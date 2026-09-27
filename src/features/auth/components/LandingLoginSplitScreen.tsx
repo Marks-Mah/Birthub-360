@@ -95,9 +95,7 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
 
-  const [isSignUp] = useState(
-    () => new URLSearchParams(window.location.search).get('signup') === '1',
-  );
+  const [isSignUp, setIsSignUp] = useState(false);
   const [name, setName] = useState('');
   const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [forgotPasswordSent, setForgotPasswordSent] = useState(false);
@@ -121,21 +119,22 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
     setIsSubmitting(true);
     setError('');
 
-    if (!isAuthorizedLoginEmail(email)) {
-      setError(
-        'Acesso restrito. Utilize um e-mail corporativo autorizado do ecossistema Birth Hub 360°.',
-      );
-      setIsSubmitting(false);
-      return;
-    }
+    // Temporariamente desabilitado para permitir cadastro administrativo
+    // if (!isAuthorizedLoginEmail(email)) {
+    //   setError(
+    //     'Acesso restrito. Utilize um e-mail corporativo autorizado do ecossistema Birth Hub 360°.',
+    //   );
+    //   setIsSubmitting(false);
+    //   return;
+    // }
 
     const result = isSignUp
       ? await authClient.signUp.email({
-          email,
-          password,
-          name: name || email.split('@')[0],
-          callbackURL: '/app',
-        })
+        email,
+        password,
+        name: name || email.split('@')[0],
+        callbackURL: '/app',
+      })
       : await authClient.signIn.email({ email, password, rememberMe, callbackURL: '/app' });
 
     if (result.error) {
@@ -157,11 +156,12 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
     setIsSubmitting(true);
     setError('');
 
-    if (!isAuthorizedLoginEmail(email)) {
-      setError('Acesso restrito. Utilize um e-mail corporativo autorizado.');
-      setIsSubmitting(false);
-      return;
-    }
+    // Temporariamente desabilitado para permitir cadastro administrativo
+    // if (!isAuthorizedLoginEmail(email)) {
+    //   setError('Acesso restrito. Utilize um e-mail corporativo autorizado.');
+    //   setIsSubmitting(false);
+    //   return;
+    // }
 
     const result = await authClient.requestPasswordReset({ email, redirectTo: '/reset-password' });
     setIsSubmitting(false);
@@ -669,6 +669,23 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
                       )}
                     </button>
                   </form>
+                )}
+
+                {/* Toggle Login/Signup */}
+                {!isForgotPassword && !verificationPending && (
+                  <div className="mt-6 text-center">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsSignUp(!isSignUp);
+                        setError('');
+                        setName('');
+                      }}
+                      className="text-xs font-bold text-slate-600 dark:text-slate-400 hover:text-brand dark:hover:text-brand transition-colors"
+                    >
+                      {isSignUp ? 'Já tem conta? Fazer login' : 'Não tem conta? Criar conta'}
+                    </button>
+                  </div>
                 )}
 
                 {/* SSO/Social Integrations */}

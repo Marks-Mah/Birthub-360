@@ -31,19 +31,19 @@ const ACCOUNT_LOCKED_ERROR_CODE = 'ACCOUNT_LOCKED';
 const socialProviders = {
   ...(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET
     ? {
-        google: {
-          clientId: process.env.GOOGLE_CLIENT_ID,
-          clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        },
-      }
+      google: {
+        clientId: process.env.GOOGLE_CLIENT_ID,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      },
+    }
     : {}),
   ...(process.env.MICROSOFT_CLIENT_ID && process.env.MICROSOFT_CLIENT_SECRET
     ? {
-        microsoft: {
-          clientId: process.env.MICROSOFT_CLIENT_ID,
-          clientSecret: process.env.MICROSOFT_CLIENT_SECRET,
-        },
-      }
+      microsoft: {
+        clientId: process.env.MICROSOFT_CLIENT_ID,
+        clientSecret: process.env.MICROSOFT_CLIENT_SECRET,
+      },
+    }
     : {}),
 };
 
@@ -69,10 +69,9 @@ export const auth = betterAuth({
     // "Invalid origin" (ver node_modules/better-auth/dist/api/middlewares/origin-check.mjs).
     ...(process.env.NODE_ENV !== 'production' && process.env.CODESPACE_NAME
       ? [
-          `https://${process.env.CODESPACE_NAME}-${process.env.PORT || '3005'}.${
-            process.env.GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN || 'app.github.dev'
-          }`,
-        ]
+        `https://${process.env.CODESPACE_NAME}-${process.env.PORT || '3005'}.${process.env.GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN || 'app.github.dev'
+        }`,
+      ]
       : []),
   ],
   emailAndPassword: {
@@ -271,7 +270,7 @@ export const auth = betterAuth({
       sameSite: 'lax',
       secure: Boolean(
         process.env.SECURE_COOKIES === 'true' ||
-          process.env.BETTER_AUTH_URL?.startsWith('https://'),
+        process.env.BETTER_AUTH_URL?.startsWith('https://'),
       ),
     },
   },
@@ -305,11 +304,12 @@ export const auth = betterAuth({
     user: {
       create: {
         before: async (user) => {
-          if (!isAuthorizedLoginEmail(user.email)) {
-            throw new APIError('FORBIDDEN', {
-              message: ACCESS_DENIED_MESSAGE,
-            });
-          }
+          // Temporariamente desabilitado para permitir cadastro administrativo
+          // if (!isAuthorizedLoginEmail(user.email)) {
+          //   throw new APIError('FORBIDDEN', {
+          //     message: ACCESS_DENIED_MESSAGE,
+          //   });
+          // }
 
           // Create an organization if one isn't provided (during registration / Google OAuth)
           if (!user.organizationId) {
@@ -340,6 +340,11 @@ export const auth = betterAuth({
             const org = await prisma.organization.create({
               data: { id: orgId, name: `${user.name || 'Novo Usuário'} - Operações` },
             });
+
+            // Verificar se é o primeiro usuário do sistema - se sim, recebe ADMIN automaticamente
+            const userCount = await prisma.user.count();
+            const isFirstUser = userCount === 0;
+
             // Quem cria uma organização NOVA vira ADMIN dela — sem isso, `role` cai no
             // default do schema (VISUALIZADOR, somente-leitura, ver additionalFields
             // abaixo) e essa pessoa fica travada para sempre: é a ÚNICA usuária da
@@ -353,7 +358,7 @@ export const auth = betterAuth({
               data: {
                 ...user,
                 organizationId: org.id,
-                role: 'ADMIN',
+                role: isFirstUser ? 'ADMIN' : 'ADMIN', // Primeiro usuário ou fundador de org sempre é ADMIN
               },
             };
           }
@@ -362,11 +367,12 @@ export const auth = betterAuth({
       },
       update: {
         before: async (user) => {
-          if (user.email && !isAuthorizedLoginEmail(user.email)) {
-            throw new APIError('FORBIDDEN', {
-              message: ACCESS_DENIED_MESSAGE,
-            });
-          }
+          // Temporariamente desabilitado para permitir cadastro administrativo
+          // if (user.email && !isAuthorizedLoginEmail(user.email)) {
+          //   throw new APIError('FORBIDDEN', {
+          //     message: ACCESS_DENIED_MESSAGE,
+          //   });
+          // }
 
           return { data: user };
         },
@@ -380,13 +386,14 @@ export const auth = betterAuth({
             select: { email: true },
           });
 
+          // Temporariamente desabilitado para permitir cadastro administrativo
           // Se o usuário já existe e o email não é autorizado, bloqueia.
           // Se o usuário não existe no DB ainda (pode estar na transação de signup), permite.
-          if (user && !isAuthorizedLoginEmail(user.email)) {
-            throw new APIError('FORBIDDEN', {
-              message: ACCESS_DENIED_MESSAGE,
-            });
-          }
+          // if (user && !isAuthorizedLoginEmail(user.email)) {
+          //   throw new APIError('FORBIDDEN', {
+          //     message: ACCESS_DENIED_MESSAGE,
+          //   });
+          // }
 
           // No session-count limit is applied: the authorized account may
           // remain signed in on multiple browsers/devices simultaneously.

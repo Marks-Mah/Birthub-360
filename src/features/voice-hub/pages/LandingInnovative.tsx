@@ -10,101 +10,14 @@ import {
 import { useTheme } from '../components/design-system/ThemeContext.js';
 import { Button, Badge, useToast, ToastContainer, AtlasLogo } from '../components/design-system/index.js';
 import { getAccessibleTextOnBrand } from '../components/design-system/tokens.js';
-import { useSessionStore } from '../../../store/useSessionStore.js';
 
-// Advanced particle background effect
+// Simplified background effect
 const ParticleBackground: React.FC = () => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const { theme } = useTheme();
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
-    resize();
-    window.addEventListener('resize', resize);
-
-    const particles: Array<{
-      x: number;
-      y: number;
-      vx: number;
-      vy: number;
-      size: number;
-      alpha: number;
-    }> = [];
-
-    const createParticle = () => ({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      vx: (Math.random() - 0.5) * 0.5,
-      vy: (Math.random() - 0.5) * 0.5,
-      size: Math.random() * 2 + 1,
-      alpha: Math.random() * 0.5 + 0.2
-    });
-
-    for (let i = 0; i < 80; i++) {
-      particles.push(createParticle());
-    }
-
-    const animate = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      const isDark = theme === 'dark';
-      const particleColor = isDark ? 'rgba(212, 175, 55, ' : 'rgba(11, 19, 43, ';
-      const lineColor = isDark ? 'rgba(212, 175, 55, ' : 'rgba(11, 19, 43, ';
-
-      particles.forEach((p, i) => {
-        p.x += p.vx;
-        p.y += p.vy;
-
-        if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
-        if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
-
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = particleColor + p.alpha + ')';
-        ctx.fill();
-
-        // Connect nearby particles
-        particles.slice(i + 1).forEach(p2 => {
-          const dx = p.x - p2.x;
-          const dy = p.y - p2.y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-
-          if (dist < 150) {
-            ctx.beginPath();
-            ctx.moveTo(p.x, p.y);
-            ctx.lineTo(p2.x, p2.y);
-            ctx.strokeStyle = lineColor + (0.15 * (1 - dist / 150)) + ')';
-            ctx.lineWidth = 0.5;
-            ctx.stroke();
-          }
-        });
-      });
-
-      requestAnimationFrame(animate);
-    };
-
-    animate();
-
-    return () => {
-      window.removeEventListener('resize', resize);
-    };
-  }, [theme]);
-
   return (
-    <canvas
-      ref={canvasRef}
-      className="absolute inset-0 pointer-events-none z-0"
-      style={{ opacity: 0.6 }}
-    />
+    <div className="absolute inset-0 pointer-events-none z-0">
+      <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-brand/10 rounded-full blur-[150px]" />
+      <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-iris/10 rounded-full blur-[120px]" />
+    </div>
   );
 };
 
@@ -257,8 +170,6 @@ const DataStream: React.FC = () => {
 export default function LandingInnovative() {
   const { theme, setTheme } = useTheme();
   const { toasts, showToast } = useToast();
-  const brandColor = useSessionStore((state) => state.brandColor);
-  const accessibleBrandText = getAccessibleTextOnBrand(brandColor);
 
   const { scrollY } = useScroll();
   const heroOpacity = useTransform(scrollY, [0, 500], [1, 0]);
@@ -348,8 +259,8 @@ export default function LandingInnovative() {
                 key={item}
                 onClick={() => scrollToSection(item.toLowerCase().replace(' ', '-'))}
                 className={`text-sm font-semibold transition-all relative ${activeSection === i
-                    ? 'text-brand'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white'
+                  ? 'text-brand'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white'
                   }`}
               >
                 {item}
