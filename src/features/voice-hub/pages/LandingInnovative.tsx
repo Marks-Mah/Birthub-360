@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import {
   Sparkles, Shield, Globe, ArrowRight, ChevronDown,
-  Activity, Database, Lock, Terminal, Radio, BarChart3,
+  Activity, Database, Lock, Terminal, Radio, Network, Zap,
   Server, Bot, BrainCircuit
 } from 'lucide-react';
 import { useTheme } from '../components/design-system/ThemeContext.js';
