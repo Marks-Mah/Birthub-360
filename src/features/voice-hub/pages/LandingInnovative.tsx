@@ -1,15 +1,14 @@
 import type React from 'react';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, useScroll, useTransform, useSpring, AnimatePresence } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import {
-  Sparkles, Cpu, Network, Shield, Globe, Zap, ArrowRight, ChevronDown,
-  Activity, Database, Code2, Layers, Lock, Terminal, Radio, BarChart3,
-  Smartphone, Server, Bot, NeuralNetwork, Waves, Command, Orbit
+  Sparkles, Shield, Globe, ArrowRight, ChevronDown,
+  Activity, Database, Lock, Terminal, Radio, BarChart3,
+  Server, Bot, BrainCircuit
 } from 'lucide-react';
 import { useTheme } from '../components/design-system/ThemeContext.js';
 import { Button, Badge, useToast, ToastContainer, AtlasLogo } from '../components/design-system/index.js';
-import { getAccessibleTextOnBrand } from '../components/design-system/tokens.js';
 
 // Simplified background effect
 const ParticleBackground: React.FC = () => {
@@ -28,21 +27,6 @@ const MagneticButton: React.FC<{
   className?: string;
   variant?: 'primary' | 'secondary';
 }> = ({ children, onClick, className = '', variant = 'primary' }) => {
-  const ref = useRef<HTMLButtonElement>(null);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!ref.current) return;
-    const rect = ref.current.getBoundingClientRect();
-    const x = e.clientX - rect.left - rect.width / 2;
-    const y = e.clientY - rect.top - rect.height / 2;
-    setPosition({ x: x * 0.3, y: y * 0.3 });
-  };
-
-  const handleMouseLeave = () => {
-    setPosition({ x: 0, y: 0 });
-  };
-
   const baseClasses = "relative px-8 py-4 rounded-xl font-bold text-sm transition-all duration-300 transform-gpu";
   const variantClasses = variant === 'primary'
     ? "bg-brand text-white shadow-lg hover:shadow-2xl"
@@ -50,13 +34,8 @@ const MagneticButton: React.FC<{
 
   return (
     <motion.button
-      ref={ref}
       onClick={onClick}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
       className={`${baseClasses} ${variantClasses} ${className}`}
-      animate={{ x: position.x, y: position.y }}
-      transition={{ type: 'spring', stiffness: 400, damping: 30 }}
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
     >
@@ -72,49 +51,21 @@ const HolographicCard: React.FC<{
   description: string;
   delay: number;
 }> = ({ icon, title, description, delay }) => {
-  const ref = useRef<HTMLDivElement>(null);
-  const [rotateX, setRotateX] = useState(0);
-  const [rotateY, setRotateY] = useState(0);
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!ref.current) return;
-    const rect = ref.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
-    setRotateX((y - centerY) / 20);
-    setRotateY((centerX - x) / 20);
-  };
-
-  const handleMouseLeave = () => {
-    setRotateX(0);
-    setRotateY(0);
-  };
-
   return (
     <motion.div
-      ref={ref}
       initial={{ opacity: 0, y: 50 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-100px" }}
       transition={{ duration: 0.6, delay }}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      style={{
-        transformStyle: 'preserve-3d',
-        perspective: 1000
-      }}
       className="relative group"
     >
       <motion.div
-        animate={{ rotateX, rotateY }}
+        whileHover={{ y: -8 }}
         transition={{ type: 'spring', stiffness: 300, damping: 20 }}
         className="relative bg-white dark:bg-slate-900 rounded-2xl p-8 border border-slate-200 dark:border-slate-800 shadow-xl hover:shadow-2xl transition-all duration-500"
-        style={{ transformStyle: 'preserve-3d' }}
       >
         <div className="absolute inset-0 bg-gradient-to-br from-brand/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-        <div className="relative z-10" style={{ transform: 'translateZ(20px)' }}>
+        <div className="relative z-10">
           <div className="w-14 h-14 rounded-xl bg-brand/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
             {icon}
           </div>
@@ -129,7 +80,6 @@ const HolographicCard: React.FC<{
 // Real-time data stream visualization
 const DataStream: React.FC = () => {
   const [dataPoints, setDataPoints] = useState<number[]>([]);
-  const { theme } = useTheme();
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -142,22 +92,19 @@ const DataStream: React.FC = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const isDark = theme === 'dark';
-  const lineColor = isDark ? '#d4af37' : '#0b132b';
-
   return (
     <div className="relative h-24 w-full">
       <svg className="w-full h-full" viewBox="0 0 400 100" preserveAspectRatio="none">
         <defs>
           <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor={lineColor} stopOpacity="0.3" />
-            <stop offset="100%" stopColor={lineColor} stopOpacity="0" />
+            <stop offset="0%" stopColor="var(--brand)" stopOpacity="0.3" />
+            <stop offset="100%" stopColor="var(--brand)" stopOpacity="0" />
           </linearGradient>
         </defs>
         <path
           d={`M0,${100 - dataPoints[0] || 50} ${dataPoints.map((val, i) => `L${i * 20},${100 - val}`).join(' ')}`}
           fill="url(#gradient)"
-          stroke={lineColor}
+          stroke="var(--brand)"
           strokeWidth="2"
           className="transition-all duration-300"
         />
@@ -177,7 +124,6 @@ export default function LandingInnovative() {
   const heroY = useTransform(scrollY, [0, 500], [0, 100]);
 
   const [activeSection, setActiveSection] = useState(0);
-  const [isTyping, setIsTyping] = useState(false);
   const [typedText, setTypedText] = useState('');
 
   // Typing effect for hero text
@@ -451,7 +397,7 @@ export default function LandingInnovative() {
             />
             <HolographicCard
               delay={0.1}
-              icon={<NeuralNetwork className="h-7 w-7 text-iris" />}
+              icon={<BrainCircuit className="h-7 w-7 text-iris" />}
               title="RAG Avançado"
               description="Sistema de recuperação de conhecimento que consulta seus documentos corporativos em milissegundos para respostas precisas e contextualizadas."
             />

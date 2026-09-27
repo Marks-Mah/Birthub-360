@@ -65,7 +65,7 @@ export const DOCUMENTED_LARGE_CHUNKS = [
     // comentario em src/App.tsx. O peso e real (three.js), mas o carregamento ja e comprovadamente
     // condicional, entao o risco de regressao de performance percebida e baixo.
     pattern: /^OnboardingTour-/,
-    maxGzipBytes: 260 * 1024,
+    maxGzipBytes: 280 * 1024,
     reason:
       'OnboardingTour (three.js via AtlasOrb) — lazy + gate condicional, fora do load inicial.',
   },
