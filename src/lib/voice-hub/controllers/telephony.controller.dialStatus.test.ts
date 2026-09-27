@@ -19,7 +19,11 @@ function fakeRes() {
     send: vi.fn().mockReturnThis(),
     status: vi.fn().mockReturnThis(),
   };
-  return res as unknown as Response & { type: ReturnType<typeof vi.fn>; send: ReturnType<typeof vi.fn>; status: ReturnType<typeof vi.fn> };
+  return res as unknown as Response & {
+    type: ReturnType<typeof vi.fn>;
+    send: ReturnType<typeof vi.fn>;
+    status: ReturnType<typeof vi.fn>;
+  };
 }
 
 describe('telephony.controller — Dial status callback & action configuration', () => {

@@ -23,14 +23,21 @@ function formatDate(iso?: string): string {
 // Wave 12 (CPI) - CRM/Operação: feedback real do último resultado de exportação
 // persistido no lead (não só o resultado efêmero do clique nesta sessão) —
 // "não exportado" nunca aparece com a mesma cor de "exportado com sucesso".
-export const BitrixExportStatusBadge: React.FC<BitrixExportStatusBadgeProps> = ({ status, error, exportedAt, theme = 'dark' }) => {
+export const BitrixExportStatusBadge: React.FC<BitrixExportStatusBadgeProps> = ({
+  status,
+  error,
+  exportedAt,
+  theme = 'dark',
+}) => {
   const isDark = theme === 'dark';
 
   if (status === 'not_exported') {
     return (
       <span
         className={`px-2 py-0.5 rounded-md border text-[10px] font-semibold flex items-center gap-1 ${
-          isDark ? 'bg-slate-800/60 border-slate-700 text-slate-400' : 'bg-slate-100 border-slate-200 text-slate-500'
+          isDark
+            ? 'bg-slate-800/60 border-slate-700 text-slate-400'
+            : 'bg-slate-100 border-slate-200 text-slate-500'
         }`}
         title="Este lead ainda não foi enviado ao Bitrix24."
       >
@@ -44,7 +51,11 @@ export const BitrixExportStatusBadge: React.FC<BitrixExportStatusBadgeProps> = (
     return (
       <span
         className="px-2 py-0.5 rounded-md border text-[10px] font-bold flex items-center gap-1 bg-emerald-500/15 text-emerald-500 border-emerald-500/30"
-        title={exportedAt ? `Exportado com sucesso em ${formatDate(exportedAt)}` : 'Exportado com sucesso'}
+        title={
+          exportedAt
+            ? `Exportado com sucesso em ${formatDate(exportedAt)}`
+            : 'Exportado com sucesso'
+        }
       >
         <CheckCircle2 className="w-3 h-3" />
         <span>Exportado{exportedAt ? ` em ${formatDate(exportedAt)}` : ''}</span>
@@ -56,7 +67,10 @@ export const BitrixExportStatusBadge: React.FC<BitrixExportStatusBadgeProps> = (
     return (
       <span
         className="px-2 py-0.5 rounded-md border text-[10px] font-bold flex items-center gap-1 bg-amber-500/15 text-amber-500 border-amber-500/30 max-w-[220px]"
-        title={error || 'Bloqueado pela checagem de elegibilidade (Wave 12) antes de qualquer envio ao Bitrix24.'}
+        title={
+          error ||
+          'Bloqueado pela checagem de elegibilidade (Wave 12) antes de qualquer envio ao Bitrix24.'
+        }
       >
         <ShieldOff className="w-3 h-3 shrink-0" />
         <span className="truncate">Bloqueado: {error || 'não elegível'}</span>

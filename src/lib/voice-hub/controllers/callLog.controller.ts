@@ -1,6 +1,12 @@
 import type { Request, Response } from 'express';
 import { callLogSchema } from '../validators/index.js';
-import { listCallLogs, createCallLog, updateCallLog, deleteCallLog, NotFoundError } from '../services/callLogService.js';
+import {
+  listCallLogs,
+  createCallLog,
+  updateCallLog,
+  deleteCallLog,
+  NotFoundError,
+} from '../services/callLogService.js';
 import { writeAuditLog } from '../services/audit.js';
 
 export async function listCallLogsHandler(req: Request, res: Response) {
@@ -13,7 +19,8 @@ export async function createCallLogHandler(req: Request, res: Response) {
   if (!parsed.success) return res.status(400).json({ error: parsed.error.issues[0].message });
 
   const log = await createCallLog(req.organizationId!, req.voiceHubUser?.id ?? null, parsed.data);
-  if (req.voiceHubUser) writeAuditLog(req.organizationId, req.voiceHubUser.id, 'CALL_LOG_CREATE', { logId: log.id });
+  if (req.voiceHubUser)
+    writeAuditLog(req.organizationId, req.voiceHubUser.id, 'CALL_LOG_CREATE', { logId: log.id });
   return res.json({ success: true, log });
 }
 

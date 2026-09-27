@@ -68,7 +68,10 @@ export function listApiKeysForTenant(organizationId: string): Promise<SafeApiKey
   });
 }
 
-export function findApiKeyForTenant(id: string, organizationId: string): Promise<SafeApiKey | null> {
+export function findApiKeyForTenant(
+  id: string,
+  organizationId: string,
+): Promise<SafeApiKey | null> {
   return prisma.aPIKey.findFirst({
     where: { id, organizationId },
     select: API_KEY_SAFE_SELECT,

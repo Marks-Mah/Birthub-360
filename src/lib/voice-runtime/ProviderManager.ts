@@ -21,21 +21,28 @@ export class ProviderManager {
   }
 
   public getProvidersByType(type: 'STT' | 'LLM' | 'TTS' | 'E2E'): BaseProvider[] {
-    return Array.from(this.providers.values()).filter(p => p.type === type);
+    return Array.from(this.providers.values()).filter((p) => p.type === type);
   }
 
-  public async getHealthyProvider(preferredId: string, type: 'STT' | 'LLM' | 'TTS' | 'E2E', fallbacks: string[] = []): Promise<BaseProvider> {
+  public async getHealthyProvider(
+    preferredId: string,
+    type: 'STT' | 'LLM' | 'TTS' | 'E2E',
+    fallbacks: string[] = [],
+  ): Promise<BaseProvider> {
     const preferred = this.getProvider(preferredId);
-    
-    if (preferred && await preferred.checkHealth()) {
+
+    if (preferred && (await preferred.checkHealth())) {
       return preferred;
     }
 
-    observability.logEvent('SYSTEM', 'PROVIDER_FAILOVER', { failed: preferredId, trying: fallbacks });
+    observability.logEvent('SYSTEM', 'PROVIDER_FAILOVER', {
+      failed: preferredId,
+      trying: fallbacks,
+    });
 
     for (const fallbackId of fallbacks) {
       const fallbackProvider = this.getProvider(fallbackId);
-      if (fallbackProvider && await fallbackProvider.checkHealth()) {
+      if (fallbackProvider && (await fallbackProvider.checkHealth())) {
         return fallbackProvider;
       }
     }

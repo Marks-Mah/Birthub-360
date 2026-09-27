@@ -11,7 +11,7 @@ function formatPublishedAt(iso: string): string {
     month: '2-digit',
     year: 'numeric',
     hour: '2-digit',
-    minute: '2-digit'
+    minute: '2-digit',
   });
 }
 
@@ -41,7 +41,7 @@ export function VersionHistoryPanel() {
     rollbackState,
     rollbackIssues,
     rollbackError,
-    rollbackTargetVersion
+    rollbackTargetVersion,
   } = useStudioStore();
 
   const [confirmingVersion, setConfirmingVersion] = useState<number | null>(null);
@@ -73,8 +73,12 @@ export function VersionHistoryPanel() {
               <History className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-white font-semibold leading-none mb-1">Histórico de Publicações</h3>
-              <p className="text-gray-400 text-xs">Versões publicadas deste fluxo, mais recente primeiro.</p>
+              <h3 className="text-white font-semibold leading-none mb-1">
+                Histórico de Publicações
+              </h3>
+              <p className="text-gray-400 text-xs">
+                Versões publicadas deste fluxo, mais recente primeiro.
+              </p>
             </div>
           </div>
           <button
@@ -103,7 +107,8 @@ export function VersionHistoryPanel() {
         )}
         {rollbackState === 'success' && (
           <div className="px-4 py-2 bg-green-500/10 border-b border-green-500/20 text-green-300 text-xs font-semibold flex items-center gap-2 shrink-0">
-            <CheckCircle2 className="w-3.5 h-3.5 shrink-0" /> Versão restaurada e publicada com sucesso.
+            <CheckCircle2 className="w-3.5 h-3.5 shrink-0" /> Versão restaurada e publicada com
+            sucesso.
           </div>
         )}
 
@@ -132,7 +137,9 @@ export function VersionHistoryPanel() {
             <div className="flex flex-col items-center justify-center py-10 text-center gap-2">
               <Clock className="w-8 h-8 text-gray-500" />
               <p className="text-sm text-gray-300 font-semibold">Nenhuma versão publicada ainda.</p>
-              <p className="text-xs text-gray-500">Publique este fluxo para começar a acumular histórico.</p>
+              <p className="text-xs text-gray-500">
+                Publique este fluxo para começar a acumular histórico.
+              </p>
             </div>
           )}
 
@@ -145,7 +152,9 @@ export function VersionHistoryPanel() {
                 <div className="min-w-0">
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-bold text-gray-100">v{v.version}</span>
-                    <span className="text-[10px] font-mono text-gray-500">{formatPublishedAt(v.publishedAt)}</span>
+                    <span className="text-[10px] font-mono text-gray-500">
+                      {formatPublishedAt(v.publishedAt)}
+                    </span>
                   </div>
                   <p className="text-[11px] text-gray-400 mt-0.5 truncate">
                     Publicado por {v.publishedBy || 'usuário desconhecido'}

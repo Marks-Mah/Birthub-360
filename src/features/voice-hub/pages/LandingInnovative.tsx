@@ -3,12 +3,30 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import {
-  Sparkles, Shield, Globe, ArrowRight, ChevronDown,
-  Activity, Database, Lock, Terminal, Radio, Network, Zap,
-  Server, Bot, BrainCircuit
+  Sparkles,
+  Shield,
+  Globe,
+  ArrowRight,
+  ChevronDown,
+  Activity,
+  Database,
+  Lock,
+  Terminal,
+  Radio,
+  Network,
+  Zap,
+  Server,
+  Bot,
+  BrainCircuit,
 } from 'lucide-react';
 import { useTheme } from '../components/design-system/ThemeContext.js';
-import { Button, Badge, useToast, ToastContainer, AtlasLogo } from '../components/design-system/index.js';
+import {
+  Button,
+  Badge,
+  useToast,
+  ToastContainer,
+  AtlasLogo,
+} from '../components/design-system/index.js';
 
 // Simplified background effect
 const ParticleBackground: React.FC = () => {
@@ -27,10 +45,12 @@ const MagneticButton: React.FC<{
   className?: string;
   variant?: 'primary' | 'secondary';
 }> = ({ children, onClick, className = '', variant = 'primary' }) => {
-  const baseClasses = "relative px-8 py-4 rounded-xl font-bold text-sm transition-all duration-300 transform-gpu";
-  const variantClasses = variant === 'primary'
-    ? "bg-brand text-white shadow-lg hover:shadow-2xl"
-    : "bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-700";
+  const baseClasses =
+    'relative px-8 py-4 rounded-xl font-bold text-sm transition-all duration-300 transform-gpu';
+  const variantClasses =
+    variant === 'primary'
+      ? 'bg-brand text-white shadow-lg hover:shadow-2xl'
+      : 'bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-700';
 
   return (
     <motion.button
@@ -55,7 +75,7 @@ const HolographicCard: React.FC<{
     <motion.div
       initial={{ opacity: 0, y: 50 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-100px" }}
+      viewport={{ once: true, margin: '-100px' }}
       transition={{ duration: 0.6, delay }}
       className="relative group"
     >
@@ -83,7 +103,7 @@ const DataStream: React.FC = () => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setDataPoints(prev => {
+      setDataPoints((prev) => {
         const newPoint = Math.random() * 100;
         const updated = [...prev, newPoint];
         return updated.slice(-20);
@@ -132,7 +152,7 @@ export default function LandingInnovative() {
 
   // Typing effect for hero text
   useEffect(() => {
-    const fullText = "INTELIGÊNCIA ARTIFICIAL AUTÔNOMA";
+    const fullText = 'INTELIGÊNCIA ARTIFICIAL AUTÔNOMA';
     let index = 0;
 
     const typeInterval = setInterval(() => {
@@ -155,12 +175,12 @@ export default function LandingInnovative() {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             const id = entry.target.getAttribute('id');
-            const sectionIndex = Array.from(sections).findIndex(s => s.id === id);
+            const sectionIndex = Array.from(sections).findIndex((s) => s.id === id);
             setActiveSection(sectionIndex);
           }
         });
       },
-      { threshold: 0.3 }
+      { threshold: 0.3 },
     );
 
     sections.forEach((section) => observer.observe(section));
@@ -198,8 +218,12 @@ export default function LandingInnovative() {
               <AtlasLogo className="h-7 w-7" />
             </motion.div>
             <div className="text-left">
-              <h1 className="text-lg font-extrabold tracking-tight text-slate-950 dark:text-white">Birth Hub 360</h1>
-              <span className="text-[10px] text-brand font-bold uppercase tracking-widest">Enterprise AI</span>
+              <h1 className="text-lg font-extrabold tracking-tight text-slate-950 dark:text-white">
+                Birth Hub 360
+              </h1>
+              <span className="text-[10px] text-brand font-bold uppercase tracking-widest">
+                Enterprise AI
+              </span>
             </div>
           </Link>
 
@@ -208,10 +232,11 @@ export default function LandingInnovative() {
               <button
                 key={item}
                 onClick={() => scrollToSection(item.toLowerCase().replace(' ', '-'))}
-                className={`text-sm font-semibold transition-all relative ${activeSection === i
-                  ? 'text-brand'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white'
-                  }`}
+                className={`text-sm font-semibold transition-all relative ${
+                  activeSection === i
+                    ? 'text-brand'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white'
+                }`}
               >
                 {item}
                 {activeSection === i && (
@@ -387,8 +412,8 @@ export default function LandingInnovative() {
               Inteligência que Transforma
             </h2>
             <p className="text-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-              Nossa plataforma combina tecnologias de ponta para criar agentes que
-              pensam, aprendem e executam em escala empresarial.
+              Nossa plataforma combina tecnologias de ponta para criar agentes que pensam, aprendem
+              e executam em escala empresarial.
             </p>
           </motion.div>
 
@@ -454,10 +479,26 @@ export default function LandingInnovative() {
 
               <div className="space-y-6">
                 {[
-                  { icon: Lock, title: 'Criptografia End-to-End', desc: 'TLS 1.3 em trânsito, AES-256 em repouso' },
-                  { icon: Server, title: 'Infraestrutura Distribuída', desc: 'SLA 99.98% com redundância geográfica' },
-                  { icon: Terminal, title: 'Auditoria Completa', desc: 'Logs imutáveis e rastreabilidade total' },
-                  { icon: Database, title: 'Soberania de Dados', desc: 'Storage privado ou cloud criptografado' }
+                  {
+                    icon: Lock,
+                    title: 'Criptografia End-to-End',
+                    desc: 'TLS 1.3 em trânsito, AES-256 em repouso',
+                  },
+                  {
+                    icon: Server,
+                    title: 'Infraestrutura Distribuída',
+                    desc: 'SLA 99.98% com redundância geográfica',
+                  },
+                  {
+                    icon: Terminal,
+                    title: 'Auditoria Completa',
+                    desc: 'Logs imutáveis e rastreabilidade total',
+                  },
+                  {
+                    icon: Database,
+                    title: 'Soberania de Dados',
+                    desc: 'Storage privado ou cloud criptografado',
+                  },
                 ].map((item, i) => (
                   <motion.div
                     key={i}
@@ -471,7 +512,9 @@ export default function LandingInnovative() {
                       <item.icon className="h-6 w-6 text-brand" />
                     </div>
                     <div>
-                      <h3 className="font-bold text-slate-900 dark:text-white mb-1">{item.title}</h3>
+                      <h3 className="font-bold text-slate-900 dark:text-white mb-1">
+                        {item.title}
+                      </h3>
                       <p className="text-slate-600 dark:text-slate-400 text-sm">{item.desc}</p>
                     </div>
                   </motion.div>
@@ -493,11 +536,16 @@ export default function LandingInnovative() {
                     { label: 'Criptografia', value: 'AES-256' },
                     { label: 'Protocolo', value: 'TLS 1.3' },
                     { label: 'Compliance', value: 'LGPD' },
-                    { label: 'SLA', value: '99.98%' }
+                    { label: 'SLA', value: '99.98%' },
                   ].map((item, i) => (
-                    <div key={i} className="text-center p-4 bg-slate-50 dark:bg-slate-900 rounded-xl">
+                    <div
+                      key={i}
+                      className="text-center p-4 bg-slate-50 dark:bg-slate-900 rounded-xl"
+                    >
                       <div className="text-2xl font-bold text-brand mb-1">{item.value}</div>
-                      <div className="text-xs text-slate-500 uppercase tracking-wider">{item.label}</div>
+                      <div className="text-xs text-slate-500 uppercase tracking-wider">
+                        {item.label}
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -521,8 +569,8 @@ export default function LandingInnovative() {
               Pronto para o Futuro da IA?
             </h2>
             <p className="text-xl text-slate-600 dark:text-slate-400">
-              Junte-se às empresas que já estão transformando suas operações com
-              inteligência artificial autônoma de última geração.
+              Junte-se às empresas que já estão transformando suas operações com inteligência
+              artificial autônoma de última geração.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link to="/login">
@@ -531,9 +579,7 @@ export default function LandingInnovative() {
                   <ArrowRight className="h-4 w-4 ml-2" />
                 </MagneticButton>
               </Link>
-              <MagneticButton variant="secondary">
-                Falar com Especialista
-              </MagneticButton>
+              <MagneticButton variant="secondary">Falar com Especialista</MagneticButton>
             </div>
           </motion.div>
         </div>
@@ -561,12 +607,7 @@ export default function LandingInnovative() {
 
 // Import missing icon
 const Moon: React.FC<{ className?: string }> = ({ className }) => (
-  <svg
-    className={className}
-    fill="none"
-    viewBox="0 0 24 24"
-    stroke="currentColor"
-  >
+  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
     <path
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -577,11 +618,7 @@ const Moon: React.FC<{ className?: string }> = ({ className }) => (
 );
 
 const Play: React.FC<{ className?: string }> = ({ className }) => (
-  <svg
-    className={className}
-    fill="currentColor"
-    viewBox="0 0 24 24"
-  >
+  <svg className={className} fill="currentColor" viewBox="0 0 24 24">
     <path d="M8 5v14l11-7z" />
   </svg>
 );

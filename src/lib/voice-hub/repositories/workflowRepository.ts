@@ -2,7 +2,10 @@ import { Prisma } from '@prisma/client';
 import { prisma } from '@/lib/prisma.js';
 
 export function findWorkflowForTenant(organizationId: string) {
-  return prisma.workflow.findFirst({ where: { organizationId, deletedAt: null }, orderBy: { updatedAt: 'desc' } });
+  return prisma.workflow.findFirst({
+    where: { organizationId, deletedAt: null },
+    orderBy: { updatedAt: 'desc' },
+  });
 }
 
 // Only workflow the voice runtime (Agente 04) is meant to execute for a tenant: one that has
@@ -10,14 +13,24 @@ export function findWorkflowForTenant(organizationId: string) {
 // edit after publish flips status back to 'draft' (see workflowService.saveWorkflow/
 // updateWorkflow), so this never returns a row whose nodes/edges drifted from what was validated.
 export function findActiveWorkflowForTenant(organizationId: string) {
-  return prisma.workflow.findFirst({ where: { organizationId, deletedAt: null, status: 'active' }, orderBy: { updatedAt: 'desc' } });
+  return prisma.workflow.findFirst({
+    where: { organizationId, deletedAt: null, status: 'active' },
+    orderBy: { updatedAt: 'desc' },
+  });
 }
 
 export function upsertWorkflow(
   organizationId: string,
   userId: string,
   existingId: string | null,
-  data: { name?: string; nodes?: unknown; edges?: unknown; metadata?: unknown; version?: number; status?: string }
+  data: {
+    name?: string;
+    nodes?: unknown;
+    edges?: unknown;
+    metadata?: unknown;
+    version?: number;
+    status?: string;
+  },
 ) {
   if (existingId) {
     return prisma.workflow.update({
@@ -26,7 +39,8 @@ export function upsertWorkflow(
         name: data.name ?? undefined,
         nodes: data.nodes !== undefined ? (data.nodes as Prisma.InputJsonValue) : undefined,
         edges: data.edges !== undefined ? (data.edges as Prisma.InputJsonValue) : undefined,
-        metadata: data.metadata !== undefined ? (data.metadata as Prisma.InputJsonValue) : undefined,
+        metadata:
+          data.metadata !== undefined ? (data.metadata as Prisma.InputJsonValue) : undefined,
         version: data.version ?? undefined,
         status: data.status ?? undefined,
         updatedBy: userId,
@@ -39,7 +53,7 @@ export function upsertWorkflow(
       userId,
       createdBy: userId,
       updatedBy: userId,
-      name: data.name || "Default Workflow",
+      name: data.name || 'Default Workflow',
       nodes: (data.nodes ?? []) as Prisma.InputJsonValue,
       edges: (data.edges ?? []) as Prisma.InputJsonValue,
       metadata: (data.metadata ?? {}) as Prisma.InputJsonValue,
@@ -68,7 +82,12 @@ export function findWorkflowByIdForTenant(id: string, organizationId: string) {
 // Optimistic concurrency: only applies the metadata write if `version` still matches what the
 // caller last read. Returns the affected row count so callers can detect a lost-update race
 // (two collaborators editing locks/comments on the same workflow at once) and retry.
-export async function updateMetadataIfVersion(id: string, expectedVersion: number, userId: string, metadata: unknown) {
+export async function updateMetadataIfVersion(
+  id: string,
+  expectedVersion: number,
+  userId: string,
+  metadata: unknown,
+) {
   const { count } = await prisma.workflow.updateMany({
     where: { id, version: expectedVersion },
     data: {
@@ -123,6 +142,8 @@ export function findWorkflowVersion(workflowId: string, version: number) {
   });
 }
 
-export function isUniqueConstraintViolation(err: unknown): err is Prisma.PrismaClientKnownRequestError {
+export function isUniqueConstraintViolation(
+  err: unknown,
+): err is Prisma.PrismaClientKnownRequestError {
   return err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2002';
 }

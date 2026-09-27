@@ -1,21 +1,30 @@
 import type React from 'react';
-import { useState, useEffect, } from 'react';
-import type { Lead, AIConfig, ThemeMode, IntegrationsConfig, LeadStage, User, ProspectFilters, ProspectRunMeta } from '../types.js';
+import { useState, useEffect } from 'react';
+import type {
+  Lead,
+  AIConfig,
+  ThemeMode,
+  IntegrationsConfig,
+  LeadStage,
+  User,
+  ProspectFilters,
+  ProspectRunMeta,
+} from '../types.js';
 import { LeadCard } from './LeadCard.js';
 import { resolveBitrixWebhook } from '../utils/bitrix.js';
 import { SearchCombobox } from './SearchCombobox.js';
 import { MetricsChart } from './MetricsChart.js';
 import { ProspectRunSummary } from './ProspectRunSummary.js';
 import { SEARCH_SCHEMA_CONFIG } from '../utils/searchOptions.js';
-import { 
-  Search, 
-  Sparkles, 
-  Loader2, 
-  CheckCircle2, 
-  Flame, 
-  FileCode, 
-  FileSpreadsheet, 
-  Send, 
+import {
+  Search,
+  Sparkles,
+  Loader2,
+  CheckCircle2,
+  Flame,
+  FileCode,
+  FileSpreadsheet,
+  Send,
   Check,
   Building2,
   MapPin,
@@ -86,21 +95,25 @@ export const ProspectorTab: React.FC<ProspectorTabProps> = ({
   theme = 'dark',
   integrationsConfig,
   onFiltersChange,
-  runMeta = null
+  runMeta = null,
 }) => {
   // Dropdown & Combobox States for the 7 requested fields
   const [selectedSegment, setSelectedSegment] = useState<string>('transp_geral');
   const [customSegmentText, setCustomSegmentText] = useState<string>('');
-  
+
   const [selectedState, setSelectedState] = useState<string>('SP');
   const [selectedCity, setSelectedCity] = useState<string>('');
-  const [ibgeCities, setIbgeCities] = useState<{id: string, label: string, description: string}[]>([]);
+  const [ibgeCities, setIbgeCities] = useState<
+    { id: string; label: string; description: string }[]
+  >([]);
   const [searchRadius, setSearchRadius] = useState<string>('50'); // in km
 
   const [selectedCompanyType, setSelectedCompanyType] = useState<string>('tipo_frota_propria');
   const [selectedEmployeeCount, setSelectedEmployeeCount] = useState<string>('func_51_200');
   const [selectedAnnualRevenue, setSelectedAnnualRevenue] = useState<string>('fat_20m_50m');
-  const [selectedDecisionMakerRoles, setSelectedDecisionMakerRoles] = useState<string[]>(['diretor_operacoes']);
+  const [selectedDecisionMakerRoles, setSelectedDecisionMakerRoles] = useState<string[]>([
+    'diretor_operacoes',
+  ]);
 
   // Bulk Export State
   const [isBulkExporting, setIsBulkExporting] = useState(false);
@@ -115,8 +128,8 @@ export const ProspectorTab: React.FC<ProspectorTabProps> = ({
     // meio do uso, a rota devolve 401 (objeto, não array) - Array.isArray evita
     // guardar um erro no lugar da lista e quebrar downstream.
     fetch('/api/users', { credentials: 'include' })
-      .then(res => res.json())
-      .then(data => setUsersList(Array.isArray(data) ? data : []))
+      .then((res) => res.json())
+      .then((data) => setUsersList(Array.isArray(data) ? data : []))
       .catch((err: any) => console.error(err));
   }, []);
 
@@ -126,16 +139,16 @@ export const ProspectorTab: React.FC<ProspectorTabProps> = ({
   useEffect(() => {
     if (!selectedState) return;
     fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${selectedState}/municipios`)
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         const formatted = data.map((c: any) => ({
           id: c.nome,
           label: c.nome,
-          description: `Estado de ${selectedState}`
+          description: `Estado de ${selectedState}`,
         }));
         setIbgeCities(formatted);
         if (formatted.length > 0) {
-           setSelectedCity(formatted[0].id);
+          setSelectedCity(formatted[0].id);
         }
       })
       .catch((err: any) => console.error('Erro ao buscar municípios do IBGE:', err));
@@ -148,7 +161,7 @@ export const ProspectorTab: React.FC<ProspectorTabProps> = ({
     if (selectedSegment === 'custom') {
       segmentLabel = customSegmentText || 'Transportadora e Logística';
     } else {
-      const seg = SEARCH_SCHEMA_CONFIG.segments.find(s => s.id === selectedSegment);
+      const seg = SEARCH_SCHEMA_CONFIG.segments.find((s) => s.id === selectedSegment);
       segmentLabel = seg ? seg.label : 'Transportadora de Cargas';
     }
 
@@ -164,14 +177,17 @@ export const ProspectorTab: React.FC<ProspectorTabProps> = ({
     }
 
     // 3. Tipo de Empresa / Frota
-    const typeObj = SEARCH_SCHEMA_CONFIG.companyTypes.find(t => t.id === selectedCompanyType);
-    const typeLabel = (typeObj && typeObj.id !== 'todos_tipos') ? `(${typeObj.label})` : '';
+    const typeObj = SEARCH_SCHEMA_CONFIG.companyTypes.find((t) => t.id === selectedCompanyType);
+    const typeLabel = typeObj && typeObj.id !== 'todos_tipos' ? `(${typeObj.label})` : '';
 
     // 4. Porte de Funcionários
-    const empObj = SEARCH_SCHEMA_CONFIG.employeeCounts.find(e => e.id === selectedEmployeeCount);
-    const empLabel = (empObj && empObj.id !== 'todos_funcionarios') ? `com ${empObj.badge} colaboradores` : '';
+    const empObj = SEARCH_SCHEMA_CONFIG.employeeCounts.find((e) => e.id === selectedEmployeeCount);
+    const empLabel =
+      empObj && empObj.id !== 'todos_funcionarios' ? `com ${empObj.badge} colaboradores` : '';
 
-    const combined = `${segmentLabel} ${typeLabel} ${locationLabel} ${empLabel}`.replace(/\s+/g, ' ').trim();
+    const combined = `${segmentLabel} ${typeLabel} ${locationLabel} ${empLabel}`
+      .replace(/\s+/g, ' ')
+      .trim();
     if (combined) {
       setQuery(combined);
     }
@@ -179,28 +195,48 @@ export const ProspectorTab: React.FC<ProspectorTabProps> = ({
     // Wave 1 (CPI) - Search Intent: além da string de exibição acima, reporta os
     // filtros estruturados para serem enviados individualmente ao backend.
     if (onFiltersChange) {
-      const typeObjForFilter = SEARCH_SCHEMA_CONFIG.companyTypes.find(t => t.id === selectedCompanyType);
-      const empObjForFilter = SEARCH_SCHEMA_CONFIG.employeeCounts.find(e => e.id === selectedEmployeeCount);
-      const revObjForFilter = SEARCH_SCHEMA_CONFIG.annualRevenues.find(r => r.id === selectedAnnualRevenue);
+      const typeObjForFilter = SEARCH_SCHEMA_CONFIG.companyTypes.find(
+        (t) => t.id === selectedCompanyType,
+      );
+      const empObjForFilter = SEARCH_SCHEMA_CONFIG.employeeCounts.find(
+        (e) => e.id === selectedEmployeeCount,
+      );
+      const revObjForFilter = SEARCH_SCHEMA_CONFIG.annualRevenues.find(
+        (r) => r.id === selectedAnnualRevenue,
+      );
       // Vários cargos podem ser marcados ao mesmo tempo: 'decisionMakerRole' vira um
       // rótulo combinado (exibição / avaliação do Requirement Engine) e
       // 'decisionMakerTitles' é a lista real de termos enviada à busca de pessoas do
       // Apollo (união dos queryFragment de cada cargo marcado).
-      const dmRoleObjsForFilter = SEARCH_SCHEMA_CONFIG.decisionMakerRoles.filter(d => selectedDecisionMakerRoles.includes(d.id));
-      const dmTitles = Array.from(new Set(
-        dmRoleObjsForFilter.flatMap(d => d.queryFragment.split(/\s+/)).filter(Boolean)
-      ));
+      const dmRoleObjsForFilter = SEARCH_SCHEMA_CONFIG.decisionMakerRoles.filter((d) =>
+        selectedDecisionMakerRoles.includes(d.id),
+      );
+      const dmTitles = Array.from(
+        new Set(dmRoleObjsForFilter.flatMap((d) => d.queryFragment.split(/\s+/)).filter(Boolean)),
+      );
 
       onFiltersChange({
         segment: segmentLabel || undefined,
         region: selectedState || undefined,
         city: selectedCity || undefined,
         radiusKm: searchRadius && searchRadius !== '0' ? Number(searchRadius) : undefined,
-        companyType: typeObjForFilter && typeObjForFilter.id !== 'todos_tipos' ? typeObjForFilter.label : undefined,
-        employeeCount: empObjForFilter && empObjForFilter.id !== 'todos_funcionarios' ? empObjForFilter.badge : undefined,
-        annualRevenue: revObjForFilter && revObjForFilter.id !== 'todos_faturamentos' ? revObjForFilter.label : undefined,
-        decisionMakerRole: dmRoleObjsForFilter.length > 0 ? dmRoleObjsForFilter.map(d => d.label).join(' / ') : undefined,
-        decisionMakerTitles: dmTitles.length > 0 ? dmTitles : undefined
+        companyType:
+          typeObjForFilter && typeObjForFilter.id !== 'todos_tipos'
+            ? typeObjForFilter.label
+            : undefined,
+        employeeCount:
+          empObjForFilter && empObjForFilter.id !== 'todos_funcionarios'
+            ? empObjForFilter.badge
+            : undefined,
+        annualRevenue:
+          revObjForFilter && revObjForFilter.id !== 'todos_faturamentos'
+            ? revObjForFilter.label
+            : undefined,
+        decisionMakerRole:
+          dmRoleObjsForFilter.length > 0
+            ? dmRoleObjsForFilter.map((d) => d.label).join(' / ')
+            : undefined,
+        decisionMakerTitles: dmTitles.length > 0 ? dmTitles : undefined,
       });
     }
   }, [
@@ -214,7 +250,7 @@ export const ProspectorTab: React.FC<ProspectorTabProps> = ({
     selectedAnnualRevenue,
     selectedDecisionMakerRoles,
     setQuery,
-    onFiltersChange
+    onFiltersChange,
   ]);
 
   // When State changes, reset City
@@ -238,8 +274,8 @@ export const ProspectorTab: React.FC<ProspectorTabProps> = ({
           body: JSON.stringify({
             lead,
             webhookUrl,
-            title: `[Atlas Outbound] ${lead.name} (${lead.decision_maker_name || 'Decisor'})`
-          })
+            title: `[Atlas Outbound] ${lead.name} (${lead.decision_maker_name || 'Decisor'})`,
+          }),
         });
       }
 
@@ -254,76 +290,89 @@ export const ProspectorTab: React.FC<ProspectorTabProps> = ({
   };
 
   // Combobox Options Maps
-  const segmentComboboxOptions = SEARCH_SCHEMA_CONFIG.segments.map(s => ({
+  const segmentComboboxOptions = SEARCH_SCHEMA_CONFIG.segments.map((s) => ({
     id: s.id,
     label: s.label,
     description: s.description,
-    badge: s.badge
+    badge: s.badge,
   }));
 
-  const companyTypeComboboxOptions = SEARCH_SCHEMA_CONFIG.companyTypes.map(t => ({
+  const companyTypeComboboxOptions = SEARCH_SCHEMA_CONFIG.companyTypes.map((t) => ({
     id: t.id,
     label: t.label,
     description: t.description,
-    badge: t.badge
+    badge: t.badge,
   }));
 
-  const employeeCountComboboxOptions = SEARCH_SCHEMA_CONFIG.employeeCounts.map(e => ({
+  const employeeCountComboboxOptions = SEARCH_SCHEMA_CONFIG.employeeCounts.map((e) => ({
     id: e.id,
     label: e.label,
     description: e.description,
-    badge: e.badge
+    badge: e.badge,
   }));
 
-  const annualRevenueComboboxOptions = SEARCH_SCHEMA_CONFIG.annualRevenues.map(r => ({
+  const annualRevenueComboboxOptions = SEARCH_SCHEMA_CONFIG.annualRevenues.map((r) => ({
     id: r.id,
     label: r.label,
     description: r.description,
-    badge: r.badge
+    badge: r.badge,
   }));
 
-  const decisionMakerRoleComboboxOptions = SEARCH_SCHEMA_CONFIG.decisionMakerRoles.map(d => ({
+  const decisionMakerRoleComboboxOptions = SEARCH_SCHEMA_CONFIG.decisionMakerRoles.map((d) => ({
     id: d.id,
     label: d.label,
     description: d.description,
-    badge: d.badge
+    badge: d.badge,
   }));
 
   // Handle single lead update from child card
   const handleLeadSaved = (updatedLead: Lead) => {
-    setLeads(prev => prev.map(l => l.id === updatedLead.id ? updatedLead : l));
+    setLeads((prev) => prev.map((l) => (l.id === updatedLead.id ? updatedLead : l)));
   };
 
   return (
     <div className="space-y-6">
       <MetricsChart leads={leads} isDark={isDark} />
       {/* 1. Main Search & Structured Form Panel */}
-      <div className={`border rounded-2xl p-5 md:p-6 shadow-xl space-y-5 transition duration-200 ${
-        isDark 
-          ? 'bg-slate-900 border-slate-800 text-slate-200' 
-          : 'bg-white border-slate-200 shadow-slate-100 text-slate-800'
-      }`}>
+      <div
+        className={`border rounded-2xl p-5 md:p-6 shadow-xl space-y-5 transition duration-200 ${
+          isDark
+            ? 'bg-slate-900 border-slate-800 text-slate-200'
+            : 'bg-white border-slate-200 shadow-slate-100 text-slate-800'
+        }`}
+      >
         {/* Panel Header */}
-        <div className={`flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b pb-4 ${
-          isDark ? 'border-slate-800' : 'border-slate-200'
-        }`}>
+        <div
+          className={`flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b pb-4 ${
+            isDark ? 'border-slate-800' : 'border-slate-200'
+          }`}
+        >
           <div>
-            <h2 className={`text-base font-bold flex items-center gap-2 ${isDark ? 'text-white' : 'text-slate-900'}`}>
+            <h2
+              className={`text-base font-bold flex items-center gap-2 ${isDark ? 'text-white' : 'text-slate-900'}`}
+            >
               <Sparkles className="w-4 h-4 text-[var(--brand-primary)]" />
               <span>Painel de Busca Estruturada & Filtros Suspensos</span>
             </h2>
             <p className={`text-xs mt-0.5 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-              Configure os 7 parâmetros detalhados para prospecção de alta precisão no setor logístico e corporativo.
+              Configure os 7 parâmetros detalhados para prospecção de alta precisão no setor
+              logístico e corporativo.
             </p>
           </div>
 
           <div className="flex items-center gap-2 text-xs">
-            <span className={`px-2.5 py-1 rounded-full border font-mono ${
-              isDark 
-                ? 'bg-slate-800 border-slate-700 text-slate-300' 
-                : 'bg-slate-100 border-slate-200 text-slate-700'
-            }`}>
-              Motor: <strong className="text-[var(--brand-primary)]">{aiConfig.provider.toUpperCase()}</strong> ({aiConfig.provider === 'ollama' ? aiConfig.ollamaModel : aiConfig.groqModel})
+            <span
+              className={`px-2.5 py-1 rounded-full border font-mono ${
+                isDark
+                  ? 'bg-slate-800 border-slate-700 text-slate-300'
+                  : 'bg-slate-100 border-slate-200 text-slate-700'
+              }`}
+            >
+              Motor:{' '}
+              <strong className="text-[var(--brand-primary)]">
+                {aiConfig.provider.toUpperCase()}
+              </strong>{' '}
+              ({aiConfig.provider === 'ollama' ? aiConfig.ollamaModel : aiConfig.groqModel})
             </span>
           </div>
         </div>
@@ -355,8 +404,8 @@ export const ProspectorTab: React.FC<ProspectorTabProps> = ({
                   onChange={(e) => setCustomSegmentText(e.target.value)}
                   placeholder="Ex: Transportadoras de Medicamentos"
                   className={`w-full border rounded-xl px-3 py-2 text-xs outline-none transition mt-2 ${
-                    isDark 
-                      ? 'bg-slate-950 border-slate-700 text-slate-100 placeholder-slate-500 focus:border-[var(--brand-primary)]' 
+                    isDark
+                      ? 'bg-slate-950 border-slate-700 text-slate-100 placeholder-slate-500 focus:border-[var(--brand-primary)]'
                       : 'bg-slate-50 border-slate-300 text-slate-900 placeholder-slate-400 focus:border-[var(--brand-primary)]'
                   }`}
                 />
@@ -365,17 +414,19 @@ export const ProspectorTab: React.FC<ProspectorTabProps> = ({
 
             {/* Field 2: Região / Estado */}
             <div className="md:col-span-2 space-y-1.5">
-              <label className={`block text-xs font-semibold uppercase tracking-wider ${
-                isDark ? 'text-slate-300' : 'text-slate-700'
-              }`}>
+              <label
+                className={`block text-xs font-semibold uppercase tracking-wider ${
+                  isDark ? 'text-slate-300' : 'text-slate-700'
+                }`}
+              >
                 2. Estado (UF)
               </label>
               <select
                 value={selectedState}
                 onChange={(e) => handleStateChange(e.target.value)}
                 className={`w-full border rounded-xl px-3 py-2.5 text-xs font-semibold outline-none transition ${
-                  isDark 
-                    ? 'bg-slate-900 border-slate-700/80 text-slate-100 focus:border-[var(--brand-primary)]' 
+                  isDark
+                    ? 'bg-slate-900 border-slate-700/80 text-slate-100 focus:border-[var(--brand-primary)]'
                     : 'bg-white border-slate-300 text-slate-900 focus:border-[var(--brand-primary)]'
                 }`}
               >
@@ -404,17 +455,19 @@ export const ProspectorTab: React.FC<ProspectorTabProps> = ({
 
             {/* Raio de Busca */}
             <div className="md:col-span-2 space-y-1.5">
-              <label className={`block text-xs font-semibold uppercase tracking-wider ${
-                isDark ? 'text-slate-300' : 'text-slate-700'
-              }`}>
+              <label
+                className={`block text-xs font-semibold uppercase tracking-wider ${
+                  isDark ? 'text-slate-300' : 'text-slate-700'
+                }`}
+              >
                 Raio (km)
               </label>
               <select
                 value={searchRadius}
                 onChange={(e) => setSearchRadius(e.target.value)}
                 className={`w-full border rounded-xl px-3 py-2.5 text-xs font-semibold outline-none transition ${
-                  isDark 
-                    ? 'bg-slate-900 border-slate-700/80 text-slate-100 focus:border-[var(--brand-primary)]' 
+                  isDark
+                    ? 'bg-slate-900 border-slate-700/80 text-slate-100 focus:border-[var(--brand-primary)]'
                     : 'bg-white border-slate-300 text-slate-900 focus:border-[var(--brand-primary)]'
                 }`}
               >
@@ -494,17 +547,19 @@ export const ProspectorTab: React.FC<ProspectorTabProps> = ({
           {/* Row 3: Quantidade de Leads */}
           <div className="grid grid-cols-1 md:grid-cols-12 gap-3.5 pt-1">
             <div className="md:col-span-12 space-y-1.5">
-              <label className={`block text-xs font-semibold uppercase tracking-wider ${
-                isDark ? 'text-slate-300' : 'text-slate-700'
-              }`}>
+              <label
+                className={`block text-xs font-semibold uppercase tracking-wider ${
+                  isDark ? 'text-slate-300' : 'text-slate-700'
+                }`}
+              >
                 Quantidade de Leads a prospectar nesta rodada
               </label>
               <select
                 value={limit}
                 onChange={(e) => setLimit(Number(e.target.value))}
                 className={`w-full max-w-sm border rounded-xl px-3 py-2.5 text-xs font-bold outline-none transition ${
-                  isDark 
-                    ? 'bg-slate-900 border-slate-700/80 text-[var(--brand-primary)] focus:border-[var(--brand-primary)]' 
+                  isDark
+                    ? 'bg-slate-900 border-slate-700/80 text-[var(--brand-primary)] focus:border-[var(--brand-primary)]'
                     : 'bg-white border-slate-300 text-[var(--brand-primary)] focus:border-[var(--brand-primary)]'
                 }`}
               >
@@ -515,32 +570,36 @@ export const ProspectorTab: React.FC<ProspectorTabProps> = ({
                 <option value={8}>8 Leads (Lote Amplo)</option>
                 <option value={10}>10 Leads (Extração Máxima)</option>
               </select>
-              <p className="text-[10px] text-slate-400 mt-1">
-                Pipeline em tempo real via IA
-              </p>
+              <p className="text-[10px] text-slate-400 mt-1">Pipeline em tempo real via IA</p>
             </div>
           </div>
         </div>
 
         {/* Live Query Viewer & Execution Bar with "Prospectar", "Parar" and "Salvar" */}
-        <div className={`p-4 rounded-xl border flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 ${
-          isDark 
-            ? 'bg-slate-950/70 border-slate-800' 
-            : 'bg-slate-100/80 border-slate-200'
-        }`}>
+        <div
+          className={`p-4 rounded-xl border flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 ${
+            isDark ? 'bg-slate-950/70 border-slate-800' : 'bg-slate-100/80 border-slate-200'
+          }`}
+        >
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">
               <span className="text-[11px] font-bold uppercase tracking-wider text-[var(--brand-primary)] flex items-center gap-1">
                 <Search className="w-3 h-3" />
                 Query Estruturada Gerada:
               </span>
-              <span className={`text-[10px] px-2 py-0.5 rounded-full border ${
-                isDark ? 'bg-slate-800 text-slate-400 border-slate-700' : 'bg-white text-slate-600 border-slate-200'
-              }`}>
+              <span
+                className={`text-[10px] px-2 py-0.5 rounded-full border ${
+                  isDark
+                    ? 'bg-slate-800 text-slate-400 border-slate-700'
+                    : 'bg-white text-slate-600 border-slate-200'
+                }`}
+              >
                 Auto-sincronizada com os seletores
               </span>
             </div>
-            <p className={`text-xs sm:text-sm font-semibold truncate ${isDark ? 'text-white' : 'text-slate-900'}`}>
+            <p
+              className={`text-xs sm:text-sm font-semibold truncate ${isDark ? 'text-white' : 'text-slate-900'}`}
+            >
               {query || 'Selecione os parâmetros acima para compor a busca...'}
             </p>
           </div>
@@ -583,11 +642,13 @@ export const ProspectorTab: React.FC<ProspectorTabProps> = ({
 
       {/* Progress & Live Pipeline Status Card */}
       {isSearching && (
-        <div className={`border rounded-2xl p-5 shadow-xl space-y-3 animate-pulse ${
-          isDark 
-            ? 'bg-slate-900 border-[var(--brand-primary)]/40' 
-            : 'bg-white border-[var(--brand-primary)]/40 shadow-slate-100'
-        }`}>
+        <div
+          className={`border rounded-2xl p-5 shadow-xl space-y-3 animate-pulse ${
+            isDark
+              ? 'bg-slate-900 border-[var(--brand-primary)]/40'
+              : 'bg-white border-[var(--brand-primary)]/40 shadow-slate-100'
+          }`}
+        >
           <div className="flex items-center justify-between text-xs">
             <span className="font-semibold text-[var(--brand-primary)] flex items-center gap-2">
               <Loader2 className="w-4 h-4 animate-spin text-[var(--brand-primary)]" />
@@ -596,9 +657,11 @@ export const ProspectorTab: React.FC<ProspectorTabProps> = ({
             <span className="font-mono text-slate-400 font-bold">{progressPercent}%</span>
           </div>
 
-          <div className={`w-full rounded-full h-2.5 overflow-hidden border ${
-            isDark ? 'bg-slate-950 border-slate-800' : 'bg-slate-100 border-slate-200'
-          }`}>
+          <div
+            className={`w-full rounded-full h-2.5 overflow-hidden border ${
+              isDark ? 'bg-slate-950 border-slate-800' : 'bg-slate-100 border-slate-200'
+            }`}
+          >
             <div
               className="bg-gradient-to-r from-[var(--brand-primary)] via-[#FF8008] to-[#FFC500] h-2.5 rounded-full transition-all duration-300"
               style={{ width: `${progressPercent}%` }}
@@ -606,16 +669,24 @@ export const ProspectorTab: React.FC<ProspectorTabProps> = ({
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-4 gap-2 text-[11px] text-slate-400 pt-1">
-            <div className={`p-1.5 rounded flex items-center gap-1.5 ${progressPercent >= 20 ? 'text-emerald-500 font-semibold bg-emerald-500/10' : 'text-slate-400'}`}>
+            <div
+              className={`p-1.5 rounded flex items-center gap-1.5 ${progressPercent >= 20 ? 'text-emerald-500 font-semibold bg-emerald-500/10' : 'text-slate-400'}`}
+            >
               <CheckCircle2 className="w-3.5 h-3.5" /> 1. Places ({limit} empresas)
             </div>
-            <div className={`p-1.5 rounded flex items-center gap-1.5 ${progressPercent >= 40 ? 'text-emerald-500 font-semibold bg-emerald-500/10' : 'text-slate-400'}`}>
+            <div
+              className={`p-1.5 rounded flex items-center gap-1.5 ${progressPercent >= 40 ? 'text-emerald-500 font-semibold bg-emerald-500/10' : 'text-slate-400'}`}
+            >
               <CheckCircle2 className="w-3.5 h-3.5" /> 2. CNPJ Oficial (Receita/BrasilAPI)
             </div>
-            <div className={`p-1.5 rounded flex items-center gap-1.5 ${progressPercent >= 70 ? 'text-emerald-500 font-semibold bg-emerald-500/10' : 'text-slate-400'}`}>
+            <div
+              className={`p-1.5 rounded flex items-center gap-1.5 ${progressPercent >= 70 ? 'text-emerald-500 font-semibold bg-emerald-500/10' : 'text-slate-400'}`}
+            >
               <CheckCircle2 className="w-3.5 h-3.5" /> 3. Apollo Decisores & E-mails
             </div>
-            <div className={`p-1.5 rounded flex items-center gap-1.5 ${progressPercent >= 95 ? 'text-emerald-500 font-semibold bg-emerald-500/10' : 'text-slate-400'}`}>
+            <div
+              className={`p-1.5 rounded flex items-center gap-1.5 ${progressPercent >= 95 ? 'text-emerald-500 font-semibold bg-emerald-500/10' : 'text-slate-400'}`}
+            >
               <CheckCircle2 className="w-3.5 h-3.5" /> 4. Salvo no SQLite
             </div>
           </div>
@@ -629,11 +700,11 @@ export const ProspectorTab: React.FC<ProspectorTabProps> = ({
 
       {/* Results Header when Leads exist */}
       {leads.length > 0 && (
-        <div className={`flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-xl border ${
-          isDark 
-            ? 'bg-slate-900/60 border-slate-800' 
-            : 'bg-white border-slate-200 shadow-sm'
-        }`}>
+        <div
+          className={`flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-xl border ${
+            isDark ? 'bg-slate-900/60 border-slate-800' : 'bg-white border-slate-200 shadow-sm'
+          }`}
+        >
           <div className="flex flex-col gap-1">
             <div className="flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
@@ -642,7 +713,8 @@ export const ProspectorTab: React.FC<ProspectorTabProps> = ({
                   {leads.length} Empresas Mapeadas (Places + CNPJ Oficial + Apollo)
                 </h3>
                 <p className="text-[11px] text-slate-400">
-                  1ª Etapa concluída • Roteiros com IA e Dossiê de Notícias disponíveis sob demanda em cada card
+                  1ª Etapa concluída • Roteiros com IA e Dossiê de Notícias disponíveis sob demanda
+                  em cada card
                 </p>
               </div>
             </div>
@@ -659,8 +731,8 @@ export const ProspectorTab: React.FC<ProspectorTabProps> = ({
               className={`px-3 py-1.5 text-xs font-semibold rounded-lg border transition flex items-center gap-1.5 ${
                 bulkExportSuccess
                   ? 'bg-emerald-500/15 text-emerald-600 border-emerald-500/30'
-                  : isDark 
-                    ? 'bg-[var(--brand-primary)]/20 hover:bg-[var(--brand-primary)]/30 text-[var(--brand-primary)] border-[var(--brand-primary)]/30' 
+                  : isDark
+                    ? 'bg-[var(--brand-primary)]/20 hover:bg-[var(--brand-primary)]/30 text-[var(--brand-primary)] border-[var(--brand-primary)]/30'
                     : 'bg-[var(--brand-primary)]/10 hover:bg-[var(--brand-primary)]/10 text-[var(--brand-primary)] border-[var(--brand-primary)]/20'
               }`}
               title="Exportar todos os leads encontrados para o Bitrix24"
@@ -678,8 +750,8 @@ export const ProspectorTab: React.FC<ProspectorTabProps> = ({
             <button
               onClick={onExportJSON}
               className={`px-3 py-1.5 text-xs font-semibold rounded-lg border transition flex items-center gap-1.5 ${
-                isDark 
-                  ? 'bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700' 
+                isDark
+                  ? 'bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700'
                   : 'bg-slate-100 hover:bg-slate-200 text-slate-800 border-slate-300'
               }`}
             >
@@ -689,8 +761,8 @@ export const ProspectorTab: React.FC<ProspectorTabProps> = ({
             <button
               onClick={onExportCSV}
               className={`px-3 py-1.5 text-xs font-semibold rounded-lg border transition flex items-center gap-1.5 ${
-                isDark 
-                  ? 'bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700' 
+                isDark
+                  ? 'bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700'
                   : 'bg-slate-100 hover:bg-slate-200 text-slate-800 border-slate-300'
               }`}
             >
@@ -703,7 +775,7 @@ export const ProspectorTab: React.FC<ProspectorTabProps> = ({
 
       {/* Feed of Leads */}
       <div className="space-y-6">
-      <MetricsChart leads={leads} isDark={isDark} />
+        <MetricsChart leads={leads} isDark={isDark} />
         {leads.map((lead, idx) => (
           <LeadCard
             key={lead.id || idx}
@@ -724,12 +796,18 @@ export const ProspectorTab: React.FC<ProspectorTabProps> = ({
         ))}
 
         {leads.length === 0 && !isSearching && (
-          <div className={`border-2 border-dashed rounded-2xl p-12 text-center space-y-3 ${
-            isDark ? 'border-slate-800 text-slate-400' : 'border-slate-300 text-slate-600 bg-white'
-          }`}>
-            <div className={`w-14 h-14 rounded-2xl border mx-auto flex items-center justify-center text-[var(--brand-primary)] ${
-              isDark ? 'bg-slate-900 border-slate-800' : 'bg-slate-100 border-slate-200'
-            }`}>
+          <div
+            className={`border-2 border-dashed rounded-2xl p-12 text-center space-y-3 ${
+              isDark
+                ? 'border-slate-800 text-slate-400'
+                : 'border-slate-300 text-slate-600 bg-white'
+            }`}
+          >
+            <div
+              className={`w-14 h-14 rounded-2xl border mx-auto flex items-center justify-center text-[var(--brand-primary)] ${
+                isDark ? 'bg-slate-900 border-slate-800' : 'bg-slate-100 border-slate-200'
+              }`}
+            >
               <Search className="w-7 h-7" />
             </div>
             <div>
@@ -737,7 +815,9 @@ export const ProspectorTab: React.FC<ProspectorTabProps> = ({
                 Nenhum lead prospectado ainda
               </h4>
               <p className="text-xs text-slate-400 mt-1 max-w-md mx-auto">
-                Selecione os parâmetros nas listas suspensas acima e clique em <strong>"Prospectar Leads com IA"</strong> para extrair as empresas, CNPJs, dados de contato e mapear decisores com copys comerciais prontas.
+                Selecione os parâmetros nas listas suspensas acima e clique em{' '}
+                <strong>"Prospectar Leads com IA"</strong> para extrair as empresas, CNPJs, dados de
+                contato e mapear decisores com copys comerciais prontas.
               </p>
             </div>
           </div>

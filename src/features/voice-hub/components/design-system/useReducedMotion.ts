@@ -13,9 +13,10 @@ import { useEffect, useState } from 'react';
 // components can drop straight to their end state instead.
 function computeReducedMotion(): boolean {
   if (typeof window === 'undefined' || typeof document === 'undefined') return false;
-  const osPrefersReduced = typeof window.matchMedia === 'function'
-    ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    : false;
+  const osPrefersReduced =
+    typeof window.matchMedia === 'function'
+      ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      : false;
   const appPrefersReduced = document.documentElement.dataset.reducedMotion === 'true';
   return osPrefersReduced || appPrefersReduced;
 }
@@ -31,13 +32,17 @@ export function usePrefersReducedMotion(): boolean {
 
     // jsdom (unit tests) doesn't implement matchMedia — degrade to the `data-reduced-motion`
     // signal only rather than throwing.
-    const mediaQuery = typeof window.matchMedia === 'function'
-      ? window.matchMedia('(prefers-reduced-motion: reduce)')
-      : null;
+    const mediaQuery =
+      typeof window.matchMedia === 'function'
+        ? window.matchMedia('(prefers-reduced-motion: reduce)')
+        : null;
     mediaQuery?.addEventListener('change', update);
 
     const observer = new MutationObserver(update);
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-reduced-motion'] });
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-reduced-motion'],
+    });
 
     return () => {
       mediaQuery?.removeEventListener('change', update);

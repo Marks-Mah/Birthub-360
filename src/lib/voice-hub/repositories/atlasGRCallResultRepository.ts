@@ -67,7 +67,7 @@ export function findAtlasGRCallResultByCallId(callId: string) {
  */
 export async function listAtlasGRCallResultsForTenant(
   organizationId: string,
-  { page, pageSize }: { page: number; pageSize: number }
+  { page, pageSize }: { page: number; pageSize: number },
 ) {
   const skip = (page - 1) * pageSize;
   const [items, total] = await Promise.all([

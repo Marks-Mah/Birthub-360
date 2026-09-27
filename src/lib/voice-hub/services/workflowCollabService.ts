@@ -26,7 +26,11 @@ const MAX_RETRIES = 5;
 // (per project constraint: no Prisma schema changes for this collab feature). Concurrent
 // mutations therefore need optimistic locking on `Workflow.version` — without it, two
 // read-modify-write calls racing on the same workflow silently drop one caller's update.
-async function mutateMetadata(organizationId: string, userId: string, mutate: (metadata: CollabMetadata) => void) {
+async function mutateMetadata(
+  organizationId: string,
+  userId: string,
+  mutate: (metadata: CollabMetadata) => void,
+) {
   for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
     const existing = await workflowRepository.findWorkflowForTenant(organizationId);
     if (!existing) throw new NotFoundError('Workflow não encontrado.');
@@ -34,13 +38,20 @@ async function mutateMetadata(organizationId: string, userId: string, mutate: (m
     const metadata = (existing.metadata as CollabMetadata) || {};
     mutate(metadata);
 
-    const updatedCount = await workflowRepository.updateMetadataIfVersion(existing.id, existing.version, userId, metadata);
+    const updatedCount = await workflowRepository.updateMetadataIfVersion(
+      existing.id,
+      existing.version,
+      userId,
+      metadata,
+    );
     if (updatedCount > 0) {
       return workflowRepository.findWorkflowById(existing.id);
     }
     // Someone else updated the workflow between our read and write — retry with fresh data.
   }
-  throw new ConflictError('Não foi possível salvar: o fluxo foi modificado concorrentemente. Tente novamente.');
+  throw new ConflictError(
+    'Não foi possível salvar: o fluxo foi modificado concorrentemente. Tente novamente.',
+  );
 }
 
 export function addComment(organizationId: string, userId: string, nodeId: string, text: string) {
@@ -72,7 +83,11 @@ export function lockNode(organizationId: string, userId: string, nodeId: string)
   return mutateMetadata(organizationId, userId, (metadata) => {
     metadata.locks = metadata.locks || {};
     const existingLock = metadata.locks[nodeId];
-    if (existingLock && existingLock.userId !== userId && Date.now() - existingLock.timestamp < 300000) {
+    if (
+      existingLock &&
+      existingLock.userId !== userId &&
+      Date.now() - existingLock.timestamp < 300000
+    ) {
       throw new ConflictError('Nó atualmente bloqueado por outro usuário.');
     }
     metadata.locks[nodeId] = { userId, timestamp: Date.now() };

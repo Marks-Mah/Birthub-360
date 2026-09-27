@@ -1,8 +1,8 @@
-import { randomUUID } from "node:crypto";
-import { Lead } from "../../domain/entities/Lead.js";
-import { PhoneNumber } from "../../domain/value-objects/PhoneNumber.js";
-import type { LeadRepository } from "../ports/LeadRepository.js";
-import type { DncRepository } from "../ports/DncRepository.js";
+import { randomUUID } from 'node:crypto';
+import { Lead } from '../../domain/entities/Lead.js';
+import { PhoneNumber } from '../../domain/value-objects/PhoneNumber.js';
+import type { LeadRepository } from '../ports/LeadRepository.js';
+import type { DncRepository } from '../ports/DncRepository.js';
 
 export interface RawLeadInput {
   name: string;
@@ -47,10 +47,7 @@ export class ImportLeads {
         continue;
       }
 
-      const isDuplicate = await this.leadRepository.existsByCampaignAndPhone(
-        campaignId,
-        e164,
-      );
+      const isDuplicate = await this.leadRepository.existsByCampaignAndPhone(campaignId, e164);
       if (isDuplicate) {
         result.skippedDuplicate += 1;
         continue;

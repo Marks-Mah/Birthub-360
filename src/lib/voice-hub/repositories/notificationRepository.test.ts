@@ -62,18 +62,22 @@ describe('notificationRepository.countUnreadForUser', () => {
 
     const result = await countUnreadForUser('user-1');
 
-    expect(prisma.notification.count).toHaveBeenCalledWith({ where: { userId: 'user-1', isRead: false } });
+    expect(prisma.notification.count).toHaveBeenCalledWith({
+      where: { userId: 'user-1', isRead: false },
+    });
     expect(result).toBe(3);
   });
 });
 
 describe('notificationRepository.findNotificationByIdForUser', () => {
-  it('scopes the lookup to id AND userId so a cross-user id resolves to null, not another user\'s row', async () => {
+  it("scopes the lookup to id AND userId so a cross-user id resolves to null, not another user's row", async () => {
     vi.mocked(prisma.notification.findFirst).mockResolvedValue(null);
 
     const result = await findNotificationByIdForUser('notif-1', 'user-1');
 
-    expect(prisma.notification.findFirst).toHaveBeenCalledWith({ where: { id: 'notif-1', userId: 'user-1' } });
+    expect(prisma.notification.findFirst).toHaveBeenCalledWith({
+      where: { id: 'notif-1', userId: 'user-1' },
+    });
     expect(result).toBeNull();
   });
 });
@@ -89,7 +93,10 @@ describe('notificationRepository.markNotificationAsRead', () => {
   });
 
   it('updates isRead:true by id once ownership is confirmed', async () => {
-    vi.mocked(prisma.notification.findFirst).mockResolvedValue({ id: 'notif-1', userId: 'user-1' } as any);
+    vi.mocked(prisma.notification.findFirst).mockResolvedValue({
+      id: 'notif-1',
+      userId: 'user-1',
+    } as any);
     vi.mocked(prisma.notification.update).mockResolvedValue({ id: 'notif-1', isRead: true } as any);
 
     const result = await markNotificationAsRead('notif-1', 'user-1');
@@ -103,7 +110,7 @@ describe('notificationRepository.markNotificationAsRead', () => {
 });
 
 describe('notificationRepository.markAllAsReadForUser', () => {
-  it('bulk-updates only the given user\'s unread notifications', async () => {
+  it("bulk-updates only the given user's unread notifications", async () => {
     vi.mocked(prisma.notification.updateMany).mockResolvedValue({ count: 4 });
 
     const result = await markAllAsReadForUser('user-1');

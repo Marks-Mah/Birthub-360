@@ -1,5 +1,5 @@
-import type { RunDialerCycle } from "../../application/use-cases/RunDialerCycle.js";
-import type { Logger } from "../../infrastructure/logger.js";
+import type { RunDialerCycle } from '../../application/use-cases/RunDialerCycle.js';
+import type { Logger } from '../../infrastructure/logger.js';
 
 export interface DialerLoopHandle {
   stop(): Promise<void>;
@@ -19,7 +19,7 @@ export function startDialerLoop(
 
   const tick = async (): Promise<void> => {
     if (activeCyclePromise !== null) {
-      logger.warn("Ciclo anterior do discador ainda em execução — pulando este tick");
+      logger.warn('Ciclo anterior do discador ainda em execução — pulando este tick');
       return;
     }
     if (isStopped) {
@@ -30,7 +30,7 @@ export function startDialerLoop(
       .execute()
       .then((report) => {
         if (report.skippedReason !== null) {
-          logger.debug({ report }, "Ciclo do discador pulado");
+          logger.debug({ report }, 'Ciclo do discador pulado');
           return;
         }
         if (
@@ -38,17 +38,17 @@ export function startDialerLoop(
           report.totalRejectedImmediately > 0 ||
           report.totalDnConflicts > 0
         ) {
-          logger.info({ report }, "Ciclo do discador concluído");
+          logger.info({ report }, 'Ciclo do discador concluído');
         }
         if (report.totalDnConflicts > 0) {
           logger.warn(
             { report },
-            "Corrida entre processos ao reservar DN de agente — leads liberados de volta para a fila",
+            'Corrida entre processos ao reservar DN de agente — leads liberados de volta para a fila',
           );
         }
       })
       .catch((error: unknown) => {
-        logger.error({ err: error }, "Erro ao executar ciclo do discador");
+        logger.error({ err: error }, 'Erro ao executar ciclo do discador');
       })
       .finally(() => {
         if (activeCyclePromise === currentPromise) {
@@ -69,7 +69,7 @@ export function startDialerLoop(
       isStopped = true;
       clearInterval(timer);
       if (activeCyclePromise !== null) {
-        logger.info("Aguardando ciclo ativo do discador finalizar para encerrar...");
+        logger.info('Aguardando ciclo ativo do discador finalizar para encerrar...');
         await activeCyclePromise;
       }
     },

@@ -108,7 +108,7 @@ export default function KnowledgeManager() {
   const filteredKnowledge = currentKnowledge.filter(
     (doc) =>
       doc.name.toLowerCase().includes(searchFilter.toLowerCase()) ||
-      doc.keyword.toLowerCase().includes(searchFilter.toLowerCase())
+      doc.keyword.toLowerCase().includes(searchFilter.toLowerCase()),
   );
 
   const handleFileUpload = async (e: React.FormEvent) => {
@@ -263,14 +263,17 @@ export default function KnowledgeManager() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Knowledge Base (RAG)</h1>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
+              Knowledge Base (RAG)
+            </h1>
             <Badge variant="success" className="normal-case">
               <ShieldCheck className="h-3.5 w-3.5 mr-1 inline" />
               Antivírus ClamAV Ativo
             </Badge>
           </div>
           <p className="text-sm text-slate-500">
-            Base de conhecimento vetorial e documentos contextuais indexados para seus agentes de voz.
+            Base de conhecimento vetorial e documentos contextuais indexados para seus agentes de
+            voz.
           </p>
         </div>
 
@@ -283,11 +286,19 @@ export default function KnowledgeManager() {
             <Sparkles className="h-4 w-4 mr-2" />
             Testar RAG
           </Button>
-          <Button variant="outline" onClick={() => setIsAddTextModalOpen(true)} disabled={!selectedAgent}>
+          <Button
+            variant="outline"
+            onClick={() => setIsAddTextModalOpen(true)}
+            disabled={!selectedAgent}
+          >
             <Plus className="h-4 w-4 mr-2" />
             Adicionar Texto
           </Button>
-          <Button variant="primary" onClick={() => setIsUploadModalOpen(true)} disabled={!selectedAgent}>
+          <Button
+            variant="primary"
+            onClick={() => setIsUploadModalOpen(true)}
+            disabled={!selectedAgent}
+          >
             <UploadCloud className="h-4 w-4 mr-2" />
             Upload (.txt / .md)
           </Button>
@@ -347,7 +358,9 @@ export default function KnowledgeManager() {
                   <span>{agent.name}</span>
                   <span
                     className={`text-xs px-1.5 py-0.5 rounded-full ${
-                      isSelected ? 'bg-white/20 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'
+                      isSelected
+                        ? 'bg-white/20 text-white'
+                        : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'
                     }`}
                   >
                     {docCount}
@@ -370,8 +383,12 @@ export default function KnowledgeManager() {
               />
             </div>
             <div className="text-xs text-slate-500 flex items-center gap-4">
-              <span>Total de documentos: <strong>{currentKnowledge.length}</strong></span>
-              <span>Agente: <strong>{selectedAgent?.name}</strong></span>
+              <span>
+                Total de documentos: <strong>{currentKnowledge.length}</strong>
+              </span>
+              <span>
+                Agente: <strong>{selectedAgent?.name}</strong>
+              </span>
             </div>
           </div>
 
@@ -420,7 +437,10 @@ export default function KnowledgeManager() {
                   >
                     <div>
                       <div className="flex justify-between items-start gap-2 mb-2">
-                        <h3 className="font-semibold text-slate-900 dark:text-white text-base truncate flex-1" title={doc.name}>
+                        <h3
+                          className="font-semibold text-slate-900 dark:text-white text-base truncate flex-1"
+                          title={doc.name}
+                        >
                           {doc.name}
                         </h3>
                         <Badge variant="secondary" className="text-xs shrink-0">
@@ -464,7 +484,9 @@ export default function KnowledgeManager() {
             <div className="flex justify-between items-center mb-4">
               <div className="flex items-center gap-2">
                 <UploadCloud className="h-5 w-5 text-brand" />
-                <h2 className="text-lg font-bold text-slate-900 dark:text-white">Upload de Conhecimento</h2>
+                <h2 className="text-lg font-bold text-slate-900 dark:text-white">
+                  Upload de Conhecimento
+                </h2>
               </div>
               <button
                 onClick={() => setIsUploadModalOpen(false)}
@@ -557,7 +579,9 @@ export default function KnowledgeManager() {
             <div className="flex justify-between items-center mb-4">
               <div className="flex items-center gap-2">
                 <FileText className="h-5 w-5 text-brand" />
-                <h2 className="text-lg font-bold text-slate-900 dark:text-white">Inserir Conteúdo Textual</h2>
+                <h2 className="text-lg font-bold text-slate-900 dark:text-white">
+                  Inserir Conteúdo Textual
+                </h2>
               </div>
               <button
                 onClick={() => setIsAddTextModalOpen(false)}
@@ -647,7 +671,9 @@ export default function KnowledgeManager() {
             <div className="flex justify-between items-center mb-4">
               <div className="flex items-center gap-2">
                 <Sparkles className="h-5 w-5 text-brand" />
-                <h2 className="text-lg font-bold text-slate-900 dark:text-white">Simulador de Consulta RAG</h2>
+                <h2 className="text-lg font-bold text-slate-900 dark:text-white">
+                  Simulador de Consulta RAG
+                </h2>
               </div>
               <button
                 onClick={() => setIsRagModalOpen(false)}
@@ -700,15 +726,16 @@ export default function KnowledgeManager() {
                         ragResult.confidenceLevel === 'high'
                           ? 'success'
                           : ragResult.confidenceLevel === 'medium'
-                          ? 'warning'
-                          : 'danger'
+                            ? 'warning'
+                            : 'danger'
                       }
                     >
                       {ragResult.confidenceLevel === 'high'
                         ? 'Alta Confiança'
                         : ragResult.confidenceLevel === 'medium'
-                        ? 'Média Confiança'
-                        : 'Baixa Confiança'} ({(ragResult.confidence * 100).toFixed(0)}%)
+                          ? 'Média Confiança'
+                          : 'Baixa Confiança'}{' '}
+                      ({(ragResult.confidence * 100).toFixed(0)}%)
                     </Badge>
                   </div>
 
@@ -723,7 +750,9 @@ export default function KnowledgeManager() {
                             key={idx}
                             className="text-xs bg-white dark:bg-slate-900 p-2 rounded-lg border border-slate-200 dark:border-slate-800 flex justify-between items-center"
                           >
-                            <span className="font-medium text-slate-800 dark:text-slate-200">{m.name}</span>
+                            <span className="font-medium text-slate-800 dark:text-slate-200">
+                              {m.name}
+                            </span>
                             <Badge variant="secondary" className="text-[10px]">
                               {m.keyword}
                             </Badge>
@@ -733,7 +762,8 @@ export default function KnowledgeManager() {
                     </div>
                   ) : (
                     <p className="text-xs text-slate-500">
-                      Nenhuma correspondência direta encontrada na base de conhecimento. O agente usará o prompt geral ou fallback.
+                      Nenhuma correspondência direta encontrada na base de conhecimento. O agente
+                      usará o prompt geral ou fallback.
                     </p>
                   )}
                 </div>

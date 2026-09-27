@@ -1,6 +1,15 @@
 import React, { useState, useEffect, useId, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { AlertTriangle, AlertCircle, Info, CheckCircle, X, ChevronDown, RefreshCw, ChevronRight } from 'lucide-react';
+import {
+  AlertTriangle,
+  AlertCircle,
+  Info,
+  CheckCircle,
+  X,
+  ChevronDown,
+  RefreshCw,
+  ChevronRight,
+} from 'lucide-react';
 import { useSessionStore } from '../../store/useSessionStore.js';
 import { getAccessibleTextOnBrand, getAccessibleBrandForeground, colors } from './tokens.js';
 import { usePrefersReducedMotion } from './useReducedMotion.js';
@@ -15,11 +24,7 @@ const FOCUSABLE_SELECTOR =
 export function AtlasLogo({ className = 'h-5 w-5' }: { className?: string }) {
   return (
     <span className={`inline-flex items-center justify-center ${className}`} aria-hidden="true">
-      <img
-        src="/brand/atlasgr-symbol.svg"
-        className="h-full w-full object-contain"
-        alt=""
-      />
+      <img src="/brand/atlasgr-symbol.svg" className="h-full w-full object-contain" alt="" />
     </span>
   );
 }
@@ -27,7 +32,6 @@ export function AtlasLogo({ className = 'h-5 w-5' }: { className?: string }) {
 // ============================================================================
 // 1. BUTTON COMPONENT
 // ============================================================================
-
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'outline' | 'danger' | 'ghost' | 'success';
@@ -39,10 +43,8 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
   className?: string;
   disabled?: boolean;
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
-  type?: "button" | "submit" | "reset";
+  type?: 'button' | 'submit' | 'reset';
 }
-
-
 
 export function Button({
   children,
@@ -62,22 +64,27 @@ export function Button({
   const brandColor = useSessionStore((state) => state.brandColor);
   const accessibleBrandText = getAccessibleTextOnBrand(brandColor);
 
-  const baseStyle = "inline-flex items-center justify-center font-semibold rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none disabled:active:scale-100 dark:focus:ring-offset-slate-900";
+  const baseStyle =
+    'inline-flex items-center justify-center font-semibold rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none disabled:active:scale-100 dark:focus:ring-offset-slate-900';
 
   const variants = {
-    primary: "bg-brand hover:opacity-95 shadow-sm hover:shadow-md",
-    secondary: "bg-slate-100 text-slate-800 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-200 dark:hover:bg-slate-600",
-    outline: "border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 hover:border-slate-300 shadow-xs dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700/60",
-    danger: "bg-red-600 text-white hover:bg-red-700 shadow-sm dark:bg-red-700 dark:hover:bg-red-800",
-    ghost: "text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800/80",
-    success: "bg-green-600 text-white hover:bg-green-700 shadow-sm dark:bg-green-700 dark:hover:bg-green-800"
+    primary: 'bg-brand hover:opacity-95 shadow-sm hover:shadow-md',
+    secondary:
+      'bg-slate-100 text-slate-800 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-200 dark:hover:bg-slate-600',
+    outline:
+      'border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 hover:border-slate-300 shadow-xs dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700/60',
+    danger:
+      'bg-red-600 text-white hover:bg-red-700 shadow-sm dark:bg-red-700 dark:hover:bg-red-800',
+    ghost: 'text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800/80',
+    success:
+      'bg-green-600 text-white hover:bg-green-700 shadow-sm dark:bg-green-700 dark:hover:bg-green-800',
   };
 
   const sizes = {
-    xs: "px-2.5 py-1 text-xs",
-    sm: "px-3.5 py-1.5 text-sm",
-    md: "px-5 py-2.5 text-sm",
-    lg: "px-6 py-3 text-base"
+    xs: 'px-2.5 py-1 text-xs',
+    sm: 'px-3.5 py-1.5 text-sm',
+    md: 'px-5 py-2.5 text-sm',
+    lg: 'px-6 py-3 text-base',
   };
 
   return (
@@ -91,11 +98,15 @@ export function Button({
       {isLoading ? (
         <RefreshCw aria-hidden="true" className="animate-spin h-4 w-4 mr-2" />
       ) : leftIcon ? (
-        <span aria-hidden="true" className="mr-2 flex items-center justify-center">{leftIcon}</span>
+        <span aria-hidden="true" className="mr-2 flex items-center justify-center">
+          {leftIcon}
+        </span>
       ) : null}
       {children}
       {!isLoading && rightIcon && (
-        <span aria-hidden="true" className="ml-2 flex items-center justify-center">{rightIcon}</span>
+        <span aria-hidden="true" className="ml-2 flex items-center justify-center">
+          {rightIcon}
+        </span>
       )}
     </button>
   );
@@ -104,7 +115,6 @@ export function Button({
 // ============================================================================
 // 2. INPUT & TEXTAREA COMPONENTS
 // ============================================================================
-
 
 export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
@@ -118,16 +128,7 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
   onChange?: React.ChangeEventHandler<HTMLInputElement>;
 }
 
-
-
-export function Input({
-  label,
-  error,
-  helperText,
-  className = '',
-  id,
-  ...props
-}: InputProps) {
+export function Input({ label, error, helperText, className = '', id, ...props }: InputProps) {
   const generatedId = useId();
   const inputId = id ?? generatedId;
   const errorId = error ? `${inputId}-error` : undefined;
@@ -135,7 +136,10 @@ export function Input({
   return (
     <div className="w-full space-y-1.5 text-left">
       {label && (
-        <label htmlFor={inputId} className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+        <label
+          htmlFor={inputId}
+          className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider"
+        >
           {label}
         </label>
       )}
@@ -148,12 +152,19 @@ export function Input({
         } ${className}`}
         {...props}
       />
-      {error && <p id={errorId} className="text-xs text-red-650 dark:text-red-400 font-medium">{error}</p>}
-      {!error && helperText && <p id={helperId} className="text-xs text-slate-500 dark:text-slate-400">{helperText}</p>}
+      {error && (
+        <p id={errorId} className="text-xs text-red-650 dark:text-red-400 font-medium">
+          {error}
+        </p>
+      )}
+      {!error && helperText && (
+        <p id={helperId} className="text-xs text-slate-500 dark:text-slate-400">
+          {helperText}
+        </p>
+      )}
     </div>
   );
 }
-
 
 export interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   label?: string;
@@ -161,7 +172,6 @@ export interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextArea
   helperText?: string;
   className?: string;
 }
-
 
 export function Textarea({
   label,
@@ -178,7 +188,10 @@ export function Textarea({
   return (
     <div className="w-full space-y-1.5 text-left">
       {label && (
-        <label htmlFor={textareaId} className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+        <label
+          htmlFor={textareaId}
+          className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider"
+        >
           {label}
         </label>
       )}
@@ -191,8 +204,16 @@ export function Textarea({
         } ${className}`}
         {...props}
       />
-      {error && <p id={errorId} className="text-xs text-red-650 dark:text-red-400 font-medium">{error}</p>}
-      {!error && helperText && <p id={helperId} className="text-xs text-slate-500 dark:text-slate-400">{helperText}</p>}
+      {error && (
+        <p id={errorId} className="text-xs text-red-650 dark:text-red-400 font-medium">
+          {error}
+        </p>
+      )}
+      {!error && helperText && (
+        <p id={helperId} className="text-xs text-slate-500 dark:text-slate-400">
+          {helperText}
+        </p>
+      )}
     </div>
   );
 }
@@ -201,15 +222,12 @@ export function Textarea({
 // 3. CHECKBOX & SWITCH
 // ============================================================================
 
-
 export interface CheckboxProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label: string;
   className?: string;
   checked?: boolean;
   onChange?: React.ChangeEventHandler<HTMLInputElement>;
 }
-
-
 
 export function Checkbox({ label, className = '', ...props }: CheckboxProps) {
   return (
@@ -219,7 +237,9 @@ export function Checkbox({ label, className = '', ...props }: CheckboxProps) {
         className="mt-0.5 h-4 w-4 text-brand rounded border-slate-300 focus:ring-brand accent-brand transition-all dark:border-slate-700 dark:bg-slate-800"
         {...props}
       />
-      <span className="text-sm font-semibold text-slate-700 dark:text-slate-300 leading-tight">{label}</span>
+      <span className="text-sm font-semibold text-slate-700 dark:text-slate-300 leading-tight">
+        {label}
+      </span>
     </label>
   );
 }
@@ -242,8 +262,16 @@ export function Switch({ checked, onChange, label, description }: SwitchProps) {
     <div className="flex items-start justify-between gap-4 text-left">
       {(label || description) && (
         <div className="flex flex-col">
-          {label && <span id={labelId} className="text-sm font-bold text-slate-800 dark:text-slate-200">{label}</span>}
-          {description && <span id={descId} className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{description}</span>}
+          {label && (
+            <span id={labelId} className="text-sm font-bold text-slate-800 dark:text-slate-200">
+              {label}
+            </span>
+          )}
+          {description && (
+            <span id={descId} className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+              {description}
+            </span>
+          )}
         </div>
       )}
       <button
@@ -272,7 +300,6 @@ export function Switch({ checked, onChange, label, description }: SwitchProps) {
 // 4. SELECT COMPONENT
 // ============================================================================
 
-
 export interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
   label?: string;
   error?: string;
@@ -282,8 +309,6 @@ export interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElemen
   onChange?: React.ChangeEventHandler<HTMLSelectElement>;
 }
 
-
-
 export function Select({ label, error, options, className = '', id, ...props }: SelectProps) {
   const generatedId = useId();
   const selectId = id ?? generatedId;
@@ -291,7 +316,10 @@ export function Select({ label, error, options, className = '', id, ...props }: 
   return (
     <div className="w-full space-y-1.5 text-left">
       {label && (
-        <label htmlFor={selectId} className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+        <label
+          htmlFor={selectId}
+          className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider"
+        >
           {label}
         </label>
       )}
@@ -311,9 +339,16 @@ export function Select({ label, error, options, className = '', id, ...props }: 
             </option>
           ))}
         </select>
-        <ChevronDown aria-hidden="true" className="absolute right-3 top-3 h-4 w-4 text-slate-400 dark:text-slate-500 pointer-events-none" />
+        <ChevronDown
+          aria-hidden="true"
+          className="absolute right-3 top-3 h-4 w-4 text-slate-400 dark:text-slate-500 pointer-events-none"
+        />
       </div>
-      {error && <p id={errorId} className="text-xs text-red-650 dark:text-red-400 font-medium">{error}</p>}
+      {error && (
+        <p id={errorId} className="text-xs text-red-650 dark:text-red-400 font-medium">
+          {error}
+        </p>
+      )}
     </div>
   );
 }
@@ -337,12 +372,16 @@ export function Badge({ children, variant = 'primary', className = '' }: BadgePr
   const brandTextOnDark = getAccessibleBrandForeground(brandColor, colors.dark.surface);
 
   const styles = {
-    primary: "bg-brand-50 border-brand-100 dark:bg-brand-900/40 dark:border-brand-800/40",
-    secondary: "bg-slate-100 text-slate-750 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700",
-    success: "bg-green-50 text-green-700 border-green-200 dark:bg-green-950/40 dark:text-green-300 dark:border-green-900/40",
-    warning: "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-900/40",
-    danger: "bg-red-50 text-red-700 border-red-200 dark:bg-red-950/40 dark:text-red-300 dark:border-red-900/40",
-    info: "bg-blue-50 text-brand-ink dark:text-brand border-blue-200 dark:bg-blue-950/40 dark:text-brand-ink dark:text-brand dark:border-blue-900/40"
+    primary: 'bg-brand-50 border-brand-100 dark:bg-brand-900/40 dark:border-brand-800/40',
+    secondary:
+      'bg-slate-100 text-slate-750 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700',
+    success:
+      'bg-green-50 text-green-700 border-green-200 dark:bg-green-950/40 dark:text-green-300 dark:border-green-900/40',
+    warning:
+      'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-900/40',
+    danger:
+      'bg-red-50 text-red-700 border-red-200 dark:bg-red-950/40 dark:text-red-300 dark:border-red-900/40',
+    info: 'bg-blue-50 text-brand-ink dark:text-brand border-blue-200 dark:bg-blue-950/40 dark:text-brand-ink dark:text-brand dark:border-blue-900/40',
   };
 
   return (
@@ -350,7 +389,14 @@ export function Badge({ children, variant = 'primary', className = '' }: BadgePr
       className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold border ${styles[variant]} ${
         variant === 'primary' ? 'text-[var(--badge-fg-light)] dark:text-[var(--badge-fg-dark)]' : ''
       } ${className}`}
-      style={variant === 'primary' ? ({ '--badge-fg-light': brandTextOnLight, '--badge-fg-dark': brandTextOnDark } as React.CSSProperties) : undefined}
+      style={
+        variant === 'primary'
+          ? ({
+              '--badge-fg-light': brandTextOnLight,
+              '--badge-fg-dark': brandTextOnDark,
+            } as React.CSSProperties)
+          : undefined
+      }
     >
       {children}
     </span>
@@ -368,7 +414,6 @@ export interface CardProps {
   hoverable?: boolean;
   key?: React.Key;
 }
-
 
 export function Card({ children, className = '', onClick, hoverable = false }: CardProps) {
   // A clickable `<div>` is invisible to keyboard/screen-reader users: no Tab stop, no Enter/Space
@@ -390,9 +435,13 @@ export function Card({ children, className = '', onClick, hoverable = false }: C
       role={onClick ? 'button' : undefined}
       tabIndex={onClick ? 0 : undefined}
       className={`bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6 shadow-sm transition-all duration-200 ${
-        onClick ? 'focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2 dark:focus:ring-offset-slate-900' : ''
+        onClick
+          ? 'focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2 dark:focus:ring-offset-slate-900'
+          : ''
       } ${
-        onClick || hoverable ? 'cursor-pointer hover:border-slate-300 dark:hover:border-slate-600 hover:shadow-md' : ''
+        onClick || hoverable
+          ? 'cursor-pointer hover:border-slate-300 dark:hover:border-slate-600 hover:shadow-md'
+          : ''
       } ${className}`}
     >
       {children}
@@ -404,9 +453,7 @@ export function Card({ children, className = '', onClick, hoverable = false }: C
 // 7. SKELETON LOADER
 // ============================================================================
 export function Skeleton({ className = '' }: { className?: string }) {
-  return (
-    <div className={`animate-pulse bg-slate-200 dark:bg-slate-700 rounded-md ${className}`} />
-  );
+  return <div className={`animate-pulse bg-slate-200 dark:bg-slate-700 rounded-md ${className}`} />;
 }
 
 // ============================================================================
@@ -428,7 +475,9 @@ export function EmptyState({ title, description, icon, action }: EmptyStateProps
         </div>
       )}
       <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">{title}</h3>
-      <p className="text-sm text-slate-500 dark:text-slate-400 mt-2 leading-relaxed max-w-xs mx-auto">{description}</p>
+      <p className="text-sm text-slate-500 dark:text-slate-400 mt-2 leading-relaxed max-w-xs mx-auto">
+        {description}
+      </p>
       {action && <div className="mt-6">{action}</div>}
     </div>
   );
@@ -448,18 +497,25 @@ export function Alert({ title, description, variant = 'info' }: AlertProps) {
     success: <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400" />,
     warning: <AlertTriangle className="h-5 w-5 text-amber-600 dark:text-amber-400" />,
     danger: <AlertCircle className="h-5 w-5 text-red-600 dark:text-red-400" />,
-    info: <Info className="h-5 w-5 text-brand-ink dark:text-brand dark:text-brand-ink dark:text-brand" />
+    info: (
+      <Info className="h-5 w-5 text-brand-ink dark:text-brand dark:text-brand-ink dark:text-brand" />
+    ),
   };
 
   const styles = {
-    success: "bg-green-50 border-green-200 text-green-800 dark:bg-green-950/20 dark:border-green-900/30 dark:text-green-300",
-    warning: "bg-amber-50 border-amber-200 text-amber-800 dark:bg-amber-950/20 dark:border-amber-900/30 dark:text-amber-300",
-    danger: "bg-red-50 border-red-200 text-red-800 dark:bg-red-950/20 dark:border-red-900/30 dark:text-red-300",
-    info: "bg-blue-50 border-blue-200 text-brand-ink dark:text-brand dark:bg-blue-950/20 dark:border-blue-900/30 dark:text-brand-ink dark:text-brand"
+    success:
+      'bg-green-50 border-green-200 text-green-800 dark:bg-green-950/20 dark:border-green-900/30 dark:text-green-300',
+    warning:
+      'bg-amber-50 border-amber-200 text-amber-800 dark:bg-amber-950/20 dark:border-amber-900/30 dark:text-amber-300',
+    danger:
+      'bg-red-50 border-red-200 text-red-800 dark:bg-red-950/20 dark:border-red-900/30 dark:text-red-300',
+    info: 'bg-blue-50 border-blue-200 text-brand-ink dark:text-brand dark:bg-blue-950/20 dark:border-blue-900/30 dark:text-brand-ink dark:text-brand',
   };
 
   return (
-    <div className={`flex items-start gap-3 p-4 border rounded-xl shadow-xs leading-relaxed ${styles[variant]}`}>
+    <div
+      className={`flex items-start gap-3 p-4 border rounded-xl shadow-xs leading-relaxed ${styles[variant]}`}
+    >
       <div className="shrink-0 mt-0.5">{icons[variant]}</div>
       <div className="flex-1 space-y-1">
         <h4 className="text-sm font-bold text-slate-900 dark:text-slate-100">{title}</h4>
@@ -472,26 +528,36 @@ export function Alert({ title, description, variant = 'info' }: AlertProps) {
 // ============================================================================
 // 10. SPINNER (LOADING)
 // ============================================================================
-export function Spinner({ className = '', size = 'md' }: { className?: string, size?: 'sm' | 'md' | 'lg' }) {
+export function Spinner({
+  className = '',
+  size = 'md',
+}: {
+  className?: string;
+  size?: 'sm' | 'md' | 'lg';
+}) {
   const sizes = {
     sm: 'h-4 w-4 border-2',
     md: 'h-8 w-8 border-3',
-    lg: 'h-12 w-12 border-4'
+    lg: 'h-12 w-12 border-4',
   };
   return (
-    <div className={`animate-spin rounded-full border-slate-200 border-t-brand dark:border-slate-700 dark:border-t-brand ${sizes[size]} ${className}`} />
+    <div
+      className={`animate-spin rounded-full border-slate-200 border-t-brand dark:border-slate-700 dark:border-t-brand ${sizes[size]} ${className}`}
+    />
   );
 }
 
 // ============================================================================
 // 11. PROGRESS BAR
 // ============================================================================
-export function Progress({ value, className = '' }: { value: number, className?: string }) {
+export function Progress({ value, className = '' }: { value: number; className?: string }) {
   const clampedValue = Math.min(100, Math.max(0, value));
   return (
-    <div className={`w-full bg-slate-100 dark:bg-slate-750 rounded-full h-2.5 overflow-hidden ${className}`}>
-      <div 
-        className="bg-brand h-2.5 rounded-full transition-all duration-350 ease-out" 
+    <div
+      className={`w-full bg-slate-100 dark:bg-slate-750 rounded-full h-2.5 overflow-hidden ${className}`}
+    >
+      <div
+        className="bg-brand h-2.5 rounded-full transition-all duration-350 ease-out"
         style={{ width: `${clampedValue}%` }}
       />
     </div>
@@ -501,17 +567,33 @@ export function Progress({ value, className = '' }: { value: number, className?:
 // ============================================================================
 // 12. AVATAR COMPONENT
 // ============================================================================
-export function Avatar({ name, src, size = 'md', className = '' }: { name: string, src?: string, size?: 'sm' | 'md' | 'lg', className?: string }) {
+export function Avatar({
+  name,
+  src,
+  size = 'md',
+  className = '',
+}: {
+  name: string;
+  src?: string;
+  size?: 'sm' | 'md' | 'lg';
+  className?: string;
+}) {
   const brandColor = useSessionStore((state) => state.brandColor);
   const accessibleBrandText = getAccessibleTextOnBrand(brandColor);
   const sizes = {
     sm: 'h-8 w-8 text-xs',
     md: 'h-11 w-11 text-sm',
-    lg: 'h-16 w-16 text-lg'
+    lg: 'h-16 w-16 text-lg',
   };
 
   const getInitials = (n: string) => {
-    return n.trim().split(' ').slice(0, 2).map(p => p[0]).join('').toUpperCase();
+    return n
+      .trim()
+      .split(' ')
+      .slice(0, 2)
+      .map((p) => p[0])
+      .join('')
+      .toUpperCase();
   };
 
   return (
@@ -537,7 +619,17 @@ interface Tab {
   icon?: React.ReactNode;
 }
 
-export function Tabs({ tabs, activeTab, onChange, className = '' }: { tabs: Tab[], activeTab: string, onChange: (id: string) => void, className?: string }) {
+export function Tabs({
+  tabs,
+  activeTab,
+  onChange,
+  className = '',
+}: {
+  tabs: Tab[];
+  activeTab: string;
+  onChange: (id: string) => void;
+  className?: string;
+}) {
   const tablistId = useId();
   const brandColor = useSessionStore((state) => state.brandColor);
   const brandTextOnLight = getAccessibleBrandForeground(brandColor, colors.light.surface);
@@ -545,7 +637,8 @@ export function Tabs({ tabs, activeTab, onChange, className = '' }: { tabs: Tab[
   const reduceMotion = usePrefersReducedMotion();
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>, index: number) => {
-    if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft' && e.key !== 'Home' && e.key !== 'End') return;
+    if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft' && e.key !== 'Home' && e.key !== 'End')
+      return;
     e.preventDefault();
     let nextIndex = index;
     if (e.key === 'ArrowRight') nextIndex = (index + 1) % tabs.length;
@@ -558,7 +651,10 @@ export function Tabs({ tabs, activeTab, onChange, className = '' }: { tabs: Tab[
   };
 
   return (
-    <div role="tablist" className={`flex border-b border-slate-200 dark:border-slate-700 overflow-x-auto scrollbar-hide gap-1 ${className}`}>
+    <div
+      role="tablist"
+      className={`flex border-b border-slate-200 dark:border-slate-700 overflow-x-auto scrollbar-hide gap-1 ${className}`}
+    >
       {tabs.map((tab, index) => {
         const isSelected = tab.id === activeTab;
         return (
@@ -570,20 +666,33 @@ export function Tabs({ tabs, activeTab, onChange, className = '' }: { tabs: Tab[
             tabIndex={isSelected ? 0 : -1}
             onClick={() => onChange(tab.id)}
             onKeyDown={(e) => handleKeyDown(e, index)}
-            style={isSelected ? ({ '--brand-fg-light': brandTextOnLight, '--brand-fg-dark': brandTextOnDark } as React.CSSProperties) : undefined}
+            style={
+              isSelected
+                ? ({
+                    '--brand-fg-light': brandTextOnLight,
+                    '--brand-fg-dark': brandTextOnDark,
+                  } as React.CSSProperties)
+                : undefined
+            }
             className={`flex items-center gap-2 px-5 py-3.5 text-sm font-bold transition-all relative whitespace-nowrap outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-900 rounded-t-md ${
               isSelected
                 ? 'text-[var(--brand-fg-light)] dark:text-[var(--brand-fg-dark)]'
                 : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-250'
             }`}
           >
-            {tab.icon && <span aria-hidden="true" className="shrink-0">{tab.icon}</span>}
+            {tab.icon && (
+              <span aria-hidden="true" className="shrink-0">
+                {tab.icon}
+              </span>
+            )}
             <span>{tab.label}</span>
             {isSelected && (
               <motion.div
                 layoutId="active-tab-line"
                 className="absolute bottom-0 left-0 right-0 h-0.5 bg-brand"
-                transition={reduceMotion ? { duration: 0 } : { type: 'spring', stiffness: 380, damping: 30 }}
+                transition={
+                  reduceMotion ? { duration: 0 } : { type: 'spring', stiffness: 380, damping: 30 }
+                }
               />
             )}
           </button>
@@ -608,7 +717,7 @@ export function Breadcrumb({ items }: { items: BreadcrumbItem[] }) {
         <React.Fragment key={idx}>
           {idx > 0 && <ChevronRight className="h-3.5 w-3.5 text-slate-350 dark:text-slate-600" />}
           {item.onClick ? (
-            <button 
+            <button
               onClick={item.onClick}
               className="hover:text-slate-900 dark:hover:text-slate-200 transition-colors"
             >
@@ -626,19 +735,33 @@ export function Breadcrumb({ items }: { items: BreadcrumbItem[] }) {
 // ============================================================================
 // 15. TABLE COMPONENT
 // ============================================================================
-export function Table({ children, className = '' }: { children: React.ReactNode, className?: string }) {
+export function Table({
+  children,
+  className = '',
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
   return (
-    <div className={`w-full overflow-x-auto border border-slate-200 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-850 shadow-sm ${className}`}>
-      <table className="w-full text-sm text-left border-collapse">
-        {children}
-      </table>
+    <div
+      className={`w-full overflow-x-auto border border-slate-200 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-850 shadow-sm ${className}`}
+    >
+      <table className="w-full text-sm text-left border-collapse">{children}</table>
     </div>
   );
 }
 
-export function TableHead({ children, className = '' }: { children: React.ReactNode, className?: string }) {
+export function TableHead({
+  children,
+  className = '',
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
   return (
-    <thead className={`bg-slate-50 dark:bg-slate-800/40 border-b border-slate-200 dark:border-slate-750 text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider ${className}`}>
+    <thead
+      className={`bg-slate-50 dark:bg-slate-800/40 border-b border-slate-200 dark:border-slate-750 text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider ${className}`}
+    >
       {children}
     </thead>
   );
@@ -652,8 +775,8 @@ interface TableRowProps {
 
 export function TableRow({ children, className = '', onClick }: TableRowProps) {
   return (
-    <tr 
-      onClick={onClick} 
+    <tr
+      onClick={onClick}
       className={`border-b last:border-0 border-slate-150 dark:border-slate-750 hover:bg-slate-50/50 dark:hover:bg-slate-800/20 transition-colors ${
         onClick ? 'cursor-pointer' : ''
       } ${className}`}
@@ -663,11 +786,27 @@ export function TableRow({ children, className = '', onClick }: TableRowProps) {
   );
 }
 
-export function TableCell({ children, className = '', isHeader = false }: { children: React.ReactNode, className?: string, isHeader?: boolean }) {
+export function TableCell({
+  children,
+  className = '',
+  isHeader = false,
+}: {
+  children: React.ReactNode;
+  className?: string;
+  isHeader?: boolean;
+}) {
   if (isHeader) {
-    return <th className={`px-6 py-4 font-bold text-slate-600 dark:text-slate-400 ${className}`}>{children}</th>;
+    return (
+      <th className={`px-6 py-4 font-bold text-slate-600 dark:text-slate-400 ${className}`}>
+        {children}
+      </th>
+    );
   }
-  return <td className={`px-6 py-4 text-slate-750 dark:text-slate-300 font-medium ${className}`}>{children}</td>;
+  return (
+    <td className={`px-6 py-4 text-slate-750 dark:text-slate-300 font-medium ${className}`}>
+      {children}
+    </td>
+  );
 }
 
 // ============================================================================
@@ -756,15 +895,22 @@ export function Modal({ isOpen, onClose, title, children, footer }: ModalProps) 
             className="bg-white dark:bg-slate-800 rounded-xl shadow-2xl border border-slate-200 dark:border-slate-700 max-w-lg w-full overflow-hidden flex flex-col z-10 outline-none"
           >
             <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-700">
-              <h3 id={titleId} className="font-bold text-slate-900 dark:text-white text-base leading-none">{title}</h3>
-              <button onClick={onClose} aria-label="Fechar" className="p-1 hover:bg-slate-100 dark:hover:bg-slate-700 rounded text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors">
+              <h3
+                id={titleId}
+                className="font-bold text-slate-900 dark:text-white text-base leading-none"
+              >
+                {title}
+              </h3>
+              <button
+                onClick={onClose}
+                aria-label="Fechar"
+                className="p-1 hover:bg-slate-100 dark:hover:bg-slate-700 rounded text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
+              >
                 <X aria-hidden="true" className="h-4.5 w-4.5" />
               </button>
             </div>
 
-            <div className="p-6 overflow-y-auto max-h-[70vh] text-left">
-              {children}
-            </div>
+            <div className="p-6 overflow-y-auto max-h-[70vh] text-left">{children}</div>
 
             {footer && (
               <div className="flex items-center justify-end gap-3 px-6 py-4 bg-slate-50 dark:bg-slate-900/45 border-t border-slate-200 dark:border-slate-700">
@@ -799,9 +945,13 @@ export function Timeline({ items }: { items: TimelineItem[] }) {
           <div className="flex-1 space-y-1">
             <div className="flex items-center justify-between gap-4">
               <h4 className="text-sm font-bold text-slate-900 dark:text-slate-150">{item.title}</h4>
-              <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">{item.time}</span>
+              <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">
+                {item.time}
+              </span>
             </div>
-            <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">{item.description}</p>
+            <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+              {item.description}
+            </p>
           </div>
         </div>
       ))}
@@ -812,14 +962,17 @@ export function Timeline({ items }: { items: TimelineItem[] }) {
 // ============================================================================
 // 18. TOOLTIP
 // ============================================================================
-export function Tooltip({ text, children }: { text: string, children: React.ReactNode }) {
+export function Tooltip({ text, children }: { text: string; children: React.ReactNode }) {
   // `group-hover` alone is invisible to keyboard users: nothing here ever receives focus, so the
   // tooltip can never appear without a mouse. Making the wrapper itself a (0) tab stop with
   // `group-focus-within` and `aria-describedby` surfaces the same text on Tab, and to a screen
   // reader, as it does on hover.
   const tooltipId = useId();
   return (
-    <div aria-describedby={tooltipId} className="relative group inline-block outline-none rounded-md focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-900">
+    <div
+      aria-describedby={tooltipId}
+      className="relative group inline-block outline-none rounded-md focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-900"
+    >
       {children}
       <div
         id={tooltipId}
@@ -861,7 +1014,11 @@ export function ToastContainer({ toasts }: { toasts: Toast[] }) {
   return (
     // `aria-live="polite"` + `role="status"` announce new toasts to screen readers; without it a
     // toast is a purely visual event that a non-sighted user would never learn happened.
-    <div aria-live="polite" role="status" className="fixed bottom-5 right-5 z-50 flex flex-col gap-2.5 max-w-sm w-full pointer-events-none">
+    <div
+      aria-live="polite"
+      role="status"
+      className="fixed bottom-5 right-5 z-50 flex flex-col gap-2.5 max-w-sm w-full pointer-events-none"
+    >
       <AnimatePresence>
         {toasts.map((toast) => (
           <motion.div
@@ -869,16 +1026,37 @@ export function ToastContainer({ toasts }: { toasts: Toast[] }) {
             role={toast.type === 'error' ? 'alert' : undefined}
             initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={reduceMotion ? { opacity: 0, transition: { duration: 0 } } : { opacity: 0, scale: 0.95, transition: { duration: 0.15 } }}
+            exit={
+              reduceMotion
+                ? { opacity: 0, transition: { duration: 0 } }
+                : { opacity: 0, scale: 0.95, transition: { duration: 0.15 } }
+            }
             className={`p-4 rounded-xl border shadow-lg flex items-start gap-3 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 pointer-events-auto ${
-              toast.type === 'success' ? 'border-green-200 bg-green-50/50 dark:border-green-900/40 dark:bg-green-950/20' :
-              toast.type === 'error' ? 'border-red-200 bg-red-50/50 dark:border-red-900/40 dark:bg-red-950/20' :
-              'border-slate-200 bg-white dark:border-slate-700'
+              toast.type === 'success'
+                ? 'border-green-200 bg-green-50/50 dark:border-green-900/40 dark:bg-green-950/20'
+                : toast.type === 'error'
+                  ? 'border-red-200 bg-red-50/50 dark:border-red-900/40 dark:bg-red-950/20'
+                  : 'border-slate-200 bg-white dark:border-slate-700'
             }`}
           >
-            {toast.type === 'success' && <CheckCircle aria-hidden="true" className="h-5 w-5 text-green-600 dark:text-green-450 shrink-0 mt-0.5" />}
-            {toast.type === 'error' && <AlertCircle aria-hidden="true" className="h-5 w-5 text-red-600 dark:text-red-450 shrink-0 mt-0.5" />}
-            {toast.type === 'info' && <Info aria-hidden="true" className="h-5 w-5 text-brand-ink dark:text-brand dark:text-blue-450 shrink-0 mt-0.5" />}
+            {toast.type === 'success' && (
+              <CheckCircle
+                aria-hidden="true"
+                className="h-5 w-5 text-green-600 dark:text-green-450 shrink-0 mt-0.5"
+              />
+            )}
+            {toast.type === 'error' && (
+              <AlertCircle
+                aria-hidden="true"
+                className="h-5 w-5 text-red-600 dark:text-red-450 shrink-0 mt-0.5"
+              />
+            )}
+            {toast.type === 'info' && (
+              <Info
+                aria-hidden="true"
+                className="h-5 w-5 text-brand-ink dark:text-brand dark:text-blue-450 shrink-0 mt-0.5"
+              />
+            )}
             <span className="text-xs font-semibold leading-relaxed flex-1">{toast.message}</span>
           </motion.div>
         ))}

@@ -21,11 +21,16 @@ interface PlaygroundMessage {
 
 export async function chatHandler(req: Request, res: Response) {
   try {
-    const { prompt, currentMessages } = req.body as { prompt?: string; currentMessages?: PlaygroundMessage[] };
-    const lastUserMessage = [...(currentMessages || [])].reverse().find(m => m.role === 'user');
+    const { prompt, currentMessages } = req.body as {
+      prompt?: string;
+      currentMessages?: PlaygroundMessage[];
+    };
+    const lastUserMessage = [...(currentMessages || [])].reverse().find((m) => m.role === 'user');
 
     if (!lastUserMessage?.text) {
-      return res.status(400).json({ error: 'currentMessages deve conter ao menos uma mensagem do usuário.' });
+      return res
+        .status(400)
+        .json({ error: 'currentMessages deve conter ao menos uma mensagem do usuário.' });
     }
 
     // Real LLM Gateway call — goes through the same provider failover chain (guaranteed to end
@@ -38,7 +43,7 @@ export async function chatHandler(req: Request, res: Response) {
       lastUserMessage.text,
       'GoogleGemini',
       prompt || undefined,
-      req.organizationId!
+      req.organizationId!,
     );
 
     return res.json(gatewayResponse);
@@ -68,7 +73,7 @@ export async function setAiConsentHandler(req: Request, res: Response) {
 
 export async function ttsHandler(_req: Request, res: Response) {
   // Retorna um áudio vazio para evitar erros de decodificação no frontend do MVP
-  return res.json({ audioBase64: "" });
+  return res.json({ audioBase64: '' });
 }
 
 export async function generateMusicHandler(req: Request, res: Response) {
@@ -77,7 +82,10 @@ export async function generateMusicHandler(req: Request, res: Response) {
     const ai = getGeminiClient();
     if (!ai) return res.status(500).json({ error: 'Chave da API Gemini não configurada.' });
 
-    const response = await ai.models.generateContentStream({ model: 'lyria-3-clip-preview', contents: prompt });
+    const response = await ai.models.generateContentStream({
+      model: 'lyria-3-clip-preview',
+      contents: prompt,
+    });
 
     let audioBase64 = '';
     let mimeType = 'audio/wav';
@@ -164,7 +172,7 @@ export async function videoDownloadHandler(req: Request, res: Response) {
         close() {
           res.end();
         },
-      })
+      }),
     );
   } catch (error: unknown) {
     logger.error('Video download error:', error);
@@ -216,7 +224,11 @@ Retorne os mesmos nós, mantendo seus IDs e posições intactos, mas modificando
                   },
                   data: {
                     type: 'OBJECT',
-                    properties: { label: { type: 'STRING' }, category: { type: 'STRING' }, config: { type: 'OBJECT' } },
+                    properties: {
+                      label: { type: 'STRING' },
+                      category: { type: 'STRING' },
+                      config: { type: 'OBJECT' },
+                    },
                     required: ['label', 'category', 'config'],
                   },
                 },
@@ -288,7 +300,11 @@ Regras de posicionamento do layout:
                   },
                   data: {
                     type: 'OBJECT',
-                    properties: { label: { type: 'STRING' }, category: { type: 'STRING' }, config: { type: 'OBJECT' } },
+                    properties: {
+                      label: { type: 'STRING' },
+                      category: { type: 'STRING' },
+                      config: { type: 'OBJECT' },
+                    },
                     required: ['label', 'category', 'config'],
                   },
                 },

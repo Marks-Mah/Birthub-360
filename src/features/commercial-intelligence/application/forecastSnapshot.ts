@@ -11,7 +11,10 @@
  * lógica de cálculo sem depender de Postgres.
  */
 import { randomUUID } from 'node:crypto';
-import type { ExecutiveOverview, ForecastSnapshotRecord } from '../domain/CommercialIntelligence.js';
+import type {
+  ExecutiveOverview,
+  ForecastSnapshotRecord,
+} from '../domain/CommercialIntelligence.js';
 import { FORECAST_RULES_VERSION } from './forecastEngine.js';
 
 /**

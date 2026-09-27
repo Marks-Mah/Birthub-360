@@ -45,12 +45,18 @@ export default function GovernancePage() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Governança & RBAC</h1>
-          <p className="text-sm text-slate-500">Controle de acessos, permissões granulares e auditoria corporativa.</p>
+          <p className="text-sm text-slate-500">
+            Controle de acessos, permissões granulares e auditoria corporativa.
+          </p>
         </div>
         {/* Sensitive action gated on the real session role, not just visually hidden — the
             backend route this would call (POST /api/users) is itself requireRole(['admin']). */}
         {isAdmin && (
-          <Button variant="primary" disabled title="Criação direta de usuário disponível via API; convite por e-mail ainda não implementado">
+          <Button
+            variant="primary"
+            disabled
+            title="Criação direta de usuário disponível via API; convite por e-mail ainda não implementado"
+          >
             <Users className="h-4 w-4 mr-2" /> Adicionar Membro
           </Button>
         )}
@@ -97,7 +103,9 @@ export default function GovernancePage() {
                       <Shield className="h-4 w-4 text-brand" /> {role}
                     </h3>
                     <div className="flex justify-between items-center pt-4 mt-4 border-t border-slate-100 dark:border-slate-800">
-                      <span className="text-xs font-semibold text-slate-600 dark:text-slate-400">{count} membro{count !== 1 ? 's' : ''}</span>
+                      <span className="text-xs font-semibold text-slate-600 dark:text-slate-400">
+                        {count} membro{count !== 1 ? 's' : ''}
+                      </span>
                     </div>
                   </Card>
                 ))
@@ -117,18 +125,28 @@ export default function GovernancePage() {
               this as "Ativado" would be a false compliance claim. */}
           <div className="flex justify-between items-center p-4 bg-slate-50 dark:bg-slate-900/50 rounded-lg border border-slate-200 dark:border-slate-800">
             <div>
-              <p className="font-bold text-slate-900 dark:text-white">Autenticação SSO (OIDC/Keycloak)</p>
-              <p className="text-slate-500 text-xs mt-0.5">Login via provedor de identidade corporativo.</p>
+              <p className="font-bold text-slate-900 dark:text-white">
+                Autenticação SSO (OIDC/Keycloak)
+              </p>
+              <p className="text-slate-500 text-xs mt-0.5">
+                Login via provedor de identidade corporativo.
+              </p>
             </div>
-            <Badge variant="warning"><XCircle className="h-3 w-3 mr-1" /> Não configurado</Badge>
+            <Badge variant="warning">
+              <XCircle className="h-3 w-3 mr-1" /> Não configurado
+            </Badge>
           </div>
 
           <div className="flex justify-between items-center p-4 bg-slate-50 dark:bg-slate-900/50 rounded-lg border border-slate-200 dark:border-slate-800">
             <div>
               <p className="font-bold text-slate-900 dark:text-white">Data Residency (LGPD)</p>
-              <p className="text-slate-500 text-xs mt-0.5">Armazenar dados, gravações e logs exclusivamente na região selecionada.</p>
+              <p className="text-slate-500 text-xs mt-0.5">
+                Armazenar dados, gravações e logs exclusivamente na região selecionada.
+              </p>
             </div>
-            <div className="text-xs font-mono bg-white dark:bg-slate-950 px-2 py-1 rounded border border-slate-200 dark:border-slate-800">sa-east-1 (SP)</div>
+            <div className="text-xs font-mono bg-white dark:bg-slate-950 px-2 py-1 rounded border border-slate-200 dark:border-slate-800">
+              sa-east-1 (SP)
+            </div>
           </div>
 
           {/* Log redaction is real (see src/lib/logger.ts, pino `redact` over sensitive fields).
@@ -136,10 +154,17 @@ export default function GovernancePage() {
               is scoped to what is actually implemented instead of a blanket "Ativado". */}
           <div className="flex justify-between items-center p-4 bg-slate-50 dark:bg-slate-900/50 rounded-lg border border-slate-200 dark:border-slate-800">
             <div>
-              <p className="font-bold text-slate-900 dark:text-white">Mascaramento de PII em logs</p>
-              <p className="text-slate-500 text-xs mt-0.5">Campos sensíveis (tokens, senhas, dados de contato) são redigidos automaticamente nos logs do servidor (pino).</p>
+              <p className="font-bold text-slate-900 dark:text-white">
+                Mascaramento de PII em logs
+              </p>
+              <p className="text-slate-500 text-xs mt-0.5">
+                Campos sensíveis (tokens, senhas, dados de contato) são redigidos automaticamente
+                nos logs do servidor (pino).
+              </p>
             </div>
-            <Badge variant="success"><CheckCircle className="h-3 w-3 mr-1" /> Ativado</Badge>
+            <Badge variant="success">
+              <CheckCircle className="h-3 w-3 mr-1" /> Ativado
+            </Badge>
           </div>
         </div>
       </Card>

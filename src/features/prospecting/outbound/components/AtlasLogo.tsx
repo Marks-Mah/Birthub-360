@@ -11,7 +11,7 @@ export const AtlasLogo: React.FC<AtlasLogoProps> = ({
   variant = 'with-subtitle',
   theme = 'dark',
   size = 'md',
-  className = ''
+  className = '',
 }) => {
   // Height & scale configuration
   const sizeMap = {
@@ -41,15 +41,9 @@ export const AtlasLogo: React.FC<AtlasLogoProps> = ({
         className="shrink-0 transition-transform duration-300 hover:scale-105"
       >
         {/* Slanted Parallelogram 60 degrees */}
-        <polygon
-          points="40,0 85,0 45,120 0,120"
-          fill={orangeFill}
-        />
+        <polygon points="40,0 85,0 45,120 0,120" fill={orangeFill} />
         {/* Adjacent Triangle */}
-        <polygon
-          points="105,48 160,120 70,120"
-          fill={orangeFill}
-        />
+        <polygon points="105,48 160,120 70,120" fill={orangeFill} />
       </svg>
 
       {variant !== 'symbol' && (

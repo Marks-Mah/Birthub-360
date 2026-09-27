@@ -98,7 +98,9 @@ export async function createEndpoint(data: {
 // selects a column that would let the secret leak (there would be none to select even if asked:
 // only secretHash is ever persisted, never the plaintext) — toRecord/the service layer's
 // `toMetadata` never surface it regardless.
-export async function listEndpointsForTenant(organizationId: string): Promise<TenantWebhookEndpointRecord[]> {
+export async function listEndpointsForTenant(
+  organizationId: string,
+): Promise<TenantWebhookEndpointRecord[]> {
   const rows = await prisma.tenantWebhookEndpoint.findMany({
     where: { organizationId },
     orderBy: { createdAt: 'desc' },
@@ -109,7 +111,9 @@ export async function listEndpointsForTenant(organizationId: string): Promise<Te
 // Active-only — used by webhookEndpointService.resolveActiveEndpointsForEvent (dispatch path). A
 // tenant-scoped query at the repository layer, never a filter applied after fetching everyone
 // (AGENTS.md §15): the WHERE clause itself carries both `organizationId` and `active`.
-export async function listActiveEndpointsForTenant(organizationId: string): Promise<TenantWebhookEndpointRecord[]> {
+export async function listActiveEndpointsForTenant(
+  organizationId: string,
+): Promise<TenantWebhookEndpointRecord[]> {
   const rows = await prisma.tenantWebhookEndpoint.findMany({
     where: { organizationId, active: true },
   });
@@ -132,7 +136,9 @@ export async function findEndpointForTenant(
 // webhookEndpointService.findActiveSigningSecretHash). This is intentionally NOT tenant-scoped:
 // the worker has no tenant-authenticated caller to scope against, it is resolving the endpoint
 // that a prior, already-tenant-scoped `dispatch()` call decided to enqueue for.
-export async function findActiveEndpointById(id: string): Promise<TenantWebhookEndpointRecord | null> {
+export async function findActiveEndpointById(
+  id: string,
+): Promise<TenantWebhookEndpointRecord | null> {
   const row = await prisma.tenantWebhookEndpoint.findFirst({ where: { id, active: true } });
   return row ? toRecord(row) : null;
 }

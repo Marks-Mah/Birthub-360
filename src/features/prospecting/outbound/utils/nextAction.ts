@@ -27,7 +27,9 @@ function daysSince(dateStr?: string): number {
  * Não é IA generativa — é a mesma lógica sempre para o mesmo estado do lead, o que
  * é o ponto: previsibilidade em vez de um texto diferente a cada consulta.
  */
-export function computeNextAction(lead: Partial<Lead> & { bitrix_check_status?: string }): NextAction {
+export function computeNextAction(
+  lead: Partial<Lead> & { bitrix_check_status?: string },
+): NextAction {
   const stage = lead.stage || 'prospecto';
   const days = daysSince(lead.created_at);
   const hasCopies = Boolean(lead.copies_generated);
@@ -35,18 +37,27 @@ export function computeNextAction(lead: Partial<Lead> & { bitrix_check_status?: 
   const bitrixStatus = lead.bitrix_check_status;
 
   if (stage === 'ganho') {
-    return { action: 'Nenhuma ação — negócio ganho', reason: 'Lead já convertido em cliente.', urgency: 'baixa' };
+    return {
+      action: 'Nenhuma ação — negócio ganho',
+      reason: 'Lead já convertido em cliente.',
+      urgency: 'baixa',
+    };
   }
 
   if (stage === 'perdido') {
-    return { action: 'Nenhuma ação — negócio perdido', reason: 'Lead encerrado sem conversão.', urgency: 'baixa' };
+    return {
+      action: 'Nenhuma ação — negócio perdido',
+      reason: 'Lead encerrado sem conversão.',
+      urgency: 'baixa',
+    };
   }
 
   if (bitrixStatus === 'existing_client') {
     return {
       action: 'Confirmar relação atual antes de abordar',
-      reason: 'Esta empresa já aparece como cliente/contato no Bitrix24 — alinhar com o time antes de tratar como lead novo.',
-      urgency: 'alta'
+      reason:
+        'Esta empresa já aparece como cliente/contato no Bitrix24 — alinhar com o time antes de tratar como lead novo.',
+      urgency: 'alta',
     };
   }
 
@@ -54,17 +65,18 @@ export function computeNextAction(lead: Partial<Lead> & { bitrix_check_status?: 
     return {
       action: 'Gerar roteiros de abordagem',
       reason: 'Lead novo, ainda sem cold call, e-mail ou WhatsApp preparados.',
-      urgency: 'media'
+      urgency: 'media',
     };
   }
 
   if (stage === 'prospecto' && hasCopies) {
     return {
       action: 'Fazer o primeiro contato',
-      reason: days > 2
-        ? `Roteiros prontos há ${days} dias e o primeiro contato ainda não foi feito.`
-        : 'Roteiros prontos — falta a primeira ligação, e-mail ou WhatsApp.',
-      urgency: days > 2 ? 'alta' : 'media'
+      reason:
+        days > 2
+          ? `Roteiros prontos há ${days} dias e o primeiro contato ainda não foi feito.`
+          : 'Roteiros prontos — falta a primeira ligação, e-mail ou WhatsApp.',
+      urgency: days > 2 ? 'alta' : 'media',
     };
   }
 
@@ -72,7 +84,7 @@ export function computeNextAction(lead: Partial<Lead> & { bitrix_check_status?: 
     return {
       action: 'Avançar para o primeiro contato',
       reason: 'Lead qualificado aguardando abordagem.',
-      urgency: 'media'
+      urgency: 'media',
     };
   }
 
@@ -81,13 +93,13 @@ export function computeNextAction(lead: Partial<Lead> & { bitrix_check_status?: 
       return {
         action: 'Fazer follow-up — sem retorno',
         reason: `Em contato há ${days} dias sem avançar de estágio.`,
-        urgency: 'alta'
+        urgency: 'alta',
       };
     }
     return {
       action: 'Aguardar resposta / preparar follow-up',
       reason: 'Contato recente, ainda dentro do prazo esperado de retorno.',
-      urgency: 'baixa'
+      urgency: 'baixa',
     };
   }
 
@@ -96,13 +108,16 @@ export function computeNextAction(lead: Partial<Lead> & { bitrix_check_status?: 
       return {
         action: 'Enriquecer com dossiê de notícias',
         reason: 'Negociação em andamento sem dossiê de notícias/ganchos comerciais gerado.',
-        urgency: 'media'
+        urgency: 'media',
       };
     }
     return {
       action: 'Confirmar reunião / enviar proposta',
-      reason: days >= 5 ? `Negociação parada há ${days} dias — retomar contato.` : 'Negociação ativa com dossiê já preparado.',
-      urgency: days >= 5 ? 'alta' : 'media'
+      reason:
+        days >= 5
+          ? `Negociação parada há ${days} dias — retomar contato.`
+          : 'Negociação ativa com dossiê já preparado.',
+      urgency: days >= 5 ? 'alta' : 'media',
     };
   }
 

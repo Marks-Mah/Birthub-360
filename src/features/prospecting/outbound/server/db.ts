@@ -34,7 +34,7 @@ export class DbHandle {
       return [];
     }
     const columns = Object.keys(result[0]);
-    const values = result.map(row => columns.map(col => row[col]));
+    const values = result.map((row) => columns.map((col) => row[col]));
     return [{ columns, values }];
   }
 
@@ -55,12 +55,24 @@ export async function getDatabase(): Promise<DbHandle> {
 
 export async function logActivity(
   db: DbHandle,
-  entry: { leadId?: string | null; userId?: string | null; action: string; fromValue?: string | null; toValue?: string | null }
+  entry: {
+    leadId?: string | null;
+    userId?: string | null;
+    action: string;
+    fromValue?: string | null;
+    toValue?: string | null;
+  },
 ): Promise<void> {
   try {
     await db.run(
       'INSERT INTO activity_log (lead_id, user_id, action, from_value, to_value) VALUES (?, ?, ?, ?, ?)',
-      [entry.leadId || null, entry.userId || null, entry.action, entry.fromValue ?? null, entry.toValue ?? null]
+      [
+        entry.leadId || null,
+        entry.userId || null,
+        entry.action,
+        entry.fromValue ?? null,
+        entry.toValue ?? null,
+      ],
     );
   } catch (err: any) {
     console.error('Falha ao gravar activity_log:', err);
@@ -83,5 +95,12 @@ export async function executeQuery(_sql: string, _params: any[] = []): Promise<a
 }
 
 export async function getStats() {
-  return { campaignsCount: 0, leadsCount: 0, messagesCount: 0, chatMessagesCount: 0, dbSizeBytes: 0, tables: [] };
+  return {
+    campaignsCount: 0,
+    leadsCount: 0,
+    messagesCount: 0,
+    chatMessagesCount: 0,
+    dbSizeBytes: 0,
+    tables: [],
+  };
 }

@@ -81,7 +81,7 @@ describe('workflowCollab.controller', () => {
         'tenant-1',
         'user-1',
         'node-1',
-        'Rever este nó de roteamento'
+        'Rever este nó de roteamento',
       );
       expect(res.json).toHaveBeenCalledWith({ success: true, workflow: mockWorkflow });
     });
@@ -185,7 +185,9 @@ describe('workflowCollab.controller', () => {
     });
 
     it('returns 409 when lockNode detects conflict', async () => {
-      vi.mocked(lockNode).mockRejectedValue(new ConflictError('Nó já está em edição por outro usuário.'));
+      vi.mocked(lockNode).mockRejectedValue(
+        new ConflictError('Nó já está em edição por outro usuário.'),
+      );
 
       const req = {
         organizationId: 'tenant-1',

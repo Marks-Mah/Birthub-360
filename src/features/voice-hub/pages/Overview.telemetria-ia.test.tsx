@@ -49,10 +49,13 @@ function stubFetch(metrics: MetricFixture[]) {
   vi.stubGlobal(
     'fetch',
     vi.fn((url: string) => {
-      if (url === '/api/onboarding') return Promise.resolve(jsonResponse({ body: { checklist: {} } }));
-      if (url === '/api/call-logs') return Promise.resolve(jsonResponse({ body: { callLogs: [] } }));
+      if (url === '/api/onboarding')
+        return Promise.resolve(jsonResponse({ body: { checklist: {} } }));
+      if (url === '/api/call-logs')
+        return Promise.resolve(jsonResponse({ body: { callLogs: [] } }));
       if (url === '/api/agents') return Promise.resolve(jsonResponse({ body: { agents: [] } }));
-      if (url === '/api/ready') return Promise.resolve(jsonResponse({ body: { checks: { database: 'ok', redis: 'ok' } } }));
+      if (url === '/api/ready')
+        return Promise.resolve(jsonResponse({ body: { checks: { database: 'ok', redis: 'ok' } } }));
       if (url === '/api/metrics') return Promise.resolve(jsonResponse({ body: { metrics } }));
       throw new Error(`unexpected fetch: ${url}`);
     }),
@@ -67,14 +70,56 @@ describe('Overview — AI cost/tokens/latency cards', () => {
 
   it('aggregates real ai_call_* metrics from GET /api/metrics into the cards', async () => {
     stubFetch([
-      { id: 'm1', name: 'ai_call_cost_usd', value: 0.012, tags: { provider: 'openai' }, timestamp: new Date().toISOString() },
-      { id: 'm2', name: 'ai_call_cost_usd', value: 0.008, tags: { provider: 'openai' }, timestamp: new Date().toISOString() },
-      { id: 'm3', name: 'ai_call_tokens', value: 500, tags: { provider: 'openai' }, timestamp: new Date().toISOString() },
-      { id: 'm4', name: 'ai_call_tokens', value: 300, tags: { provider: 'openai' }, timestamp: new Date().toISOString() },
-      { id: 'm5', name: 'ai_call_latency_ms', value: 800, tags: { provider: 'openai' }, timestamp: new Date().toISOString() },
-      { id: 'm6', name: 'ai_call_latency_ms', value: 1200, tags: { provider: 'openai' }, timestamp: new Date().toISOString() },
+      {
+        id: 'm1',
+        name: 'ai_call_cost_usd',
+        value: 0.012,
+        tags: { provider: 'openai' },
+        timestamp: new Date().toISOString(),
+      },
+      {
+        id: 'm2',
+        name: 'ai_call_cost_usd',
+        value: 0.008,
+        tags: { provider: 'openai' },
+        timestamp: new Date().toISOString(),
+      },
+      {
+        id: 'm3',
+        name: 'ai_call_tokens',
+        value: 500,
+        tags: { provider: 'openai' },
+        timestamp: new Date().toISOString(),
+      },
+      {
+        id: 'm4',
+        name: 'ai_call_tokens',
+        value: 300,
+        tags: { provider: 'openai' },
+        timestamp: new Date().toISOString(),
+      },
+      {
+        id: 'm5',
+        name: 'ai_call_latency_ms',
+        value: 800,
+        tags: { provider: 'openai' },
+        timestamp: new Date().toISOString(),
+      },
+      {
+        id: 'm6',
+        name: 'ai_call_latency_ms',
+        value: 1200,
+        tags: { provider: 'openai' },
+        timestamp: new Date().toISOString(),
+      },
       // Unrelated event name from the same endpoint must never leak into the AI aggregation.
-      { id: 'm7', name: 'platform_ready_check', value: 1, tags: {}, timestamp: new Date().toISOString() },
+      {
+        id: 'm7',
+        name: 'platform_ready_check',
+        value: 1,
+        tags: {},
+        timestamp: new Date().toISOString(),
+      },
     ]);
 
     render(<RebuiltExecutiveOverview />);
@@ -91,7 +136,9 @@ describe('Overview — AI cost/tokens/latency cards', () => {
     render(<RebuiltExecutiveOverview />);
 
     await screen.findByText('Custo de IA (total)');
-    const emptyCaptions = await screen.findAllByText('Ainda sem chamadas de IA para esta organização');
+    const emptyCaptions = await screen.findAllByText(
+      'Ainda sem chamadas de IA para esta organização',
+    );
     expect(emptyCaptions.length).toBe(3); // cost, tokens, latency — each honestly empty
 
     const dashes = screen.getAllByText('—');
@@ -107,9 +154,27 @@ describe('Overview — AI cost/tokens/latency cards', () => {
 
   it('never mixes AI telemetry across mounts (e.g. switching tenant/session remounts clean)', async () => {
     stubFetch([
-      { id: 'a1', name: 'ai_call_cost_usd', value: 5, tags: {}, timestamp: new Date().toISOString() },
-      { id: 'a2', name: 'ai_call_tokens', value: 1000, tags: {}, timestamp: new Date().toISOString() },
-      { id: 'a3', name: 'ai_call_latency_ms', value: 500, tags: {}, timestamp: new Date().toISOString() },
+      {
+        id: 'a1',
+        name: 'ai_call_cost_usd',
+        value: 5,
+        tags: {},
+        timestamp: new Date().toISOString(),
+      },
+      {
+        id: 'a2',
+        name: 'ai_call_tokens',
+        value: 1000,
+        tags: {},
+        timestamp: new Date().toISOString(),
+      },
+      {
+        id: 'a3',
+        name: 'ai_call_latency_ms',
+        value: 500,
+        tags: {},
+        timestamp: new Date().toISOString(),
+      },
     ]);
     const { unmount } = render(<RebuiltExecutiveOverview />);
     expect(await screen.findByText('US$ 5.00')).toBeInTheDocument();

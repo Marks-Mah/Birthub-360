@@ -13,14 +13,26 @@
 // genérico. O padrão segue o já usado por cnpjOficial.provider.ts: a lógica
 // de negócio/resiliência fica no serviço, o adapter só empacota o resultado.
 
-import { checkBitrixDuplicate, fetchWithRetry, type BitrixDuplicateResult } from '../../services/bitrix.js';
+import {
+  checkBitrixDuplicate,
+  fetchWithRetry,
+  type BitrixDuplicateResult,
+} from '../../services/bitrix.js';
 import { isUrlSafeForOutboundWebhook } from '../../validators.js';
-import type { ProviderCapability, ProviderHealth, ProviderResult, SearchProvider } from './types.js';
+import type {
+  ProviderCapability,
+  ProviderHealth,
+  ProviderResult,
+  SearchProvider,
+} from './types.js';
 
 const CAPABILITIES: ProviderCapability[] = ['crm_duplicate_check', 'crm_export'];
 
 function isConfigured(): boolean {
-  return Boolean((process.env.BITRIX_TOTALTRAC_WEBHOOK || '').trim() || (process.env.BITRIX_ATLASGR_WEBHOOK || '').trim());
+  return Boolean(
+    (process.env.BITRIX_TOTALTRAC_WEBHOOK || '').trim() ||
+      (process.env.BITRIX_ATLASGR_WEBHOOK || '').trim(),
+  );
 }
 
 /**
@@ -32,7 +44,7 @@ function isConfigured(): boolean {
  */
 export async function checkDuplicate(
   webhookUrl: string,
-  params: { phone?: string; email?: string }
+  params: { phone?: string; email?: string },
 ): Promise<ProviderResult<BitrixDuplicateResult>> {
   const startedAt = Date.now();
   const result = await checkBitrixDuplicate(webhookUrl, params);
@@ -47,7 +59,7 @@ export async function checkDuplicate(
       status: webhookUrl ? 'error' : 'not_configured',
       source: 'bitrix',
       latencyMs,
-      errorMessage: result.detail
+      errorMessage: result.detail,
     };
   }
 
@@ -68,7 +80,7 @@ export interface BitrixExportResult {
 export async function exportLead(
   webhookUrl: string,
   fields: Record<string, unknown>,
-  timeoutMs = 15_000
+  timeoutMs = 15_000,
 ): Promise<ProviderResult<BitrixExportResult>> {
   const startedAt = Date.now();
   const base = (webhookUrl || '').trim().replace(/\/+$/, '');
@@ -79,7 +91,12 @@ export async function exportLead(
   const targetEndpoint = `${base}/crm.lead.add.json`;
   const safety = isUrlSafeForOutboundWebhook(targetEndpoint);
   if (!safety.safe) {
-    return { status: 'error', source: 'bitrix', latencyMs: Date.now() - startedAt, errorMessage: `Webhook do Bitrix24 rejeitado por segurança: ${safety.reason}` };
+    return {
+      status: 'error',
+      source: 'bitrix',
+      latencyMs: Date.now() - startedAt,
+      errorMessage: `Webhook do Bitrix24 rejeitado por segurança: ${safety.reason}`,
+    };
   }
 
   const controller = new AbortController();
@@ -93,31 +110,64 @@ export async function exportLead(
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ fields, params: { REGISTER_SONET_EVENT: 'Y' } }),
-          signal: controller.signal as any
+          signal: controller.signal as any,
         },
-        { attempts: 3, baseDelayMs: 400 }
+        { attempts: 3, baseDelayMs: 400 },
       );
     } catch (err: any) {
       const latencyMs = Date.now() - startedAt;
       if (err?.name === 'AbortError') {
-        return { status: 'timeout', source: 'bitrix', latencyMs, errorMessage: 'Timeout ao exportar lead para o Bitrix24.' };
+        return {
+          status: 'timeout',
+          source: 'bitrix',
+          latencyMs,
+          errorMessage: 'Timeout ao exportar lead para o Bitrix24.',
+        };
       }
-      return { status: 'error', source: 'bitrix', latencyMs, errorMessage: err?.message || String(err) };
+      return {
+        status: 'error',
+        source: 'bitrix',
+        latencyMs,
+        errorMessage: err?.message || String(err),
+      };
     }
 
     const latencyMs = Date.now() - startedAt;
-    if (response.status === 429) return { status: 'rate_limited', source: 'bitrix', latencyMs, httpStatus: 429 };
-    if (!response.ok) return { status: 'error', source: 'bitrix', latencyMs, httpStatus: response.status, errorMessage: `Bitrix24 respondeu ${response.status}` };
+    if (response.status === 429)
+      return { status: 'rate_limited', source: 'bitrix', latencyMs, httpStatus: 429 };
+    if (!response.ok)
+      return {
+        status: 'error',
+        source: 'bitrix',
+        latencyMs,
+        httpStatus: response.status,
+        errorMessage: `Bitrix24 respondeu ${response.status}`,
+      };
 
-    const data = await response.json() as any;
+    const data = (await response.json()) as any;
     if (data.result) {
-      return { status: 'ok', data: { bitrixLeadId: String(data.result) }, source: 'bitrix', latencyMs, httpStatus: response.status };
+      return {
+        status: 'ok',
+        data: { bitrixLeadId: String(data.result) },
+        source: 'bitrix',
+        latencyMs,
+        httpStatus: response.status,
+      };
     }
     // HTTP 200 mas sem `result`: Bitrix rejeitou o payload (validação de campo,
     // etc) - nunca tratamos isso como sucesso. errorMessage carrega a razão
     // real devolvida pela API, nunca uma mensagem genérica fabricada.
-    const errMsg = data.error_description || data.error || 'Bitrix24 respondeu 200 sem "result" - lead não foi criado.';
-    return { status: 'error', source: 'bitrix', latencyMs, httpStatus: response.status, errorMessage: errMsg };
+    const errMsg =
+      data.error_description ||
+      data.error ||
+      'Bitrix24 respondeu 200 sem "result" - lead não foi criado.';
+    return {
+      status: 'error',
+      source: 'bitrix',
+      latencyMs,
+      httpStatus: response.status,
+      errorMessage: errMsg,
+    };
   } finally {
     clearTimeout(timeoutId);
   }
@@ -129,12 +179,22 @@ export const bitrixProvider: SearchProvider = {
   configured: isConfigured,
   async health(): Promise<ProviderHealth> {
     if (!isConfigured()) {
-      return { status: 'not_configured', checkedAt: new Date().toISOString(), message: 'Nenhum webhook do Bitrix24 configurado (BITRIX_TOTALTRAC_WEBHOOK / BITRIX_ATLASGR_WEBHOOK).' };
+      return {
+        status: 'not_configured',
+        checkedAt: new Date().toISOString(),
+        message:
+          'Nenhum webhook do Bitrix24 configurado (BITRIX_TOTALTRAC_WEBHOOK / BITRIX_ATLASGR_WEBHOOK).',
+      };
     }
     // "online" aqui significa "configurado", não "testado agora" - checar de
     // fato exigiria uma chamada real ao Bitrix a cada health check, custando
     // uma requisição para uma integração de saída. Mesmo padrão de honestidade
     // do restante do registry: não fabricamos "online" quando não sabemos.
-    return { status: 'online', checkedAt: new Date().toISOString(), message: 'Webhook configurado - saúde real só é confirmada na próxima chamada (crm_duplicate_check/crm_export).' };
-  }
+    return {
+      status: 'online',
+      checkedAt: new Date().toISOString(),
+      message:
+        'Webhook configurado - saúde real só é confirmada na próxima chamada (crm_duplicate_check/crm_export).',
+    };
+  },
 };

@@ -12,12 +12,15 @@ export class TwilioProvider extends BaseProvider {
     logger.debug(`[${this.name}] Initialized with config`, config);
   }
 
-  public async process(_input: ProviderInput, _context?: ProviderContext): Promise<ProviderResponse> {
+  public async process(
+    _input: ProviderInput,
+    _context?: ProviderContext,
+  ): Promise<ProviderResponse> {
     // Handling WebSocket or direct chunk transmission in a robust system
     // Mock processing step for architecture completeness
     return {
       text: 'Conexão SIP/WebRTC via Twilio estabelecida.',
-      latencyMs: 150
+      latencyMs: 150,
     };
   }
 

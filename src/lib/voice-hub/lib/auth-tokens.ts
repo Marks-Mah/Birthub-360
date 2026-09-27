@@ -15,7 +15,9 @@ export interface RefreshTokenPayload {
 function requireSecret(name: 'JWT_SECRET' | 'REFRESH_TOKEN_SECRET'): string {
   const value = process.env[name];
   if (!value) {
-    throw new Error(`${name} não está configurado. Defina esta variável de ambiente antes de iniciar o servidor.`);
+    throw new Error(
+      `${name} não está configurado. Defina esta variável de ambiente antes de iniciar o servidor.`,
+    );
   }
   return value;
 }
@@ -48,8 +50,13 @@ export function verifyPassword(password: string, stored: string): boolean {
 
 function sign(payload: object, secret: string, expiresInSeconds: number): string {
   const header = Buffer.from(JSON.stringify({ alg: 'HS256', typ: 'JWT' })).toString('base64url');
-  const body = Buffer.from(JSON.stringify({ ...payload, exp: Math.floor(Date.now() / 1000) + expiresInSeconds })).toString('base64url');
-  const signature = crypto.createHmac('sha256', secret).update(`${header}.${body}`).digest('base64url');
+  const body = Buffer.from(
+    JSON.stringify({ ...payload, exp: Math.floor(Date.now() / 1000) + expiresInSeconds }),
+  ).toString('base64url');
+  const signature = crypto
+    .createHmac('sha256', secret)
+    .update(`${header}.${body}`)
+    .digest('base64url');
   return `${header}.${body}.${signature}`;
 }
 
@@ -59,10 +66,17 @@ function verify<T>(token: string, secret: string): (T & { exp?: number }) | null
   if (parts.length !== 3) return null;
 
   const [header, body, signature] = parts;
-  const expectedSignature = crypto.createHmac('sha256', secret).update(`${header}.${body}`).digest('base64url');
+  const expectedSignature = crypto
+    .createHmac('sha256', secret)
+    .update(`${header}.${body}`)
+    .digest('base64url');
   const signatureBuf = Buffer.from(signature);
   const expectedBuf = Buffer.from(expectedSignature);
-  if (signatureBuf.length !== expectedBuf.length || !crypto.timingSafeEqual(signatureBuf, expectedBuf)) return null;
+  if (
+    signatureBuf.length !== expectedBuf.length ||
+    !crypto.timingSafeEqual(signatureBuf, expectedBuf)
+  )
+    return null;
 
   try {
     const payload = JSON.parse(Buffer.from(body, 'base64url').toString('utf-8'));
@@ -86,7 +100,12 @@ export function generateRefreshToken(payload: RefreshTokenPayload): string {
 export function verifyToken(token: string): TokenPayload | null {
   const payload = verify<TokenPayload>(token, requireSecret('JWT_SECRET'));
   if (!payload) return null;
-  return { id: payload.id, email: payload.email, role: payload.role, organizationId: payload.organizationId };
+  return {
+    id: payload.id,
+    email: payload.email,
+    role: payload.role,
+    organizationId: payload.organizationId,
+  };
 }
 
 export function verifyRefreshToken(token: string): RefreshTokenPayload | null {

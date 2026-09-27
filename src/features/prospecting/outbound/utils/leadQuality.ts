@@ -5,43 +5,41 @@ export function calculateLeadQuality(lead: Lead): LeadQualityMetric {
     name: lead.decision_maker_name || '',
     title: lead.decision_maker_title || '',
     email: lead.decision_maker_email || '',
-    linkedin: lead.decision_maker_linkedin || ''
+    linkedin: lead.decision_maker_linkedin || '',
   };
 
   const hasDecisionMaker = Boolean(
-    mainDm.name && 
-    mainDm.name.trim().length > 2 && 
-    !mainDm.name.toLowerCase().includes('não informado') &&
-    !mainDm.name.toLowerCase().includes('empresa alvo')
+    mainDm.name &&
+      mainDm.name.trim().length > 2 &&
+      !mainDm.name.toLowerCase().includes('não informado') &&
+      !mainDm.name.toLowerCase().includes('empresa alvo'),
   );
 
   const hasTitle = Boolean(
-    mainDm.title && 
-    mainDm.title.trim().length > 2 && 
-    !mainDm.title.toLowerCase().includes('não informado')
+    mainDm.title &&
+      mainDm.title.trim().length > 2 &&
+      !mainDm.title.toLowerCase().includes('não informado'),
   );
 
   const hasEmail = Boolean(
-    mainDm.email?.includes('@') && 
-    !mainDm.email.toLowerCase().includes('não revelado') &&
-    !mainDm.email.startsWith('contato@')
+    mainDm.email?.includes('@') &&
+      !mainDm.email.toLowerCase().includes('não revelado') &&
+      !mainDm.email.startsWith('contato@'),
   );
 
   const hasLinkedin = Boolean(
-    mainDm.linkedin?.includes('linkedin.com') && 
-    mainDm.linkedin.length > 15
+    mainDm.linkedin?.includes('linkedin.com') && mainDm.linkedin.length > 15,
   );
 
   const hasPhone = Boolean(
-    lead.phone && 
-    lead.phone.trim().length >= 8 && 
-    lead.phone !== 'N/A' &&
-    !lead.phone.includes('0000')
+    lead.phone &&
+      lead.phone.trim().length >= 8 &&
+      lead.phone !== 'N/A' &&
+      !lead.phone.includes('0000'),
   );
 
   const hasWebsite = Boolean(
-    (lead.website && lead.website.length > 5) || 
-    (lead.domain && lead.domain.length > 3)
+    (lead.website && lead.website.length > 5) || (lead.domain && lead.domain.length > 3),
   );
 
   let score = 0;
@@ -80,6 +78,6 @@ export function calculateLeadQuality(lead: Lead): LeadQualityMetric {
     hasPhone,
     hasWebsite,
     completionCount,
-    totalFields: checklist.length
+    totalFields: checklist.length,
   };
 }

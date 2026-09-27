@@ -2,14 +2,21 @@ import type { Prisma } from '@prisma/client';
 import { prisma } from '@/lib/prisma.js';
 
 export function listAgentsForTenant(organizationId: string) {
-  return prisma.agent.findMany({ where: { organizationId, deletedAt: null }, orderBy: { createdAt: 'desc' } });
+  return prisma.agent.findMany({
+    where: { organizationId, deletedAt: null },
+    orderBy: { createdAt: 'desc' },
+  });
 }
 
 export function getAgent(id: string, organizationId: string) {
   return prisma.agent.findFirst({ where: { id, organizationId, deletedAt: null } });
 }
 
-export function createAgent(organizationId: string, userId: string, data: { name: string; model: string; configuration?: unknown }) {
+export function createAgent(
+  organizationId: string,
+  userId: string,
+  data: { name: string; model: string; configuration?: unknown },
+) {
   return prisma.agent.create({
     data: {
       organizationId,
@@ -21,7 +28,11 @@ export function createAgent(organizationId: string, userId: string, data: { name
   });
 }
 
-export function updateAgent(id: string, organizationId: string, data: { name?: string; model?: string; configuration?: unknown }) {
+export function updateAgent(
+  id: string,
+  organizationId: string,
+  data: { name?: string; model?: string; configuration?: unknown },
+) {
   const updateData: Prisma.AgentUpdateManyMutationInput = {};
   if (data.name) updateData.name = data.name;
   if (data.model) updateData.model = data.model;
@@ -29,12 +40,15 @@ export function updateAgent(id: string, organizationId: string, data: { name?: s
 
   return prisma.agent.updateMany({
     where: { id, organizationId, deletedAt: null },
-    data: updateData
+    data: updateData,
   });
 }
 
 export function deleteAgentForTenant(id: string, organizationId: string) {
-  return prisma.agent.updateMany({ where: { id, organizationId }, data: { deletedAt: new Date() } });
+  return prisma.agent.updateMany({
+    where: { id, organizationId },
+    data: { deletedAt: new Date() },
+  });
 }
 
 export function findAgentByPhoneNumber(phoneNumber: string) {

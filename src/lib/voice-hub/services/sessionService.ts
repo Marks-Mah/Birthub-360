@@ -7,18 +7,30 @@ export function listSessions(organizationId: string, userId: string) {
   return sessionRepository.listSessionsForUser(organizationId, userId);
 }
 
-export function createSession(organizationId: string, userId: string, data: { agentId?: string; channel?: string; metadata?: unknown }) {
+export function createSession(
+  organizationId: string,
+  userId: string,
+  data: { agentId?: string; channel?: string; metadata?: unknown },
+) {
   return sessionRepository.createSession(organizationId, userId, data);
 }
 
-export async function updateSession(id: string, organizationId: string, userId: string, data: { status?: string; metadata?: Record<string, unknown> }) {
+export async function updateSession(
+  id: string,
+  organizationId: string,
+  userId: string,
+  data: { status?: string; metadata?: Record<string, unknown> },
+) {
   const existing = await sessionRepository.findSessionForUser(id, organizationId, userId);
   if (!existing) throw new NotFoundError('Sessão não encontrada.');
 
   return sessionRepository.updateSession(id, {
     status: data.status ?? undefined,
     metadata: data.metadata
-      ? ({ ...(existing.metadata as Record<string, unknown>), ...data.metadata } as Prisma.InputJsonValue)
+      ? ({
+          ...(existing.metadata as Record<string, unknown>),
+          ...data.metadata,
+        } as Prisma.InputJsonValue)
       : undefined,
   });
 }

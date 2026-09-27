@@ -17,7 +17,7 @@ export interface AuthUser {
 export type AuthRequest = Omit<Request, 'user'> & {
   user: AuthUser;
   db?: ReturnType<typeof getTenantPrisma>;
-}
+};
 
 export const authenticateToken = async (
   req: Request,

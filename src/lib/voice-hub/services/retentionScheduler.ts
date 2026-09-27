@@ -46,7 +46,7 @@ export function startRetentionScheduler(): { queue: Queue; worker: Worker } | un
         });
         return { deletedCount };
       },
-      { connection }
+      { connection },
     );
 
     worker.on('failed', (job, err) => {
@@ -63,7 +63,7 @@ export function startRetentionScheduler(): { queue: Queue; worker: Worker } | un
           repeat: { pattern: REPEAT_CRON },
           removeOnComplete: true,
           removeOnFail: 100,
-        }
+        },
       )
       .then(() => {
         logger.info('[RetentionScheduler] Registered daily CallLog retention purge job', {

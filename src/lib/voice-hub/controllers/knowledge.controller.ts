@@ -2,23 +2,30 @@ import type { Request, Response } from 'express';
 import { getAgent, updateAgentConfig } from '../services/agentService.js';
 import { knowledgeConfidenceEngine } from '../../lib/voice-runtime/intelligence/KnowledgeConfidenceEngine.js';
 import type { AgentConfiguration } from '../types/agent.js';
-import { AntivirusUnavailableError, InfectedFileError, scanBufferForViruses } from '../infrastructure/antivirus.js';
+import {
+  AntivirusUnavailableError,
+  InfectedFileError,
+  scanBufferForViruses,
+} from '../infrastructure/antivirus.js';
 import { logger } from '../../../lib/logger.js';
 
 export async function addKnowledgeDocumentHandler(req: Request, res: Response) {
   try {
-     const { agentId, name, keyword, content } = req.body;
-     const agent = await getAgent(agentId, req.organizationId!);
-     if (!agent) return res.status(404).json({ error: 'Agente não encontrado.' });
+    const { agentId, name, keyword, content } = req.body;
+    const agent = await getAgent(agentId, req.organizationId!);
+    if (!agent) return res.status(404).json({ error: 'Agente não encontrado.' });
 
-     const config = (agent.configuration as unknown as AgentConfiguration) || {};
-     const knowledge = config.knowledge || [];
-     knowledge.push({ id: crypto.randomUUID(), name, keyword, content, addedAt: Date.now() });
+    const config = (agent.configuration as unknown as AgentConfiguration) || {};
+    const knowledge = config.knowledge || [];
+    knowledge.push({ id: crypto.randomUUID(), name, keyword, content, addedAt: Date.now() });
 
-     await updateAgentConfig(agentId, req.organizationId!, { knowledge });
-     return res.json({ success: true, message: 'Documento adicionado à base de conhecimento do agente.' });
+    await updateAgentConfig(agentId, req.organizationId!, { knowledge });
+    return res.json({
+      success: true,
+      message: 'Documento adicionado à base de conhecimento do agente.',
+    });
   } catch (err: unknown) {
-     return res.status(500).json({ error: err instanceof Error ? err.message : String(err) });
+    return res.status(500).json({ error: err instanceof Error ? err.message : String(err) });
   }
 }
 
@@ -91,10 +98,14 @@ export async function uploadKnowledgeDocumentHandler(req: Request, res: Response
     const agentId = String(req.params.id);
 
     if (
-      typeof name !== 'string' || !name.trim()
-      || typeof keyword !== 'string' || !keyword.trim()
-      || typeof fileName !== 'string' || !fileName.trim()
-      || typeof contentBase64 !== 'string' || !contentBase64.trim()
+      typeof name !== 'string' ||
+      !name.trim() ||
+      typeof keyword !== 'string' ||
+      !keyword.trim() ||
+      typeof fileName !== 'string' ||
+      !fileName.trim() ||
+      typeof contentBase64 !== 'string' ||
+      !contentBase64.trim()
     ) {
       return res.status(400).json({
         error: 'Campos obrigatórios: name, keyword, fileName, contentBase64.',
@@ -140,7 +151,8 @@ export async function uploadKnowledgeDocumentHandler(req: Request, res: Response
     const content = decodePlainText(buffer);
     if (content === null) {
       return res.status(422).json({
-        error: 'Apenas arquivos de texto simples (.txt, .md) são suportados nesta versão — PDF/DOCX ainda não têm pipeline de extração.',
+        error:
+          'Apenas arquivos de texto simples (.txt, .md) são suportados nesta versão — PDF/DOCX ainda não têm pipeline de extração.',
       });
     }
 
@@ -155,7 +167,10 @@ export async function uploadKnowledgeDocumentHandler(req: Request, res: Response
     });
 
     await updateAgentConfig(agentId, req.organizationId!, { knowledge });
-    return res.json({ success: true, message: 'Documento adicionado à base de conhecimento do agente.' });
+    return res.json({
+      success: true,
+      message: 'Documento adicionado à base de conhecimento do agente.',
+    });
   } catch (err: unknown) {
     return res.status(500).json({ error: err instanceof Error ? err.message : String(err) });
   }
@@ -163,16 +178,16 @@ export async function uploadKnowledgeDocumentHandler(req: Request, res: Response
 
 export async function testRagQueryHandler(req: Request, res: Response) {
   try {
-     const { agentId, query } = req.body;
-     const agent = await getAgent(agentId, req.organizationId!);
-     if (!agent) return res.status(404).json({ error: 'Agente não encontrado.' });
+    const { agentId, query } = req.body;
+    const agent = await getAgent(agentId, req.organizationId!);
+    if (!agent) return res.status(404).json({ error: 'Agente não encontrado.' });
 
-     const config = (agent.configuration as unknown as AgentConfiguration) || {};
-     const knowledge = config.knowledge || [];
+    const config = (agent.configuration as unknown as AgentConfiguration) || {};
+    const knowledge = config.knowledge || [];
 
-     const result = knowledgeConfidenceEngine.evaluateKnowledge(query, knowledge);
-     return res.json({ success: true, result });
+    const result = knowledgeConfidenceEngine.evaluateKnowledge(query, knowledge);
+    return res.json({ success: true, result });
   } catch (err: unknown) {
-     return res.status(500).json({ error: err instanceof Error ? err.message : String(err) });
+    return res.status(500).json({ error: err instanceof Error ? err.message : String(err) });
   }
 }

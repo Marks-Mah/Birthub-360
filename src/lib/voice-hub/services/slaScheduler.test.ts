@@ -57,7 +57,10 @@ beforeEach(() => {
   vi.clearAllMocks();
   lastWorkerProcessor = undefined;
   mockAdd.mockResolvedValue(undefined);
-  mockCheckPlatformHealth.mockResolvedValue({ ready: true, checks: { database: 'ok', redis: 'ok' } });
+  mockCheckPlatformHealth.mockResolvedValue({
+    ready: true,
+    checks: { database: 'ok', redis: 'ok' },
+  });
   mockListActiveTenantIds.mockResolvedValue(['tenant-a', 'tenant-b']);
   mockCreateMetric.mockResolvedValue({ id: 'metric-1' });
 });
@@ -73,7 +76,7 @@ describe('startSlaScheduler', () => {
       {},
       expect.objectContaining({
         repeat: { pattern: '*/5 * * * *' },
-      })
+      }),
     );
   });
 
@@ -89,18 +92,21 @@ describe('startSlaScheduler', () => {
     expect(mockCreateMetric).toHaveBeenCalledWith(
       'tenant-a',
       null,
-      expect.objectContaining({ name: PLATFORM_READY_METRIC_NAME, value: 1 })
+      expect.objectContaining({ name: PLATFORM_READY_METRIC_NAME, value: 1 }),
     );
     expect(mockCreateMetric).toHaveBeenCalledWith(
       'tenant-b',
       null,
-      expect.objectContaining({ name: PLATFORM_READY_METRIC_NAME, value: 1 })
+      expect.objectContaining({ name: PLATFORM_READY_METRIC_NAME, value: 1 }),
     );
     expect(result).toEqual({ ready: true, tenantCount: 2 });
   });
 
   it('records value 0 (never fabricated) when the platform is not actually ready', async () => {
-    mockCheckPlatformHealth.mockResolvedValue({ ready: false, checks: { database: 'error', redis: 'ok' } });
+    mockCheckPlatformHealth.mockResolvedValue({
+      ready: false,
+      checks: { database: 'error', redis: 'ok' },
+    });
 
     startSlaScheduler();
     const result = await lastWorkerProcessor!();
@@ -108,13 +114,15 @@ describe('startSlaScheduler', () => {
     expect(mockCreateMetric).toHaveBeenCalledWith(
       'tenant-a',
       null,
-      expect.objectContaining({ name: PLATFORM_READY_METRIC_NAME, value: 0 })
+      expect.objectContaining({ name: PLATFORM_READY_METRIC_NAME, value: 0 }),
     );
     expect(result).toEqual({ ready: false, tenantCount: 2 });
   });
 
   it('logs, but does not throw, when persisting the metric fails for some tenants', async () => {
-    mockCreateMetric.mockResolvedValueOnce({ id: 'ok' }).mockRejectedValueOnce(new Error('db unreachable'));
+    mockCreateMetric
+      .mockResolvedValueOnce({ id: 'ok' })
+      .mockRejectedValueOnce(new Error('db unreachable'));
 
     startSlaScheduler();
     await expect(lastWorkerProcessor!()).resolves.toEqual({ ready: true, tenantCount: 2 });

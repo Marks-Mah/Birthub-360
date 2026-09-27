@@ -1,8 +1,8 @@
-import type { CallAttempt } from "../../domain/entities/CallAttempt.js";
-import type { Lead } from "../../domain/entities/Lead.js";
-import type { CallAttemptRepository } from "../ports/CallAttemptRepository.js";
-import type { LeadRepository } from "../ports/LeadRepository.js";
-import type { CallStatusSnapshot } from "../ports/DialerProvider.js";
+import type { CallAttempt } from '../../domain/entities/CallAttempt.js';
+import type { Lead } from '../../domain/entities/Lead.js';
+import type { CallAttemptRepository } from '../ports/CallAttemptRepository.js';
+import type { LeadRepository } from '../ports/LeadRepository.js';
+import type { CallStatusSnapshot } from '../ports/DialerProvider.js';
 
 export interface SyncCallStatusesConfig {
   maxAttempts: number;
@@ -59,7 +59,7 @@ export class SyncCallStatuses {
       }
 
       // A tentativa não aparece mais como ativa no provedor: encerrou.
-      const finalStatus = attempt.status === "connected" ? "completed" : "no_answer";
+      const finalStatus = attempt.status === 'connected' ? 'completed' : 'no_answer';
       attempt.updateStatus(finalStatus, now);
       await this.callAttemptRepository.save(attempt);
       await this.finalizeLead(attempt, now);
@@ -77,7 +77,7 @@ export class SyncCallStatuses {
   }
 
   private applyOutcomeToLead(lead: Lead, attempt: CallAttempt, now: Date): void {
-    if (attempt.status === "completed") {
+    if (attempt.status === 'completed') {
       lead.markContacted(now);
       return;
     }

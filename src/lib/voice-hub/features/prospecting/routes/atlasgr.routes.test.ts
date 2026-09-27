@@ -91,7 +91,13 @@ describe('POST /api/webhook/atlasgr/outbound — authentication', () => {
   });
 
   it('accepts a request with the correct shared secret and a valid payload', async () => {
-    mockTrigger.mockResolvedValue({ success: true, duplicate: false, message: 'ok', callId: 'c1', status: 'queued' });
+    mockTrigger.mockResolvedValue({
+      success: true,
+      duplicate: false,
+      message: 'ok',
+      callId: 'c1',
+      status: 'queued',
+    });
     const app = buildApp();
     const res = await request(app)
       .post('/api/webhook/atlasgr/outbound')
@@ -164,7 +170,9 @@ describe('POST /api/webhooks/bland/:token', () => {
   it('fails closed when the AtlasGR forwarding destination is missing', async () => {
     delete process.env.ATLASGR_BASE_URL;
     const app = buildApp();
-    const res = await request(app).post('/api/webhooks/bland/callback-token').send({ call_id: 'c1', status: 'completed' });
+    const res = await request(app)
+      .post('/api/webhooks/bland/callback-token')
+      .send({ call_id: 'c1', status: 'completed' });
     expect(res.status).toBe(503);
     expect(mockBeginCallback).not.toHaveBeenCalled();
   });
@@ -211,12 +219,14 @@ describe('POST /api/webhooks/bland/:token', () => {
     vi.stubGlobal('fetch', fetchMock);
     const app = buildApp();
 
-    const res = await request(app).post('/api/webhooks/bland/callback-token').send({
-      call_id: 'c1',
-      status: 'completed',
-      call_length: 42,
-      variables: { lead_id: 'lead-1' },
-    });
+    const res = await request(app)
+      .post('/api/webhooks/bland/callback-token')
+      .send({
+        call_id: 'c1',
+        status: 'completed',
+        call_length: 42,
+        variables: { lead_id: 'lead-1' },
+      });
 
     expect(res.status).toBe(200);
     expect(mockUpsertCallResult).toHaveBeenCalledWith({
@@ -250,7 +260,9 @@ describe('POST /api/webhooks/bland/:token', () => {
     mockBeginCallback.mockResolvedValue('duplicate');
     const app = buildApp();
 
-    await request(app).post('/api/webhooks/bland/callback-token').send({ call_id: 'c1', status: 'completed' });
+    await request(app)
+      .post('/api/webhooks/bland/callback-token')
+      .send({ call_id: 'c1', status: 'completed' });
 
     expect(mockUpsertCallResult).not.toHaveBeenCalled();
   });
@@ -261,7 +273,9 @@ describe('POST /api/webhooks/bland/:token', () => {
     vi.stubGlobal('fetch', fetchMock);
     const app = buildApp();
 
-    const res = await request(app).post('/api/webhooks/bland/callback-token').send({ call_id: 'c1', status: 'completed' });
+    const res = await request(app)
+      .post('/api/webhooks/bland/callback-token')
+      .send({ call_id: 'c1', status: 'completed' });
 
     expect(res.status).toBe(200);
     expect(res.body).toEqual({ received: true, duplicate: true });
@@ -273,7 +287,9 @@ describe('POST /api/webhooks/bland/:token', () => {
     vi.stubGlobal('fetch', fetchMock);
     const app = buildApp();
 
-    const res = await request(app).post('/api/webhooks/bland/callback-token').send({ call_id: 'c1', status: 'completed' });
+    const res = await request(app)
+      .post('/api/webhooks/bland/callback-token')
+      .send({ call_id: 'c1', status: 'completed' });
 
     expect(res.status).toBe(502);
     expect(mockReleaseCallback).toHaveBeenCalledWith('c1');
@@ -282,7 +298,9 @@ describe('POST /api/webhooks/bland/:token', () => {
 
   it('rejects a payload without call_id', async () => {
     const app = buildApp();
-    const res = await request(app).post('/api/webhooks/bland/callback-token').send({ status: 'completed' });
+    const res = await request(app)
+      .post('/api/webhooks/bland/callback-token')
+      .send({ status: 'completed' });
     expect(res.status).toBe(400);
   });
 });

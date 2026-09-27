@@ -2,8 +2,29 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import type { Question } from '../types.js';
 import { logger } from '../../../lib/logger.js';
 
-const POSITIVE_WORDS = ['sim', 'claro', 'ótimo', 'bom', 'gostei', 'certeza', 'ok', 'beleza', 'excelente', 'rápido'];
-const NEGATIVE_WORDS = ['não', 'ruim', 'péssimo', 'errado', 'difícil', 'problema', 'demora', 'caro', 'infelizmente'];
+const POSITIVE_WORDS = [
+  'sim',
+  'claro',
+  'ótimo',
+  'bom',
+  'gostei',
+  'certeza',
+  'ok',
+  'beleza',
+  'excelente',
+  'rápido',
+];
+const NEGATIVE_WORDS = [
+  'não',
+  'ruim',
+  'péssimo',
+  'errado',
+  'difícil',
+  'problema',
+  'demora',
+  'caro',
+  'infelizmente',
+];
 
 interface SpeechRecognitionResultLike {
   isFinal: boolean;
@@ -32,8 +53,8 @@ interface SpeechRecognitionLike {
 const analyzeSentiment = (text: string) => {
   const lower = text.toLowerCase();
 
-  const isPositive = POSITIVE_WORDS.some(w => lower.includes(w));
-  const isNegative = NEGATIVE_WORDS.some(w => lower.includes(w));
+  const isPositive = POSITIVE_WORDS.some((w) => lower.includes(w));
+  const isNegative = NEGATIVE_WORDS.some((w) => lower.includes(w));
 
   if (isPositive && !isNegative) return 'positive';
   if (isNegative && !isPositive) return 'negative';
@@ -41,8 +62,10 @@ const analyzeSentiment = (text: string) => {
 };
 
 export function useVoiceConversation(questions: Question[], speed: number = 1.1) {
-  const [status, setStatus] = useState<'idle' | 'speaking' | 'listening' | 'processing' | 'completed'>('idle');
-  const [transcript, setTranscript] = useState<{role: 'agent'|'user', text: string}[]>([]);
+  const [status, setStatus] = useState<
+    'idle' | 'speaking' | 'listening' | 'processing' | 'completed'
+  >('idle');
+  const [transcript, setTranscript] = useState<{ role: 'agent' | 'user'; text: string }[]>([]);
   const [sentiment, setSentiment] = useState<'positive' | 'neutral' | 'negative'>('neutral');
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
@@ -56,79 +79,80 @@ export function useVoiceConversation(questions: Question[], speed: number = 1.1)
 
   const speak = useCallback((text: string, isFinal = false) => {
     setStatus('speaking');
-    setTranscript(prev => [...prev, { role: 'agent', text }]);
+    setTranscript((prev) => [...prev, { role: 'agent', text }]);
 
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = 'pt-BR';
-        utterance.rate = stateRef.current.speed;
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'pt-BR';
+      utterance.rate = stateRef.current.speed;
 
-        utterance.onend = () => {
-            if (!isFinal) {
-                setStatus('listening');
-                try {
-                  recognitionRef.current?.start();
-                } catch {
-                  // Recognition already started or error
-                }
-            } else {
-                setStatus('completed');
-            }
-        };
-        window.speechSynthesis.speak(utterance);
+      utterance.onend = () => {
+        if (!isFinal) {
+          setStatus('listening');
+          try {
+            recognitionRef.current?.start();
+          } catch {
+            // Recognition already started or error
+          }
+        } else {
+          setStatus('completed');
+        }
+      };
+      window.speechSynthesis.speak(utterance);
     } else {
-
-       // Fallback for no TTS (browser constraint)
-       requestAnimationFrame(() => {
-           if (!isFinal) setStatus('listening');
-           else setStatus('completed');
-       });
-
+      // Fallback for no TTS (browser constraint)
+      requestAnimationFrame(() => {
+        if (!isFinal) setStatus('listening');
+        else setStatus('completed');
+      });
     }
   }, []);
 
-  const handleUserResponse = useCallback((text: string) => {
-    setStatus('processing');
-    setTranscript(prev => [...prev, { role: 'user', text }]);
-    setSentiment(analyzeSentiment(text));
+  const handleUserResponse = useCallback(
+    (text: string) => {
+      setStatus('processing');
+      setTranscript((prev) => [...prev, { role: 'user', text }]);
+      setSentiment(analyzeSentiment(text));
 
-    const { questions, currentQuestionIndex } = stateRef.current;
+      const { questions, currentQuestionIndex } = stateRef.current;
 
-    fetch('/api/voice/analyze', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text, context: questions[currentQuestionIndex] })
-    })
-    .then(res => res.json())
-    .then(() => {
-      const nextIndex = currentQuestionIndex + 1;
-      if (nextIndex < questions.length) {
-        setCurrentQuestionIndex(nextIndex);
-        speak(questions[nextIndex].text, false);
-      } else {
-        speak("Obrigada pelas respostas. Entraremos em contato em breve.", true);
-      }
-    })
-    .catch(() => {
-      // Graceful degradation on fetch fail
-      const nextIndex = currentQuestionIndex + 1;
-      if (nextIndex < questions.length) {
-        setCurrentQuestionIndex(nextIndex);
-        speak(questions[nextIndex].text, false);
-      } else {
-        speak("Obrigada pelas respostas. Entraremos em contato em breve.", true);
-      }
-    });
-
-  }, [speak]);
+      fetch('/api/voice/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text, context: questions[currentQuestionIndex] }),
+      })
+        .then((res) => res.json())
+        .then(() => {
+          const nextIndex = currentQuestionIndex + 1;
+          if (nextIndex < questions.length) {
+            setCurrentQuestionIndex(nextIndex);
+            speak(questions[nextIndex].text, false);
+          } else {
+            speak('Obrigada pelas respostas. Entraremos em contato em breve.', true);
+          }
+        })
+        .catch(() => {
+          // Graceful degradation on fetch fail
+          const nextIndex = currentQuestionIndex + 1;
+          if (nextIndex < questions.length) {
+            setCurrentQuestionIndex(nextIndex);
+            speak(questions[nextIndex].text, false);
+          } else {
+            speak('Obrigada pelas respostas. Entraremos em contato em breve.', true);
+          }
+        });
+    },
+    [speak],
+  );
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const { SpeechRecognition: SpeechRecognitionCtor, webkitSpeechRecognition } = window as unknown as {
-        SpeechRecognition?: new () => SpeechRecognitionLike;
-        webkitSpeechRecognition?: new () => SpeechRecognitionLike;
-      };
+      const { SpeechRecognition: SpeechRecognitionCtor, webkitSpeechRecognition } =
+        window as unknown as {
+          SpeechRecognition?: new () => SpeechRecognitionLike;
+          webkitSpeechRecognition?: new () => SpeechRecognitionLike;
+        };
       const SpeechRecognition = SpeechRecognitionCtor || webkitSpeechRecognition;
       if (SpeechRecognition) {
         setIsSupported(true);
@@ -150,18 +174,18 @@ export function useVoiceConversation(questions: Question[], speed: number = 1.1)
           }
 
           if (interimTranscript) {
-             setSentiment(analyzeSentiment(interimTranscript));
+            setSentiment(analyzeSentiment(interimTranscript));
           }
 
           if (finalTranscript) {
-             handleUserResponse(finalTranscript);
+            handleUserResponse(finalTranscript);
           }
         };
 
         recognition.onerror = (event: SpeechRecognitionErrorEventLike) => {
           logger.error('Speech recognition error', { error: event.error });
           if (event.error === 'no-speech') {
-              // Maybe restart listening?
+            // Maybe restart listening?
           }
         };
 
@@ -179,9 +203,9 @@ export function useVoiceConversation(questions: Question[], speed: number = 1.1)
   };
 
   const submitTextResponse = (text: string) => {
-      if (status === 'listening') {
-          handleUserResponse(text);
-      }
+    if (status === 'listening') {
+      handleUserResponse(text);
+    }
   };
 
   return { status, transcript, sentiment, startCall, isSupported, submitTextResponse };

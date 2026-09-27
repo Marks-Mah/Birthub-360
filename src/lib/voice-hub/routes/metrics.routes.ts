@@ -1,6 +1,11 @@
 import express from 'express';
 import { requireTenant } from '../middlewares/rbac.js';
-import { listMetricsHandler, createMetricHandler, updateMetricsHandler, clearMetricsHandler } from '../controllers/metrics.controller.js';
+import {
+  listMetricsHandler,
+  createMetricHandler,
+  updateMetricsHandler,
+  clearMetricsHandler,
+} from '../controllers/metrics.controller.js';
 
 const router = express.Router();
 

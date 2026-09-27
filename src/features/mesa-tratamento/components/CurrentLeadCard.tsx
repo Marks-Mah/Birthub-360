@@ -2,7 +2,13 @@ import { ChevronDown, ChevronUp, Gauge, Lightbulb, Mic, Square } from 'lucide-re
 import { useMemo, useState } from 'react';
 import { Badge } from '../../../components/ui/Badge.js';
 import { Button } from '../../../components/ui/Button.js';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '../../../components/ui/Card.js';
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '../../../components/ui/Card.js';
 import { SoundFX } from '../../../lib/soundEffects.js';
 import { toast } from '../../../lib/toast.js';
 import { LOSS_REASONS } from '../constants/lossReasons.js';

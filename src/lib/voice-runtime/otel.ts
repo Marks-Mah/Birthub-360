@@ -60,7 +60,7 @@ class OpenTelemetryCollector {
     name: string,
     sessionId: string,
     attributes: Attributes = {},
-    tenantId: string = SYSTEM_TENANT_ID
+    tenantId: string = SYSTEM_TENANT_ID,
   ): string {
     const spanId = `span-${Date.now()}-${this.spans.length}`;
     const localSpan: LocalSpan = {
@@ -69,13 +69,13 @@ class OpenTelemetryCollector {
       sessionId,
       tenantId,
       startTime: Date.now(),
-      attributes
+      attributes,
     };
     this.spans.push(localSpan);
 
     // Also trigger OpenTelemetry API trace
     const otelSpan = this.tracer.startSpan(name, {
-      attributes: { sessionId, tenantId, ...attributes }
+      attributes: { sessionId, tenantId, ...attributes },
     });
     // Set active context or store it
     otelSpan.end(); // close API span immediately for simplicity in our synchronous engines
@@ -84,7 +84,7 @@ class OpenTelemetryCollector {
   }
 
   public endLocalSpan(spanId: string, additionalAttributes: Attributes = {}) {
-    const span = this.spans.find(s => s.id === spanId);
+    const span = this.spans.find((s) => s.id === spanId);
     if (span) {
       span.endTime = Date.now();
       span.duration = span.endTime - span.startTime;
@@ -94,7 +94,7 @@ class OpenTelemetryCollector {
       const durationHistogram = this.meter.createHistogram('engine_latency_ms', {
         description: 'Latency of core engine execution',
         unit: 'ms',
-        valueType: ValueType.INT
+        valueType: ValueType.INT,
       });
       durationHistogram.record(span.duration, { engine: span.name, sessionId: span.sessionId });
 
@@ -105,7 +105,7 @@ class OpenTelemetryCollector {
         'engine_latency_ms',
         span.duration,
         { engine: span.name, sessionId: span.sessionId },
-        span.tenantId
+        span.tenantId,
       );
     }
   }
@@ -115,14 +115,14 @@ class OpenTelemetryCollector {
     name: string,
     value: number,
     attributes: Attributes = {},
-    tenantId: string = SYSTEM_TENANT_ID
+    tenantId: string = SYSTEM_TENANT_ID,
   ) {
     this.metrics.push({
       name,
       value,
       tenantId,
       timestamp: Date.now(),
-      attributes
+      attributes,
     });
 
     // Clean up older records to avoid memory bloating
@@ -136,11 +136,11 @@ class OpenTelemetryCollector {
   // 'system' (e.g. server.ts's bootstrap seed), never another tenant's data. Real per-tenant
   // reads (observability.controller.ts) always pass req.tenantId! explicitly.
   public getSpans(tenantId: string = SYSTEM_TENANT_ID): LocalSpan[] {
-    return this.spans.filter(s => s.tenantId === tenantId);
+    return this.spans.filter((s) => s.tenantId === tenantId);
   }
 
   public getMetrics(tenantId: string = SYSTEM_TENANT_ID): LocalMetric[] {
-    return this.metrics.filter(m => m.tenantId === tenantId);
+    return this.metrics.filter((m) => m.tenantId === tenantId);
   }
 
   public clear() {

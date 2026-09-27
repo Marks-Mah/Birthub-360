@@ -5,7 +5,10 @@ import {
   BlandConfigurationError,
   ExternalAiConsentRequiredError,
 } from '../services/voice.service.js';
-import { atlasGROutboundPayloadSchema, blandCallResultSchema } from '../validators/atlasgr.schema.js';
+import {
+  atlasGROutboundPayloadSchema,
+  blandCallResultSchema,
+} from '../validators/atlasgr.schema.js';
 import { safeEqual } from '../lib/safeCompare.js';
 import {
   beginBlandCallbackProcessing,
@@ -24,7 +27,7 @@ router.use(express.json());
 
 function asRecord(value: unknown): Record<string, unknown> {
   return value && typeof value === 'object' && !Array.isArray(value)
-    ? value as Record<string, unknown>
+    ? (value as Record<string, unknown>)
     : {};
 }
 
@@ -45,10 +48,16 @@ function asBoolean(value: unknown, fallback: boolean): boolean {
  * Fails closed: if the secret isn't configured server-side, every request is rejected rather than
  * silently accepted.
  */
-function validateAtlasGRSecret(req: express.Request, res: express.Response, next: express.NextFunction) {
+function validateAtlasGRSecret(
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) {
   const expectedSecret = process.env.ATLASGR_WEBHOOK_SECRET;
   if (!expectedSecret) {
-    logger.error('AtlasGR webhook rejected: ATLASGR_WEBHOOK_SECRET is not configured (failing closed)');
+    logger.error(
+      'AtlasGR webhook rejected: ATLASGR_WEBHOOK_SECRET is not configured (failing closed)',
+    );
     return res.status(503).json({ error: 'Integração AtlasGR não está configurada.' });
     return;
   }
@@ -70,10 +79,16 @@ function validateAtlasGRSecret(req: express.Request, res: express.Response, next
  * (Bland AI's outbound-call API takes a plain `webhook` URL with no custom-header support, so a
  * shared secret has to travel in the path).
  */
-function validateBlandCallbackToken(req: express.Request, res: express.Response, next: express.NextFunction) {
+function validateBlandCallbackToken(
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) {
   const expectedToken = process.env.BLAND_WEBHOOK_TOKEN;
   if (!expectedToken) {
-    logger.error('Bland AI callback rejected: BLAND_WEBHOOK_TOKEN is not configured (failing closed)');
+    logger.error(
+      'Bland AI callback rejected: BLAND_WEBHOOK_TOKEN is not configured (failing closed)',
+    );
     return res.status(503).json({ error: 'Callback da Bland AI não está configurado.' });
     return;
   }
@@ -92,7 +107,9 @@ router.post('/webhook/atlasgr/outbound', validateAtlasGRSecret, async (req, res)
   const parsed = atlasGROutboundPayloadSchema.safeParse(req.body);
   if (!parsed.success) {
     logger.warn('AtlasGR webhook rejected: invalid payload', { issues: parsed.error.issues });
-    return res.status(400).json({ error: 'Payload inválido.', issues: parsed.error.issues.map((i) => i.message) });
+    return res
+      .status(400)
+      .json({ error: 'Payload inválido.', issues: parsed.error.issues.map((i) => i.message) });
     return;
   }
 
@@ -101,7 +118,9 @@ router.post('/webhook/atlasgr/outbound', validateAtlasGRSecret, async (req, res)
     return res.status(200).json(result);
   } catch (error: any) {
     if (error instanceof ExternalAiConsentRequiredError) {
-      logger.warn('AtlasGR webhook rejected: external AI consent is not granted for the configured tenant');
+      logger.warn(
+        'AtlasGR webhook rejected: external AI consent is not granted for the configured tenant',
+      );
       return res.status(403).json({
         error: 'Consentimento para processamento por provedor externo de IA é obrigatório.',
         code: 'AI_PROVIDER_CONSENT_REQUIRED',
@@ -109,14 +128,21 @@ router.post('/webhook/atlasgr/outbound', validateAtlasGRSecret, async (req, res)
       return;
     }
     if (error instanceof IdempotencyCheckFailedError) {
-      logger.error('AtlasGR webhook: idempotency check failed, rejecting to avoid a duplicate call', {
-        error: error.message,
-      });
-      return res.status(503).json({ error: 'Não foi possível processar o webhook no momento. Tente novamente.' });
+      logger.error(
+        'AtlasGR webhook: idempotency check failed, rejecting to avoid a duplicate call',
+        {
+          error: error.message,
+        },
+      );
+      return res
+        .status(503)
+        .json({ error: 'Não foi possível processar o webhook no momento. Tente novamente.' });
       return;
     }
     if (error instanceof BlandConfigurationError) {
-      logger.error('AtlasGR webhook: Bland AI integration is misconfigured', { error: error.message });
+      logger.error('AtlasGR webhook: Bland AI integration is misconfigured', {
+        error: error.message,
+      });
       return res.status(503).json({ error: 'Integração com Bland AI não está configurada.' });
       return;
     }
@@ -147,12 +173,17 @@ router.post('/webhooks/bland/:token', validateBlandCallbackToken, async (req, re
   const atlasBaseUrl = process.env.ATLASGR_BASE_URL?.trim();
   const webhookSecret = process.env.ATLASGR_WEBHOOK_SECRET?.trim();
   if (!atlasBaseUrl || !webhookSecret) {
-    logger.error('Bland AI callback cannot be forwarded: AtlasGR destination or signing secret is missing', {
-      callId,
-      hasBaseUrl: Boolean(atlasBaseUrl),
-      hasSecret: Boolean(webhookSecret),
-    });
-    return res.status(503).json({ error: 'Integração de retorno com AtlasGR não está configurada.' });
+    logger.error(
+      'Bland AI callback cannot be forwarded: AtlasGR destination or signing secret is missing',
+      {
+        callId,
+        hasBaseUrl: Boolean(atlasBaseUrl),
+        hasSecret: Boolean(webhookSecret),
+      },
+    );
+    return res
+      .status(503)
+      .json({ error: 'Integração de retorno com AtlasGR não está configurada.' });
     return;
   }
 
@@ -248,7 +279,9 @@ router.post('/webhooks/bland/:token', validateBlandCallbackToken, async (req, re
       callId,
       error: error instanceof Error ? error.message : String(error),
     });
-    return res.status(502).json({ error: 'Falha ao encaminhar resultado da chamada para AtlasGR.' });
+    return res
+      .status(502)
+      .json({ error: 'Falha ao encaminhar resultado da chamada para AtlasGR.' });
   }
 });
 

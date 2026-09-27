@@ -2,10 +2,17 @@ import { Prisma } from '@prisma/client';
 import { prisma } from '@/lib/prisma.js';
 
 export function listSessionsForUser(organizationId: string, userId: string) {
-  return prisma.session.findMany({ where: { organizationId, userId, deletedAt: null }, orderBy: { createdAt: 'desc' } });
+  return prisma.session.findMany({
+    where: { organizationId, userId, deletedAt: null },
+    orderBy: { createdAt: 'desc' },
+  });
 }
 
-export function createSession(organizationId: string, userId: string, data: { agentId?: string; channel?: string; metadata?: unknown }) {
+export function createSession(
+  organizationId: string,
+  userId: string,
+  data: { agentId?: string; channel?: string; metadata?: unknown },
+) {
   return prisma.session.create({
     data: {
       organizationId,
@@ -22,7 +29,10 @@ export function findSessionForUser(id: string, organizationId: string, userId: s
   return prisma.session.findFirst({ where: { id, organizationId, userId, deletedAt: null } });
 }
 
-export function updateSession(id: string, data: { status?: string; metadata?: Prisma.InputJsonValue }) {
+export function updateSession(
+  id: string,
+  data: { status?: string; metadata?: Prisma.InputJsonValue },
+) {
   return prisma.session.update({ where: { id }, data });
 }
 
@@ -53,7 +63,12 @@ export function findSessionById(id: string) {
 // on the phone number, so we can't thread our own sessionId through it like we do for /gather).
 export function findActivePhoneSessionByCallSid(callSid: string) {
   return prisma.session.findFirst({
-    where: { channel: 'phone', status: 'active', deletedAt: null, metadata: { path: ['callSid'], equals: callSid } },
+    where: {
+      channel: 'phone',
+      status: 'active',
+      deletedAt: null,
+      metadata: { path: ['callSid'], equals: callSid },
+    },
   });
 }
 

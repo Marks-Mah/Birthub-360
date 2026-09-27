@@ -7,8 +7,11 @@ interface TasksOverviewTabProps {
 }
 
 function isOverdue(task: LeadTask): boolean {
-  return task.status === 'pending' && !!task.due_date
-    && new Date(`${task.due_date}T00:00:00`) < new Date(new Date().toDateString());
+  return (
+    task.status === 'pending' &&
+    !!task.due_date &&
+    new Date(`${task.due_date}T00:00:00`) < new Date(new Date().toDateString())
+  );
 }
 
 export function TasksOverviewTab({ isDark }: TasksOverviewTabProps) {
@@ -50,12 +53,12 @@ export function TasksOverviewTab({ isDark }: TasksOverviewTabProps) {
   }
   // Vendedores com mais tarefas pendentes/atrasadas primeiro — é quem o gestor mais precisa olhar.
   const sellers = Array.from(bySeller.values()).sort((a, b) => {
-    const pendingA = a.tasks.filter(t => t.status === 'pending').length;
-    const pendingB = b.tasks.filter(t => t.status === 'pending').length;
+    const pendingA = a.tasks.filter((t) => t.status === 'pending').length;
+    const pendingB = b.tasks.filter((t) => t.status === 'pending').length;
     return pendingB - pendingA;
   });
 
-  const totalPending = tasks.filter(t => t.status === 'pending').length;
+  const totalPending = tasks.filter((t) => t.status === 'pending').length;
   const totalOverdue = tasks.filter(isOverdue).length;
 
   return (
@@ -68,7 +71,9 @@ export function TasksOverviewTab({ isDark }: TasksOverviewTabProps) {
           </h2>
         </div>
         <div className="flex items-center gap-2">
-          <span className={`text-sm px-3 py-1 rounded-full ${isDark ? 'bg-slate-800 text-slate-300' : 'bg-slate-200 text-slate-700'}`}>
+          <span
+            className={`text-sm px-3 py-1 rounded-full ${isDark ? 'bg-slate-800 text-slate-300' : 'bg-slate-200 text-slate-700'}`}
+          >
             {totalPending} pendente{totalPending === 1 ? '' : 's'}
           </span>
           {totalOverdue > 0 && (
@@ -80,22 +85,30 @@ export function TasksOverviewTab({ isDark }: TasksOverviewTabProps) {
       </div>
 
       {sellers.length === 0 ? (
-        <div className={`border-2 border-dashed rounded-2xl p-8 text-center text-sm ${isDark ? 'border-slate-800 text-slate-500' : 'border-slate-300 text-slate-500 bg-white'}`}>
+        <div
+          className={`border-2 border-dashed rounded-2xl p-8 text-center text-sm ${isDark ? 'border-slate-800 text-slate-500' : 'border-slate-300 text-slate-500 bg-white'}`}
+        >
           Nenhuma tarefa criada por nenhum vendedor ainda.
         </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          {sellers.map(seller => {
-            const pending = seller.tasks.filter(t => t.status === 'pending');
+          {sellers.map((seller) => {
+            const pending = seller.tasks.filter((t) => t.status === 'pending');
             const overdue = pending.filter(isOverdue);
-            const done = seller.tasks.filter(t => t.status === 'done');
+            const done = seller.tasks.filter((t) => t.status === 'done');
             return (
               <div
                 key={seller.userName}
                 className={`rounded-2xl border overflow-hidden ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}
               >
-                <div className={`flex items-center justify-between px-4 py-3 border-b ${isDark ? 'border-slate-800 bg-slate-900/60' : 'border-slate-200 bg-slate-50'}`}>
-                  <p className={`font-semibold text-sm ${isDark ? 'text-white' : 'text-slate-900'}`}>{seller.userName}</p>
+                <div
+                  className={`flex items-center justify-between px-4 py-3 border-b ${isDark ? 'border-slate-800 bg-slate-900/60' : 'border-slate-200 bg-slate-50'}`}
+                >
+                  <p
+                    className={`font-semibold text-sm ${isDark ? 'text-white' : 'text-slate-900'}`}
+                  >
+                    {seller.userName}
+                  </p>
                   <div className="flex items-center gap-1.5">
                     {overdue.length > 0 && (
                       <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-red-500/10 text-red-500">
@@ -109,15 +122,19 @@ export function TasksOverviewTab({ isDark }: TasksOverviewTabProps) {
                 </div>
 
                 {pending.length === 0 ? (
-                  <p className={`px-4 py-6 text-sm text-center ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
+                  <p
+                    className={`px-4 py-6 text-sm text-center ${isDark ? 'text-slate-500' : 'text-slate-400'}`}
+                  >
                     Nenhuma tarefa pendente ({done.length} concluída{done.length === 1 ? '' : 's'}).
                   </p>
                 ) : (
                   <div className="divide-y max-h-80 overflow-y-auto">
                     {pending
                       .slice()
-                      .sort((a, b) => (a.due_date || '9999-99-99').localeCompare(b.due_date || '9999-99-99'))
-                      .map(task => {
+                      .sort((a, b) =>
+                        (a.due_date || '9999-99-99').localeCompare(b.due_date || '9999-99-99'),
+                      )
+                      .map((task) => {
                         const overdueFlag = isOverdue(task);
                         return (
                           <div
@@ -126,18 +143,26 @@ export function TasksOverviewTab({ isDark }: TasksOverviewTabProps) {
                           >
                             <Circle className="w-3.5 h-3.5 mt-0.5 shrink-0 text-slate-400" />
                             <div className="min-w-0 flex-1">
-                              <p className={`text-xs font-medium truncate ${isDark ? 'text-slate-200' : 'text-slate-800'}`}>
+                              <p
+                                className={`text-xs font-medium truncate ${isDark ? 'text-slate-200' : 'text-slate-800'}`}
+                              >
                                 {task.description}
                               </p>
-                              <div className={`flex items-center gap-2 mt-0.5 text-[10px] ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>
+                              <div
+                                className={`flex items-center gap-2 mt-0.5 text-[10px] ${isDark ? 'text-slate-500' : 'text-slate-500'}`}
+                              >
                                 <span className="flex items-center gap-1 truncate">
                                   <Building2 className="w-3 h-3 shrink-0" />
                                   {task.lead_name}
                                 </span>
                                 {task.due_date && (
-                                  <span className={`flex items-center gap-1 shrink-0 ${overdueFlag ? 'text-red-500 font-semibold' : ''}`}>
+                                  <span
+                                    className={`flex items-center gap-1 shrink-0 ${overdueFlag ? 'text-red-500 font-semibold' : ''}`}
+                                  >
                                     <Calendar className="w-3 h-3" />
-                                    {new Date(`${task.due_date}T00:00:00`).toLocaleDateString('pt-BR')}
+                                    {new Date(`${task.due_date}T00:00:00`).toLocaleDateString(
+                                      'pt-BR',
+                                    )}
                                   </span>
                                 )}
                               </div>

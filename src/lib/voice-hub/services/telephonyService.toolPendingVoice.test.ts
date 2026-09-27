@@ -117,11 +117,23 @@ describe('telephonyService.handleTurn — mid-call tool_pending continuation', (
     const pendingState = workflowState({ currentNodeId: 'tool-1' });
     const resumedState = workflowState({ currentNodeId: 'end-1', ended: true, nodes: [] });
 
-    mockFindSessionById.mockResolvedValue(session({
-      metadata: { callSid: 'CA123', from: '+1000', to: '+15551234567', turns: [], workflow: workflowState() },
-    }));
+    mockFindSessionById.mockResolvedValue(
+      session({
+        metadata: {
+          callSid: 'CA123',
+          from: '+1000',
+          to: '+15551234567',
+          turns: [],
+          workflow: workflowState(),
+        },
+      }),
+    );
     mockFindById.mockResolvedValue(agent());
-    mockPrepareWorkflowTurn.mockReturnValue({ state: pendingState, mode: 'tool_pending', shouldEnd: false });
+    mockPrepareWorkflowTurn.mockReturnValue({
+      state: pendingState,
+      mode: 'tool_pending',
+      shouldEnd: false,
+    });
     mockResumeAfterTool.mockResolvedValue({
       state: resumedState,
       mode: 'direct',
@@ -129,7 +141,10 @@ describe('telephonyService.handleTurn — mid-call tool_pending continuation', (
       shouldEnd: true,
     });
 
-    const result = await handleTurn({ sessionId: 'sess-1', speechResult: 'Qual o status do meu pedido?' });
+    const result = await handleTurn({
+      sessionId: 'sess-1',
+      speechResult: 'Qual o status do meu pedido?',
+    });
 
     expect(mockResumeAfterTool).toHaveBeenCalledTimes(1);
     expect(mockResumeAfterTool).toHaveBeenCalledWith(
@@ -137,9 +152,16 @@ describe('telephonyService.handleTurn — mid-call tool_pending continuation', (
       expect.objectContaining({ id: 'tool-1', type: 'tool' }),
     );
     expect(mockProcessRequest).not.toHaveBeenCalled();
-    expect(result).toEqual({ found: true, reply: 'Consulta concluída, obrigado.', shouldEnd: true, voiceOverride: undefined });
+    expect(result).toEqual({
+      found: true,
+      reply: 'Consulta concluída, obrigado.',
+      shouldEnd: true,
+      voiceOverride: undefined,
+    });
 
-    const persisted = mockUpdateSession.mock.calls[0][1].metadata as unknown as { workflow: WorkflowRuntimeState };
+    const persisted = mockUpdateSession.mock.calls[0][1].metadata as unknown as {
+      workflow: WorkflowRuntimeState;
+    };
     expect(persisted.workflow.currentNodeId).toBe('end-1');
   });
 
@@ -148,32 +170,77 @@ describe('telephonyService.handleTurn — mid-call tool_pending continuation', (
     const secondPending = workflowState({ currentNodeId: 'tool-2', nodes: [toolNode('tool-2')] });
     const finalState = workflowState({ currentNodeId: 'end-1', ended: true, nodes: [] });
 
-    mockFindSessionById.mockResolvedValue(session({
-      metadata: { callSid: 'CA123', from: '+1000', to: '+15551234567', turns: [], workflow: workflowState() },
-    }));
+    mockFindSessionById.mockResolvedValue(
+      session({
+        metadata: {
+          callSid: 'CA123',
+          from: '+1000',
+          to: '+15551234567',
+          turns: [],
+          workflow: workflowState(),
+        },
+      }),
+    );
     mockFindById.mockResolvedValue(agent());
-    mockPrepareWorkflowTurn.mockReturnValue({ state: firstPending, mode: 'tool_pending', shouldEnd: false });
+    mockPrepareWorkflowTurn.mockReturnValue({
+      state: firstPending,
+      mode: 'tool_pending',
+      shouldEnd: false,
+    });
     mockResumeAfterTool
       .mockResolvedValueOnce({ state: secondPending, mode: 'tool_pending', shouldEnd: false })
-      .mockResolvedValueOnce({ state: finalState, mode: 'direct', directReply: 'Tudo certo!', shouldEnd: true });
+      .mockResolvedValueOnce({
+        state: finalState,
+        mode: 'direct',
+        directReply: 'Tudo certo!',
+        shouldEnd: true,
+      });
 
-    const result = await handleTurn({ sessionId: 'sess-1', speechResult: 'Confirma o agendamento' });
+    const result = await handleTurn({
+      sessionId: 'sess-1',
+      speechResult: 'Confirma o agendamento',
+    });
 
     expect(mockResumeAfterTool).toHaveBeenCalledTimes(2);
-    expect(mockResumeAfterTool).toHaveBeenNthCalledWith(1, firstPending, expect.objectContaining({ id: 'tool-1' }));
-    expect(mockResumeAfterTool).toHaveBeenNthCalledWith(2, secondPending, expect.objectContaining({ id: 'tool-2' }));
-    expect(result).toEqual({ found: true, reply: 'Tudo certo!', shouldEnd: true, voiceOverride: undefined });
+    expect(mockResumeAfterTool).toHaveBeenNthCalledWith(
+      1,
+      firstPending,
+      expect.objectContaining({ id: 'tool-1' }),
+    );
+    expect(mockResumeAfterTool).toHaveBeenNthCalledWith(
+      2,
+      secondPending,
+      expect.objectContaining({ id: 'tool-2' }),
+    );
+    expect(result).toEqual({
+      found: true,
+      reply: 'Tudo certo!',
+      shouldEnd: true,
+      voiceOverride: undefined,
+    });
   });
 
   it('resolves a tool_pending turn into the LLM branch, using the resumed systemInstruction', async () => {
     const pendingState = workflowState({ currentNodeId: 'tool-1' });
     const resumedState = workflowState({ currentNodeId: 'prompt-1', nodes: [] });
 
-    mockFindSessionById.mockResolvedValue(session({
-      metadata: { callSid: 'CA123', from: '+1000', to: '+15551234567', turns: [], workflow: workflowState() },
-    }));
+    mockFindSessionById.mockResolvedValue(
+      session({
+        metadata: {
+          callSid: 'CA123',
+          from: '+1000',
+          to: '+15551234567',
+          turns: [],
+          workflow: workflowState(),
+        },
+      }),
+    );
     mockFindById.mockResolvedValue(agent());
-    mockPrepareWorkflowTurn.mockReturnValue({ state: pendingState, mode: 'tool_pending', shouldEnd: false });
+    mockPrepareWorkflowTurn.mockReturnValue({
+      state: pendingState,
+      mode: 'tool_pending',
+      shouldEnd: false,
+    });
     mockResumeAfterTool.mockResolvedValue({
       state: resumedState,
       mode: 'llm',
@@ -198,17 +265,37 @@ describe('telephonyService.handleTurn — mid-call tool_pending continuation', (
       'Responda com base no resultado da consulta.',
       'tenant-1',
     );
-    expect(result).toEqual({ found: true, reply: 'Seu pedido está a caminho.', shouldEnd: false, voiceOverride: undefined });
+    expect(result).toEqual({
+      found: true,
+      reply: 'Seu pedido está a caminho.',
+      shouldEnd: false,
+      voiceOverride: undefined,
+    });
   });
 
   it('ends the call gracefully instead of looping when the pending tool node cannot be resolved', async () => {
-    const corruptedState = workflowState({ currentNodeId: 'ghost-node', nodes: [toolNode('tool-1')] });
+    const corruptedState = workflowState({
+      currentNodeId: 'ghost-node',
+      nodes: [toolNode('tool-1')],
+    });
 
-    mockFindSessionById.mockResolvedValue(session({
-      metadata: { callSid: 'CA123', from: '+1000', to: '+15551234567', turns: [], workflow: workflowState() },
-    }));
+    mockFindSessionById.mockResolvedValue(
+      session({
+        metadata: {
+          callSid: 'CA123',
+          from: '+1000',
+          to: '+15551234567',
+          turns: [],
+          workflow: workflowState(),
+        },
+      }),
+    );
     mockFindById.mockResolvedValue(agent());
-    mockPrepareWorkflowTurn.mockReturnValue({ state: corruptedState, mode: 'tool_pending', shouldEnd: false });
+    mockPrepareWorkflowTurn.mockReturnValue({
+      state: corruptedState,
+      mode: 'tool_pending',
+      shouldEnd: false,
+    });
 
     const result = await handleTurn({ sessionId: 'sess-1', speechResult: 'oi' });
 
@@ -221,14 +308,30 @@ describe('telephonyService.handleTurn — mid-call tool_pending continuation', (
   it('ends the call instead of looping forever on a cyclical tool_pending chain', async () => {
     const pendingState = workflowState({ currentNodeId: 'tool-1' });
 
-    mockFindSessionById.mockResolvedValue(session({
-      metadata: { callSid: 'CA123', from: '+1000', to: '+15551234567', turns: [], workflow: workflowState() },
-    }));
+    mockFindSessionById.mockResolvedValue(
+      session({
+        metadata: {
+          callSid: 'CA123',
+          from: '+1000',
+          to: '+15551234567',
+          turns: [],
+          workflow: workflowState(),
+        },
+      }),
+    );
     mockFindById.mockResolvedValue(agent());
-    mockPrepareWorkflowTurn.mockReturnValue({ state: pendingState, mode: 'tool_pending', shouldEnd: false });
+    mockPrepareWorkflowTurn.mockReturnValue({
+      state: pendingState,
+      mode: 'tool_pending',
+      shouldEnd: false,
+    });
     // Always resolves to another `tool_pending` on the very same node — simulates a corrupted
     // published graph with a `tool` node pointing back to itself.
-    mockResumeAfterTool.mockResolvedValue({ state: pendingState, mode: 'tool_pending', shouldEnd: false } as PreparedWorkflowTurn);
+    mockResumeAfterTool.mockResolvedValue({
+      state: pendingState,
+      mode: 'tool_pending',
+      shouldEnd: false,
+    } as PreparedWorkflowTurn);
 
     const result = await handleTurn({ sessionId: 'sess-1', speechResult: 'oi' });
 
@@ -243,9 +346,17 @@ describe('telephonyService.handleTurn — voiceOverride propagation', () => {
   it('propagates voiceOverride from a direct terminal turn', async () => {
     const state = workflowState({ currentNodeId: 'end-1', ended: true, nodes: [] });
 
-    mockFindSessionById.mockResolvedValue(session({
-      metadata: { callSid: 'CA123', from: '+1000', to: '+15551234567', turns: [], workflow: workflowState() },
-    }));
+    mockFindSessionById.mockResolvedValue(
+      session({
+        metadata: {
+          callSid: 'CA123',
+          from: '+1000',
+          to: '+15551234567',
+          turns: [],
+          workflow: workflowState(),
+        },
+      }),
+    );
     mockFindById.mockResolvedValue(agent());
     mockPrepareWorkflowTurn.mockReturnValue({
       state,
@@ -264,11 +375,23 @@ describe('telephonyService.handleTurn — voiceOverride propagation', () => {
     const pendingState = workflowState({ currentNodeId: 'tool-1' });
     const resumedState = workflowState({ currentNodeId: 'end-1', ended: true, nodes: [] });
 
-    mockFindSessionById.mockResolvedValue(session({
-      metadata: { callSid: 'CA123', from: '+1000', to: '+15551234567', turns: [], workflow: workflowState() },
-    }));
+    mockFindSessionById.mockResolvedValue(
+      session({
+        metadata: {
+          callSid: 'CA123',
+          from: '+1000',
+          to: '+15551234567',
+          turns: [],
+          workflow: workflowState(),
+        },
+      }),
+    );
     mockFindById.mockResolvedValue(agent());
-    mockPrepareWorkflowTurn.mockReturnValue({ state: pendingState, mode: 'tool_pending', shouldEnd: false });
+    mockPrepareWorkflowTurn.mockReturnValue({
+      state: pendingState,
+      mode: 'tool_pending',
+      shouldEnd: false,
+    });
     mockResumeAfterTool.mockResolvedValue({
       state: resumedState,
       mode: 'direct',
@@ -283,9 +406,17 @@ describe('telephonyService.handleTurn — voiceOverride propagation', () => {
   });
 
   it('leaves voiceOverride undefined when no voice node was reached', async () => {
-    mockFindSessionById.mockResolvedValue(session({
-      metadata: { callSid: 'CA123', from: '+1000', to: '+15551234567', turns: [], workflow: workflowState() },
-    }));
+    mockFindSessionById.mockResolvedValue(
+      session({
+        metadata: {
+          callSid: 'CA123',
+          from: '+1000',
+          to: '+15551234567',
+          turns: [],
+          workflow: workflowState(),
+        },
+      }),
+    );
     mockFindById.mockResolvedValue(agent());
     mockPrepareWorkflowTurn.mockReturnValue({
       state: workflowState({ currentNodeId: 'end-1', ended: true, nodes: [] }),

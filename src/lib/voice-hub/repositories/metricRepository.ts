@@ -12,8 +12,16 @@ import { prisma } from '@/lib/prisma.js';
 // equality and has no concept of an `OR` clause.
 export async function listMetricsForUser(organizationId: string, userId: string) {
   const [own, tenantWide] = await Promise.all([
-    prisma.metric.findMany({ where: { organizationId, userId }, orderBy: { timestamp: 'desc' }, take: 1000 }),
-    prisma.metric.findMany({ where: { organizationId, userId: null }, orderBy: { timestamp: 'desc' }, take: 1000 }),
+    prisma.metric.findMany({
+      where: { organizationId, userId },
+      orderBy: { timestamp: 'desc' },
+      take: 1000,
+    }),
+    prisma.metric.findMany({
+      where: { organizationId, userId: null },
+      orderBy: { timestamp: 'desc' },
+      take: 1000,
+    }),
   ]);
   return [...own, ...tenantWide]
     .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())

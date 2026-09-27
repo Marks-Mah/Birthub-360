@@ -73,7 +73,11 @@ export function buildAtlasGROutboundIdempotencyKey(payload: {
   if (payload.leadId) {
     return `${ATLASGR_OUTBOUND_IDEMPOTENCY_PREFIX}lead:${payload.leadId}`;
   }
-  const normalized = [payload.phoneNumber.replace(/\D/g, ''), payload.name.trim().toLowerCase(), payload.company.trim().toLowerCase()].join('|');
+  const normalized = [
+    payload.phoneNumber.replace(/\D/g, ''),
+    payload.name.trim().toLowerCase(),
+    payload.company.trim().toLowerCase(),
+  ].join('|');
   const hash = createHash('sha256').update(normalized).digest('hex');
   return `${ATLASGR_OUTBOUND_IDEMPOTENCY_PREFIX}hash:${hash}`;
 }
@@ -112,11 +116,19 @@ export type CallbackProcessingState = 'acquired' | 'duplicate' | 'in_progress';
  * acknowledges the result, a provider retry can take over after one minute. `done` is kept for the
  * normal 24h dedup window and makes repeated successful callbacks cheap no-ops.
  */
-export async function beginBlandCallbackProcessing(callId: string): Promise<CallbackProcessingState> {
+export async function beginBlandCallbackProcessing(
+  callId: string,
+): Promise<CallbackProcessingState> {
   const key = buildBlandCallbackIdempotencyKey(callId);
   try {
     const client = getClient();
-    const claimed = await client.set(key, 'processing', 'EX', CALLBACK_PROCESSING_TTL_SECONDS, 'NX');
+    const claimed = await client.set(
+      key,
+      'processing',
+      'EX',
+      CALLBACK_PROCESSING_TTL_SECONDS,
+      'NX',
+    );
     if (claimed === 'OK') return 'acquired';
 
     const current = await client.get(key);

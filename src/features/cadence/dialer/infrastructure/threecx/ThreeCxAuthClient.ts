@@ -1,5 +1,5 @@
-import { CircuitBreaker } from "../http/CircuitBreaker.js";
-import { isNetworkError, withRetry } from "../http/retry.js";
+import { CircuitBreaker } from '../http/CircuitBreaker.js';
+import { isNetworkError, withRetry } from '../http/retry.js';
 
 export interface ThreeCxAuthConfig {
   domain: string;
@@ -86,12 +86,12 @@ export class ThreeCxAuthClient {
 
   private async requestToken(): Promise<TokenResponse> {
     const response = await fetch(`https://${this.config.domain}/connect/token`, {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams({
         client_id: this.config.clientId,
         client_secret: this.config.apiKey,
-        grant_type: "client_credentials",
+        grant_type: 'client_credentials',
       }),
       signal: AbortSignal.timeout(this.timeoutMs),
     });
@@ -116,6 +116,6 @@ export class ThreeCxAuthError extends Error {
     public readonly responseBody: string,
   ) {
     super(`Falha ao autenticar na 3CX (HTTP ${statusCode}): ${responseBody}`);
-    this.name = "ThreeCxAuthError";
+    this.name = 'ThreeCxAuthError';
   }
 }

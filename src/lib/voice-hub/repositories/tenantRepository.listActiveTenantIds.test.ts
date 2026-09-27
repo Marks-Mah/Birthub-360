@@ -22,7 +22,10 @@ describe('organizationRepository.listActiveTenantIds', () => {
 
     const result = await listActiveTenantIds();
 
-    expect(prisma.tenant.findMany).toHaveBeenCalledWith({ where: { deletedAt: null }, select: { id: true } });
+    expect(prisma.tenant.findMany).toHaveBeenCalledWith({
+      where: { deletedAt: null },
+      select: { id: true },
+    });
     expect(result).toEqual(['t1', 't2']);
   });
 

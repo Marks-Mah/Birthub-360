@@ -1,25 +1,25 @@
-import type { PrismaClient } from "@prisma/client";
+import type { PrismaClient } from '@prisma/client';
 import {
   CallAttempt,
   TERMINAL_CALL_ATTEMPT_STATUSES,
   type CallAttemptProps,
   type CallAttemptStatus,
-} from "../../../domain/entities/CallAttempt.js";
+} from '../../../domain/entities/CallAttempt.js';
 import {
   AgentDnConflictError,
   type CallAttemptRepository,
-} from "../../../application/ports/CallAttemptRepository.js";
+} from '../../../application/ports/CallAttemptRepository.js';
 
 /** Nome do índice único parcial criado na migration 002 (ver esse arquivo para o motivo). */
-const ACTIVE_AGENT_DN_CONSTRAINT = "uq_call_attempts_active_agent_dn";
+const ACTIVE_AGENT_DN_CONSTRAINT = 'uq_call_attempts_active_agent_dn';
 
 function isActiveAgentDnViolation(error: unknown): boolean {
   return (
-    typeof error === "object" &&
+    typeof error === 'object' &&
     error !== null &&
-    "code" in error &&
-    (error as { code?: unknown }).code === "23505" &&
-    "constraint" in error &&
+    'code' in error &&
+    (error as { code?: unknown }).code === '23505' &&
+    'constraint' in error &&
     (error as { constraint?: unknown }).constraint === ACTIVE_AGENT_DN_CONSTRAINT
   );
 }
@@ -55,7 +55,7 @@ function rowToProps(row: CallAttemptRow): CallAttemptProps {
  * placeholder (depende de quantos outros parâmetros vêm antes na query).
  */
 function terminalStatusPlaceholders(startAt: number): string {
-  return TERMINAL_CALL_ATTEMPT_STATUSES.map((_, index) => `$${startAt + index}`).join(", ");
+  return TERMINAL_CALL_ATTEMPT_STATUSES.map((_, index) => `$${startAt + index}`).join(', ');
 }
 
 // TODO: Refactor native SQL queries to use Prisma ORM directly.
@@ -93,7 +93,7 @@ export class PgCallAttemptRepository implements CallAttemptRepository {
 
   async findById(id: string): Promise<CallAttempt | null> {
     const rows = await this.prisma.$queryRawUnsafe<CallAttemptRow[]>(
-      "SELECT * FROM call_attempts WHERE id = $1",
+      'SELECT * FROM call_attempts WHERE id = $1',
       [id],
     );
     const row = rows[0];

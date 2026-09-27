@@ -96,7 +96,8 @@ export function useDeveloperSettings() {
   const [newWebhookEvents, setNewWebhookEvents] = useState('');
   const [isCreatingWebhook, setIsCreatingWebhook] = useState(false);
   const [createWebhookError, setCreateWebhookError] = useState<string | null>(null);
-  const [createdWebhookSecretReveal, setCreatedWebhookSecretReveal] = useState<CreatedWebhookSecretReveal | null>(null);
+  const [createdWebhookSecretReveal, setCreatedWebhookSecretReveal] =
+    useState<CreatedWebhookSecretReveal | null>(null);
   const [deletingWebhookId, setDeletingWebhookId] = useState<string | null>(null);
   const [webhookActionError, setWebhookActionError] = useState<string | null>(null);
   const [regeneratingWebhookId, setRegeneratingWebhookId] = useState<string | null>(null);
@@ -136,7 +137,10 @@ export function useDeveloperSettings() {
       })
       .then((data: { webhookEndpoints: WebhookEndpointMetadata[] } | null) => {
         if (data === null) return; // already handled as 'unavailable' above
-        setWebhooksState({ status: 'ready', data: Array.isArray(data.webhookEndpoints) ? data.webhookEndpoints : [] });
+        setWebhooksState({
+          status: 'ready',
+          data: Array.isArray(data.webhookEndpoints) ? data.webhookEndpoints : [],
+        });
       })
       .catch((err) => {
         logger.error('Failed to load webhook endpoints', { err });
@@ -195,11 +199,13 @@ export function useDeveloperSettings() {
           fetchKeys();
         } catch (err: any) {
           logger.error('Failed to revoke API key', { err });
-          setRevokeError(err instanceof Error ? err.message : 'Não foi possível revogar a chave de API.');
+          setRevokeError(
+            err instanceof Error ? err.message : 'Não foi possível revogar a chave de API.',
+          );
         } finally {
           setRevokingId(null);
         }
-      }
+      },
     });
   };
 
@@ -210,7 +216,14 @@ export function useDeveloperSettings() {
   // see telephonyService.ts), so presenting a dropdown of options would imply a completeness that
   // does not exist (AGENTS.md §14).
   function parseWebhookEvents(raw: string): string[] {
-    return Array.from(new Set(raw.split(/[\s,]+/).map((s) => s.trim()).filter(Boolean)));
+    return Array.from(
+      new Set(
+        raw
+          .split(/[\s,]+/)
+          .map((s) => s.trim())
+          .filter(Boolean),
+      ),
+    );
   }
 
   const handleCreateWebhook = async (e: React.FormEvent) => {
@@ -229,7 +242,10 @@ export function useDeveloperSettings() {
       });
       const data = await res.json().catch(() => ({}));
       if (res.status === 503) {
-        throw new Error(data.error || 'Endpoints de webhook por tenant ainda não estão disponíveis nesta implantação.');
+        throw new Error(
+          data.error ||
+            'Endpoints de webhook por tenant ainda não estão disponíveis nesta implantação.',
+        );
       }
       if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
 
@@ -245,7 +261,9 @@ export function useDeveloperSettings() {
       fetchWebhooks();
     } catch (err: any) {
       logger.error('Failed to create webhook endpoint', { err });
-      setCreateWebhookError(err instanceof Error ? err.message : 'Não foi possível criar o endpoint de webhook.');
+      setCreateWebhookError(
+        err instanceof Error ? err.message : 'Não foi possível criar o endpoint de webhook.',
+      );
     } finally {
       setIsCreatingWebhook(false);
     }
@@ -269,11 +287,13 @@ export function useDeveloperSettings() {
           fetchWebhooks();
         } catch (err: any) {
           logger.error('Failed to delete webhook endpoint', { err });
-          setWebhookActionError(err instanceof Error ? err.message : 'Não foi possível remover o endpoint de webhook.');
+          setWebhookActionError(
+            err instanceof Error ? err.message : 'Não foi possível remover o endpoint de webhook.',
+          );
         } finally {
           setDeletingWebhookId(null);
         }
-      }
+      },
     });
   };
 
@@ -287,7 +307,9 @@ export function useDeveloperSettings() {
         setRegeneratingWebhookId(id);
         setWebhookActionError(null);
         try {
-          const res = await fetch(`/api/developers/webhooks/${id}/regenerate-secret`, { method: 'POST' });
+          const res = await fetch(`/api/developers/webhooks/${id}/regenerate-secret`, {
+            method: 'POST',
+          });
           const data = await res.json().catch(() => ({}));
           if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
           setCreatedWebhookSecretReveal({
@@ -298,11 +320,13 @@ export function useDeveloperSettings() {
           fetchWebhooks();
         } catch (err: any) {
           logger.error('Failed to regenerate webhook secret', { err });
-          setWebhookActionError(err instanceof Error ? err.message : 'Não foi possível regenerar o segredo do webhook.');
+          setWebhookActionError(
+            err instanceof Error ? err.message : 'Não foi possível regenerar o segredo do webhook.',
+          );
         } finally {
           setRegeneratingWebhookId(null);
         }
-      }
+      },
     });
   };
 

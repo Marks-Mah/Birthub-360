@@ -63,9 +63,9 @@ function asNonEmptyString(value: unknown): string | undefined {
 // Cargo mal formado no array não invalida a busca inteira - só é descartado.
 function asStringArray(value: unknown): string[] | undefined {
   if (!Array.isArray(value)) return undefined;
-  const cleaned = Array.from(new Set(
-    value.map(v => asNonEmptyString(v)).filter((v): v is string => Boolean(v))
-  )).slice(0, 30);
+  const cleaned = Array.from(
+    new Set(value.map((v) => asNonEmptyString(v)).filter((v): v is string => Boolean(v))),
+  ).slice(0, 30);
   return cleaned.length > 0 ? cleaned : undefined;
 }
 
@@ -84,9 +84,10 @@ export function parseSearchIntent(body: RawSearchIntentInput): SearchIntent {
   // Preserva um radiusKm inválido (ex: negativo) em vez de descartá-lo em silêncio -
   // é o validator, não o parser, quem decide se o valor é aceitável.
   const radiusKmNum = Number(body.radiusKm);
-  const radiusKm = body.radiusKm !== undefined && body.radiusKm !== null && Number.isFinite(radiusKmNum)
-    ? radiusKmNum
-    : undefined;
+  const radiusKm =
+    body.radiusKm !== undefined && body.radiusKm !== null && Number.isFinite(radiusKmNum)
+      ? radiusKmNum
+      : undefined;
 
   const requestedFields: string[] = [];
   if (segment) requestedFields.push('segment');
@@ -117,7 +118,7 @@ export function parseSearchIntent(body: RawSearchIntentInput): SearchIntent {
     decisionMakerRole,
     decisionMakerTitles,
     tone,
-    requestedFields
+    requestedFields,
   };
 }
 
@@ -130,7 +131,9 @@ export function validateSearchIntent(intent: SearchIntent): SearchIntentValidati
   const errors: string[] = [];
 
   if (!intent.freeTextQuery || intent.freeTextQuery.trim().length === 0) {
-    errors.push('Informe ao menos um critério de busca: segmento, cidade/estado ou um texto de busca.');
+    errors.push(
+      'Informe ao menos um critério de busca: segmento, cidade/estado ou um texto de busca.',
+    );
   }
 
   if (!Number.isFinite(intent.targetCount) || intent.targetCount < 1) {

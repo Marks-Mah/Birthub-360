@@ -27,7 +27,13 @@ describe('NotificationCenter', () => {
       expect(String(url)).toContain('/api/notifications?page=1');
       return jsonResponse({
         items: [
-          { id: 'n1', title: 'Plano atualizado', message: 'Seu plano mudou.', isRead: false, createdAt: new Date().toISOString() },
+          {
+            id: 'n1',
+            title: 'Plano atualizado',
+            message: 'Seu plano mudou.',
+            isRead: false,
+            createdAt: new Date().toISOString(),
+          },
         ],
         unreadCount: 1,
         page: 1,
@@ -44,7 +50,7 @@ describe('NotificationCenter', () => {
 
   it('shows an explicit empty state — never a fabricated item — when there are no notifications', async () => {
     vi.mocked(fetch).mockImplementation(() =>
-      jsonResponse({ items: [], unreadCount: 0, page: 1, pageSize: 20, total: 0, totalPages: 1 })
+      jsonResponse({ items: [], unreadCount: 0, page: 1, pageSize: 20, total: 0, totalPages: 1 }),
     );
 
     const user = userEvent.setup();
@@ -56,7 +62,9 @@ describe('NotificationCenter', () => {
   });
 
   it('shows an explicit error state with a retry action when the fetch fails', async () => {
-    vi.mocked(fetch).mockImplementation(() => Promise.resolve({ ok: false, status: 500, json: () => Promise.resolve({}) } as Response));
+    vi.mocked(fetch).mockImplementation(() =>
+      Promise.resolve({ ok: false, status: 500, json: () => Promise.resolve({}) } as Response),
+    );
 
     const user = userEvent.setup();
     render(<NotificationCenter />);
@@ -68,14 +76,27 @@ describe('NotificationCenter', () => {
 
   it('marks a notification as read and decrements the unread badge', async () => {
     const items = [
-      { id: 'n1', title: 'Alerta', message: 'Mensagem', isRead: false, createdAt: new Date().toISOString() },
+      {
+        id: 'n1',
+        title: 'Alerta',
+        message: 'Mensagem',
+        isRead: false,
+        createdAt: new Date().toISOString(),
+      },
     ];
     vi.mocked(fetch).mockImplementation((url, init) => {
       const method = init?.method ?? 'GET';
       if (String(url).includes('/read') && method === 'POST') {
         return jsonResponse({ notification: { ...items[0], isRead: true } });
       }
-      return jsonResponse({ items, unreadCount: 1, page: 1, pageSize: 20, total: 1, totalPages: 1 });
+      return jsonResponse({
+        items,
+        unreadCount: 1,
+        page: 1,
+        pageSize: 20,
+        total: 1,
+        totalPages: 1,
+      });
     });
 
     const user = userEvent.setup();
@@ -88,7 +109,9 @@ describe('NotificationCenter', () => {
 
     await waitFor(() => expect(screen.queryByText('Marcar como lida')).not.toBeInTheDocument());
     // Badge disappears once unreadCount reaches 0.
-    await waitFor(() => expect(screen.queryByLabelText('Notificações')?.querySelector('span')).toBeNull());
+    await waitFor(() =>
+      expect(screen.queryByLabelText('Notificações')?.querySelector('span')).toBeNull(),
+    );
   });
 
   it('marks all as read via the bulk action', async () => {
@@ -101,7 +124,14 @@ describe('NotificationCenter', () => {
       if (String(url).includes('/read-all') && method === 'POST') {
         return jsonResponse({ updatedCount: 2 });
       }
-      return jsonResponse({ items, unreadCount: 2, page: 1, pageSize: 20, total: 2, totalPages: 1 });
+      return jsonResponse({
+        items,
+        unreadCount: 2,
+        page: 1,
+        pageSize: 20,
+        total: 2,
+        totalPages: 1,
+      });
     });
 
     const user = userEvent.setup();

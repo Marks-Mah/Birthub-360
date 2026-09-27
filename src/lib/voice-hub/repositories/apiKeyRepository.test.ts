@@ -76,7 +76,10 @@ describe('apiKeyRepository', () => {
   });
 
   it('findApiKeyByHash is the only function that reads the raw model (no select filter, needed for hash comparison)', async () => {
-    vi.mocked(prisma.aPIKey.findUnique).mockResolvedValue({ id: 'key-1', keyHash: 'hash-value' } as any);
+    vi.mocked(prisma.aPIKey.findUnique).mockResolvedValue({
+      id: 'key-1',
+      keyHash: 'hash-value',
+    } as any);
 
     const result = await findApiKeyByHash('hash-value');
 
@@ -85,7 +88,10 @@ describe('apiKeyRepository', () => {
   });
 
   it('revokeApiKey sets revokedAt to a Date via update', async () => {
-    vi.mocked(prisma.aPIKey.update).mockResolvedValue({ id: 'key-1', revokedAt: new Date() } as any);
+    vi.mocked(prisma.aPIKey.update).mockResolvedValue({
+      id: 'key-1',
+      revokedAt: new Date(),
+    } as any);
 
     await revokeApiKey('key-1');
 

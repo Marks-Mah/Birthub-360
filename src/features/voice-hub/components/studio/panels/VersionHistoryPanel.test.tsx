@@ -70,7 +70,7 @@ describe('VersionHistoryPanel', () => {
   it('shows an explicit error state with a retry action when the version list fetch fails', async () => {
     useStudioStore.setState({ isVersionHistoryOpen: true, workflowId: 'wf-1' });
     vi.mocked(fetch).mockImplementation(() =>
-      jsonResponse({ error: 'Workflow não encontrado.' }, false, 404)
+      jsonResponse({ error: 'Workflow não encontrado.' }, false, 404),
     );
 
     render(<VersionHistoryPanel />);
@@ -83,7 +83,9 @@ describe('VersionHistoryPanel', () => {
     const user = userEvent.setup();
     useStudioStore.setState({ isVersionHistoryOpen: true, workflowId: 'wf-1' });
     vi.mocked(fetch).mockImplementation(() =>
-      jsonResponse({ versions: [{ version: 1, publishedAt: '2026-01-01T00:00:00.000Z', publishedBy: 'user-1' }] })
+      jsonResponse({
+        versions: [{ version: 1, publishedAt: '2026-01-01T00:00:00.000Z', publishedBy: 'user-1' }],
+      }),
     );
 
     render(<VersionHistoryPanel />);
@@ -105,12 +107,23 @@ describe('VersionHistoryPanel', () => {
     const user = userEvent.setup();
     useStudioStore.setState({ isVersionHistoryOpen: true, workflowId: 'wf-1' });
 
-    const restoredNodes = [{ id: 'start-1', type: 'start', position: { x: 0, y: 0 }, data: { label: 'Start', category: 'Start', config: {} } }];
+    const restoredNodes = [
+      {
+        id: 'start-1',
+        type: 'start',
+        position: { x: 0, y: 0 },
+        data: { label: 'Start', category: 'Start', config: {} },
+      },
+    ];
 
     vi.mocked(fetch).mockImplementation((url, init) => {
       const href = String(url);
       if (href === '/api/workflow/wf-1/versions' && (!init || init.method === undefined)) {
-        return jsonResponse({ versions: [{ version: 1, publishedAt: '2026-01-01T00:00:00.000Z', publishedBy: 'user-1' }] });
+        return jsonResponse({
+          versions: [
+            { version: 1, publishedAt: '2026-01-01T00:00:00.000Z', publishedBy: 'user-1' },
+          ],
+        });
       }
       if (href === '/api/workflow/wf-1/versions/1/rollback' && init?.method === 'POST') {
         return jsonResponse({
@@ -127,7 +140,9 @@ describe('VersionHistoryPanel', () => {
     await user.click(screen.getByRole('button', { name: 'Restaurar versão 1' }));
     await user.click(screen.getByRole('button', { name: 'Sim, restaurar' }));
 
-    expect(await screen.findByText('Versão restaurada e publicada com sucesso.')).toBeInTheDocument();
+    expect(
+      await screen.findByText('Versão restaurada e publicada com sucesso.'),
+    ).toBeInTheDocument();
     expect(useStudioStore.getState().nodes).toEqual(restoredNodes);
     // Confirmation prompt is gone and the (single) row is no longer stuck loading.
     expect(screen.queryByText('Confirma?')).not.toBeInTheDocument();
@@ -140,16 +155,26 @@ describe('VersionHistoryPanel', () => {
     vi.mocked(fetch).mockImplementation((url, init) => {
       const href = String(url);
       if (href === '/api/workflow/wf-1/versions' && !init) {
-        return jsonResponse({ versions: [{ version: 1, publishedAt: '2026-01-01T00:00:00.000Z', publishedBy: 'user-1' }] });
+        return jsonResponse({
+          versions: [
+            { version: 1, publishedAt: '2026-01-01T00:00:00.000Z', publishedBy: 'user-1' },
+          ],
+        });
       }
       if (href === '/api/workflow/wf-1/versions/1/rollback' && init?.method === 'POST') {
         return jsonResponse(
           {
             error: 'O fluxo contém erros de validação e não pode ser publicado/ativado.',
-            issues: [{ id: 'err-runtime-unsupported-voice-1', type: 'error', message: 'Nó de voz sem suporte no runtime atual.' }],
+            issues: [
+              {
+                id: 'err-runtime-unsupported-voice-1',
+                type: 'error',
+                message: 'Nó de voz sem suporte no runtime atual.',
+              },
+            ],
           },
           false,
-          422
+          422,
         );
       }
       throw new Error(`Unexpected fetch: ${href}`);
@@ -163,7 +188,11 @@ describe('VersionHistoryPanel', () => {
     await user.click(screen.getByRole('button', { name: 'Restaurar versão 1' }));
     await user.click(screen.getByRole('button', { name: 'Sim, restaurar' }));
 
-    expect(await screen.findByText('O fluxo contém erros de validação e não pode ser publicado/ativado.')).toBeInTheDocument();
+    expect(
+      await screen.findByText(
+        'O fluxo contém erros de validação e não pode ser publicado/ativado.',
+      ),
+    ).toBeInTheDocument();
     expect(screen.getByText('Nó de voz sem suporte no runtime atual.')).toBeInTheDocument();
     // The canvas must NOT have been mutated by a rejected rollback.
     expect(useStudioStore.getState().nodes).toBe(nodesBeforeRollback);
@@ -173,7 +202,9 @@ describe('VersionHistoryPanel', () => {
     const user = userEvent.setup();
     useStudioStore.setState({ isVersionHistoryOpen: true, workflowId: 'wf-1' });
     vi.mocked(fetch).mockImplementation(() =>
-      jsonResponse({ versions: [{ version: 1, publishedAt: '2026-01-01T00:00:00.000Z', publishedBy: 'user-1' }] })
+      jsonResponse({
+        versions: [{ version: 1, publishedAt: '2026-01-01T00:00:00.000Z', publishedBy: 'user-1' }],
+      }),
     );
 
     render(<VersionHistoryPanel />);

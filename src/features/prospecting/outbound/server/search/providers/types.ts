@@ -41,7 +41,13 @@ export interface ProviderHealth {
 // Todo resultado de provider é explícito sobre o que aconteceu - nunca um
 // valor de sucesso fabricado quando a chamada real falhou. `data` só existe
 // quando `status === 'ok'`.
-export type ProviderResultStatus = 'ok' | 'not_found' | 'error' | 'timeout' | 'rate_limited' | 'not_configured';
+export type ProviderResultStatus =
+  | 'ok'
+  | 'not_found'
+  | 'error'
+  | 'timeout'
+  | 'rate_limited'
+  | 'not_configured';
 
 export interface ProviderResult<T> {
   status: ProviderResultStatus;

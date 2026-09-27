@@ -38,7 +38,7 @@ describe('BottomDrawer accessibility', () => {
     await user.click(screen.getByRole('button', { name: /Catarina AI Studio/i }));
 
     const promptField = await screen.findByLabelText(
-      'Prompt em linguagem natural para gerar workflow via IA'
+      'Prompt em linguagem natural para gerar workflow via IA',
     );
     expect(promptField.tagName).toBe('TEXTAREA');
 

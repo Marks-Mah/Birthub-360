@@ -10,7 +10,8 @@ export type SystemRoleName = 'admin' | 'user' | 'supervisor';
 // capabilities here instead of introducing another magic string checked ad-hoc in a controller or
 // socket handler.
 export const PERMISSIONS: Record<string, string> = {
-  'supervision:intervene': 'Permite intervir em uma chamada ao vivo monitorada pelo LiveSupervisor.',
+  'supervision:intervene':
+    'Permite intervir em uma chamada ao vivo monitorada pelo LiveSupervisor.',
 };
 
 // Default permissions granted to a system role the first time it is created (see
@@ -30,7 +31,11 @@ export async function getOrCreateSystemRole(name: SystemRoleName) {
   if (existing) return existing;
 
   const defaultPermissionNames = SYSTEM_ROLE_DEFAULT_PERMISSIONS[name] ?? [];
-  const data: Prisma.RoleUncheckedCreateInput = { name, organizationId: null, description: `System role: ${name}` };
+  const data: Prisma.RoleUncheckedCreateInput = {
+    name,
+    organizationId: null,
+    description: `System role: ${name}`,
+  };
   if (defaultPermissionNames.length > 0) {
     data.permissions = {
       connectOrCreate: defaultPermissionNames.map((permissionName) => ({
@@ -56,7 +61,10 @@ export function permissionNamesOf(role: { permissions?: unknown } | null | undef
 // role of that name wins if one exists, otherwise falls back to the system role of the same name
 // (organizationId null). This is queried live (not embedded in the JWT) so that granting/revoking a
 // permission on a Role takes effect immediately, without waiting for token refresh.
-export async function getPermissionsForRoleName(name: string, organizationId: string): Promise<string[]> {
+export async function getPermissionsForRoleName(
+  name: string,
+  organizationId: string,
+): Promise<string[]> {
   const tenantRole = await prisma.role.findFirst({
     where: { name, organizationId },
     include: { permissions: true },

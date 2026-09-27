@@ -1,12 +1,12 @@
-import type { PhoneNumber } from "../value-objects/PhoneNumber.js";
+import type { PhoneNumber } from '../value-objects/PhoneNumber.js';
 
 export type LeadStatus =
-  | "pending" // aguardando a primeira tentativa ou uma nova tentativa
-  | "in_progress" // existe uma ligação em andamento para este lead agora
-  | "contacted" // conectado com sucesso (agente falou com o lead)
-  | "exhausted" // esgotou o número máximo de tentativas sem sucesso
-  | "do_not_call" // está na lista de não perturbe / opt-out
-  | "invalid_number"; // telefone inválido, nunca discado
+  | 'pending' // aguardando a primeira tentativa ou uma nova tentativa
+  | 'in_progress' // existe uma ligação em andamento para este lead agora
+  | 'contacted' // conectado com sucesso (agente falou com o lead)
+  | 'exhausted' // esgotou o número máximo de tentativas sem sucesso
+  | 'do_not_call' // está na lista de não perturbe / opt-out
+  | 'invalid_number'; // telefone inválido, nunca discado
 
 export interface LeadProps {
   id: string;
@@ -37,7 +37,7 @@ export class Lead {
       campaignId: input.campaignId,
       name: input.name,
       phone: input.phone,
-      status: "pending",
+      status: 'pending',
       attempts: 0,
       nextAttemptAt: null,
       createdAt: now,
@@ -79,7 +79,7 @@ export class Lead {
 
   /** É elegível para uma nova tentativa agora, dado o limite máximo e o agendamento de retentativa. */
   isEligibleForDialing(maxAttempts: number, now: Date): boolean {
-    if (this.props.status !== "pending") {
+    if (this.props.status !== 'pending') {
       return false;
     }
     if (this.props.attempts >= maxAttempts) {
@@ -92,12 +92,12 @@ export class Lead {
   }
 
   markInProgress(now = new Date()): void {
-    this.props.status = "in_progress";
+    this.props.status = 'in_progress';
     this.props.updatedAt = now;
   }
 
   markContacted(now = new Date()): void {
-    this.props.status = "contacted";
+    this.props.status = 'contacted';
     this.props.updatedAt = now;
   }
 
@@ -109,7 +109,7 @@ export class Lead {
    * fato ocorreu e falhou. Ver `AgentDnConflictError`.
    */
   releaseClaim(now = new Date()): void {
-    this.props.status = "pending";
+    this.props.status = 'pending';
     this.props.updatedAt = now;
   }
 
@@ -128,17 +128,17 @@ export class Lead {
     this.props.updatedAt = now;
 
     if (this.props.attempts >= options.maxAttempts) {
-      this.props.status = "exhausted";
+      this.props.status = 'exhausted';
       this.props.nextAttemptAt = null;
       return;
     }
 
-    this.props.status = "pending";
+    this.props.status = 'pending';
     this.props.nextAttemptAt = new Date(now.getTime() + options.retryBackoffMinutes * 60_000);
   }
 
   markDoNotCall(now = new Date()): void {
-    this.props.status = "do_not_call";
+    this.props.status = 'do_not_call';
     this.props.nextAttemptAt = null;
     this.props.updatedAt = now;
   }

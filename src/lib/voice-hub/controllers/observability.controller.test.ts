@@ -24,12 +24,8 @@ describe('observability.controller', () => {
 
   describe('observabilityMetricsHandler', () => {
     it('returns filtered spans and metrics for the authenticated tenant', () => {
-      const mockSpans = [
-        { name: 'voice_call_turn', organizationId: 'tenant-123', durationMs: 45 },
-      ];
-      const mockMetrics = [
-        { name: 'llm_latency', value: 350, organizationId: 'tenant-123' },
-      ];
+      const mockSpans = [{ name: 'voice_call_turn', organizationId: 'tenant-123', durationMs: 45 }];
+      const mockMetrics = [{ name: 'llm_latency', value: 350, organizationId: 'tenant-123' }];
 
       vi.mocked(otelCollector.getSpans).mockReturnValue(mockSpans as never);
       vi.mocked(otelCollector.getMetrics).mockReturnValue(mockMetrics as never);

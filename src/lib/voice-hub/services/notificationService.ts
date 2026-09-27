@@ -84,7 +84,7 @@ export async function createNotification(input: {
 // service/repository layer, never merely "remembered" in the controller or UI).
 export async function listNotifications(
   userId: string,
-  pagination: { page: number; pageSize: number }
+  pagination: { page: number; pageSize: number },
 ): Promise<NotificationsPage> {
   const [[items, total], unreadCount] = await Promise.all([
     findNotificationsForUser(userId, pagination),

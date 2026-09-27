@@ -5,11 +5,19 @@ export function findSetting(organizationId: string | null, userId: string | null
   return prisma.setting.findFirst({ where: { organizationId, userId, key } });
 }
 
-export async function upsertSetting(organizationId: string | null, userId: string | null, key: string, value: unknown) {
+export async function upsertSetting(
+  organizationId: string | null,
+  userId: string | null,
+  key: string,
+  value: unknown,
+) {
   const existing = await prisma.setting.findFirst({ where: { organizationId, userId, key } });
 
   if (existing) {
-    return prisma.setting.update({ where: { id: existing.id }, data: { value: value as Prisma.InputJsonValue } });
+    return prisma.setting.update({
+      where: { id: existing.id },
+      data: { value: value as Prisma.InputJsonValue },
+    });
   }
 
   try {
@@ -25,11 +33,13 @@ export async function upsertSetting(organizationId: string | null, userId: strin
   } catch (error: any) {
     // If a race condition occurred and the unique constraint failed, update the existing record
     if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
-      const raceExisting = await prisma.setting.findFirst({ where: { organizationId, userId, key } });
+      const raceExisting = await prisma.setting.findFirst({
+        where: { organizationId, userId, key },
+      });
       if (raceExisting) {
         return prisma.setting.update({
           where: { id: raceExisting.id },
-          data: { value: value as Prisma.InputJsonValue }
+          data: { value: value as Prisma.InputJsonValue },
         });
       }
     }

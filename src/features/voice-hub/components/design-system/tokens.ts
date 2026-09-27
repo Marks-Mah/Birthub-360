@@ -40,17 +40,17 @@ export const colors = {
     textPrimary: '#f8fafc', // slate-50
     textSecondary: '#cbd5e1', // slate-300
     textMuted: '#64748b', // slate-500
-  }
+  },
 };
 
 export const spacing = {
   none: '0px',
-  xs: '4px',    // 0.25rem (4)
-  sm: '8px',    // 0.5rem (8)
-  md: '12px',   // 0.75rem (12)
-  lg: '16px',   // 1rem (16)
-  xl: '24px',   // 1.5rem (24)
-  xxl: '32px',  // 2rem (32)
+  xs: '4px', // 0.25rem (4)
+  sm: '8px', // 0.5rem (8)
+  md: '12px', // 0.75rem (12)
+  lg: '16px', // 1rem (16)
+  xl: '24px', // 1.5rem (24)
+  xxl: '32px', // 2rem (32)
   '3xl': '40px', // 2.5rem (40)
   '4xl': '48px', // 3rem (48)
   '5xl': '64px', // 4rem (64)
@@ -81,19 +81,19 @@ export const shadows = {
 export const typography = {
   fontFamily: {
     sans: "'Montserrat', Arial, sans-serif",
-    mono: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
+    mono: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace',
   },
   fontSize: {
-    12: '0.75rem',   // 12px
-    14: '0.875rem',  // 14px
-    16: '1rem',      // 16px
-    18: '1.125rem',  // 18px
-    20: '1.25rem',   // 20px
-    24: '1.5rem',    // 24px
-    30: '1.875rem',  // 30px
-    36: '2.25rem',   // 36px
-    48: '3rem',      // 48px
-    64: '4.5rem',    // 64px
+    12: '0.75rem', // 12px
+    14: '0.875rem', // 14px
+    16: '1rem', // 16px
+    18: '1.125rem', // 18px
+    20: '1.25rem', // 20px
+    24: '1.5rem', // 24px
+    30: '1.875rem', // 30px
+    36: '2.25rem', // 36px
+    48: '3rem', // 48px
+    64: '4.5rem', // 64px
   },
   fontWeight: {
     light: '300',
@@ -117,7 +117,7 @@ export const typography = {
     wide: '0.025em',
     wider: '0.05em',
     widest: '0.1em',
-  }
+  },
 };
 
 export const transitions = {
@@ -133,7 +133,7 @@ export const transitions = {
     easeOut: 'cubic-bezier(0, 0, 0.2, 1)',
     easeInOut: 'cubic-bezier(0.4, 0, 0.2, 1)',
     spring: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
-  }
+  },
 };
 
 export const zIndex = {
@@ -185,7 +185,11 @@ function channelLuminance(channel255: number): number {
 export function relativeLuminance(hex: string): number {
   const rgb = hexToRgb(hex);
   if (!rgb) return 0.5;
-  return 0.2126 * channelLuminance(rgb.r) + 0.7152 * channelLuminance(rgb.g) + 0.0722 * channelLuminance(rgb.b);
+  return (
+    0.2126 * channelLuminance(rgb.r) +
+    0.7152 * channelLuminance(rgb.g) +
+    0.0722 * channelLuminance(rgb.b)
+  );
 }
 
 /** WCAG contrast ratio (1:1 to 21:1) between two `#rrggbb` colors. */
@@ -204,7 +208,9 @@ export function contrastRatio(hexA: string, hexB: string): number {
  * cross exactly there — so this is a mathematically guaranteed WCAG AA pass (4.5:1 normal text,
  * 3:1 large text) regardless of which color a tenant picks, without needing per-color tuning.
  */
-export function getAccessibleTextOnBrand(brandHex: string | null | undefined): '#ffffff' | '#000000' {
+export function getAccessibleTextOnBrand(
+  brandHex: string | null | undefined,
+): '#ffffff' | '#000000' {
   if (!brandHex || !hexToRgb(brandHex)) return '#ffffff';
   const whiteContrast = contrastRatio('#ffffff', brandHex);
   const blackContrast = contrastRatio('#000000', brandHex);
@@ -225,9 +231,15 @@ function hexToHsl(hex: string): { h: number; s: number; l: number } | null {
   const s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
   let h: number;
   switch (max) {
-    case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-    case g: h = (b - r) / d + 2; break;
-    default: h = (r - g) / d + 4; break;
+    case r:
+      h = (g - b) / d + (g < b ? 6 : 0);
+      break;
+    case g:
+      h = (b - r) / d + 2;
+      break;
+    default:
+      h = (r - g) / d + 4;
+      break;
   }
   h /= 6;
   return { h, s, l };
@@ -254,7 +266,10 @@ function hslToHex(h: number, s: number, l: number): string {
     g = hueToRgbChannel(p, q, h);
     b = hueToRgbChannel(p, q, h - 1 / 3);
   }
-  const toHex = (c: number) => Math.round(Math.min(1, Math.max(0, c)) * 255).toString(16).padStart(2, '0');
+  const toHex = (c: number) =>
+    Math.round(Math.min(1, Math.max(0, c)) * 255)
+      .toString(16)
+      .padStart(2, '0');
   return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
 }
 
@@ -271,7 +286,7 @@ function hslToHex(h: number, s: number, l: number): string {
 export function getAccessibleBrandForeground(
   brandHex: string | null | undefined,
   surfaceHex: string,
-  minRatio = 4.5
+  minRatio = 4.5,
 ): string {
   if (!brandHex || !hexToRgb(brandHex)) return brandHex ?? '#000000';
   if (contrastRatio(brandHex, surfaceHex) >= minRatio) return brandHex;
@@ -290,7 +305,8 @@ export function getAccessibleBrandForeground(
     const candidate = hslToHex(hsl.h, hsl.s, mid);
     if (contrastRatio(candidate, surfaceHex) >= minRatio) {
       best = candidate;
-      if (surfaceIsLight) lo = mid; else hi = mid;
+      if (surfaceIsLight) lo = mid;
+      else hi = mid;
     } else if (surfaceIsLight) {
       hi = mid;
     } else {

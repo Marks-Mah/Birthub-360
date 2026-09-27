@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from 'zod';
 
 /**
  * Converte "101,102,103" em ["101", "102", "103"], removendo espaços e
@@ -6,7 +6,7 @@ import { z } from "zod";
  */
 function csv(value: string): string[] {
   return value
-    .split(",")
+    .split(',')
     .map((item) => item.trim())
     .filter((item) => item.length > 0);
 }
@@ -15,16 +15,16 @@ const timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
 
 const envSchema = z.object({
   PORT: z.coerce.number().int().positive().default(3000),
-  LOG_LEVEL: z.enum(["fatal", "error", "warn", "info", "debug", "trace"]).default("info"),
+  LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace']).default('info'),
 
-  DATABASE_URL: z.string().min(1, "DATABASE_URL é obrigatório"),
+  DATABASE_URL: z.string().min(1, 'DATABASE_URL é obrigatório'),
 
-  THREECX_DOMAIN: z.string().min(1, "THREECX_DOMAIN é obrigatório"),
-  THREECX_CLIENT_ID: z.string().min(1, "THREECX_CLIENT_ID é obrigatório"),
-  THREECX_API_KEY: z.string().min(1, "THREECX_API_KEY é obrigatório"),
+  THREECX_DOMAIN: z.string().min(1, 'THREECX_DOMAIN é obrigatório'),
+  THREECX_CLIENT_ID: z.string().min(1, 'THREECX_CLIENT_ID é obrigatório'),
+  THREECX_API_KEY: z.string().min(1, 'THREECX_API_KEY é obrigatório'),
   THREECX_AGENT_DNS: z
     .string()
-    .min(1, "THREECX_AGENT_DNS é obrigatório (ex: 101,102,103)")
+    .min(1, 'THREECX_AGENT_DNS é obrigatório (ex: 101,102,103)')
     .transform(csv),
   THREECX_CALL_TIMEOUT_SECONDS: z.coerce.number().int().positive().default(25),
   THREECX_HTTP_RETRY_MAX_ATTEMPTS: z.coerce.number().int().positive().default(3),
@@ -35,18 +35,18 @@ const envSchema = z.object({
   DIALER_MAX_ATTEMPTS: z.coerce.number().int().positive().default(3),
   DIALER_RETRY_BACKOFF_MINUTES: z.coerce.number().int().positive().default(60),
 
-  DIALER_CALLING_HOURS_START: z.string().regex(timeRegex).default("08:00"),
-  DIALER_CALLING_HOURS_END: z.string().regex(timeRegex).default("20:00"),
+  DIALER_CALLING_HOURS_START: z.string().regex(timeRegex).default('08:00'),
+  DIALER_CALLING_HOURS_END: z.string().regex(timeRegex).default('20:00'),
   DIALER_CALLING_DAYS: z
     .string()
-    .default("1,2,3,4,5,6")
+    .default('1,2,3,4,5,6')
     .transform((value) => csv(value).map((day) => Number.parseInt(day, 10))),
-  DIALER_TIMEZONE: z.string().default("America/Sao_Paulo"),
+  DIALER_TIMEZONE: z.string().default('America/Sao_Paulo'),
 });
 
 export type Env = Readonly<{
   port: number;
-  logLevel: "fatal" | "error" | "warn" | "info" | "debug" | "trace";
+  logLevel: 'fatal' | 'error' | 'warn' | 'info' | 'debug' | 'trace';
   databaseUrl: string;
   threeCx: Readonly<{
     domain: string;
@@ -79,8 +79,8 @@ export function loadEnv(source: NodeJS.ProcessEnv = process.env): Env {
 
   if (!parsed.success) {
     const issues = parsed.error.issues
-      .map((issue) => `  - ${issue.path.join(".")}: ${issue.message}`)
-      .join("\n");
+      .map((issue) => `  - ${issue.path.join('.')}: ${issue.message}`)
+      .join('\n');
     throw new Error(`Configuração de ambiente inválida:\n${issues}`);
   }
 

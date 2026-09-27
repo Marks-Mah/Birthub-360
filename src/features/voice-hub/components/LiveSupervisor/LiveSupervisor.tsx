@@ -1,6 +1,18 @@
 import type React from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { AlertCircle, ShieldAlert, HeartPulse, Activity, Zap, Shield, Clock, Wifi, WifiOff, Loader2, Lock } from 'lucide-react';
+import {
+  AlertCircle,
+  ShieldAlert,
+  HeartPulse,
+  Activity,
+  Zap,
+  Shield,
+  Clock,
+  Wifi,
+  WifiOff,
+  Loader2,
+  Lock,
+} from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { io, type Socket } from 'socket.io-client';
 import { useSessionStore } from '../../store/useSessionStore.js';
@@ -130,10 +142,13 @@ export function LiveSupervisor({ sessionId }: LiveSupervisorProps) {
 
     socket.on('telemetry_stream', (data: TelemetryPayload) => {
       if (data?.sessionId && data.sessionId !== sessionId) {
-        logger.warn('LiveSupervisor: telemetria ignorada — sessionId não corresponde à sessão observada', {
-          expected: sessionId,
-          received: data.sessionId,
-        });
+        logger.warn(
+          'LiveSupervisor: telemetria ignorada — sessionId não corresponde à sessão observada',
+          {
+            expected: sessionId,
+            received: data.sessionId,
+          },
+        );
         return;
       }
       setLastUpdateAt(Date.now());
@@ -165,7 +180,9 @@ export function LiveSupervisor({ sessionId }: LiveSupervisorProps) {
       // (see server.ts, which enforces the 'supervision:intervene' permission via hasPermission()).
       // If it rejects the request, roll back the optimistic state instead of showing an
       // intervention that never actually happened.
-      logger.warn('LiveSupervisor: intervenção rejeitada pelo servidor', { message: data?.message });
+      logger.warn('LiveSupervisor: intervenção rejeitada pelo servidor', {
+        message: data?.message,
+      });
       setIntervention((prev) => (prev?.triggeredByMe ? null : prev));
     });
 
@@ -205,11 +222,18 @@ export function LiveSupervisor({ sessionId }: LiveSupervisorProps) {
     socketInstance.emit('intervene_call', { sessionId });
     // Optimistic local state — the server is the source of truth for the audit record (who/when),
     // this only reflects the action was sent while awaiting/echoing confirmation.
-    setIntervention({ active: true, triggeredByMe: true, actorLabel: user?.email || 'Você', at: Date.now() });
+    setIntervention({
+      active: true,
+      triggeredByMe: true,
+      actorLabel: user?.email || 'Você',
+      at: Date.now(),
+    });
   }, [socketInstance, canIntervene, intervention, sessionId, user]);
 
   const formatTime = (seconds: number) => {
-    const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+    const m = Math.floor(seconds / 60)
+      .toString()
+      .padStart(2, '0');
     const s = (seconds % 60).toString().padStart(2, '0');
     return `${m}:${s}`;
   };
@@ -257,15 +281,19 @@ export function LiveSupervisor({ sessionId }: LiveSupervisorProps) {
       {isStale && (
         <div className="px-4 py-2 bg-amber-500/10 border-b border-amber-500/30 text-amber-300 text-xs flex items-center gap-2">
           <Loader2 className="w-3.5 h-3.5 animate-spin" />
-          Dados congelados — {connectionStatus === 'reconnecting' ? 'reconectando ao stream ao vivo' : 'conexão perdida'}.
-          {lastUpdateAt && ` Última atualização: ${new Date(lastUpdateAt).toLocaleTimeString()}.`}
+          Dados congelados —{' '}
+          {connectionStatus === 'reconnecting'
+            ? 'reconectando ao stream ao vivo'
+            : 'conexão perdida'}
+          .{lastUpdateAt && ` Última atualização: ${new Date(lastUpdateAt).toLocaleTimeString()}.`}
         </div>
       )}
 
       <div className="flex-1 p-6 grid grid-cols-12 gap-6 overflow-y-auto">
         {/* Left Column: Metrics & Intent */}
-        <div className={`col-span-12 lg:col-span-8 space-y-6 transition-opacity ${isStale ? 'opacity-60' : 'opacity-100'}`}>
-
+        <div
+          className={`col-span-12 lg:col-span-8 space-y-6 transition-opacity ${isStale ? 'opacity-60' : 'opacity-100'}`}
+        >
           {!hasTelemetry ? (
             <div className="bg-slate-800/50 rounded-xl p-8 border border-slate-700 text-center text-sm text-slate-400">
               {connectionStatus === 'connected'
@@ -275,9 +303,28 @@ export function LiveSupervisor({ sessionId }: LiveSupervisorProps) {
           ) : (
             <>
               <div className="grid grid-cols-3 gap-4">
-                <MetricCard title="Empatia" value={emotions.empathy} icon={<HeartPulse className="w-4 h-4" />} color="text-pink-400" bg="bg-pink-400/10" />
-                <MetricCard title="Confiança" value={emotions.confidence} icon={<Shield className="w-4 h-4" />} color="text-emerald-400" bg="bg-emerald-400/10" />
-                <MetricCard title="Frustração" value={emotions.frustration} icon={<Activity className="w-4 h-4" />} color="text-orange-400" bg="bg-orange-400/10" inverted />
+                <MetricCard
+                  title="Empatia"
+                  value={emotions.empathy}
+                  icon={<HeartPulse className="w-4 h-4" />}
+                  color="text-pink-400"
+                  bg="bg-pink-400/10"
+                />
+                <MetricCard
+                  title="Confiança"
+                  value={emotions.confidence}
+                  icon={<Shield className="w-4 h-4" />}
+                  color="text-emerald-400"
+                  bg="bg-emerald-400/10"
+                />
+                <MetricCard
+                  title="Frustração"
+                  value={emotions.frustration}
+                  icon={<Activity className="w-4 h-4" />}
+                  color="text-orange-400"
+                  bg="bg-orange-400/10"
+                  inverted
+                />
               </div>
 
               <div className="bg-slate-800/50 rounded-xl p-5 border border-slate-700">
@@ -311,7 +358,9 @@ export function LiveSupervisor({ sessionId }: LiveSupervisorProps) {
             <div className="space-y-3">
               <AnimatePresence>
                 {objections.length === 0 ? (
-                   <p className="text-sm text-slate-500 italic">Nenhuma objeção registrada nesta sessão.</p>
+                  <p className="text-sm text-slate-500 italic">
+                    Nenhuma objeção registrada nesta sessão.
+                  </p>
                 ) : (
                   objections.map((obj, i) => (
                     <motion.div
@@ -328,7 +377,6 @@ export function LiveSupervisor({ sessionId }: LiveSupervisorProps) {
               </AnimatePresence>
             </div>
           </div>
-
         </div>
 
         {/* Right Column: Real-time Alerts */}
@@ -343,7 +391,9 @@ export function LiveSupervisor({ sessionId }: LiveSupervisorProps) {
             <div className="p-4 flex-1 overflow-y-auto space-y-3">
               <AnimatePresence>
                 {alerts.length === 0 ? (
-                  <p className="text-sm text-slate-500 text-center mt-10">Tudo normal. Nenhum alerta crítico.</p>
+                  <p className="text-sm text-slate-500 text-center mt-10">
+                    Tudo normal. Nenhum alerta crítico.
+                  </p>
                 ) : (
                   alerts.map((alert) => (
                     <motion.div
@@ -357,8 +407,12 @@ export function LiveSupervisor({ sessionId }: LiveSupervisorProps) {
                       }`}
                     >
                       <div className="flex justify-between items-start mb-1">
-                        <span className="font-bold uppercase tracking-wider text-[10px]">{alert.level}</span>
-                        <span className="font-mono text-slate-500">{new Date(alert.timestamp).toLocaleTimeString()}</span>
+                        <span className="font-bold uppercase tracking-wider text-[10px]">
+                          {alert.level}
+                        </span>
+                        <span className="font-mono text-slate-500">
+                          {new Date(alert.timestamp).toLocaleTimeString()}
+                        </span>
                       </div>
                       <p>{alert.message}</p>
                     </motion.div>
@@ -367,34 +421,36 @@ export function LiveSupervisor({ sessionId }: LiveSupervisorProps) {
               </AnimatePresence>
             </div>
             <div className="p-4 bg-slate-900 border-t border-slate-700 space-y-2">
-               {!canIntervene && (
-                 <p className="text-[11px] text-slate-500 flex items-center gap-1.5">
-                   <Lock className="w-3 h-3" /> Apenas supervisores podem intervir nesta chamada.
-                 </p>
-               )}
-               <button
-                 onClick={handleIntervene}
-                 disabled={!canIntervene || !!intervention?.active}
-                 title={!canIntervene ? 'Apenas supervisores podem intervir nesta chamada.' : undefined}
-                 className={`w-full py-2 text-white text-sm font-bold rounded-lg shadow-lg transition-colors disabled:cursor-not-allowed ${
-                   intervention?.active
-                     ? 'bg-emerald-600 shadow-emerald-900/50'
-                     : canIntervene
-                       ? 'bg-red-600 hover:bg-red-700 shadow-red-900/50'
-                       : 'bg-slate-700 shadow-none opacity-60'
-                 }`}
-               >
-                 {intervention?.active
-                   ? intervention.triggeredByMe
-                     ? 'INTERVENÇÃO ENVIADA VIA WEBSOCKET'
-                     : 'INTERVENÇÃO ATIVA (OUTRO SUPERVISOR)'
-                   : 'INTERVIR NA CHAMADA'}
-               </button>
-               {intervention?.active && (
-                 <p className="text-[11px] text-slate-400 font-mono">
-                   Por {intervention.actorLabel} às {new Date(intervention.at).toLocaleTimeString()}
-                 </p>
-               )}
+              {!canIntervene && (
+                <p className="text-[11px] text-slate-500 flex items-center gap-1.5">
+                  <Lock className="w-3 h-3" /> Apenas supervisores podem intervir nesta chamada.
+                </p>
+              )}
+              <button
+                onClick={handleIntervene}
+                disabled={!canIntervene || !!intervention?.active}
+                title={
+                  !canIntervene ? 'Apenas supervisores podem intervir nesta chamada.' : undefined
+                }
+                className={`w-full py-2 text-white text-sm font-bold rounded-lg shadow-lg transition-colors disabled:cursor-not-allowed ${
+                  intervention?.active
+                    ? 'bg-emerald-600 shadow-emerald-900/50'
+                    : canIntervene
+                      ? 'bg-red-600 hover:bg-red-700 shadow-red-900/50'
+                      : 'bg-slate-700 shadow-none opacity-60'
+                }`}
+              >
+                {intervention?.active
+                  ? intervention.triggeredByMe
+                    ? 'INTERVENÇÃO ENVIADA VIA WEBSOCKET'
+                    : 'INTERVENÇÃO ATIVA (OUTRO SUPERVISOR)'
+                  : 'INTERVIR NA CHAMADA'}
+              </button>
+              {intervention?.active && (
+                <p className="text-[11px] text-slate-400 font-mono">
+                  Por {intervention.actorLabel} às {new Date(intervention.at).toLocaleTimeString()}
+                </p>
+              )}
             </div>
           </div>
         </div>
@@ -404,7 +460,10 @@ export function LiveSupervisor({ sessionId }: LiveSupervisorProps) {
 }
 
 function ConnectionBadge({ status }: { status: ConnectionStatus }) {
-  const config: Record<ConnectionStatus, { label: string; className: string; icon: React.ReactNode }> = {
+  const config: Record<
+    ConnectionStatus,
+    { label: string; className: string; icon: React.ReactNode }
+  > = {
     connecting: {
       label: 'CONECTANDO...',
       className: 'text-slate-300',
@@ -437,15 +496,27 @@ function ConnectionBadge({ status }: { status: ConnectionStatus }) {
   );
 }
 
-function MetricCard({ title, value, icon, color, bg, inverted = false }: { title: string, value: number, icon: React.ReactNode, color: string, bg: string, inverted?: boolean }) {
+function MetricCard({
+  title,
+  value,
+  icon,
+  color,
+  bg,
+  inverted = false,
+}: {
+  title: string;
+  value: number;
+  icon: React.ReactNode;
+  color: string;
+  bg: string;
+  inverted?: boolean;
+}) {
   const isWarning = inverted ? value > 50 : value < 50;
 
   return (
     <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700 flex flex-col justify-between">
       <div className="flex items-center justify-between mb-4">
-        <div className={`p-2 rounded-lg ${bg} ${color}`}>
-          {icon}
-        </div>
+        <div className={`p-2 rounded-lg ${bg} ${color}`}>{icon}</div>
         <span className="text-xs font-medium text-slate-400">{title}</span>
       </div>
       <div className="flex items-end justify-between">

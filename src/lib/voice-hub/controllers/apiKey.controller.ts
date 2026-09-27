@@ -22,7 +22,10 @@ export async function createApiKeyHandler(req: Request, res: Response) {
   });
 
   // Audit the creation event itself, never the secret value.
-  writeAuditLog(req.organizationId, req.voiceHubUser?.id, 'API_KEY_CREATE', { apiKeyId: apiKey.id, name: apiKey.name });
+  writeAuditLog(req.organizationId, req.voiceHubUser?.id, 'API_KEY_CREATE', {
+    apiKeyId: apiKey.id,
+    name: apiKey.name,
+  });
 
   return res.status(201).json({
     apiKey: {
@@ -47,10 +50,13 @@ export async function listApiKeysHandler(req: Request, res: Response) {
 export async function revokeApiKeyHandler(req: Request, res: Response) {
   try {
     const apiKey = await revokeApiKeyForTenant(req.organizationId!, String(req.params.id));
-    writeAuditLog(req.organizationId, req.voiceHubUser?.id, 'API_KEY_REVOKE', { apiKeyId: apiKey.id });
+    writeAuditLog(req.organizationId, req.voiceHubUser?.id, 'API_KEY_REVOKE', {
+      apiKeyId: apiKey.id,
+    });
     return res.json({ success: true, apiKey });
   } catch (err: any) {
-    if (err instanceof ApiKeyServiceError) return res.status(err.status).json({ error: err.message });
+    if (err instanceof ApiKeyServiceError)
+      return res.status(err.status).json({ error: err.message });
     throw err;
   }
 }

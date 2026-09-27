@@ -32,7 +32,12 @@ export async function getUserSettings(organizationId: string, userId: string) {
   return row?.value ?? DEFAULT_SETTINGS;
 }
 
-export async function saveUserSettings(organizationId: string, userId: string, settings: Record<string, unknown>, merge: boolean) {
+export async function saveUserSettings(
+  organizationId: string,
+  userId: string,
+  settings: Record<string, unknown>,
+  merge: boolean,
+) {
   let value = settings;
   if (merge) {
     const existing = await settingRepository.findSetting(organizationId, userId, 'general');
@@ -51,7 +56,12 @@ export async function getVoiceRuntimeConfig(organizationId: string, userId: stri
   return row?.value ?? DEFAULT_VOICE_RUNTIME;
 }
 
-export async function saveVoiceRuntimeConfig(organizationId: string, userId: string, config: Record<string, unknown>, merge: boolean) {
+export async function saveVoiceRuntimeConfig(
+  organizationId: string,
+  userId: string,
+  config: Record<string, unknown>,
+  merge: boolean,
+) {
   let value = config;
   if (merge) {
     const existing = await settingRepository.findSetting(organizationId, userId, 'voice_runtime');
@@ -70,7 +80,11 @@ export async function getChecklist(organizationId: string, userId: string) {
   return row?.value ?? DEFAULT_CHECKLIST;
 }
 
-export function saveChecklist(organizationId: string, userId: string, checklist: Record<string, boolean>) {
+export function saveChecklist(
+  organizationId: string,
+  userId: string,
+  checklist: Record<string, boolean>,
+) {
   return settingRepository.upsertSetting(organizationId, userId, 'onboarding_checklist', checklist);
 }
 
@@ -128,12 +142,18 @@ export async function getAiConsent(organizationId: string): Promise<AiConsentRec
   return toAiConsentRecord(row);
 }
 
-export async function grantAiConsent(organizationId: string, actorUserId: string): Promise<AiConsentRecord> {
+export async function grantAiConsent(
+  organizationId: string,
+  actorUserId: string,
+): Promise<AiConsentRecord> {
   const row = await organizationAiConsentRepository.grant(organizationId, new Date(), actorUserId);
   return toAiConsentRecord(row);
 }
 
-export async function revokeAiConsent(organizationId: string, actorUserId: string): Promise<AiConsentRecord> {
+export async function revokeAiConsent(
+  organizationId: string,
+  actorUserId: string,
+): Promise<AiConsentRecord> {
   const row = await organizationAiConsentRepository.revoke(organizationId, new Date(), actorUserId);
   return toAiConsentRecord(row);
 }

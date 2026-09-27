@@ -1,4 +1,4 @@
-import type { Campaign } from "../../domain/entities/Campaign.js";
+import type { Campaign } from '../../domain/entities/Campaign.js';
 
 export interface CampaignRepository {
   save(campaign: Campaign): Promise<void>;

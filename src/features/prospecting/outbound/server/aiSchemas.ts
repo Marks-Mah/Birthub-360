@@ -52,7 +52,7 @@ export const COPIES_STRING_FIELDS = [
   'objection_matrix',
   'qualification_matrix',
   'ice_breaker',
-  'approach_prompt'
+  'approach_prompt',
 ] as const;
 
 export type CopiesStringField = (typeof COPIES_STRING_FIELDS)[number];
@@ -101,7 +101,14 @@ export function validateCopiesShape(parsed: unknown): CopiesShapeValidation {
 }
 
 export interface NewsItemShapeResult {
-  validItems: Array<{ title: string; source: string; date: string; snippet: string; url?: string; relevance: string }>;
+  validItems: Array<{
+    title: string;
+    source: string;
+    date: string;
+    snippet: string;
+    url?: string;
+    relevance: string;
+  }>;
   droppedCount: number;
 }
 
@@ -130,7 +137,7 @@ export function sanitizeNewsItems(value: unknown): NewsItemShapeResult {
         date: isNonEmptyString((item as any).date) ? (item as any).date : '',
         snippet: isNonEmptyString((item as any).snippet) ? (item as any).snippet : '',
         url: isNonEmptyString((item as any).url) ? (item as any).url : undefined,
-        relevance: isNonEmptyString((item as any).relevance) ? (item as any).relevance : ''
+        relevance: isNonEmptyString((item as any).relevance) ? (item as any).relevance : '',
       });
     } else {
       droppedCount++;
@@ -162,7 +169,12 @@ export function validateEnrichmentShape(parsed: unknown): EnrichmentShapeValidat
   const errors: string[] = [];
 
   if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) {
-    return { valid: false, newsDossier: null, copies: null, errors: ['resposta não é um objeto JSON'] };
+    return {
+      valid: false,
+      newsDossier: null,
+      copies: null,
+      errors: ['resposta não é um objeto JSON'],
+    };
   }
 
   const obj = parsed as Record<string, unknown>;
@@ -183,30 +195,41 @@ export function validateEnrichmentShape(parsed: unknown): EnrichmentShapeValidat
   const dossierObj = rawDossier as Record<string, unknown>;
   const { validItems, droppedCount } = sanitizeNewsItems(dossierObj.recent_news);
   if (droppedCount > 0) {
-    errors.push(`news_dossier.recent_news continha ${droppedCount} item(ns) malformado(s), descartado(s)`);
+    errors.push(
+      `news_dossier.recent_news continha ${droppedCount} item(ns) malformado(s), descartado(s)`,
+    );
   }
 
   const commercialHooks = Array.isArray(dossierObj.commercial_hooks)
     ? dossierObj.commercial_hooks.filter(isNonEmptyString)
     : [];
-  if (Array.isArray(dossierObj.commercial_hooks) && commercialHooks.length !== dossierObj.commercial_hooks.length) {
+  if (
+    Array.isArray(dossierObj.commercial_hooks) &&
+    commercialHooks.length !== dossierObj.commercial_hooks.length
+  ) {
     errors.push('news_dossier.commercial_hooks continha item(ns) não-string, descartado(s)');
   }
 
   const copiesValidation = validateCopiesShape(rawCopies);
   if (!copiesValidation.valid) {
-    errors.push(`copies com campo(s) de forma inválida: ${copiesValidation.invalidFields.join(', ')}`);
+    errors.push(
+      `copies com campo(s) de forma inválida: ${copiesValidation.invalidFields.join(', ')}`,
+    );
   }
 
   return {
     valid: true,
     newsDossier: {
-      company_overview: isNonEmptyString(dossierObj.company_overview) ? dossierObj.company_overview : '',
+      company_overview: isNonEmptyString(dossierObj.company_overview)
+        ? dossierObj.company_overview
+        : '',
       recent_news: validItems,
-      decision_maker_insights: isNonEmptyString(dossierObj.decision_maker_insights) ? dossierObj.decision_maker_insights : '',
-      commercial_hooks: commercialHooks
+      decision_maker_insights: isNonEmptyString(dossierObj.decision_maker_insights)
+        ? dossierObj.decision_maker_insights
+        : '',
+      commercial_hooks: commercialHooks,
     },
     copies: copiesValidation,
-    errors
+    errors,
   };
 }

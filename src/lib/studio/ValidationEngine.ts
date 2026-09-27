@@ -1,4 +1,3 @@
-
 export interface ValidationIssue {
   id: string;
   type: 'error' | 'warning';
@@ -14,8 +13,7 @@ export const validationEngine = {
   validate: (_nodes: any[], _edges: any[]): ValidationResult => {
     return {
       isValid: true,
-      issues: []
+      issues: [],
     };
-  }
+  },
 };
-

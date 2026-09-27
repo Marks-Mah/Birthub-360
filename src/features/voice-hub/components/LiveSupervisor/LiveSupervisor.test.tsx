@@ -31,7 +31,7 @@ vi.mock('socket.io-client', () => {
       disconnect: vi.fn(),
       trigger: (event: string, data?: unknown) => {
         (handlers.get(event) ?? []).forEach((cb) => cb(data));
-      }
+      },
     };
     lastSocket = socket;
     return socket;
@@ -39,7 +39,7 @@ vi.mock('socket.io-client', () => {
 
   return {
     io,
-    __getLastSocket: () => lastSocket
+    __getLastSocket: () => lastSocket,
   };
 });
 
@@ -50,16 +50,40 @@ function getMockSocket(): MockSocket {
   return socket;
 }
 
-const SUPERVISOR_USER = { id: 'u1', email: 'supervisora@teste.com', role: 'admin', organizationId: 'tenant-1', permissions: ['supervision:intervene'] };
-const AGENT_USER = { id: 'u2', email: 'agente@teste.com', role: 'user', organizationId: 'tenant-1', permissions: [] };
+const SUPERVISOR_USER = {
+  id: 'u1',
+  email: 'supervisora@teste.com',
+  role: 'admin',
+  organizationId: 'tenant-1',
+  permissions: ['supervision:intervene'],
+};
+const AGENT_USER = {
+  id: 'u2',
+  email: 'agente@teste.com',
+  role: 'user',
+  organizationId: 'tenant-1',
+  permissions: [],
+};
 // Dedicated 'supervisor' role (see handoff 01-para-11-supervisor-permission-frontend.md): holds
 // the 'supervision:intervene' permission on the server by default, same as 'admin', but must not
 // get full admin access. `canIntervene` is driven purely by `user.permissions` now (see handoff
 // 02-para-11-permissions-disponivel-no-sessionstore.md) — the role name itself is irrelevant here.
-const DEDICATED_SUPERVISOR_USER = { id: 'u3', email: 'supervisor.dedicado@teste.com', role: 'supervisor', organizationId: 'tenant-1', permissions: ['supervision:intervene'] };
+const DEDICATED_SUPERVISOR_USER = {
+  id: 'u3',
+  email: 'supervisor.dedicado@teste.com',
+  role: 'supervisor',
+  organizationId: 'tenant-1',
+  permissions: ['supervision:intervene'],
+};
 // A user whose role is outside the old hardcoded allowlist entirely, but who was granted the
 // permission directly — proves `canIntervene` no longer depends on role name at all.
-const CUSTOM_ROLE_WITH_PERMISSION_USER = { id: 'u4', email: 'custom.permissao@teste.com', role: 'qa-lead', organizationId: 'tenant-1', permissions: ['supervision:intervene'] };
+const CUSTOM_ROLE_WITH_PERMISSION_USER = {
+  id: 'u4',
+  email: 'custom.permissao@teste.com',
+  role: 'qa-lead',
+  organizationId: 'tenant-1',
+  permissions: ['supervision:intervene'],
+};
 
 describe('LiveSupervisor', () => {
   beforeEach(() => {
@@ -101,7 +125,14 @@ describe('LiveSupervisor', () => {
         emotions: { empathy: 40, confidence: 30, frustration: 80 },
         intent: { primary: 'Reclamação sobre cobrança', confidence: 77 },
         objections: ['Preço muito alto'],
-        alerts: [{ id: 'a1', level: 'critical', message: 'Cliente irritado detectado', timestamp: Date.now() }]
+        alerts: [
+          {
+            id: 'a1',
+            level: 'critical',
+            message: 'Cliente irritado detectado',
+            timestamp: Date.now(),
+          },
+        ],
       });
     });
 
@@ -123,9 +154,12 @@ describe('LiveSupervisor', () => {
         emotions: { empathy: 1, confidence: 1, frustration: 1 },
         intent: { primary: 'Vazamento cross-tenant', confidence: 1 },
         objections: [],
-        alerts: []
+        alerts: [],
       });
-      socket.trigger('intervention_triggered', { sessionId: 'sess-OTHER-TENANT', by: 'outro@tenant.com' });
+      socket.trigger('intervention_triggered', {
+        sessionId: 'sess-OTHER-TENANT',
+        by: 'outro@tenant.com',
+      });
     });
 
     expect(screen.queryByText('Vazamento cross-tenant')).not.toBeInTheDocument();
@@ -145,7 +179,7 @@ describe('LiveSupervisor', () => {
         emotions: { empathy: 50, confidence: 50, frustration: 50 },
         intent: { primary: 'Qualificação', confidence: 80 },
         objections: [],
-        alerts: []
+        alerts: [],
       });
     });
 
@@ -191,7 +225,10 @@ describe('LiveSupervisor', () => {
   });
 
   it('allows intervention based on user.permissions alone, regardless of role name', () => {
-    useSessionStore.setState({ user: CUSTOM_ROLE_WITH_PERMISSION_USER, sessionStatus: 'authenticated' });
+    useSessionStore.setState({
+      user: CUSTOM_ROLE_WITH_PERMISSION_USER,
+      sessionStatus: 'authenticated',
+    });
     render(<LiveSupervisor sessionId="sess-123" />);
 
     const interveneButton = screen.getByRole('button', { name: /intervir na chamada/i });
@@ -231,10 +268,16 @@ describe('LiveSupervisor', () => {
     const socket = getMockSocket();
 
     act(() => {
-      socket.trigger('intervention_triggered', { sessionId: 'sess-123', by: 'outro.supervisor@teste.com', at: Date.now() });
+      socket.trigger('intervention_triggered', {
+        sessionId: 'sess-123',
+        by: 'outro.supervisor@teste.com',
+        at: Date.now(),
+      });
     });
 
-    expect(screen.getByRole('button', { name: /intervenção ativa \(outro supervisor\)/i })).toBeDisabled();
+    expect(
+      screen.getByRole('button', { name: /intervenção ativa \(outro supervisor\)/i }),
+    ).toBeDisabled();
     expect(screen.getByText(/outro\.supervisor@teste\.com/)).toBeInTheDocument();
   });
 
@@ -250,7 +293,14 @@ describe('LiveSupervisor', () => {
         emotions: { empathy: 50, confidence: 50, frustration: 90 },
         intent: { primary: 'Cancelamento', confidence: 60 },
         objections: [],
-        alerts: [{ id: 'crit-1', level: 'critical', message: 'Cliente ameaça cancelar contrato', timestamp: Date.now() }]
+        alerts: [
+          {
+            id: 'crit-1',
+            level: 'critical',
+            message: 'Cliente ameaça cancelar contrato',
+            timestamp: Date.now(),
+          },
+        ],
       });
     });
 
@@ -273,8 +323,13 @@ describe('LiveSupervisor', () => {
         objections: [],
         alerts: [
           { id: 'warn-1', level: 'warning', message: 'Tom de voz elevado', timestamp: Date.now() },
-          { id: 'info-1', level: 'info', message: 'Cliente mencionou concorrente', timestamp: Date.now() }
-        ]
+          {
+            id: 'info-1',
+            level: 'info',
+            message: 'Cliente mencionou concorrente',
+            timestamp: Date.now(),
+          },
+        ],
       });
     });
 
@@ -300,9 +355,19 @@ describe('LiveSupervisor', () => {
         objections: [],
         alerts: [
           { id: 'warn-1', level: 'warning', message: 'Tom de voz elevado', timestamp: Date.now() },
-          { id: 'info-1', level: 'info', message: 'Cliente mencionou concorrente', timestamp: Date.now() },
-          { id: 'crit-2', level: 'critical', message: 'Cliente exige cancelamento imediato', timestamp: Date.now() }
-        ]
+          {
+            id: 'info-1',
+            level: 'info',
+            message: 'Cliente mencionou concorrente',
+            timestamp: Date.now(),
+          },
+          {
+            id: 'crit-2',
+            level: 'critical',
+            message: 'Cliente exige cancelamento imediato',
+            timestamp: Date.now(),
+          },
+        ],
       });
     });
 

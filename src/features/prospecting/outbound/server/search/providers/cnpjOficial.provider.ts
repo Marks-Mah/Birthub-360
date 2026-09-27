@@ -6,7 +6,12 @@
 // qualquer outra, por capacidade.
 
 import { fetchCnpjPublicData, type CnpjData } from '../../cnpj.js';
-import type { ProviderCapability, ProviderHealth, ProviderResult, SearchProvider } from './types.js';
+import type {
+  ProviderCapability,
+  ProviderHealth,
+  ProviderResult,
+  SearchProvider,
+} from './types.js';
 
 const CAPABILITIES: ProviderCapability[] = ['company_cnae_lookup', 'company_location_lookup'];
 
@@ -17,7 +22,11 @@ export async function lookupCnpj(cnpj: string): Promise<ProviderResult<CnpjData>
   const latencyMs = Date.now() - startedAt;
 
   if (!result) {
-    return { status: 'not_found', source: result === null ? 'cnpj_receita_federal' : 'unknown', latencyMs };
+    return {
+      status: 'not_found',
+      source: result === null ? 'cnpj_receita_federal' : 'unknown',
+      latencyMs,
+    };
   }
   return { status: 'ok', data: result, source: result.source || 'cnpj_receita_federal', latencyMs };
 }
@@ -30,5 +39,5 @@ export const cnpjOficialProvider: SearchProvider = {
   },
   async health(): Promise<ProviderHealth> {
     return { status: 'online', checkedAt: new Date().toISOString() };
-  }
+  },
 };

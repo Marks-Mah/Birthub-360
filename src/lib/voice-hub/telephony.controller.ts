@@ -70,7 +70,10 @@ export async function incomingCallHandler(req: Request, res: Response) {
   const result = await telephonyService.startCall({ callSid, from, to });
 
   if (!result.configured) {
-    twiml.say({ language: 'pt-BR' }, 'Este número ainda não está configurado para atendimento. Por favor, tente novamente mais tarde.');
+    twiml.say(
+      { language: 'pt-BR' },
+      'Este número ainda não está configurado para atendimento. Por favor, tente novamente mais tarde.',
+    );
     twiml.hangup();
     return sendTwiml(res, twiml);
   }
@@ -226,7 +229,7 @@ export async function dialStatusHandler(req: Request, res: Response) {
   // When human handoff was unanswered, busy, or failed, speak a clean fallback
   twiml.say(
     { language: 'pt-BR' },
-    'Não foi possível conectar com um atendente no momento. Por favor, tente novamente mais tarde.'
+    'Não foi possível conectar com um atendente no momento. Por favor, tente novamente mais tarde.',
   );
   twiml.hangup();
   sendTwiml(res, twiml);

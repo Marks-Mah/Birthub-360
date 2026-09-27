@@ -31,9 +31,9 @@ export default function LoginPage() {
       const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify({ email, password }),
       });
 
       const data = await response.json();
@@ -72,23 +72,27 @@ export default function LoginPage() {
 
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
-              <label htmlFor={emailId} className="block text-sm font-medium text-slate-700 mb-1">Email</label>
+              <label htmlFor={emailId} className="block text-sm font-medium text-slate-700 mb-1">
+                Email
+              </label>
               <input
                 id={emailId}
                 type="email"
                 value={email}
-                onChange={e => setEmail(e.target.value)}
+                onChange={(e) => setEmail(e.target.value)}
                 className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand outline-none"
                 required
               />
             </div>
             <div>
-              <label htmlFor={passwordId} className="block text-sm font-medium text-slate-700 mb-1">Senha</label>
+              <label htmlFor={passwordId} className="block text-sm font-medium text-slate-700 mb-1">
+                Senha
+              </label>
               <input
                 id={passwordId}
                 type="password"
                 value={password}
-                onChange={e => setPassword(e.target.value)}
+                onChange={(e) => setPassword(e.target.value)}
                 className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand outline-none"
                 required
               />
@@ -99,12 +103,21 @@ export default function LoginPage() {
               className="w-full bg-brand hover:opacity-90 font-bold py-3 rounded-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50"
               style={{ color: accessibleBrandText }}
             >
-              {loading ? 'Entrando...' : <>Entrar <ArrowRight className="h-4 w-4" /></>}
+              {loading ? (
+                'Entrando...'
+              ) : (
+                <>
+                  Entrar <ArrowRight className="h-4 w-4" />
+                </>
+              )}
             </button>
           </form>
 
           <div className="mt-6 text-center text-sm text-slate-500">
-            Não tem uma conta? <Link to="/register" className="text-brand hover:underline">Registre-se</Link>
+            Não tem uma conta?{' '}
+            <Link to="/register" className="text-brand hover:underline">
+              Registre-se
+            </Link>
           </div>
         </div>
       </div>

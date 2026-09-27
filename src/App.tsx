@@ -49,7 +49,9 @@ const ProspectingHub = lazy(() =>
     default: m.ProspectingHub,
   })),
 );
-const CrmBoard = lazy(() => import('./components/CrmBoard.js').then((m) => ({ default: m.CrmBoard })));
+const CrmBoard = lazy(() =>
+  import('./components/CrmBoard.js').then((m) => ({ default: m.CrmBoard })),
+);
 const CrmOverview = lazy(() =>
   import('./features/crm360/components/CrmOverview.js').then((m) => ({ default: m.CrmOverview })),
 );
@@ -66,7 +68,9 @@ const EliteCommercialAgentWorkspace = lazy(() =>
   })),
 );
 const CompanyList = lazy(() =>
-  import('./features/companies/components/CompanyList.js').then((m) => ({ default: m.CompanyList })),
+  import('./features/companies/components/CompanyList.js').then((m) => ({
+    default: m.CompanyList,
+  })),
 );
 const ContactList = lazy(() =>
   import('./features/contacts/components/ContactList.js').then((m) => ({ default: m.ContactList })),
@@ -103,7 +107,9 @@ const BitrixGuideHub = lazy(() =>
   })),
 );
 const ReportsHub = lazy(() =>
-  import('./features/intelligence/components/ReportsHub.js').then((m) => ({ default: m.ReportsHub })),
+  import('./features/intelligence/components/ReportsHub.js').then((m) => ({
+    default: m.ReportsHub,
+  })),
 );
 const ChatbookHub = lazy(() =>
   import('./features/chatbook/components/ChatbookHub.js').then((m) => ({ default: m.ChatbookHub })),
@@ -125,9 +131,11 @@ const WinLossAnalysis = lazy(() =>
   })),
 );
 const CommercialIntelligenceHub = lazy(() =>
-  import('./features/commercial-intelligence/components/CommercialIntelligenceHub.js').then((m) => ({
-    default: m.CommercialIntelligenceHub,
-  })),
+  import('./features/commercial-intelligence/components/CommercialIntelligenceHub.js').then(
+    (m) => ({
+      default: m.CommercialIntelligenceHub,
+    }),
+  ),
 );
 
 const DailyPlanHub = lazy(() =>
@@ -154,7 +162,9 @@ const Notifications = lazy(() =>
   })),
 );
 const Automations = lazy(() =>
-  import('./features/automations/components/Automations.js').then((m) => ({ default: m.Automations })),
+  import('./features/automations/components/Automations.js').then((m) => ({
+    default: m.Automations,
+  })),
 );
 const Usage = lazy(() =>
   import('./features/billing/components/Billing.js').then((m) => ({ default: m.Billing })),
@@ -198,12 +208,20 @@ const LeadApprovalDeck = lazy(() =>
   })),
 );
 
-const VoiceStudioPage = lazy(() => import('./features/voice-hub/pages/VoiceStudio.js').then(m => ({ default: m.default })));
-const OutboundApp = lazy(() => import('./features/prospecting/outbound/App.js').then(m => ({ default: m.default })));
-const DialerFrontend = lazy(() => import('./features/cadence/components/CadenceHub.js').then(m => ({ default: m.CadenceHub })));
+const VoiceStudioPage = lazy(() =>
+  import('./features/voice-hub/pages/VoiceStudio.js').then((m) => ({ default: m.default })),
+);
+const OutboundApp = lazy(() =>
+  import('./features/prospecting/outbound/App.js').then((m) => ({ default: m.default })),
+);
+const DialerFrontend = lazy(() =>
+  import('./features/cadence/components/CadenceHub.js').then((m) => ({ default: m.CadenceHub })),
+);
 
 const PropostasList = lazy(() =>
-  import('./features/crm360/components/PropostasList.js').then((m) => ({ default: m.PropostasList })),
+  import('./features/crm360/components/PropostasList.js').then((m) => ({
+    default: m.PropostasList,
+  })),
 );
 
 const PublicBookingPage = lazy(() =>

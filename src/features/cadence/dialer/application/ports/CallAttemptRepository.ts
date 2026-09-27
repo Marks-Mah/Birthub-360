@@ -1,4 +1,4 @@
-import type { CallAttempt } from "../../domain/entities/CallAttempt.js";
+import type { CallAttempt } from '../../domain/entities/CallAttempt.js';
 
 /**
  * Lançado por `save()` quando a implementação detecta que outro processo já
@@ -13,7 +13,7 @@ import type { CallAttempt } from "../../domain/entities/CallAttempt.js";
 export class AgentDnConflictError extends Error {
   constructor(public readonly agentDn: string) {
     super(`DN ${agentDn} já possui uma tentativa de ligação ativa (corrida entre processos)`);
-    this.name = "AgentDnConflictError";
+    this.name = 'AgentDnConflictError';
   }
 }
 

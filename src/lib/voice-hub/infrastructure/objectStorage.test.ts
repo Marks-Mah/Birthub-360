@@ -45,11 +45,15 @@ describe('buildTenantObjectKey', () => {
   });
 
   it('rejects a organizationId with path-unsafe characters', () => {
-    expect(() => buildTenantObjectKey('../other-tenant', 'file.txt')).toThrow(InvalidObjectKeyError);
+    expect(() => buildTenantObjectKey('../other-tenant', 'file.txt')).toThrow(
+      InvalidObjectKeyError,
+    );
   });
 
   it('rejects a path segment containing ".." (traversal attempt)', () => {
-    expect(() => buildTenantObjectKey('tenant-abc', '..', 'secrets.txt')).toThrow(InvalidObjectKeyError);
+    expect(() => buildTenantObjectKey('tenant-abc', '..', 'secrets.txt')).toThrow(
+      InvalidObjectKeyError,
+    );
   });
 
   it('rejects a path segment containing a slash', () => {
@@ -67,7 +71,9 @@ describe('assertKeyBelongsToTenant — cross-tenant isolation', () => {
   });
 
   it('rejects a key that belongs to a different tenant', () => {
-    expect(() => assertKeyBelongsToTenant('tenant-a', 'tenants/tenant-b/doc.pdf')).toThrow(InvalidObjectKeyError);
+    expect(() => assertKeyBelongsToTenant('tenant-a', 'tenants/tenant-b/doc.pdf')).toThrow(
+      InvalidObjectKeyError,
+    );
   });
 
   it('rejects a key with no tenant prefix at all', () => {

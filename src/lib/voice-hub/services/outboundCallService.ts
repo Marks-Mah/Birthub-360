@@ -34,7 +34,9 @@ export interface OutboundCallResult {
  * happens later, over the TwiML webhooks, and the outcome arrives via the `agent.call.ended`
  * webhook. Callers get back a sessionId to correlate the two.
  */
-export async function initiateOutboundCall(params: OutboundCallRequest): Promise<OutboundCallResult> {
+export async function initiateOutboundCall(
+  params: OutboundCallRequest,
+): Promise<OutboundCallResult> {
   // Tenant-scoped lookup (not findAgentById) so one tenant can never dial using another's agent.
   const agent = await agentRepository.getAgent(params.agentId, params.organizationId);
   if (!agent) {

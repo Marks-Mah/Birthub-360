@@ -2,7 +2,9 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import type { AtlasGROutboundPayload } from '../validators/atlasgr.schema.js';
 
 vi.mock('../lib/webhookIdempotency.js', () => ({
-  buildAtlasGROutboundIdempotencyKey: vi.fn().mockReturnValue('idempotency:atlasgr-outbound-call:hash:test'),
+  buildAtlasGROutboundIdempotencyKey: vi
+    .fn()
+    .mockReturnValue('idempotency:atlasgr-outbound-call:hash:test'),
   claimIdempotencyKey: vi.fn(),
 }));
 
@@ -134,7 +136,9 @@ describe('VoiceProspectingService.triggerOutboundCall', () => {
     vi.stubGlobal('fetch', fetchMock);
 
     const service = new VoiceProspectingService();
-    await expect(service.triggerOutboundCall(basePayload)).rejects.toThrow('Upstream provider error');
+    await expect(service.triggerOutboundCall(basePayload)).rejects.toThrow(
+      'Upstream provider error',
+    );
   });
 
   it('handles non-JSON error response gracefully', async () => {
@@ -146,7 +150,9 @@ describe('VoiceProspectingService.triggerOutboundCall', () => {
     vi.stubGlobal('fetch', fetchMock);
 
     const service = new VoiceProspectingService();
-    await expect(service.triggerOutboundCall(basePayload)).rejects.toThrow('Service Unavailable HTML Body');
+    await expect(service.triggerOutboundCall(basePayload)).rejects.toThrow(
+      'Service Unavailable HTML Body',
+    );
   });
 
   it('throws BlandConfigurationError instead of calling Bland AI when BLAND_API_KEY is missing', async () => {
@@ -155,7 +161,9 @@ describe('VoiceProspectingService.triggerOutboundCall', () => {
     vi.stubGlobal('fetch', fetchMock);
 
     const service = new VoiceProspectingService();
-    await expect(service.triggerOutboundCall(basePayload)).rejects.toBeInstanceOf(BlandConfigurationError);
+    await expect(service.triggerOutboundCall(basePayload)).rejects.toBeInstanceOf(
+      BlandConfigurationError,
+    );
     expect(fetchMock).not.toHaveBeenCalled();
     expect(mockClaim).not.toHaveBeenCalled();
     expect(mockGetAiConsent).not.toHaveBeenCalled();
@@ -167,7 +175,9 @@ describe('VoiceProspectingService.triggerOutboundCall', () => {
     vi.stubGlobal('fetch', fetchMock);
 
     const service = new VoiceProspectingService();
-    await expect(service.triggerOutboundCall(basePayload)).rejects.toBeInstanceOf(BlandConfigurationError);
+    await expect(service.triggerOutboundCall(basePayload)).rejects.toBeInstanceOf(
+      BlandConfigurationError,
+    );
     expect(fetchMock).not.toHaveBeenCalled();
   });
 });

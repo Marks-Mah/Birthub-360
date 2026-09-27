@@ -4,7 +4,10 @@ import {
   computeTrendMomentum,
   TREND_MOMENTUM_THRESHOLD_PP,
 } from '../application/predictiveForecast.js';
-import type { ExecutiveOverview, HistoricalTrendsReport } from '../domain/CommercialIntelligence.js';
+import type {
+  ExecutiveOverview,
+  HistoricalTrendsReport,
+} from '../domain/CommercialIntelligence.js';
 
 const EMPTY_COVERAGE = {
   coverage: null,

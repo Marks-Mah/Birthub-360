@@ -10,7 +10,11 @@ const BITRIX_FETCH_TIMEOUT_MS = 10_000;
 export interface BitrixDuplicateResult {
   status: BitrixCheckStatus;
   detail: string;
-  matches: { leadIds: Array<string | number>; contactIds: Array<string | number>; companyIds: Array<string | number> };
+  matches: {
+    leadIds: Array<string | number>;
+    contactIds: Array<string | number>;
+    companyIds: Array<string | number>;
+  };
 }
 
 // Qual webhook usar de acordo com a marca do vendedor/campanha — para não depender
@@ -30,12 +34,20 @@ export function resolveBitrixWebhookForCompany(company?: string): string {
 // para não travar o fluxo de prospecção.
 export async function checkBitrixDuplicate(
   webhookUrl: string,
-  params: { phone?: string; email?: string }
+  params: { phone?: string; email?: string },
 ): Promise<BitrixDuplicateResult> {
-  const empty = { leadIds: [] as Array<string | number>, contactIds: [] as Array<string | number>, companyIds: [] as Array<string | number> };
+  const empty = {
+    leadIds: [] as Array<string | number>,
+    contactIds: [] as Array<string | number>,
+    companyIds: [] as Array<string | number>,
+  };
 
   if (!webhookUrl) {
-    return { status: 'unchecked', detail: 'Nenhum webhook do Bitrix24 configurado para esta marca.', matches: empty };
+    return {
+      status: 'unchecked',
+      detail: 'Nenhum webhook do Bitrix24 configurado para esta marca.',
+      matches: empty,
+    };
   }
 
   const base = webhookUrl.replace(/\/$/, '');
@@ -44,7 +56,11 @@ export async function checkBitrixDuplicate(
   // profundidade caso um chamador futuro esqueça de validar antes de chegar aqui.
   const webhookSafety = isUrlSafeForOutboundWebhook(`${base}/crm.duplicate.findbycomm.json`);
   if (!webhookSafety.safe) {
-    return { status: 'unchecked', detail: `Webhook do Bitrix24 rejeitado por segurança: ${webhookSafety.reason}`, matches: empty };
+    return {
+      status: 'unchecked',
+      detail: `Webhook do Bitrix24 rejeitado por segurança: ${webhookSafety.reason}`,
+      matches: empty,
+    };
   }
 
   const leadIds = new Set<string | number>();
@@ -66,9 +82,9 @@ export async function checkBitrixDuplicate(
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ type, values: [value] }),
-          signal: controller.signal as any
+          signal: controller.signal as any,
         },
-        { attempts: 2, baseDelayMs: 250 }
+        { attempts: 2, baseDelayMs: 250 },
       );
       if (!res.ok) return;
       const data: any = await res.json();
@@ -89,14 +105,18 @@ export async function checkBitrixDuplicate(
   if (params.phone) await findByComm('PHONE', params.phone);
 
   if (!reachedBitrix) {
-    return { status: 'unchecked', detail: 'Não foi possível consultar o Bitrix24 no momento.', matches: empty };
+    return {
+      status: 'unchecked',
+      detail: 'Não foi possível consultar o Bitrix24 no momento.',
+      matches: empty,
+    };
   }
 
   if (contactIds.size > 0 || companyIds.size > 0) {
     return {
       status: 'existing_client',
       detail: `Já existe como Empresa/Contato no Bitrix24 (${companyIds.size} empresa(s), ${contactIds.size} contato(s)).`,
-      matches: { leadIds: [...leadIds], contactIds: [...contactIds], companyIds: [...companyIds] }
+      matches: { leadIds: [...leadIds], contactIds: [...contactIds], companyIds: [...companyIds] },
     };
   }
 
@@ -104,11 +124,15 @@ export async function checkBitrixDuplicate(
     return {
       status: 'existing_lead',
       detail: `Já existe como Lead no Bitrix24 (${leadIds.size} registro(s)) — ainda não convertido em cliente.`,
-      matches: { leadIds: [...leadIds], contactIds: [], companyIds: [] }
+      matches: { leadIds: [...leadIds], contactIds: [], companyIds: [] },
     };
   }
 
-  return { status: 'new', detail: 'Nenhum registro correspondente encontrado no Bitrix24.', matches: empty };
+  return {
+    status: 'new',
+    detail: 'Nenhum registro correspondente encontrado no Bitrix24.',
+    matches: empty,
+  };
 }
 
 // syncLeadToBitrix foi removida por duplicar (com menos campos) a lógica de
@@ -151,7 +175,7 @@ export interface RetryOptions {
 export async function fetchWithRetry(
   url: string,
   init: RequestInit,
-  options: RetryOptions = {}
+  options: RetryOptions = {},
 ): Promise<Response> {
   const attempts = Math.max(1, options.attempts ?? 3);
   const baseDelayMs = options.baseDelayMs ?? 300;
@@ -164,7 +188,9 @@ export async function fetchWithRetry(
       if (!isRetryableStatus || attempt === attempts) {
         return response;
       }
-      lastError = new Error(`Bitrix24 respondeu HTTP ${response.status} na tentativa ${attempt}/${attempts}.`);
+      lastError = new Error(
+        `Bitrix24 respondeu HTTP ${response.status} na tentativa ${attempt}/${attempts}.`,
+      );
     } catch (err: any) {
       lastError = err;
       if (attempt === attempts) {
@@ -172,9 +198,11 @@ export async function fetchWithRetry(
       }
     }
     // Backoff curto e crescente entre tentativas (300ms, 600ms, 900ms...).
-    await new Promise(resolve => setTimeout(resolve, baseDelayMs * attempt));
+    await new Promise((resolve) => setTimeout(resolve, baseDelayMs * attempt));
   }
   // Inalcançável na prática (o loop sempre retorna ou lança na última tentativa),
   // mas mantém o TypeScript feliz sobre o tipo de retorno.
-  throw lastError instanceof Error ? lastError : new Error('Falha ao chamar o Bitrix24 após múltiplas tentativas.');
+  throw lastError instanceof Error
+    ? lastError
+    : new Error('Falha ao chamar o Bitrix24 após múltiplas tentativas.');
 }

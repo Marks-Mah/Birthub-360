@@ -17,9 +17,27 @@ const router = express.Router();
 // loop while leaving normal dashboard use untouched.
 const billingRateLimiter = createRateLimiter('billing', 30, 60);
 
-router.get('/billing/summary', requireTenant, requireRole(['admin']), billingRateLimiter, getWalletSummaryHandler);
-router.get('/billing/transactions', requireTenant, requireRole(['admin']), billingRateLimiter, listTransactionsHandler);
-router.post('/billing/change-plan', requireTenant, requireRole(['admin']), billingRateLimiter, changePlanHandler);
+router.get(
+  '/billing/summary',
+  requireTenant,
+  requireRole(['admin']),
+  billingRateLimiter,
+  getWalletSummaryHandler,
+);
+router.get(
+  '/billing/transactions',
+  requireTenant,
+  requireRole(['admin']),
+  billingRateLimiter,
+  listTransactionsHandler,
+);
+router.post(
+  '/billing/change-plan',
+  requireTenant,
+  requireRole(['admin']),
+  billingRateLimiter,
+  changePlanHandler,
+);
 
 // Plan catalog is not tenant-specific data (same list for every tenant) — any authenticated
 // tenant member can read it to see what plans exist, even if only an admin can act on it.

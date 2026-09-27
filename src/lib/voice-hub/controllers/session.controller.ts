@@ -1,7 +1,13 @@
 import type { Request, Response } from 'express';
 import { z } from 'zod';
 import { sessionSchema } from '../validators/index.js';
-import { listSessions, createSession, updateSession, deleteSession, NotFoundError } from '../services/sessionService.js';
+import {
+  listSessions,
+  createSession,
+  updateSession,
+  deleteSession,
+  NotFoundError,
+} from '../services/sessionService.js';
 
 const updateSessionSchema = z.object({
   status: z.string().optional(),
@@ -26,7 +32,12 @@ export async function updateSessionHandler(req: Request, res: Response) {
   if (!parsed.success) return res.status(400).json({ error: parsed.error.issues[0].message });
 
   try {
-    const session = await updateSession(String(req.params.id), req.organizationId!, req.voiceHubUser?.id, parsed.data);
+    const session = await updateSession(
+      String(req.params.id),
+      req.organizationId!,
+      req.voiceHubUser?.id,
+      parsed.data,
+    );
     return res.json({ success: true, session });
   } catch (err: any) {
     if (err instanceof NotFoundError) return res.status(404).json({ error: err.message });

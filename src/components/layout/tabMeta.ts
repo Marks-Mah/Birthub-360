@@ -165,7 +165,7 @@ export const TAB_META: Record<TabType, { label: string; icon: typeof Home; accen
   knowledge: { label: 'Base de Conhecimento', icon: Database, accent: 'green' },
   editor: { label: 'Editor de Documentos', icon: FileText, accent: 'slate' },
 
-    // TELEPHONY & OUTBOUND - Comunicação de Voz e Prospecção
+  // TELEPHONY & OUTBOUND - Comunicação de Voz e Prospecção
   'voice-hub': { label: 'Voice Hub', icon: Mic, accent: 'iris' },
   outbound: { label: 'Outbound AI', icon: PhoneCall, accent: 'red' },
   dialer: { label: 'Discador 3CX', icon: PhoneCall, accent: 'teal' },
@@ -184,5 +184,3 @@ export const TAB_META: Record<TabType, { label: string; icon: typeof Home; accen
   // DIAGNOSTICS - Ferramentas de diagnóstico
   'sdr-diagnostic': { label: 'Diagnóstico SDR', icon: Stethoscope, accent: 'green' },
 };
-
-

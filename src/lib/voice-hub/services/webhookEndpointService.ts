@@ -73,7 +73,9 @@ export interface WebhookEndpointMetadata {
   lastDeliveryStatus: string | null;
 }
 
-function toMetadata(row: webhookEndpointRepository.TenantWebhookEndpointRecord): WebhookEndpointMetadata {
+function toMetadata(
+  row: webhookEndpointRepository.TenantWebhookEndpointRecord,
+): WebhookEndpointMetadata {
   return {
     id: row.id,
     url: row.url,
@@ -123,7 +125,9 @@ export async function createWebhookEndpointForTenant(
   };
 }
 
-export async function listWebhookEndpointsForTenant(organizationId: string): Promise<WebhookEndpointMetadata[]> {
+export async function listWebhookEndpointsForTenant(
+  organizationId: string,
+): Promise<WebhookEndpointMetadata[]> {
   const rows = await webhookEndpointRepository.listEndpointsForTenant(organizationId);
   return rows.map(toMetadata);
 }
@@ -131,7 +135,10 @@ export async function listWebhookEndpointsForTenant(organizationId: string): Pro
 // DELETE /api/developers/webhooks/:id. Tenant-scoped lookup (never trusts the id alone) so an
 // admin from tenant A can never delete — or even discover the existence of — an endpoint
 // belonging to tenant B (AGENTS.md §15).
-export async function deleteWebhookEndpointForTenant(organizationId: string, id: string): Promise<void> {
+export async function deleteWebhookEndpointForTenant(
+  organizationId: string,
+  id: string,
+): Promise<void> {
   const existing = await webhookEndpointRepository.findEndpointForTenant(id, organizationId);
   if (!existing) {
     throw new WebhookEndpointServiceError('Endpoint de webhook não encontrado.', 404);

@@ -64,7 +64,7 @@ const CRITERION_CAPABILITY: Partial<Record<string, ProviderCapability>> = {
   companyType: 'company_type_enrich',
   employeeCount: 'company_size_enrich',
   annualRevenue: 'company_revenue_enrich',
-  decisionMakerRole: 'people_search'
+  decisionMakerRole: 'people_search',
 };
 
 /**
@@ -78,7 +78,7 @@ const CRITERION_CAPABILITY: Partial<Record<string, ProviderCapability>> = {
 export function planSearch(requirements: Requirement[], ctx: PlannerContext): SearchPlan {
   const steps: PlanStep[] = [];
   const unsupportedCriteria: UnsupportedCriterion[] = [];
-  const criteria = new Set(requirements.map(r => r.criterion));
+  const criteria = new Set(requirements.map((r) => r.criterion));
 
   // 1. Descoberta da empresa (sempre necessária, independente dos requisitos
   // específicos pedidos - é a entrada de todo o pipeline).
@@ -95,15 +95,16 @@ export function planSearch(requirements: Requirement[], ctx: PlannerContext): Se
       dependsOn: [],
       retryPolicy: { maxRetries: 0 },
       fallbackProviders: [],
-      stopCondition: 'zero resultados novos após excluir leads já prospectados'
+      stopCondition: 'zero resultados novos após excluir leads já prospectados',
     });
   } else {
     unsupportedCriteria.push({
       criterion: 'discovery',
       status: discoveryProviders.length > 0 ? 'requires_enrichment' : 'unsupported',
-      reason: discoveryProviders.length > 0
-        ? 'Google Places (único provider de descoberta no registry) não está configurado nesta execução.'
-        : 'Nenhum provider no registry declara a capacidade "company_discovery".'
+      reason:
+        discoveryProviders.length > 0
+          ? 'Google Places (único provider de descoberta no registry) não está configurado nesta execução.'
+          : 'Nenhum provider no registry declara a capacidade "company_discovery".',
     });
   }
 
@@ -116,7 +117,7 @@ export function planSearch(requirements: Requirement[], ctx: PlannerContext): Se
       unsupportedCriteria.push({
         criterion,
         status: 'unsupported',
-        reason: `Nenhum provider no registry declara a capacidade "${capability}".`
+        reason: `Nenhum provider no registry declara a capacidade "${capability}".`,
       });
       continue;
     }
@@ -125,13 +126,19 @@ export function planSearch(requirements: Requirement[], ctx: PlannerContext): Se
       provider: 'cnpj_receita_federal',
       operation: 'lookup_cnpj',
       inputs: ['cnpj_or_known_carrier_name'],
-      outputs: criterion === 'segment' ? ['cnae_fiscal_descricao'] : criterion === 'region' ? ['uf'] : ['municipio'],
+      outputs:
+        criterion === 'segment'
+          ? ['cnae_fiscal_descricao']
+          : criterion === 'region'
+            ? ['uf']
+            : ['municipio'],
       estimatedCost: 'free',
       priority: 2,
       dependsOn: ctx.googlePlacesConfigured ? ['discover-places'] : [],
       retryPolicy: { maxRetries: 1 },
       fallbackProviders: [],
-      stopCondition: 'CNPJ desconhecido ou nenhuma fonte pública (BrasilAPI/Minha Receita) responde'
+      stopCondition:
+        'CNPJ desconhecido ou nenhuma fonte pública (BrasilAPI/Minha Receita) responde',
     });
   }
 
@@ -145,9 +152,10 @@ export function planSearch(requirements: Requirement[], ctx: PlannerContext): Se
     unsupportedCriteria.push({
       criterion,
       status: capableProviders.length > 0 ? 'requires_enrichment' : 'unsupported',
-      reason: capableProviders.length > 0
-        ? `Um provider capaz de "${capability}" existe no registry, mas não está configurado nesta execução.`
-        : `Nenhum provider no registry declara a capacidade "${capability}".`
+      reason:
+        capableProviders.length > 0
+          ? `Um provider capaz de "${capability}" existe no registry, mas não está configurado nesta execução.`
+          : `Nenhum provider no registry declara a capacidade "${capability}".`,
     });
   }
 
@@ -168,13 +176,18 @@ export function planSearch(requirements: Requirement[], ctx: PlannerContext): Se
         provider: 'apollo',
         operation: 'people_search',
         inputs: ['domain', 'decisionMakerRole'],
-        outputs: ['decision_maker_name', 'decision_maker_title', 'decision_maker_email', 'decision_maker_linkedin'],
+        outputs: [
+          'decision_maker_name',
+          'decision_maker_title',
+          'decision_maker_email',
+          'decision_maker_linkedin',
+        ],
         estimatedCost: 'medium',
         priority: 3,
         dependsOn: ctx.googlePlacesConfigured ? ['discover-places'] : [],
         retryPolicy: { maxRetries: 0 },
-        fallbackProviders: emailVerifyProviders.map(p => p.name as ProviderId),
-        stopCondition: 'nenhuma pessoa retornada pela busca'
+        fallbackProviders: emailVerifyProviders.map((p) => p.name as ProviderId),
+        stopCondition: 'nenhuma pessoa retornada pela busca',
       });
       if (emailVerifyProviders.length > 0) {
         steps.push({
@@ -188,16 +201,17 @@ export function planSearch(requirements: Requirement[], ctx: PlannerContext): Se
           dependsOn: ['apollo-people-search'],
           retryPolicy: { maxRetries: 0 },
           fallbackProviders: [],
-          stopCondition: 'nenhum e-mail encontrado pela Apollo para verificar'
+          stopCondition: 'nenhum e-mail encontrado pela Apollo para verificar',
         });
       }
     } else {
       unsupportedCriteria.push({
         criterion: 'decisionMakerRole',
         status: peopleSearchProviders.length > 0 ? 'requires_enrichment' : 'unsupported',
-        reason: peopleSearchProviders.length > 0
-          ? 'Apollo (único provider de "people_search" no registry) não está configurado nesta execução.'
-          : 'Nenhum provider no registry declara a capacidade "people_search".'
+        reason:
+          peopleSearchProviders.length > 0
+            ? 'Apollo (único provider de "people_search" no registry) não está configurado nesta execução.'
+            : 'Nenhum provider no registry declara a capacidade "people_search".',
       });
     }
   }

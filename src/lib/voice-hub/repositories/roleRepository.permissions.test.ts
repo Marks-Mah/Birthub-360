@@ -50,7 +50,10 @@ describe('roleRepository.getOrCreateSystemRole (Permission wiring)', () => {
 
   it('connects the default permission when creating the supervisor role for the first time', async () => {
     vi.mocked(prisma.role.findFirst).mockResolvedValue(null);
-    vi.mocked(prisma.role.create).mockResolvedValue({ id: 'role-supervisor', name: 'supervisor' } as any);
+    vi.mocked(prisma.role.create).mockResolvedValue({
+      id: 'role-supervisor',
+      name: 'supervisor',
+    } as any);
 
     await getOrCreateSystemRole('supervisor');
 
@@ -63,7 +66,10 @@ describe('roleRepository.getOrCreateSystemRole (Permission wiring)', () => {
           connectOrCreate: [
             {
               where: { name: 'supervision:intervene' },
-              create: { name: 'supervision:intervene', description: PERMISSIONS['supervision:intervene'] },
+              create: {
+                name: 'supervision:intervene',
+                description: PERMISSIONS['supervision:intervene'],
+              },
             },
           ],
         },
@@ -83,10 +89,9 @@ describe('roleRepository.getOrCreateSystemRole (Permission wiring)', () => {
 
 describe('roleRepository.permissionNamesOf', () => {
   it('extracts permission names from a role with a clean permissions array', () => {
-    expect(permissionNamesOf({ permissions: [{ name: 'supervision:intervene' }, { name: 'x' }] })).toEqual([
-      'supervision:intervene',
-      'x',
-    ]);
+    expect(
+      permissionNamesOf({ permissions: [{ name: 'supervision:intervene' }, { name: 'x' }] }),
+    ).toEqual(['supervision:intervene', 'x']);
   });
 
   it('fails closed (empty array) for null/undefined role', () => {
@@ -119,7 +124,10 @@ describe('roleRepository.getPermissionsForRoleName', () => {
   it('falls back to the system role (organizationId null) when no tenant-scoped role exists', async () => {
     vi.mocked(prisma.role.findFirst)
       .mockResolvedValueOnce(null)
-      .mockResolvedValueOnce({ id: 'system-role', permissions: [{ name: 'supervision:intervene' }] } as any);
+      .mockResolvedValueOnce({
+        id: 'system-role',
+        permissions: [{ name: 'supervision:intervene' }],
+      } as any);
 
     const result = await getPermissionsForRoleName('supervisor', 'tenant-1');
 

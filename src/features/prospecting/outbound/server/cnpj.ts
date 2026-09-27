@@ -53,20 +53,20 @@ export function formatCnpj(value: string): string {
 // Referência estática de fatos reais (não é geração sintética): usada apenas para localizar
 // o CNPJ correto a consultar nas APIs públicas oficiais abaixo.
 const KNOWN_CARRIERS_CNPJ: Record<string, string> = {
-  'jamef': '20540912000108',
-  'braspress': '48740351000165',
-  'tnt': '61123456000189',
-  'fedex': '03882100000192',
-  'patrus': '17489321000144',
-  'rodonaves': '27080571000130',
-  'tegma': '02351144000118',
-  'iterlog': '31920401000199',
-  'transvale': '91204551000102',
-  'dellavolpe': '61432100000188',
+  jamef: '20540912000108',
+  braspress: '48740351000165',
+  tnt: '61123456000189',
+  fedex: '03882100000192',
+  patrus: '17489321000144',
+  rodonaves: '27080571000130',
+  tegma: '02351144000118',
+  iterlog: '31920401000199',
+  transvale: '91204551000102',
+  dellavolpe: '61432100000188',
   'julio simoes': '47321098000155',
-  'jsl': '47321098000155',
-  'solistica': '02891230000177',
-  'atlas': '04123987000122'
+  jsl: '47321098000155',
+  solistica: '02891230000177',
+  atlas: '04123987000122',
 };
 
 /**
@@ -87,15 +87,17 @@ export async function fetchCnpjPublicData(cnpjInput: string): Promise<CnpjData |
 
     const response = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${cleanCnpj}`, {
       signal: controller.signal,
-      headers: { 'Accept': 'application/json' }
+      headers: { Accept: 'application/json' },
     });
     clearTimeout(timeoutId);
 
     if (response.ok) {
-      const data = await response.json() as any;
+      const data = (await response.json()) as any;
 
       const capSocialFormatted = data.capital_social
-        ? new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(Number(data.capital_social))
+        ? new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
+            Number(data.capital_social),
+          )
         : undefined;
 
       const endereco = [
@@ -104,14 +106,18 @@ export async function fetchCnpjPublicData(cnpjInput: string): Promise<CnpjData |
         data.complemento,
         data.bairro,
         data.municipio ? `${data.municipio} - ${data.uf}` : '',
-        data.cep ? `CEP ${data.cep}` : ''
-      ].filter(Boolean).join(', ');
+        data.cep ? `CEP ${data.cep}` : '',
+      ]
+        .filter(Boolean)
+        .join(', ');
 
-      const qsaFormatted = (data.qsa || []).map((s: any) => ({
-        nome_socio: s.nome_socio || s.nome,
-        qualificacao_socio: s.qualificacao_socio || s.qualificacao_representante_legal,
-        faixa_etaria: s.faixa_etaria || ''
-      })).filter((s: any) => !!s.nome_socio);
+      const qsaFormatted = (data.qsa || [])
+        .map((s: any) => ({
+          nome_socio: s.nome_socio || s.nome,
+          qualificacao_socio: s.qualificacao_socio || s.qualificacao_representante_legal,
+          faixa_etaria: s.faixa_etaria || '',
+        }))
+        .filter((s: any) => !!s.nome_socio);
 
       const tel = data.ddd_telefone_1
         ? `(${data.ddd_telefone_1.slice(0, 2)}) ${data.ddd_telefone_1.slice(2).trim()}`
@@ -122,7 +128,8 @@ export async function fetchCnpjPublicData(cnpjInput: string): Promise<CnpjData |
         cnpj_raw: cleanCnpj,
         razao_social: data.razao_social || undefined,
         nome_fantasia: data.nome_fantasia || undefined,
-        situacao_cadastral: data.descricao_situacao_cadastral || data.situacao_cadastral || undefined,
+        situacao_cadastral:
+          data.descricao_situacao_cadastral || data.situacao_cadastral || undefined,
         data_situacao_cadastral: data.data_situacao_cadastral || undefined,
         data_inicio_atividade: data.data_inicio_atividade || undefined,
         cnae_fiscal: data.cnae_fiscal ? String(data.cnae_fiscal) : undefined,
@@ -143,7 +150,7 @@ export async function fetchCnpjPublicData(cnpjInput: string): Promise<CnpjData |
         telefone: tel,
         email: data.email || undefined,
         consultado_em: new Date().toISOString(),
-        source: 'brasilapi'
+        source: 'brasilapi',
       };
     }
   } catch (err: any) {
@@ -157,15 +164,17 @@ export async function fetchCnpjPublicData(cnpjInput: string): Promise<CnpjData |
 
     const response = await fetch(`https://minhareceita.org/${cleanCnpj}`, {
       signal: controller.signal,
-      headers: { 'Accept': 'application/json' }
+      headers: { Accept: 'application/json' },
     });
     clearTimeout(timeoutId);
 
     if (response.ok) {
-      const data = await response.json() as any;
+      const data = (await response.json()) as any;
 
       const capSocialFormatted = data.capital_social
-        ? new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(Number(data.capital_social))
+        ? new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
+            Number(data.capital_social),
+          )
         : undefined;
 
       const endereco = [
@@ -174,13 +183,17 @@ export async function fetchCnpjPublicData(cnpjInput: string): Promise<CnpjData |
         data.complemento,
         data.bairro,
         data.municipio ? `${data.municipio} - ${data.uf}` : '',
-        data.cep ? `CEP ${data.cep}` : ''
-      ].filter(Boolean).join(', ');
+        data.cep ? `CEP ${data.cep}` : '',
+      ]
+        .filter(Boolean)
+        .join(', ');
 
-      const qsaFormatted = (data.qsa || []).map((s: any) => ({
-        nome_socio: s.nome_socio,
-        qualificacao_socio: s.qualificacao_socio
-      })).filter((s: any) => !!s.nome_socio);
+      const qsaFormatted = (data.qsa || [])
+        .map((s: any) => ({
+          nome_socio: s.nome_socio,
+          qualificacao_socio: s.qualificacao_socio,
+        }))
+        .filter((s: any) => !!s.nome_socio);
 
       return {
         cnpj: formatCnpj(cleanCnpj),
@@ -201,7 +214,7 @@ export async function fetchCnpjPublicData(cnpjInput: string): Promise<CnpjData |
         municipio: data.municipio || undefined,
         uf: data.uf || undefined,
         consultado_em: new Date().toISOString(),
-        source: 'minhareceita'
+        source: 'minhareceita',
       };
     }
   } catch (err: any) {
@@ -232,7 +245,7 @@ export interface CnpjProviderCallInfo {
  */
 export async function resolveAndEnrichCnpjForLead(
   lead: { name: string; domain?: string; cnpj?: string; address?: string },
-  onProviderCall?: (info: CnpjProviderCallInfo) => void
+  onProviderCall?: (info: CnpjProviderCallInfo) => void,
 ): Promise<CnpjData> {
   const nameLower = lead.name.toLowerCase();
 
@@ -268,6 +281,6 @@ export async function resolveAndEnrichCnpjForLead(
   // mas o restante do cadastro fica desconhecido em vez de fabricado.
   return {
     cnpj: formatCnpj(targetCnpj),
-    cnpj_raw: targetCnpj
+    cnpj_raw: targetCnpj,
   };
 }

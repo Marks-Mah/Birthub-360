@@ -30,7 +30,7 @@ export function createNotification(input: {
 
 export function findNotificationsForUser(
   userId: string,
-  { page, pageSize }: { page: number; pageSize: number }
+  { page, pageSize }: { page: number; pageSize: number },
 ): Promise<[Notification[], number]> {
   const skip = (page - 1) * pageSize;
   return Promise.all([
@@ -48,7 +48,10 @@ export function countUnreadForUser(userId: string): Promise<number> {
   return prisma.notification.count({ where: { userId, isRead: false } });
 }
 
-export function findNotificationByIdForUser(id: string, userId: string): Promise<Notification | null> {
+export function findNotificationByIdForUser(
+  id: string,
+  userId: string,
+): Promise<Notification | null> {
   // `userId` is part of the where-clause itself (not checked after the fact) so a notification
   // belonging to another user resolves to `null` here — the same 404-not-403 fallback the
   // tenant-isolation convention elsewhere in the codebase uses, so a caller can never learn a
@@ -62,7 +65,10 @@ export function findNotificationByIdForUser(id: string, userId: string): Promise
 // two round-trips instead of one atomic statement, but each is a single-row primary-key lookup and
 // the alternative (encoding ownership into a raw query) would bypass Prisma's typed API for no
 // real benefit here.
-export async function markNotificationAsRead(id: string, userId: string): Promise<Notification | null> {
+export async function markNotificationAsRead(
+  id: string,
+  userId: string,
+): Promise<Notification | null> {
   const existing = await prisma.notification.findFirst({ where: { id, userId } });
   if (!existing) return null;
   return prisma.notification.update({ where: { id: existing.id }, data: { isRead: true } });

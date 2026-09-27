@@ -72,8 +72,16 @@ describe('buildAtlasGROutboundIdempotencyKey', () => {
   });
 
   it('produces different hash keys for genuinely different leads', () => {
-    const keyA = buildAtlasGROutboundIdempotencyKey({ phoneNumber: '+5511999998888', name: 'A', company: 'X' });
-    const keyB = buildAtlasGROutboundIdempotencyKey({ phoneNumber: '+5511999997777', name: 'B', company: 'Y' });
+    const keyA = buildAtlasGROutboundIdempotencyKey({
+      phoneNumber: '+5511999998888',
+      name: 'A',
+      company: 'X',
+    });
+    const keyB = buildAtlasGROutboundIdempotencyKey({
+      phoneNumber: '+5511999997777',
+      name: 'B',
+      company: 'Y',
+    });
     expect(keyA).not.toBe(keyB);
   });
 });
@@ -98,6 +106,8 @@ describe('claimIdempotencyKey', () => {
     };
     __setIdempotencyClientForTests(failingClient as never);
 
-    await expect(claimIdempotencyKey('any-key', 60)).rejects.toBeInstanceOf(IdempotencyCheckFailedError);
+    await expect(claimIdempotencyKey('any-key', 60)).rejects.toBeInstanceOf(
+      IdempotencyCheckFailedError,
+    );
   });
 });

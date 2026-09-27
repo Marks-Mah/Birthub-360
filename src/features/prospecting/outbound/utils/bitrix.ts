@@ -5,7 +5,10 @@ import type { User, IntegrationsConfig } from '../types.js';
 // Bitrix da Total Trac (ou vice-versa) por causa de um seletor manual esquecido
 // na posição errada. 'totaltrac'/'atlasgr'/'custom' continuam disponíveis como
 // substituição explícita para quem realmente precisa.
-export function resolveBitrixWebhook(user: User | null | undefined, config: IntegrationsConfig | undefined): string {
+export function resolveBitrixWebhook(
+  user: User | null | undefined,
+  config: IntegrationsConfig | undefined,
+): string {
   const target = config?.activeBitrixTarget || 'auto';
 
   if (target === 'custom') {

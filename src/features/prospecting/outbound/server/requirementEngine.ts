@@ -11,9 +11,19 @@
 // filtro solicitado pelo usuário em atributo observado da empresa").
 
 import type { SearchIntent } from './searchIntent.js';
-import type { RequirementType, RequirementStatus, RequirementEvaluation, UnknownHardFilterPolicy } from '../src/types.js';
+import type {
+  RequirementType,
+  RequirementStatus,
+  RequirementEvaluation,
+  UnknownHardFilterPolicy,
+} from '../src/types.js';
 
-export type { RequirementType, RequirementStatus, UnknownHardFilterPolicy, RequirementEvaluation } from '../src/types.js';
+export type {
+  RequirementType,
+  RequirementStatus,
+  UnknownHardFilterPolicy,
+  RequirementEvaluation,
+} from '../src/types.js';
 
 // Política para quando um HARD_FILTER não pode ser confirmado nem negado
 // (nenhum provider disponível informou o dado observado):
@@ -43,25 +53,60 @@ export function buildRequirementsFromSearchIntent(intent: SearchIntent): Require
   const requirements: Requirement[] = [];
 
   if (intent.segment) {
-    requirements.push({ criterion: 'segment', type: 'HARD_FILTER', expected: intent.segment, weight: 3 });
+    requirements.push({
+      criterion: 'segment',
+      type: 'HARD_FILTER',
+      expected: intent.segment,
+      weight: 3,
+    });
   }
   if (intent.location.state) {
-    requirements.push({ criterion: 'region', type: 'HARD_FILTER', expected: intent.location.state, weight: 3 });
+    requirements.push({
+      criterion: 'region',
+      type: 'HARD_FILTER',
+      expected: intent.location.state,
+      weight: 3,
+    });
   }
   if (intent.location.city) {
-    requirements.push({ criterion: 'city', type: 'HARD_FILTER', expected: intent.location.city, weight: 2 });
+    requirements.push({
+      criterion: 'city',
+      type: 'HARD_FILTER',
+      expected: intent.location.city,
+      weight: 2,
+    });
   }
   if (intent.companyType) {
-    requirements.push({ criterion: 'companyType', type: 'SOFT_FILTER', expected: intent.companyType, weight: 1 });
+    requirements.push({
+      criterion: 'companyType',
+      type: 'SOFT_FILTER',
+      expected: intent.companyType,
+      weight: 1,
+    });
   }
   if (intent.employeeCount) {
-    requirements.push({ criterion: 'employeeCount', type: 'SOFT_FILTER', expected: intent.employeeCount, weight: 1 });
+    requirements.push({
+      criterion: 'employeeCount',
+      type: 'SOFT_FILTER',
+      expected: intent.employeeCount,
+      weight: 1,
+    });
   }
   if (intent.annualRevenue) {
-    requirements.push({ criterion: 'annualRevenue', type: 'SOFT_FILTER', expected: intent.annualRevenue, weight: 1 });
+    requirements.push({
+      criterion: 'annualRevenue',
+      type: 'SOFT_FILTER',
+      expected: intent.annualRevenue,
+      weight: 1,
+    });
   }
   if (intent.decisionMakerRole) {
-    requirements.push({ criterion: 'decisionMakerRole', type: 'ENRICHMENT', expected: intent.decisionMakerRole, weight: 1 });
+    requirements.push({
+      criterion: 'decisionMakerRole',
+      type: 'ENRICHMENT',
+      expected: intent.decisionMakerRole,
+      weight: 1,
+    });
   }
 
   return requirements;
@@ -90,7 +135,7 @@ export function evaluateRequirement(
   req: Requirement,
   observed: string | number | null | undefined,
   source: string,
-  opts?: { unknownHardFilterPolicy?: UnknownHardFilterPolicy }
+  opts?: { unknownHardFilterPolicy?: UnknownHardFilterPolicy },
 ): RequirementEvaluation {
   const policy = opts?.unknownHardFilterPolicy || 'balanced';
 
@@ -107,13 +152,14 @@ export function evaluateRequirement(
       reason: isHard
         ? `Nenhum provider confirmou "${req.criterion}" para este lead (política: ${policy}).`
         : `Nenhum provider confirmou "${req.criterion}" para este lead.`,
-      weight: req.weight
+      weight: req.weight,
     };
   }
 
-  const matches = typeof req.expected === 'string' && typeof observed === 'string'
-    ? textMatches(req.expected, observed)
-    : req.expected === observed;
+  const matches =
+    typeof req.expected === 'string' && typeof observed === 'string'
+      ? textMatches(req.expected, observed)
+      : req.expected === observed;
 
   return {
     criterion: req.criterion,
@@ -125,7 +171,7 @@ export function evaluateRequirement(
     reason: matches
       ? `"${req.criterion}" observado (${source}) corresponde ao solicitado.`
       : `"${req.criterion}" observado (${source}) diverge do solicitado.`,
-    weight: req.weight
+    weight: req.weight,
   };
 }
 
@@ -133,15 +179,15 @@ export function evaluateRequirements(
   requirements: Requirement[],
   observedByCriterion: Record<string, string | number | null | undefined>,
   observedSourceByCriterion: Record<string, string>,
-  opts?: { unknownHardFilterPolicy?: UnknownHardFilterPolicy }
+  opts?: { unknownHardFilterPolicy?: UnknownHardFilterPolicy },
 ): RequirementEvaluation[] {
-  return requirements.map(req =>
+  return requirements.map((req) =>
     evaluateRequirement(
       req,
       observedByCriterion[req.criterion],
       observedSourceByCriterion[req.criterion] || 'unknown_source',
-      opts
-    )
+      opts,
+    ),
   );
 }
 
@@ -152,5 +198,5 @@ export function evaluateRequirements(
  * prospectados no pipeline) - o tipo existe no schema para uso futuro.
  */
 export function shouldExcludeLead(evaluations: RequirementEvaluation[]): boolean {
-  return evaluations.some(e => e.type === 'HARD_FILTER' && e.status === 'unmatched');
+  return evaluations.some((e) => e.type === 'HARD_FILTER' && e.status === 'unmatched');
 }

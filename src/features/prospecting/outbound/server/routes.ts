@@ -1,15 +1,38 @@
 import { Router, type Request, type Response } from 'express';
 import crypto from 'node:crypto';
-import { getDatabase, executeQuery, getStats, saveDatabase, logActivity, checkExplorerSqlSafety } from './db.js';
-import { checkOllamaConnection, generateCopiesWithEngine, chatWithLLaMA3, enrichLeadWithPublicNewsAndScripts } from './ai.js';
+import {
+  getDatabase,
+  executeQuery,
+  getStats,
+  saveDatabase,
+  logActivity,
+  checkExplorerSqlSafety,
+} from './db.js';
+import {
+  checkOllamaConnection,
+  generateCopiesWithEngine,
+  chatWithLLaMA3,
+  enrichLeadWithPublicNewsAndScripts,
+} from './ai.js';
 import { resolveAndEnrichCnpjForLead, fetchCnpjPublicData, type CnpjData } from './cnpj.js';
 import { parseSearchIntent, validateSearchIntent } from './searchIntent.js';
 import { buildRequirementsFromSearchIntent, evaluateRequirements } from './requirementEngine.js';
 import { planSearch } from './queryPlanner.js';
 import { buildFunnelSummary } from './progressiveSearch.js';
 import { providerRegistry } from './providerRegistry.js';
-import { buildCompanyKey, canonicalizeDomain, normalizeCompanyName, findDuplicate, type CompanyKey } from './entityResolution.js';
-import { buildCnpjEvidence, buildDecisionMakerEvidence, saveFieldEvidence, getFieldEvidence } from './evidence.js';
+import {
+  buildCompanyKey,
+  canonicalizeDomain,
+  normalizeCompanyName,
+  findDuplicate,
+  type CompanyKey,
+} from './entityResolution.js';
+import {
+  buildCnpjEvidence,
+  buildDecisionMakerEvidence,
+  saveFieldEvidence,
+  getFieldEvidence,
+} from './evidence.js';
 import { computeLeadScores } from './scoring.js';
 import { detectSignalsForLead } from './signals.js';
 import {
@@ -20,25 +43,60 @@ import {
   recordCandidateDecision,
   finishSearchRun,
   getSearchRun,
-  getObservabilitySummary
+  getObservabilitySummary,
 } from './observability.js';
-import { buildFeedbackSummary, type FeedbackMessageRecord, type FeedbackLeadRecord } from './feedbackLoop.js';
+import {
+  buildFeedbackSummary,
+  type FeedbackMessageRecord,
+  type FeedbackLeadRecord,
+} from './feedbackLoop.js';
 import { searchPlaces } from './search/providers/googlePlaces.provider.js';
 import { enrichOrganization, searchAndMatchPeople } from './search/providers/apollo.provider.js';
-import { domainSearch as hunterDomainSearch, verifyEmail as hunterVerifyEmail, complementDecisionMakerEmail as complementDecisionMakerEmailWithHunter } from './search/providers/hunter.provider.js';
+import {
+  domainSearch as hunterDomainSearch,
+  verifyEmail as hunterVerifyEmail,
+  complementDecisionMakerEmail as complementDecisionMakerEmailWithHunter,
+} from './search/providers/hunter.provider.js';
 import { exportLead } from './search/providers/bitrix.provider.js';
-import { checkBitrixDuplicate, resolveBitrixWebhookForCompany, generateExportIdempotencyKey } from './services/bitrix.js';
+import {
+  checkBitrixDuplicate,
+  resolveBitrixWebhookForCompany,
+  generateExportIdempotencyKey,
+} from './services/bitrix.js';
 import { checkExportEligibility, type ExportPolicy } from './exportEligibility.js';
 import { rateLimit } from './middleware/rateLimit.js';
 import {
-  withCache, withRetry, withCircuitBreaker, withProviderRetry, withProviderCircuitBreaker,
-  hasFreshCacheEntry, CACHE_TTL_MS, createBudgetTracker, hasEnrichmentBudget, isBudgetExhausted,
-  recordApiCall, recordEnrichment, parseSearchBudget, getCircuitState
+  withCache,
+  withRetry,
+  withCircuitBreaker,
+  withProviderRetry,
+  withProviderCircuitBreaker,
+  hasFreshCacheEntry,
+  CACHE_TTL_MS,
+  createBudgetTracker,
+  hasEnrichmentBudget,
+  isBudgetExhausted,
+  recordApiCall,
+  recordEnrichment,
+  parseSearchBudget,
+  getCircuitState,
 } from './resilience.js';
-import { isValidCnpjFormat, isValidEmailFormat, isValidPhoneFormat, isUrlSafeForOutboundWebhook, isWithinMaxLength, maskWebhookUrl } from './validators.js';
 import {
-  attachUser, requireAuth, requireAdmin, requireManager,
-  createSessionToken, buildSessionCookie, buildLogoutCookie
+  isValidCnpjFormat,
+  isValidEmailFormat,
+  isValidPhoneFormat,
+  isUrlSafeForOutboundWebhook,
+  isWithinMaxLength,
+  maskWebhookUrl,
+} from './validators.js';
+import {
+  attachUser,
+  requireAuth,
+  requireAdmin,
+  requireManager,
+  createSessionToken,
+  buildSessionCookie,
+  buildLogoutCookie,
 } from './auth.js';
 import type { Lead, DecisionMaker } from '../src/types.js';
 
@@ -47,11 +105,22 @@ import type { Lead, DecisionMaker } from '../src/types.js';
 // volta), senão um dado legado imperfeito de um lead antigo travaria qualquer
 // edição futura nele, mesmo em campos que a pessoa nem tocou.
 function validateChangedLeadFields(
-  incoming: { cnpj?: string; phone?: string; corporate_email?: string; decision_maker_email?: string },
-  current: { cnpj?: string; phone?: string; corporate_email?: string; decision_maker_email?: string }
+  incoming: {
+    cnpj?: string;
+    phone?: string;
+    corporate_email?: string;
+    decision_maker_email?: string;
+  },
+  current: {
+    cnpj?: string;
+    phone?: string;
+    corporate_email?: string;
+    decision_maker_email?: string;
+  },
 ): string[] {
   const errors: string[] = [];
-  const changed = (key: keyof typeof incoming) => incoming[key] !== undefined && incoming[key] !== current[key];
+  const changed = (key: keyof typeof incoming) =>
+    incoming[key] !== undefined && incoming[key] !== current[key];
 
   if (changed('cnpj') && incoming.cnpj && !isValidCnpjFormat(incoming.cnpj)) {
     errors.push('CNPJ com formato ou dígito verificador inválido.');
@@ -59,10 +128,18 @@ function validateChangedLeadFields(
   if (changed('phone') && incoming.phone && !isValidPhoneFormat(incoming.phone)) {
     errors.push('Telefone precisa ter entre 10 e 13 dígitos.');
   }
-  if (changed('corporate_email') && incoming.corporate_email && !isValidEmailFormat(incoming.corporate_email)) {
+  if (
+    changed('corporate_email') &&
+    incoming.corporate_email &&
+    !isValidEmailFormat(incoming.corporate_email)
+  ) {
     errors.push('E-mail corporativo com formato inválido.');
   }
-  if (changed('decision_maker_email') && incoming.decision_maker_email && !isValidEmailFormat(incoming.decision_maker_email)) {
+  if (
+    changed('decision_maker_email') &&
+    incoming.decision_maker_email &&
+    !isValidEmailFormat(incoming.decision_maker_email)
+  ) {
     errors.push('E-mail do decisor com formato inválido.');
   }
   return errors;
@@ -70,8 +147,16 @@ function validateChangedLeadFields(
 
 // Tetos por IP para rotas que chamam APIs pagas/externas (Apollo, Google Places,
 // Groq, Gemini, Bitrix24, Hunter) — protege contra custo/abuso, não é autenticação.
-const heavyAiLimiter = rateLimit({ windowMs: 60_000, max: 20, message: 'Muitas chamadas de IA/enriquecimento em 1 minuto. Aguarde um instante.' });
-const integrationLimiter = rateLimit({ windowMs: 60_000, max: 30, message: 'Muitas chamadas a integrações externas em 1 minuto. Aguarde um instante.' });
+const heavyAiLimiter = rateLimit({
+  windowMs: 60_000,
+  max: 20,
+  message: 'Muitas chamadas de IA/enriquecimento em 1 minuto. Aguarde um instante.',
+});
+const integrationLimiter = rateLimit({
+  windowMs: 60_000,
+  max: 30,
+  message: 'Muitas chamadas a integrações externas em 1 minuto. Aguarde um instante.',
+});
 
 export const apiRouter = Router();
 
@@ -107,7 +192,9 @@ function verifyHashedPassword(password: string, stored: string): boolean {
 // os literais exatos 'atlas'/'totaltrac' — qualquer variação travava o login de todo
 // usuário 'user' daquela marca com "conta pertence a outra empresa", mesmo com a senha certa.
 function normalizeCompany(value: unknown): 'atlas' | 'totaltrac' | null {
-  const v = String(value ?? '').trim().toLowerCase();
+  const v = String(value ?? '')
+    .trim()
+    .toLowerCase();
   if (!v) return null;
   if (v.includes('total')) return 'totaltrac';
   if (v.includes('atlas')) return 'atlas';
@@ -153,7 +240,10 @@ export function formatLeadRow(leadObj: any, messages: any[] = []): any {
   let dmEmails: string[] = [];
   try {
     if (leadObj.decision_maker_emails) {
-      dmEmails = typeof leadObj.decision_maker_emails === 'string' ? JSON.parse(leadObj.decision_maker_emails) : leadObj.decision_maker_emails;
+      dmEmails =
+        typeof leadObj.decision_maker_emails === 'string'
+          ? JSON.parse(leadObj.decision_maker_emails)
+          : leadObj.decision_maker_emails;
     }
   } catch (_e: any) {
     dmEmails = leadObj.decision_maker_email ? [leadObj.decision_maker_email] : [];
@@ -165,7 +255,10 @@ export function formatLeadRow(leadObj: any, messages: any[] = []): any {
   let dmPhones: string[] = [];
   try {
     if (leadObj.decision_maker_phones) {
-      dmPhones = typeof leadObj.decision_maker_phones === 'string' ? JSON.parse(leadObj.decision_maker_phones) : leadObj.decision_maker_phones;
+      dmPhones =
+        typeof leadObj.decision_maker_phones === 'string'
+          ? JSON.parse(leadObj.decision_maker_phones)
+          : leadObj.decision_maker_phones;
     }
   } catch (_e: any) {
     dmPhones = leadObj.decision_maker_phone ? [leadObj.decision_maker_phone] : [];
@@ -190,22 +283,28 @@ export function formatLeadRow(leadObj: any, messages: any[] = []): any {
   leadObj.stage = leadObj.stage || 'prospecto';
   leadObj.copies = copies;
   leadObj.engine_used = lastEngineUsed;
-  leadObj.copies_generated = Object.values(copies).some((c: any) => typeof c === 'string' && c.trim().length > 10);
+  leadObj.copies_generated = Object.values(copies).some(
+    (c: any) => typeof c === 'string' && c.trim().length > 10,
+  );
   leadObj.messages = messages;
   leadObj.news_dossier = newsDossier;
   leadObj.is_enriched = Boolean(leadObj.is_enriched || newsDossier);
   leadObj.decision_maker_emails = dmEmails;
   leadObj.decision_maker_phones = dmPhones;
 
-  leadObj.decision_makers = leadObj.decision_maker_name ? [{
-    name: leadObj.decision_maker_name,
-    title: leadObj.decision_maker_title || 'Decisor',
-    email: leadObj.decision_maker_email || dmEmails[0] || '',
-    emails: dmEmails,
-    phone: leadObj.decision_maker_phone || dmPhones[0] || leadObj.phone || '',
-    phones: dmPhones,
-    linkedin: leadObj.decision_maker_linkedin || ''
-  }] : [];
+  leadObj.decision_makers = leadObj.decision_maker_name
+    ? [
+        {
+          name: leadObj.decision_maker_name,
+          title: leadObj.decision_maker_title || 'Decisor',
+          email: leadObj.decision_maker_email || dmEmails[0] || '',
+          emails: dmEmails,
+          phone: leadObj.decision_maker_phone || dmPhones[0] || leadObj.phone || '',
+          phones: dmPhones,
+          linkedin: leadObj.decision_maker_linkedin || '',
+        },
+      ]
+    : [];
 
   return leadObj;
 }
@@ -216,7 +315,15 @@ export function formatLeadRow(leadObj: any, messages: any[] = []): any {
 // nunca perder o que já foi enviado.
 async function upsertMessageWithVersioning(
   db: any,
-  params: { msgId: string; campaignId: string; leadId: string; channel: string; content: string; engineUsed?: string; force?: boolean }
+  params: {
+    msgId: string;
+    campaignId: string;
+    leadId: string;
+    channel: string;
+    content: string;
+    engineUsed?: string;
+    force?: boolean;
+  },
 ): Promise<{ content: string; skipped: boolean }> {
   const { msgId, campaignId, leadId, channel, content, engineUsed, force } = params;
 
@@ -238,7 +345,7 @@ async function upsertMessageWithVersioning(
     try {
       await db.run(
         `INSERT INTO message_versions (message_id, lead_id, channel, content, engine_used) VALUES (?, ?, ?, ?, ?)`,
-        [msgId, leadId, channel, existing.content, null]
+        [msgId, leadId, channel, existing.content, null],
       );
     } catch (err: any) {
       console.error('Falha ao versionar mensagem anterior:', err);
@@ -246,13 +353,19 @@ async function upsertMessageWithVersioning(
   }
 
   try {
-    await db.run(`
+    await db.run(
+      `
       INSERT INTO messages (id, campaign_id, lead_id, channel, role, content, status, engine_used, created_at)
       VALUES (?, ?, ?, ?, 'assistant', ?, 'reviewed', ?, ?)
       ON CONFLICT(id) DO UPDATE SET content = excluded.content, status = 'reviewed', engine_used = excluded.engine_used
-    `, [msgId, campaignId, leadId, channel, content, engineUsed || null, new Date().toISOString()]);
+    `,
+      [msgId, campaignId, leadId, channel, content, engineUsed || null, new Date().toISOString()],
+    );
   } catch (_err: any) {
-    await db.run(`UPDATE messages SET content = ?, status = 'reviewed', engine_used = ? WHERE id = ?`, [content, engineUsed || null, msgId]);
+    await db.run(
+      `UPDATE messages SET content = ?, status = 'reviewed', engine_used = ? WHERE id = ?`,
+      [content, engineUsed || null, msgId],
+    );
   }
 
   return { content, skipped: false };
@@ -268,12 +381,14 @@ apiRouter.get('/health', async (_req: Request, res: Response) => {
 // "some" do catálogo, incluindo os ainda não migrados a adapter formal.
 apiRouter.get('/providers/health', async (_req: Request, res: Response) => {
   try {
-    const snapshot = await Promise.all(providerRegistry.map(async p => ({
-      name: p.name,
-      capabilities: p.capabilities,
-      configured: p.configured(),
-      health: await p.health()
-    })));
+    const snapshot = await Promise.all(
+      providerRegistry.map(async (p) => ({
+        name: p.name,
+        capabilities: p.capabilities,
+        configured: p.configured(),
+        health: await p.health(),
+      })),
+    );
     res.json({ providers: snapshot });
   } catch (err: any) {
     res.status(500).json({ error: err.message });
@@ -291,8 +406,9 @@ apiRouter.get('/search-runs/:searchId', async (req: Request, res: Response) => {
   const run = getSearchRun(searchId);
   if (!run) {
     return res.status(404).json({
-      error: 'Search-ID não encontrado. Buscas são retidas em memória por processo (últimas 200) - pode ter expirado, ter sido de outra instância do servidor, ou nunca ter existido.',
-      searchId
+      error:
+        'Search-ID não encontrado. Buscas são retidas em memória por processo (últimas 200) - pode ter expirado, ter sido de outra instância do servidor, ou nunca ter existido.',
+      searchId,
     });
   }
   res.json(run);
@@ -320,19 +436,25 @@ apiRouter.get('/db/stats', async (_req: Request, res: Response) => {
 // relato para revisão posterior. Nunca deve travar o uso do app por causa de
 // um erro ao registrar o próprio erro — por isso segue com sucesso genérico
 // para o usuário mesmo que o log em si falhe, só reportando no servidor.
-const errorReportLimiter = rateLimit({ windowMs: 60_000, max: 10, message: 'Muitos reportes em 1 minuto. Aguarde um instante.' });
+const errorReportLimiter = rateLimit({
+  windowMs: 60_000,
+  max: 10,
+  message: 'Muitos reportes em 1 minuto. Aguarde um instante.',
+});
 
 apiRouter.post('/error-reports', errorReportLimiter, async (req: Request, res: Response) => {
   const { message, page, userId, userEmail, userAgent } = req.body;
   if (!message || typeof message !== 'string' || !message.trim()) {
     return res.status(400).json({ error: 'Descreva o problema antes de enviar.' });
   }
-  console.error(`[REPORTE DE ERRO] página=${page || 'desconhecida'} usuário=${userEmail || userId || 'anônimo'}: ${message}`);
+  console.error(
+    `[REPORTE DE ERRO] página=${page || 'desconhecida'} usuário=${userEmail || userId || 'anônimo'}: ${message}`,
+  );
   try {
     const db = await getDatabase();
     await db.run(
       `INSERT INTO error_reports (user_id, user_email, page, message, user_agent) VALUES (?, ?, ?, ?, ?)`,
-      [userId || null, userEmail || null, page || null, message.trim(), userAgent || null]
+      [userId || null, userEmail || null, page || null, message.trim(), userAgent || null],
     );
     saveDatabase();
   } catch (err: any) {
@@ -347,12 +469,16 @@ apiRouter.get('/error-reports', async (req: Request, res: Response) => {
   try {
     const db = await getDatabase();
     const limit = Math.min(Math.max(1, Number(req.query.limit) || 50), 200);
-    const result = await db.exec(`SELECT * FROM error_reports ORDER BY created_at DESC LIMIT ?`, [limit]);
+    const result = await db.exec(`SELECT * FROM error_reports ORDER BY created_at DESC LIMIT ?`, [
+      limit,
+    ]);
     if (result.length === 0) return res.json([]);
     const cols = result[0].columns;
-    const reports = result[0].values.map(row => {
+    const reports = result[0].values.map((row) => {
       const obj: any = {};
-      cols.forEach((col, idx) => { obj[col] = row[idx]; });
+      cols.forEach((col, idx) => {
+        obj[col] = row[idx];
+      });
       return obj;
     });
     res.json(reports);
@@ -399,7 +525,10 @@ apiRouter.post('/auth/login', async (req: Request, res: Response) => {
     // do que foi cadastrado manualmente no banco (ex.: "Nome@AtlasGR.com.br" vs "nome@atlasgr.com.br").
     const normalizedEmail = String(email).trim().toLowerCase();
     const db = await getDatabase();
-    const result = await db.exec(`SELECT id, email, name, role, company, password FROM users WHERE LOWER(TRIM(email)) = ?`, [normalizedEmail]);
+    const result = await db.exec(
+      `SELECT id, email, name, role, company, password FROM users WHERE LOWER(TRIM(email)) = ?`,
+      [normalizedEmail],
+    );
     if (result.length === 0 || result[0].values.length === 0) {
       return res.status(401).json({ error: 'Credenciais inválidas' });
     }
@@ -409,7 +538,9 @@ apiRouter.post('/auth/login', async (req: Request, res: Response) => {
     // que fariam até uma senha em texto puro correta nunca bater com '==='.
     const storedPassword = String(row[5] || '').trim();
     const isHashed = storedPassword.startsWith(SCRYPT_PREFIX);
-    const passwordMatches = isHashed ? verifyHashedPassword(password, storedPassword) : storedPassword === password;
+    const passwordMatches = isHashed
+      ? verifyHashedPassword(password, storedPassword)
+      : storedPassword === password;
 
     if (!passwordMatches) {
       return res.status(401).json({ error: 'Credenciais inválidas' });
@@ -420,14 +551,17 @@ apiRouter.post('/auth/login', async (req: Request, res: Response) => {
       email: row[1],
       name: row[2],
       role: row[3],
-      company: normalizeCompany(row[4]) ?? row[4]
+      company: normalizeCompany(row[4]) ?? row[4],
     };
 
     // Conta antiga com senha em texto puro: migra para hash agora que a senha foi confirmada,
     // sem exigir nenhuma ação manual do usuário.
     if (!isHashed) {
       try {
-        await db.run(`UPDATE users SET password = ? WHERE id = ?`, [hashPassword(password), user.id]);
+        await db.run(`UPDATE users SET password = ? WHERE id = ?`, [
+          hashPassword(password),
+          user.id,
+        ]);
       } catch (err: any) {
         console.error('Falha ao migrar senha para hash:', err);
       }
@@ -442,7 +576,9 @@ apiRouter.post('/auth/login', async (req: Request, res: Response) => {
       const requestedCompany = normalizeCompany(company);
       const userCompany = normalizeCompany(row[4]);
       if (requestedCompany && userCompany && requestedCompany !== userCompany) {
-        return res.status(403).json({ error: 'Esta conta pertence a outra empresa. Selecione a marca correta para entrar.' });
+        return res.status(403).json({
+          error: 'Esta conta pertence a outra empresa. Selecione a marca correta para entrar.',
+        });
       }
     }
 
@@ -451,7 +587,11 @@ apiRouter.post('/auth/login', async (req: Request, res: Response) => {
     // checagem de marca acima — nunca contém a senha nem o hash, só
     // id/role/company (ver server/auth.ts). O corpo da resposta continua
     // devolvendo `user` no mesmo formato de antes, para não quebrar o front.
-    const token = createSessionToken({ id: String(user.id), role: String(user.role), company: (user.company as string) ?? null });
+    const token = createSessionToken({
+      id: String(user.id),
+      role: String(user.role),
+      company: (user.company as string) ?? null,
+    });
     res.setHeader('Set-Cookie', buildSessionCookie(token));
     res.json({ success: true, user });
   } catch (err: any) {
@@ -479,11 +619,11 @@ apiRouter.get('/users', requireAuth, async (_req: Request, res: Response) => {
     const db = await getDatabase();
     const result = await db.exec(`SELECT id, email, name, role FROM users`);
     if (result.length === 0) return res.json([]);
-    const users = result[0].values.map(row => ({
+    const users = result[0].values.map((row) => ({
       id: row[0],
       email: row[1],
       name: row[2],
-      role: row[3]
+      role: row[3],
     }));
     res.json(users);
   } catch (err: any) {
@@ -499,21 +639,24 @@ apiRouter.get('/campaigns', async (req: Request, res: Response) => {
     const db = await getDatabase();
     const limit = Math.min(Math.max(1, Number(req.query.limit) || 50), 200);
     const offset = Math.max(0, Number(req.query.offset) || 0);
-    const result = await db.exec(`
+    const result = await db.exec(
+      `
       SELECT c.*,
         (SELECT COUNT(*) FROM leads l WHERE l.campaign_id = c.id) as leads_count,
         (SELECT COUNT(*) FROM messages m WHERE m.campaign_id = c.id) as messages_count
       FROM campaigns c
       ORDER BY c.created_at DESC
       LIMIT ? OFFSET ?
-    `, [limit, offset]);
+    `,
+      [limit, offset],
+    );
 
     if (result.length === 0) {
       return res.json([]);
     }
 
     const cols = result[0].columns;
-    const campaigns = result[0].values.map(row => {
+    const campaigns = result[0].values.map((row) => {
       const obj: any = {};
       cols.forEach((col, idx) => {
         obj[col] = row[idx];
@@ -535,7 +678,10 @@ apiRouter.get('/users/:userId/leads', async (req: Request, res: Response) => {
     const db = await getDatabase();
     const limit = Math.min(Math.max(1, Number(req.query.limit) || 500), 2000);
     const offset = Math.max(0, Number(req.query.offset) || 0);
-    const leadsRes = await db.exec(`SELECT * FROM leads WHERE assigned_to = ? ORDER BY created_at DESC LIMIT ? OFFSET ?`, [userId, limit, offset]);
+    const leadsRes = await db.exec(
+      `SELECT * FROM leads WHERE assigned_to = ? ORDER BY created_at DESC LIMIT ? OFFSET ?`,
+      [userId, limit, offset],
+    );
     const leads: any[] = [];
     if (leadsRes.length > 0) {
       const lCols = leadsRes[0].columns;
@@ -545,11 +691,14 @@ apiRouter.get('/users/:userId/leads', async (req: Request, res: Response) => {
           leadObj[col] = row[idx];
         });
 
-        const msgRes = await db.exec(`SELECT * FROM messages WHERE lead_id = ? ORDER BY created_at ASC`, [leadObj.id]);
+        const msgRes = await db.exec(
+          `SELECT * FROM messages WHERE lead_id = ? ORDER BY created_at ASC`,
+          [leadObj.id],
+        );
         const messages: any[] = [];
         if (msgRes.length > 0) {
           const mCols = msgRes[0].columns;
-          msgRes[0].values.forEach(mRow => {
+          msgRes[0].values.forEach((mRow) => {
             const msgObj: any = {};
             mCols.forEach((col, idx) => {
               msgObj[col] = mRow[idx];
@@ -577,32 +726,42 @@ apiRouter.get('/leads/distribution', async (_req: Request, res: Response) => {
 
     // 'gestor' não é vendedor (não entra no rodízio de leads em /api/prospect) — só
     // role='user' representa um vendedor de verdade nessa visão de distribuição.
-    const usersRes = await db.exec(`SELECT id, email, name, role, company FROM users WHERE role = 'user' ORDER BY name ASC`);
-    const sellers: any[] = (usersRes[0]?.values || []).map(row => ({
-      id: row[0], email: row[1], name: row[2], role: row[3], company: row[4] || 'totaltrac'
+    const usersRes = await db.exec(
+      `SELECT id, email, name, role, company FROM users WHERE role = 'user' ORDER BY name ASC`,
+    );
+    const sellers: any[] = (usersRes[0]?.values || []).map((row) => ({
+      id: row[0],
+      email: row[1],
+      name: row[2],
+      role: row[3],
+      company: row[4] || 'totaltrac',
     }));
 
     const groups: Record<'atlas' | 'totaltrac', { sellers: any[]; totalLeads: number }> = {
       atlas: { sellers: [], totalLeads: 0 },
-      totaltrac: { sellers: [], totalLeads: 0 }
+      totaltrac: { sellers: [], totalLeads: 0 },
     };
 
     // Lista limitada a 200 por vendedor (renderização), mas totalLeads vem de um
     // COUNT(*) à parte — nunca subestimar o total mostrado ao gestor por causa do limite.
     for (const seller of sellers) {
-      const countRes = await db.exec(`SELECT COUNT(*) FROM leads WHERE assigned_to = ?`, [seller.id]);
+      const countRes = await db.exec(`SELECT COUNT(*) FROM leads WHERE assigned_to = ?`, [
+        seller.id,
+      ]);
       const totalLeadsForSeller = Number(countRes[0]?.values[0]?.[0]) || 0;
 
       const leadsRes = await db.exec(
         `SELECT id, name, segment, company_type, stage, domain, created_at FROM leads WHERE assigned_to = ? ORDER BY created_at DESC LIMIT 200`,
-        [seller.id]
+        [seller.id],
       );
       const leads: any[] = [];
       if (leadsRes.length > 0) {
         const cols = leadsRes[0].columns;
-        leadsRes[0].values.forEach(row => {
+        leadsRes[0].values.forEach((row) => {
           const obj: any = {};
-          cols.forEach((col, idx) => { obj[col] = row[idx]; });
+          cols.forEach((col, idx) => {
+            obj[col] = row[idx];
+          });
           obj.stage = obj.stage || 'prospecto';
           leads.push(obj);
         });
@@ -622,7 +781,7 @@ apiRouter.get('/campaigns/:id', async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const db = await getDatabase();
-    
+
     const campRes = await db.exec(`SELECT * FROM campaigns WHERE id = ?`, [id]);
     if (campRes.length === 0 || campRes[0].values.length === 0) {
       return res.status(404).json({ error: 'Campanha não encontrada.' });
@@ -635,7 +794,10 @@ apiRouter.get('/campaigns/:id', async (req: Request, res: Response) => {
     });
 
     // Get leads
-    const leadsRes = await db.exec(`SELECT * FROM leads WHERE campaign_id = ? ORDER BY created_at ASC`, [id]);
+    const leadsRes = await db.exec(
+      `SELECT * FROM leads WHERE campaign_id = ? ORDER BY created_at ASC`,
+      [id],
+    );
     const leads: any[] = [];
     if (leadsRes.length > 0) {
       const lCols = leadsRes[0].columns;
@@ -646,11 +808,14 @@ apiRouter.get('/campaigns/:id', async (req: Request, res: Response) => {
         });
 
         // Get messages for this lead
-        const msgRes = await db.exec(`SELECT * FROM messages WHERE lead_id = ? ORDER BY created_at ASC`, [leadObj.id]);
+        const msgRes = await db.exec(
+          `SELECT * FROM messages WHERE lead_id = ? ORDER BY created_at ASC`,
+          [leadObj.id],
+        );
         const messages: any[] = [];
         if (msgRes.length > 0) {
           const mCols = msgRes[0].columns;
-          msgRes[0].values.forEach(mRow => {
+          msgRes[0].values.forEach((mRow) => {
             const msgObj: any = {};
             mCols.forEach((col, idx) => {
               msgObj[col] = mRow[idx];
@@ -687,22 +852,39 @@ apiRouter.put('/leads/:id/stage', requireAuth, async (req: Request, res: Respons
     // registrado. win_reason (Wave 13/CPI) é a contraparte simétrica de
     // loss_reason para quando o lead vai para "ganho".
     if (lossReason !== undefined && winReason !== undefined) {
-      await db.run(`UPDATE leads SET stage = ?, loss_reason = ?, win_reason = ? WHERE id = ?`, [stage, lossReason, winReason, id]);
+      await db.run(`UPDATE leads SET stage = ?, loss_reason = ?, win_reason = ? WHERE id = ?`, [
+        stage,
+        lossReason,
+        winReason,
+        id,
+      ]);
     } else if (lossReason !== undefined) {
-      await db.run(`UPDATE leads SET stage = ?, loss_reason = ? WHERE id = ?`, [stage, lossReason, id]);
+      await db.run(`UPDATE leads SET stage = ?, loss_reason = ? WHERE id = ?`, [
+        stage,
+        lossReason,
+        id,
+      ]);
     } else if (winReason !== undefined) {
-      await db.run(`UPDATE leads SET stage = ?, win_reason = ? WHERE id = ?`, [stage, winReason, id]);
+      await db.run(`UPDATE leads SET stage = ?, win_reason = ? WHERE id = ?`, [
+        stage,
+        winReason,
+        id,
+      ]);
     } else {
       await db.run(`UPDATE leads SET stage = ? WHERE id = ?`, [stage, id]);
     }
     if (previousStage !== stage) {
-      const reasonNote = lossReason ? ` (motivo: ${lossReason})` : winReason ? ` (motivo: ${winReason})` : '';
+      const reasonNote = lossReason
+        ? ` (motivo: ${lossReason})`
+        : winReason
+          ? ` (motivo: ${winReason})`
+          : '';
       await logActivity(db, {
         leadId: id,
         userId,
         action: 'stage_changed',
         fromValue: previousStage,
-        toValue: `${stage}${reasonNote}`
+        toValue: `${stage}${reasonNote}`,
       });
     }
     saveDatabase();
@@ -727,7 +909,13 @@ apiRouter.put('/leads/:id/tags', requireAuth, async (req: Request, res: Response
 
     await db.run(`UPDATE leads SET tags = ? WHERE id = ?`, [tagsJson, id]);
     if (previousTags !== tagsJson) {
-      await logActivity(db, { leadId: id, userId, action: 'tags_changed', fromValue: previousTags, toValue: tagsJson });
+      await logActivity(db, {
+        leadId: id,
+        userId,
+        action: 'tags_changed',
+        fromValue: previousTags,
+        toValue: tagsJson,
+      });
     }
     saveDatabase();
     res.json({ success: true, tags, leadId: id });
@@ -752,16 +940,24 @@ apiRouter.put('/leads/:id', requireAuth, async (req: Request, res: Response) => 
       corporate_email,
       website,
       address,
-      userId
+      userId,
     } = req.body;
 
     const db = await getDatabase();
 
-    const currentRes = await db.exec(`SELECT cnpj, phone, corporate_email, decision_maker_email FROM leads WHERE id = ?`, [id]);
+    const currentRes = await db.exec(
+      `SELECT cnpj, phone, corporate_email, decision_maker_email FROM leads WHERE id = ?`,
+      [id],
+    );
     const currentRow = currentRes[0]?.values[0] || [];
     const validationErrors = validateChangedLeadFields(
       { cnpj, phone, corporate_email, decision_maker_email },
-      { cnpj: currentRow[0], phone: currentRow[1], corporate_email: currentRow[2], decision_maker_email: currentRow[3] }
+      {
+        cnpj: currentRow[0],
+        phone: currentRow[1],
+        corporate_email: currentRow[2],
+        decision_maker_email: currentRow[3],
+      },
     );
     if (validationErrors.length > 0) {
       return res.status(400).json({ error: validationErrors.join(' ') });
@@ -772,23 +968,41 @@ apiRouter.put('/leads/:id', requireAuth, async (req: Request, res: Response) => 
       const previousStage = beforeRes[0]?.values[0]?.[0] ?? null;
       await db.run(`UPDATE leads SET stage = ? WHERE id = ?`, [stage, id]);
       if (previousStage !== stage) {
-        await logActivity(db, { leadId: id, userId, action: 'stage_changed', fromValue: previousStage, toValue: stage });
+        await logActivity(db, {
+          leadId: id,
+          userId,
+          action: 'stage_changed',
+          fromValue: previousStage,
+          toValue: stage,
+        });
       }
     }
     if (tags !== undefined) {
       await db.run(`UPDATE leads SET tags = ? WHERE id = ?`, [JSON.stringify(tags), id]);
     }
     if (decision_maker_name !== undefined) {
-      await db.run(`UPDATE leads SET decision_maker_name = ? WHERE id = ?`, [decision_maker_name, id]);
+      await db.run(`UPDATE leads SET decision_maker_name = ? WHERE id = ?`, [
+        decision_maker_name,
+        id,
+      ]);
     }
     if (decision_maker_title !== undefined) {
-      await db.run(`UPDATE leads SET decision_maker_title = ? WHERE id = ?`, [decision_maker_title, id]);
+      await db.run(`UPDATE leads SET decision_maker_title = ? WHERE id = ?`, [
+        decision_maker_title,
+        id,
+      ]);
     }
     if (decision_maker_email !== undefined) {
-      await db.run(`UPDATE leads SET decision_maker_email = ? WHERE id = ?`, [decision_maker_email, id]);
+      await db.run(`UPDATE leads SET decision_maker_email = ? WHERE id = ?`, [
+        decision_maker_email,
+        id,
+      ]);
     }
     if (decision_maker_linkedin !== undefined) {
-      await db.run(`UPDATE leads SET decision_maker_linkedin = ? WHERE id = ?`, [decision_maker_linkedin, id]);
+      await db.run(`UPDATE leads SET decision_maker_linkedin = ? WHERE id = ?`, [
+        decision_maker_linkedin,
+        id,
+      ]);
     }
     if (cnpj !== undefined) {
       await db.run(`UPDATE leads SET cnpj = ? WHERE id = ?`, [cnpj, id]);
@@ -820,11 +1034,24 @@ apiRouter.post('/leads/:id/save', requireAuth, async (req: Request, res: Respons
 
     const db = await getDatabase();
 
-    const currentRes = await db.exec(`SELECT cnpj, phone, corporate_email, decision_maker_email FROM leads WHERE id = ?`, [id]);
+    const currentRes = await db.exec(
+      `SELECT cnpj, phone, corporate_email, decision_maker_email FROM leads WHERE id = ?`,
+      [id],
+    );
     const currentRow = currentRes[0]?.values[0] || [];
     const validationErrors = validateChangedLeadFields(
-      { cnpj: leadData.cnpj, phone: leadData.phone, corporate_email: leadData.corporate_email, decision_maker_email: leadData.decision_maker_email },
-      { cnpj: currentRow[0], phone: currentRow[1], corporate_email: currentRow[2], decision_maker_email: currentRow[3] }
+      {
+        cnpj: leadData.cnpj,
+        phone: leadData.phone,
+        corporate_email: leadData.corporate_email,
+        decision_maker_email: leadData.decision_maker_email,
+      },
+      {
+        cnpj: currentRow[0],
+        phone: currentRow[1],
+        corporate_email: currentRow[2],
+        decision_maker_email: currentRow[3],
+      },
     );
     if (validationErrors.length > 0) {
       return res.status(400).json({ error: validationErrors.join(' ') });
@@ -837,22 +1064,39 @@ apiRouter.post('/leads/:id/save', requireAuth, async (req: Request, res: Respons
       const previousStage = beforeRes[0]?.values[0]?.[0] ?? null;
       // win_reason (Wave 13/CPI) é a contraparte simétrica de loss_reason.
       if (leadData.lossReason !== undefined && leadData.winReason !== undefined) {
-        await db.run(`UPDATE leads SET stage = ?, loss_reason = ?, win_reason = ? WHERE id = ?`, [leadData.stage, leadData.lossReason, leadData.winReason, id]);
+        await db.run(`UPDATE leads SET stage = ?, loss_reason = ?, win_reason = ? WHERE id = ?`, [
+          leadData.stage,
+          leadData.lossReason,
+          leadData.winReason,
+          id,
+        ]);
       } else if (leadData.lossReason !== undefined) {
-        await db.run(`UPDATE leads SET stage = ?, loss_reason = ? WHERE id = ?`, [leadData.stage, leadData.lossReason, id]);
+        await db.run(`UPDATE leads SET stage = ?, loss_reason = ? WHERE id = ?`, [
+          leadData.stage,
+          leadData.lossReason,
+          id,
+        ]);
       } else if (leadData.winReason !== undefined) {
-        await db.run(`UPDATE leads SET stage = ?, win_reason = ? WHERE id = ?`, [leadData.stage, leadData.winReason, id]);
+        await db.run(`UPDATE leads SET stage = ?, win_reason = ? WHERE id = ?`, [
+          leadData.stage,
+          leadData.winReason,
+          id,
+        ]);
       } else {
         await db.run(`UPDATE leads SET stage = ? WHERE id = ?`, [leadData.stage, id]);
       }
       if (previousStage !== leadData.stage) {
-        const reasonNote = leadData.lossReason ? ` (motivo: ${leadData.lossReason})` : leadData.winReason ? ` (motivo: ${leadData.winReason})` : '';
+        const reasonNote = leadData.lossReason
+          ? ` (motivo: ${leadData.lossReason})`
+          : leadData.winReason
+            ? ` (motivo: ${leadData.winReason})`
+            : '';
         await logActivity(db, {
           leadId: id,
           userId,
           action: 'stage_changed',
           fromValue: previousStage,
-          toValue: `${leadData.stage}${reasonNote}`
+          toValue: `${leadData.stage}${reasonNote}`,
         });
       }
     }
@@ -866,7 +1110,10 @@ apiRouter.post('/leads/:id/save', requireAuth, async (req: Request, res: Respons
       await db.run(`UPDATE leads SET phone = ? WHERE id = ?`, [leadData.phone, id]);
     }
     if (leadData.corporate_email) {
-      await db.run(`UPDATE leads SET corporate_email = ? WHERE id = ?`, [leadData.corporate_email, id]);
+      await db.run(`UPDATE leads SET corporate_email = ? WHERE id = ?`, [
+        leadData.corporate_email,
+        id,
+      ]);
     }
     if (leadData.website) {
       await db.run(`UPDATE leads SET website = ? WHERE id = ?`, [leadData.website, id]);
@@ -875,48 +1122,86 @@ apiRouter.post('/leads/:id/save', requireAuth, async (req: Request, res: Respons
       await db.run(`UPDATE leads SET address = ? WHERE id = ?`, [leadData.address, id]);
     }
     if (leadData.decision_maker_name) {
-      await db.run(`UPDATE leads SET decision_maker_name = ? WHERE id = ?`, [leadData.decision_maker_name, id]);
+      await db.run(`UPDATE leads SET decision_maker_name = ? WHERE id = ?`, [
+        leadData.decision_maker_name,
+        id,
+      ]);
     }
     if (leadData.decision_maker_title) {
-      await db.run(`UPDATE leads SET decision_maker_title = ? WHERE id = ?`, [leadData.decision_maker_title, id]);
+      await db.run(`UPDATE leads SET decision_maker_title = ? WHERE id = ?`, [
+        leadData.decision_maker_title,
+        id,
+      ]);
     }
     if (leadData.decision_maker_email) {
-      await db.run(`UPDATE leads SET decision_maker_email = ? WHERE id = ?`, [leadData.decision_maker_email, id]);
+      await db.run(`UPDATE leads SET decision_maker_email = ? WHERE id = ?`, [
+        leadData.decision_maker_email,
+        id,
+      ]);
     }
     if (leadData.decision_maker_linkedin) {
-      await db.run(`UPDATE leads SET decision_maker_linkedin = ? WHERE id = ?`, [leadData.decision_maker_linkedin, id]);
+      await db.run(`UPDATE leads SET decision_maker_linkedin = ? WHERE id = ?`, [
+        leadData.decision_maker_linkedin,
+        id,
+      ]);
     }
     if (leadData.company_linkedin !== undefined) {
-      await db.run(`UPDATE leads SET company_linkedin = ? WHERE id = ?`, [leadData.company_linkedin, id]);
+      await db.run(`UPDATE leads SET company_linkedin = ? WHERE id = ?`, [
+        leadData.company_linkedin,
+        id,
+      ]);
     }
     if (leadData.assigned_to !== undefined) {
       const beforeRes = await db.exec(`SELECT assigned_to FROM leads WHERE id = ?`, [id]);
       const previousAssignee = beforeRes[0]?.values[0]?.[0] ?? null;
       await db.run(`UPDATE leads SET assigned_to = ? WHERE id = ?`, [leadData.assigned_to, id]);
       if (previousAssignee !== leadData.assigned_to) {
-        await logActivity(db, { leadId: id, userId, action: 'reassigned', fromValue: previousAssignee, toValue: leadData.assigned_to });
+        await logActivity(db, {
+          leadId: id,
+          userId,
+          action: 'reassigned',
+          fromValue: previousAssignee,
+          toValue: leadData.assigned_to,
+        });
       }
     }
     if (leadData.activity_notes !== undefined) {
-      await db.run(`UPDATE leads SET activity_notes = ? WHERE id = ?`, [leadData.activity_notes, id]);
+      await db.run(`UPDATE leads SET activity_notes = ? WHERE id = ?`, [
+        leadData.activity_notes,
+        id,
+      ]);
     }
     if (leadData.activity_context !== undefined) {
-      await db.run(`UPDATE leads SET activity_context = ? WHERE id = ?`, [leadData.activity_context, id]);
+      await db.run(`UPDATE leads SET activity_context = ? WHERE id = ?`, [
+        leadData.activity_context,
+        id,
+      ]);
     }
-    
+
     // Save updated copies if sent
     if (leadData.copies) {
-      const channels = ['cold_call', 'cold_email', 'whatsapp', 'linkedin', 'objection_matrix', 'qualification_matrix', 'ice_breaker'] as const;
+      const channels = [
+        'cold_call',
+        'cold_email',
+        'whatsapp',
+        'linkedin',
+        'objection_matrix',
+        'qualification_matrix',
+        'ice_breaker',
+      ] as const;
       for (const ch of channels) {
         if (leadData.copies[ch]) {
           const msgId = `msg-${id}-${ch}`;
           try {
-            await db.run(`UPDATE messages SET content = ? WHERE id = ?`, [leadData.copies[ch], msgId]);
-          } catch(_e: any) {}
+            await db.run(`UPDATE messages SET content = ? WHERE id = ?`, [
+              leadData.copies[ch],
+              msgId,
+            ]);
+          } catch (_e: any) {}
         }
       }
     }
-    
+
     saveDatabase();
     res.json({ success: true, message: 'Dados do lead salvos com sucesso!' });
   } catch (err: any) {
@@ -925,239 +1210,290 @@ apiRouter.post('/leads/:id/save', requireAuth, async (req: Request, res: Respons
 });
 
 // Second Stage: News & Public Sources Enrichment with Script Generation
-apiRouter.post('/leads/:id/enrich-news', heavyAiLimiter, requireAuth, async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-    const { pitch, aiConfig, tone, force } = req.body;
-    const db = await getDatabase();
-
-    const leadRes = await db.exec(`SELECT * FROM leads WHERE id = ?`, [id]);
-    if (leadRes.length === 0 || leadRes[0].values.length === 0) {
-      return res.status(404).json({ error: 'Lead não encontrado.' });
-    }
-
-    const cols = leadRes[0].columns;
-    const rawLead: any = {};
-    cols.forEach((col, idx) => {
-      rawLead[col] = leadRes[0].values[0][idx];
-    });
-
-    let dmEmails: string[] = [];
+apiRouter.post(
+  '/leads/:id/enrich-news',
+  heavyAiLimiter,
+  requireAuth,
+  async (req: Request, res: Response) => {
     try {
-      if (rawLead.decision_maker_emails) {
-        dmEmails = JSON.parse(rawLead.decision_maker_emails);
-      }
-    } catch(_e: any) {
-      dmEmails = [rawLead.decision_maker_email];
-    }
-    if (dmEmails.length === 0 && rawLead.decision_maker_email) {
-      dmEmails = [rawLead.decision_maker_email];
-    }
+      const { id } = req.params;
+      const { pitch, aiConfig, tone, force } = req.body;
+      const db = await getDatabase();
 
-    let dmPhones: string[] = [];
+      const leadRes = await db.exec(`SELECT * FROM leads WHERE id = ?`, [id]);
+      if (leadRes.length === 0 || leadRes[0].values.length === 0) {
+        return res.status(404).json({ error: 'Lead não encontrado.' });
+      }
+
+      const cols = leadRes[0].columns;
+      const rawLead: any = {};
+      cols.forEach((col, idx) => {
+        rawLead[col] = leadRes[0].values[0][idx];
+      });
+
+      let dmEmails: string[] = [];
+      try {
+        if (rawLead.decision_maker_emails) {
+          dmEmails = JSON.parse(rawLead.decision_maker_emails);
+        }
+      } catch (_e: any) {
+        dmEmails = [rawLead.decision_maker_email];
+      }
+      if (dmEmails.length === 0 && rawLead.decision_maker_email) {
+        dmEmails = [rawLead.decision_maker_email];
+      }
+
+      let dmPhones: string[] = [];
+      try {
+        if (rawLead.decision_maker_phones) {
+          dmPhones = JSON.parse(rawLead.decision_maker_phones);
+        }
+      } catch (_e: any) {
+        dmPhones = [rawLead.decision_maker_phone || rawLead.phone].filter(Boolean);
+      }
+      if (dmPhones.length === 0 && (rawLead.decision_maker_phone || rawLead.phone)) {
+        dmPhones = [rawLead.decision_maker_phone || rawLead.phone];
+      }
+
+      const lead: Lead = {
+        ...rawLead,
+        decision_makers: rawLead.decision_maker_name
+          ? [
+              {
+                name: rawLead.decision_maker_name,
+                title: rawLead.decision_maker_title || '',
+                email: rawLead.decision_maker_email || dmEmails[0] || '',
+                emails: dmEmails,
+                phone: rawLead.decision_maker_phone || dmPhones[0] || '',
+                phones: dmPhones,
+                linkedin: rawLead.decision_maker_linkedin || '',
+              },
+            ]
+          : [],
+      };
+
+      const defaultPitch =
+        pitch ||
+        'A Atlas conecta pessoas e tecnologia gerando valores com segurança e inteligência logística.';
+      // IA & Guardrails (CPI follow-up): evidência já confirmada deste lead
+      // (Wave 6) alimenta o LeadEvidenceContext do prompt - ver server/ai.ts.
+      const storedEvidence = await getFieldEvidence(db, 'lead', id);
+      const enrichedData = await enrichLeadWithPublicNewsAndScripts(
+        lead,
+        defaultPitch,
+        aiConfig || {
+          provider: 'ollama',
+          ollamaUrl: 'http://localhost:11434',
+          ollamaModel: 'llama3',
+        },
+        tone,
+        storedEvidence,
+      );
+
+      const newsDossierJson = JSON.stringify(enrichedData.news_dossier);
+      await db.run(`UPDATE leads SET news_dossier = ?, is_enriched = 1 WHERE id = ?`, [
+        newsDossierJson,
+        id,
+      ]);
+
+      // Grava cada roteiro com versionamento: se já existir um marcado 'sent', não é
+      // sobrescrito sem force=true — e a versão anterior nunca é perdida.
+      const channels = [
+        'cold_call',
+        'cold_email',
+        'whatsapp',
+        'linkedin',
+        'objection_matrix',
+        'qualification_matrix',
+        'ice_breaker',
+      ] as const;
+      const finalCopies: Record<string, string> = {};
+      let anySkipped = false;
+      for (const ch of channels) {
+        const msgId = `msg-${id}-${ch}`;
+        const { content, skipped } = await upsertMessageWithVersioning(db, {
+          msgId,
+          campaignId: rawLead.campaign_id || 'camp-default',
+          leadId: id,
+          channel: ch,
+          content: enrichedData.copies[ch] || '',
+          engineUsed: enrichedData.engineUsed,
+          force: Boolean(force),
+        });
+        finalCopies[ch] = content;
+        if (skipped) anySkipped = true;
+      }
+
+      saveDatabase();
+
+      res.json({
+        success: true,
+        leadId: id,
+        news_dossier: enrichedData.news_dossier,
+        copies: finalCopies,
+        engineUsed: enrichedData.engineUsed,
+        personalization_level: enrichedData.personalization_level,
+        skippedSentMessages: anySkipped,
+        message: anySkipped
+          ? `Lead "${lead.name}" enriquecido — algum roteiro já marcado como "enviado" foi preservado (use force para sobrescrever).`
+          : `Lead "${lead.name}" enriquecido com sucesso com notícias públicas e novos roteiros!`,
+      });
+    } catch (err: any) {
+      console.error('Erro no enriquecimento de notícias:', err);
+      res.status(500).json({ error: err.message || 'Falha ao enriquecer lead com notícias.' });
+    }
+  },
+);
+
+// Dedicated On-Demand AI Copy Generation (Runs only when user requests)
+apiRouter.post(
+  '/leads/:id/generate-copies',
+  heavyAiLimiter,
+  requireAuth,
+  async (req: Request, res: Response) => {
     try {
-      if (rawLead.decision_maker_phones) {
-        dmPhones = JSON.parse(rawLead.decision_maker_phones);
-      }
-    } catch(_e: any) {
-      dmPhones = [rawLead.decision_maker_phone || rawLead.phone].filter(Boolean);
-    }
-    if (dmPhones.length === 0 && (rawLead.decision_maker_phone || rawLead.phone)) {
-      dmPhones = [rawLead.decision_maker_phone || rawLead.phone];
-    }
+      const { id } = req.params;
+      const { pitch, aiConfig, tone, force } = req.body;
+      const db = await getDatabase();
 
-    const lead: Lead = {
-      ...rawLead,
-      decision_makers: rawLead.decision_maker_name ? [{
-        name: rawLead.decision_maker_name,
+      const leadRes = await db.exec(`SELECT * FROM leads WHERE id = ?`, [id]);
+      if (leadRes.length === 0 || leadRes[0].values.length === 0) {
+        return res.status(404).json({ error: 'Lead não encontrado.' });
+      }
+
+      const cols = leadRes[0].columns;
+      const rawLead: any = {};
+      cols.forEach((col, idx) => {
+        rawLead[col] = leadRes[0].values[0][idx];
+      });
+
+      let dmEmails: string[] = [];
+      try {
+        if (rawLead.decision_maker_emails) {
+          dmEmails = JSON.parse(rawLead.decision_maker_emails);
+        }
+      } catch (_e: any) {
+        dmEmails = [rawLead.decision_maker_email];
+      }
+
+      let dmPhones: string[] = [];
+      try {
+        if (rawLead.decision_maker_phones) {
+          dmPhones = JSON.parse(rawLead.decision_maker_phones);
+        }
+      } catch (_e: any) {
+        dmPhones = [rawLead.decision_maker_phone || rawLead.phone].filter(Boolean);
+      }
+
+      // Sem decisor real cadastrado, o campo fica vazio - nunca preenchemos com um
+      // nome/cargo de decisor inventado só para ter algo para a IA escrever.
+      const mainDm: DecisionMaker = {
+        name: rawLead.decision_maker_name || '',
         title: rawLead.decision_maker_title || '',
         email: rawLead.decision_maker_email || dmEmails[0] || '',
         emails: dmEmails,
-        phone: rawLead.decision_maker_phone || dmPhones[0] || '',
+        phone: rawLead.decision_maker_phone || dmPhones[0] || rawLead.phone || '',
         phones: dmPhones,
-        linkedin: rawLead.decision_maker_linkedin || ''
-      }] : []
-    };
-    
-    const defaultPitch = pitch || 'A Atlas conecta pessoas e tecnologia gerando valores com segurança e inteligência logística.';
-    // IA & Guardrails (CPI follow-up): evidência já confirmada deste lead
-    // (Wave 6) alimenta o LeadEvidenceContext do prompt - ver server/ai.ts.
-    const storedEvidence = await getFieldEvidence(db, 'lead', id);
-    const enrichedData = await enrichLeadWithPublicNewsAndScripts(
-      lead,
-      defaultPitch,
-      aiConfig || { provider: 'ollama', ollamaUrl: 'http://localhost:11434', ollamaModel: 'llama3' },
-      tone,
-      storedEvidence
-    );
-    
-    const newsDossierJson = JSON.stringify(enrichedData.news_dossier);
-    await db.run(`UPDATE leads SET news_dossier = ?, is_enriched = 1 WHERE id = ?`, [newsDossierJson, id]);
+        linkedin: rawLead.decision_maker_linkedin || '',
+      };
 
-    // Grava cada roteiro com versionamento: se já existir um marcado 'sent', não é
-    // sobrescrito sem force=true — e a versão anterior nunca é perdida.
-    const channels = ['cold_call', 'cold_email', 'whatsapp', 'linkedin', 'objection_matrix', 'qualification_matrix', 'ice_breaker'] as const;
-    const finalCopies: Record<string, string> = {};
-    let anySkipped = false;
-    for (const ch of channels) {
-      const msgId = `msg-${id}-${ch}`;
-      const { content, skipped } = await upsertMessageWithVersioning(db, {
-        msgId,
-        campaignId: rawLead.campaign_id || 'camp-default',
-        leadId: id,
-        channel: ch,
-        content: enrichedData.copies[ch] || '',
-        engineUsed: enrichedData.engineUsed,
-        force: Boolean(force)
-      });
-      finalCopies[ch] = content;
-      if (skipped) anySkipped = true;
-    }
+      const lead: Lead = {
+        ...rawLead,
+        decision_makers: [mainDm],
+      };
 
-    saveDatabase();
+      const defaultPitch =
+        pitch ||
+        'A Atlas conecta pessoas e tecnologia gerando valores com segurança e inteligência logística.';
+      // IA & Guardrails (CPI follow-up): evidência já confirmada deste lead
+      // (Wave 6) alimenta o LeadEvidenceContext do prompt - ver server/ai.ts.
+      const storedEvidence = await getFieldEvidence(db, 'lead', id);
+      const { copies, engineUsed, personalization_level } = await generateCopiesWithEngine(
+        lead,
+        defaultPitch,
+        aiConfig || {
+          provider: 'ollama',
+          ollamaUrl: 'http://localhost:11434',
+          ollamaModel: 'llama3',
+        },
+        mainDm,
+        storedEvidence,
+      );
 
-    res.json({
-      success: true,
-      leadId: id,
-      news_dossier: enrichedData.news_dossier,
-      copies: finalCopies,
-      engineUsed: enrichedData.engineUsed,
-      personalization_level: enrichedData.personalization_level,
-      skippedSentMessages: anySkipped,
-      message: anySkipped
-        ? `Lead "${lead.name}" enriquecido — algum roteiro já marcado como "enviado" foi preservado (use force para sobrescrever).`
-        : `Lead "${lead.name}" enriquecido com sucesso com notícias públicas e novos roteiros!`
-    });
-  } catch (err: any) {
-    console.error('Erro no enriquecimento de notícias:', err);
-    res.status(500).json({ error: err.message || 'Falha ao enriquecer lead com notícias.' });
-  }
-});
-
-// Dedicated On-Demand AI Copy Generation (Runs only when user requests)
-apiRouter.post('/leads/:id/generate-copies', heavyAiLimiter, requireAuth, async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-    const { pitch, aiConfig, tone, force } = req.body;
-    const db = await getDatabase();
-
-    const leadRes = await db.exec(`SELECT * FROM leads WHERE id = ?`, [id]);
-    if (leadRes.length === 0 || leadRes[0].values.length === 0) {
-      return res.status(404).json({ error: 'Lead não encontrado.' });
-    }
-
-    const cols = leadRes[0].columns;
-    const rawLead: any = {};
-    cols.forEach((col, idx) => {
-      rawLead[col] = leadRes[0].values[0][idx];
-    });
-
-    let dmEmails: string[] = [];
-    try {
-      if (rawLead.decision_maker_emails) {
-        dmEmails = JSON.parse(rawLead.decision_maker_emails);
+      // Grava cada roteiro com versionamento (mesma regra do enrich-news: roteiro
+      // marcado 'sent' só é sobrescrito com force=true).
+      const channels = [
+        'cold_call',
+        'cold_email',
+        'whatsapp',
+        'linkedin',
+        'objection_matrix',
+        'qualification_matrix',
+        'ice_breaker',
+      ] as const;
+      const finalCopies: Record<string, string> = {};
+      let anySkipped = false;
+      for (const ch of channels) {
+        const msgId = `msg-${id}-${ch}`;
+        const result = await upsertMessageWithVersioning(db, {
+          msgId,
+          campaignId: rawLead.campaign_id || 'camp-default',
+          leadId: id,
+          channel: ch,
+          content: copies[ch] || '',
+          engineUsed,
+          force: Boolean(force),
+        });
+        finalCopies[ch] = result.content;
+        if (result.skipped) anySkipped = true;
       }
-    } catch(_e: any) {
-      dmEmails = [rawLead.decision_maker_email];
-    }
 
-    let dmPhones: string[] = [];
-    try {
-      if (rawLead.decision_maker_phones) {
-        dmPhones = JSON.parse(rawLead.decision_maker_phones);
-      }
-    } catch(_e: any) {
-      dmPhones = [rawLead.decision_maker_phone || rawLead.phone].filter(Boolean);
-    }
+      saveDatabase();
 
-    // Sem decisor real cadastrado, o campo fica vazio - nunca preenchemos com um
-    // nome/cargo de decisor inventado só para ter algo para a IA escrever.
-    const mainDm: DecisionMaker = {
-      name: rawLead.decision_maker_name || '',
-      title: rawLead.decision_maker_title || '',
-      email: rawLead.decision_maker_email || dmEmails[0] || '',
-      emails: dmEmails,
-      phone: rawLead.decision_maker_phone || dmPhones[0] || rawLead.phone || '',
-      phones: dmPhones,
-      linkedin: rawLead.decision_maker_linkedin || ''
-    };
-
-    const lead: Lead = {
-      ...rawLead,
-      decision_makers: [mainDm]
-    };
-
-    const defaultPitch = pitch || 'A Atlas conecta pessoas e tecnologia gerando valores com segurança e inteligência logística.';
-    // IA & Guardrails (CPI follow-up): evidência já confirmada deste lead
-    // (Wave 6) alimenta o LeadEvidenceContext do prompt - ver server/ai.ts.
-    const storedEvidence = await getFieldEvidence(db, 'lead', id);
-    const { copies, engineUsed, personalization_level } = await generateCopiesWithEngine(
-      lead,
-      defaultPitch,
-      aiConfig || { provider: 'ollama', ollamaUrl: 'http://localhost:11434', ollamaModel: 'llama3' },
-      mainDm,
-      storedEvidence
-    );
-
-    // Grava cada roteiro com versionamento (mesma regra do enrich-news: roteiro
-    // marcado 'sent' só é sobrescrito com force=true).
-    const channels = ['cold_call', 'cold_email', 'whatsapp', 'linkedin', 'objection_matrix', 'qualification_matrix', 'ice_breaker'] as const;
-    const finalCopies: Record<string, string> = {};
-    let anySkipped = false;
-    for (const ch of channels) {
-      const msgId = `msg-${id}-${ch}`;
-      const result = await upsertMessageWithVersioning(db, {
-        msgId,
-        campaignId: rawLead.campaign_id || 'camp-default',
+      res.json({
+        success: true,
         leadId: id,
-        channel: ch,
-        content: copies[ch] || '',
+        copies: finalCopies,
         engineUsed,
-        force: Boolean(force)
+        personalization_level,
+        skippedSentMessages: anySkipped,
+        message: anySkipped
+          ? `Roteiros gerados — algum já marcado como "enviado" foi preservado (use force para sobrescrever).`
+          : `Roteiros comerciais gerados com sucesso para ${rawLead.name}!`,
       });
-      finalCopies[ch] = result.content;
-      if (result.skipped) anySkipped = true;
+    } catch (err: any) {
+      console.error('Erro na geração de copys sob demanda:', err);
+      res.status(500).json({ error: err.message || 'Falha ao gerar roteiros comerciais.' });
     }
-
-    saveDatabase();
-
-    res.json({
-      success: true,
-      leadId: id,
-      copies: finalCopies,
-      engineUsed,
-      personalization_level,
-      skippedSentMessages: anySkipped,
-      message: anySkipped
-        ? `Roteiros gerados — algum já marcado como "enviado" foi preservado (use force para sobrescrever).`
-        : `Roteiros comerciais gerados com sucesso para ${rawLead.name}!`
-    });
-  } catch (err: any) {
-    console.error('Erro na geração de copys sob demanda:', err);
-    res.status(500).json({ error: err.message || 'Falha ao gerar roteiros comerciais.' });
-  }
-});
+  },
+);
 
 // Aprendizado contínuo: o vendedor marca se usou o roteiro como veio, editou antes
 // de usar, ou nem usou. Isso não re-treina nada sozinho, mas é o dado que falta
 // para, no futuro, saber quais prompts/motores realmente convertem.
 const VALID_COPY_FEEDBACK = ['used_as_is', 'edited', 'not_used'] as const;
-apiRouter.post('/leads/:id/copies/:channel/feedback', requireAuth, async (req: Request, res: Response) => {
-  try {
-    const { id, channel } = req.params;
-    const { feedback } = req.body;
-    if (!VALID_COPY_FEEDBACK.includes(feedback)) {
-      return res.status(400).json({ error: `feedback deve ser um de: ${VALID_COPY_FEEDBACK.join(', ')}` });
+apiRouter.post(
+  '/leads/:id/copies/:channel/feedback',
+  requireAuth,
+  async (req: Request, res: Response) => {
+    try {
+      const { id, channel } = req.params;
+      const { feedback } = req.body;
+      if (!VALID_COPY_FEEDBACK.includes(feedback)) {
+        return res
+          .status(400)
+          .json({ error: `feedback deve ser um de: ${VALID_COPY_FEEDBACK.join(', ')}` });
+      }
+      const db = await getDatabase();
+      const msgId = `msg-${id}-${channel}`;
+      await db.run(`UPDATE messages SET feedback = ? WHERE id = ?`, [feedback, msgId]);
+      saveDatabase();
+      res.json({ success: true, leadId: id, channel, feedback });
+    } catch (err: any) {
+      res.status(500).json({ error: err.message || 'Falha ao registrar feedback do roteiro.' });
     }
-    const db = await getDatabase();
-    const msgId = `msg-${id}-${channel}`;
-    await db.run(`UPDATE messages SET feedback = ? WHERE id = ?`, [feedback, msgId]);
-    saveDatabase();
-    res.json({ success: true, leadId: id, channel, feedback });
-  } catch (err: any) {
-    res.status(500).json({ error: err.message || 'Falha ao registrar feedback do roteiro.' });
-  }
-});
+  },
+);
 
 // --- Tarefas por lead --------------------------------------------------------
 // Compromisso que o próprio vendedor cria (data + descrição livre), diferente de
@@ -1167,9 +1503,11 @@ const VALID_TASK_STATUS = ['pending', 'done', 'cancelled'] as const;
 function mapRows(result: { columns: string[]; values: any[][] }[]): any[] {
   if (result.length === 0) return [];
   const cols = result[0].columns;
-  return result[0].values.map(row => {
+  return result[0].values.map((row) => {
     const obj: any = {};
-    cols.forEach((col, idx) => { obj[col] = row[idx]; });
+    cols.forEach((col, idx) => {
+      obj[col] = row[idx];
+    });
     return obj;
   });
 }
@@ -1183,7 +1521,9 @@ apiRouter.post('/leads/:id/tasks', requireAuth, async (req: Request, res: Respon
       return res.status(400).json({ error: 'Descrição da tarefa é obrigatória.' });
     }
     if (!isWithinMaxLength(description, 500)) {
-      return res.status(400).json({ error: 'Descrição da tarefa é longa demais (máx. 500 caracteres).' });
+      return res
+        .status(400)
+        .json({ error: 'Descrição da tarefa é longa demais (máx. 500 caracteres).' });
     }
     const db = await getDatabase();
     const leadRes = await db.exec(`SELECT id FROM leads WHERE id = ?`, [id]);
@@ -1192,10 +1532,15 @@ apiRouter.post('/leads/:id/tasks', requireAuth, async (req: Request, res: Respon
     }
     const insertRes = await db.exec(
       `INSERT INTO tasks (lead_id, user_id, description, due_date, status) VALUES (?, ?, ?, ?, 'pending') RETURNING *`,
-      [id, userId || null, description.trim(), dueDate || null]
+      [id, userId || null, description.trim(), dueDate || null],
     );
     const task = mapRows(insertRes)[0];
-    await logActivity(db, { leadId: id, userId, action: 'task_created', toValue: description.trim() });
+    await logActivity(db, {
+      leadId: id,
+      userId,
+      action: 'task_created',
+      toValue: description.trim(),
+    });
     saveDatabase();
     res.status(201).json(task);
   } catch (err: any) {
@@ -1211,7 +1556,7 @@ apiRouter.get('/leads/:id/tasks', async (req: Request, res: Response) => {
     const result = await db.exec(
       `SELECT * FROM tasks WHERE lead_id = ?
        ORDER BY (status = 'pending') DESC, due_date ASC NULLS LAST, created_at DESC`,
-      [id]
+      [id],
     );
     res.json(mapRows(result));
   } catch (err: any) {
@@ -1231,7 +1576,9 @@ apiRouter.put('/tasks/:id', requireAuth, async (req: Request, res: Response) => 
 
     if (status !== undefined) {
       if (!VALID_TASK_STATUS.includes(status)) {
-        return res.status(400).json({ error: `status deve ser um de: ${VALID_TASK_STATUS.join(', ')}` });
+        return res
+          .status(400)
+          .json({ error: `status deve ser um de: ${VALID_TASK_STATUS.join(', ')}` });
       }
       sets.push('status = ?');
       params.push(status);
@@ -1243,7 +1590,9 @@ apiRouter.put('/tasks/:id', requireAuth, async (req: Request, res: Response) => 
         return res.status(400).json({ error: 'Descrição da tarefa não pode ficar vazia.' });
       }
       if (!isWithinMaxLength(description, 500)) {
-        return res.status(400).json({ error: 'Descrição da tarefa é longa demais (máx. 500 caracteres).' });
+        return res
+          .status(400)
+          .json({ error: 'Descrição da tarefa é longa demais (máx. 500 caracteres).' });
       }
       sets.push('description = ?');
       params.push(description.trim());
@@ -1266,7 +1615,13 @@ apiRouter.put('/tasks/:id', requireAuth, async (req: Request, res: Response) => 
     params.push(id);
     await db.run(`UPDATE tasks SET ${sets.join(', ')} WHERE id = ?`, params);
     if (status !== undefined && status !== previousStatus) {
-      await logActivity(db, { leadId, userId, action: 'task_status_changed', fromValue: previousStatus, toValue: status });
+      await logActivity(db, {
+        leadId,
+        userId,
+        action: 'task_status_changed',
+        fromValue: previousStatus,
+        toValue: status,
+      });
     }
     saveDatabase();
 
@@ -1289,7 +1644,7 @@ apiRouter.get('/users/:userId/tasks', requireAuth, async (req: Request, res: Res
        JOIN leads l ON l.id = t.lead_id
        WHERE t.user_id = ?
        ORDER BY (t.status = 'pending') DESC, t.due_date ASC NULLS LAST, t.created_at DESC`,
-      [userId]
+      [userId],
     );
     res.json(mapRows(result));
   } catch (err: any) {
@@ -1308,7 +1663,7 @@ apiRouter.get('/tasks', requireManager, async (_req: Request, res: Response) => 
        JOIN leads l ON l.id = t.lead_id
        LEFT JOIN users u ON u.id = t.user_id
        WHERE t.status != 'cancelled'
-       ORDER BY (t.status = 'pending') DESC, t.due_date ASC NULLS LAST, t.created_at DESC`
+       ORDER BY (t.status = 'pending') DESC, t.due_date ASC NULLS LAST, t.created_at DESC`,
     );
     res.json(mapRows(result));
   } catch (err: any) {
@@ -1336,7 +1691,7 @@ apiRouter.post('/leads/:id/cnpj-refresh', requireAuth, async (req: Request, res:
     const { id } = req.params;
     const { cnpj } = req.body;
     const db = await getDatabase();
-    
+
     const leadRes = await db.exec(`SELECT * FROM leads WHERE id = ?`, [id]);
     if (leadRes.length === 0 || leadRes[0].values.length === 0) {
       return res.status(404).json({ error: 'Lead não encontrado.' });
@@ -1353,23 +1708,26 @@ apiRouter.post('/leads/:id/cnpj-refresh', requireAuth, async (req: Request, res:
       name: currentLead.name,
       domain: currentLead.domain,
       cnpj: targetCnpj,
-      address: currentLead.address
+      address: currentLead.address,
     });
 
-    await db.run(`
+    await db.run(
+      `
       UPDATE leads 
       SET cnpj = ?, razao_social = ?, situacao_cadastral = ?, cnae_fiscal = ?, cnae_fiscal_descricao = ?, capital_social = ?, qsa = ?
       WHERE id = ?
-    `, [
-      cnpjData.cnpj,
-      cnpjData.razao_social,
-      cnpjData.situacao_cadastral,
-      cnpjData.cnae_fiscal,
-      cnpjData.cnae_fiscal_descricao,
-      cnpjData.capital_social,
-      JSON.stringify(cnpjData.qsa || []),
-      id
-    ]);
+    `,
+      [
+        cnpjData.cnpj,
+        cnpjData.razao_social,
+        cnpjData.situacao_cadastral,
+        cnpjData.cnae_fiscal,
+        cnpjData.cnae_fiscal_descricao,
+        cnpjData.capital_social,
+        JSON.stringify(cnpjData.qsa || []),
+        id,
+      ],
+    );
 
     saveDatabase();
 
@@ -1377,7 +1735,7 @@ apiRouter.post('/leads/:id/cnpj-refresh', requireAuth, async (req: Request, res:
       success: true,
       leadId: id,
       cnpjData,
-      message: `CNPJ ${cnpjData.cnpj} atualizado com dados oficiais da Receita Federal!`
+      message: `CNPJ ${cnpjData.cnpj} atualizado com dados oficiais da Receita Federal!`,
     });
   } catch (err: any) {
     res.status(500).json({ error: err.message });
@@ -1409,20 +1767,27 @@ apiRouter.get('/feedback/summary', async (_req: Request, res: Response) => {
     const db = await getDatabase();
 
     const messagesRes = await db.exec(`SELECT channel, feedback FROM messages`);
-    const messages: FeedbackMessageRecord[] = messagesRes.length > 0
-      ? messagesRes[0].values.map(row => ({ channel: row[0] as string | null, feedback: row[1] as string | null }))
-      : [];
+    const messages: FeedbackMessageRecord[] =
+      messagesRes.length > 0
+        ? messagesRes[0].values.map((row) => ({
+            channel: row[0] as string | null,
+            feedback: row[1] as string | null,
+          }))
+        : [];
 
-    const leadsRes = await db.exec(`SELECT stage, loss_reason, win_reason, segment, company FROM leads`);
-    const leads: FeedbackLeadRecord[] = leadsRes.length > 0
-      ? leadsRes[0].values.map(row => ({
-          stage: row[0] as string | null,
-          loss_reason: row[1] as string | null,
-          win_reason: row[2] as string | null,
-          segment: row[3] as string | null,
-          company: row[4] as string | null
-        }))
-      : [];
+    const leadsRes = await db.exec(
+      `SELECT stage, loss_reason, win_reason, segment, company FROM leads`,
+    );
+    const leads: FeedbackLeadRecord[] =
+      leadsRes.length > 0
+        ? leadsRes[0].values.map((row) => ({
+            stage: row[0] as string | null,
+            loss_reason: row[1] as string | null,
+            win_reason: row[2] as string | null,
+            segment: row[3] as string | null,
+            company: row[4] as string | null,
+          }))
+        : [];
 
     const summary = buildFeedbackSummary(messages, leads);
     res.json(summary);
@@ -1457,26 +1822,35 @@ export async function resolveCnpjWithResilience(
   cacheKey: string,
   // Wave 10 (CPI) - Observabilidade: só dispara em cache miss (a única situação em
   // que resolveAndEnrichCnpjForLead de fato roda e faz uma chamada real).
-  onProviderCall?: (info: any) => void
+  onProviderCall?: (info: any) => void,
 ): Promise<CnpjData> {
   return withCache<CnpjData>(
     cacheKey,
-    result => (result.razao_social ? CACHE_TTL_MS.LONG_CADASTRAL : CACHE_TTL_MS.SHORT_SIGNAL),
+    (result) => (result.razao_social ? CACHE_TTL_MS.LONG_CADASTRAL : CACHE_TTL_MS.SHORT_SIGNAL),
     async () => {
       const { result } = await withCircuitBreaker<CnpjData>(
         'cnpj_receita_federal',
-        () => withRetry(() => resolveAndEnrichCnpjForLead(lead, onProviderCall), isCnpjLookupIncomplete, { maxRetries: 2, baseDelayMs: 150, maxDelayMs: 1000 }),
+        () =>
+          withRetry(
+            () => resolveAndEnrichCnpjForLead(lead, onProviderCall),
+            isCnpjLookupIncomplete,
+            { maxRetries: 2, baseDelayMs: 150, maxDelayMs: 1000 },
+          ),
         () => ({}), // circuito aberto: CNPJ fica desconhecido (nunca fabricado), sem tentar de novo
-        isCnpjLookupIncomplete
+        isCnpjLookupIncomplete,
       );
       return result;
-    }
+    },
   );
 }
 
 function cleanDomainForCache(url?: string): string {
   if (!url) return '';
-  return url.replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0].toLowerCase();
+  return url
+    .replace(/^https?:\/\//, '')
+    .replace(/^www\./, '')
+    .split('/')[0]
+    .toLowerCase();
 }
 
 // 5. Prospecting Pipeline (1. Places/Directory -> 2. CNPJ API Oficial -> 3. Apollo Decisores -> Salva no SQLite)
@@ -1486,7 +1860,15 @@ apiRouter.post('/prospect', heavyAiLimiter, requireAuth, async (req: Request, re
   // SearchRun como "failed" sob o mesmo Search-ID, em vez de sumir sem rastro).
   let searchId: string = '';
   try {
-    const { pitch, aiConfig, googleApiKey, apolloApiKey, hunterApiKey, company: bodyCompany, bitrixWebhook } = req.body;
+    const {
+      pitch,
+      aiConfig,
+      googleApiKey,
+      apolloApiKey,
+      hunterApiKey,
+      company: bodyCompany,
+      bitrixWebhook,
+    } = req.body;
 
     // Auth & RBAC (CPI follow-up) - escopo por marca: para uma sessão não-admin, a
     // marca vem SEMPRE da sessão (req.outboundUser.company), nunca do corpo da requisição -
@@ -1495,9 +1877,10 @@ apiRouter.post('/prospect', heavyAiLimiter, requireAuth, async (req: Request, re
     // a marca livremente (mesmo padrão de "admin gerencia as duas marcas" já usado
     // no login, ver normalizeCompany acima). Sem sessão, requireAuth já bloqueou a
     // rota antes de chegar aqui.
-    const company = (req.outboundUser && req.outboundUser.role !== 'admin' && req.outboundUser.company)
-      ? req.outboundUser.company
-      : bodyCompany;
+    const company =
+      req.outboundUser && req.outboundUser.role !== 'admin' && req.outboundUser.company
+        ? req.outboundUser.company
+        : bodyCompany;
 
     // Wave 9 (CPI) - Cost/Cache/Resiliência: orçamento por execução de busca.
     // Aceita um `budget` opcional no corpo da requisição (maxApiCalls/
@@ -1529,9 +1912,9 @@ apiRouter.post('/prospect', heavyAiLimiter, requireAuth, async (req: Request, re
         annualRevenue: searchIntent.annualRevenue,
         decisionMakerRole: searchIntent.decisionMakerRole,
         company: company === 'atlas' ? 'atlas' : 'totaltrac',
-        limit: searchIntent.targetCount
+        limit: searchIntent.targetCount,
       },
-      searchIntent
+      searchIntent,
     });
     searchId = searchRun.searchId;
     const finishIntentStep = recordStep(searchId, 'search_intent_validated');
@@ -1540,11 +1923,22 @@ apiRouter.post('/prospect', heavyAiLimiter, requireAuth, async (req: Request, re
     if (!validation.valid) {
       finishIntentStep({ status: 'error', detail: validation.errors.join(' ') });
       finishSearchRun(searchId, 'failed', validation.errors.join(' '));
-      return res.status(400).json({ error: validation.errors.join(' '), searchIntentErrors: validation.errors, searchId });
+      return res.status(400).json({
+        error: validation.errors.join(' '),
+        searchIntentErrors: validation.errors,
+        searchId,
+      });
     }
     finishIntentStep({ status: 'ok' });
 
-    const { segment, companyType, employeeCount, annualRevenue, decisionMakerRole, decisionMakerTitles } = searchIntent;
+    const {
+      segment,
+      companyType,
+      employeeCount,
+      annualRevenue,
+      decisionMakerRole,
+      decisionMakerTitles,
+    } = searchIntent;
     const _region = searchIntent.location.state;
     const _city = searchIntent.location.city;
 
@@ -1568,7 +1962,10 @@ apiRouter.post('/prospect', heavyAiLimiter, requireAuth, async (req: Request, re
     // (chave forte canonicalizada), que tem prioridade sobre nome normalizado
     // (chave fraca) - nunca o contrário.
     const existingLeadsRes = await db.exec(`SELECT id, domain, name, cnpj FROM leads`);
-    const existingCompanyKeys: Array<{ key: CompanyKey; entry: { id: string; domain: string; name: string } }> = [];
+    const existingCompanyKeys: Array<{
+      key: CompanyKey;
+      entry: { id: string; domain: string; name: string };
+    }> = [];
     const excludeDomains = new Set<string>();
     const excludeNames = new Set<string>();
     if (existingLeadsRes.length > 0 && existingLeadsRes[0].values) {
@@ -1593,49 +1990,67 @@ apiRouter.post('/prospect', heavyAiLimiter, requireAuth, async (req: Request, re
       excludeDomains,
       excludeNames,
       onProviderCall: (log) => recordProviderCall(searchId, log as any),
-      onCandidateDiscarded: (log) => recordCandidateDecision(searchId, {
-        name: log.name,
-        domain: log.domain,
-        decision: 'discarded',
-        reasonCode: log.reasonCode,
-        reason: log.reason
-      })
+      onCandidateDiscarded: (log) =>
+        recordCandidateDecision(searchId, {
+          name: log.name,
+          domain: log.domain,
+          decision: 'discarded',
+          reasonCode: log.reasonCode,
+          reason: log.reason,
+        }),
     });
-    finishDiscoveryStep({ status: 'ok', detail: `${rawLeads.length} candidato(s) novo(s) após pré-filtro de duplicidade.` });
+    finishDiscoveryStep({
+      status: 'ok',
+      detail: `${rawLeads.length} candidato(s) novo(s) após pré-filtro de duplicidade.`,
+    });
 
     if (rawLeads.length === 0) {
       finishSearchRun(searchId, 'completed');
       if (!effectiveGoogleKey) {
         return res.status(503).json({
-          error: 'Provedor de descoberta de empresas (Google Places) não está configurado. Configure a API key para buscar leads reais.',
+          error:
+            'Provedor de descoberta de empresas (Google Places) não está configurado. Configure a API key para buscar leads reais.',
           provider: 'google_places',
           providerConfigured: false,
-          searchId
+          searchId,
         });
       }
-      return res.status(404).json({ error: 'Nenhum lead novo encontrado para os critérios informados (empresas já prospectadas foram excluídas). Tente outros filtros.', searchId });
+      return res.status(404).json({
+        error:
+          'Nenhum lead novo encontrado para os critérios informados (empresas já prospectadas foram excluídas). Tente outros filtros.',
+        searchId,
+      });
     }
 
     // Insert Campaign record in SQLite
-    const defaultPitch = pitch || 'A Atlas conecta pessoas e tecnologia gerando valores com segurança, inteligência logística e gestão de risco rodoviário.';
+    const defaultPitch =
+      pitch ||
+      'A Atlas conecta pessoas e tecnologia gerando valores com segurança, inteligência logística e gestão de risco rodoviário.';
     const providerName = aiConfig?.provider || 'ollama';
-    const modelName = providerName === 'ollama' ? (aiConfig?.ollamaModel || 'llama3') : (providerName === 'groq' ? (aiConfig?.groqModel || 'llama-3.3-70b-versatile') : 'gemini-3.7-flash');
+    const modelName =
+      providerName === 'ollama'
+        ? aiConfig?.ollamaModel || 'llama3'
+        : providerName === 'groq'
+          ? aiConfig?.groqModel || 'llama-3.3-70b-versatile'
+          : 'gemini-3.7-flash';
 
-    await db.run(`
+    await db.run(
+      `
       INSERT INTO campaigns (id, title, segment, pitch, provider, model, leads_count, company, created_at)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `, [
-      campaignId,
-      `Prospecção: ${searchQuery}`,
-      segment || searchQuery,
-      defaultPitch,
-      providerName,
-      modelName,
-      rawLeads.length,
-      effectiveCompany,
-      now
-    ]);
-
+    `,
+      [
+        campaignId,
+        `Prospecção: ${searchQuery}`,
+        segment || searchQuery,
+        defaultPitch,
+        providerName,
+        modelName,
+        rawLeads.length,
+        effectiveCompany,
+        now,
+      ],
+    );
 
     const enrichedLeads: Lead[] = [];
 
@@ -1650,30 +2065,35 @@ apiRouter.post('/prospect', heavyAiLimiter, requireAuth, async (req: Request, re
     // em vez de deixar isso silenciosamente como "unknown" sem explicação.
     const searchPlan = planSearch(requirements, {
       googlePlacesConfigured: Boolean(effectiveGoogleKey),
-      apolloConfigured: Boolean(effectiveApolloKey)
+      apolloConfigured: Boolean(effectiveApolloKey),
     });
     attachSearchPlan(searchId, searchPlan);
-    recordStep(searchId, 'query_planned')({
+    recordStep(
+      searchId,
+      'query_planned',
+    )({
       status: 'ok',
-      detail: `${searchPlan.steps.length} etapa(s) planejada(s), ${searchPlan.unsupportedCriteria.length} critério(s) sem provider capaz nesta execução.`
+      detail: `${searchPlan.steps.length} etapa(s) planejada(s), ${searchPlan.unsupportedCriteria.length} critério(s) sem provider capaz nesta execução.`,
     });
 
     // Pool de vendedores dinâmico: qualquer vendedor ativo cadastrado com a marca
     // certa entra no rodízio automaticamente — não depende mais de IDs fixos no código.
     const sellersRes = await db.exec(
       `SELECT id FROM users WHERE role = 'user' AND company = ? AND active IS DISTINCT FROM false`,
-      [effectiveCompany]
+      [effectiveCompany],
     );
     const sellerIds: string[] = (sellersRes[0]?.values || []).map((row: any) => row[0] as string);
 
     const sdrLoads: Record<string, number> = {};
-    sellerIds.forEach(id => { sdrLoads[id] = 0; });
+    sellerIds.forEach((id) => {
+      sdrLoads[id] = 0;
+    });
 
     if (sellerIds.length > 0) {
       const placeholders = sellerIds.map(() => '?').join(',');
       const activeLeadsRes = await db.exec(
         `SELECT assigned_to, COUNT(*) as count FROM leads WHERE assigned_to IN (${placeholders}) AND stage IN ('prospecto', 'contatado', 'negociacao') GROUP BY assigned_to`,
-        sellerIds
+        sellerIds,
       );
       (activeLeadsRes[0]?.values || []).forEach((row: any) => {
         if (row[0] && sdrLoads[row[0] as string] !== undefined) {
@@ -1681,18 +2101,25 @@ apiRouter.post('/prospect', heavyAiLimiter, requireAuth, async (req: Request, re
         }
       });
     } else {
-      console.warn(`Nenhum vendedor ativo cadastrado para a marca "${effectiveCompany}" — leads serão salvos sem atribuição automática.`);
+      console.warn(
+        `Nenhum vendedor ativo cadastrado para a marca "${effectiveCompany}" — leads serão salvos sem atribuição automática.`,
+      );
     }
 
     function pickSeller(): string | null {
       if (sellerIds.length === 0) return null;
-      return sellerIds.reduce((best, id) => (sdrLoads[id] < sdrLoads[best] ? id : best), sellerIds[0]);
+      return sellerIds.reduce(
+        (best, id) => (sdrLoads[id] < sdrLoads[best] ? id : best),
+        sellerIds[0],
+      );
     }
 
     // Webhook do Bitrix desta marca, para conferir duplicidade (cliente já existente)
     // antes de gravar o lead — usa o override explícito da tela, se houver, senão o
     // webhook padrão da marca.
-    const effectiveBitrixWebhook = (bitrixWebhook || resolveBitrixWebhookForCompany(effectiveCompany)).replace(/\/$/, '');
+    const effectiveBitrixWebhook = (
+      bitrixWebhook || resolveBitrixWebhookForCompany(effectiveCompany)
+    ).replace(/\/$/, '');
 
     // Wave 5 (CPI) - Entity Resolution & Dedup: leads pulados por serem a mesma
     // empresa de um registro já existente (detectado só após resolver o CNPJ
@@ -1700,7 +2127,8 @@ apiRouter.post('/prospect', heavyAiLimiter, requireAuth, async (req: Request, re
     // pré-filtro acima, mas o CNPJ, chave forte, não mente). existingCompanyKeys
     // também recebe o CNPJ recém-confirmado a cada volta do loop, para não
     // duplicar dentro da própria leva de resultados do Places.
-    const duplicatesSkipped: Array<{ name: string; matchedBy: string; existingLeadId: string }> = [];
+    const duplicatesSkipped: Array<{ name: string; matchedBy: string; existingLeadId: string }> =
+      [];
 
     // Wave 10 (CPI) - Observabilidade: um único passo cobre CNPJ+Apollo+Bitrix
     // por lead - as três fontes rodam intercaladas por candidato, não em fases
@@ -1721,24 +2149,29 @@ apiRouter.post('/prospect', heavyAiLimiter, requireAuth, async (req: Request, re
       // total de chamadas do orçamento (maxApiCalls), não pelo de enriquecimentos.
       let cnpjInfo: CnpjData;
       if (budgetTracker.used.apiCalls < budgetTracker.budget.maxApiCalls) {
-        const cnpjCacheKey = buildCnpjCacheKey({ name: leadItem.name, domain: leadItem.domain, cnpj: leadItem.cnpj });
+        const cnpjCacheKey = buildCnpjCacheKey({
+          name: leadItem.name,
+          domain: leadItem.domain,
+          cnpj: leadItem.cnpj,
+        });
         const cnpjWasCached = hasFreshCacheEntry(cnpjCacheKey);
         cnpjInfo = await resolveCnpjWithResilience(
           {
             name: leadItem.name,
             domain: leadItem.domain,
             cnpj: leadItem.cnpj,
-            address: leadItem.address
+            address: leadItem.address,
           },
           cnpjCacheKey,
-          (info) => recordProviderCall(searchId, {
-            provider: 'cnpj_receita_federal',
-            operation: 'lookup_cnpj',
-            status: info.status,
-            latencyMs: info.latencyMs,
-            source: info.source,
-            leadName: leadItem.name
-          })
+          (info) =>
+            recordProviderCall(searchId, {
+              provider: 'cnpj_receita_federal',
+              operation: 'lookup_cnpj',
+              status: info.status,
+              latencyMs: info.latencyMs,
+              source: info.source,
+              leadName: leadItem.name,
+            }),
         );
         if (!cnpjWasCached) recordApiCall(budgetTracker);
       } else {
@@ -1755,11 +2188,21 @@ apiRouter.post('/prospect', heavyAiLimiter, requireAuth, async (req: Request, re
       // também evita duplicar dentro da própria leva de resultados do Places.
       let candidateKey: CompanyKey | null = null;
       if (cnpjInfo.cnpj) {
-        candidateKey = buildCompanyKey({ cnpj: cnpjInfo.cnpj, domain: leadItem.domain, name: leadItem.name });
+        candidateKey = buildCompanyKey({
+          cnpj: cnpjInfo.cnpj,
+          domain: leadItem.domain,
+          name: leadItem.name,
+        });
         const duplicate = findDuplicate(candidateKey, existingCompanyKeys);
         if (duplicate && duplicate.matchedBy === 'cnpj') {
-          duplicatesSkipped.push({ name: leadItem.name, matchedBy: duplicate.matchedBy, existingLeadId: duplicate.entry.id });
-          console.info(`CNPJ ${cnpjInfo.cnpj} já existe na base — "${leadItem.name}" não foi duplicado.`);
+          duplicatesSkipped.push({
+            name: leadItem.name,
+            matchedBy: duplicate.matchedBy,
+            existingLeadId: duplicate.entry.id,
+          });
+          console.info(
+            `CNPJ ${cnpjInfo.cnpj} já existe na base — "${leadItem.name}" não foi duplicado.`,
+          );
           recordCandidateDecision(searchId, {
             name: leadItem.name,
             domain: leadItem.domain,
@@ -1767,11 +2210,14 @@ apiRouter.post('/prospect', heavyAiLimiter, requireAuth, async (req: Request, re
             decision: 'discarded',
             reasonCode: 'duplicate_cnpj',
             reason: `Mesmo CNPJ oficial (${cnpjInfo.cnpj}) de um lead já existente na base (id ${duplicate.entry.id}), mesmo com nome/domínio diferentes.`,
-            matchedExistingLeadId: duplicate.entry.id
+            matchedExistingLeadId: duplicate.entry.id,
           });
           continue;
         }
-        existingCompanyKeys.push({ key: candidateKey, entry: { id: leadId, domain: leadItem.domain || '', name: leadItem.name } });
+        existingCompanyKeys.push({
+          key: candidateKey,
+          entry: { id: leadId, domain: leadItem.domain || '', name: leadItem.name },
+        });
       }
 
       const assignedSdr = pickSeller();
@@ -1792,23 +2238,25 @@ apiRouter.post('/prospect', heavyAiLimiter, requireAuth, async (req: Request, re
       // resultado cacheado com outro conjunto de cargos.
       let apolloResult: { decisionMakers: DecisionMaker[]; companyLinkedin?: string };
       if (hasEnrichmentBudget(budgetTracker)) {
-        const apolloTitlesKeyPart = decisionMakerTitles && decisionMakerTitles.length > 0
-          ? [...decisionMakerTitles].sort().join(',')
-          : '';
-        const apolloCacheKey = `apollo:${(cleanDomainForCache(leadItem.domain) || leadItem.name.toLowerCase())}:${decisionMakerRole || ''}:${apolloTitlesKeyPart}`;
+        const apolloTitlesKeyPart =
+          decisionMakerTitles && decisionMakerTitles.length > 0
+            ? [...decisionMakerTitles].sort().join(',')
+            : '';
+        const apolloCacheKey = `apollo:${cleanDomainForCache(leadItem.domain) || leadItem.name.toLowerCase()}:${decisionMakerRole || ''}:${apolloTitlesKeyPart}`;
         const apolloWasCached = hasFreshCacheEntry(apolloCacheKey);
         apolloResult = await withCache(
           apolloCacheKey,
           (r: { decisionMakers: DecisionMaker[]; companyLinkedin?: string }) =>
             r.decisionMakers.length > 0 ? CACHE_TTL_MS.MEDIUM_CONTACT : CACHE_TTL_MS.SHORT_SIGNAL,
-          () => enrichLeadWithApollo(
-            leadItem.domain,
-            leadItem.name,
-            effectiveApolloKey,
-            decisionMakerRole,
-            decisionMakerTitles,
-            (log) => recordProviderCall(searchId, { ...log, leadName: leadItem.name } as any)
-          )
+          () =>
+            enrichLeadWithApollo(
+              leadItem.domain,
+              leadItem.name,
+              effectiveApolloKey,
+              decisionMakerRole,
+              decisionMakerTitles,
+              (log) => recordProviderCall(searchId, { ...log, leadName: leadItem.name } as any),
+            ),
         );
         if (!apolloWasCached) recordEnrichment(budgetTracker, { apiCalls: 2, paidCredits: 2 });
       } else {
@@ -1832,21 +2280,33 @@ apiRouter.post('/prospect', heavyAiLimiter, requireAuth, async (req: Request, re
       // desconhecido, como antes da Wave 9.
       if (effectiveHunterKey && leadItem.domain) {
         if (mainDm && !mainDm.email) {
-          const foundEmail = await complementDecisionMakerEmailWithHunter(mainDm, leadItem.domain, effectiveHunterKey);
+          const foundEmail = await complementDecisionMakerEmailWithHunter(
+            mainDm,
+            leadItem.domain,
+            effectiveHunterKey,
+          );
           if (foundEmail) {
-            mainDm = { ...mainDm, email: foundEmail, emails: [...(mainDm.emails || []), foundEmail] };
+            mainDm = {
+              ...mainDm,
+              email: foundEmail,
+              emails: [...(mainDm.emails || []), foundEmail],
+            };
             decisionMakers[0] = mainDm;
           }
         } else if (!mainDm && cnpjInfo.qsa && cnpjInfo.qsa.length > 0) {
           const socio = cnpjInfo.qsa[0];
-          const foundEmail = await complementDecisionMakerEmailWithHunter({ name: socio.nome_socio }, leadItem.domain, effectiveHunterKey);
+          const foundEmail = await complementDecisionMakerEmailWithHunter(
+            { name: socio.nome_socio },
+            leadItem.domain,
+            effectiveHunterKey,
+          );
           if (foundEmail) {
             mainDm = {
               name: socio.nome_socio,
               title: socio.qualificacao_socio || '',
               email: foundEmail,
               emails: [foundEmail],
-              linkedin: ''
+              linkedin: '',
             };
             decisionMakers.push(mainDm);
           }
@@ -1865,14 +2325,14 @@ apiRouter.post('/prospect', heavyAiLimiter, requireAuth, async (req: Request, re
           companyType: undefined, // nenhum provider atual confirma isto
           employeeCount: undefined, // nenhum provider atual confirma isto
           annualRevenue: undefined, // nenhum provider atual confirma isto
-          decisionMakerRole: mainDm?.title
+          decisionMakerRole: mainDm?.title,
         },
         {
           segment: 'cnpj_receita_federal',
           region: 'cnpj_receita_federal',
           city: 'cnpj_receita_federal',
-          decisionMakerRole: 'apollo'
-        }
+          decisionMakerRole: 'apollo',
+        },
       );
 
       // Wave 6 (CPI) - Evidence & Provenance: monta aqui (antes do lead ser
@@ -1881,7 +2341,7 @@ apiRouter.post('/prospect', heavyAiLimiter, requireAuth, async (req: Request, re
       // para saveFieldEvidence, sem recalcular.
       const evidences = [
         ...buildCnpjEvidence(cnpjInfo),
-        ...(mainDm ? buildDecisionMakerEvidence(mainDm, 'apollo') : [])
+        ...(mainDm ? buildDecisionMakerEvidence(mainDm, 'apollo') : []),
       ];
 
       // Wave 13 (CPI) - Signals & Intent: única fonte honesta hoje é o CNPJ
@@ -1902,19 +2362,22 @@ apiRouter.post('/prospect', heavyAiLimiter, requireAuth, async (req: Request, re
         requirementEvaluations,
         evidences,
         signals,
-        company: effectiveCompany
+        company: effectiveCompany,
       });
 
       const situacaoAtiva = (cnpjInfo.situacao_cadastral || '').toUpperCase() === 'ATIVA';
-      const tags = [segment ? `Busca: ${segment}` : undefined, 'Novo Lead', situacaoAtiva ? 'CNPJ Ativo' : undefined]
-        .filter((t): t is string => Boolean(t));
+      const tags = [
+        segment ? `Busca: ${segment}` : undefined,
+        'Novo Lead',
+        situacaoAtiva ? 'CNPJ Ativo' : undefined,
+      ].filter((t): t is string => Boolean(t));
 
       // 4. Bitrix24: essa empresa já é cliente ou já está prospectada por lá? Checagem
       // best-effort — se o Bitrix não estiver configurado ou não responder, o lead é
       // salvo normalmente como "unchecked" em vez de travar a prospecção.
       const bitrixCheck = await checkBitrixDuplicate(effectiveBitrixWebhook, {
         phone: leadItem.phone,
-        email: mainDm?.email
+        email: mainDm?.email,
       });
 
       const completeLead: Lead = {
@@ -1959,10 +2422,10 @@ apiRouter.post('/prospect', heavyAiLimiter, requireAuth, async (req: Request, re
           cold_call: '',
           cold_email: '',
           whatsapp: '',
-          linkedin: ''
+          linkedin: '',
         },
         copies_generated: false,
-        created_at: now
+        created_at: now,
       };
       (completeLead as any).company = effectiveCompany;
       (completeLead as any).bitrix_check_status = bitrixCheck.status;
@@ -1973,13 +2436,15 @@ apiRouter.post('/prospect', heavyAiLimiter, requireAuth, async (req: Request, re
       // campos ficam genuinamente vazios/ausentes quando não confirmados — nunca
       // preenchidos com um placeholder plausível — então este flag sinaliza "dado
       // cadastral não confirmado pela Receita Federal", não "valor de preenchimento".
-      const isEstimated = !cnpjInfo.situacao_cadastral || !cnpjInfo.cnae_fiscal || !cnpjInfo.capital_social;
+      const isEstimated =
+        !cnpjInfo.situacao_cadastral || !cnpjInfo.cnae_fiscal || !cnpjInfo.capital_social;
       (completeLead as any).is_estimated = isEstimated;
 
       // 4. Salvar Lead no Postgres com dados completos de Places, CNPJ, Apollo e Bitrix.
       // Campos não confirmados por uma fonte real vão vazios ('') em vez de um
       // valor plausível inventado.
-      await db.run(`
+      await db.run(
+        `
         INSERT INTO leads (
           id, campaign_id, name, cnpj, razao_social, situacao_cadastral, cnae_fiscal, cnae_fiscal_descricao, capital_social, qsa,
           address, phone, corporate_email, website, domain, company_linkedin,
@@ -1989,58 +2454,60 @@ apiRouter.post('/prospect', heavyAiLimiter, requireAuth, async (req: Request, re
           company, bitrix_check_status, bitrix_check_detail, bitrix_checked_at, is_estimated, created_at
         )
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-      `, [
-        leadId,
-        campaignId,
-        completeLead.name,
-        completeLead.cnpj || '',
-        completeLead.razao_social || '',
-        completeLead.situacao_cadastral || '',
-        completeLead.cnae_fiscal || '',
-        completeLead.cnae_fiscal_descricao || '',
-        completeLead.capital_social || '',
-        JSON.stringify(completeLead.qsa || []),
-        completeLead.address || '',
-        completeLead.phone || '',
-        completeLead.corporate_email || '',
-        completeLead.website || '',
-        completeLead.domain,
-        completeLead.company_linkedin || '',
-        Number(completeLead.rating) || 0,
-        completeLead.total_ratings || 0,
-        // Testes de Integração e E2E (CPI follow-up) - Anti-Fabricação: NUNCA usar
-        // segment/companyType/employeeCount/annualRevenue (o FILTRO pedido pelo
-        // usuário, desestruturado de searchIntent acima) como fallback aqui. Isso
-        // gravaria o critério de busca no banco como se fosse um atributo OBSERVADO
-        // da empresa - exatamente a fabricação sutil que a Wave 2 (Requirement
-        // Engine) já eliminou em findLeads/completeLead (ver comentário "Wave 2" na
-        // montagem de completeLead acima) e que a Wave 2 documenta explicitamente:
-        // o segmento pedido só deve aparecer como tag "Busca: <segmento>", nunca
-        // como fato do lead. completeLead nunca define estes 4 campos (nenhum
-        // provider integrado hoje confirma segmento/tipo/porte/faturamento por
-        // empresa - ver providerRegistry), então ficam '' (desconhecido) em vez de
-        // herdar o filtro.
-        completeLead.segment || '',
-        completeLead.company_type || '',
-        completeLead.employee_count || '',
-        completeLead.annual_revenue || '',
-        mainDm?.name || '',
-        mainDm?.title || '',
-        mainDm?.email || '',
-        JSON.stringify(mainDm?.emails || []),
-        mainDm?.phone || '',
-        JSON.stringify(mainDm?.phones || []),
-        mainDm?.linkedin || '',
-        'prospecto',
-        JSON.stringify(completeLead.tags || []),
-        assignedSdr,
-        effectiveCompany,
-        bitrixCheck.status,
-        bitrixCheck.detail,
-        bitrixCheck.status === 'unchecked' ? null : now,
-        isEstimated,
-        now
-      ]);
+      `,
+        [
+          leadId,
+          campaignId,
+          completeLead.name,
+          completeLead.cnpj || '',
+          completeLead.razao_social || '',
+          completeLead.situacao_cadastral || '',
+          completeLead.cnae_fiscal || '',
+          completeLead.cnae_fiscal_descricao || '',
+          completeLead.capital_social || '',
+          JSON.stringify(completeLead.qsa || []),
+          completeLead.address || '',
+          completeLead.phone || '',
+          completeLead.corporate_email || '',
+          completeLead.website || '',
+          completeLead.domain,
+          completeLead.company_linkedin || '',
+          Number(completeLead.rating) || 0,
+          completeLead.total_ratings || 0,
+          // Testes de Integração e E2E (CPI follow-up) - Anti-Fabricação: NUNCA usar
+          // segment/companyType/employeeCount/annualRevenue (o FILTRO pedido pelo
+          // usuário, desestruturado de searchIntent acima) como fallback aqui. Isso
+          // gravaria o critério de busca no banco como se fosse um atributo OBSERVADO
+          // da empresa - exatamente a fabricação sutil que a Wave 2 (Requirement
+          // Engine) já eliminou em findLeads/completeLead (ver comentário "Wave 2" na
+          // montagem de completeLead acima) e que a Wave 2 documenta explicitamente:
+          // o segmento pedido só deve aparecer como tag "Busca: <segmento>", nunca
+          // como fato do lead. completeLead nunca define estes 4 campos (nenhum
+          // provider integrado hoje confirma segmento/tipo/porte/faturamento por
+          // empresa - ver providerRegistry), então ficam '' (desconhecido) em vez de
+          // herdar o filtro.
+          completeLead.segment || '',
+          completeLead.company_type || '',
+          completeLead.employee_count || '',
+          completeLead.annual_revenue || '',
+          mainDm?.name || '',
+          mainDm?.title || '',
+          mainDm?.email || '',
+          JSON.stringify(mainDm?.emails || []),
+          mainDm?.phone || '',
+          JSON.stringify(mainDm?.phones || []),
+          mainDm?.linkedin || '',
+          'prospecto',
+          JSON.stringify(completeLead.tags || []),
+          assignedSdr,
+          effectiveCompany,
+          bitrixCheck.status,
+          bitrixCheck.detail,
+          bitrixCheck.status === 'unchecked' ? null : now,
+          isEstimated,
+          now,
+        ],
+      );
 
       // Wave 6 (CPI) - Evidence & Provenance: registra de onde cada campo
       // relevante veio, quando foi obtido e com que confiança/status - para a
@@ -2065,8 +2532,8 @@ apiRouter.post('/prospect', heavyAiLimiter, requireAuth, async (req: Request, re
       // escopo desta wave), mas a discrepância fica visível em
       // unmatchedHardFilters - "por que apareceu mesmo sem confirmar X".
       const unmatchedHardFilters = requirementEvaluations
-        .filter(e => e.type === 'HARD_FILTER' && e.status === 'unmatched')
-        .map(e => e.criterion);
+        .filter((e) => e.type === 'HARD_FILTER' && e.status === 'unmatched')
+        .map((e) => e.criterion);
       recordCandidateDecision(searchId, {
         name: leadItem.name,
         domain: leadItem.domain,
@@ -2075,18 +2542,22 @@ apiRouter.post('/prospect', heavyAiLimiter, requireAuth, async (req: Request, re
         reasonCode: 'included',
         reason: 'Passou pela checagem de duplicidade (Wave 5) e foi incluído no resultado final.',
         leadId,
-        unmatchedHardFilters: unmatchedHardFilters.length > 0 ? unmatchedHardFilters : undefined
+        unmatchedHardFilters: unmatchedHardFilters.length > 0 ? unmatchedHardFilters : undefined,
       });
     }
-    finishEnrichmentStep({ status: 'ok', detail: `${enrichedLeads.length} lead(s) enriquecido(s) e incluído(s).` });
+    finishEnrichmentStep({
+      status: 'ok',
+      detail: `${enrichedLeads.length} lead(s) enriquecido(s) e incluído(s).`,
+    });
 
     const finishPersistenceStep = recordStep(searchId, 'persistence');
     saveDatabase();
     finishPersistenceStep({ status: 'ok' });
 
-    const duplicateNote = duplicatesSkipped.length > 0
-      ? ` (${duplicatesSkipped.length} ${duplicatesSkipped.length === 1 ? 'empresa já estava' : 'empresas já estavam'} na base pelo CNPJ e não ${duplicatesSkipped.length === 1 ? 'foi duplicada' : 'foram duplicadas'})`
-      : '';
+    const duplicateNote =
+      duplicatesSkipped.length > 0
+        ? ` (${duplicatesSkipped.length} ${duplicatesSkipped.length === 1 ? 'empresa já estava' : 'empresas já estavam'} na base pelo CNPJ e não ${duplicatesSkipped.length === 1 ? 'foi duplicada' : 'foram duplicadas'})`
+        : '';
 
     // Wave 7 (CPI) - Progressive Search: funil explícito (quantos candidatos
     // entraram/saíram de cada etapa e por quê) e o motivo pelo qual a busca
@@ -2094,14 +2565,16 @@ apiRouter.post('/prospect', heavyAiLimiter, requireAuth, async (req: Request, re
     // (rawLeads.length, duplicatesSkipped.length, enrichedLeads.length), sem
     // nenhuma chamada extra. Ver server/progressiveSearch.ts para o porquê do
     // escopo (sem paginação real do Places nesta wave).
-    const decisionMakersConfirmedCount = enrichedLeads.filter(l => Boolean(l.decision_maker_name)).length;
+    const decisionMakersConfirmedCount = enrichedLeads.filter((l) =>
+      Boolean(l.decision_maker_name),
+    ).length;
     const funnelSummary = buildFunnelSummary({
       targetCount: effectiveLimit,
       discoveryProviderConfigured: Boolean(effectiveGoogleKey),
       discoveredCount: rawLeads.length,
       duplicatesSkippedCount: duplicatesSkipped.length,
       finalCount: enrichedLeads.length,
-      decisionMakersConfirmedCount
+      decisionMakersConfirmedCount,
     });
 
     // Wave 10 (CPI) - Observabilidade: fecha o SearchRun com sucesso - o
@@ -2133,7 +2606,8 @@ apiRouter.post('/prospect', heavyAiLimiter, requireAuth, async (req: Request, re
       // ranking por adequação - é a ordem em que o provider de descoberta devolveu
       // os resultados, filtrada por duplicidade. Scoring/ranking real é a Wave 8.
       rankingApplied: false,
-      rankingNote: 'Resultados na ordem de descoberta, não há ranking por adequação ainda (ver Wave 8 - Scoring).',
+      rankingNote:
+        'Resultados na ordem de descoberta, não há ranking por adequação ainda (ver Wave 8 - Scoring).',
       // Wave 9 (CPI) - Cost/Cache/Resiliência: quanto do orçamento desta execução
       // foi consumido (chamadas de API, créditos pagos estimados, enriquecimentos
       // Apollo) e se ele se esgotou antes de todos os leads serem enriquecidos -
@@ -2141,7 +2615,7 @@ apiRouter.post('/prospect', heavyAiLimiter, requireAuth, async (req: Request, re
       // falhar ou inventar um decisor.
       budget: {
         limits: budgetTracker.budget,
-        used: budgetTracker.used
+        used: budgetTracker.used,
       },
       budgetExhausted: isBudgetExhausted(budgetTracker),
       callsUsed: budgetTracker.used.apiCalls,
@@ -2150,17 +2624,21 @@ apiRouter.post('/prospect', heavyAiLimiter, requireAuth, async (req: Request, re
       // provider por um cooldown, sem gastar tempo/créditos em novas chamadas).
       providerCircuits: {
         cnpj_receita_federal: getCircuitState('cnpj_receita_federal'),
-        apollo: getCircuitState('apollo')
+        apollo: getCircuitState('apollo'),
       },
-      message: `${enrichedLeads.length} empresas prospectadas com Places, CNPJ Oficial e Decisores Apollo salvos com sucesso no SQLite!${duplicateNote}`
+      message: `${enrichedLeads.length} empresas prospectadas com Places, CNPJ Oficial e Decisores Apollo salvos com sucesso no SQLite!${duplicateNote}`,
     });
   } catch (err: any) {
     console.error('Erro na prospecção:', err);
     // Wave 10 (CPI) - Observabilidade: mesmo uma falha a meio do pipeline
     // fecha o SearchRun (status "failed") em vez de deixá-lo "running" para
     // sempre - o Search-ID gerado no início continua consultável.
-    if (searchId) finishSearchRun(searchId, 'failed', err.message || 'Falha no processamento da prospecção.');
-    res.status(500).json({ error: err.message || 'Falha no processamento da prospecção.', searchId: searchId || undefined });
+    if (searchId)
+      finishSearchRun(searchId, 'failed', err.message || 'Falha no processamento da prospecção.');
+    res.status(500).json({
+      error: err.message || 'Falha no processamento da prospecção.',
+      searchId: searchId || undefined,
+    });
   }
 });
 
@@ -2184,40 +2662,77 @@ apiRouter.post('/chat', heavyAiLimiter, requireAuth, async (req: Request, res: R
     const now = new Date().toISOString();
 
     // Ensure session exists
-    const sessCheck = await db.exec(`SELECT id FROM chat_sessions WHERE id = ?`, [effectiveSessionId]);
+    const sessCheck = await db.exec(`SELECT id FROM chat_sessions WHERE id = ?`, [
+      effectiveSessionId,
+    ]);
     if (sessCheck.length === 0 || sessCheck[0].values.length === 0) {
-      const modelTitle = aiConfig?.provider === 'ollama' ? (aiConfig.ollamaModel || 'llama3') : (aiConfig?.groqModel || 'gemini-3.7');
-      await db.run(`
+      const modelTitle =
+        aiConfig?.provider === 'ollama'
+          ? aiConfig.ollamaModel || 'llama3'
+          : aiConfig?.groqModel || 'gemini-3.7';
+      await db.run(
+        `
         INSERT INTO chat_sessions (id, title, model, created_at)
         VALUES (?, ?, ?, ?)
-      `, [effectiveSessionId, `Conversa ${modelTitle} (${new Date().toLocaleDateString('pt-BR')})`, modelTitle, now]);
+      `,
+        [
+          effectiveSessionId,
+          `Conversa ${modelTitle} (${new Date().toLocaleDateString('pt-BR')})`,
+          modelTitle,
+          now,
+        ],
+      );
     }
 
     // Save user message to SQLite
     const userMsgId = `cmsg-u-${Date.now()}`;
-    await db.run(`
+    await db.run(
+      `
       INSERT INTO chat_messages (id, session_id, role, content, model, created_at)
       VALUES (?, ?, 'user', ?, ?, ?)
-    `, [userMsgId, effectiveSessionId, message, aiConfig?.ollamaModel || 'llama3', now]);
+    `,
+      [userMsgId, effectiveSessionId, message, aiConfig?.ollamaModel || 'llama3', now],
+    );
 
     // Fetch conversation history from SQLite
-    const histRes = await db.exec(`SELECT role, content FROM chat_messages WHERE session_id = ? ORDER BY created_at ASC`, [effectiveSessionId]);
+    const histRes = await db.exec(
+      `SELECT role, content FROM chat_messages WHERE session_id = ? ORDER BY created_at ASC`,
+      [effectiveSessionId],
+    );
     const history: { role: string; content: string }[] = [];
     if (histRes.length > 0) {
-      histRes[0].values.forEach(row => {
+      histRes[0].values.forEach((row) => {
         history.push({ role: row[0] as string, content: row[1] as string });
       });
     }
 
     // Call AI Engine (LLaMA3 Ollama / Groq / Gemini)
-    const result = await chatWithLLaMA3(history.slice(-8, -1), message, aiConfig || { provider: 'ollama', ollamaUrl: 'http://localhost:11434', ollamaModel: 'llama3' });
+    const result = await chatWithLLaMA3(
+      history.slice(-8, -1),
+      message,
+      aiConfig || {
+        provider: 'ollama',
+        ollamaUrl: 'http://localhost:11434',
+        ollamaModel: 'llama3',
+      },
+    );
 
     // Save assistant response to SQLite
     const botMsgId = `cmsg-a-${Date.now()}`;
-    await db.run(`
+    await db.run(
+      `
       INSERT INTO chat_messages (id, session_id, role, content, model, tokens, created_at)
       VALUES (?, ?, 'assistant', ?, ?, ?, ?)
-    `, [botMsgId, effectiveSessionId, result.text, result.modelUsed, result.tokensEstimated, new Date().toISOString()]);
+    `,
+      [
+        botMsgId,
+        effectiveSessionId,
+        result.text,
+        result.modelUsed,
+        result.tokensEstimated,
+        new Date().toISOString(),
+      ],
+    );
 
     saveDatabase();
 
@@ -2227,7 +2742,7 @@ apiRouter.post('/chat', heavyAiLimiter, requireAuth, async (req: Request, res: R
       modelUsed: result.modelUsed,
       tokensEstimated: result.tokensEstimated,
       userMessageId: userMsgId,
-      assistantMessageId: botMsgId
+      assistantMessageId: botMsgId,
     });
   } catch (err: any) {
     res.status(500).json({ error: err.message });
@@ -2245,12 +2760,14 @@ apiRouter.get('/chat/sessions', async (_req: Request, res: Response) => {
       FROM chat_sessions s
       ORDER BY s.created_at DESC
     `);
-    
+
     if (result.length === 0) return res.json([]);
     const cols = result[0].columns;
-    const sessions = result[0].values.map(row => {
+    const sessions = result[0].values.map((row) => {
       const obj: any = {};
-      cols.forEach((col, idx) => { obj[col] = row[idx]; });
+      cols.forEach((col, idx) => {
+        obj[col] = row[idx];
+      });
       return obj;
     });
     res.json(sessions);
@@ -2263,13 +2780,18 @@ apiRouter.get('/chat/sessions/:id/messages', async (req: Request, res: Response)
   try {
     const { id } = req.params;
     const db = await getDatabase();
-    const result = await db.exec(`SELECT * FROM chat_messages WHERE session_id = ? ORDER BY created_at ASC`, [id]);
-    
+    const result = await db.exec(
+      `SELECT * FROM chat_messages WHERE session_id = ? ORDER BY created_at ASC`,
+      [id],
+    );
+
     if (result.length === 0) return res.json([]);
     const cols = result[0].columns;
-    const messages = result[0].values.map(row => {
+    const messages = result[0].values.map((row) => {
       const obj: any = {};
-      cols.forEach((col, idx) => { obj[col] = row[idx]; });
+      cols.forEach((col, idx) => {
+        obj[col] = row[idx];
+      });
       return obj;
     });
     res.json(messages);
@@ -2292,17 +2814,20 @@ function getBitrixExportPolicy(): ExportPolicy {
 // Wave 12 (CPI) — resume, a partir dos campos já presentes no lead, de onde vieram
 // os dados e quando foram confirmados pela última vez. Nunca inventa uma fonte:
 // quando o pipeline não sabe, devolve 'Não confirmada'/null explicitamente.
-function summarizeVerification(lead: any): { primarySource: string; lastVerifiedAt: string | null } {
+function summarizeVerification(lead: any): {
+  primarySource: string;
+  lastVerifiedAt: string | null;
+} {
   if (lead.cnpj_consultado === true && lead.is_estimated !== true) {
     return {
       primarySource: 'Receita Federal (consulta pública de CNPJ)',
-      lastVerifiedAt: lead.created_at || null
+      lastVerifiedAt: lead.created_at || null,
     };
   }
   if (lead.cnpj_consultado === true && lead.is_estimated === true) {
     return {
       primarySource: 'Consulta de CNPJ sem confirmação completa (dados fiscais estimados)',
-      lastVerifiedAt: lead.created_at || null
+      lastVerifiedAt: lead.created_at || null,
     };
   }
   return { primarySource: 'Não confirmada (CNPJ não consultado)', lastVerifiedAt: null };
@@ -2340,334 +2865,401 @@ function extractScoresAndSearchContext(lead: any): {
 }
 
 // 9. Integration: Bitrix24 CRM Lead/Deal Export
-apiRouter.post('/integrations/bitrix24/send-lead', integrationLimiter, requireAuth, async (req: Request, res: Response) => {
-  const db = await getDatabase();
-  const { webhookUrl, lead, customComments, force } = req.body || {};
+apiRouter.post(
+  '/integrations/bitrix24/send-lead',
+  integrationLimiter,
+  requireAuth,
+  async (req: Request, res: Response) => {
+    const db = await getDatabase();
+    const { webhookUrl, lead, customComments, force } = req.body || {};
 
-  try {
-    const effectiveWebhook = (webhookUrl || resolveBitrixWebhookForCompany(lead?.company) || process.env.BITRIX_TOTALTRAC_WEBHOOK || '').replace(/\/$/, '');
+    try {
+      const effectiveWebhook = (
+        webhookUrl ||
+        resolveBitrixWebhookForCompany(lead?.company) ||
+        process.env.BITRIX_TOTALTRAC_WEBHOOK ||
+        ''
+      ).replace(/\/$/, '');
 
-    if (!lead?.name) {
-      return res.status(400).json({ error: 'Dados do lead são obrigatórios.' });
-    }
-
-    // Wave 11 (CPI) - SSRF: o webhook pode vir direto do body da requisição
-    // (webhookUrl) — nunca chamamos fetch() para um destino do usuário sem
-    // antes garantir que não é localhost/IP privado/link-local.
-    const webhookSafety = isUrlSafeForOutboundWebhook(effectiveWebhook);
-    if (!webhookSafety.safe) {
-      return res.status(400).json({ error: `Webhook do Bitrix24 rejeitado: ${webhookSafety.reason}` });
-    }
-
-    if (customComments !== undefined && !isWithinMaxLength(String(customComments))) {
-      return res.status(400).json({ error: 'Notas adicionais excedem o tamanho máximo permitido.' });
-    }
-
-    // --- Wave 12: elegibilidade — nunca exporta dado sintético/fabricado, nem
-    // dado não confirmado sob política 'strict', nem lead já cliente no Bitrix.
-    const policy = getBitrixExportPolicy();
-    const eligibility = checkExportEligibility(lead, policy);
-    if (!eligibility.eligible) {
-      if (lead.id) {
-        await db.run(
-          `UPDATE leads SET bitrix_export_status = ?, bitrix_export_error = ? WHERE id = ?`,
-          ['blocked', eligibility.reasons.join(' | '), lead.id]
-        ).catch((e: any) => console.error('Falha ao gravar bitrix_export_status=blocked:', e));
+      if (!lead?.name) {
+        return res.status(400).json({ error: 'Dados do lead são obrigatórios.' });
       }
-      return res.status(409).json({
-        success: false,
-        blocked: true,
-        error: 'Lead não elegível para exportação ao Bitrix24.',
-        reasons: eligibility.reasons,
-        warnings: eligibility.warnings
-      });
-    }
 
-    // --- Wave 12: idempotência — mesmo lead + mesmo webhook nunca cria um
-    // segundo Lead/Deal no Bitrix, a menos que force=true seja passado de propósito.
-    const idempotencyKey = generateExportIdempotencyKey(lead.id || '', effectiveWebhook);
-    if (!force && lead.id) {
-      try {
-        const prior = await db.exec(
-          `SELECT bitrix_lead_id, created_at FROM bitrix_export_log WHERE idempotency_key = ? AND status = 'success' ORDER BY created_at DESC LIMIT 1`,
-          [idempotencyKey]
-        );
-        if (prior.length > 0 && prior[0].values.length > 0) {
-          const [priorBitrixLeadId, priorCreatedAt] = prior[0].values[0];
-          return res.json({
-            success: true,
-            idempotent: true,
-            leadId: priorBitrixLeadId,
-            message: `Lead "${lead.name}" já havia sido exportado para o Bitrix24 (Lead #${priorBitrixLeadId}, em ${priorCreatedAt}). Envie novamente com "force" para reprocessar de propósito.`,
-            target: effectiveWebhook.includes('totaltrac') ? 'Total Trac' : 'AtlasGR',
-            warnings: eligibility.warnings
-          });
+      // Wave 11 (CPI) - SSRF: o webhook pode vir direto do body da requisição
+      // (webhookUrl) — nunca chamamos fetch() para um destino do usuário sem
+      // antes garantir que não é localhost/IP privado/link-local.
+      const webhookSafety = isUrlSafeForOutboundWebhook(effectiveWebhook);
+      if (!webhookSafety.safe) {
+        return res
+          .status(400)
+          .json({ error: `Webhook do Bitrix24 rejeitado: ${webhookSafety.reason}` });
+      }
+
+      if (customComments !== undefined && !isWithinMaxLength(String(customComments))) {
+        return res
+          .status(400)
+          .json({ error: 'Notas adicionais excedem o tamanho máximo permitido.' });
+      }
+
+      // --- Wave 12: elegibilidade — nunca exporta dado sintético/fabricado, nem
+      // dado não confirmado sob política 'strict', nem lead já cliente no Bitrix.
+      const policy = getBitrixExportPolicy();
+      const eligibility = checkExportEligibility(lead, policy);
+      if (!eligibility.eligible) {
+        if (lead.id) {
+          await db
+            .run(
+              `UPDATE leads SET bitrix_export_status = ?, bitrix_export_error = ? WHERE id = ?`,
+              ['blocked', eligibility.reasons.join(' | '), lead.id],
+            )
+            .catch((e: any) => console.error('Falha ao gravar bitrix_export_status=blocked:', e));
         }
-      } catch (err: any) {
-        console.error('Falha ao checar idempotência de exportação Bitrix24 (seguindo com o envio):', err);
+        return res.status(409).json({
+          success: false,
+          blocked: true,
+          error: 'Lead não elegível para exportação ao Bitrix24.',
+          reasons: eligibility.reasons,
+          warnings: eligibility.warnings,
+        });
       }
-    }
 
-    const dmName = lead.decision_maker_name || (lead.decision_makers?.[0]?.name) || 'Decisor';
-    const dmTitle = lead.decision_maker_title || (lead.decision_makers?.[0]?.title) || 'Liderança';
-    const dmEmail = lead.decision_maker_email || (lead.decision_makers?.[0]?.email) || '';
-    const dmPhone = lead.phone || '';
-
-    const { primarySource, lastVerifiedAt } = summarizeVerification(lead);
-    const { fitScore, intentScore, dataQualityScore, adherenceReason, searchId } = extractScoresAndSearchContext(lead);
-
-    // Construct rich text comments
-    let comments = `=== PROSPECÇÃO ATLAS OUTBOUND AI ===\n`;
-    comments += `Empresa: ${lead.name}\n`;
-    comments += `Decisor: ${dmName} (${dmTitle})\n`;
-    comments += `Endereço: ${lead.address || 'N/A'}\n`;
-    comments += `Website: ${lead.website || 'N/A'}\n`;
-    comments += `Avaliação Google: ${lead.rating || 'N/A'} (${lead.total_ratings || 0} avaliações)\n`;
-    if (lead.is_estimated) {
-      comments += `⚠ ATENÇÃO: situação cadastral/CNAE/capital social não confirmados na Receita Federal — dados fiscais abaixo são estimados.\n`;
-    }
-    comments += `\n--- QUALIFICAÇÃO (Wave 12) ---\n`;
-    comments += `Fonte principal: ${primarySource}\n`;
-    comments += `Última verificação: ${lastVerifiedAt || 'Nunca verificado'}\n`;
-    if (searchId) comments += `Search-ID: ${searchId}\n`;
-    if (fitScore !== undefined || intentScore !== undefined || dataQualityScore !== undefined) {
-      comments += `Scores — Fit: ${fitScore ?? 'N/A'} | Intent: ${intentScore ?? 'N/A'} | Data Quality: ${dataQualityScore ?? 'N/A'}\n`;
-    }
-    if (adherenceReason) comments += `Motivo de aderência: ${adherenceReason}\n`;
-    if (eligibility.warnings.length > 0) {
-      comments += `Ressalvas de elegibilidade (política: ${policy}): ${eligibility.warnings.join(' | ')}\n`;
-    }
-    comments += `\n`;
-
-    if (lead.copies) {
-      comments += `--- ROTEIRO COLD CALL ---\n${lead.copies.cold_call || ''}\n\n`;
-      comments += `--- COLD EMAIL ---\n${lead.copies.cold_email || ''}\n\n`;
-      comments += `--- WHATSAPP ---\n${lead.copies.whatsapp || ''}\n\n`;
-      comments += `--- LINKEDIN ---\n${lead.copies.linkedin || ''}\n\n`;
-      if (lead.copies.followup_strategy) {
-        comments += `--- ESTRATÉGIA DE FOLLOW-UP ---\n${lead.copies.followup_strategy}\n`;
+      // --- Wave 12: idempotência — mesmo lead + mesmo webhook nunca cria um
+      // segundo Lead/Deal no Bitrix, a menos que force=true seja passado de propósito.
+      const idempotencyKey = generateExportIdempotencyKey(lead.id || '', effectiveWebhook);
+      if (!force && lead.id) {
+        try {
+          const prior = await db.exec(
+            `SELECT bitrix_lead_id, created_at FROM bitrix_export_log WHERE idempotency_key = ? AND status = 'success' ORDER BY created_at DESC LIMIT 1`,
+            [idempotencyKey],
+          );
+          if (prior.length > 0 && prior[0].values.length > 0) {
+            const [priorBitrixLeadId, priorCreatedAt] = prior[0].values[0];
+            return res.json({
+              success: true,
+              idempotent: true,
+              leadId: priorBitrixLeadId,
+              message: `Lead "${lead.name}" já havia sido exportado para o Bitrix24 (Lead #${priorBitrixLeadId}, em ${priorCreatedAt}). Envie novamente com "force" para reprocessar de propósito.`,
+              target: effectiveWebhook.includes('totaltrac') ? 'Total Trac' : 'AtlasGR',
+              warnings: eligibility.warnings,
+            });
+          }
+        } catch (err: any) {
+          console.error(
+            'Falha ao checar idempotência de exportação Bitrix24 (seguindo com o envio):',
+            err,
+          );
+        }
       }
-    }
 
-    if (customComments) {
-      comments += `\nNotas Adicionais: ${customComments}\n`;
-    }
+      const dmName = lead.decision_maker_name || lead.decision_makers?.[0]?.name || 'Decisor';
+      const dmTitle = lead.decision_maker_title || lead.decision_makers?.[0]?.title || 'Liderança';
+      const dmEmail = lead.decision_maker_email || lead.decision_makers?.[0]?.email || '';
+      const dmPhone = lead.phone || '';
 
-    const payload = {
-      fields: {
-        TITLE: `[Atlas] ${lead.name} - ${dmName}`,
-        NAME: dmName.split(' ')[0] || 'Decisor',
-        LAST_NAME: dmName.split(' ').slice(1).join(' ') || '',
-        POST: dmTitle,
-        COMPANY_TITLE: lead.name,
-        ADDRESS: lead.address || '',
-        SOURCE_ID: 'OUTBOUND_ATLAS',
-        STATUS_ID: 'NEW',
-        OPENED: 'Y',
-        COMMENTS: comments,
-        PHONE: dmPhone ? [{ VALUE: dmPhone, VALUE_TYPE: 'WORK' }] : [],
-        EMAIL: dmEmail ? [{ VALUE: dmEmail, VALUE_TYPE: 'WORK' }] : [],
-        WEB: lead.website ? [{ VALUE: lead.website, VALUE_TYPE: 'WORK' }] : []
-      },
-      params: { REGISTER_SONET_EVENT: 'Y' }
-    };
+      const { primarySource, lastVerifiedAt } = summarizeVerification(lead);
+      const { fitScore, intentScore, dataQualityScore, adherenceReason, searchId } =
+        extractScoresAndSearchContext(lead);
 
-    // Wave 4 (CPI, follow-up) - a chamada HTTP real (timeout, SSRF, 429/5xx,
-    // retry) agora vive no adapter formal (server/search/providers/bitrix.
-    // provider.ts, capacidade "crm_export") - esta rota só cuida de
-    // elegibilidade/idempotência/log, que são regra de negócio, não integração.
-    const exportResult = await exportLead(effectiveWebhook, payload.fields);
+      // Construct rich text comments
+      let comments = `=== PROSPECÇÃO ATLAS OUTBOUND AI ===\n`;
+      comments += `Empresa: ${lead.name}\n`;
+      comments += `Decisor: ${dmName} (${dmTitle})\n`;
+      comments += `Endereço: ${lead.address || 'N/A'}\n`;
+      comments += `Website: ${lead.website || 'N/A'}\n`;
+      comments += `Avaliação Google: ${lead.rating || 'N/A'} (${lead.total_ratings || 0} avaliações)\n`;
+      if (lead.is_estimated) {
+        comments += `⚠ ATENÇÃO: situação cadastral/CNAE/capital social não confirmados na Receita Federal — dados fiscais abaixo são estimados.\n`;
+      }
+      comments += `\n--- QUALIFICAÇÃO (Wave 12) ---\n`;
+      comments += `Fonte principal: ${primarySource}\n`;
+      comments += `Última verificação: ${lastVerifiedAt || 'Nunca verificado'}\n`;
+      if (searchId) comments += `Search-ID: ${searchId}\n`;
+      if (fitScore !== undefined || intentScore !== undefined || dataQualityScore !== undefined) {
+        comments += `Scores — Fit: ${fitScore ?? 'N/A'} | Intent: ${intentScore ?? 'N/A'} | Data Quality: ${dataQualityScore ?? 'N/A'}\n`;
+      }
+      if (adherenceReason) comments += `Motivo de aderência: ${adherenceReason}\n`;
+      if (eligibility.warnings.length > 0) {
+        comments += `Ressalvas de elegibilidade (política: ${policy}): ${eligibility.warnings.join(' | ')}\n`;
+      }
+      comments += `\n`;
 
-    if (exportResult.status === 'ok' && exportResult.data) {
-      const bitrixLeadId = exportResult.data.bitrixLeadId;
+      if (lead.copies) {
+        comments += `--- ROTEIRO COLD CALL ---\n${lead.copies.cold_call || ''}\n\n`;
+        comments += `--- COLD EMAIL ---\n${lead.copies.cold_email || ''}\n\n`;
+        comments += `--- WHATSAPP ---\n${lead.copies.whatsapp || ''}\n\n`;
+        comments += `--- LINKEDIN ---\n${lead.copies.linkedin || ''}\n\n`;
+        if (lead.copies.followup_strategy) {
+          comments += `--- ESTRATÉGIA DE FOLLOW-UP ---\n${lead.copies.followup_strategy}\n`;
+        }
+      }
+
+      if (customComments) {
+        comments += `\nNotas Adicionais: ${customComments}\n`;
+      }
+
+      const payload = {
+        fields: {
+          TITLE: `[Atlas] ${lead.name} - ${dmName}`,
+          NAME: dmName.split(' ')[0] || 'Decisor',
+          LAST_NAME: dmName.split(' ').slice(1).join(' ') || '',
+          POST: dmTitle,
+          COMPANY_TITLE: lead.name,
+          ADDRESS: lead.address || '',
+          SOURCE_ID: 'OUTBOUND_ATLAS',
+          STATUS_ID: 'NEW',
+          OPENED: 'Y',
+          COMMENTS: comments,
+          PHONE: dmPhone ? [{ VALUE: dmPhone, VALUE_TYPE: 'WORK' }] : [],
+          EMAIL: dmEmail ? [{ VALUE: dmEmail, VALUE_TYPE: 'WORK' }] : [],
+          WEB: lead.website ? [{ VALUE: lead.website, VALUE_TYPE: 'WORK' }] : [],
+        },
+        params: { REGISTER_SONET_EVENT: 'Y' },
+      };
+
+      // Wave 4 (CPI, follow-up) - a chamada HTTP real (timeout, SSRF, 429/5xx,
+      // retry) agora vive no adapter formal (server/search/providers/bitrix.
+      // provider.ts, capacidade "crm_export") - esta rota só cuida de
+      // elegibilidade/idempotência/log, que são regra de negócio, não integração.
+      const exportResult = await exportLead(effectiveWebhook, payload.fields);
+
+      if (exportResult.status === 'ok' && exportResult.data) {
+        const bitrixLeadId = exportResult.data.bitrixLeadId;
+        if (lead.id) {
+          await db
+            .run(
+              `INSERT INTO bitrix_export_log (lead_id, idempotency_key, status, bitrix_lead_id) VALUES (?, ?, 'success', ?)`,
+              [lead.id, idempotencyKey, bitrixLeadId],
+            )
+            .catch((e: any) => console.error('Falha ao gravar bitrix_export_log:', e));
+          await db
+            .run(
+              `UPDATE leads SET bitrix_export_status = 'exported', bitrix_export_error = NULL, bitrix_exported_at = NOW() WHERE id = ?`,
+              [lead.id],
+            )
+            .catch((e: any) => console.error('Falha ao gravar bitrix_export_status=exported:', e));
+        }
+        saveDatabase();
+        return res.json({
+          success: true,
+          leadId: bitrixLeadId,
+          message: `Lead #${bitrixLeadId} "${lead.name}" exportado com sucesso para o Bitrix24!`,
+          target: effectiveWebhook.includes('totaltrac') ? 'Total Trac' : 'AtlasGR',
+          warnings: eligibility.warnings,
+        });
+      }
+
+      // timeout/rate_limited/error/not_configured: nunca tratado como sucesso -
+      // status explícito do adapter, nunca um "provavelmente foi" fabricado.
+      const errMsg = exportResult.errorMessage || 'Erro retornado pela API do Bitrix24.';
       if (lead.id) {
-        await db.run(
-          `INSERT INTO bitrix_export_log (lead_id, idempotency_key, status, bitrix_lead_id) VALUES (?, ?, 'success', ?)`,
-          [lead.id, idempotencyKey, bitrixLeadId]
-        ).catch((e: any) => console.error('Falha ao gravar bitrix_export_log:', e));
-        await db.run(
-          `UPDATE leads SET bitrix_export_status = 'exported', bitrix_export_error = NULL, bitrix_exported_at = NOW() WHERE id = ?`,
-          [lead.id]
-        ).catch((e: any) => console.error('Falha ao gravar bitrix_export_status=exported:', e));
+        await db
+          .run(
+            `INSERT INTO bitrix_export_log (lead_id, idempotency_key, status, error) VALUES (?, ?, 'error', ?)`,
+            [lead.id, idempotencyKey, errMsg],
+          )
+          .catch((e: any) => console.error('Falha ao gravar bitrix_export_log:', e));
+        await db
+          .run(
+            `UPDATE leads SET bitrix_export_status = 'error', bitrix_export_error = ? WHERE id = ?`,
+            [errMsg, lead.id],
+          )
+          .catch((e: any) => console.error('Falha ao gravar bitrix_export_status=error:', e));
       }
       saveDatabase();
-      return res.json({
-        success: true,
-        leadId: bitrixLeadId,
-        message: `Lead #${bitrixLeadId} "${lead.name}" exportado com sucesso para o Bitrix24!`,
-        target: effectiveWebhook.includes('totaltrac') ? 'Total Trac' : 'AtlasGR',
-        warnings: eligibility.warnings
+      const httpStatus =
+        exportResult.status === 'rate_limited'
+          ? 429
+          : exportResult.status === 'timeout' ||
+              (exportResult.httpStatus !== undefined && exportResult.httpStatus >= 500)
+            ? 502
+            : 400;
+      return res.status(httpStatus).json({
+        success: false,
+        error: errMsg,
+        providerStatus: exportResult.status,
       });
+    } catch (err: any) {
+      // Nunca logar a URL do webhook em texto puro: o token de autenticação do
+      // Bitrix24 vem embutido no path da URL (ver maskWebhookUrl).
+      console.error(
+        'Erro na integração Bitrix24:',
+        err.message || err,
+        '| webhook:',
+        maskWebhookUrl(req.body?.webhookUrl),
+      );
+      if (lead?.id) {
+        await db
+          .run(
+            `UPDATE leads SET bitrix_export_status = 'error', bitrix_export_error = ? WHERE id = ?`,
+            [err.message || 'Falha ao conectar com o Bitrix24.', lead.id],
+          )
+          .catch((e: any) => console.error('Falha ao gravar bitrix_export_status=error:', e));
+      }
+      res
+        .status(500)
+        .json({ success: false, error: err.message || 'Falha ao conectar com o Bitrix24.' });
     }
-
-    // timeout/rate_limited/error/not_configured: nunca tratado como sucesso -
-    // status explícito do adapter, nunca um "provavelmente foi" fabricado.
-    const errMsg = exportResult.errorMessage || 'Erro retornado pela API do Bitrix24.';
-    if (lead.id) {
-      await db.run(
-        `INSERT INTO bitrix_export_log (lead_id, idempotency_key, status, error) VALUES (?, ?, 'error', ?)`,
-        [lead.id, idempotencyKey, errMsg]
-      ).catch((e: any) => console.error('Falha ao gravar bitrix_export_log:', e));
-      await db.run(
-        `UPDATE leads SET bitrix_export_status = 'error', bitrix_export_error = ? WHERE id = ?`,
-        [errMsg, lead.id]
-      ).catch((e: any) => console.error('Falha ao gravar bitrix_export_status=error:', e));
-    }
-    saveDatabase();
-    const httpStatus = exportResult.status === 'rate_limited'
-      ? 429
-      : (exportResult.status === 'timeout' || (exportResult.httpStatus !== undefined && exportResult.httpStatus >= 500))
-        ? 502
-        : 400;
-    return res.status(httpStatus).json({
-      success: false,
-      error: errMsg,
-      providerStatus: exportResult.status
-    });
-  } catch (err: any) {
-    // Nunca logar a URL do webhook em texto puro: o token de autenticação do
-    // Bitrix24 vem embutido no path da URL (ver maskWebhookUrl).
-    console.error('Erro na integração Bitrix24:', err.message || err, '| webhook:', maskWebhookUrl(req.body?.webhookUrl));
-    if (lead?.id) {
-      await db.run(
-        `UPDATE leads SET bitrix_export_status = 'error', bitrix_export_error = ? WHERE id = ?`,
-        [err.message || 'Falha ao conectar com o Bitrix24.', lead.id]
-      ).catch((e: any) => console.error('Falha ao gravar bitrix_export_status=error:', e));
-    }
-    res.status(500).json({ success: false, error: err.message || 'Falha ao conectar com o Bitrix24.' });
-  }
-});
+  },
+);
 
 // 9b. Bitrix24: conferir manualmente se um lead específico já é cliente/já está na base
 // (para leads antigos, salvos antes desta checagem existir, ou cujo primeiro check falhou).
-apiRouter.post('/leads/:id/bitrix-check', integrationLimiter, requireAuth, async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-    const { webhookUrl } = req.body;
-    const db = await getDatabase();
+apiRouter.post(
+  '/leads/:id/bitrix-check',
+  integrationLimiter,
+  requireAuth,
+  async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params;
+      const { webhookUrl } = req.body;
+      const db = await getDatabase();
 
-    const leadRes = await db.exec(`SELECT * FROM leads WHERE id = ?`, [id]);
-    if (leadRes.length === 0 || leadRes[0].values.length === 0) {
-      return res.status(404).json({ error: 'Lead não encontrado.' });
-    }
-    const cols = leadRes[0].columns;
-    const rawLead: any = {};
-    cols.forEach((col, idx) => { rawLead[col] = leadRes[0].values[0][idx]; });
-
-    const effectiveWebhook = (webhookUrl || resolveBitrixWebhookForCompany(rawLead.company)).replace(/\/$/, '');
-    // Wave 11 (CPI) - SSRF: mesma checagem de destino do send-lead. checkBitrixDuplicate
-    // também valida por conta própria (defesa em profundidade), mas checar aqui devolve
-    // um erro explícito ao usuário em vez de um 'unchecked' silencioso.
-    if (effectiveWebhook) {
-      const webhookSafety = isUrlSafeForOutboundWebhook(effectiveWebhook);
-      if (!webhookSafety.safe) {
-        return res.status(400).json({ error: `Webhook do Bitrix24 rejeitado: ${webhookSafety.reason}` });
+      const leadRes = await db.exec(`SELECT * FROM leads WHERE id = ?`, [id]);
+      if (leadRes.length === 0 || leadRes[0].values.length === 0) {
+        return res.status(404).json({ error: 'Lead não encontrado.' });
       }
+      const cols = leadRes[0].columns;
+      const rawLead: any = {};
+      cols.forEach((col, idx) => {
+        rawLead[col] = leadRes[0].values[0][idx];
+      });
+
+      const effectiveWebhook = (
+        webhookUrl || resolveBitrixWebhookForCompany(rawLead.company)
+      ).replace(/\/$/, '');
+      // Wave 11 (CPI) - SSRF: mesma checagem de destino do send-lead. checkBitrixDuplicate
+      // também valida por conta própria (defesa em profundidade), mas checar aqui devolve
+      // um erro explícito ao usuário em vez de um 'unchecked' silencioso.
+      if (effectiveWebhook) {
+        const webhookSafety = isUrlSafeForOutboundWebhook(effectiveWebhook);
+        if (!webhookSafety.safe) {
+          return res
+            .status(400)
+            .json({ error: `Webhook do Bitrix24 rejeitado: ${webhookSafety.reason}` });
+        }
+      }
+      const result = await checkBitrixDuplicate(effectiveWebhook, {
+        phone: rawLead.phone,
+        email: rawLead.decision_maker_email || rawLead.corporate_email,
+      });
+
+      await db.run(
+        `UPDATE leads SET bitrix_check_status = ?, bitrix_check_detail = ?, bitrix_checked_at = ? WHERE id = ?`,
+        [
+          result.status,
+          result.detail,
+          result.status === 'unchecked' ? null : new Date().toISOString(),
+          id,
+        ],
+      );
+      saveDatabase();
+
+      res.json({ success: true, leadId: id, ...result });
+    } catch (err: any) {
+      res.status(500).json({ error: err.message || 'Falha ao consultar o Bitrix24.' });
     }
-    const result = await checkBitrixDuplicate(effectiveWebhook, {
-      phone: rawLead.phone,
-      email: rawLead.decision_maker_email || rawLead.corporate_email
-    });
-
-    await db.run(
-      `UPDATE leads SET bitrix_check_status = ?, bitrix_check_detail = ?, bitrix_checked_at = ? WHERE id = ?`,
-      [result.status, result.detail, result.status === 'unchecked' ? null : new Date().toISOString(), id]
-    );
-    saveDatabase();
-
-    res.json({ success: true, leadId: id, ...result });
-  } catch (err: any) {
-    res.status(500).json({ error: err.message || 'Falha ao consultar o Bitrix24.' });
-  }
-});
+  },
+);
 
 // 10. Integration: Hunter.io Email Verification & Domain Search
 // Wave 4 (CPI, follow-up) - a chamada HTTP real agora vive no adapter formal
 // (server/search/providers/hunter.provider.ts), com timeout/429/5xx/status
 // explícito - a rota só traduz o ProviderResult para o formato já consumido
 // pelo frontend (ver src/components/LeadCard.tsx).
-apiRouter.post('/integrations/hunter/verify', integrationLimiter, requireAuth, async (req: Request, res: Response) => {
-  try {
-    const { email, apiKey } = req.body;
-    const effectiveKey = (apiKey || process.env.HUNTER_API_KEY || '').trim();
+apiRouter.post(
+  '/integrations/hunter/verify',
+  integrationLimiter,
+  requireAuth,
+  async (req: Request, res: Response) => {
+    try {
+      const { email, apiKey } = req.body;
+      const effectiveKey = (apiKey || process.env.HUNTER_API_KEY || '').trim();
 
-    if (!email) {
-      return res.status(400).json({ error: 'E-mail para verificação é obrigatório.' });
+      if (!email) {
+        return res.status(400).json({ error: 'E-mail para verificação é obrigatório.' });
+      }
+
+      const result = await hunterVerifyEmail(email, effectiveKey);
+
+      if (result.status === 'ok' && result.data) {
+        res.json({
+          success: true,
+          email: result.data.email,
+          status: result.data.status, // valid, invalid, accept_all, disposable, etc.
+          score: result.data.score,
+          domain: result.data.domain,
+          sources_count: result.data.sourcesCount,
+          result: result.data.result,
+          message: `E-mail verificado via Hunter.io: status ${result.data.status} (Score ${result.data.score}/100)`,
+        });
+      } else {
+        // Hunter.io indisponível, sem chave configurada, rate-limited ou erro: a
+        // verificação real não aconteceu, então o status é 'unknown' - nunca
+        // simulamos um score de confiança nem afirmamos que o domínio corporativo
+        // foi verificado.
+        res.json({
+          success: false,
+          email,
+          status: 'unknown',
+          score: 0,
+          domain: email.split('@')[1] || '',
+          message:
+            'Verificação via Hunter.io indisponível (chave não configurada ou serviço fora do ar). Nenhuma verificação real foi realizada.',
+          isSimulated: true,
+          providerStatus: result.status,
+        });
+      }
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
     }
+  },
+);
 
-    const result = await hunterVerifyEmail(email, effectiveKey);
+apiRouter.post(
+  '/integrations/hunter/domain-search',
+  integrationLimiter,
+  requireAuth,
+  async (req: Request, res: Response) => {
+    try {
+      const { domain, apiKey } = req.body;
+      const effectiveKey = (apiKey || process.env.HUNTER_API_KEY || '').trim();
 
-    if (result.status === 'ok' && result.data) {
-      res.json({
-        success: true,
-        email: result.data.email,
-        status: result.data.status, // valid, invalid, accept_all, disposable, etc.
-        score: result.data.score,
-        domain: result.data.domain,
-        sources_count: result.data.sourcesCount,
-        result: result.data.result,
-        message: `E-mail verificado via Hunter.io: status ${result.data.status} (Score ${result.data.score}/100)`
-      });
-    } else {
-      // Hunter.io indisponível, sem chave configurada, rate-limited ou erro: a
-      // verificação real não aconteceu, então o status é 'unknown' - nunca
-      // simulamos um score de confiança nem afirmamos que o domínio corporativo
-      // foi verificado.
-      res.json({
-        success: false,
-        email,
-        status: 'unknown',
-        score: 0,
-        domain: email.split('@')[1] || '',
-        message: 'Verificação via Hunter.io indisponível (chave não configurada ou serviço fora do ar). Nenhuma verificação real foi realizada.',
-        isSimulated: true,
-        providerStatus: result.status
-      });
+      if (!domain) {
+        return res.status(400).json({ error: 'Domínio é obrigatório.' });
+      }
+
+      const result = await hunterDomainSearch(domain, effectiveKey);
+
+      if (result.status === 'ok' && result.data) {
+        res.json({
+          success: true,
+          domain,
+          organization: result.data.organization,
+          emails: result.data.emails.map((e) => ({
+            value: e.email,
+            type: e.type,
+            confidence: e.confidence,
+            first_name: e.firstName,
+            last_name: e.lastName,
+            position: e.position,
+          })),
+        });
+      } else {
+        // Hunter.io indisponível, sem chave configurada, sem match ou erro: nenhum e-mail é inventado.
+        res.json({
+          success: false,
+          domain,
+          emails: [],
+          message:
+            'Busca de e-mails via Hunter.io indisponível (chave não configurada ou serviço fora do ar).',
+          providerStatus: result.status,
+        });
+      }
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
     }
-  } catch (err: any) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-apiRouter.post('/integrations/hunter/domain-search', integrationLimiter, requireAuth, async (req: Request, res: Response) => {
-  try {
-    const { domain, apiKey } = req.body;
-    const effectiveKey = (apiKey || process.env.HUNTER_API_KEY || '').trim();
-
-    if (!domain) {
-      return res.status(400).json({ error: 'Domínio é obrigatório.' });
-    }
-
-    const result = await hunterDomainSearch(domain, effectiveKey);
-
-    if (result.status === 'ok' && result.data) {
-      res.json({
-        success: true,
-        domain,
-        organization: result.data.organization,
-        emails: result.data.emails.map(e => ({
-          value: e.email,
-          type: e.type,
-          confidence: e.confidence,
-          first_name: e.firstName,
-          last_name: e.lastName,
-          position: e.position
-        }))
-      });
-    } else {
-      // Hunter.io indisponível, sem chave configurada, sem match ou erro: nenhum e-mail é inventado.
-      res.json({
-        success: false,
-        domain,
-        emails: [],
-        message: 'Busca de e-mails via Hunter.io indisponível (chave não configurada ou serviço fora do ar).',
-        providerStatus: result.status
-      });
-    }
-  } catch (err: any) {
-    res.status(500).json({ error: err.message });
-  }
-});
+  },
+);
 
 // 11. Integration: Bland AI Conversational Voice Call
 apiRouter.post('/integrations/bland/call', requireAuth, async (req: Request, res: Response) => {
@@ -2676,11 +3268,15 @@ apiRouter.post('/integrations/bland/call', requireAuth, async (req: Request, res
     const effectiveKey = (apiKey || process.env.BLAND_AI_API_KEY || '').trim();
 
     if (!phoneNumber) {
-      return res.status(400).json({ error: 'Número de telefone é obrigatório para disparo da chamada.' });
+      return res
+        .status(400)
+        .json({ error: 'Número de telefone é obrigatório para disparo da chamada.' });
     }
 
     if (script !== undefined && !isWithinMaxLength(String(script))) {
-      return res.status(400).json({ error: 'Roteiro de chamada excede o tamanho máximo permitido.' });
+      return res
+        .status(400)
+        .json({ error: 'Roteiro de chamada excede o tamanho máximo permitido.' });
     }
 
     const promptTask = `Você é a assistente de voz IA da Atlas Inteligência e Segurança Logística.
@@ -2693,7 +3289,7 @@ Fale com voz natural, cordial, em Português Brasileiro (PT-BR), aguarde a respo
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'authorization': effectiveKey
+        authorization: effectiveKey,
       },
       body: JSON.stringify({
         phone_number: phoneNumber,
@@ -2702,11 +3298,11 @@ Fale com voz natural, cordial, em Português Brasileiro (PT-BR), aguarde a respo
         reduce_latency: true,
         record: true,
         wait_for_greeting: true,
-        language: 'pt'
-      })
+        language: 'pt',
+      }),
     });
 
-    const data = await response.json() as any;
+    const data = (await response.json()) as any;
 
     if (response.ok && data.status === 'success') {
       res.json({
@@ -2714,7 +3310,7 @@ Fale com voz natural, cordial, em Português Brasileiro (PT-BR), aguarde a respo
         call_id: data.call_id,
         status: 'queued',
         message: `Chamada de voz IA agendada para ${phoneNumber} com sucesso via Bland AI! (Call ID: ${data.call_id})`,
-        phone_number: phoneNumber
+        phone_number: phoneNumber,
       });
     } else {
       // A chamada real via Bland AI falhou (sem chave configurada, saldo/limite ou
@@ -2722,8 +3318,11 @@ Fale com voz natural, cordial, em Português Brasileiro (PT-BR), aguarde a respo
       res.status(502).json({
         success: false,
         status: 'error',
-        error: data.message || data.error || 'Falha ao disparar a chamada via Bland AI (chave não configurada ou serviço indisponível).',
-        phone_number: phoneNumber
+        error:
+          data.message ||
+          data.error ||
+          'Falha ao disparar a chamada via Bland AI (chave não configurada ou serviço indisponível).',
+        phone_number: phoneNumber,
       });
     }
   } catch (err: any) {
@@ -2744,8 +3343,21 @@ export async function findLeads(opts: {
   // Wave 10 (CPI) - Observabilidade: hooks opcionais para auditar a busca
   // inteira sob um Search-ID (ver server/observability.ts). Nunca alteram o
   // resultado retornado - só observam o que já aconteceu.
-  onProviderCall?: (log: { provider: string; operation: string; status: string; latencyMs?: number; httpStatus?: number; source?: string; errorMessage?: string }) => void;
-  onCandidateDiscarded?: (log: { name: string; domain?: string; reasonCode: 'duplicate_pre_cnpj_domain_or_name' | 'exceeds_requested_limit'; reason: string }) => void;
+  onProviderCall?: (log: {
+    provider: string;
+    operation: string;
+    status: string;
+    latencyMs?: number;
+    httpStatus?: number;
+    source?: string;
+    errorMessage?: string;
+  }) => void;
+  onCandidateDiscarded?: (log: {
+    name: string;
+    domain?: string;
+    reasonCode: 'duplicate_pre_cnpj_domain_or_name' | 'exceeds_requested_limit';
+    reason: string;
+  }) => void;
 }): Promise<Lead[]> {
   const { query, limit, googleApiKey } = opts;
   const excludeDomains = opts.excludeDomains || new Set<string>();
@@ -2773,11 +3385,15 @@ export async function findLeads(opts: {
     latencyMs: result.latencyMs,
     httpStatus: result.httpStatus,
     source: result.source,
-    errorMessage: result.errorMessage
+    errorMessage: result.errorMessage,
   });
 
   if (result.status !== 'ok') {
-    if (result.status === 'error' || result.status === 'timeout' || result.status === 'rate_limited') {
+    if (
+      result.status === 'error' ||
+      result.status === 'timeout' ||
+      result.status === 'rate_limited'
+    ) {
       console.warn(`[google_places] ${result.status}: ${result.errorMessage || result.httpStatus}`);
     }
     // not_configured / not_found / error / timeout / rate_limited: em todos os
@@ -2807,7 +3423,7 @@ export async function findLeads(opts: {
       // recebem valor real quando um provider realmente os confirma (ex: CNAE
       // oficial da Receita Federal). O que o usuário pediu fica só no
       // SearchIntent/RequirementEvaluations do lead (ver /prospect).
-      decision_makers: []
+      decision_makers: [],
     };
   });
 
@@ -2822,7 +3438,8 @@ export async function findLeads(opts: {
         name: lead.name,
         domain: lead.domain,
         reasonCode: 'duplicate_pre_cnpj_domain_or_name',
-        reason: 'Domínio ou nome normalizado já pertence a um lead existente na base (checagem prévia à resolução de CNPJ oficial).'
+        reason:
+          'Domínio ou nome normalizado já pertence a um lead existente na base (checagem prévia à resolução de CNPJ oficial).',
       });
     }
     return !isDuplicate;
@@ -2837,7 +3454,7 @@ export async function findLeads(opts: {
       name: lead.name,
       domain: lead.domain,
       reasonCode: 'exceeds_requested_limit',
-      reason: `O Google Places devolveu mais candidatos novos do que o limite pedido (${limit}); os excedentes não foram processados.`
+      reason: `O Google Places devolveu mais candidatos novos do que o limite pedido (${limit}); os excedentes não foram processados.`,
     });
   });
   return withinLimit;
@@ -2857,7 +3474,20 @@ function normalizeLinkedInUrl(url?: string): string {
   return clean;
 }
 
-const APOLLO_PREFERRED_TITLES = ['CEO', 'Founder', 'Owner', 'Presidente', 'Diretor', 'Gerente', 'Head', 'Sócio', 'VP', 'Operações', 'Logística', 'Comercial'];
+const APOLLO_PREFERRED_TITLES = [
+  'CEO',
+  'Founder',
+  'Owner',
+  'Presidente',
+  'Diretor',
+  'Gerente',
+  'Head',
+  'Sócio',
+  'VP',
+  'Operações',
+  'Logística',
+  'Comercial',
+];
 
 export async function enrichLeadWithApollo(
   domain: string,
@@ -2866,7 +3496,15 @@ export async function enrichLeadWithApollo(
   preferredRole?: string,
   preferredTitles?: string[],
   // Wave 10 (CPI) - Observabilidade: hook opcional, ver findLeads acima.
-  onProviderCall?: (log: { provider: string; operation: string; status: string; latencyMs?: number; httpStatus?: number; source?: string; errorMessage?: string }) => void
+  onProviderCall?: (log: {
+    provider: string;
+    operation: string;
+    status: string;
+    latencyMs?: number;
+    httpStatus?: number;
+    source?: string;
+    errorMessage?: string;
+  }) => void,
 ): Promise<{ decisionMakers: DecisionMaker[]; companyLinkedin?: string }> {
   const cleanDom = cleanDomain(domain);
 
@@ -2879,7 +3517,7 @@ export async function enrichLeadWithApollo(
   // insistir num provider claramente fora do ar - nunca inventa dado, só evita
   // gastar tempo/créditos numa chamada que provavelmente vai falhar de novo.
   const orgResult = await withProviderCircuitBreaker('apollo', () =>
-    withProviderRetry(() => enrichOrganization(cleanDom, apiKey))
+    withProviderRetry(() => enrichOrganization(cleanDom, apiKey)),
   );
   onProviderCall?.({
     provider: 'apollo',
@@ -2888,19 +3526,27 @@ export async function enrichLeadWithApollo(
     latencyMs: orgResult.latencyMs,
     httpStatus: orgResult.httpStatus,
     source: orgResult.source,
-    errorMessage: orgResult.errorMessage
+    errorMessage: orgResult.errorMessage,
   });
-  const companyLinkedin = orgResult.status === 'ok' ? normalizeLinkedInUrl(orgResult.data?.linkedinUrl) : '';
+  const companyLinkedin =
+    orgResult.status === 'ok' ? normalizeLinkedInUrl(orgResult.data?.linkedinUrl) : '';
 
-  if (orgResult.status === 'error' || orgResult.status === 'timeout' || orgResult.status === 'rate_limited') {
-    console.warn(`[apollo:organization/enrich] ${orgResult.status}: ${orgResult.errorMessage || orgResult.httpStatus}`);
+  if (
+    orgResult.status === 'error' ||
+    orgResult.status === 'timeout' ||
+    orgResult.status === 'rate_limited'
+  ) {
+    console.warn(
+      `[apollo:organization/enrich] ${orgResult.status}: ${orgResult.errorMessage || orgResult.httpStatus}`,
+    );
   }
 
   // Cargo(s) marcados no combobox "Decisor Alvo" (múltipla escolha) restringem a
   // busca de pessoas do Apollo; sem nenhum marcado, cai na lista genérica ampla.
-  const titlesToSearch = preferredTitles && preferredTitles.length > 0 ? preferredTitles : APOLLO_PREFERRED_TITLES;
+  const titlesToSearch =
+    preferredTitles && preferredTitles.length > 0 ? preferredTitles : APOLLO_PREFERRED_TITLES;
   const peopleResult = await withProviderCircuitBreaker('apollo', () =>
-    withProviderRetry(() => searchAndMatchPeople(cleanDom, companyName, titlesToSearch, apiKey))
+    withProviderRetry(() => searchAndMatchPeople(cleanDom, companyName, titlesToSearch, apiKey)),
   );
   onProviderCall?.({
     provider: 'apollo',
@@ -2909,25 +3555,31 @@ export async function enrichLeadWithApollo(
     latencyMs: peopleResult.latencyMs,
     httpStatus: peopleResult.httpStatus,
     source: peopleResult.source,
-    errorMessage: peopleResult.errorMessage
+    errorMessage: peopleResult.errorMessage,
   });
 
   if (peopleResult.status === 'ok') {
-    const dms: DecisionMaker[] = peopleResult.data?.map(p => ({
+    const dms: DecisionMaker[] = peopleResult.data?.map((p) => ({
       name: p.name,
       title: p.title || preferredRole || '',
       email: p.email,
       emails: p.email ? [p.email] : [],
       phone: p.phone,
       phones: p.phone ? [p.phone] : [],
-      linkedin: p.linkedinUrl ? normalizeLinkedInUrl(p.linkedinUrl) : ''
+      linkedin: p.linkedinUrl ? normalizeLinkedInUrl(p.linkedinUrl) : '',
     }));
 
     if (dms.length > 0) {
       return { decisionMakers: dms, companyLinkedin };
     }
-  } else if (peopleResult.status === 'error' || peopleResult.status === 'timeout' || peopleResult.status === 'rate_limited') {
-    console.warn(`[apollo:people_search] ${peopleResult.status}: ${peopleResult.errorMessage || peopleResult.httpStatus}`);
+  } else if (
+    peopleResult.status === 'error' ||
+    peopleResult.status === 'timeout' ||
+    peopleResult.status === 'rate_limited'
+  ) {
+    console.warn(
+      `[apollo:people_search] ${peopleResult.status}: ${peopleResult.errorMessage || peopleResult.httpStatus}`,
+    );
   }
 
   // Sem match real via Apollo (ou sem chave configurada): o decisor permanece
@@ -2942,12 +3594,18 @@ export async function enrichLeadWithApollo(
 
 function cleanDomain(url: string): string {
   if (!url) return '';
-  return url.replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0];
+  return url
+    .replace(/^https?:\/\//, '')
+    .replace(/^www\./, '')
+    .split('/')[0];
 }
 
 function slugify(text: string): string {
-  return text.toString().toLowerCase()
-    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+  return text
+    .toString()
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
     .replace(/\s+/g, '-')
     .replace(/[^\w-]+/g, '')
     .replace(/--+/g, '-')

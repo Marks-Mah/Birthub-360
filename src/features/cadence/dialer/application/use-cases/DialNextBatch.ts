@@ -1,9 +1,12 @@
-import { randomUUID } from "node:crypto";
-import { CallAttempt } from "../../domain/entities/CallAttempt.js";
-import type { Campaign } from "../../domain/entities/Campaign.js";
-import type { LeadRepository } from "../ports/LeadRepository.js";
-import { AgentDnConflictError, type CallAttemptRepository } from "../ports/CallAttemptRepository.js";
-import type { DialerProvider } from "../ports/DialerProvider.js";
+import { randomUUID } from 'node:crypto';
+import { CallAttempt } from '../../domain/entities/CallAttempt.js';
+import type { Campaign } from '../../domain/entities/Campaign.js';
+import type { LeadRepository } from '../ports/LeadRepository.js';
+import {
+  AgentDnConflictError,
+  type CallAttemptRepository,
+} from '../ports/CallAttemptRepository.js';
+import type { DialerProvider } from '../ports/DialerProvider.js';
 
 export interface DialNextBatchConfig {
   callTimeoutSeconds: number;
@@ -45,7 +48,11 @@ export class DialNextBatch {
     // `claimNextEligible` já marca e persiste os leads como "in_progress"
     // atomicamente (ver LeadRepository) — não é preciso um markInProgress +
     // save() manual aqui.
-    const leads = await this.leadRepository.claimNextEligible(campaign.id, now, freeAgentDns.length);
+    const leads = await this.leadRepository.claimNextEligible(
+      campaign.id,
+      now,
+      freeAgentDns.length,
+    );
 
     for (let index = 0; index < leads.length; index += 1) {
       const lead = leads[index];
@@ -86,7 +93,7 @@ export class DialNextBatch {
       });
 
       if (!originationResult.accepted) {
-        attempt.updateStatus("failed", now);
+        attempt.updateStatus('failed', now);
         await this.callAttemptRepository.save(attempt);
         lead.registerFailedAttempt({
           maxAttempts: this.config.maxAttempts,

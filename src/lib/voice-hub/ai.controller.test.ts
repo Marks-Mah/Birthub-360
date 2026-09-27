@@ -22,15 +22,15 @@ const mockGetVideosOperation = vi.fn();
 vi.mock('@google/genai', () => {
   return {
     GoogleGenAI: vi.fn().mockImplementation(() => ({
-        models: {
-          generateContent: mockGenerateContent,
-          generateContentStream: mockGenerateContentStream,
-          generateVideos: mockGenerateVideos,
-        },
-        operations: {
-          getVideosOperation: mockGetVideosOperation,
-        },
-      })),
+      models: {
+        generateContent: mockGenerateContent,
+        generateContentStream: mockGenerateContentStream,
+        generateVideos: mockGenerateVideos,
+      },
+      operations: {
+        getVideosOperation: mockGetVideosOperation,
+      },
+    })),
     GenerateVideosOperation: vi.fn().mockImplementation(function (this: { name?: string }) {
       this.name = '';
     }),
@@ -85,9 +85,11 @@ describe('ai.controller', () => {
       await chatHandler(req, res);
 
       expect(res.status).toHaveBeenCalledWith(400);
-      expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
-        error: 'currentMessages deve conter ao menos uma mensagem do usuário.',
-      }));
+      expect(res.json).toHaveBeenCalledWith(
+        expect.objectContaining({
+          error: 'currentMessages deve conter ao menos uma mensagem do usuário.',
+        }),
+      );
     });
 
     it('delegates to llmProviderGateway with GoogleGemini and organizationId', async () => {
@@ -105,9 +107,7 @@ describe('ai.controller', () => {
         organizationId: 'tenant-abc',
         body: {
           prompt: 'Você é um assistente prestativo',
-          currentMessages: [
-            { role: 'user', text: 'Qual o horário de funcionamento?' },
-          ],
+          currentMessages: [{ role: 'user', text: 'Qual o horário de funcionamento?' }],
         },
       } as unknown as Request;
       const res = fakeResponse();
@@ -118,7 +118,7 @@ describe('ai.controller', () => {
         'Qual o horário de funcionamento?',
         'GoogleGemini',
         'Você é um assistente prestativo',
-        'tenant-abc'
+        'tenant-abc',
       );
       expect(res.json).toHaveBeenCalledWith(mockResult);
     });
@@ -247,9 +247,7 @@ describe('ai.controller', () => {
           candidates: [
             {
               content: {
-                parts: [
-                  { inlineData: { data: 'CHUNK1', mimeType: 'audio/mp3' } },
-                ],
+                parts: [{ inlineData: { data: 'CHUNK1', mimeType: 'audio/mp3' } }],
               },
             },
           ],
@@ -258,9 +256,7 @@ describe('ai.controller', () => {
           candidates: [
             {
               content: {
-                parts: [
-                  { inlineData: { data: 'CHUNK2' } },
-                ],
+                parts: [{ inlineData: { data: 'CHUNK2' } }],
               },
             },
           ],
@@ -339,7 +335,14 @@ describe('ai.controller', () => {
       const req = {
         body: {
           mode: 'simplify',
-          nodes: [{ id: 'start-1', type: 'start', position: { x: 50, y: 300 }, data: { label: 'Start', category: 'Start', config: {} } }],
+          nodes: [
+            {
+              id: 'start-1',
+              type: 'start',
+              position: { x: 50, y: 300 },
+              data: { label: 'Start', category: 'Start', config: {} },
+            },
+          ],
         },
       } as Request;
       const res = fakeResponse();

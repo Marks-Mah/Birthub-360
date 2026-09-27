@@ -11,7 +11,7 @@ vi.mock('react-router-dom', async (importOriginal) => {
   const actual = await importOriginal<typeof import('react-router-dom')>();
   return {
     ...actual,
-    useNavigate: () => mockNavigate
+    useNavigate: () => mockNavigate,
   };
 });
 
@@ -19,7 +19,7 @@ function renderAgentForm() {
   return render(
     <MemoryRouter>
       <AgentForm />
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 }
 
@@ -49,7 +49,7 @@ describe('AgentForm', () => {
 
     expect(screen.getByDisplayValue('SDR Virtual')).toBeInTheDocument();
     expect(
-      screen.getByDisplayValue('Qualificação rápida e prospecção ativa de leads inbound/outbound.')
+      screen.getByDisplayValue('Qualificação rápida e prospecção ativa de leads inbound/outbound.'),
     ).toBeInTheDocument();
   });
 
@@ -57,16 +57,13 @@ describe('AgentForm', () => {
     const user = userEvent.setup();
     (fetch as unknown as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
       ok: true,
-      json: async () => ({ agent: { id: 'agent-123' } })
+      json: async () => ({ agent: { id: 'agent-123' } }),
     });
 
     renderAgentForm();
     await user.click(screen.getByRole('button', { name: /criar e configurar agente/i }));
 
-    expect(fetch).toHaveBeenCalledWith(
-      '/api/agents',
-      expect.objectContaining({ method: 'POST' })
-    );
+    expect(fetch).toHaveBeenCalledWith('/api/agents', expect.objectContaining({ method: 'POST' }));
     expect(await screen.findByText(/inicializando/i)).toBeInTheDocument();
     await vi.waitFor(() => {
       expect(mockNavigate).toHaveBeenCalledWith('/dashboard/agents/agent-123');
@@ -77,7 +74,7 @@ describe('AgentForm', () => {
     const user = userEvent.setup();
     (fetch as unknown as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
       ok: false,
-      json: async () => ({ error: 'Nome do agente é obrigatório.' })
+      json: async () => ({ error: 'Nome do agente é obrigatório.' }),
     });
 
     renderAgentForm();
@@ -87,7 +84,8 @@ describe('AgentForm', () => {
     expect(mockNavigate).not.toHaveBeenCalled();
 
     // Dismissing the error clears it from the DOM.
-    const dismissButton = screen.getByText('Nome do agente é obrigatório.').nextElementSibling as HTMLElement;
+    const dismissButton = screen.getByText('Nome do agente é obrigatório.')
+      .nextElementSibling as HTMLElement;
     await user.click(dismissButton);
     expect(screen.queryByText('Nome do agente é obrigatório.')).not.toBeInTheDocument();
   });

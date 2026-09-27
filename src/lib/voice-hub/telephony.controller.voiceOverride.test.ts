@@ -23,7 +23,11 @@ function fakeRes() {
     send: vi.fn().mockReturnThis(),
     status: vi.fn().mockReturnThis(),
   };
-  return res as unknown as Response & { type: ReturnType<typeof vi.fn>; send: ReturnType<typeof vi.fn>; status: ReturnType<typeof vi.fn> };
+  return res as unknown as Response & {
+    type: ReturnType<typeof vi.fn>;
+    send: ReturnType<typeof vi.fn>;
+    status: ReturnType<typeof vi.fn>;
+  };
 }
 
 beforeEach(() => {
@@ -38,7 +42,10 @@ describe('telephony.controller gatherHandler — voiceOverride (Onda 6)', () => 
       shouldEnd: false,
       voiceOverride: { voice: 'Polly.Camila', language: 'pt-BR' },
     });
-    const req = { query: { sessionId: 'sess-1' }, body: { SpeechResult: 'Oi' } } as unknown as Request;
+    const req = {
+      query: { sessionId: 'sess-1' },
+      body: { SpeechResult: 'Oi' },
+    } as unknown as Request;
     const res = fakeRes();
 
     await gatherHandler(req, res);
@@ -56,7 +63,10 @@ describe('telephony.controller gatherHandler — voiceOverride (Onda 6)', () => 
       shouldEnd: true,
       voiceOverride: { voice: 'Polly.Vitoria' },
     });
-    const req = { query: { sessionId: 'sess-1' }, body: { SpeechResult: 'Tchau' } } as unknown as Request;
+    const req = {
+      query: { sessionId: 'sess-1' },
+      body: { SpeechResult: 'Tchau' },
+    } as unknown as Request;
     const res = fakeRes();
 
     await gatherHandler(req, res);
@@ -67,8 +77,15 @@ describe('telephony.controller gatherHandler — voiceOverride (Onda 6)', () => 
   });
 
   it('keeps the default Twilio voice (no voice attribute) when handleTurn has no override', async () => {
-    mockHandleTurn.mockResolvedValue({ found: true, reply: 'Sem voz customizada.', shouldEnd: false });
-    const req = { query: { sessionId: 'sess-1' }, body: { SpeechResult: 'Oi' } } as unknown as Request;
+    mockHandleTurn.mockResolvedValue({
+      found: true,
+      reply: 'Sem voz customizada.',
+      shouldEnd: false,
+    });
+    const req = {
+      query: { sessionId: 'sess-1' },
+      body: { SpeechResult: 'Oi' },
+    } as unknown as Request;
     const res = fakeRes();
 
     await gatherHandler(req, res);

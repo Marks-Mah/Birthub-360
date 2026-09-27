@@ -49,7 +49,10 @@ describe('executeHttpTool', () => {
     const fetchMock = vi.fn();
     global.fetch = fetchMock as unknown as typeof fetch;
 
-    const result = await executeHttpTool({ method: 'GET', endpoint: 'https://169.254.169.254/latest/meta-data' });
+    const result = await executeHttpTool({
+      method: 'GET',
+      endpoint: 'https://169.254.169.254/latest/meta-data',
+    });
 
     expect(result).toEqual({ ok: false, error: 'blocked_url' });
     expect(fetchMock).not.toHaveBeenCalled();
@@ -59,19 +62,25 @@ describe('executeHttpTool', () => {
     const fetchMock = vi.fn();
     global.fetch = fetchMock as unknown as typeof fetch;
 
-    const result = await executeHttpTool({ method: 'TRACE', endpoint: 'https://api.example.com/data' });
+    const result = await executeHttpTool({
+      method: 'TRACE',
+      endpoint: 'https://api.example.com/data',
+    });
 
     expect(result).toEqual({ ok: false, error: 'unsupported_method' });
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
   it('returns the response body on a 2xx response', async () => {
-    const fetchMock = vi.fn().mockResolvedValue(
-      new Response('{"status":"ok"}', { status: 200, statusText: 'OK' }),
-    );
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValue(new Response('{"status":"ok"}', { status: 200, statusText: 'OK' }));
     global.fetch = fetchMock as unknown as typeof fetch;
 
-    const result = await executeHttpTool({ method: 'GET', endpoint: 'https://api.example.com/data' });
+    const result = await executeHttpTool({
+      method: 'GET',
+      endpoint: 'https://api.example.com/data',
+    });
 
     expect(result).toEqual({ ok: true, status: 200, body: '{"status":"ok"}' });
     expect(fetchMock).toHaveBeenCalledTimes(1);
@@ -80,17 +89,24 @@ describe('executeHttpTool', () => {
   });
 
   it('never waits indefinitely: a hung request is aborted by the timeout', async () => {
-    const fetchMock = vi.fn().mockImplementation((_url: string, init: RequestInit) => new Promise((_resolve, reject) => {
-      const signal = init.signal;
-      signal?.addEventListener('abort', () => {
-        const err = new Error('The operation was aborted');
-        err.name = 'TimeoutError';
-        reject(err);
-      });
-    }));
+    const fetchMock = vi.fn().mockImplementation(
+      (_url: string, init: RequestInit) =>
+        new Promise((_resolve, reject) => {
+          const signal = init.signal;
+          signal?.addEventListener('abort', () => {
+            const err = new Error('The operation was aborted');
+            err.name = 'TimeoutError';
+            reject(err);
+          });
+        }),
+    );
     global.fetch = fetchMock as unknown as typeof fetch;
 
-    const result = await executeHttpTool({ method: 'GET', endpoint: 'https://api.example.com/slow', timeoutMs: 50 });
+    const result = await executeHttpTool({
+      method: 'GET',
+      endpoint: 'https://api.example.com/slow',
+      timeoutMs: 50,
+    });
 
     expect(result).toEqual({ ok: false, error: 'timeout' });
   }, 10_000);
@@ -102,7 +118,11 @@ describe('executeHttpTool', () => {
       .mockResolvedValueOnce(new Response('ok', { status: 200 }));
     global.fetch = fetchMock as unknown as typeof fetch;
 
-    const result = await executeHttpTool({ method: 'GET', endpoint: 'https://api.example.com/data', retryLimit: 1 });
+    const result = await executeHttpTool({
+      method: 'GET',
+      endpoint: 'https://api.example.com/data',
+      retryLimit: 1,
+    });
 
     expect(result).toEqual({ ok: true, status: 200, body: 'ok' });
     expect(fetchMock).toHaveBeenCalledTimes(2);
@@ -112,29 +132,41 @@ describe('executeHttpTool', () => {
     const fetchMock = vi.fn().mockRejectedValue(new Error('ECONNRESET'));
     global.fetch = fetchMock as unknown as typeof fetch;
 
-    const result = await executeHttpTool({ method: 'GET', endpoint: 'https://api.example.com/data', retryLimit: 1 });
+    const result = await executeHttpTool({
+      method: 'GET',
+      endpoint: 'https://api.example.com/data',
+      retryLimit: 1,
+    });
 
     expect(result).toEqual({ ok: false, error: 'network_error' });
     expect(fetchMock).toHaveBeenCalledTimes(2);
   });
 
   it('reports a non-2xx response as an http_<status> failure instead of throwing', async () => {
-    const fetchMock = vi.fn().mockResolvedValue(new Response('nope', { status: 503, statusText: 'Unavailable' }));
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValue(new Response('nope', { status: 503, statusText: 'Unavailable' }));
     global.fetch = fetchMock as unknown as typeof fetch;
 
-    const result = await executeHttpTool({ method: 'GET', endpoint: 'https://api.example.com/data' });
+    const result = await executeHttpTool({
+      method: 'GET',
+      endpoint: 'https://api.example.com/data',
+    });
 
     expect(result).toEqual({ ok: false, error: 'http_503' });
   });
 
   it('clamps an absurd tenant-configured timeout/retryLimit instead of trusting it verbatim', async () => {
-    const fetchMock = vi.fn().mockImplementation((_url: string, init: RequestInit) => new Promise((_resolve, reject) => {
-      init.signal?.addEventListener('abort', () => {
-        const err = new Error('aborted');
-        err.name = 'TimeoutError';
-        reject(err);
-      });
-    }));
+    const fetchMock = vi.fn().mockImplementation(
+      (_url: string, init: RequestInit) =>
+        new Promise((_resolve, reject) => {
+          init.signal?.addEventListener('abort', () => {
+            const err = new Error('aborted');
+            err.name = 'TimeoutError';
+            reject(err);
+          });
+        }),
+    );
     global.fetch = fetchMock as unknown as typeof fetch;
 
     const start = Date.now();

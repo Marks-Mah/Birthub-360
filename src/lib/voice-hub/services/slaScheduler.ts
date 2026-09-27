@@ -46,7 +46,10 @@ let queue: Queue | null = null;
 let worker: Worker | null = null;
 let redisClient: Redis | null = null;
 
-async function sampleAndRecordPlatformReadiness(): Promise<{ ready: boolean; tenantCount: number }> {
+async function sampleAndRecordPlatformReadiness(): Promise<{
+  ready: boolean;
+  tenantCount: number;
+}> {
   if (!redisClient) {
     throw new Error('[SlaScheduler] Redis client not initialized');
   }
@@ -61,14 +64,14 @@ async function sampleAndRecordPlatformReadiness(): Promise<{ ready: boolean; ten
         name: PLATFORM_READY_METRIC_NAME,
         value: ready ? 1 : 0,
         tags: { database: checks.database, redis: checks.redis, checkedAt },
-      })
-    )
+      }),
+    ),
   );
 
   const failedCount = results.filter((r) => r.status === 'rejected').length;
   if (failedCount > 0) {
     logger.error(
-      `[SlaScheduler] Failed to persist ${PLATFORM_READY_METRIC_NAME} for ${failedCount}/${organizationIds.length} tenants`
+      `[SlaScheduler] Failed to persist ${PLATFORM_READY_METRIC_NAME} for ${failedCount}/${organizationIds.length} tenants`,
     );
   }
 
@@ -102,7 +105,9 @@ export function startSlaScheduler(): { queue: Queue; worker: Worker } | undefine
       commandTimeout: 2000,
       retryStrategy: getRedisRetryStrategy(),
     });
-    redisClient.on('error', (err) => logger.error('[SlaScheduler] Redis client error', err.message));
+    redisClient.on('error', (err) =>
+      logger.error('[SlaScheduler] Redis client error', err.message),
+    );
 
     worker = new Worker(QUEUE_NAME, () => sampleAndRecordPlatformReadiness(), { connection });
 
@@ -120,10 +125,12 @@ export function startSlaScheduler(): { queue: Queue; worker: Worker } | undefine
           repeat: { pattern: REPEAT_CRON },
           removeOnComplete: true,
           removeOnFail: 100,
-        }
+        },
       )
       .then(() => {
-        logger.info('[SlaScheduler] Registered platform readiness sampling job', { cron: REPEAT_CRON });
+        logger.info('[SlaScheduler] Registered platform readiness sampling job', {
+          cron: REPEAT_CRON,
+        });
       })
       .catch((err: unknown) => {
         const msg = err instanceof Error ? err.message : String(err);

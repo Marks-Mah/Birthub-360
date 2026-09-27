@@ -17,8 +17,8 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     fetch('/api/settings')
-      .then(res => res.ok ? res.json() : null)
-      .then(data => {
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
         if (data?.settings?.theme) {
           setThemeState(data.settings.theme);
         }
@@ -31,16 +31,16 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     fetch('/api/settings', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ settings: { theme: newTheme } })
+      body: JSON.stringify({ settings: { theme: newTheme } }),
     }).catch(() => {});
   };
 
   useEffect(() => {
     const root = window.document.documentElement;
-    
+
     const applyTheme = () => {
       let activeTheme: 'light' | 'dark' = 'light';
-      
+
       if (theme === 'system') {
         const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
         activeTheme = systemPrefersDark ? 'dark' : 'light';

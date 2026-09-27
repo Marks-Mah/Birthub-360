@@ -1,4 +1,3 @@
-
 import React, { type ErrorInfo, type ReactNode } from 'react';
 import { AlertCircle, RotateCcw, Home } from 'lucide-react';
 import { logger } from '../../../../lib/logger.js';
@@ -21,7 +20,7 @@ export class ErrorBoundary extends React.Component<Props, State> {
     super(props);
     this.state = {
       hasError: false,
-      error: null
+      error: null,
     };
   }
 
@@ -51,18 +50,22 @@ export class ErrorBoundary extends React.Component<Props, State> {
       return (
         // `role="alert"` announces the crash to screen readers as soon as it mounts — the boundary
         // has just replaced the entire crashed subtree, and nothing else would signal that.
-        <div role="alert" className="min-h-screen bg-slate-50 dark:bg-slate-900 flex flex-col items-center justify-center p-6 text-center transition-colors">
+        <div
+          role="alert"
+          className="min-h-screen bg-slate-50 dark:bg-slate-900 flex flex-col items-center justify-center p-6 text-center transition-colors"
+        >
           <div className="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-xl max-w-md w-full border border-slate-200 dark:border-slate-700 animate-scale-in">
             <div className="h-16 w-16 bg-red-50 dark:bg-red-950/40 rounded-full flex items-center justify-center mx-auto mb-6">
               <AlertCircle aria-hidden="true" className="h-8 w-8 text-red-600 dark:text-red-400" />
             </div>
-            
+
             <h1 className="text-xl font-bold text-slate-900 dark:text-slate-50 mb-2">
               Algo deu errado
             </h1>
-            
+
             <p className="text-sm text-slate-500 dark:text-slate-400 mb-6 leading-relaxed">
-              Ocorreu um erro inesperado ao processar essa seção da plataforma. Mas não se preocupe, seus dados estão seguros.
+              Ocorreu um erro inesperado ao processar essa seção da plataforma. Mas não se preocupe,
+              seus dados estão seguros.
             </p>
 
             {this.state.error && (

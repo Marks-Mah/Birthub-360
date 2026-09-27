@@ -62,7 +62,7 @@ function isUsableValue(value: unknown): value is string | number {
 export function buildLeadEvidenceContext(
   lead: Lead,
   decisionMaker?: DecisionMaker,
-  storedEvidence: EvidenceRecord[] = []
+  storedEvidence: EvidenceRecord[] = [],
 ): LeadEvidenceContext {
   const confirmedFacts: Record<string, string> = {};
 
@@ -73,7 +73,10 @@ export function buildLeadEvidenceContext(
   }
 
   for (const evidence of storedEvidence) {
-    if (evidence.verificationStatus === 'verified' && isUsableValue(evidence.value as string | number)) {
+    if (
+      evidence.verificationStatus === 'verified' &&
+      isUsableValue(evidence.value as string | number)
+    ) {
       // Não sobrescreve um fato já confirmado via requirement_evaluations -
       // essa fonte é mais específica ao pedido de busca deste lead.
       if (!(evidence.field in confirmedFacts)) {
@@ -83,9 +86,10 @@ export function buildLeadEvidenceContext(
   }
 
   const dm = decisionMaker || lead.decision_makers?.[0];
-  const resolvedDecisionMaker = dm?.name && dm.name.trim() !== ''
-    ? { name: dm.name, title: dm.title && dm.title.trim() !== '' ? dm.title : undefined }
-    : undefined;
+  const resolvedDecisionMaker =
+    dm?.name && dm.name.trim() !== ''
+      ? { name: dm.name, title: dm.title && dm.title.trim() !== '' ? dm.title : undefined }
+      : undefined;
 
   return {
     leadId: lead.id,
@@ -93,7 +97,7 @@ export function buildLeadEvidenceContext(
     companyAddress: lead.address && lead.address.trim() !== '' ? lead.address : undefined,
     confirmedFacts,
     decisionMaker: resolvedDecisionMaker,
-    newsItems: lead.news_dossier?.recent_news || []
+    newsItems: lead.news_dossier?.recent_news || [],
   };
 }
 
@@ -146,7 +150,9 @@ export function formatEvidenceContextForPrompt(context: LeadEvidenceContext): st
   }
 
   if (lines.length === 1 && !context.companyAddress) {
-    lines.push('- (Nenhum outro fato confirmado disponível. Não presuma nada além do nome da empresa.)');
+    lines.push(
+      '- (Nenhum outro fato confirmado disponível. Não presuma nada além do nome da empresa.)',
+    );
   }
 
   return lines.join('\n');

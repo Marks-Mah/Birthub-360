@@ -1,9 +1,9 @@
-import type { CampaignRepository } from "../ports/CampaignRepository.js";
-import type { CallAttemptRepository } from "../ports/CallAttemptRepository.js";
-import type { DialerProvider } from "../ports/DialerProvider.js";
-import type { CallingHoursPolicy } from "../../domain/policies/CallingHoursPolicy.js";
-import type { SyncCallStatuses } from "./SyncCallStatuses.js";
-import type { DialNextBatch } from "./DialNextBatch.js";
+import type { CampaignRepository } from '../ports/CampaignRepository.js';
+import type { CallAttemptRepository } from '../ports/CallAttemptRepository.js';
+import type { DialerProvider } from '../ports/DialerProvider.js';
+import type { CallingHoursPolicy } from '../../domain/policies/CallingHoursPolicy.js';
+import type { SyncCallStatuses } from './SyncCallStatuses.js';
+import type { DialNextBatch } from './DialNextBatch.js';
 
 export interface RunDialerCycleConfig {
   agentDns: readonly string[];
@@ -14,7 +14,7 @@ export interface RunDialerCycleConfig {
 
 export interface RunDialerCycleReport {
   ranAt: Date;
-  skippedReason: "outside_calling_hours" | "no_active_campaigns" | null;
+  skippedReason: 'outside_calling_hours' | 'no_active_campaigns' | null;
   campaignsProcessed: number;
   totalDialed: number;
   totalRejectedImmediately: number;
@@ -68,12 +68,12 @@ export class RunDialerCycle {
     };
 
     if (!this.callingHoursPolicy.isAllowedAt(now)) {
-      return { ...baseReport, skippedReason: "outside_calling_hours" };
+      return { ...baseReport, skippedReason: 'outside_calling_hours' };
     }
 
     const activeCampaigns = await this.campaignRepository.findActive();
     if (activeCampaigns.length === 0) {
-      return { ...baseReport, skippedReason: "no_active_campaigns" };
+      return { ...baseReport, skippedReason: 'no_active_campaigns' };
     }
 
     const snapshots = await this.dialerProvider.getActiveCallStatuses(this.config.agentDns);

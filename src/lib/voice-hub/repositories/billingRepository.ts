@@ -15,7 +15,7 @@ export function findWalletByTenant(organizationId: string): Promise<WalletWithPl
 
 export function findTransactionsForTenant(
   organizationId: string,
-  { page, pageSize }: { page: number; pageSize: number }
+  { page, pageSize }: { page: number; pageSize: number },
 ): Promise<[Transaction[], number]> {
   const skip = (page - 1) * pageSize;
   return Promise.all([
@@ -43,7 +43,7 @@ export function findPlanById(planId: string): Promise<Plan | null> {
 // trigger"), otherwise updates the existing row in place.
 export function upsertWalletPlan(
   organizationId: string,
-  data: { planId: string; planStatus: string; currentPeriodEnd: Date | null; currency: string }
+  data: { planId: string; planStatus: string; currentPeriodEnd: Date | null; currency: string },
 ): Promise<WalletWithPlan> {
   return prisma.wallet.upsert({
     where: { organizationId },
@@ -64,7 +64,9 @@ export function upsertWalletPlan(
   });
 }
 
-export function findTransactionByIdempotencyKey(idempotencyKey: string): Promise<Transaction | null> {
+export function findTransactionByIdempotencyKey(
+  idempotencyKey: string,
+): Promise<Transaction | null> {
   return prisma.transaction.findUnique({ where: { idempotencyKey } });
 }
 
@@ -116,6 +118,8 @@ export function createTransactionAtomic(input: {
   });
 }
 
-export function isUniqueConstraintViolation(err: unknown): err is Prisma.PrismaClientKnownRequestError {
+export function isUniqueConstraintViolation(
+  err: unknown,
+): err is Prisma.PrismaClientKnownRequestError {
   return err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2002';
 }

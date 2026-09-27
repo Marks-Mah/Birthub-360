@@ -27,7 +27,9 @@ export function rateLimit(opts: { windowMs: number; max: number; message?: strin
       const retryAfterSec = Math.max(1, Math.ceil((bucket.resetAt - now) / 1000));
       res.setHeader('Retry-After', String(retryAfterSec));
       return res.status(429).json({
-        error: opts.message || `Muitas requisições para esta rota. Tente novamente em ${retryAfterSec}s.`
+        error:
+          opts.message ||
+          `Muitas requisições para esta rota. Tente novamente em ${retryAfterSec}s.`,
       });
     }
 

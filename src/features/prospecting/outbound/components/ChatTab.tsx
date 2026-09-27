@@ -1,17 +1,17 @@
 import type React from 'react';
 import { useState, useEffect, useRef } from 'react';
 import type { AIConfig, ChatMessage, ChatSession, ThemeMode } from '../types.js';
-import { 
-  Send, 
-  Bot, 
-  User, 
-  Loader2, 
-  MessageSquare, 
-  Plus, 
+import {
+  Send,
+  Bot,
+  User,
+  Loader2,
+  MessageSquare,
+  Plus,
   Database,
   Lightbulb,
   Copy,
-  Check
+  Check,
 } from 'lucide-react';
 
 interface ChatTabProps {
@@ -34,7 +34,7 @@ export const ChatTab: React.FC<ChatTabProps> = ({ aiConfig, theme = 'dark' }) =>
     'Como quebrar a objeção: "Já temos empresa de gerenciamento de risco"?',
     'Crie 3 opções de assunto de Cold Email de alto impacto para diretores de frota.',
     'Gere um script de WhatsApp de 3 linhas com pergunta aberta sobre sinistros.',
-    'Explique como a tecnologia de predição da Atlas reduz custos com seguro de carga.'
+    'Explique como a tecnologia de predição da Atlas reduz custos com seguro de carga.',
   ];
 
   // Load sessions on mount
@@ -78,19 +78,20 @@ export const ChatTab: React.FC<ChatTabProps> = ({ aiConfig, theme = 'dark' }) =>
       id: newId,
       title: `Conversa LLaMA3 (${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })})`,
       model: aiConfig.ollamaModel || 'llama3',
-      created_at: new Date().toISOString()
+      created_at: new Date().toISOString(),
     };
-    setSessions(prev => [newSession, ...prev]);
+    setSessions((prev) => [newSession, ...prev]);
     setCurrentSessionId(newId);
     setMessages([
       {
         id: `init-${Date.now()}`,
         session_id: newId,
         role: 'assistant',
-        content: 'Olá! Sou o Assistente de Inteligência Comercial e Estratégia da **Atlas (Segurança e Inteligência Logística)**. Posso redigir scripts personalizados, contornar objeções de clientes ou afinar sua abordagem de prospecção. Como posso ajudar hoje?',
+        content:
+          'Olá! Sou o Assistente de Inteligência Comercial e Estratégia da **Atlas (Segurança e Inteligência Logística)**. Posso redigir scripts personalizados, contornar objeções de clientes ou afinar sua abordagem de prospecção. Como posso ajudar hoje?',
         model: 'Atlas LLaMA3',
-        created_at: new Date().toISOString()
-      }
+        created_at: new Date().toISOString(),
+      },
     ]);
   };
 
@@ -107,10 +108,10 @@ export const ChatTab: React.FC<ChatTabProps> = ({ aiConfig, theme = 'dark' }) =>
       session_id: currentSessionId,
       role: 'user',
       content: textToSend,
-      created_at: new Date().toISOString()
+      created_at: new Date().toISOString(),
     };
 
-    setMessages(prev => [...prev, userMessage]);
+    setMessages((prev) => [...prev, userMessage]);
     if (!customText) setInputPrompt('');
     setIsLoading(true);
 
@@ -121,8 +122,8 @@ export const ChatTab: React.FC<ChatTabProps> = ({ aiConfig, theme = 'dark' }) =>
         body: JSON.stringify({
           sessionId: currentSessionId,
           message: textToSend,
-          aiConfig
-        })
+          aiConfig,
+        }),
       });
 
       if (res.ok) {
@@ -134,15 +135,15 @@ export const ChatTab: React.FC<ChatTabProps> = ({ aiConfig, theme = 'dark' }) =>
           content: data.reply,
           model: data.modelUsed,
           tokens: data.tokensEstimated,
-          created_at: new Date().toISOString()
+          created_at: new Date().toISOString(),
         };
-        setMessages(prev => [...prev, botMessage]);
+        setMessages((prev) => [...prev, botMessage]);
       } else {
         const errData = await res.json();
         throw new Error(errData.error || 'Erro na resposta');
       }
     } catch (err: any) {
-      setMessages(prev => [
+      setMessages((prev) => [
         ...prev,
         {
           id: `err-${Date.now()}`,
@@ -150,8 +151,8 @@ export const ChatTab: React.FC<ChatTabProps> = ({ aiConfig, theme = 'dark' }) =>
           role: 'assistant',
           content: `Houve uma instabilidade na conexão: ${err.message}. Verifique o status do Ollama na aba lateral.`,
           model: 'Sistema',
-          created_at: new Date().toISOString()
-        }
+          created_at: new Date().toISOString(),
+        },
       ]);
     } finally {
       setIsLoading(false);
@@ -167,13 +168,20 @@ export const ChatTab: React.FC<ChatTabProps> = ({ aiConfig, theme = 'dark' }) =>
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 h-[calc(100vh-140px)] min-h-[550px]">
       {/* Sessions Sidebar Column (3 cols) */}
-      <div className={`lg:col-span-3 border rounded-2xl p-4 flex flex-col justify-between shadow-xl transition ${
-        isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-slate-100'
-      }`}>
+      <div
+        className={`lg:col-span-3 border rounded-2xl p-4 flex flex-col justify-between shadow-xl transition ${
+          isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-slate-100'
+        }`}
+      >
         <div className="space-y-3 flex-1 overflow-y-auto">
-          <div className={`flex items-center justify-between border-b pb-3 ${isDark ? 'border-slate-800' : 'border-slate-200'}`}>
-            <h3 className={`text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-              <MessageSquare className="w-3.5 h-3.5 text-[var(--brand-primary)]" /> Histórico de Sessões
+          <div
+            className={`flex items-center justify-between border-b pb-3 ${isDark ? 'border-slate-800' : 'border-slate-200'}`}
+          >
+            <h3
+              className={`text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}
+            >
+              <MessageSquare className="w-3.5 h-3.5 text-[var(--brand-primary)]" /> Histórico de
+              Sessões
             </h3>
             <button
               onClick={createNewSession}
@@ -195,8 +203,8 @@ export const ChatTab: React.FC<ChatTabProps> = ({ aiConfig, theme = 'dark' }) =>
                 className={`w-full text-left p-2.5 rounded-xl text-xs transition flex items-center justify-between ${
                   currentSessionId === sess.id
                     ? 'bg-[var(--brand-primary)]/15 border border-[var(--brand-primary)]/40 text-[var(--brand-primary)] font-bold'
-                    : isDark 
-                      ? 'text-slate-400 hover:text-slate-200 hover:bg-slate-800 border border-transparent' 
+                    : isDark
+                      ? 'text-slate-400 hover:text-slate-200 hover:bg-slate-800 border border-transparent'
                       : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 border border-transparent'
                 }`}
               >
@@ -209,28 +217,36 @@ export const ChatTab: React.FC<ChatTabProps> = ({ aiConfig, theme = 'dark' }) =>
           </div>
         </div>
 
-        <div className={`pt-3 border-t text-[11px] flex items-center gap-1.5 ${
-          isDark ? 'border-slate-800 text-slate-500' : 'border-slate-200 text-slate-400'
-        }`}>
+        <div
+          className={`pt-3 border-t text-[11px] flex items-center gap-1.5 ${
+            isDark ? 'border-slate-800 text-slate-500' : 'border-slate-200 text-slate-400'
+          }`}
+        >
           <Database className="w-3.5 h-3.5 text-[var(--brand-primary)]" />
           <span>Sessões salvas no SQLite</span>
         </div>
       </div>
 
       {/* Main Chat Thread (9 cols) */}
-      <div className={`lg:col-span-9 border rounded-2xl flex flex-col shadow-xl overflow-hidden transition ${
-        isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-slate-100'
-      }`}>
+      <div
+        className={`lg:col-span-9 border rounded-2xl flex flex-col shadow-xl overflow-hidden transition ${
+          isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-slate-100'
+        }`}
+      >
         {/* Chat Header */}
-        <div className={`p-4 border-b flex items-center justify-between ${
-          isDark ? 'border-slate-800 bg-slate-950/40' : 'border-slate-200 bg-slate-50'
-        }`}>
+        <div
+          className={`p-4 border-b flex items-center justify-between ${
+            isDark ? 'border-slate-800 bg-slate-950/40' : 'border-slate-200 bg-slate-50'
+          }`}
+        >
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-[var(--brand-primary)]/20 border border-[var(--brand-primary)]/30 flex items-center justify-center text-[var(--brand-primary)]">
               <Bot className="w-4 h-4" />
             </div>
             <div>
-              <h3 className={`text-sm font-bold flex items-center gap-2 ${isDark ? 'text-white' : 'text-slate-900'}`}>
+              <h3
+                className={`text-sm font-bold flex items-center gap-2 ${isDark ? 'text-white' : 'text-slate-900'}`}
+              >
                 <span>Assistente Atlas LLaMA3</span>
                 <span className="text-[10px] bg-emerald-500/10 text-emerald-500 border border-emerald-500/30 px-1.5 py-0.2 rounded font-mono font-semibold">
                   ONLINE
@@ -242,17 +258,26 @@ export const ChatTab: React.FC<ChatTabProps> = ({ aiConfig, theme = 'dark' }) =>
             </div>
           </div>
 
-          <div className={`text-xs font-mono px-2.5 py-1 rounded-lg border ${
-            isDark ? 'text-slate-400 bg-slate-900 border-slate-800' : 'text-slate-600 bg-slate-100 border-slate-200'
-          }`}>
-            Motor: <span className="text-[var(--brand-primary)] font-bold">{aiConfig.provider.toUpperCase()}</span>
+          <div
+            className={`text-xs font-mono px-2.5 py-1 rounded-lg border ${
+              isDark
+                ? 'text-slate-400 bg-slate-900 border-slate-800'
+                : 'text-slate-600 bg-slate-100 border-slate-200'
+            }`}
+          >
+            Motor:{' '}
+            <span className="text-[var(--brand-primary)] font-bold">
+              {aiConfig.provider.toUpperCase()}
+            </span>
           </div>
         </div>
 
         {/* Message Stream */}
-        <div className={`flex-1 p-4 md:p-6 overflow-y-auto space-y-4 ${
-          isDark ? 'bg-slate-900/50' : 'bg-slate-50/50'
-        }`}>
+        <div
+          className={`flex-1 p-4 md:p-6 overflow-y-auto space-y-4 ${
+            isDark ? 'bg-slate-900/50' : 'bg-slate-50/50'
+          }`}
+        >
           {messages.map((msg) => {
             const isUser = msg.role === 'user';
             return (
@@ -277,12 +302,15 @@ export const ChatTab: React.FC<ChatTabProps> = ({ aiConfig, theme = 'dark' }) =>
                 >
                   <div className="flex items-center justify-between text-[10px] opacity-70 pb-1 border-b border-white/10">
                     <span>{isUser ? 'Você' : 'Atlas LLaMA3 Specialist'}</span>
-                    <span>{new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                    <span>
+                      {new Date(msg.created_at).toLocaleTimeString([], {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })}
+                    </span>
                   </div>
 
-                  <div className="whitespace-pre-wrap font-sans select-text">
-                    {msg.content}
-                  </div>
+                  <div className="whitespace-pre-wrap font-sans select-text">{msg.content}</div>
 
                   {!isUser && (
                     <div className="pt-2 flex items-center justify-between text-[10px] text-slate-400">
@@ -308,9 +336,13 @@ export const ChatTab: React.FC<ChatTabProps> = ({ aiConfig, theme = 'dark' }) =>
                 </div>
 
                 {isUser && (
-                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs shrink-0 border ${
-                    isDark ? 'bg-slate-800 text-slate-300 border-slate-700' : 'bg-slate-200 text-slate-700 border-slate-300'
-                  }`}>
+                  <div
+                    className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs shrink-0 border ${
+                      isDark
+                        ? 'bg-slate-800 text-slate-300 border-slate-700'
+                        : 'bg-slate-200 text-slate-700 border-slate-300'
+                    }`}
+                  >
                     <User className="w-4 h-4" />
                   </div>
                 )}
@@ -323,9 +355,13 @@ export const ChatTab: React.FC<ChatTabProps> = ({ aiConfig, theme = 'dark' }) =>
               <div className="w-8 h-8 rounded-lg bg-[var(--brand-primary)] text-white flex items-center justify-center font-bold text-xs shrink-0 animate-pulse">
                 A
               </div>
-              <div className={`border rounded-2xl rounded-tl-sm p-4 text-xs flex items-center gap-2 ${
-                isDark ? 'bg-slate-950 border-slate-800 text-slate-400' : 'bg-white border-slate-200 text-slate-600 shadow-sm'
-              }`}>
+              <div
+                className={`border rounded-2xl rounded-tl-sm p-4 text-xs flex items-center gap-2 ${
+                  isDark
+                    ? 'bg-slate-950 border-slate-800 text-slate-400'
+                    : 'bg-white border-slate-200 text-slate-600 shadow-sm'
+                }`}
+              >
                 <Loader2 className="w-4 h-4 animate-spin text-[var(--brand-primary)]" />
                 <span>LLaMA3 está estruturando sua resposta comercial...</span>
               </div>
@@ -336,17 +372,19 @@ export const ChatTab: React.FC<ChatTabProps> = ({ aiConfig, theme = 'dark' }) =>
         </div>
 
         {/* Quick Suggestion Chips for Chat */}
-        <div className={`px-4 py-2 border-t flex items-center gap-1.5 overflow-x-auto scrollbar-none ${
-          isDark ? 'bg-slate-950/60 border-slate-800/80' : 'bg-slate-100 border-slate-200'
-        }`}>
+        <div
+          className={`px-4 py-2 border-t flex items-center gap-1.5 overflow-x-auto scrollbar-none ${
+            isDark ? 'bg-slate-950/60 border-slate-800/80' : 'bg-slate-100 border-slate-200'
+          }`}
+        >
           <Lightbulb className="w-3.5 h-3.5 text-[#FFC500] shrink-0 ml-1" />
           {quickPrompts.map((qp, i) => (
             <button
               key={i}
               onClick={() => handleSendMessage(qp)}
               className={`text-[11px] px-2.5 py-1 rounded-lg border whitespace-nowrap transition ${
-                isDark 
-                  ? 'bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border-slate-700' 
+                isDark
+                  ? 'bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border-slate-700'
                   : 'bg-white hover:bg-slate-50 text-slate-700 hover:text-slate-900 border-slate-200'
               }`}
             >
@@ -356,9 +394,11 @@ export const ChatTab: React.FC<ChatTabProps> = ({ aiConfig, theme = 'dark' }) =>
         </div>
 
         {/* Input Bar */}
-        <div className={`p-3 border-t ${
-          isDark ? 'border-slate-800 bg-slate-950' : 'border-slate-200 bg-white'
-        }`}>
+        <div
+          className={`p-3 border-t ${
+            isDark ? 'border-slate-800 bg-slate-950' : 'border-slate-200 bg-white'
+          }`}
+        >
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -372,8 +412,8 @@ export const ChatTab: React.FC<ChatTabProps> = ({ aiConfig, theme = 'dark' }) =>
               onChange={(e) => setInputPrompt(e.target.value)}
               placeholder="Digite sua dúvida ou peça um roteiro específico para a Atlas..."
               className={`flex-1 border rounded-xl px-4 py-2.5 text-xs outline-none ${
-                isDark 
-                  ? 'bg-slate-900 border-slate-700 text-slate-100 placeholder-slate-500 focus:border-[var(--brand-primary)]' 
+                isDark
+                  ? 'bg-slate-900 border-slate-700 text-slate-100 placeholder-slate-500 focus:border-[var(--brand-primary)]'
                   : 'bg-slate-50 border-slate-300 text-slate-900 placeholder-slate-400 focus:border-[var(--brand-primary)]'
               }`}
             />

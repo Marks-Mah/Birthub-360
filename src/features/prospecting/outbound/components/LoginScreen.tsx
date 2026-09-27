@@ -1,6 +1,16 @@
 import type React from 'react';
 import { useState } from 'react';
-import { Lock, Mail, Loader2, ArrowRight, Sun, Moon, Building2, Sparkles, ListChecks } from 'lucide-react';
+import {
+  Lock,
+  Mail,
+  Loader2,
+  ArrowRight,
+  Sun,
+  Moon,
+  Building2,
+  Sparkles,
+  ListChecks,
+} from 'lucide-react';
 import type { User, ThemeMode } from '../types.js';
 import { AtlasLogo } from './AtlasLogo.js';
 import { TotalTracLogo } from './TotalTracLogo.js';
@@ -81,7 +91,7 @@ export function LoginScreen({ onLogin, isDark, setTheme }: LoginScreenProps) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ email, password, company })
+        body: JSON.stringify({ email, password, company }),
       });
       const data = await res.json();
 
@@ -123,12 +133,15 @@ export function LoginScreen({ onLogin, isDark, setTheme }: LoginScreenProps) {
         style={{
           // O véu escuro por trás do degradê existe para o selo "AI" do logo Atlas
           // (laranja translúcido) não sumir dentro do próprio fundo laranja.
-          background: `linear-gradient(150deg, rgba(0,0,0,0.32), rgba(0,0,0,0.04)), linear-gradient(150deg, ${brand.gradientFrom}, ${brand.gradientTo})`
+          background: `linear-gradient(150deg, rgba(0,0,0,0.32), rgba(0,0,0,0.04)), linear-gradient(150deg, ${brand.gradientFrom}, ${brand.gradientTo})`,
         }}
       >
         <div className="pointer-events-none absolute -top-32 -left-24 w-[26rem] h-[26rem] rounded-full bg-white/15 blur-3xl" />
         <div className="pointer-events-none absolute -bottom-40 -right-16 w-[30rem] h-[30rem] rounded-full bg-black/20 blur-3xl" />
-        <svg className="pointer-events-none absolute inset-0 w-full h-full opacity-[0.08]" xmlns="http://www.w3.org/2000/svg">
+        <svg
+          className="pointer-events-none absolute inset-0 w-full h-full opacity-[0.08]"
+          xmlns="http://www.w3.org/2000/svg"
+        >
           <defs>
             <pattern id="login-dot-grid" width="28" height="28" patternUnits="userSpaceOnUse">
               <circle cx="2" cy="2" r="1.6" fill="white" />
@@ -163,15 +176,17 @@ export function LoginScreen({ onLogin, isDark, setTheme }: LoginScreenProps) {
       {/* Painel do formulário */}
       <div className="flex-1 min-w-0 flex items-center justify-center p-4 sm:p-8">
         <div className="w-full min-w-0 max-w-sm animate-in fade-in slide-in-from-bottom-2 duration-500">
-
           {/* Chave de seleção Atlas / TotalTrac */}
           <div className="flex justify-center mb-8">
-            <div className={`relative flex p-1 rounded-full ${isDark ? 'bg-slate-900 border border-slate-800' : 'bg-slate-100 border border-slate-200'}`}>
+            <div
+              className={`relative flex p-1 rounded-full ${isDark ? 'bg-slate-900 border border-slate-800' : 'bg-slate-100 border border-slate-200'}`}
+            >
               <div
                 className="absolute top-1 bottom-1 w-[calc(50%-4px)] rounded-full transition-transform duration-300 ease-out"
                 style={{
                   background: `linear-gradient(to right, ${brand.gradientFrom}, ${brand.gradientTo})`,
-                  transform: company === 'atlas' ? 'translateX(0%)' : 'translateX(calc(100% + 8px))',
+                  transform:
+                    company === 'atlas' ? 'translateX(0%)' : 'translateX(calc(100% + 8px))',
                 }}
               ></div>
               {(Object.keys(BRAND) as Company[]).map((key) => (
@@ -182,7 +197,9 @@ export function LoginScreen({ onLogin, isDark, setTheme }: LoginScreenProps) {
                   className={`relative z-10 w-28 py-2 text-sm font-medium rounded-full transition-colors ${
                     company === key
                       ? 'text-white'
-                      : isDark ? 'text-slate-400 hover:text-slate-200' : 'text-slate-500 hover:text-slate-700'
+                      : isDark
+                        ? 'text-slate-400 hover:text-slate-200'
+                        : 'text-slate-500 hover:text-slate-700'
                   }`}
                 >
                   {BRAND[key].label}
@@ -196,18 +213,28 @@ export function LoginScreen({ onLogin, isDark, setTheme }: LoginScreenProps) {
             <div className="mb-5 lg:hidden">
               <Logo size="lg" theme={isDark ? 'dark' : 'light'} variant="full" />
             </div>
-            <h1 className={`text-2xl font-bold text-center lg:text-left ${isDark ? 'text-white' : 'text-slate-900'}`}>
+            <h1
+              className={`text-2xl font-bold text-center lg:text-left ${isDark ? 'text-white' : 'text-slate-900'}`}
+            >
               Bem-vindo de volta
             </h1>
-            <p className={`text-sm mt-1.5 text-center lg:text-left ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+            <p
+              className={`text-sm mt-1.5 text-center lg:text-left ${isDark ? 'text-slate-400' : 'text-slate-500'}`}
+            >
               {brand.subtitle}
             </p>
           </div>
 
-          <div className={`w-full p-6 sm:p-7 rounded-2xl shadow-xl shadow-black/[0.03] ${isDark ? 'bg-slate-900 border border-slate-800' : 'bg-white border border-slate-200'}`}>
+          <div
+            className={`w-full p-6 sm:p-7 rounded-2xl shadow-xl shadow-black/[0.03] ${isDark ? 'bg-slate-900 border border-slate-800' : 'bg-white border border-slate-200'}`}
+          >
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className={`block text-xs font-medium mb-1.5 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>Email</label>
+                <label
+                  className={`block text-xs font-medium mb-1.5 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}
+                >
+                  Email
+                </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                     <Mail className={`w-4 h-4 ${isDark ? 'text-slate-500' : 'text-slate-400'}`} />
@@ -216,22 +243,26 @@ export function LoginScreen({ onLogin, isDark, setTheme }: LoginScreenProps) {
                     type="email"
                     required
                     value={email}
-                    onChange={e => setEmail(e.target.value)}
+                    onChange={(e) => setEmail(e.target.value)}
                     className={`w-full pl-10 pr-4 py-2.5 rounded-xl text-sm transition-colors border outline-none focus:ring-2 ${
                       isDark
                         ? 'bg-slate-950 border-slate-800 text-white'
                         : 'bg-slate-50 border-slate-200 text-slate-900'
                     }`}
                     style={{ '--tw-ring-color': `${brand.accent}33` } as React.CSSProperties}
-                    onFocus={e => (e.currentTarget.style.borderColor = brand.accent)}
-                    onBlur={e => (e.currentTarget.style.borderColor = '')}
+                    onFocus={(e) => (e.currentTarget.style.borderColor = brand.accent)}
+                    onBlur={(e) => (e.currentTarget.style.borderColor = '')}
                     placeholder={brand.placeholder}
                   />
                 </div>
               </div>
 
               <div>
-                <label className={`block text-xs font-medium mb-1.5 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>Senha</label>
+                <label
+                  className={`block text-xs font-medium mb-1.5 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}
+                >
+                  Senha
+                </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                     <Lock className={`w-4 h-4 ${isDark ? 'text-slate-500' : 'text-slate-400'}`} />
@@ -240,15 +271,15 @@ export function LoginScreen({ onLogin, isDark, setTheme }: LoginScreenProps) {
                     type="password"
                     required
                     value={password}
-                    onChange={e => setPassword(e.target.value)}
+                    onChange={(e) => setPassword(e.target.value)}
                     className={`w-full pl-10 pr-4 py-2.5 rounded-xl text-sm transition-colors border outline-none focus:ring-2 ${
                       isDark
                         ? 'bg-slate-950 border-slate-800 text-white'
                         : 'bg-slate-50 border-slate-200 text-slate-900'
                     }`}
                     style={{ '--tw-ring-color': `${brand.accent}33` } as React.CSSProperties}
-                    onFocus={e => (e.currentTarget.style.borderColor = brand.accent)}
-                    onBlur={e => (e.currentTarget.style.borderColor = '')}
+                    onFocus={(e) => (e.currentTarget.style.borderColor = brand.accent)}
+                    onBlur={(e) => (e.currentTarget.style.borderColor = '')}
                     placeholder="••••••••"
                   />
                 </div>
@@ -266,12 +297,18 @@ export function LoginScreen({ onLogin, isDark, setTheme }: LoginScreenProps) {
                 className="group w-full mt-2 flex items-center justify-center gap-2 text-white font-medium py-2.5 rounded-xl transition-all disabled:opacity-50 shadow-lg"
                 style={{
                   background: `linear-gradient(to right, ${brand.gradientFrom}, ${brand.gradientTo})`,
-                  boxShadow: `0 8px 20px -8px ${brand.accent}80`
+                  boxShadow: `0 8px 20px -8px ${brand.accent}80`,
                 }}
-                onMouseEnter={e => (e.currentTarget.style.background = `linear-gradient(to right, ${brand.hoverFrom}, ${brand.hoverTo})`)}
-                onMouseLeave={e => (e.currentTarget.style.background = `linear-gradient(to right, ${brand.gradientFrom}, ${brand.gradientTo})`)}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.background = `linear-gradient(to right, ${brand.hoverFrom}, ${brand.hoverTo})`)
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.background = `linear-gradient(to right, ${brand.gradientFrom}, ${brand.gradientTo})`)
+                }
               >
-                {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : (
+                {loading ? (
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                ) : (
                   <>
                     Entrar {brand.label}
                     <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />

@@ -12,8 +12,14 @@ import DevelopersPage from './Developers.js';
 let mockRole = 'admin';
 
 vi.mock('../../store/useSessionStore.js', () => ({
-  useSessionStore: (selector: (state: { user: { id: string; email: string; role: string; organizationId: string } | null }) => unknown) =>
-    selector({ user: { id: 'user-1', email: 'admin@teste.com', role: mockRole, organizationId: 'tenant-1' } }),
+  useSessionStore: (
+    selector: (state: {
+      user: { id: string; email: string; role: string; organizationId: string } | null;
+    }) => unknown,
+  ) =>
+    selector({
+      user: { id: 'user-1', email: 'admin@teste.com', role: mockRole, organizationId: 'tenant-1' },
+    }),
 }));
 
 interface MockResponse {
@@ -43,9 +49,18 @@ describe('Developers page — Webhooks', () => {
     vi.stubGlobal(
       'fetch',
       vi.fn((url: string) => {
-        if (url === '/api/developers/keys') return Promise.resolve(jsonResponse({ body: { apiKeys: [] } }));
+        if (url === '/api/developers/keys')
+          return Promise.resolve(jsonResponse({ body: { apiKeys: [] } }));
         if (url === '/api/developers/webhooks') {
-          return Promise.resolve(jsonResponse({ status: 503, body: { error: 'Endpoints de webhook por tenant ainda não estão disponíveis nesta implantação.' } }));
+          return Promise.resolve(
+            jsonResponse({
+              status: 503,
+              body: {
+                error:
+                  'Endpoints de webhook por tenant ainda não estão disponíveis nesta implantação.',
+              },
+            }),
+          );
         }
         throw new Error(`unexpected fetch: ${url}`);
       }),
@@ -53,7 +68,9 @@ describe('Developers page — Webhooks', () => {
 
     render(<DevelopersPage />);
 
-    expect(await screen.findByText('Funcionalidade temporariamente indisponível')).toBeInTheDocument();
+    expect(
+      await screen.findByText('Funcionalidade temporariamente indisponível'),
+    ).toBeInTheDocument();
     expect(screen.queryByText(/Nenhum endpoint de webhook cadastrado/)).not.toBeInTheDocument();
   });
 
@@ -61,21 +78,26 @@ describe('Developers page — Webhooks', () => {
     vi.stubGlobal(
       'fetch',
       vi.fn((url: string) => {
-        if (url === '/api/developers/keys') return Promise.resolve(jsonResponse({ body: { apiKeys: [] } }));
-        if (url === '/api/developers/webhooks') return Promise.resolve(jsonResponse({ body: { webhookEndpoints: [] } }));
+        if (url === '/api/developers/keys')
+          return Promise.resolve(jsonResponse({ body: { apiKeys: [] } }));
+        if (url === '/api/developers/webhooks')
+          return Promise.resolve(jsonResponse({ body: { webhookEndpoints: [] } }));
         throw new Error(`unexpected fetch: ${url}`);
       }),
     );
 
     render(<DevelopersPage />);
 
-    expect(await screen.findByText(/Nenhum endpoint de webhook cadastrado ainda/)).toBeInTheDocument();
+    expect(
+      await screen.findByText(/Nenhum endpoint de webhook cadastrado ainda/),
+    ).toBeInTheDocument();
   });
 
   it('reveals the plaintext secret once on create, then hides it after dismissal', async () => {
     const user = userEvent.setup();
     const fetchMock = vi.fn((url: string, init?: RequestInit) => {
-      if (url === '/api/developers/keys') return Promise.resolve(jsonResponse({ body: { apiKeys: [] } }));
+      if (url === '/api/developers/keys')
+        return Promise.resolve(jsonResponse({ body: { apiKeys: [] } }));
       if (url === '/api/developers/webhooks' && (!init || init.method === undefined)) {
         return Promise.resolve(jsonResponse({ body: { webhookEndpoints: [] } }));
       }
@@ -104,8 +126,14 @@ describe('Developers page — Webhooks', () => {
     await screen.findByText(/Nenhum endpoint de webhook cadastrado ainda/);
 
     await user.click(screen.getByRole('button', { name: /Adicionar Endpoint/i }));
-    await user.type(screen.getByPlaceholderText('https://seu-servidor.com/webhooks/voice'), 'https://example.com/hooks/voice');
-    await user.type(screen.getByPlaceholderText(/agent\.call\.ended ou \* para todos/), 'agent.call.ended');
+    await user.type(
+      screen.getByPlaceholderText('https://seu-servidor.com/webhooks/voice'),
+      'https://example.com/hooks/voice',
+    );
+    await user.type(
+      screen.getByPlaceholderText(/agent\.call\.ended ou \* para todos/),
+      'agent.call.ended',
+    );
     await user.click(screen.getByRole('button', { name: /^Criar Endpoint$/ }));
 
     expect(await screen.findByText('whsec_plaintext-once-only')).toBeInTheDocument();
@@ -116,15 +144,18 @@ describe('Developers page — Webhooks', () => {
 
   it('propagates the backend 409 (limit reached) message verbatim instead of a generic error', async () => {
     const user = userEvent.setup();
-    const limitMessage = 'Limite de 5 endpoints de webhook ativos por tenant atingido. Remova ou desative um endpoint existente antes de criar outro.';
+    const limitMessage =
+      'Limite de 5 endpoints de webhook ativos por tenant atingido. Remova ou desative um endpoint existente antes de criar outro.';
     vi.stubGlobal(
       'fetch',
       vi.fn((url: string, init?: RequestInit) => {
-        if (url === '/api/developers/keys') return Promise.resolve(jsonResponse({ body: { apiKeys: [] } }));
+        if (url === '/api/developers/keys')
+          return Promise.resolve(jsonResponse({ body: { apiKeys: [] } }));
         if (url === '/api/developers/webhooks' && init?.method === 'POST') {
           return Promise.resolve(jsonResponse({ status: 409, body: { error: limitMessage } }));
         }
-        if (url === '/api/developers/webhooks') return Promise.resolve(jsonResponse({ body: { webhookEndpoints: [] } }));
+        if (url === '/api/developers/webhooks')
+          return Promise.resolve(jsonResponse({ body: { webhookEndpoints: [] } }));
         throw new Error(`unexpected fetch: ${url}`);
       }),
     );
@@ -133,7 +164,10 @@ describe('Developers page — Webhooks', () => {
     await screen.findByText(/Nenhum endpoint de webhook cadastrado ainda/);
 
     await user.click(screen.getByRole('button', { name: /Adicionar Endpoint/i }));
-    await user.type(screen.getByPlaceholderText('https://seu-servidor.com/webhooks/voice'), 'https://example.com/hooks/voice');
+    await user.type(
+      screen.getByPlaceholderText('https://seu-servidor.com/webhooks/voice'),
+      'https://example.com/hooks/voice',
+    );
     await user.type(screen.getByPlaceholderText(/agent\.call\.ended ou \* para todos/), '*');
     await user.click(screen.getByRole('button', { name: /^Criar Endpoint$/ }));
 
@@ -146,7 +180,8 @@ describe('Developers page — Webhooks', () => {
     vi.stubGlobal(
       'fetch',
       vi.fn((url: string, init?: RequestInit) => {
-        if (url === '/api/developers/keys') return Promise.resolve(jsonResponse({ body: { apiKeys: [] } }));
+        if (url === '/api/developers/keys')
+          return Promise.resolve(jsonResponse({ body: { apiKeys: [] } }));
         if (url === '/api/developers/webhooks/wh-1' && init?.method === 'DELETE') {
           deleted = true;
           return Promise.resolve(jsonResponse({ body: { success: true } }));
@@ -186,12 +221,17 @@ describe('Developers page — Webhooks', () => {
     await user.click(within(dialogBox).getByRole('button', { name: 'Remover' }));
 
     await waitFor(() => expect(deleted).toBe(true));
-    await waitFor(() => expect(screen.queryByText('https://example.com/hooks/voice')).not.toBeInTheDocument());
+    await waitFor(() =>
+      expect(screen.queryByText('https://example.com/hooks/voice')).not.toBeInTheDocument(),
+    );
   });
 
   it('gates both API Keys and Webhooks behind admin role, without a way to trigger create', async () => {
     mockRole = 'member';
-    vi.stubGlobal('fetch', vi.fn(() => Promise.reject(new Error('should not fetch for non-admin'))));
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(() => Promise.reject(new Error('should not fetch for non-admin'))),
+    );
 
     render(<DevelopersPage />);
 

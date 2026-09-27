@@ -13,11 +13,19 @@ export function listCallLogs(organizationId: string) {
   return callLogRepository.listCallLogsForTenant(organizationId);
 }
 
-export function createCallLog(organizationId: string, userId: string | null, data: { contactName?: string; duration?: string; status?: string; agent?: string }) {
+export function createCallLog(
+  organizationId: string,
+  userId: string | null,
+  data: { contactName?: string; duration?: string; status?: string; agent?: string },
+) {
   return callLogRepository.createCallLog(organizationId, userId, data);
 }
 
-export async function updateCallLog(id: string, organizationId: string, data: { contactName?: string; status?: string; duration?: string }) {
+export async function updateCallLog(
+  id: string,
+  organizationId: string,
+  data: { contactName?: string; status?: string; duration?: string },
+) {
   const existing = await callLogRepository.findCallLogForTenant(id, organizationId);
   if (!existing) throw new NotFoundError('Log de chamada não encontrado.');
   return callLogRepository.updateCallLog(id, data);
@@ -37,9 +45,16 @@ export async function deleteCallLog(id: string, organizationId: string) {
  * job, a cron container) should call this on a daily cadence — see
  * `.agents/handoffs/onda-1/05-para-00-callLog-retention-scheduling.md`.
  */
-export async function purgeExpiredCallLogs(retentionDays: number = Number(process.env.CALL_LOG_RETENTION_DAYS) || DEFAULT_CALL_LOG_RETENTION_DAYS) {
+export async function purgeExpiredCallLogs(
+  retentionDays: number = Number(process.env.CALL_LOG_RETENTION_DAYS) ||
+    DEFAULT_CALL_LOG_RETENTION_DAYS,
+) {
   const cutoff = new Date(Date.now() - retentionDays * 24 * 60 * 60 * 1000);
   const result = await callLogRepository.deleteCallLogsOlderThan(cutoff);
-  logger.info('[CallLogService] Retention purge complete', { retentionDays, cutoff: cutoff.toISOString(), deletedCount: result.count });
+  logger.info('[CallLogService] Retention purge complete', {
+    retentionDays,
+    cutoff: cutoff.toISOString(),
+    deletedCount: result.count,
+  });
   return { deletedCount: result.count, cutoff };
 }

@@ -1,14 +1,7 @@
 import type React from 'react';
 import { useState, useEffect } from 'react';
 import type { DatabaseStats, QueryResult, ThemeMode } from '../types.js';
-import { 
-  Database, 
-  Play, 
-  Table, 
-  RefreshCw, 
-  AlertCircle,
-  Code2,
-} from 'lucide-react';
+import { Database, Play, Table, RefreshCw, AlertCircle, Code2 } from 'lucide-react';
 
 interface DatabaseExplorerTabProps {
   dbStats: DatabaseStats | null;
@@ -16,25 +9,45 @@ interface DatabaseExplorerTabProps {
   theme?: ThemeMode;
 }
 
-export const DatabaseExplorerTab: React.FC<DatabaseExplorerTabProps> = ({ 
-  dbStats, 
+export const DatabaseExplorerTab: React.FC<DatabaseExplorerTabProps> = ({
+  dbStats,
   onRefreshStats,
-  theme = 'dark'
+  theme = 'dark',
 }) => {
   const [_selectedTable, _setSelectedTable] = useState('messages');
-  const [customSql, setCustomSql] = useState('SELECT m.id, l.name as lead, m.channel, m.status, m.content FROM messages m LEFT JOIN leads l ON m.lead_id = l.id LIMIT 25;');
+  const [customSql, setCustomSql] = useState(
+    'SELECT m.id, l.name as lead, m.channel, m.status, m.content FROM messages m LEFT JOIN leads l ON m.lead_id = l.id LIMIT 25;',
+  );
   const [queryResult, setQueryResult] = useState<QueryResult | null>(null);
   const [isExecuting, setIsExecuting] = useState(false);
 
   const isDark = theme === 'dark';
 
   const sampleQueries = [
-    { label: 'Todas as Mensagens (JOIN Lead)', sql: 'SELECT m.id, l.name as empresa, m.channel, m.status, substr(m.content, 1, 80) || "..." as previa FROM messages m LEFT JOIN leads l ON m.lead_id = l.id ORDER BY m.created_at DESC;' },
-    { label: 'Leads & Decisores Apollo', sql: 'SELECT name, address, rating, decision_maker_name, decision_maker_title, decision_maker_email FROM leads ORDER BY created_at DESC;' },
-    { label: 'Mensagens por Canal (Estatística)', sql: 'SELECT channel, status, COUNT(*) as total FROM messages GROUP BY channel, status;' },
-    { label: 'Campanhas Criadas', sql: 'SELECT id, title, segment, provider, model, leads_count, created_at FROM campaigns ORDER BY created_at DESC;' },
-    { label: 'Histórico de Chat LLaMA3', sql: 'SELECT session_id, role, model, tokens, substr(content, 1, 100) || "..." as previa FROM chat_messages ORDER BY created_at DESC LIMIT 20;' },
-    { label: 'Logs de Auditoria SQL', sql: 'SELECT id, query, execution_time_ms, rows_affected, created_at FROM query_audit_logs ORDER BY created_at DESC LIMIT 15;' }
+    {
+      label: 'Todas as Mensagens (JOIN Lead)',
+      sql: 'SELECT m.id, l.name as empresa, m.channel, m.status, substr(m.content, 1, 80) || "..." as previa FROM messages m LEFT JOIN leads l ON m.lead_id = l.id ORDER BY m.created_at DESC;',
+    },
+    {
+      label: 'Leads & Decisores Apollo',
+      sql: 'SELECT name, address, rating, decision_maker_name, decision_maker_title, decision_maker_email FROM leads ORDER BY created_at DESC;',
+    },
+    {
+      label: 'Mensagens por Canal (Estatística)',
+      sql: 'SELECT channel, status, COUNT(*) as total FROM messages GROUP BY channel, status;',
+    },
+    {
+      label: 'Campanhas Criadas',
+      sql: 'SELECT id, title, segment, provider, model, leads_count, created_at FROM campaigns ORDER BY created_at DESC;',
+    },
+    {
+      label: 'Histórico de Chat LLaMA3',
+      sql: 'SELECT session_id, role, model, tokens, substr(content, 1, 100) || "..." as previa FROM chat_messages ORDER BY created_at DESC LIMIT 20;',
+    },
+    {
+      label: 'Logs de Auditoria SQL',
+      sql: 'SELECT id, query, execution_time_ms, rows_affected, created_at FROM query_audit_logs ORDER BY created_at DESC LIMIT 15;',
+    },
   ];
 
   const runQuery = async (sqlToRun?: string) => {
@@ -47,7 +60,7 @@ export const DatabaseExplorerTab: React.FC<DatabaseExplorerTabProps> = ({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ sql })
+        body: JSON.stringify({ sql }),
       });
       const data = await res.json();
       setQueryResult(data);
@@ -58,7 +71,7 @@ export const DatabaseExplorerTab: React.FC<DatabaseExplorerTabProps> = ({
         rows: [[err.message]],
         rowCount: 0,
         executionTimeMs: 0,
-        error: err.message
+        error: err.message,
       });
     } finally {
       setIsExecuting(false);
@@ -72,21 +85,28 @@ export const DatabaseExplorerTab: React.FC<DatabaseExplorerTabProps> = ({
   return (
     <div className="space-y-6">
       {/* Top Banner: Relational Persistence Architecture */}
-      <div className={`border rounded-2xl p-5 md:p-6 shadow-xl space-y-4 transition ${
-        isDark 
-          ? 'bg-slate-900 border-slate-800 text-slate-200' 
-          : 'bg-white border-slate-200 shadow-slate-100 text-slate-800'
-      }`}>
-        <div className={`flex flex-col md:flex-row md:items-center justify-between gap-3 border-b pb-4 ${
-          isDark ? 'border-slate-800' : 'border-slate-200'
-        }`}>
+      <div
+        className={`border rounded-2xl p-5 md:p-6 shadow-xl space-y-4 transition ${
+          isDark
+            ? 'bg-slate-900 border-slate-800 text-slate-200'
+            : 'bg-white border-slate-200 shadow-slate-100 text-slate-800'
+        }`}
+      >
+        <div
+          className={`flex flex-col md:flex-row md:items-center justify-between gap-3 border-b pb-4 ${
+            isDark ? 'border-slate-800' : 'border-slate-200'
+          }`}
+        >
           <div>
-            <h2 className={`text-base font-bold flex items-center gap-2 ${isDark ? 'text-white' : 'text-slate-900'}`}>
+            <h2
+              className={`text-base font-bold flex items-center gap-2 ${isDark ? 'text-white' : 'text-slate-900'}`}
+            >
               <Database className="w-5 h-5 text-[var(--brand-primary)]" />
               <span>Banco de Dados Relacional SQLite (Persistência de Mensagens)</span>
             </h2>
             <p className={`text-xs mt-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-              Estrutura relacional normalizada com integridade referencial, foreign keys e logs de auditoria para todas as mensagens de outbound e histórico de chat.
+              Estrutura relacional normalizada com integridade referencial, foreign keys e logs de
+              auditoria para todas as mensagens de outbound e histórico de chat.
             </p>
           </div>
 
@@ -94,8 +114,8 @@ export const DatabaseExplorerTab: React.FC<DatabaseExplorerTabProps> = ({
             <button
               onClick={onRefreshStats}
               className={`px-3 py-1.5 text-xs font-semibold rounded-lg border transition flex items-center gap-1.5 ${
-                isDark 
-                  ? 'bg-slate-800 hover:bg-slate-700 text-slate-300 border-slate-700' 
+                isDark
+                  ? 'bg-slate-800 hover:bg-slate-700 text-slate-300 border-slate-700'
                   : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-200'
               }`}
             >
@@ -107,49 +127,83 @@ export const DatabaseExplorerTab: React.FC<DatabaseExplorerTabProps> = ({
 
         {/* Database Metric Badges */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          <div className={`p-3.5 rounded-xl border ${
-            isDark ? 'bg-slate-950 border-slate-800' : 'bg-slate-50 border-slate-200'
-          }`}>
-            <div className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Tabela messages</div>
-            <div className="text-xl font-bold text-emerald-500 mt-0.5">{dbStats?.messagesCount ?? 0}</div>
-            <div className={`text-[10px] ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>Registros persistidos</div>
+          <div
+            className={`p-3.5 rounded-xl border ${
+              isDark ? 'bg-slate-950 border-slate-800' : 'bg-slate-50 border-slate-200'
+            }`}
+          >
+            <div className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+              Tabela messages
+            </div>
+            <div className="text-xl font-bold text-emerald-500 mt-0.5">
+              {dbStats?.messagesCount ?? 0}
+            </div>
+            <div className={`text-[10px] ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
+              Registros persistidos
+            </div>
           </div>
-          <div className={`p-3.5 rounded-xl border ${
-            isDark ? 'bg-slate-950 border-slate-800' : 'bg-slate-50 border-slate-200'
-          }`}>
-            <div className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Tabela leads</div>
-            <div className={`text-xl font-bold mt-0.5 ${isDark ? 'text-white' : 'text-slate-900'}`}>{dbStats?.leadsCount ?? 0}</div>
-            <div className={`text-[10px] ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>Empresas & Decisores</div>
+          <div
+            className={`p-3.5 rounded-xl border ${
+              isDark ? 'bg-slate-950 border-slate-800' : 'bg-slate-50 border-slate-200'
+            }`}
+          >
+            <div className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+              Tabela leads
+            </div>
+            <div className={`text-xl font-bold mt-0.5 ${isDark ? 'text-white' : 'text-slate-900'}`}>
+              {dbStats?.leadsCount ?? 0}
+            </div>
+            <div className={`text-[10px] ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
+              Empresas & Decisores
+            </div>
           </div>
-          <div className={`p-3.5 rounded-xl border ${
-            isDark ? 'bg-slate-950 border-slate-800' : 'bg-slate-50 border-slate-200'
-          }`}>
-            <div className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Tabela campaigns</div>
-            <div className="text-xl font-bold text-[var(--brand-primary)] mt-0.5">{dbStats?.campaignsCount ?? 0}</div>
-            <div className={`text-[10px] ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>Sessões de prospecção</div>
+          <div
+            className={`p-3.5 rounded-xl border ${
+              isDark ? 'bg-slate-950 border-slate-800' : 'bg-slate-50 border-slate-200'
+            }`}
+          >
+            <div className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+              Tabela campaigns
+            </div>
+            <div className="text-xl font-bold text-[var(--brand-primary)] mt-0.5">
+              {dbStats?.campaignsCount ?? 0}
+            </div>
+            <div className={`text-[10px] ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
+              Sessões de prospecção
+            </div>
           </div>
-          <div className={`p-3.5 rounded-xl border ${
-            isDark ? 'bg-slate-950 border-slate-800' : 'bg-slate-50 border-slate-200'
-          }`}>
-            <div className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Tamanho do Banco</div>
+          <div
+            className={`p-3.5 rounded-xl border ${
+              isDark ? 'bg-slate-950 border-slate-800' : 'bg-slate-50 border-slate-200'
+            }`}
+          >
+            <div className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+              Tamanho do Banco
+            </div>
             <div className="text-xl font-bold text-[var(--brand-primary)] mt-0.5">
               {((dbStats?.dbSizeBytes ?? 0) / 1024).toFixed(1)} KB
             </div>
-            <div className={`text-[10px] ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>SQLite Engine</div>
+            <div className={`text-[10px] ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
+              SQLite Engine
+            </div>
           </div>
         </div>
       </div>
 
       {/* SQL Query Console */}
-      <div className={`border rounded-2xl p-5 md:p-6 shadow-xl space-y-4 transition ${
-        isDark 
-          ? 'bg-slate-900 border-slate-800 text-slate-200' 
-          : 'bg-white border-slate-200 shadow-slate-100 text-slate-800'
-      }`}>
+      <div
+        className={`border rounded-2xl p-5 md:p-6 shadow-xl space-y-4 transition ${
+          isDark
+            ? 'bg-slate-900 border-slate-800 text-slate-200'
+            : 'bg-white border-slate-200 shadow-slate-100 text-slate-800'
+        }`}
+      >
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-          <label className={`text-xs font-bold uppercase tracking-wider flex items-center gap-2 ${
-            isDark ? 'text-slate-300' : 'text-slate-700'
-          }`}>
+          <label
+            className={`text-xs font-bold uppercase tracking-wider flex items-center gap-2 ${
+              isDark ? 'text-slate-300' : 'text-slate-700'
+            }`}
+          >
             <Code2 className="w-4 h-4 text-[var(--brand-primary)]" /> Console SQL Interativo
           </label>
           <div className="flex items-center gap-2 text-xs text-slate-400">
@@ -168,8 +222,8 @@ export const DatabaseExplorerTab: React.FC<DatabaseExplorerTabProps> = ({
                 runQuery(q.sql);
               }}
               className={`text-[11px] px-2.5 py-1 rounded-lg border transition ${
-                isDark 
-                  ? 'bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border-slate-700' 
+                isDark
+                  ? 'bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border-slate-700'
                   : 'bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-slate-900 border-slate-200'
               }`}
             >
@@ -185,8 +239,8 @@ export const DatabaseExplorerTab: React.FC<DatabaseExplorerTabProps> = ({
             value={customSql}
             onChange={(e) => setCustomSql(e.target.value)}
             className={`w-full border rounded-xl p-3 font-mono text-xs outline-none leading-relaxed resize-y ${
-              isDark 
-                ? 'bg-slate-950 border-slate-700 text-emerald-400 focus:border-[var(--brand-primary)]' 
+              isDark
+                ? 'bg-slate-950 border-slate-700 text-emerald-400 focus:border-[var(--brand-primary)]'
                 : 'bg-slate-900 border-slate-700 text-emerald-400 focus:border-[var(--brand-primary)]'
             }`}
             placeholder="Digite sua query SQL (ex: SELECT * FROM messages;)"
@@ -227,13 +281,19 @@ export const DatabaseExplorerTab: React.FC<DatabaseExplorerTabProps> = ({
               <span>{queryResult.error}</span>
             </div>
           ) : queryResult && queryResult.columns.length > 0 ? (
-            <div className={`overflow-x-auto rounded-xl border max-h-96 ${
-              isDark ? 'border-slate-800 bg-slate-950' : 'border-slate-200 bg-white'
-            }`}>
+            <div
+              className={`overflow-x-auto rounded-xl border max-h-96 ${
+                isDark ? 'border-slate-800 bg-slate-950' : 'border-slate-200 bg-white'
+              }`}
+            >
               <table className="w-full text-left text-xs">
-                <thead className={`border-b text-[11px] font-mono sticky top-0 ${
-                  isDark ? 'bg-slate-900 border-slate-800 text-slate-400' : 'bg-slate-100 border-slate-200 text-slate-600'
-                }`}>
+                <thead
+                  className={`border-b text-[11px] font-mono sticky top-0 ${
+                    isDark
+                      ? 'bg-slate-900 border-slate-800 text-slate-400'
+                      : 'bg-slate-100 border-slate-200 text-slate-600'
+                  }`}
+                >
                   <tr>
                     {queryResult.columns.map((col, idx) => (
                       <th key={idx} className="p-3 uppercase font-semibold">
@@ -242,13 +302,18 @@ export const DatabaseExplorerTab: React.FC<DatabaseExplorerTabProps> = ({
                     ))}
                   </tr>
                 </thead>
-                <tbody className={`divide-y ${
-                  isDark ? 'divide-slate-900 text-slate-200' : 'divide-slate-100 text-slate-800'
-                }`}>
+                <tbody
+                  className={`divide-y ${
+                    isDark ? 'divide-slate-900 text-slate-200' : 'divide-slate-100 text-slate-800'
+                  }`}
+                >
                   {queryResult.rows.map((row, rIdx) => (
-                    <tr key={rIdx} className={`transition ${
-                      isDark ? 'hover:bg-slate-900/60' : 'hover:bg-slate-50'
-                    }`}>
+                    <tr
+                      key={rIdx}
+                      className={`transition ${
+                        isDark ? 'hover:bg-slate-900/60' : 'hover:bg-slate-50'
+                      }`}
+                    >
                       {row.map((val, cIdx) => (
                         <td key={cIdx} className="p-3 max-w-xs truncate font-mono text-[11px]">
                           {val === null || val === undefined ? (
@@ -264,9 +329,13 @@ export const DatabaseExplorerTab: React.FC<DatabaseExplorerTabProps> = ({
               </table>
             </div>
           ) : (
-            <div className={`p-8 text-center text-xs rounded-xl border ${
-              isDark ? 'text-slate-500 bg-slate-950 border-slate-800' : 'text-slate-400 bg-slate-50 border-slate-200'
-            }`}>
+            <div
+              className={`p-8 text-center text-xs rounded-xl border ${
+                isDark
+                  ? 'text-slate-500 bg-slate-950 border-slate-800'
+                  : 'text-slate-400 bg-slate-50 border-slate-200'
+              }`}
+            >
               Nenhum registro retornado.
             </div>
           )}

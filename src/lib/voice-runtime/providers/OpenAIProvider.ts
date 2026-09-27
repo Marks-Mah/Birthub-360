@@ -19,23 +19,23 @@ export class OpenAIRealtimeProvider extends BaseProvider {
     }
 
     const start = Date.now();
-    const systemMessage = context ? JSON.stringify(context) : "Você é um assistente de voz.";
+    const systemMessage = context ? JSON.stringify(context) : 'Você é um assistente de voz.';
 
     try {
       const res = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`
+          Authorization: `Bearer ${apiKey}`,
         },
         body: JSON.stringify({
           model: 'gpt-4o-mini',
           messages: [
             { role: 'system', content: systemMessage },
-            { role: 'user', content: String(input) }
+            { role: 'user', content: String(input) },
           ],
-          temperature: 0.7
-        })
+          temperature: 0.7,
+        }),
       });
 
       if (!res.ok) {
@@ -50,7 +50,7 @@ export class OpenAIRealtimeProvider extends BaseProvider {
 
       return {
         text,
-        latencyMs: Date.now() - start
+        latencyMs: Date.now() - start,
       };
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);

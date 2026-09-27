@@ -87,10 +87,11 @@ export const MAX_DISCOVERY_PAGE_SIZE = 20;
  */
 export function computeOverfetchTarget(
   targetCount: number,
-  multiplier: number = DEFAULT_OVERFETCH_MULTIPLIER
+  multiplier: number = DEFAULT_OVERFETCH_MULTIPLIER,
 ): number {
   const safeTarget = Number.isFinite(targetCount) && targetCount > 0 ? Math.floor(targetCount) : 1;
-  const safeMultiplier = Number.isFinite(multiplier) && multiplier > 0 ? multiplier : DEFAULT_OVERFETCH_MULTIPLIER;
+  const safeMultiplier =
+    Number.isFinite(multiplier) && multiplier > 0 ? multiplier : DEFAULT_OVERFETCH_MULTIPLIER;
   return Math.min(safeTarget * safeMultiplier, MAX_DISCOVERY_PAGE_SIZE);
 }
 
@@ -118,7 +119,13 @@ export interface StopReasonInput {
  *    para dar (sem paginação real nesta wave — ver cabeçalho do arquivo).
  */
 export function determineStopReason(input: StopReasonInput): StopReason {
-  const { targetCount, discoveryProviderConfigured, discoveredCount, duplicatesSkippedCount, finalCount } = input;
+  const {
+    targetCount,
+    discoveryProviderConfigured,
+    discoveredCount,
+    duplicatesSkippedCount,
+    finalCount,
+  } = input;
 
   if (!discoveryProviderConfigured) return 'no_provider_configured';
   if (finalCount >= targetCount) return 'target_reached';
@@ -160,7 +167,7 @@ export function buildFunnelSummary(input: BuildFunnelSummaryInput): SearchFunnel
     discoveredCount,
     duplicatesSkippedCount,
     finalCount,
-    decisionMakersConfirmedCount
+    decisionMakersConfirmedCount,
   } = input;
 
   const stages: FunnelStageCount[] = [];
@@ -174,7 +181,7 @@ export function buildFunnelSummary(input: BuildFunnelSummaryInput): SearchFunnel
       'Inclui o overfetch (computeOverfetchTarget) e o descarte de empresas já ' +
       'conhecidas por domínio/nome (Wave 5) — ambos executados dentro da mesma ' +
       'chamada ao provider de descoberta (findLeads/searchPlaces) e não são ' +
-      'decompostos em contagens separadas nesta wave.'
+      'decompostos em contagens separadas nesta wave.',
   });
 
   const afterValidation = Math.max(0, discoveredCount - duplicatesSkippedCount);
@@ -189,7 +196,7 @@ export function buildFunnelSummary(input: BuildFunnelSummaryInput): SearchFunnel
     note:
       'CNPJ oficial resolvido e checado contra a base (Wave 5 - Entity Resolution). ' +
       'Um lead sem CNPJ confirmado pela Receita Federal NÃO é descartado aqui — ele ' +
-      'segue com o campo desconhecido, nunca preenchido com um valor plausível.'
+      'segue com o campo desconhecido, nunca preenchido com um valor plausível.',
   });
 
   stages.push({
@@ -199,7 +206,7 @@ export function buildFunnelSummary(input: BuildFunnelSummaryInput): SearchFunnel
     droppedReasons: [],
     note:
       'Apollo (decisor, LinkedIn da empresa) é ENRICHMENT, não HARD_FILTER (Wave 2 - ' +
-      'Requirement Engine) — a ausência de um decisor real via Apollo não descarta o lead.'
+      'Requirement Engine) — a ausência de um decisor real via Apollo não descarta o lead.',
   });
 
   stages.push({
@@ -211,7 +218,7 @@ export function buildFunnelSummary(input: BuildFunnelSummaryInput): SearchFunnel
       decisionMakersConfirmedCount === undefined
         ? undefined
         : `${decisionMakersConfirmedCount} de ${finalCount} lead(s) têm decisor confirmado via Apollo; ` +
-          'os demais seguem com decisor desconhecido (nunca inventado).'
+          'os demais seguem com decisor desconhecido (nunca inventado).',
   });
 
   stages.push({
@@ -221,7 +228,7 @@ export function buildFunnelSummary(input: BuildFunnelSummaryInput): SearchFunnel
     droppedReasons: [],
     note:
       'rankingApplied=false — esta lista está na ordem de descoberta do provider, ' +
-      'não há ranking por adequação ainda (ver Wave 8 - Scoring).'
+      'não há ranking por adequação ainda (ver Wave 8 - Scoring).',
   });
 
   const stopReason = determineStopReason({
@@ -229,7 +236,7 @@ export function buildFunnelSummary(input: BuildFunnelSummaryInput): SearchFunnel
     discoveryProviderConfigured,
     discoveredCount,
     duplicatesSkippedCount,
-    finalCount
+    finalCount,
   });
 
   return { stages, targetCount, finalCount, stopReason };

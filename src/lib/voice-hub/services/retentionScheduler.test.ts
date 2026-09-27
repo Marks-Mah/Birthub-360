@@ -11,7 +11,10 @@ vi.mock('bullmq', () => ({
   Queue: vi.fn().mockImplementation(function Queue() {
     return { add: mockAdd, close: mockQueueClose };
   }),
-  Worker: vi.fn().mockImplementation(function Worker(_name: string, processor: (job: unknown) => unknown) {
+  Worker: vi.fn().mockImplementation(function Worker(
+    _name: string,
+    processor: (job: unknown) => unknown,
+  ) {
     lastWorkerProcessor = processor;
     return { on: mockOn, close: mockWorkerClose };
   }),
@@ -49,7 +52,7 @@ describe('startRetentionScheduler', () => {
       {},
       expect.objectContaining({
         repeat: { pattern: '0 0 * * *' },
-      })
+      }),
     );
   });
 

@@ -1,4 +1,4 @@
-import type { Lead } from "../../domain/entities/Lead.js";
+import type { Lead } from '../../domain/entities/Lead.js';
 
 export interface CampaignStats {
   campaignId: string;

@@ -67,7 +67,9 @@ export async function listWebhookEndpointsHandler(req: Request, res: Response) {
 export async function deleteWebhookEndpointHandler(req: Request, res: Response) {
   try {
     await deleteWebhookEndpointForTenant(req.organizationId!, String(req.params.id));
-    writeAuditLog(req.organizationId, req.voiceHubUser?.id, 'WEBHOOK_ENDPOINT_DELETE', { webhookEndpointId: req.params.id });
+    writeAuditLog(req.organizationId, req.voiceHubUser?.id, 'WEBHOOK_ENDPOINT_DELETE', {
+      webhookEndpointId: req.params.id,
+    });
     return res.json({ success: true });
   } catch (err: any) {
     if (handleKnownError(err, res)) return;
@@ -79,7 +81,10 @@ export async function deleteWebhookEndpointHandler(req: Request, res: Response) 
 // a new one, returned in plaintext exactly once, same rule as creation.
 export async function regenerateWebhookEndpointSecretHandler(req: Request, res: Response) {
   try {
-    const endpoint = await regenerateWebhookEndpointSecret(req.organizationId!, String(req.params.id));
+    const endpoint = await regenerateWebhookEndpointSecret(
+      req.organizationId!,
+      String(req.params.id),
+    );
     writeAuditLog(req.organizationId, req.voiceHubUser?.id, 'WEBHOOK_ENDPOINT_REGENERATE_SECRET', {
       webhookEndpointId: endpoint.id,
     });

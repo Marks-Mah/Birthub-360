@@ -38,9 +38,17 @@ describe('notificationService.createNotification', () => {
       createdAt: NOW,
     } as any);
 
-    const result = await createNotification({ userId: 'user-1', title: 'Plano atualizado', message: 'Seu plano foi alterado.' });
+    const result = await createNotification({
+      userId: 'user-1',
+      title: 'Plano atualizado',
+      message: 'Seu plano foi alterado.',
+    });
 
-    expect(createNotificationRow).toHaveBeenCalledWith({ userId: 'user-1', title: 'Plano atualizado', message: 'Seu plano foi alterado.' });
+    expect(createNotificationRow).toHaveBeenCalledWith({
+      userId: 'user-1',
+      title: 'Plano atualizado',
+      message: 'Seu plano foi alterado.',
+    });
     expect(result).toEqual({
       id: 'notif-1',
       title: 'Plano atualizado',
@@ -55,7 +63,14 @@ describe('notificationService.listNotifications', () => {
   it('combines paginated items and unread count, both scoped to userId', async () => {
     vi.mocked(findNotificationsForUser).mockResolvedValue([
       [
-        { id: 'notif-1', userId: 'user-1', title: 'A', message: 'B', isRead: false, createdAt: NOW },
+        {
+          id: 'notif-1',
+          userId: 'user-1',
+          title: 'A',
+          message: 'B',
+          isRead: false,
+          createdAt: NOW,
+        },
       ],
       1,
     ] as any);
@@ -66,7 +81,15 @@ describe('notificationService.listNotifications', () => {
     expect(findNotificationsForUser).toHaveBeenCalledWith('user-1', { page: 1, pageSize: 20 });
     expect(countUnreadForUser).toHaveBeenCalledWith('user-1');
     expect(result).toEqual({
-      items: [{ id: 'notif-1', title: 'A', message: 'B', isRead: false, createdAt: '2026-09-07T12:00:00.000Z' }],
+      items: [
+        {
+          id: 'notif-1',
+          title: 'A',
+          message: 'B',
+          isRead: false,
+          createdAt: '2026-09-07T12:00:00.000Z',
+        },
+      ],
       total: 1,
       unreadCount: 1,
     });
@@ -85,7 +108,12 @@ describe('notificationService.listNotifications', () => {
 describe('notificationService.markAsRead', () => {
   it('returns the mapped notification when the repository confirms ownership', async () => {
     vi.mocked(markNotificationAsReadRow).mockResolvedValue({
-      id: 'notif-1', userId: 'user-1', title: 'A', message: 'B', isRead: true, createdAt: NOW,
+      id: 'notif-1',
+      userId: 'user-1',
+      title: 'A',
+      message: 'B',
+      isRead: true,
+      createdAt: NOW,
     } as any);
 
     const result = await markAsRead('notif-1', 'user-1');

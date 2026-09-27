@@ -1,8 +1,8 @@
-import { Router } from "express";
-import { z } from "zod";
-import type { ManageCampaign } from "../../../application/use-cases/ManageCampaign.js";
-import type { CampaignRepository } from "../../../application/ports/CampaignRepository.js";
-import { asyncHandler } from "../middlewares/asyncHandler.js";
+import { Router } from 'express';
+import { z } from 'zod';
+import type { ManageCampaign } from '../../../application/use-cases/ManageCampaign.js';
+import type { CampaignRepository } from '../../../application/ports/CampaignRepository.js';
+import { asyncHandler } from '../middlewares/asyncHandler.js';
 
 const createCampaignSchema = z.object({
   name: z.string().min(1),
@@ -15,7 +15,7 @@ export function campaignsRoutes(deps: {
   const router = Router();
 
   router.get(
-    "/campaigns",
+    '/campaigns',
     asyncHandler(async (_req, res) => {
       const campaigns = await deps.manageCampaign.list();
       res.json(campaigns.map((c) => c.toProps()));
@@ -23,7 +23,7 @@ export function campaignsRoutes(deps: {
   );
 
   router.post(
-    "/campaigns",
+    '/campaigns',
     asyncHandler(async (req, res) => {
       const body = createCampaignSchema.parse(req.body);
       const campaign = await deps.manageCampaign.create(body.name);
@@ -32,7 +32,7 @@ export function campaignsRoutes(deps: {
   );
 
   router.get(
-    "/campaigns/:id",
+    '/campaigns/:id',
     asyncHandler(async (req, res) => {
       const id = z.string().uuid().parse(req.params.id);
       const campaign = await deps.manageCampaign.getById(id);
@@ -41,7 +41,7 @@ export function campaignsRoutes(deps: {
   );
 
   router.get(
-    "/campaigns/:id/stats",
+    '/campaigns/:id/stats',
     asyncHandler(async (req, res) => {
       const id = z.string().uuid().parse(req.params.id);
       const stats = await deps.manageCampaign.getStats(id);
@@ -50,7 +50,7 @@ export function campaignsRoutes(deps: {
   );
 
   router.post(
-    "/campaigns/:id/start",
+    '/campaigns/:id/start',
     asyncHandler(async (req, res) => {
       const id = z.string().uuid().parse(req.params.id);
       const campaign = await deps.manageCampaign.start(id);
@@ -59,7 +59,7 @@ export function campaignsRoutes(deps: {
   );
 
   router.post(
-    "/campaigns/:id/pause",
+    '/campaigns/:id/pause',
     asyncHandler(async (req, res) => {
       const id = z.string().uuid().parse(req.params.id);
       const campaign = await deps.manageCampaign.pause(id);
@@ -68,7 +68,7 @@ export function campaignsRoutes(deps: {
   );
 
   router.post(
-    "/campaigns/:id/resume",
+    '/campaigns/:id/resume',
     asyncHandler(async (req, res) => {
       const id = z.string().uuid().parse(req.params.id);
       const campaign = await deps.manageCampaign.resume(id);
@@ -77,7 +77,7 @@ export function campaignsRoutes(deps: {
   );
 
   router.post(
-    "/campaigns/:id/finish",
+    '/campaigns/:id/finish',
     asyncHandler(async (req, res) => {
       const id = z.string().uuid().parse(req.params.id);
       const campaign = await deps.manageCampaign.finish(id);

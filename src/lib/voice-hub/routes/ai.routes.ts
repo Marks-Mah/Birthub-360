@@ -24,7 +24,8 @@ router.post('/chat', requireTenant, chatHandler);
 // instead of this endpoint.
 router.post('/tts', requireTenant, (_req, res) => {
   return res.status(501).json({
-    error: 'TTS HTTP ainda não está disponível neste endpoint. Use o runtime de voz configurado para chamadas.',
+    error:
+      'TTS HTTP ainda não está disponível neste endpoint. Use o runtime de voz configurado para chamadas.',
     code: 'TTS_HTTP_NOT_IMPLEMENTED',
   });
 });
@@ -37,7 +38,12 @@ router.post('/generate-video', requireTenant, requireAiProviderConsent, generate
 router.post('/video-status', requireTenant, requireAiProviderConsent, videoStatusHandler);
 router.get('/video-download', requireTenant, requireAiProviderConsent, videoDownloadHandler);
 router.post('/ai/refactor', requireTenant, requireAiProviderConsent, refactorWorkflowHandler);
-router.post('/ai/generate-workflow', requireTenant, requireAiProviderConsent, generateWorkflowHandler);
+router.post(
+  '/ai/generate-workflow',
+  requireTenant,
+  requireAiProviderConsent,
+  generateWorkflowHandler,
+);
 
 router.get('/ai/consent', requireTenant, getAiConsentHandler);
 router.post('/ai/consent', requireTenant, setAiConsentHandler);

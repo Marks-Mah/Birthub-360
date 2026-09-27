@@ -32,7 +32,7 @@ export class VoiceboxProvider extends BaseProvider {
       const response = await fetch(`${this.apiUrl}/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: input, voice: voiceId })
+        body: JSON.stringify({ text: input, voice: voiceId }),
       });
 
       if (!response.ok) {
@@ -46,9 +46,9 @@ export class VoiceboxProvider extends BaseProvider {
         audio: {
           data: buffer,
           timestamp: Date.now(),
-          isSpeech: true
+          isSpeech: true,
         },
-        latencyMs: Date.now() - start
+        latencyMs: Date.now() - start,
       };
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
