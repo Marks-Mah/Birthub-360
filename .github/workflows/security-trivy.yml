@@ -44,10 +44,10 @@ jobs:
       contents: read
       security-events: write
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/checkout@v4
 
       - name: Rodar Trivy (fs scan, HIGH/CRITICAL, bloqueante)
-        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        uses: aquasecurity/trivy-action@master
         with:
           scan-type: fs
           scan-ref: .
@@ -65,14 +65,14 @@ jobs:
 
       - name: Upload SARIF para a aba Security
         if: always()
-        uses: github/codeql-action/upload-sarif@42947a340483f03ba47bb1a039b2c519aab3df85 # v3.37.8
+        uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: trivy-fs-results.sarif
           category: trivy-fs
 
       - name: Upload SARIF como artefato (auditoria/retenção)
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@v4
         with:
           name: trivy-fs-pr-gate-sarif
           path: trivy-fs-results.sarif
@@ -84,7 +84,7 @@ jobs:
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/checkout@v4
 
       # `npm run security:trivy` é só `docker compose --profile tools run --rm trivy` (ver
       # package.json) — não precisa de `npm ci`/node_modules, o comando é um wrapper fino sobre
