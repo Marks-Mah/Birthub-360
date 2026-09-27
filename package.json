@@ -196,7 +196,7 @@
     "tesseract.js": "^7.0.0",
     "three": "^0.185.1",
     "undici": "^8.10.2",
-    "uuid": "^14.0.1",
+    "uuid": "^14.0.2",
     "vaul": "^1.1.2",
     "wavesurfer.js": "^8.0.1",
     "yaml": "^2.9.1",
@@ -205,7 +205,7 @@
   "overrides": {
     "deepmerge-ts": "^8.0.2",
     "brace-expansion": "^2.0.1",
-    "uuid": "^14.0.1",
+    "uuid": "^14.0.2",
     "fast-uri": "^3.1.7",
     "@xenova/transformers": {
       "sharp": "^0.35.3"
