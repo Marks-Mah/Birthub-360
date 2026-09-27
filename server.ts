@@ -1,4 +1,4 @@
-import './src/lib/telemetry/otel.js'; // Precisa ser avaliado antes de qualquer modulo instrumentado (ex.: express, que carrega http internamente) para o HttpInstrumentation cobrir os requires abaixo.
+import './src/lib/telemetry/otel.ts'; // Precisa ser avaliado antes de qualquer modulo instrumentado (ex.: express, que carrega http internamente) para o HttpInstrumentation cobrir os requires abaixo.
 import { initTracing } from './src/lib/tracing.js';
 import * as SentryNode from '@sentry/node';
 
