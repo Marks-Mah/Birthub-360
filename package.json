@@ -64,7 +64,7 @@
     "format": "biome format --write src",
     "format:check": "biome format src",
     "test": "npm run test:unit && npm run test:integration && npm run test:e2e",
-    "test:unit": "vitest run -c vitest.unit.config.ts --no-file-parallelism",
+    "test:unit": "vitest run -c vitest.unit.config.ts",
     "pretest:integration": "node scripts/test/prepare-integration-env.js && npx dotenv-cli -e .env.test -- npx prisma migrate deploy",
     "test:integration": "vitest run -c vitest.integration.config.ts --no-file-parallelism",
     "pretest:e2e": "node scripts/test/prepare-integration-env.js && npx dotenv-cli -e .env.test -- npx prisma migrate deploy",

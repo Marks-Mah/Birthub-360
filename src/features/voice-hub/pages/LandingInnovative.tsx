@@ -94,17 +94,21 @@ const DataStream: React.FC = () => {
 
   return (
     <div className="relative h-24 w-full">
-      <svg className="w-full h-full" viewBox="0 0 400 100" preserveAspectRatio="none">
+      <svg
+        className="w-full h-full text-brand-ink dark:text-brand"
+        viewBox="0 0 400 100"
+        preserveAspectRatio="none"
+      >
         <defs>
           <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="var(--brand)" stopOpacity="0.3" />
-            <stop offset="100%" stopColor="var(--brand)" stopOpacity="0" />
+            <stop offset="0%" stopColor="currentColor" stopOpacity="0.3" />
+            <stop offset="100%" stopColor="currentColor" stopOpacity="0" />
           </linearGradient>
         </defs>
         <path
           d={`M0,${100 - dataPoints[0] || 50} ${dataPoints.map((val, i) => `L${i * 20},${100 - val}`).join(' ')}`}
           fill="url(#gradient)"
-          stroke="var(--brand)"
+          stroke="currentColor"
           strokeWidth="2"
           className="transition-all duration-300"
         />
