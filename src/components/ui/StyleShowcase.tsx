@@ -1,19 +1,25 @@
 import { motion } from 'framer-motion';
 import {
+  Activity,
   ArrowRight,
+  BarChart3,
   Cpu,
   Flame,
   Globe,
   Rocket,
   Shield,
   Sparkles,
+  Target,
   Trophy,
+  Users,
   Zap,
 } from 'lucide-react';
 import { useState } from 'react';
+import { Badge } from './Badge.js';
 import { Button } from './Button.js';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './Card.js';
 import { CyberInput } from './CyberInput.js';
+import { EmptyState } from './EmptyState.js';
 import { GamificationWidget } from './GamificationWidget.js';
 import { Gamified3DOrb } from './Gamified3DOrb.js';
 import { HolographicCard } from './HolographicCard.js';
@@ -24,14 +30,17 @@ import {
   ShieldSecurityIcon,
   Trophy3DIcon,
 } from './icons/Isometric3DIcons.js';
+import { KpiCard } from './KpiCard.js';
 import { NeonButton } from './NeonButton.js';
 import { DigitalRain, GlitchEffect, ParticleSystem } from './ParticleSystem.js';
+import { TabNavCards } from './TabNavCards.js';
 import { ThemeSwitcher, type ThemeStyle } from './ThemeSwitcher.js';
 import { Toggle } from './Toggle.js';
 
 export function StyleShowcase() {
   const [currentStyle, setCurrentStyle] = useState<ThemeStyle>('classic');
   const [toggles, setToggles] = useState({ classic: true, neon: true, cyber: true });
+  const [activeTabId, setActiveTabId] = useState('pipeline');
 
   return (
     <div className="min-h-screen bg-bg text-ink p-6 md:p-10 font-sans">
@@ -247,7 +256,79 @@ export function StyleShowcase() {
         </div>
       </section>
 
-      {/* SEÇÃO 5: Laboratório de Efeitos & Toggles */}
+      {/* SEÇÃO 5: KPIs, Badges e Navegação Espacial 2026 */}
+      <section className="relative z-10 mb-12">
+        <h2 className="font-display text-xl font-bold text-ink flex items-center gap-2 mb-4">
+          <BarChart3 className="h-5 w-5 text-brand" />
+          5. KPIs Inteligentes com Spotlight & Navegação Espacial
+        </h2>
+
+        {/* TabNavCards */}
+        <div className="mb-6">
+          <TabNavCards
+            items={[
+              { id: 'pipeline', icon: Activity, title: 'Pipeline Ativo', subtitle: 'R$ 2.4M sob gestão' },
+              { id: 'ai-agents', icon: Cpu, title: 'Agentes de IA', subtitle: '7 robôs autônomos 24/7' },
+              { id: 'conversion', icon: Target, title: 'Meta do Mês', subtitle: '88% atingida' },
+              { id: 'sdr-team', icon: Users, title: 'Equipe SDR', subtitle: '12 operadores ativos' },
+            ]}
+            activeId={activeTabId}
+            onSelect={setActiveTabId}
+          />
+        </div>
+
+        {/* KPI Cards Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <KpiCard
+            icon={Activity}
+            label="Leads Qualificados"
+            value="1.248"
+            caption="Últimos 30 dias com enriquecimento IA"
+            tone="brand"
+            trend={{ value: '+18.4%', isPositive: true }}
+            onSelect={() => {}}
+          />
+          <KpiCard
+            icon={Target}
+            label="Reuniões Agendadas"
+            value="342"
+            caption="Taxa de conversão de 28.5%"
+            tone="ok"
+            trend={{ value: '+8.2%', isPositive: true }}
+            onSelect={() => {}}
+          />
+          <KpiCard
+            icon={Zap}
+            label="Pressão Comercial"
+            value="94.2"
+            caption="Índice de engajamento outbound"
+            tone="cyan"
+            trend={{ value: '+5.1%', isPositive: true }}
+            onSelect={() => {}}
+          />
+          <KpiCard
+            icon={Trophy}
+            label="Receita em Pipeline"
+            value="R$ 1.85M"
+            caption="Previsão de fechamento no ciclo"
+            tone="gold"
+            trend={{ value: '-2.4%', isPositive: false }}
+            onSelect={() => {}}
+          />
+        </div>
+
+        {/* Badges 2026 com Pulse Dot */}
+        <div className="flex flex-wrap items-center gap-3 p-4 rounded-xl border border-line bg-surface/60 backdrop-blur-md">
+          <span className="text-xs font-bold text-ink-2 mr-2">Status ao Vivo (2026 Badges):</span>
+          <Badge variant="cosmic" dot>Operação Ativa 24/7</Badge>
+          <Badge variant="success" dot>Banco de Dados Conectado</Badge>
+          <Badge variant="warning" dot>Sincronização Bitrix24</Badge>
+          <Badge variant="cyan" dot>Enxame Autônomo</Badge>
+          <Badge variant="holographic">Prismatic Sheen</Badge>
+        </div>
+      </section>
+
+      {/* SEÇÃO 6: Laboratório de Efeitos & Toggles */}
       <section className="relative z-10 mb-12">
         <HolographicCard variant="mixed" intensity="low">
           <h3 className="font-bold text-xl mb-6 flex items-center gap-2">

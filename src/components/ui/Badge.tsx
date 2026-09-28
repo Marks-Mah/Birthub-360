@@ -32,6 +32,11 @@ const badgeVariants = cva(
         cyan: 'bg-accent-cyan/15 text-accent-cyan focus:ring-accent-cyan/40',
         // --pulse mede ≥5.1:1 cru nos dois temas (calculado) — mesmo raciocínio.
         pulse: 'bg-pulse/15 text-pulse focus:ring-pulse/40',
+        // --- Tendências 2026 ---
+        cosmic:
+          'bg-gradient-to-r from-brand/20 via-brand/10 to-brand-2/20 text-brand border border-brand/40 shadow-[0_0_12px_rgba(212,175,55,0.25)] font-bold',
+        holographic:
+          'bg-surface-elevated/70 backdrop-blur-md text-ink border border-white/20 shadow-sm',
       },
     },
     defaultVariants: {
@@ -42,10 +47,24 @@ const badgeVariants = cva(
 
 export interface BadgeProps
   extends React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof badgeVariants> {}
+    VariantProps<typeof badgeVariants> {
+  /** Adiciona um ponto indicador pulsante de status "ao vivo" (2026 Pulse Dot) */
+  dot?: boolean;
+}
 
-function Badge({ className, variant, ...props }: BadgeProps) {
-  return <div className={cn(badgeVariants({ variant, className }))} {...props} />;
+function Badge({ className, variant, dot = false, children, ...props }: BadgeProps) {
+  return (
+    <div className={cn(badgeVariants({ variant, className }))} {...props}>
+      {dot && (
+        <span className="relative mr-1.5 flex h-2 w-2 shrink-0" aria-hidden="true">
+          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-current opacity-70" />
+          <span className="relative inline-flex h-2 w-2 rounded-full bg-current" />
+        </span>
+      )}
+      {children}
+    </div>
+  );
 }
 
 export { Badge, badgeVariants };
+
