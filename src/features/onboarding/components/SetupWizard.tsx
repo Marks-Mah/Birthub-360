@@ -66,10 +66,15 @@ export function SetupWizard() {
                 <Card 
                   key={mod.key} 
                   padding="lg" 
-                  className={`cursor-pointer transition-all border-2 relative ${mod.alwaysActive ? 'opacity-70 pointer-events-none' : ''} ${selectedModules.has(mod.key) || mod.alwaysActive ? 'border-brand shadow-lg' : 'border-transparent hover:border-line'}`}
+                  variant="bento"
+                  spotlight
+                  soundHover
+                  soundClick
+                  className={`cursor-pointer transition-all border relative active:scale-95 group/mod ${mod.alwaysActive ? 'opacity-70 pointer-events-none' : ''} ${selectedModules.has(mod.key) || mod.alwaysActive ? 'border-brand shadow-[0_8px_32px_-12px_rgba(212,175,55,0.4)]' : 'border-line hover:border-brand/40'}`}
                   onClick={() => !mod.alwaysActive && toggleModule(mod.key)}
                 >
-                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 ${mod.colorTheme}`}>
+                  <div className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-brand/40 to-transparent opacity-0 group-hover/mod:opacity-100 transition-opacity duration-700 z-20" aria-hidden="true" />
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 relative z-30 ${mod.colorTheme}`}>
                     {iconMap[mod.iconName] || <Settings />}
                   </div>
                   <h3 className="text-lg font-bold text-ink mb-2">{mod.label}</h3>
@@ -90,7 +95,7 @@ export function SetupWizard() {
             </div>
 
             <div className="flex justify-end pt-8 border-t border-line">
-              <Button onClick={() => setStep(2)} size="lg" className="bg-brand text-on-brand hover:bg-brand-active">
+              <Button onClick={() => setStep(2)} size="lg" soundClick className="bg-brand text-on-brand hover:bg-brand-active active:scale-95 transition-all shadow-md">
                 Continuar <ChevronRight className="ml-2 w-5 h-5" />
               </Button>
             </div>
@@ -108,10 +113,10 @@ export function SetupWizard() {
             </p>
             
             <div className="flex justify-center gap-4 pt-8">
-              <Button onClick={() => setStep(1)} variant="outline" size="lg">
+              <Button onClick={() => setStep(1)} variant="outline" size="lg" soundClick className="active:scale-95 transition-all">
                 Voltar
               </Button>
-              <Button onClick={handleComplete} disabled={isLoading} size="lg" className="bg-brand text-on-brand hover:bg-brand-active shadow-xl shadow-brand/20">
+              <Button onClick={handleComplete} disabled={isLoading} size="lg" soundClick className="bg-brand text-on-brand hover:bg-brand-active shadow-xl shadow-brand/20 active:scale-95 transition-all">
                 {isLoading ? 'Configurando...' : 'Ir para o Dashboard'}
               </Button>
             </div>
