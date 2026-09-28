@@ -4613,6 +4613,31 @@ model AgentHandoffMessage {
 //
 // `AgentMemoryRecord`/`RoleMemoryRecord`/`OrganizationMemoryRecord` são 3 modelos distintos
 // (nunca um `MemoryRecord` polimórfico com `scope`) — mesma decisão de `AccessRequest`/
+
+// ---------------------------------------------------------------------------------------------
+// IA Open Source - Vector Database (Onda IA-1) — rastreamento de embeddings no Qdrant
+// Para substituir embeddings locais por vector database escalável (Qdrant).
+// Esta tabela mantém paridade entre Qdrant e PostgreSQL, permitindo deleção por tenant
+// (GDPR/compliance) e metadados sincronizados.
+// ---------------------------------------------------------------------------------------------
+
+/// Rastreamento de embeddings armazenados no Qdrant — mantém sincronia entre vector DB
+/// e PostgreSQL para deleção por tenant (GDPR) e metadados. Cada linha corresponde a um
+/// ponto/vetor upsertado no Qdrant.
+model DocumentEmbedding {
+  id          String   @id @default(cuid())
+  tenantId    String
+  documentId  String
+  /// ID do ponto no Qdrant — usado para deleção direta no vector DB
+  vectorId    String
+  /// Metadados adicionais (tipo de documento, chunk index, etc.)
+  metadata    Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([tenantId, documentId])
+  @@index([vectorId])
+}
 // `ApprovalDecision`/`TemporaryCapabilityGrant` no PROMPT 7: cada escopo tem sua própria chave
 // natural (agentCode/jobRoleCode/nenhuma) e seus próprios índices/uniques, sem coluna nullable
 // ambígua. IMPORTANTE: não confundir com o modelo `AgentMemory` já existente (AI-003, onda 31) —
