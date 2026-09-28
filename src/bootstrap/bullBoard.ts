@@ -52,7 +52,8 @@ export class TenantIsolatedBullMQAdapter extends BullMQAdapter {
       data: {
         _redacted: true,
         organizationId: '[OUTRA ORGANIZAÇÃO]',
-        message: 'Isolamento multi-tenant (SEC-003): payload de job restrito à organização de origem.',
+        message:
+          'Isolamento multi-tenant (SEC-003): payload de job restrito à organização de origem.',
       },
     };
   }
