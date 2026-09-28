@@ -31,7 +31,12 @@ export function BentoCard({
   onClick,
   ...props
 }: BentoCardProps) {
-  const { ref, style: tiltStyle, onPointerMove: onTiltMove, onPointerLeave: onTiltLeave } = useTilt(4);
+  const {
+    ref,
+    style: tiltStyle,
+    onPointerMove: onTiltMove,
+    onPointerLeave: onTiltLeave,
+  } = useTilt(4);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [isHovered, setIsHovered] = useState(false);
   const reduceMotion = useReducedMotion();
@@ -49,11 +54,14 @@ export function BentoCard({
   }[rowSpan];
 
   const variantClasses = {
-    surface: 'bg-surface-elevated/85 backdrop-blur-xl border border-line/80 shadow-card hover:border-brand/35',
+    surface:
+      'bg-surface-elevated/85 backdrop-blur-xl border border-line/80 shadow-card hover:border-brand/35',
     glass: 'bh-glass hover:border-brand/40 shadow-card',
     accent: 'bg-surface-elevated/90 border border-brand/40 shadow-glow-brand',
-    cosmic: 'bg-surface-elevated/90 border border-brand/50 shadow-[0_10px_35px_rgba(212,175,55,0.2)]',
-    specular: 'bg-surface/75 backdrop-blur-2xl border border-line/60 shadow-[inset_0_1px_1px_rgba(255,255,255,0.15),0_10px_30px_rgba(0,0,0,0.25)] hover:border-brand/35',
+    cosmic:
+      'bg-surface-elevated/90 border border-brand/50 shadow-[0_10px_35px_rgba(212,175,55,0.2)]',
+    specular:
+      'bg-surface/75 backdrop-blur-2xl border border-line/60 shadow-[inset_0_1px_1px_rgba(255,255,255,0.15),0_10px_30px_rgba(0,0,0,0.25)] hover:border-brand/35',
   }[variant];
 
   const handlePointerMove = (e: PointerEvent<HTMLDivElement>) => {
@@ -116,9 +124,7 @@ export function BentoCard({
         {...(props as React.ComponentProps<typeof motion.div>)}
       >
         {spotlightOverlay}
-        <div className="relative z-10 flex flex-col justify-between h-full w-full">
-          {children}
-        </div>
+        <div className="relative z-10 flex flex-col justify-between h-full w-full">{children}</div>
       </motion.div>
     );
   }
@@ -134,10 +140,7 @@ export function BentoCard({
       {...props}
     >
       {spotlightOverlay}
-      <div className="relative z-10 flex flex-col justify-between h-full w-full">
-        {children}
-      </div>
+      <div className="relative z-10 flex flex-col justify-between h-full w-full">{children}</div>
     </div>
   );
 }
-

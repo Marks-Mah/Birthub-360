@@ -19,9 +19,7 @@ import { Badge } from './Badge.js';
 import { Button } from './Button.js';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './Card.js';
 import { CyberInput } from './CyberInput.js';
-import { EmptyState } from './EmptyState.js';
 import { GamificationWidget } from './GamificationWidget.js';
-import { Gamified3DOrb } from './Gamified3DOrb.js';
 import { HolographicCard } from './HolographicCard.js';
 import { AnimatedIcon } from './icons/AnimatedIcon.js';
 import {
@@ -32,7 +30,7 @@ import {
 } from './icons/Isometric3DIcons.js';
 import { KpiCard } from './KpiCard.js';
 import { NeonButton } from './NeonButton.js';
-import { DigitalRain, GlitchEffect, ParticleSystem } from './ParticleSystem.js';
+import { ParticleSystem } from './ParticleSystem.js';
 import { TabNavCards } from './TabNavCards.js';
 import { ThemeSwitcher, type ThemeStyle } from './ThemeSwitcher.js';
 import { Toggle } from './Toggle.js';

@@ -36,7 +36,9 @@ export function EmptyState({ title, description, actionLabel, onAction, icon }: 
       </motion.div>
 
       <h3 className="relative z-10 font-display text-xl font-bold text-ink mb-2">{title}</h3>
-      <p className="relative z-10 text-ink-2 max-w-md mb-6 text-sm leading-relaxed">{description}</p>
+      <p className="relative z-10 text-ink-2 max-w-md mb-6 text-sm leading-relaxed">
+        {description}
+      </p>
 
       {actionLabel && onAction && (
         <Button
@@ -53,4 +55,3 @@ export function EmptyState({ title, description, actionLabel, onAction, icon }: 
     </motion.div>
   );
 }
-
