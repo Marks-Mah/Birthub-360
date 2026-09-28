@@ -54,7 +54,10 @@ export function ChatbookHub() {
               <Bot className="w-7 h-7" />
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-white/15 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
             </div>
-            <span className="absolute -bottom-0.5 -right-0.5 flex h-3.5 w-3.5" title="Motor de IA Ativo">
+            <span
+              className="absolute -bottom-0.5 -right-0.5 flex h-3.5 w-3.5"
+              title="Motor de IA Ativo"
+            >
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
               <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-emerald-500 border-2 border-surface" />
             </span>
@@ -71,8 +74,8 @@ export function ChatbookHub() {
               </span>
             </div>
             <p className="text-sm text-ink-2 flex items-center gap-1.5">
-              <Sparkles size={12} className="text-brand shrink-0" /> Assistente comercial com base interna da
-              marca; sem navegação web em tempo real.
+              <Sparkles size={12} className="text-brand shrink-0" /> Assistente comercial com base
+              interna da marca; sem navegação web em tempo real.
             </p>
           </div>
         </motion.div>
@@ -131,9 +134,12 @@ export function ChatbookHub() {
                   <Sparkles className="w-6 h-6 animate-pulse" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-ink">Inicie a conversa comercial inteligente</h3>
+                  <h3 className="text-sm font-bold text-ink">
+                    Inicie a conversa comercial inteligente
+                  </h3>
                   <p className="text-xs text-ink-2 mt-1 max-w-sm mx-auto">
-                    Faça perguntas sobre contorno de objeções, roteiros de abordagem ou estratégia de produto:
+                    Faça perguntas sobre contorno de objeções, roteiros de abordagem ou estratégia
+                    de produto:
                   </p>
                 </div>
                 <div className="flex flex-wrap items-center justify-center gap-2 max-w-md mx-auto pt-2">

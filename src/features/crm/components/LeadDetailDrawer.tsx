@@ -24,11 +24,6 @@ import { Timeline, type TimelineItem } from '../../../components/ui/Timeline.js'
 import { useAuth } from '../../../contexts/AuthContext.js';
 import { useActivePlaybook } from '../../../hooks/useActivePlaybook.js';
 import { useActiveRecord } from '../../../hooks/useActiveRecord.js';
-// Central unificada de conversas (item #18) — mescla lead.timeline com WhatsApp/e-mail/ligações.
-import {
-  type RawTimelineEvent,
-  useUnifiedLeadConversation,
-} from '../hooks/useUnifiedLeadConversation.js';
 import { api } from '../../../lib/api.js';
 import { LEAD_STATUS_EMOJI as STATUS_EMOJI } from '../../../lib/enumMap.js';
 import { SoundFX } from '../../../lib/soundEffects.js';
@@ -46,6 +41,11 @@ import { bitrixApi } from '../../integrations/bitrix/bitrix.api.js';
 // de duplicar lógica de polling/envio; CRM só decide QUANDO oferecer a ação, não COMO ela funciona.
 import { WhatsAppChatPanel } from '../../integrations/whatsapp/components/WhatsAppChatPanel.js';
 import { type BantQualificationData, calculateLeadScore } from '../domain/leadScoreCalculator.js';
+// Central unificada de conversas (item #18) — mescla lead.timeline com WhatsApp/e-mail/ligações.
+import {
+  type RawTimelineEvent,
+  useUnifiedLeadConversation,
+} from '../hooks/useUnifiedLeadConversation.js';
 import { LeadActionBar } from './LeadActionBar.js';
 
 const TEMPERATURE_EMOJI: Record<string, string> = { Quente: '🔥', Morno: '🌤️', Frio: '❄️' };
@@ -340,8 +340,25 @@ export function LeadDetailDrawer({ leadId, onClose, onChanged }: LeadDetailDrawe
       setLead(updated);
       setQualOpen(false);
       onChanged();
+      if (liveScore.score >= 70) {
+        SoundFX.play('success');
+        try {
+          const confetti = (await import('canvas-confetti')).default;
+          confetti({
+            particleCount: 50,
+            spread: 60,
+            origin: { y: 0.6 },
+            colors: ['#D4AF37', '#1677FF', '#C53678', '#10B981'],
+          });
+        } catch {
+          // ignore
+        }
+      } else {
+        SoundFX.play('confirm');
+      }
       toast.success(`Qualificação salva! Score: ${liveScore.score}/100 (${liveScore.temperature})`);
     } catch {
+      SoundFX.play('error');
       toast.error('Erro ao salvar qualificação');
     } finally {
       setSavingQual(false);
@@ -639,8 +656,11 @@ export function LeadDetailDrawer({ leadId, onClose, onChanged }: LeadDetailDrawe
                   </div>
                   <button
                     type="button"
-                    onClick={() => setQualOpen(!qualOpen)}
-                    className="text-xs text-brand-ink dark:text-brand hover:underline font-semibold flex items-center gap-1"
+                    onClick={() => {
+                      SoundFX.play('click');
+                      setQualOpen(!qualOpen);
+                    }}
+                    className="text-xs text-brand-ink dark:text-brand hover:underline font-semibold flex items-center gap-1 active:scale-95 transition-all"
                   >
                     {qualOpen ? (
                       <ChevronUp className="w-3.5 h-3.5" />
@@ -654,7 +674,8 @@ export function LeadDetailDrawer({ leadId, onClose, onChanged }: LeadDetailDrawe
                 {qualOpen ? (
                   <div className="bg-surface-2/40 p-4 rounded-2xl border border-line space-y-4">
                     {/* Score Meter */}
-                    <div className="p-3.5 rounded-xl bg-surface border border-line space-y-2">
+                    <div className="p-3.5 rounded-xl bg-surface border border-line space-y-2 relative overflow-hidden">
+                      <div className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-brand to-transparent opacity-60" />
                       <div className="flex items-center justify-between">
                         <span className="text-xs font-bold text-ink flex items-center gap-1.5">
                           🎯 Lead Score:{' '}
@@ -673,7 +694,7 @@ export function LeadDetailDrawer({ leadId, onClose, onChanged }: LeadDetailDrawe
 
                       <div className="w-full bg-surface-2 h-2.5 rounded-full overflow-hidden border border-line/50">
                         <div
-                          className={`h-full rounded-full transition-colors duration-500 ${
+                          className={`h-full rounded-full transition-all duration-500 ${
                             liveScore.score >= 70
                               ? 'bg-gradient-to-r from-amber-500 to-rose-500'
                               : liveScore.score >= 40
@@ -717,6 +738,9 @@ export function LeadDetailDrawer({ leadId, onClose, onChanged }: LeadDetailDrawe
 
                     <Button
                       type="button"
+                      variant="cosmic"
+                      shine
+                      soundClick
                       onClick={handleSaveQualification}
                       loading={savingQual}
                       className="w-full"
