@@ -465,8 +465,9 @@ export function StyleShowcase() {
             {/* Inputs */}
             <div className="space-y-4">
               <h4 className="font-semibold text-xs text-ink-2 uppercase tracking-wider">
-                Cyber Inputs
+                Cyber & Cosmic Inputs
               </h4>
+              <CyberInput variant="cosmic" placeholder="Input Cósmico Dourado (2026)..." />
               <CyberInput variant="neon" glowColor="cyan" placeholder="Input Neon..." />
               <CyberInput variant="glass" placeholder="Input Glass..." />
               <CyberInput variant="metallic" placeholder="Input Metálico..." />

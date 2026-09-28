@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { AlertTriangle, Award, Medal, Trophy, Users } from 'lucide-react';
+import { AlertTriangle, Users } from 'lucide-react';
 import { Button } from '../../../components/ui/Button.js';
 import { Card } from '../../../components/ui/Card.js';
 import {

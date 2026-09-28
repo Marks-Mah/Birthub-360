@@ -365,27 +365,27 @@ export function CommandPalette() {
     >
       <div
         ref={panelRef}
-        className="w-full h-full sm:h-auto sm:max-w-2xl overflow-hidden sm:rounded-2xl border-0 sm:border border-line bg-surface bh-card shadow-2xl flex flex-col relative"
+        className="w-full h-full sm:h-auto sm:max-w-2xl overflow-hidden sm:rounded-2xl border-0 sm:border border-line/80 bg-surface-elevated/95 backdrop-blur-2xl shadow-[0_25px_70px_-15px_rgba(0,0,0,0.6)] flex flex-col relative"
       >
-        <BorderBeam variant="brand" size={240} duration={10} borderWidth={1.5} radius={16} glow />
+        <BorderBeam variant="brand" size={260} duration={10} borderWidth={1.5} radius={16} glow />
         <div className="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-brand to-transparent pointer-events-none" />
-        <div className="flex items-center gap-3 border-b border-line px-4 py-3.5">
-          <Search className="h-5 w-5 shrink-0 text-ink-2" />
+        <div className="flex items-center gap-3 border-b border-line/80 px-4 py-3.5 bg-surface/50">
+          <Search className="h-5 w-5 shrink-0 text-brand" />
           <input
             ref={inputRef}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleInputKeydown}
             placeholder="Buscar empresa, decisor ou comando…"
-            className="flex-1 bg-transparent text-sm text-ink outline-none focus-visible:ring-2 focus-visible:ring-brand placeholder:text-ink-2"
+            className="flex-1 bg-transparent text-sm font-medium text-ink outline-none focus-visible:ring-0 placeholder:text-ink-2/60"
           />
-          {entityLoading && <Loader2 className="h-4 w-4 shrink-0 animate-spin text-ink-2" />}
-          <kbd className="hidden shrink-0 rounded-md border border-line bg-surface-2 px-1.5 py-0.5 text-[10px] font-semibold text-ink-2 sm:block">
+          {entityLoading && <Loader2 className="h-4 w-4 shrink-0 animate-spin text-brand" />}
+          <kbd className="hidden shrink-0 rounded-lg border border-line bg-surface-2 px-2 py-0.5 text-[10px] font-bold text-ink-2 sm:block shadow-xs">
             ESC
           </kbd>
         </div>
 
-        <div className="flex-1 sm:max-h-[60vh] overflow-y-auto p-2">
+        <div className="flex-1 sm:max-h-[60vh] overflow-y-auto p-2.5">
           {items.length === 0 && (
             <p className="px-3 py-8 text-center text-sm text-ink-2">
               Nenhum resultado para &quot;{query}&quot;.
@@ -395,38 +395,71 @@ export function CommandPalette() {
             const showHeader = item.group !== groupCursor;
             groupCursor = item.group;
             const Icon = item.icon;
+            const isActive = idx === activeIndex;
             return (
               <div key={item.id}>
                 {showHeader && (
-                  <p className="px-3 pb-1 pt-3 text-[10px] font-black uppercase tracking-widest text-ink-2 first:pt-1">
+                  <p className="px-3 pb-1 pt-3 text-[10px] font-extrabold uppercase tracking-[0.16em] text-brand-ink dark:text-brand/80 first:pt-1">
                     {item.group}
                   </p>
                 )}
                 <button
                   type="button"
-                  onMouseEnter={() => setActiveIndex(idx)}
+                  onMouseEnter={() => {
+                    if (idx !== activeIndex) {
+                      setActiveIndex(idx);
+                      SoundFX.play('hover');
+                    }
+                  }}
                   onClick={item.onSelect}
-                  className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm transition-colors ${idx === activeIndex ? 'bg-brand/15 text-ink' : 'text-ink-2 hover:bg-surface-2'}`}
+                  className={`group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm transition-all duration-200 ${
+                    isActive
+                      ? 'bg-brand/15 text-ink shadow-[0_0_15px_rgba(212,175,55,0.08)] ring-1 ring-brand/35 translate-x-0.5'
+                      : 'text-ink-2 hover:bg-surface-2/70 hover:text-ink'
+                  }`}
                 >
-                  <Icon className="h-4 w-4 shrink-0" />
-                  <span className="flex-1 truncate font-medium">{item.label}</span>
+                  <span
+                    className={`flex h-7 w-7 items-center justify-center rounded-lg border shrink-0 transition-colors ${
+                      isActive
+                        ? 'border-brand/40 bg-brand/20 text-brand shadow-xs'
+                        : 'border-line bg-surface text-ink-2 group-hover:border-brand/30 group-hover:text-brand'
+                    }`}
+                  >
+                    <Icon className="h-3.5 w-3.5" />
+                  </span>
+                  <span className="flex-1 truncate font-semibold">{item.label}</span>
                   {item.sublabel && (
-                    <span className="shrink-0 truncate text-xs text-ink-2">{item.sublabel}</span>
+                    <span className="shrink-0 truncate text-xs text-ink-2 font-normal">
+                      {item.sublabel}
+                    </span>
                   )}
-                  {idx === activeIndex && <CornerDownLeft className="h-3.5 w-3.5 shrink-0" />}
+                  {isActive && (
+                    <CornerDownLeft className="h-3.5 w-3.5 shrink-0 text-brand transition-transform group-hover:translate-x-0.5" />
+                  )}
                 </button>
               </div>
             );
           })}
         </div>
 
-        <div className="flex items-center gap-4 border-t border-line px-4 py-2 text-[10px] font-semibold uppercase tracking-wide text-ink-2">
-          <span className="flex items-center gap-1">
-            <ArrowUp className="h-3 w-3" />
-            <ArrowDown className="h-3 w-3" /> Navegar
-          </span>
-          <span className="flex items-center gap-1">
-            <CornerDownLeft className="h-3 w-3" /> Selecionar
+        <div className="flex items-center justify-between border-t border-line/80 px-4 py-2.5 text-[10px] font-bold uppercase tracking-wider text-ink-2 bg-surface/40">
+          <div className="flex items-center gap-4">
+            <span className="flex items-center gap-1.5">
+              <span className="flex items-center gap-0.5 rounded border border-line bg-surface px-1 py-0.5 text-[9px]">
+                <ArrowUp className="h-2.5 w-2.5" />
+                <ArrowDown className="h-2.5 w-2.5" />
+              </span>{' '}
+              Navegar
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="rounded border border-line bg-surface px-1 py-0.5 text-[9px]">
+                <CornerDownLeft className="h-2.5 w-2.5" />
+              </span>{' '}
+              Confirmar
+            </span>
+          </div>
+          <span className="text-brand font-mono text-[9px] uppercase tracking-widest hidden sm:inline">
+            Spotlight 2026
           </span>
         </div>
       </div>
