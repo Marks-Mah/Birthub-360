@@ -112,8 +112,8 @@ export default function App() {
     groqApiKey: '',
     hunterApiKey: '',
     blandAiApiKey: '',
-    bitrixTotalTracWebhook: '',
-    bitrixAtlasGrWebhook: 'https://atlasgr.bitrix24.com.br/rest/',
+    bitrixBirthhub360Webhook: '',
+    bitrixAtlasGrWebhook: 'https://birthhub360.bitrix24.com.br/rest/',
     activeBitrixTarget: 'auto',
     customBitrixWebhook: '',
   });

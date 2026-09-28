@@ -215,7 +215,7 @@ export const BITRIX_FIELD_MAP: BitrixFieldMapping[] = [
   {
     label: 'Dor se conecta a qual solução Atlas?',
     type: 'enumeration',
-    target: { kind: 'qualification', field: 'solucaoAtlas' },
+    target: { kind: 'qualification', field: 'solucaoBirthub360' },
     leadCode: 'UF_CRM_1770152253210',
     dealCode: 'UF_CRM_698344FDA84D8',
   },

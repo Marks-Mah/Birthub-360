@@ -416,7 +416,7 @@ export default function DevelopersPage() {
                   <input
                     type="text"
                     value={newKeyName}
-                    placeholder="Ex: CI Pipeline, Integração AtlasGR, staging"
+                    placeholder="Ex: CI Pipeline, Integração Birth Hub 360, staging"
                     onChange={(e) => setNewKeyName(e.target.value)}
                     className="w-full p-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent text-sm font-sans"
                     required

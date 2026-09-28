@@ -32,7 +32,7 @@ const WON: PrismaLeadStatus = 'Negocios_Ganhos';
 const LOST: PrismaLeadStatus = 'Negocios_Perdidos';
 const DESQUALIFICADO: PrismaLeadStatus = 'Lead_Desqualificado';
 const PILOT_CANCELLED_STATUSES: PrismaLeadStatus[] = [
-  'Piloto_Atlas_Profile_Cancelado',
+  'Piloto_Birthub360_Profile_Cancelado',
   'Piloto_Logistico_Cancelado',
 ];
 const CLOSED_LOST_STATUSES: PrismaLeadStatus[] = [

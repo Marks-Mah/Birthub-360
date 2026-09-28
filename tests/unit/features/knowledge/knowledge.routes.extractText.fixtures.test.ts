@@ -61,12 +61,12 @@ function fixtureBase64(fileName: string): string {
 describe('extractText — fixtures reais (sem mock de parser)', () => {
   it('extrai texto real de tests/fixtures/knowledge/sample.pdf via pdf-parse de verdade', async () => {
     const result = await extractText('sample.pdf', fixtureBase64('sample.pdf'));
-    expect(result).toContain('Hello AtlasGR fixture PDF test');
+    expect(result).toContain('Hello Birth Hub 360 fixture PDF test');
   });
 
   it('extrai texto real de tests/fixtures/knowledge/sample.docx via mammoth de verdade', async () => {
     const result = await extractText('sample.docx', fixtureBase64('sample.docx'));
-    expect(result).toContain('Fixture de teste - Base de Conhecimento ATLASGR.');
+    expect(result).toContain('Fixture de teste - Base de Conhecimento Birth Hub 360.');
     expect(result).toContain('CPI DEC-10 opcao A');
   });
 });

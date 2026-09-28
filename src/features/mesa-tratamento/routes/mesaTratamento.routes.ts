@@ -13,7 +13,7 @@ import {
   getLeadStatuses,
   importSelectedBitrixLeads,
   postCommentToBitrix,
-  resolveAtlasUserIdByEmail,
+  resolveBirthubUserIdByEmail,
   resolveOwnBitrixUserId,
 } from '../../integrations/bitrix/bitrix.service.js';
 import { resolveLossReasonLabel } from '../constants/lossReasons.js';
@@ -111,7 +111,7 @@ function toQueueDetail(lead: QueueLead, ownerNames: Map<string, string>) {
  *  bitrix.routes.ts (não exportada de lá — reimplementada aqui com as mesmas peças exportadas).
  *
  *  CORREÇÃO: esta função filtrava `Lead.owner` (que sempre grava `User.id` — ver o comentário de
- *  `resolveAtlasUserIdByEmail` em `integrations/bitrix/service/userMapping.ts` e o uso real em
+ *  `resolveBirthubUserIdByEmail` em `integrations/bitrix/service/userMapping.ts` e o uso real em
  *  `LeadUseCases.ts`) contra `user.name` (um NOME de exibição), então `where.owner = scope.ownerName`
  *  nunca batia com nenhum Lead real — todo CLOSER/SDR via a fila sempre vazia. O mesmo bug existia
  *  na checagem de posse de `/lead/:id/register` abaixo. Corrigido usando `userId` (já disponível no
@@ -486,7 +486,7 @@ router.post(
       // do Bitrix não tem usuário correspondente no Atlas (ex.: só existe no Bitrix) — a fila
       // simplesmente não filtra por ele até esse vínculo existir, nunca fabrica um dono.
       const newOwnerId = chosen.email
-        ? await resolveAtlasUserIdByEmail(organizationId, chosen.email)
+        ? await resolveBirthubUserIdByEmail(organizationId, chosen.email)
         : null;
       await prisma.lead.update({ where: { id }, data: { owner: newOwnerId } });
 

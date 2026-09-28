@@ -23,7 +23,7 @@ import type {
 const FALLBACK_WON_STATUSES = new Set<LeadStatus>([LeadStatus.Negocios_Ganhos]);
 const FALLBACK_LOST_STATUSES = new Set<LeadStatus>([
   LeadStatus.Negocios_Perdidos,
-  LeadStatus.Piloto_Atlas_Profile_Cancelado,
+  LeadStatus.Piloto_Birthub360_Profile_Cancelado,
   LeadStatus.Piloto_Logistico_Cancelado,
 ]);
 

@@ -45,7 +45,7 @@ import {
   Progress,
   useToast,
   ToastContainer,
-  AtlasLogo,
+  BirthubLogo,
 } from '../components/design-system/index.js';
 import { getAccessibleTextOnBrand } from '../components/design-system/tokens.js';
 import { useSessionStore } from '../store/useSessionStore.js';
@@ -289,7 +289,7 @@ export default function LandingPage() {
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 group">
             <div className="p-1.5 bg-white dark:bg-slate-900 rounded-lg shadow-sm border border-slate-100 dark:border-slate-800 transition-transform group-hover:scale-105">
-              <AtlasLogo className="h-6 w-6" />
+              <BirthubLogo className="h-6 w-6" />
             </div>
             <div className="text-left">
               <h1 className="text-base font-extrabold leading-none tracking-tight text-slate-950 dark:text-white">
@@ -1938,7 +1938,7 @@ export default function LandingPage() {
           <div className="col-span-2 space-y-4">
             <div className="flex items-center gap-3">
               <div className="p-1.5 bg-white rounded-lg">
-                <AtlasLogo className="h-6 w-6" />
+                <BirthubLogo className="h-6 w-6" />
               </div>
               <div className="text-left">
                 <h1 className="text-base font-extrabold leading-none tracking-tight text-white">

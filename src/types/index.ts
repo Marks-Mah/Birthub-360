@@ -46,7 +46,7 @@ export interface LeadQualification {
   dorPrincipal?: string;
   detalhamentoDor?: string;
   impactoPercebido?: string;
-  solucaoAtlas?: 'Profile' | 'GR' | 'Connect' | 'Combinação' | '';
+  solucaoBirthub360?: 'Profile' | 'GR' | 'Connect' | 'Combinação' | '';
   // 4.2.4 Interesse e Autoridade
   nivelAutoridade?: 'Decisor' | 'Influenciador' | 'Usuário' | '';
   interessePercebido?: 'Baixo' | 'Médio' | 'Alto' | '';

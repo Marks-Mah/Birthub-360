@@ -4,6 +4,8 @@ import { Navigate, Route, Routes, useNavigate } from 'react-router-dom';
 import { ErrorBoundary } from './components/ErrorBoundary.js';
 import { MainLayout } from './components/layout/MainLayout.js';
 import { ProtectedRoute } from './components/layout/ProtectedRoute.js';
+import { OnboardingGate } from './components/layout/OnboardingGate.js';
+import { SetupWizard } from './features/onboarding/components/SetupWizard.js';
 import { RequireModuleAccess } from './components/layout/RequireModuleAccess.js';
 import { RequireRole } from './components/layout/RequireRole.js';
 import { ClickSpark } from './components/ui/ClickSpark.js';
@@ -273,10 +275,10 @@ function AppLayout() {
   );
 
   return (
-    <MainLayout>
-      {/* Rotas relativas a /app — a wildcard "/app/*" na Route pai (mais abaixo) faz o React
-          Router casar estes paths aninhados contra o restante da URL automaticamente. */}
-      <Suspense fallback={<PageFallback />}>
+    <OnboardingGate>
+      <MainLayout>
+        {/* Rotas relativas a /app — a wildcard "/app/*" na Route pai (mais abaixo) faz o React
+            Router casar estes paths aninhados contra o restante da URL automaticamente. */}      <Suspense fallback={<PageFallback />}>
         <Routes>
           <Route index element={<AdaptiveDashboard />} />
           {/* Alias explícito para /app/dashboard: TabType inclui 'dashboard' e Sidebar/
@@ -394,7 +396,8 @@ function AppLayout() {
           <OnboardingTour />
         </Suspense>
       )}
-    </MainLayout>
+      </MainLayout>
+    </OnboardingGate>
   );
 }
 
@@ -479,6 +482,16 @@ export default function App() {
                             <RequireModuleAccess moduleKey="social-selling">
                               <SocialSellingHub />
                             </RequireModuleAccess>
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/setup"
+                        element={
+                          <ProtectedRoute>
+                            <RequireRole allowedRoles={['ADMIN']}>
+                              <SetupWizard />
+                            </RequireRole>
                           </ProtectedRoute>
                         }
                       />

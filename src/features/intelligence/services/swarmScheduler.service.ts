@@ -20,8 +20,8 @@ const CLOSER_STATUSES: LeadStatus[] = [
   'Proposta_Enviada',
   'Call_Visita_Agendada',
   'Piloto_VTECH',
-  'Piloto_Atlas_Profile',
-  'Piloto_Atlas_Profile_Concluido',
+  'Piloto_Birthub360_Profile',
+  'Piloto_Birthub360_Profile_Concluido',
   'Piloto_Logistica',
   'Piloto_Logistico_Concluido',
 ];

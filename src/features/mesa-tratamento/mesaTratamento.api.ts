@@ -37,7 +37,7 @@ export interface QueueLeadSummary {
 export interface QueueLeadQualificationSnapshot {
   dorPrincipal?: string;
   detalhamentoDor?: string;
-  solucaoAtlas?: string;
+  solucaoBirthub360?: string;
   nivelAutoridade?: string;
   interessePercebido?: string;
   horizonteDecisao?: string;

@@ -17,7 +17,7 @@ export const csrfProtection = (
     // ambient session cookie — are not exploitable via CSRF: a malicious page cannot attach an
     // arbitrary Authorization header to a cross-site request, and cors() already restricts which
     // origins may read the response of a JS-initiated cross-origin request. This unblocks
-    // legitimate server-to-server callers authenticated this way (e.g. the AtlasGR CRM calling
+    // legitimate server-to-server callers authenticated this way (e.g. the Birth Hub 360 CRM calling
     // POST /api/voice/outbound with its own bearer token, which never sends an Origin header)
     // without weakening protection for the cookie-authenticated browser path below.
     if (req.headers.authorization?.startsWith('Bearer ')) {

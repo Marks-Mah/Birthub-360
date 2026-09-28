@@ -1,18 +1,18 @@
 import { prisma } from '@/lib/prisma.js';
 
 /**
- * Persists the result of a call dispatched via the AtlasGR/Bland AI prospecting integration.
+ * Persists the result of a call dispatched via the Birth Hub 360/Bland AI prospecting integration.
  * Resolves .agents/handoffs/onda-1/06-para-01-persistir-resultado-bland.md — see the
- * `AtlasGRCallResult` model in `prisma/schema.prisma` for the full rationale, including why
+ * `Birthub360CallResult` model in `prisma/schema.prisma` for the full rationale, including why
  * `organizationId` is optional (this integration has no verifiable per-call tenant signal today).
  *
  * Intended caller: the Bland AI result callback handler in
- * `src/features/prospecting/routes/atlasgr.routes.ts` (Agente 06's domain) — this file only
+ * `src/features/prospecting/routes/birthhub360.routes.ts` (Agente 06's domain) — this file only
  * provides the persistence primitive; wiring it into that handler is Agente 06's follow-up
  * (see `.agents/handoffs/onda-4/01-para-06-persistir-resultado-bland-pronto.md`).
  */
 
-export interface UpsertAtlasGRCallResultInput {
+export interface UpsertBirthub360CallResultInput {
   callId: string;
   organizationId?: string | null;
   leadId?: string | null;
@@ -29,7 +29,7 @@ export interface UpsertAtlasGRCallResultInput {
  * it intentionally is NOT bumped on a later redelivery, since it records when this call result was
  * first observed, not when it was last confirmed.
  */
-export function upsertAtlasGRCallResult(input: UpsertAtlasGRCallResultInput) {
+export function upsertBirthub360CallResult(input: UpsertBirthub360CallResultInput) {
   const shared = {
     organizationId: input.organizationId ?? null,
     leadId: input.leadId ?? null,
@@ -38,7 +38,7 @@ export function upsertAtlasGRCallResult(input: UpsertAtlasGRCallResultInput) {
     callLength: input.callLength ?? null,
   };
 
-  return prisma.atlasGRCallResult.upsert({
+  return prisma.birthhub360CallResult.upsert({
     where: { callId: input.callId },
     create: {
       callId: input.callId,
@@ -48,13 +48,13 @@ export function upsertAtlasGRCallResult(input: UpsertAtlasGRCallResultInput) {
   });
 }
 
-export function findAtlasGRCallResultByCallId(callId: string) {
-  return prisma.atlasGRCallResult.findUnique({ where: { callId } });
+export function findBirthub360CallResultByCallId(callId: string) {
+  return prisma.birthhub360CallResult.findUnique({ where: { callId } });
 }
 
 /**
  * Tenant-scoped, paginated read of dispatched-call results, for a future "quantas ligações a
- * AtlasGR disparou e qual foi o resultado de cada uma" view. `organizationId` must come from the
+ * Birth Hub 360 disparou e qual foi o resultado de cada uma" view. `organizationId` must come from the
  * authenticated session (requireTenant), never from client input, same rule as every other
  * tenant-scoped query in this codebase — see AGENTS.md §15.
  *
@@ -65,19 +65,19 @@ export function findAtlasGRCallResultByCallId(callId: string) {
  * A separate, explicitly-labelled admin/operational view is the right place to list untenanted
  * rows, not this function.
  */
-export async function listAtlasGRCallResultsForTenant(
+export async function listBirthub360CallResultsForTenant(
   organizationId: string,
   { page, pageSize }: { page: number; pageSize: number },
 ) {
   const skip = (page - 1) * pageSize;
   const [items, total] = await Promise.all([
-    prisma.atlasGRCallResult.findMany({
+    prisma.birthhub360CallResult.findMany({
       where: { organizationId },
       orderBy: { receivedAt: 'desc' },
       skip,
       take: pageSize,
     }),
-    prisma.atlasGRCallResult.count({ where: { organizationId } }),
+    prisma.birthhub360CallResult.count({ where: { organizationId } }),
   ]);
   return { items, total };
 }

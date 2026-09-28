@@ -224,10 +224,10 @@ export function CurrentLeadCard({ lead, leadStatuses, onRegistered }: CurrentLea
                   </span>
                 </div>
               )}
-              {q?.solucaoAtlas && (
+              {q?.solucaoBirthub360 && (
                 <div>
                   <span className="text-ink-2 block text-xs">Solução Atlas</span>
-                  <span className="text-ink">{q.solucaoAtlas}</span>
+                  <span className="text-ink">{q.solucaoBirthub360}</span>
                 </div>
               )}
               {q?.nivelAutoridade && (

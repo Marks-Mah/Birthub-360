@@ -187,7 +187,7 @@ function verifyHashedPassword(password: string, stored: string): boolean {
 }
 
 // Usuários são cadastrados manualmente (via SQL Explorer, não há tela de cadastro),
-// então o campo 'company' no banco vem digitado à mão e varia: 'AtlasGR', 'Atlas GR',
+// então o campo 'company' no banco vem digitado à mão e varia: 'Birth Hub 360', 'Atlas GR',
 // 'TotalTrac', 'total trac', com espaços/maiúsculas inconsistentes. O front só entende
 // os literais exatos 'atlas'/'totaltrac' — qualquer variação travava o login de todo
 // usuário 'user' daquela marca com "conta pertence a outra empresa", mesmo com a senha certa.
@@ -522,7 +522,7 @@ apiRouter.post('/auth/login', async (req: Request, res: Response) => {
     }
     // E-mail é comparado sem distinguir maiúsculas/minúsculas nem espaços nas pontas —
     // digitado no celular ou preenchido automaticamente, é comum vir com casing diferente
-    // do que foi cadastrado manualmente no banco (ex.: "Nome@AtlasGR.com.br" vs "nome@atlasgr.com.br").
+    // do que foi cadastrado manualmente no banco (ex.: "Nome@Birth Hub 360.com.br" vs "nome@birthhub360.com.br").
     const normalizedEmail = String(email).trim().toLowerCase();
     const db = await getDatabase();
     const result = await db.exec(
@@ -567,7 +567,7 @@ apiRouter.post('/auth/login', async (req: Request, res: Response) => {
       }
     }
 
-    // Contas 'user' são exclusivas da própria marca: uma conta AtlasGR não pode entrar
+    // Contas 'user' são exclusivas da própria marca: uma conta Birth Hub 360 não pode entrar
     // selecionando TotalTrac, e vice-versa. Admins gerenciam as duas marcas, então ficam de fora dessa checagem.
     // A comparação é feita nos valores normalizados (não no texto cru do banco) porque o
     // cadastro é manual via SQL Explorer e varia em maiúsculas/espaços/apelidos da marca;
@@ -2877,7 +2877,7 @@ apiRouter.post(
       const effectiveWebhook = (
         webhookUrl ||
         resolveBitrixWebhookForCompany(lead?.company) ||
-        process.env.BITRIX_TOTALTRAC_WEBHOOK ||
+        process.env.BITRIX_BIRTHHUB360_WEBHOOK ||
         ''
       ).replace(/\/$/, '');
 
@@ -2939,7 +2939,7 @@ apiRouter.post(
               idempotent: true,
               leadId: priorBitrixLeadId,
               message: `Lead "${lead.name}" já havia sido exportado para o Bitrix24 (Lead #${priorBitrixLeadId}, em ${priorCreatedAt}). Envie novamente com "force" para reprocessar de propósito.`,
-              target: effectiveWebhook.includes('totaltrac') ? 'Total Trac' : 'AtlasGR',
+              target: effectiveWebhook.includes('totaltrac') ? 'Total Trac' : 'Birth Hub 360',
               warnings: eligibility.warnings,
             });
           }
@@ -3043,7 +3043,7 @@ apiRouter.post(
           success: true,
           leadId: bitrixLeadId,
           message: `Lead #${bitrixLeadId} "${lead.name}" exportado com sucesso para o Bitrix24!`,
-          target: effectiveWebhook.includes('totaltrac') ? 'Total Trac' : 'AtlasGR',
+          target: effectiveWebhook.includes('totaltrac') ? 'Total Trac' : 'Birth Hub 360',
           warnings: eligibility.warnings,
         });
       }

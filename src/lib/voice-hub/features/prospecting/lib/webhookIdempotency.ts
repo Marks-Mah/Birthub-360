@@ -43,12 +43,12 @@ export function __setIdempotencyClientForTests(client: Redis | null): void {
   redisClient = client;
 }
 
-export const ATLASGR_OUTBOUND_IDEMPOTENCY_PREFIX = 'idempotency:atlasgr-outbound-call:';
+export const ATLASGR_OUTBOUND_IDEMPOTENCY_PREFIX = 'idempotency:birthhub360-outbound-call:';
 export const BLAND_CALLBACK_IDEMPOTENCY_PREFIX = 'idempotency:bland-call-result:';
 
 /** Default dedup window: long enough to absorb realistic webhook-retry storms (most providers give
  * up retrying well within a day), short enough that a genuinely new call to the same lead/number
- * later isn't silently dropped forever. Configurable because "realistic" depends on AtlasGR's own
+ * later isn't silently dropped forever. Configurable because "realistic" depends on Birth Hub 360's own
  * retry policy, which this repo doesn't control. */
 export const DEFAULT_IDEMPOTENCY_TTL_SECONDS = Number(
   process.env.ATLASGR_WEBHOOK_IDEMPOTENCY_TTL_SECONDS ?? 24 * 60 * 60,
@@ -57,14 +57,14 @@ export const DEFAULT_IDEMPOTENCY_TTL_SECONDS = Number(
 const CALLBACK_PROCESSING_TTL_SECONDS = 60;
 
 /**
- * Derives a stable dedup key for an AtlasGR outbound-call webhook delivery.
+ * Derives a stable dedup key for an Birth Hub 360 outbound-call webhook delivery.
  *
- * Prefers `leadId` when AtlasGR supplies one (stable across redeliveries of the same event).
+ * Prefers `leadId` when Birth Hub 360 supplies one (stable across redeliveries of the same event).
  * Falls back to a hash of the normalized business payload so that even today's contract — which
  * has no lead identifier at all — still gets real protection against duplicate redelivery of the
  * exact same request.
  */
-export function buildAtlasGROutboundIdempotencyKey(payload: {
+export function buildBirth Hub 360OutboundIdempotencyKey(payload: {
   leadId?: string;
   phoneNumber: string;
   name: string;
@@ -112,7 +112,7 @@ export type CallbackProcessingState = 'acquired' | 'duplicate' | 'in_progress';
 
 /**
  * Callback forwarding needs a two-phase dedup state instead of the one-shot outbound claim.
- * `processing` is deliberately short-lived: if the worker dies after claiming but before AtlasGR
+ * `processing` is deliberately short-lived: if the worker dies after claiming but before Birth Hub 360
  * acknowledges the result, a provider retry can take over after one minute. `done` is kept for the
  * normal 24h dedup window and makes repeated successful callbacks cheap no-ops.
  */
@@ -151,7 +151,7 @@ export async function completeBlandCallbackProcessing(
 }
 
 /**
- * Releases a callback processing lock when AtlasGR definitely did not acknowledge the delivery.
+ * Releases a callback processing lock when Birth Hub 360 definitely did not acknowledge the delivery.
  * That lets a provider retry attempt the forwarding again instead of silently losing the result.
  */
 export async function releaseBlandCallbackProcessing(callId: string): Promise<void> {

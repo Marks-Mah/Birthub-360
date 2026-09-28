@@ -1,10 +1,10 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import type { AtlasGROutboundPayload } from '../validators/atlasgr.schema.js';
+import type { Birthhub360OutboundPayload } from '../validators/birthhub360.schema.js';
 
 vi.mock('../lib/webhookIdempotency.js', () => ({
-  buildAtlasGROutboundIdempotencyKey: vi
+  buildBirth Hub 360OutboundIdempotencyKey: vi
     .fn()
-    .mockReturnValue('idempotency:atlasgr-outbound-call:hash:test'),
+    .mockReturnValue('idempotency:birthhub360-outbound-call:hash:test'),
   claimIdempotencyKey: vi.fn(),
 }));
 
@@ -19,7 +19,7 @@ import { BlandConfigurationError, VoiceProspectingService } from './voice.servic
 const mockClaim = vi.mocked(claimIdempotencyKey);
 const mockGetAiConsent = vi.mocked(getAiConsent);
 
-const basePayload: AtlasGROutboundPayload = {
+const basePayload: Birthhub360OutboundPayload = {
   phone_number: '+5511999998888',
   name: 'Fulano de Tal',
   company: 'Acme Logística',
@@ -32,7 +32,7 @@ beforeEach(() => {
   process.env.BLAND_API_KEY = 'test-bland-key';
   process.env.BLAND_WEBHOOK_TOKEN = 'test-callback-token';
   process.env.WEBHOOK_BASE_URL = 'https://hub.example.com';
-  process.env.ATLASGR_TENANT_ID = 'tenant-atlas-test';
+  process.env.BIRTHHUB360_TENANT_ID = 'tenant-atlas-test';
   mockClaim.mockResolvedValue(true);
   mockGetAiConsent.mockResolvedValue({
     granted: true,

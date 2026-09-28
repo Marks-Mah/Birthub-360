@@ -100,7 +100,7 @@ export function WhatsAppChatPanel({
         role="dialog"
         aria-modal="true"
         aria-labelledby="whatsapp-chat-panel-title"
-        className="bg-surface border border-line rounded-2xl shadow-2xl w-full max-w-md h-[600px] flex flex-col overflow-hidden"
+        className="bg-surface border border-line rounded-2xl shadow-2xl w-full max-w-md h-[600px] flex flex-col overflow-hidden relative before:absolute before:inset-x-0 before:top-0 before:h-[2px] before:bg-gradient-to-r before:from-transparent before:via-emerald-400/50 before:to-transparent before:z-20"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between px-5 py-4 border-b border-line bg-emerald-600/10">
@@ -195,7 +195,7 @@ export function WhatsAppChatPanel({
                   onClick={handleSend}
                   disabled={sending || !text.trim()}
                   aria-label="Enviar mensagem"
-                  className="bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white p-2.5 rounded-full transition-colors shrink-0"
+                  className="bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white p-2.5 rounded-full transition-all active:scale-95 shrink-0 shadow-md shadow-emerald-500/20"
                 >
                   {sending ? <Loader2 className="animate-spin" size={18} /> : <Send size={18} />}
                 </button>

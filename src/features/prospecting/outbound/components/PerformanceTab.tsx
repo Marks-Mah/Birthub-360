@@ -180,7 +180,7 @@ export function PerformanceTab({ leads, isDark }: PerformanceTabProps) {
                 <Legend iconType="circle" />
                 <Line
                   type="monotone"
-                  name="AtlasGR"
+                  name="Birth Hub 360"
                   dataKey="atlasGR"
                   stroke="var(--brand-primary)"
                   strokeWidth={3}

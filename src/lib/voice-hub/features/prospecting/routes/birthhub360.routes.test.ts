@@ -15,8 +15,8 @@ vi.mock('../lib/webhookIdempotency.js', () => ({
   releaseBlandCallbackProcessing: vi.fn(),
 }));
 
-vi.mock('../../../repositories/atlasGRCallResultRepository.js', () => ({
-  upsertAtlasGRCallResult: vi.fn(),
+vi.mock('../../../repositories/birthhub360CallResultRepository.js', () => ({
+  upsertBirthub360CallResult: vi.fn(),
 }));
 
 import { voiceProspectingService } from '../services/voice.service.js';
@@ -25,14 +25,14 @@ import {
   completeBlandCallbackProcessing,
   releaseBlandCallbackProcessing,
 } from '../lib/webhookIdempotency.js';
-import { upsertAtlasGRCallResult } from '../../../repositories/atlasGRCallResultRepository.js';
-import atlasgrRoutes from './atlasgr.routes.js';
+import { upsertBirthub360CallResult } from '../../../repositories/birthhub360CallResultRepository.js';
+import birthhub360Routes from './birthhub360.routes.js';
 
 const mockTrigger = vi.mocked(voiceProspectingService.triggerOutboundCall);
 const mockBeginCallback = vi.mocked(beginBlandCallbackProcessing);
 const mockCompleteCallback = vi.mocked(completeBlandCallbackProcessing);
 const mockReleaseCallback = vi.mocked(releaseBlandCallbackProcessing);
-const mockUpsertCallResult = vi.mocked(upsertAtlasGRCallResult);
+const mockUpsertCallResult = vi.mocked(upsertBirthub360CallResult);
 
 const ORIGINAL_ENV = { ...process.env };
 const SECRET = 'shared-secret-for-tests';
@@ -41,14 +41,14 @@ const validPayload = { phone_number: '+5511999998888', name: 'Fulano', company: 
 function buildApp() {
   const app = express();
   app.use(express.json());
-  app.use('/api', atlasgrRoutes);
+  app.use('/api', birthhub360Routes);
   return app;
 }
 
 beforeEach(() => {
   vi.clearAllMocks();
-  process.env.ATLASGR_WEBHOOK_SECRET = SECRET;
-  process.env.ATLASGR_BASE_URL = 'https://atlasgr.example.com';
+  process.env.BIRTHHUB360_WEBHOOK_SECRET = SECRET;
+  process.env.ATLASGR_BASE_URL = 'https://birthhub360.example.com';
   process.env.BLAND_WEBHOOK_TOKEN = 'callback-token';
   mockBeginCallback.mockResolvedValue('acquired');
   mockCompleteCallback.mockResolvedValue(undefined);
@@ -61,10 +61,10 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-describe('POST /api/webhook/atlasgr/outbound — authentication', () => {
+describe('POST /api/webhook/birthhub360/outbound — authentication', () => {
   it('rejects a request with no shared-secret header', async () => {
     const app = buildApp();
-    const res = await request(app).post('/api/webhook/atlasgr/outbound').send(validPayload);
+    const res = await request(app).post('/api/webhook/birthhub360/outbound').send(validPayload);
     expect(res.status).toBe(401);
     expect(mockTrigger).not.toHaveBeenCalled();
   });
@@ -72,19 +72,19 @@ describe('POST /api/webhook/atlasgr/outbound — authentication', () => {
   it('rejects a request with the wrong shared secret', async () => {
     const app = buildApp();
     const res = await request(app)
-      .post('/api/webhook/atlasgr/outbound')
-      .set('x-atlasgr-webhook-secret', 'wrong-secret')
+      .post('/api/webhook/birthhub360/outbound')
+      .set('x-birthhub360-webhook-secret', 'wrong-secret')
       .send(validPayload);
     expect(res.status).toBe(401);
     expect(mockTrigger).not.toHaveBeenCalled();
   });
 
-  it('fails closed (503) when ATLASGR_WEBHOOK_SECRET is not configured server-side', async () => {
-    delete process.env.ATLASGR_WEBHOOK_SECRET;
+  it('fails closed (503) when BIRTHHUB360_WEBHOOK_SECRET is not configured server-side', async () => {
+    delete process.env.BIRTHHUB360_WEBHOOK_SECRET;
     const app = buildApp();
     const res = await request(app)
-      .post('/api/webhook/atlasgr/outbound')
-      .set('x-atlasgr-webhook-secret', 'anything')
+      .post('/api/webhook/birthhub360/outbound')
+      .set('x-birthhub360-webhook-secret', 'anything')
       .send(validPayload);
     expect(res.status).toBe(503);
     expect(mockTrigger).not.toHaveBeenCalled();
@@ -100,20 +100,20 @@ describe('POST /api/webhook/atlasgr/outbound — authentication', () => {
     });
     const app = buildApp();
     const res = await request(app)
-      .post('/api/webhook/atlasgr/outbound')
-      .set('x-atlasgr-webhook-secret', SECRET)
+      .post('/api/webhook/birthhub360/outbound')
+      .set('x-birthhub360-webhook-secret', SECRET)
       .send(validPayload);
     expect(res.status).toBe(200);
     expect(mockTrigger).toHaveBeenCalledTimes(1);
   });
 });
 
-describe('POST /api/webhook/atlasgr/outbound — payload validation', () => {
+describe('POST /api/webhook/birthhub360/outbound — payload validation', () => {
   it('rejects a payload missing required fields', async () => {
     const app = buildApp();
     const res = await request(app)
-      .post('/api/webhook/atlasgr/outbound')
-      .set('x-atlasgr-webhook-secret', SECRET)
+      .post('/api/webhook/birthhub360/outbound')
+      .set('x-birthhub360-webhook-secret', SECRET)
       .send({ phone_number: '+5511999998888' });
     expect(res.status).toBe(400);
     expect(mockTrigger).not.toHaveBeenCalled();
@@ -122,8 +122,8 @@ describe('POST /api/webhook/atlasgr/outbound — payload validation', () => {
   it('rejects an unexpected extra field (schema is strict)', async () => {
     const app = buildApp();
     const res = await request(app)
-      .post('/api/webhook/atlasgr/outbound')
-      .set('x-atlasgr-webhook-secret', SECRET)
+      .post('/api/webhook/birthhub360/outbound')
+      .set('x-birthhub360-webhook-secret', SECRET)
       .send({ ...validPayload, unexpected_field: 'x' });
     expect(res.status).toBe(400);
   });
@@ -132,21 +132,21 @@ describe('POST /api/webhook/atlasgr/outbound — payload validation', () => {
     mockTrigger.mockResolvedValue({ success: true, duplicate: false, message: 'ok' });
     const app = buildApp();
     const res = await request(app)
-      .post('/api/webhook/atlasgr/outbound')
-      .set('x-atlasgr-webhook-secret', SECRET)
+      .post('/api/webhook/birthhub360/outbound')
+      .set('x-birthhub360-webhook-secret', SECRET)
       .send({ ...validPayload, lead_id: 'lead-42' });
     expect(res.status).toBe(200);
     expect(mockTrigger).toHaveBeenCalledWith(expect.objectContaining({ lead_id: 'lead-42' }));
   });
 });
 
-describe('POST /api/webhook/atlasgr/outbound — error handling', () => {
+describe('POST /api/webhook/birthhub360/outbound — error handling', () => {
   it('reports a downstream failure as 502 without leaking internal error details', async () => {
     mockTrigger.mockRejectedValue(new Error('Bland AI internal failure with sensitive stack info'));
     const app = buildApp();
     const res = await request(app)
-      .post('/api/webhook/atlasgr/outbound')
-      .set('x-atlasgr-webhook-secret', SECRET)
+      .post('/api/webhook/birthhub360/outbound')
+      .set('x-birthhub360-webhook-secret', SECRET)
       .send(validPayload);
     expect(res.status).toBe(502);
     expect(JSON.stringify(res.body)).not.toContain('sensitive stack info');
@@ -167,7 +167,7 @@ describe('POST /api/webhooks/bland/:token', () => {
     expect(res.status).toBe(503);
   });
 
-  it('fails closed when the AtlasGR forwarding destination is missing', async () => {
+  it('fails closed when the Birth Hub 360 forwarding destination is missing', async () => {
     delete process.env.ATLASGR_BASE_URL;
     const app = buildApp();
     const res = await request(app)
@@ -192,11 +192,11 @@ describe('POST /api/webhooks/bland/:token', () => {
     expect(res.body).toEqual({ received: true, duplicate: false });
     expect(mockBeginCallback).toHaveBeenCalledWith('c1');
     expect(fetchMock).toHaveBeenCalledWith(
-      'https://atlasgr.example.com/api/webhooks/voice-result',
+      'https://birthhub360.example.com/api/webhooks/voice-result',
       expect.objectContaining({
         method: 'POST',
         headers: expect.objectContaining({
-          'x-atlasgr-webhook-secret': SECRET,
+          'x-birthhub360-webhook-secret': SECRET,
           'x-idempotency-key': 'bland-call-result:c1',
         }),
       }),
@@ -214,7 +214,7 @@ describe('POST /api/webhooks/bland/:token', () => {
   });
 
   it('persists the call result with the configured tenant id as best effort', async () => {
-    process.env.ATLASGR_TENANT_ID = 'tenant-123';
+    process.env.BIRTHHUB360_TENANT_ID = 'tenant-123';
     const fetchMock = vi.fn().mockResolvedValue({ ok: true, status: 200 });
     vi.stubGlobal('fetch', fetchMock);
     const app = buildApp();
@@ -282,7 +282,7 @@ describe('POST /api/webhooks/bland/:token', () => {
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
-  it('releases the processing lock when AtlasGR does not acknowledge the result', async () => {
+  it('releases the processing lock when Birth Hub 360 does not acknowledge the result', async () => {
     const fetchMock = vi.fn().mockResolvedValue({ ok: false, status: 503 });
     vi.stubGlobal('fetch', fetchMock);
     const app = buildApp();

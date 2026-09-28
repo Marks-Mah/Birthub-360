@@ -41,3 +41,8 @@ vi.mock('bullmq', async (importOriginal) => {
 
 // Removed global vi.mock('@/lib/prisma') as it breaks integration tests.
 // Unit tests already mock Prisma explicitly.
+
+// Mock canvas-confetti para evitar TypeError: Cannot read properties of null (reading 'clearRect') no JSDOM
+vi.mock('canvas-confetti', () => ({
+  default: vi.fn(),
+}));

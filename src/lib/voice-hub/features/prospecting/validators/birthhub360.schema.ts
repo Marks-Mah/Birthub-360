@@ -1,16 +1,16 @@
 import { z } from 'zod';
 
 /**
- * Payload sent by the AtlasGR CRM to `POST /api/webhook/atlasgr/outbound` to request a
+ * Payload sent by the Birth Hub 360 CRM to `POST /api/webhook/birthhub360/outbound` to request a
  * qualification call for a lead.
  *
  * `lead_id` is OPTIONAL and additive on purpose: the field did not exist in the payload this
  * endpoint originally accepted (`{ phone_number, name, company }`), and this route is a
- * production contract owned by the sibling AtlasGR repository — adding a required field would be
- * a breaking change. Making it optional lets AtlasGR start sending a stable identifier for
+ * production contract owned by the sibling Birth Hub 360 repository — adding a required field would be
+ * a breaking change. Making it optional lets Birth Hub 360 start sending a stable identifier for
  * reliable idempotency without invalidating whatever it sends today.
  */
-export const atlasGROutboundPayloadSchema = z
+export const birthhub360OutboundPayloadSchema = z
   .object({
     phone_number: z
       .string()
@@ -31,7 +31,7 @@ export const atlasGROutboundPayloadSchema = z
   })
   .strict();
 
-export type AtlasGROutboundPayload = z.infer<typeof atlasGROutboundPayloadSchema>;
+export type Birthhub360OutboundPayload = z.infer<typeof birthhub360OutboundPayloadSchema>;
 
 /**
  * Result payload Bland AI posts back to `${WEBHOOK_BASE_URL}/api/webhooks/bland/:token` once a

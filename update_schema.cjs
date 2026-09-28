@@ -9,7 +9,7 @@ let birthub360Content = fs.readFileSync(birthub360SchemaPath, 'utf-8');
 // Models to extract from Voices Hub (skip Session and AuditLog)
 const modelsToExtract = [
   'Workflow', 'WorkflowVersion', 'Agent', 'CallLog', 'Metric', 'Setting',
-  'TenantAiConsent', 'AtlasGRCallResult', 'APIKey', 'TenantWebhookEndpoint',
+  'TenantAiConsent', 'Birthub360CallResult', 'APIKey', 'TenantWebhookEndpoint',
   'Integration', 'Plan', 'Wallet', 'Transaction'
 ];
 
@@ -111,7 +111,7 @@ const orgRelations = `
   agents                     Agent[]
   settings                   Setting[]
   aiConsent                  OrganizationAiConsent?
-  atlasGRCallResults         AtlasGRCallResult[]
+  Birthub360CallResults         Birthub360CallResult[]
   wallet                     Wallet?
   transactions               Transaction[]
   apiKeys                    APIKey[]

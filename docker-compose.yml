@@ -81,8 +81,11 @@ services:
         condition: service_healthy
     entrypoint: >
       /bin/sh -c "
-      until mc alias set local http://minio:9000 ${MINIO_ROOT_USER:-birthhub} ${MINIO_ROOT_PASSWORD:-birthhub_minio_dev_only}; do sleep 2; done;
-      mc mb --ignore-existing local/prospector-assets;
+      apk add --no-cache curl &&
+      curl -O https://dl.min.io/client/mc/release/linux-amd64/mc &&
+      chmod +x mc &&
+      until ./mc alias set local http://minio:9000 ${MINIO_ROOT_USER:-birthhub} ${MINIO_ROOT_PASSWORD:-birthhub_minio_dev_only}; do sleep 2; done;
+      ./mc mb --ignore-existing local/prospector-assets;
       exit 0;
       "
     security_opt:
