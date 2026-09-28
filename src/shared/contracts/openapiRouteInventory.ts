@@ -85,6 +85,9 @@ const NON_REST_ALLOWLIST = new Set<string>([
   '', // '/api' — 404 catch-all de fim de cadeia, não é um router
   'metrics',
   'admin/queues',
+  'voice-hub',
+  'outbound',
+  'dialer-3cx',
 ]);
 
 function splitSegments(path: string): string[] {

@@ -37,29 +37,6 @@ export const ChatTab: React.FC<ChatTabProps> = ({ aiConfig, theme = 'dark' }) =>
     'Explique como a tecnologia de predição da Atlas reduz custos com seguro de carga.',
   ];
 
-  // Load sessions on mount
-  useEffect(() => {
-    loadSessions();
-  }, [loadSessions]);
-
-  const loadSessions = async () => {
-    try {
-      const res = await fetch('/api/chat/sessions');
-      if (res.ok) {
-        const data = await res.json();
-        setSessions(data);
-        if (data.length > 0 && !currentSessionId) {
-          setCurrentSessionId(data[0].id);
-          loadMessages(data[0].id);
-        } else if (data.length === 0) {
-          createNewSession();
-        }
-      }
-    } catch (err: any) {
-      console.error('Erro ao carregar sessões:', err);
-    }
-  };
-
   const loadMessages = async (sessionId: string) => {
     try {
       const res = await fetch(`/api/chat/sessions/${sessionId}/messages`);
@@ -94,6 +71,29 @@ export const ChatTab: React.FC<ChatTabProps> = ({ aiConfig, theme = 'dark' }) =>
       },
     ]);
   };
+
+  const loadSessions = async () => {
+    try {
+      const res = await fetch('/api/chat/sessions');
+      if (res.ok) {
+        const data = await res.json();
+        setSessions(data);
+        if (data.length > 0 && !currentSessionId) {
+          setCurrentSessionId(data[0].id);
+          loadMessages(data[0].id);
+        } else if (data.length === 0) {
+          createNewSession();
+        }
+      }
+    } catch (err: any) {
+      console.error('Erro ao carregar sessões:', err);
+    }
+  };
+
+  // Load sessions on mount
+  useEffect(() => {
+    loadSessions();
+  }, []);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });

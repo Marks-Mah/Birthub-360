@@ -18,10 +18,6 @@ export function TasksOverviewTab({ isDark }: TasksOverviewTabProps) {
   const [tasks, setTasks] = useState<LeadTask[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchTasks();
-  }, [fetchTasks]);
-
   const fetchTasks = async () => {
     setLoading(true);
     try {
@@ -34,6 +30,10 @@ export function TasksOverviewTab({ isDark }: TasksOverviewTabProps) {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchTasks();
+  }, []);
 
   if (loading) {
     return (

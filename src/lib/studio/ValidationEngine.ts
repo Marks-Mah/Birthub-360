@@ -2,6 +2,7 @@ export interface ValidationIssue {
   id: string;
   type: 'error' | 'warning';
   message: string;
+  nodeId?: string;
 }
 
 export interface ValidationResult {

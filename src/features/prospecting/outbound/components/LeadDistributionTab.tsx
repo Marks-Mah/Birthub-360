@@ -81,10 +81,6 @@ export function LeadDistributionTab({ isDark }: LeadDistributionTabProps) {
   const [distribution, setDistribution] = useState<DistributionResponse>(EMPTY_DISTRIBUTION);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchDistribution();
-  }, [fetchDistribution]);
-
   const fetchDistribution = async () => {
     setLoading(true);
     try {
@@ -100,6 +96,10 @@ export function LeadDistributionTab({ isDark }: LeadDistributionTabProps) {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchDistribution();
+  }, []);
 
   if (loading) {
     return (

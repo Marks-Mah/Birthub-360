@@ -143,6 +143,7 @@ export interface Lead {
   stage?: LeadStage;
   tags?: string[];
   loss_reason?: string;
+  userId?: string;
   // Wave 13 (CPI) - Feedback Loop: contraparte simétrica de loss_reason,
   // gravada quando o lead vai para o estágio "ganho".
   win_reason?: string;
@@ -427,6 +428,8 @@ export interface RecentSearchParams {
   annualRevenue?: string;
   decisionMakerRole?: string;
   tone?: 'consultivo' | 'direto' | 'storytelling' | 'provocador';
+  fleetSize?: string;
+  cargoType?: string;
 }
 
 export interface RecentSearch {

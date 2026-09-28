@@ -31,10 +31,6 @@ export function MyTasksTab({ user, isDark }: MyTasksTabProps) {
   const [tasks, setTasks] = useState<LeadTask[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchTasks();
-  }, [fetchTasks]);
-
   const fetchTasks = async () => {
     setLoading(true);
     try {
@@ -47,6 +43,10 @@ export function MyTasksTab({ user, isDark }: MyTasksTabProps) {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchTasks();
+  }, []);
 
   const handleToggle = async (task: LeadTask) => {
     const nextStatus: LeadTask['status'] = task.status === 'done' ? 'pending' : 'done';

@@ -61,4 +61,7 @@ const TAB_ROUTE_SET: Record<TabType, true> = {
   'daily-plan': true,
   'sdr-diagnostic': true,
   'module-access': true,
+  'voice-hub': true,
+  outbound: true,
+  dialer: true,
 };

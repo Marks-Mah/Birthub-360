@@ -38,6 +38,7 @@
     "server",
     "src/lib/voice-hub",
     "src/lib/voice-runtime",
+    "src/features/voice-hub",
     "src/features/cadence/dialer",
     "src/features/prospecting/outbound",
     "src/**/*.test.ts",

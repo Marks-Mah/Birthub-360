@@ -13,10 +13,6 @@ export function UserKanbanBoard({ user, isDark }: UserKanbanBoardProps) {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchLeads();
-  }, [fetchLeads]);
-
   const fetchLeads = async () => {
     setLoading(true);
     try {
@@ -29,6 +25,10 @@ export function UserKanbanBoard({ user, isDark }: UserKanbanBoardProps) {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchLeads();
+  }, []);
 
   const handleLeadSaved = (updatedLead: Lead) => {
     setLeads((prev) => prev.map((l) => (l.id === updatedLead.id ? updatedLead : l)));

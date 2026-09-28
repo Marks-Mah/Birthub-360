@@ -1416,7 +1416,7 @@ export const useStudioStore = create<StudioState>((set, get) => ({
         });
       }
     } catch (err: unknown) {
-      logger.error('Error applying AI refactor to workflow', { err });
+      logger.error({ err }, 'Error applying AI refactor to workflow');
       const errMessage = err instanceof Error ? err.message : String(err);
       get().addSimulationLog({
         type: 'error',
@@ -1503,7 +1503,7 @@ export const useStudioStore = create<StudioState>((set, get) => ({
         });
       }
     } catch (err: unknown) {
-      logger.error('Error generating workflow from prompt', { err });
+      logger.error({ err }, 'Error generating workflow from prompt');
       const errMessage = err instanceof Error ? err.message : String(err);
       get().addSimulationLog({
         type: 'error',
@@ -1534,7 +1534,7 @@ export const useStudioStore = create<StudioState>((set, get) => ({
         }
       }
     } catch (err: any) {
-      logger.error('Error loading workflow from server', { err });
+      logger.error({ err }, 'Error loading workflow from server');
     }
   },
   saveWorkflowToServer: async () => {
@@ -1556,7 +1556,7 @@ export const useStudioStore = create<StudioState>((set, get) => ({
         message: 'Progresso do Canvas salvo de forma segura e persistente no banco de dados.',
       });
     } catch (err: any) {
-      logger.error('Error saving workflow to server', { err });
+      logger.error({ err }, 'Error saving workflow to server');
     }
   },
 
@@ -1608,7 +1608,7 @@ export const useStudioStore = create<StudioState>((set, get) => ({
         message: `Falha ao publicar: ${data.error || res.statusText || 'erro desconhecido no servidor'}`,
       });
     } catch (err: any) {
-      logger.error('Error publishing workflow to server', { err });
+      logger.error({ err }, 'Error publishing workflow to server');
       set({ publishState: 'error', publishIssues: [] });
       get().addSimulationLog({
         type: 'error',
@@ -1662,7 +1662,7 @@ export const useStudioStore = create<StudioState>((set, get) => ({
       const versions: WorkflowVersionSummary[] = Array.isArray(data.versions) ? data.versions : [];
       set({ versionHistoryState: 'idle', workflowVersions: versions, versionHistoryError: null });
     } catch (err: any) {
-      logger.error('Error fetching workflow version history', { err });
+      logger.error({ err }, 'Error fetching workflow version history');
       set({
         versionHistoryState: 'error',
         workflowVersions: [],
@@ -1727,7 +1727,7 @@ export const useStudioStore = create<StudioState>((set, get) => ({
         message: `Falha ao restaurar versão ${version}: ${data.error || res.statusText || 'erro desconhecido no servidor'}`,
       });
     } catch (err: any) {
-      logger.error('Error rolling back workflow version', { err });
+      logger.error({ err }, 'Error rolling back workflow version');
       set({
         rollbackState: 'error',
         rollbackIssues: [],
