@@ -27,6 +27,7 @@ import {
 } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import confetti from 'canvas-confetti';
 import { BRAND } from '../config/brand.js';
 import { BitrixImportModal } from '../features/crm/components/BitrixImportModal.js';
 import { KanbanCard } from '../features/crm/components/KanbanCard.js';
@@ -296,6 +297,12 @@ export function CrmBoard({ funnel: funnelProp, embedded = false }: CrmBoardProps
       if (currentLead && currentLead.status !== targetStatus) {
         if (targetStatus === 'Negócios Ganhos' || targetStatus === 'Convertido em Oportunidade') {
           SoundFX.play('success');
+          confetti({
+            particleCount: 80,
+            spread: 70,
+            origin: { y: 0.6 },
+            colors: ['#D4AF37', '#10B981', '#3B82F6', '#F59E0B'],
+          });
         } else {
           SoundFX.play('confirm');
         }
@@ -677,6 +684,7 @@ export function CrmBoard({ funnel: funnelProp, embedded = false }: CrmBoardProps
               if (selectionMode) setSelectedLeadIds(new Set());
             }}
             variant={selectionMode ? 'default' : 'secondary'}
+            soundClick
             className="text-xs"
             title="Ativar seleção múltipla de cards no Kanban"
           >
@@ -688,6 +696,7 @@ export function CrmBoard({ funnel: funnelProp, embedded = false }: CrmBoardProps
           <Button
             onClick={() => setIsBitrixModalOpen(true)}
             variant="secondary"
+            soundClick
             className="text-xs"
             title="Abrir painel para buscar e receber leads do Bitrix24"
           >
@@ -699,6 +708,7 @@ export function CrmBoard({ funnel: funnelProp, embedded = false }: CrmBoardProps
           <Button
             onClick={handleBatchExportBitrix}
             variant="secondary"
+            soundClick
             className="text-xs"
             title="Enviar leads para o portal Bitrix24"
           >
@@ -710,6 +720,7 @@ export function CrmBoard({ funnel: funnelProp, embedded = false }: CrmBoardProps
             onClick={handleBatchEnrich}
             disabled={loading}
             variant="secondary"
+            soundClick
             className="text-xs"
             title="Enriquecer leads não enriquecidos em lote"
           >
@@ -720,6 +731,7 @@ export function CrmBoard({ funnel: funnelProp, embedded = false }: CrmBoardProps
           <Button
             onClick={handleExportCsv}
             variant="secondary"
+            soundClick
             className="text-xs"
             title="Exportar todos os leads para uma planilha CSV"
           >

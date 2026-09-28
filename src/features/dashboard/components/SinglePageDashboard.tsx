@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { BorderBeam } from '../../../components/ui/BorderBeam.js';
+import { GamificationWidget } from '../../../components/ui/GamificationWidget.js';
 import { Skeleton } from '../../../components/ui/Skeleton.js';
 import { useAuth } from '../../../contexts/AuthContext.js';
 import { useAnalyticsDashboard } from '../../../hooks/useDatabase.js';
@@ -341,7 +342,27 @@ export function SinglePageDashboard() {
             </motion.section>
           </div>
 
-          {/* TILE 4: COPILOTO IA — Gradiente Suave Dourado→Violeta na Superfície */}
+          {/* TILE 4: GAMIFICAÇÃO & DESEMPENHO COMERCIAL 2026 COM 3D ORB */}
+          <motion.div
+            variants={{
+              hidden: { opacity: 0, y: 20 },
+              show: {
+                opacity: 1,
+                y: 0,
+                transition: { type: 'spring', stiffness: 300, damping: 24 },
+              },
+            }}
+            className="lg:col-span-3"
+          >
+            <GamificationWidget
+              initialXp={Math.max(350, totalLeads * 50 + closedThisMonth * 200)}
+              level={Math.max(1, Math.floor((totalLeads * 50 + closedThisMonth * 200) / 1000) + 1)}
+              streakDays={closedThisMonth > 0 ? 5 : 2}
+              show3DCore
+            />
+          </motion.div>
+
+          {/* TILE 5: COPILOTO IA — Gradiente Suave Dourado→Violeta na Superfície */}
           <motion.section
             variants={{
               hidden: { opacity: 0, y: 20 },

@@ -71,6 +71,8 @@ export const KanbanCard = React.memo(function KanbanCard({
 }: KanbanCardProps) {
   const [enriching, setEnriching] = useState(false);
   const [converting, setConverting] = useState(false);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [isHovered, setIsHovered] = useState(false);
   const techRowRef = useRef<HTMLDivElement>(null);
 
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
@@ -103,6 +105,14 @@ export const KanbanCard = React.memo(function KanbanCard({
 
   const isBitrixSynced = Boolean(lead.bitrixLeadId || lead.bitrixDealId);
   const isHighPriority = (lead.score ?? 0) >= 70 || lead.temperature === 'Quente';
+
+  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    setMousePos({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    });
+  };
 
   useEffect(() => {
     const buttons = techRowRef.current?.querySelectorAll('button');
@@ -147,7 +157,12 @@ export const KanbanCard = React.memo(function KanbanCard({
     <div
       ref={setNodeRef}
       style={style}
-      onMouseEnter={() => SoundFX.play('hover')}
+      onPointerMove={handlePointerMove}
+      onMouseEnter={() => {
+        setIsHovered(true);
+        SoundFX.play('hover');
+      }}
+      onMouseLeave={() => setIsHovered(false)}
       className={`bg-surface-elevated/90 backdrop-blur-md rounded-2xl border transition-all duration-200 group relative overflow-hidden ${
         isSelected
           ? 'border-brand ring-2 ring-brand shadow-[0_0_20px_rgba(212,175,55,0.25)] bg-surface-2/80'
@@ -156,10 +171,23 @@ export const KanbanCard = React.memo(function KanbanCard({
             : 'border-line/80 shadow-sm hover:border-brand/40 hover:shadow-card hover:-translate-y-0.5'
       } ${isDragging ? 'shadow-2xl ring-2 ring-brand dark:ring-brand-2 z-50 scale-105 rotate-1 bg-surface-2' : ''}`}
     >
-      {/* Luz especular de topo para leads de alta relevância */}
-      {isHighPriority && (
-        <div className="absolute top-0 inset-x-3 h-[1.5px] bg-gradient-to-r from-transparent via-brand/60 to-transparent pointer-events-none rounded-t-2xl" />
+      {/* 2026 Bento Spotlight */}
+      {isHovered && !isDragging && (
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute -inset-px rounded-[inherit] transition-opacity duration-300 z-10"
+          style={{
+            background: `radial-gradient(180px circle at ${mousePos.x}px ${mousePos.y}px, rgba(212,175,55,0.12), transparent 70%)`,
+          }}
+        />
       )}
+
+      {/* Luz especular de topo: visível em hover e destacada para leads de alta relevância */}
+      <div
+        className={`absolute top-0 inset-x-0 h-[1.5px] bg-gradient-to-r from-transparent via-brand/70 to-transparent pointer-events-none rounded-t-2xl z-20 transition-opacity duration-300 ${
+          isHighPriority ? 'opacity-90' : 'opacity-0 group-hover:opacity-100'
+        }`}
+      />
 
       {/* Checkbox de seleção múltipla (visível no hover ou quando selectionMode está ativo) */}
       {(selectionMode || isSelected) && (
@@ -214,9 +242,9 @@ export const KanbanCard = React.memo(function KanbanCard({
           )}
           {lead.score !== undefined && lead.score !== null ? (
             <span
-              className={`shrink-0 text-xs font-black border px-2 py-0.5 rounded-lg flex items-center gap-1 ${
+              className={`shrink-0 text-xs font-black border px-2 py-0.5 rounded-lg flex items-center gap-1 transition-all ${
                 lead.score >= 70
-                  ? 'bg-rose-500/10 border-rose-500/30 text-rose-600 dark:text-rose-400'
+                  ? 'bg-rose-500/10 border-rose-500/30 text-rose-600 dark:text-rose-400 shadow-[0_0_10px_rgba(244,63,94,0.25)]'
                   : lead.score >= 40
                     ? 'bg-amber-500/10 border-amber-500/30 text-warning-active dark:text-warning'
                     : 'bg-blue-500/10 border-blue-500/30 text-blue-600 dark:text-blue-400'
@@ -321,7 +349,7 @@ export const KanbanCard = React.memo(function KanbanCard({
               // (Antique Gold cru já mede ~8.74:1 contra a superfície escura), escurecida no
               // claro (--color-brand-ink, ver globals.css) porque a cor crua ali cai abaixo
               // de 4.5:1. Mesmo par usado em todo o app — ver design-system/SKILL.md.
-              className="flex items-center gap-1 text-[11px] font-bold text-brand-ink dark:text-brand hover:opacity-75 disabled:opacity-50 transition-colors"
+              className="flex items-center gap-1 text-[11px] font-bold text-brand-ink dark:text-brand hover:opacity-75 disabled:opacity-50 transition-all active:scale-95 px-1.5 py-0.5 rounded-md hover:bg-brand/10"
             >
               {converting ? (
                 <Loader2 className="w-3 h-3 animate-spin" />
@@ -337,7 +365,7 @@ export const KanbanCard = React.memo(function KanbanCard({
               onClick={handleEnrich}
               disabled={enriching}
               title="Reenriquecer com dados da Receita Federal"
-              className="flex items-center gap-1 text-[11px] font-bold text-amber-400 hover:text-amber-300 disabled:opacity-50 transition-colors"
+              className="flex items-center gap-1 text-[11px] font-bold text-amber-400 hover:text-amber-300 disabled:opacity-50 transition-all active:scale-95 px-1.5 py-0.5 rounded-md hover:bg-amber-400/10"
             >
               {enriching ? (
                 <Loader2 className="w-3 h-3 animate-spin" />

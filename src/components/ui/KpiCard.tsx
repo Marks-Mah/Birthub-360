@@ -128,13 +128,18 @@ export function KpiCard({
   const sharedClassName = cn(
     'group relative w-full overflow-hidden rounded-card border border-line bg-surface-elevated/85 backdrop-blur-xl p-4 text-left shadow-card transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]',
     onSelect &&
-      'cursor-pointer hover:-translate-y-1 hover:border-brand/40 hover:shadow-card-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 focus-visible:ring-offset-2 focus-visible:ring-offset-bg',
+      'cursor-pointer active:scale-[0.98] hover:-translate-y-1 hover:border-brand/40 hover:shadow-card-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 focus-visible:ring-offset-2 focus-visible:ring-offset-bg',
     active && 'border-brand/60 shadow-[0_0_0_2px_color-mix(in_srgb,var(--brand)_28%,transparent)]',
     className,
   );
 
   const content = (
     <>
+      {/* 2026 Specular Highlight Edge */}
+      <span
+        className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-brand to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100 z-20"
+        aria-hidden="true"
+      />
       {spotlight && isHovered && (
         <span
           aria-hidden="true"
@@ -148,7 +153,7 @@ export function KpiCard({
       <span className="relative z-10 flex items-center justify-between">
         <span
           className={cn(
-            'flex h-8 w-8 items-center justify-center rounded-lg border transition-transform duration-200 group-hover:scale-110 group-hover:rotate-3',
+            'flex h-8 w-8 items-center justify-center rounded-lg border transition-all duration-300 group-hover:scale-110 group-hover:rotate-3 group-hover:shadow-[0_0_12px_rgba(212,175,55,0.25)]',
             t.chip,
           )}
         >
@@ -156,6 +161,16 @@ export function KpiCard({
         </span>
 
         <span className="flex items-center gap-2">
+          {active && (
+            <span
+              className="relative flex h-2 w-2 items-center justify-center"
+              aria-hidden="true"
+              title="Card ativo"
+            >
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand opacity-75" />
+              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-brand" />
+            </span>
+          )}
           {trend && (
             <span
               className={cn(
