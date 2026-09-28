@@ -72,7 +72,7 @@ export const useSessionStore = create<SessionState>((set) => ({
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ color }),
-    }).catch((err) => logger.error('Failed to save brand color', { err }));
+    }).catch((err) => logger.error({ err }, 'Failed to save brand color'));
 
     set({ brandColor: color });
     applyBrandColorToDom(color);
@@ -101,7 +101,7 @@ export const useSessionStore = create<SessionState>((set) => ({
       set({ user, sessionStatus: user ? 'authenticated' : 'unauthenticated' });
       return user;
     } catch (err: any) {
-      logger.error('Failed to fetch current session', { err });
+      logger.error({ err }, 'Failed to fetch current session');
       set({ user: null, sessionStatus: 'unauthenticated' });
       return null;
     }
