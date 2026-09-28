@@ -1,5 +1,4 @@
 import { motion, useReducedMotion, type SVGMotionProps } from 'framer-motion';
-import type React from 'react';
 import { cn } from '../../../lib/utils.js';
 
 interface IconBaseProps extends Omit<SVGMotionProps<SVGSVGElement>, 'size'> {

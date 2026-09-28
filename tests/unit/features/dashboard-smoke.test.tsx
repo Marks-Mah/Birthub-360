@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest';
 import { render } from '@testing-library/react';
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
@@ -16,6 +16,19 @@ import Supervision from '@/features/voice-hub/pages/Dashboard/Supervision.js';
 import Telephony from '@/features/voice-hub/pages/Dashboard/Telephony.js';
 
 describe('Smoke tests for Dashboard pages', () => {
+  beforeAll(() => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: async () => [],
+      text: async () => '',
+    }));
+  });
+
+  afterAll(() => {
+    vi.unstubAllGlobals();
+  });
+
   const renderWithProviders = (ui: React.ReactElement) => {
     return render(
       <MemoryRouter>
