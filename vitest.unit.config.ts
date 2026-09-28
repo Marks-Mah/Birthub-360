@@ -6,7 +6,13 @@ import { fileURLToPath } from 'node:url';
 // não-numérico ou <= 0 caem no default (2) — o piso pensado para coexistir com outros worktrees
 // continua sendo o comportamento padrão do CI e de quem não passar a variável.
 const parsedMaxWorkers = Number.parseInt(process.env.VITEST_MAX_WORKERS ?? '', 10);
-const maxWorkers = Number.isFinite(parsedMaxWorkers) && parsedMaxWorkers > 0 ? parsedMaxWorkers : 2;
+const hasWorkerOverride = Number.isFinite(parsedMaxWorkers) && parsedMaxWorkers > 0;
+const maxWorkers = hasWorkerOverride ? parsedMaxWorkers : 2;
+// Sem override, os arquivos rodam em série: o gate do CI ficava sem memória (OOM) ao carregar
+// vários ambientes jsdom em paralelo no runner padrão. Quem passa VITEST_MAX_WORKERS está
+// declarando que tem CPU/memória sobrando, então aí o paralelismo entre arquivos volta — caso
+// contrário o override não teria efeito nenhum.
+const fileParallelism = hasWorkerOverride;
 
 export default defineConfig({
   resolve: {
@@ -24,6 +30,7 @@ export default defineConfig({
     // VITEST_MAX_WORKERS (ver definição de `maxWorkers` acima) — default 2 preservado.
     pool: 'threads',
     maxWorkers,
+    fileParallelism,
     include: [
       'tests/unit/**/*.test.ts',
       'src/**/__tests__/**/*.test.ts',
