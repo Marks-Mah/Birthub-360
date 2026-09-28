@@ -1,4 +1,4 @@
-import { Activity, AlertTriangle, Radio } from 'lucide-react';
+import { Activity, AlertTriangle } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { Badge } from '../../../components/ui/Badge.js';
 import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/Card.js';

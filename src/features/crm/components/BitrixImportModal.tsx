@@ -12,6 +12,7 @@ import {
   X,
 } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
+import { SoundFX } from '../../../lib/soundEffects.js';
 import { toast } from '../../../lib/toast.js';
 import {
   type BitrixConnectionItem,
@@ -86,6 +87,7 @@ export function BitrixImportModal({ isOpen, onClose, onImportSuccess }: BitrixIm
   }, [isOpen, selectedConnectionId, fetchRecords]);
 
   const toggleSelect = (id: string) => {
+    SoundFX.play('click');
     const next = new Set(selectedIds);
     if (next.has(id)) next.delete(id);
     else next.add(id);
@@ -93,6 +95,7 @@ export function BitrixImportModal({ isOpen, onClose, onImportSuccess }: BitrixIm
   };
 
   const toggleSelectAll = () => {
+    SoundFX.play('click');
     const currentList = entityType === 'lead' ? leads : deals;
     if (selectedIds.size === currentList.length) {
       setSelectedIds(new Set());
@@ -111,12 +114,20 @@ export function BitrixImportModal({ isOpen, onClose, onImportSuccess }: BitrixIm
       } else {
         await bitrixApi.importDeals(selectedConnectionId, ids);
       }
+      SoundFX.play('success');
+      try {
+        const confetti = (await import('canvas-confetti')).default;
+        confetti({ particleCount: 70, spread: 80, origin: { y: 0.5 } });
+      } catch {
+        // ignore
+      }
       toast.success(
         `${ids.length} ${entityType === 'lead' ? 'lead(s)' : 'negócio(s)'} importado(s) com sucesso!`,
       );
       onImportSuccess();
       onClose();
     } catch (err: any) {
+      SoundFX.play('error');
       toast.error(err instanceof Error ? err.message : 'Falha ao importar do Bitrix24');
     } finally {
       setImporting(false);
@@ -127,12 +138,20 @@ export function BitrixImportModal({ isOpen, onClose, onImportSuccess }: BitrixIm
     setImporting(true);
     try {
       const res = await bitrixApi.importRecentBitrixLeads();
+      SoundFX.play('success');
+      try {
+        const confetti = (await import('canvas-confetti')).default;
+        confetti({ particleCount: 70, spread: 80, origin: { y: 0.5 } });
+      } catch {
+        // ignore
+      }
       toast.success(
         `Sincronização concluída: ${res.data.imported} importados, ${res.data.skipped} já existentes.`,
       );
       onImportSuccess();
       onClose();
     } catch (err: any) {
+      SoundFX.play('error');
       toast.error(err instanceof Error ? err.message : 'Falha ao sincronizar recentes');
     } finally {
       setImporting(false);
@@ -143,7 +162,7 @@ export function BitrixImportModal({ isOpen, onClose, onImportSuccess }: BitrixIm
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-surface border border-line rounded-3xl w-full max-w-3xl max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
+      <div className="relative bg-surface border border-line rounded-3xl w-full max-w-3xl max-h-[85vh] flex flex-col shadow-2xl overflow-hidden before:absolute before:inset-x-0 before:top-0 before:h-[2px] before:bg-gradient-to-r before:from-transparent before:via-brand/50 before:to-transparent before:z-20">
         {/* Header do Modal */}
         <div className="p-6 border-b border-line flex items-center justify-between bg-surface-2/60">
           <div className="flex items-center gap-3">
@@ -458,8 +477,12 @@ export function BitrixImportModal({ isOpen, onClose, onImportSuccess }: BitrixIm
               type="button"
               onClick={handleImportSelected}
               disabled={importing || selectedIds.size === 0}
-              className="px-5 py-2.5 bg-brand-active hover:brightness-110 text-on-brand rounded-xl text-xs font-bold transition-colors disabled:opacity-50 flex items-center justify-center gap-2 shadow-sm w-full sm:w-auto"
+              className="relative overflow-hidden px-5 py-2.5 bg-brand text-on-brand hover:brightness-110 active:scale-95 rounded-xl text-xs font-bold transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-sm hover:shadow-glow-brand w-full sm:w-auto cursor-pointer"
             >
+              <div
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full hover:translate-x-full transition-transform duration-1000 pointer-events-none"
+                aria-hidden="true"
+              />
               {importing ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
               ) : (
