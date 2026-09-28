@@ -1,8 +1,18 @@
 - De: Agente 07
 - Para: Agente 01
 - Onda: IA-1
-- Status: aberto
+- Status: resolvido
 - Prioridade: alto
+
+## Resolução
+
+Migration criada manualmente em `prisma/migrations/20260928000000_add_document_embedding/migration.sql` devido à indisponibilidade de npx/prisma no ambiente atual.
+
+Arquivos alterados:
+- `prisma/schema.prisma` - Model DocumentEmbedding adicionado ao final do arquivo
+- `prisma/migrations/20260928000000_add_document_embedding/migration.sql` - Migration SQL criada
+
+Próximo passo: Aplicar migration com `npx prisma migrate deploy` quando ambiente permitir.
 
 ## Problema
 
