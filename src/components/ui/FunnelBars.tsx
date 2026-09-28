@@ -1,8 +1,6 @@
+import { SoundFX } from '../../lib/soundEffects.js';
 import { cn } from '../../lib/utils.js';
 
-/* Generalizado a partir de `FunnelBars` (JoaoReisDiagnosticHub.tsx) — o mapeamento de status
-   Bitrix (CONVERTED/JUNK → tom ok/critical) é regra de negócio e fica com quem chama, não aqui
-   (ver AGENTS.md de src/components/ui/: "não inserir regra de negócio em componente base"). */
 export interface FunnelBarItem {
   id: string;
   label: string;
@@ -10,31 +8,52 @@ export interface FunnelBarItem {
   tone?: 'brand' | 'ok' | 'critical';
 }
 
-const TONE_BAR = { brand: 'bg-brand', ok: 'bg-ok', critical: 'bg-critical' } as const;
+const TONE_BAR = {
+  brand: 'bg-gradient-to-r from-brand via-brand-2 to-brand shadow-[0_0_12px_rgba(212,175,55,0.3)]',
+  ok: 'bg-gradient-to-r from-emerald-600 to-teal-500 shadow-[0_0_12px_rgba(16,185,129,0.3)]',
+  critical: 'bg-gradient-to-r from-rose-600 to-red-500 shadow-[0_0_12px_rgba(239,68,68,0.3)]',
+} as const;
 
-export function FunnelBars({ items }: { items: FunnelBarItem[] }) {
+export function FunnelBars({
+  items,
+  soundHover = false,
+}: {
+  items: FunnelBarItem[];
+  soundHover?: boolean;
+}) {
   const max = Math.max(...items.map((i) => i.value), 1);
   return (
-    <div className="space-y-2">
+    <div className="space-y-2.5">
       {items.map((item) => {
-        const widthPct = Math.max((item.value / max) * 100, item.value > 0 ? 2 : 0);
+        const widthPct = Math.max((item.value / max) * 100, item.value > 0 ? 3 : 0);
         return (
-          <div key={item.id} className="grid grid-cols-[140px_1fr_44px] items-center gap-3 text-xs">
-            <span className="truncate font-semibold text-ink">{item.label}</span>
+          <div
+            key={item.id}
+            onMouseEnter={() => {
+              if (soundHover) SoundFX.play('hover');
+            }}
+            className="group grid grid-cols-[140px_1fr_44px] items-center gap-3 text-xs p-1 rounded-lg transition-colors hover:bg-surface-elevated/50"
+          >
+            <span className="truncate font-bold text-ink group-hover:text-brand transition-colors">
+              {item.label}
+            </span>
             <div
               role="img"
               aria-label={`${item.label}: ${item.value}`}
-              className="h-4 overflow-hidden rounded-full bg-surface-2"
+              className="h-3.5 overflow-hidden rounded-full bg-surface-2 border border-line/50 p-0.5 shadow-inner"
             >
               <div
                 className={cn(
-                  'h-full rounded-full transition-colors duration-700',
+                  'h-full rounded-full transition-all duration-700 relative overflow-hidden',
                   TONE_BAR[item.tone ?? 'brand'],
                 )}
                 style={{ width: `${widthPct}%` }}
-              />
+              >
+                {/* Linha especular interna */}
+                <div className="absolute top-0 inset-x-0 h-1/2 bg-white/20 rounded-t-full pointer-events-none" />
+              </div>
             </div>
-            <span className="text-right font-mono font-bold tabular-nums text-ink">
+            <span className="text-right font-mono font-black tabular-nums text-ink">
               {item.value}
             </span>
           </div>

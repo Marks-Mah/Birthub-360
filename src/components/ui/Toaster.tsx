@@ -54,7 +54,7 @@ export function Toaster() {
     <div className="fixed bottom-6 right-6 z-[100] flex flex-col gap-2.5 max-w-sm pointer-events-none">
       <AnimatePresence>
         {toasts.map((t) => {
-          const { bg, icon: Icon, specular } = KIND_STYLES[t.kind];
+          const { bg, icon: Icon } = KIND_STYLES[t.kind];
           return (
             <motion.div
               key={t.id}
