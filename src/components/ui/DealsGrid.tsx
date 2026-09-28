@@ -36,10 +36,11 @@ export function DealCard({
   const badgeClass = isWon
     ? 'bg-ok/15 text-ok-active dark:text-ok border-ok/30'
     : isLost
-      ? 'bg-critical/15 text-critical border-critical/30'
+      ? 'bg-critical/15 text-critical-active border-critical/30'
       : 'bg-surface text-ink-2 border border-line/80';
 
   return (
+    // biome-ignore lint/a11y/noStaticElementInteractions: feedback sonoro opcional de hover em card visual
     <div
       onMouseEnter={() => {
         if (soundHover) SoundFX.play('hover');
