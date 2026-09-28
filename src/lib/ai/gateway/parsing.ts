@@ -5,6 +5,7 @@
  */
 import type { BaseMessage } from '@langchain/core/messages';
 import type { ChatCompletionMessage } from './types.js';
+import type { z } from 'zod';
 
 const MAX_MESSAGES_PER_REQUEST = 100;
 const MAX_TOTAL_MESSAGE_CHARS = 200_000;
@@ -106,5 +107,34 @@ export function cleanAndParseJson<T>(content: string): T {
       `Falha ao decodificar JSON gerado pela IA: ${(err as Error).message}. Conteúdo original: ${content.slice(0, 200)}...`,
       { cause: err },
     );
+  }
+}
+
+/**
+ * Extrai JSON e valida contra um schema Zod
+ * Combina cleanAndParseJson com validação estruturada
+ */
+export async function cleanParseAndValidate<T>(
+  content: string,
+  schema: z.ZodSchema<T>,
+  maxRetries: number = 3,
+): Promise<{ success: true; data: T } | { success: false; error: string }> {
+  try {
+    const parsed = cleanAndParseJson<T>(content);
+    const result = schema.safeParse(parsed);
+
+    if (result.success) {
+      return { success: true, data: result.data };
+    }
+
+    return {
+      success: false,
+      error: `Zod validation failed: ${result.error.errors.map((e) => e.message).join(', ')}`,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : String(error),
+    };
   }
 }
