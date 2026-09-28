@@ -79,7 +79,7 @@ export function UnifiedNode({
 
       {/* Header */}
       <div
-        className={`flex items-center gap-3 p-3 border-b border-white/5 rounded-t-xl ${colorClass.replace('bg-', 'bg-').replace('100', '500/10')} bg-opacity-20`}
+        className={`flex items-center gap-3 p-3 border-b border-white/5 rounded-t-xl ${colorClass.replace('100', '500/10')} bg-opacity-20`}
       >
         <div
           className={`p-1.5 rounded-lg bg-black/20 shadow-sm ${colorClass.replace('bg-', 'text-').replace('100', '400')} border border-white/5`}
