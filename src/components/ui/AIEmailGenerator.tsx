@@ -1,3 +1,4 @@
+import confetti from 'canvas-confetti';
 import {
   AlertCircle,
   Bot,
@@ -15,6 +16,7 @@ import {
 import { useState } from 'react';
 import { useActivePlaybook } from '../../hooks/useActivePlaybook.js';
 import { api } from '../../lib/api.js';
+import { SoundFX } from '../../lib/soundEffects.js';
 import { Button } from './Button.js';
 
 type Channel = 'email' | 'call' | 'message';
@@ -137,7 +139,15 @@ export function AIEmailGenerator({
         );
         setMessageResult(response.result);
       }
+      SoundFX.play('success');
+      confetti({
+        particleCount: 50,
+        spread: 60,
+        origin: { y: 0.65 },
+        colors: ['#D4AF37', '#1677FF', '#C53678', '#10B981'],
+      });
     } catch (generationError: any) {
+      SoundFX.play('error');
       setError(
         generationError instanceof Error
           ? generationError.message
@@ -164,12 +174,16 @@ export function AIEmailGenerator({
     }
     if (!text) return;
     navigator.clipboard.writeText(text);
+    SoundFX.play('confirm');
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
   return (
-    <div className="glass-card p-5 rounded-2xl border border-line bg-surface space-y-4 shadow-xl">
+    <div className="relative overflow-hidden p-5 rounded-2xl border border-line/80 bg-surface/90 backdrop-blur-xl space-y-4 shadow-xl">
+      {/* 2026 Top Specular Highlight */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-brand to-transparent opacity-80" />
+
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3 border-b border-line">
         <div className="flex items-center gap-2.5">
@@ -203,10 +217,13 @@ export function AIEmailGenerator({
               key={value}
               type="button"
               aria-pressed={tone === value}
-              onClick={() => setTone(value)}
-              className={`px-2.5 py-1 rounded-lg transition-colors cursor-pointer ${
+              onClick={() => {
+                SoundFX.play('click');
+                setTone(value);
+              }}
+              className={`px-2.5 py-1 rounded-lg transition-all active:scale-95 cursor-pointer ${
                 tone === value
-                  ? 'bg-brand-active text-on-brand font-bold shadow-sm'
+                  ? 'bg-brand-active text-on-brand font-bold shadow-sm ring-1 ring-brand/30'
                   : 'text-ink-2 hover:text-ink'
               }`}
             >
@@ -226,13 +243,14 @@ export function AIEmailGenerator({
               type="button"
               aria-pressed={channel === c}
               onClick={() => {
+                SoundFX.play('navigate');
                 setChannel(c);
                 setError('');
                 setCopied(false);
               }}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors cursor-pointer ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all active:scale-95 cursor-pointer ${
                 channel === c
-                  ? 'bg-brand-active text-on-brand shadow-sm'
+                  ? 'bg-brand-active text-on-brand shadow-sm ring-1 ring-brand/30'
                   : 'text-ink-2 hover:text-ink'
               }`}
             >
@@ -283,6 +301,8 @@ export function AIEmailGenerator({
           <Button
             onClick={generate}
             disabled={generating}
+            variant="cosmic"
+            shine
             className="w-full sm:w-auto shadow-lg shadow-brand/20 cursor-pointer"
           >
             {generating ? (
@@ -307,16 +327,17 @@ export function AIEmailGenerator({
             <Button
               variant="ghost"
               size="sm"
+              soundClick
               onClick={generate}
               disabled={generating}
-              className="text-xs text-indigo-400"
+              className="text-xs text-indigo-400 active:scale-95"
             >
               <RefreshCw className={`w-3.5 h-3.5 mr-1.5 ${generating ? 'animate-spin' : ''}`} />
               Regerar com Novo Tom
             </Button>
 
             <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" onClick={copyToClipboard} className="text-xs">
+              <Button variant="outline" size="sm" onClick={copyToClipboard} className="text-xs active:scale-95">
                 {copied ? (
                   <Check className="w-3.5 h-3.5 text-green-400 mr-1.5" />
                 ) : (
@@ -327,7 +348,8 @@ export function AIEmailGenerator({
               {channel === 'email' && emailResult && (
                 <a
                   href={`mailto:?subject=${encodeURIComponent(emailResult.subject)}&body=${encodeURIComponent(emailResult.body)}`}
-                  className="inline-flex items-center justify-center text-xs font-bold px-3.5 py-1.5 rounded-md bg-brand-active text-on-brand hover:brightness-95 transition-[filter] shadow-md"
+                  onClick={() => SoundFX.play('click')}
+                  className="inline-flex items-center justify-center text-xs font-bold px-3.5 py-1.5 rounded-md bg-brand-active text-on-brand hover:brightness-95 transition-all active:scale-95 shadow-md shadow-brand/20"
                 >
                   <Send className="w-3.5 h-3.5 mr-1.5" /> Enviar
                 </a>
@@ -335,7 +357,8 @@ export function AIEmailGenerator({
               {channel === 'call' && phone && (
                 <a
                   href={`tel:${phone}`}
-                  className="inline-flex items-center justify-center text-xs font-bold px-3.5 py-1.5 rounded-md bg-brand-active text-on-brand hover:brightness-95 transition-[filter] shadow-md"
+                  onClick={() => SoundFX.play('click')}
+                  className="inline-flex items-center justify-center text-xs font-bold px-3.5 py-1.5 rounded-md bg-brand-active text-on-brand hover:brightness-95 transition-all active:scale-95 shadow-md shadow-brand/20"
                 >
                   <Phone className="w-3.5 h-3.5 mr-1.5" /> Ligar para {phone}
                 </a>
@@ -343,9 +366,10 @@ export function AIEmailGenerator({
               {channel === 'message' && messageResult && phone && (
                 <a
                   href={`https://wa.me/${toWhatsAppDigits(phone)}?text=${encodeURIComponent(messageResult.body)}`}
+                  onClick={() => SoundFX.play('click')}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center justify-center text-xs font-bold px-3.5 py-1.5 rounded-md bg-brand-active text-on-brand hover:brightness-95 transition-[filter] shadow-md"
+                  className="inline-flex items-center justify-center text-xs font-bold px-3.5 py-1.5 rounded-md bg-brand-active text-on-brand hover:brightness-95 transition-all active:scale-95 shadow-md shadow-brand/20"
                 >
                   <Send className="w-3.5 h-3.5 mr-1.5" /> Enviar WhatsApp
                 </a>
