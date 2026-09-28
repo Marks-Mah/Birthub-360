@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Badge } from '../../../components/ui/Badge.js';
 import { Button } from '../../../components/ui/Button.js';
 import { Skeleton } from '../../../components/ui/Skeleton.js';
+import { SoundFX } from '../../../lib/soundEffects.js';
 import {
   COACHING_DIMENSION_LABELS,
   type CoachingRubricOutput,
@@ -113,9 +114,9 @@ export function LeadCopilotoPanel({ leadId }: { leadId: string }) {
   return (
     <section className="space-y-3">
       <h3 className="text-xs font-bold uppercase tracking-wider text-ink-2 flex items-center gap-2">
-        <Mic className="w-4 h-4 text-brand" /> Copiloto IA
+        <Mic className="w-4 h-4 text-brand animate-pulse" /> Copiloto IA
       </h3>
-      <div className="bg-surface-2/40 p-4 rounded-2xl border border-line space-y-3">
+      <div className="relative bg-surface-2/60 backdrop-blur-md p-4 rounded-2xl border border-line hover:border-brand/40 transition-all duration-300 shadow-sm overflow-hidden before:absolute before:inset-x-0 before:top-0 before:h-[2px] before:bg-gradient-to-r before:from-transparent before:via-brand/35 before:to-transparent space-y-3">
         {loading ? (
           <Skeleton className="h-6 w-full" />
         ) : (
@@ -129,11 +130,16 @@ export function LeadCopilotoPanel({ leadId }: { leadId: string }) {
               {latestScore != null && (
                 <Badge
                   variant={latestScore >= 70 ? 'success' : latestScore >= 40 ? 'warning' : 'danger'}
+                  dot
                 >
                   Deal Health {latestScore}/100
                 </Badge>
               )}
-              {pendingWhatsApp && <Badge variant="warning">WhatsApp aguardando resposta</Badge>}
+              {pendingWhatsApp && (
+                <Badge variant="warning" dot>
+                  WhatsApp aguardando resposta
+                </Badge>
+              )}
             </div>
 
             {handoff?.summary && (
@@ -183,7 +189,13 @@ export function LeadCopilotoPanel({ leadId }: { leadId: string }) {
         <Button
           variant="outline"
           size="sm"
-          onClick={() => navigate(`/app/copiloto_ia?tab=conversas&leadId=${leadId}`)}
+          soundHover
+          soundClick
+          onClick={() => {
+            SoundFX.play('navigate');
+            navigate(`/app/copiloto_ia?tab=conversas&leadId=${leadId}`);
+          }}
+          className="hover:border-brand/50 hover:bg-surface-interactive transition-all"
         >
           Ver histórico no Copiloto IA <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
         </Button>
