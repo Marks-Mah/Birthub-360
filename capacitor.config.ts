@@ -38,7 +38,7 @@ import type { CapacitorConfig } from '@capacitor/cli';
 // e mesmo assim só afeta build de debug, já que o manifest de release não declara
 // usesCleartextTraffic (ver android/app/src/main/AndroidManifest.xml e
 // android/app/src/debug/AndroidManifest.xml).
-const PRODUCTION_URL = process.env.CAPACITOR_SERVER_URL || 'https://prospector-atlas.onrender.com';
+const PRODUCTION_URL = process.env.CAPACITOR_SERVER_URL || 'https://birthhub-360.onrender.com';
 const IS_LOCAL_TEST_URL = PRODUCTION_URL.startsWith('http://');
 
 const config: CapacitorConfig = {

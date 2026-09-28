@@ -1,27 +1,23 @@
-{{- if .Values.blueGreen.enabled }}
-apiVersion: argoproj.io/v1alpha1
-kind: Rollout
+{{- if not .Values.blueGreen.enabled }}
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: {{ include "prospector-atlas.fullname" . }}
+  name: {{ include "birthhub-360.fullname" . }}
   labels:
-    {{- include "prospector-atlas.labels" . | nindent 4 }}
+    {{- include "birthhub-360.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "prospector-atlas.selectorLabels" . | nindent 6 }}
-      # Mesmo motivo do deployment.yaml: sem isto o selector também bate com os pods do worker
-      # (nome+instance é subconjunto dos labels do worker), poluindo o HPA (que lê o selector
-      # deste Rollout via scale subresource) e o Service/PDB principais com pods do worker.
+      {{- include "birthhub-360.selectorLabels" . | nindent 6 }}
+      # Sem este componente, o selector (só nome+instance) também bate com os pods do worker
+      # (que carregam esses mesmos dois labels + component:worker) — isso poluía o cálculo de
+      # CPU/memória do HPA principal (hpa.yaml lê o selector via scale subresource deste
+      # recurso) e o Service/PDB abaixo com pods do worker. Ver worker-deployment.yaml, que já
+      # usa component:worker para o mesmo propósito do lado dele.
       app.kubernetes.io/component: web
-  strategy:
-    blueGreen:
-      activeService: {{ include "prospector-atlas.fullname" . }}
-      previewService: {{ include "prospector-atlas.fullname" . }}-preview
-      autoPromotionEnabled: true
-      autoPromotionSeconds: {{ .Values.blueGreen.autoPromotionSeconds }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -29,7 +25,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "prospector-atlas.selectorLabels" . | nindent 8 }}
+        {{- include "birthhub-360.selectorLabels" . | nindent 8 }}
         app.kubernetes.io/component: web
     spec:
       {{- with .Values.imagePullSecrets }}
@@ -50,9 +46,9 @@ spec:
               protocol: TCP
           envFrom:
             - configMapRef:
-                name: {{ include "prospector-atlas.fullname" . }}-config
+                name: {{ include "birthhub-360.fullname" . }}-config
             - secretRef:
-                name: {{ include "prospector-atlas.fullname" . }}-secret
+                name: {{ include "birthhub-360.fullname" . }}-secret
           livenessProbe:
             httpGet:
               path: /health/live

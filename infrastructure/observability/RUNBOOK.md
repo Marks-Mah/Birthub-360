@@ -1,4 +1,4 @@
-# Runbook — Prospector-Atlas (Agente 10, Onda 4 — atualizado na Onda 8, go-live; corrigido para Oracle Cloud em ACH-10-01)
+# Runbook — birthhub-360 (Agente 10, Onda 4 — atualizado na Onda 8, go-live; corrigido para Oracle Cloud em ACH-10-01)
 
 Runbook de resposta a incidentes e de go-live para os cenários já mapeados como bloqueadores em
 `/AGENTS.md` e para migração/rollback (missão do Agente 10 — ver
@@ -26,7 +26,7 @@ Runbook de resposta a incidentes e de go-live para os cenários já mapeados com
 
 > **Correção de registro (Onda 8, ainda válida):** a missão citava "Render+Vercel" como caminho
 > real — verificado que **não existe Vercel neste projeto**, é um único serviço Render
-> (`prospector-atlas`, `srv-d9qtn8bm8hqs7395qtpg`) servindo API e frontend estático do mesmo
+> (`birthhub-360`, `srv-d9qtn8bm8hqs7395qtpg`) servindo API e frontend estático do mesmo
 > processo Express. A seção "Go-live (Render)" abaixo usa "Render" para esse caminho.
 
 Os passos abaixo cobrem os três caminhos com tráfego real ou potencial (Oracle Cloud, Render, k8s
@@ -215,7 +215,7 @@ Este guia cobre os procedimentos objetivos de operação, diagnósticos, observa
 ## 0. Go-live — passo a passo executável (Render)
 
 Verificado nesta rodada contra o serviço Render real via MCP (workspace "Marcelo's workspace",
-serviço `prospector-atlas` = `srv-d9qtn8bm8hqs7395qtpg`, branch `main`, plano `free`, região
+serviço `birthhub-360` = `srv-d9qtn8bm8hqs7395qtpg`, branch `main`, plano `free`, região
 `oregon`) — não é um procedimento teórico, é o que o serviço configurado hoje realmente faz.
 
 ### 0.1 Pré-checks (antes de mesclar em `main`)
@@ -341,7 +341,7 @@ Render:
 6. **Rollback**: ver seção 6, "Rollback via Oracle Cloud (Docker Compose)".
 7. **Fila/worker**: mesmo desenho do Render (`ENABLE_QUEUES`), mas aqui `worker`+`redis` já existem
    como serviços reais no `docker-compose.oci.yml` (profile `queues`, opt-in) — não é um serviço
-   "declarado mas nunca criado" como o `prospector-atlas-worker` do Render (ver seção 3 e 7). Se
+   "declarado mas nunca criado" como o `birthhub-360-worker` do Render (ver seção 3 e 7). Se
    `ENABLE_QUEUES=true` estiver ativo, confirme que o Render **não** está processando as mesmas
    filas ao mesmo tempo (duplicaria jobs) — ver aviso no cabeçalho de `docker-compose.oci.yml`.
 
@@ -375,13 +375,13 @@ erro 5xx generalizado.
    em `.env.production`. `docker compose ... logs --tail 200 app` mostra a causa. Se `caddy` está
    com problema mas `app` está saudável, o sintoma é TLS/roteamento, não a aplicação — checar
    `docker compose ... logs caddy` (renovação ACME falhando é a causa mais comum).
-3. **Render**: dashboard → serviço `prospector-atlas` (`srv-d9qtn8bm8hqs7395qtpg`, confirmado
+3. **Render**: dashboard → serviço `birthhub-360` (`srv-d9qtn8bm8hqs7395qtpg`, confirmado
    nesta rodada) → aba Logs/Events. Verificar se o deploy mais recente falhou no `startCommand`
    (`npx prisma migrate deploy && npm run start` — ver seção 2 abaixo se for isso; corrigido nesta
    rodada: a referência anterior apontava para "seção 3", que é "Fila travada", não "Falha de
    migração") ou se é o banco Supabase que está fora.
 4. **k8s/Helm** (se ativado): `kubectl get pods -n <namespace>`, `kubectl describe pod <pod>`,
-   `kubectl logs <pod> --previous` (se reiniciou). Ver `argocd app get prospector-atlas-<env>`
+   `kubectl logs <pod> --previous` (se reiniciou). Ver `argocd app get birthhub-360-<env>`
    para status de sync/health do ArgoCD.
 5. Se o Postgres está fora — Supabase (Render) é incidente do provedor, não corrigível por
    redeploy/restart (verificar status page do Supabase); `birthhub_postgres` (Oracle) é o
@@ -412,7 +412,7 @@ antes de `npm run start` rodar (ver seção 0-OCI item 2).
    bloqueado até corrigir.
 3. **k8s/Helm**: `kubectl get jobs -l app.kubernetes.io/component=migration`,
    `kubectl logs job/<nome>-migrate-<revisão>`. O hook `pre-install,pre-upgrade`
-   (`charts/prospector-atlas/templates/migration-job.yaml`) aborta o `helm upgrade`/sync do
+   (`charts/birthhub-360/templates/migration-job.yaml`) aborta o `helm upgrade`/sync do
    ArgoCD — o Deployment/Rollout novo nunca chega a ser aplicado, então não há tráfego servido
    contra schema quebrado.
 4. Causa raiz comum: migration com SQL inválido para os dados existentes, ou lock de tabela
@@ -425,7 +425,7 @@ antes de `npm run start` rodar (ver seção 0-OCI item 2).
 ## 3. Fila travada (BullMQ)
 
 **Sintoma**: `QueueBacklogHigh`/`QueueStalled` — métrica real desde a Onda 5-7
-(`src/lib/queue/metrics.ts`, ver `alert.rules.yml` → grupo `prospector-atlas.filas.ativos-hoje`),
+(`src/lib/queue/metrics.ts`, ver `alert.rules.yml` → grupo `birthhub-360.filas.ativos-hoje`),
 só ausente de `/metrics` se `ENABLE_QUEUES=false` (padrão hoje no serviço web do Render) — ou
 relato de leads não enriquecidos/mensagens não enviadas.
 
@@ -435,10 +435,10 @@ relato de leads não enriquecidos/mensagens não enviadas.
 2. Filas exigem `ENABLE_QUEUES=true` + `REDIS_URL` configurado — se essas envs estiverem ausentes
    (comportamento padrão hoje no Render, ver `render.yaml`), a fila está **desligada por
    design**, não travada. Confirme isso antes de tratar como incidente.
-3. **Quem processa a fila hoje (Render real)**: o serviço `prospector-atlas-worker` (`type:
+3. **Quem processa a fila hoje (Render real)**: o serviço `birthhub-360-worker` (`type:
 worker` em `render.yaml`, preparado pelo Agente 16/08 na Onda 6) **ainda não foi criado de
    verdade no Render** — confirmado nesta rodada consultando o workspace real via API: só existe
-   o serviço web `prospector-atlas`. Se `ENABLE_QUEUES=true` for ligado sem o worker dedicado
+   o serviço web `birthhub-360`. Se `ENABLE_QUEUES=true` for ligado sem o worker dedicado
    ativo, é o próprio `server.ts` quem processa os jobs (workers ainda não foram removidos de lá —
    ver `.agents/handoffs/onda-6/16-para-00-remover-workers-de-server-ts.md`, `status:
 em-andamento`, corte proposital ainda não aplicado). Não assuma que o worker dedicado está
@@ -455,10 +455,10 @@ em-andamento`, corte proposital ainda não aplicado). Não assuma que o worker d
 4. Se Redis está acessível mas jobs não avançam: checar logs do processo que está de fato
    processando (server.ts hoje, ou o worker dedicado quando for ativado) por exceção repetida no
    mesmo job (job "poison pill" sendo re-tentado infinitamente). No caminho k8s aspiracional,
-   `charts/prospector-atlas/templates/worker-deployment.yaml` cobre o mesmo cenário.
+   `charts/birthhub-360/templates/worker-deployment.yaml` cobre o mesmo cenário.
 5. Autoscaling do worker por profundidade de fila não existe no Render (plano `free`/`starter` não
    tem esse mecanismo) nem está ligado no caminho k8s (`worker.autoscaling.enabled: false` por
-   padrão em `charts/prospector-atlas/values.yaml`) — hoje, fila crescendo mais rápido que a
+   padrão em `charts/birthhub-360/values.yaml`) — hoje, fila crescendo mais rápido que a
    capacidade de processamento exige intervenção manual (mais réplicas manualmente, ou investigar
    por que o processamento está lento).
 
@@ -466,7 +466,7 @@ em-andamento`, corte proposital ainda não aplicado). Não assuma que o worker d
 
 **Sintoma**: leads/negócios não aparecem no Bitrix ou ficam desatualizados; `BitrixSyncFailuresHigh`
 — métrica real desde a Onda 5 (`bitrix_sync_failures_total`, ver `alert.rules.yml` → grupo
-`prospector-atlas.bitrix.ativos-hoje`), disparando de fato quando `EXPOSE_METRICS=true`.
+`birthhub-360.bitrix.ativos-hoje`), disparando de fato quando `EXPOSE_METRICS=true`.
 
 1. Bloqueador prioritário de `/AGENTS.md`: "Sincronizações Bitrix que podem falhar
    silenciosamente" — trate como candidato a bloqueador de release, não como ruído.
@@ -484,7 +484,7 @@ em-andamento`, corte proposital ainda não aplicado). Não assuma que o worker d
 **Sintoma**: bloqueador prioritário de `/AGENTS.md` ("Ferramentas do Hub de IA inacessíveis");
 `AIBudgetOverrun` — métrica real desde a Onda 5-7 (`ai_usage_cost_usd_total`/
 `ai_usage_budget_usd_total`, `src/lib/ai/metrics.ts`, ver `alert.rules.yml` → grupo
-`prospector-atlas.orcamento-ia.ativos-hoje`), **mas só dispara se `AI_MONTHLY_BUDGET_USD` estiver
+`birthhub-360.orcamento-ia.ativos-hoje`), **mas só dispara se `AI_MONTHLY_BUDGET_USD` estiver
 configurada no ambiente**. `AI_MONTHLY_BUDGET_USD` **não está declarada em `render.yaml`**
 (confirmado nesta rodada — a variável não aparece na lista de `envVars` do blueprint) — como o
 Render MCP não expõe os valores/nomes de env vars efetivamente configuradas no serviço (só o
@@ -542,7 +542,7 @@ deploys do Render) — é uma sequência manual via SSH na instância:
 
 ### Rollback via Render (caminho real de produção)
 
-Verificado nesta rodada contra o serviço real (`prospector-atlas`, `srv-d9qtn8bm8hqs7395qtpg`) via
+Verificado nesta rodada contra o serviço real (`birthhub-360`, `srv-d9qtn8bm8hqs7395qtpg`) via
 MCP Render — não é suposição:
 
 - Cada deploy tem um `status` (`live`, `deactivated`, `build_failed`, `update_failed`, etc.) e o
@@ -589,8 +589,8 @@ documento). Mantido aqui como referência caso o projeto migre para esse caminho
 ### Rollback via Helm (chart aplicado diretamente, sem ArgoCD gerenciando)
 
 ```bash
-helm history prospector-atlas -n <namespace>          # lista revisões
-helm rollback prospector-atlas <revisão-anterior> -n <namespace>
+helm history birthhub-360 -n <namespace>          # lista revisões
+helm rollback birthhub-360 <revisão-anterior> -n <namespace>
 ```
 
 `helm rollback` reaplica os manifests da revisão anterior, incluindo a tag de imagem anterior em
@@ -605,8 +605,8 @@ de código. Nunca assumir que "reverter o deploy" também reverte o banco.
 cluster real)
 
 ```bash
-argocd app history prospector-atlas-production
-argocd app rollback prospector-atlas-production <ID-da-revisão>
+argocd app history birthhub-360-production
+argocd app rollback birthhub-360-production <ID-da-revisão>
 ```
 
 Mesma ressalva do Helm acima quanto a migrations — `argocd app rollback` reverte o `sync` para um
@@ -636,10 +636,10 @@ Render.
 Resposta ao handoff `.agents/handoffs/onda-6/16-para-10-observabilidade-worker.md` (Agente 16,
 Onda 6, `status: aberto`).
 
-**Status real confirmado nesta rodada**: o serviço `prospector-atlas-worker` declarado em
+**Status real confirmado nesta rodada**: o serviço `birthhub-360-worker` declarado em
 `render.yaml` (`type: worker`, `startCommand: npx prisma migrate deploy && npm run start:worker`)
 **não existe no Render de verdade** — consultado o workspace real via API, só o serviço web
-`prospector-atlas` está provisionado. Isso está alinhado com o próprio handoff de deploy
+`birthhub-360` está provisionado. Isso está alinhado com o próprio handoff de deploy
 (`.agents/handoffs/onda-6/16-para-08-deploy-worker-service.md`, `status: em-andamento`
 deliberadamente): falta (a) aplicar o corte de `server.ts` que hoje ainda processa as filas
 (`16-para-00-remover-workers-de-server-ts.md`) e (b) autorização de gasto do usuário, já que
@@ -659,7 +659,7 @@ quando ele for ativado, não um estado atual:
    `healthCheckPath`, mas services `type: worker` do Render não expõem porta pública/health check
    HTTP gerenciado pela plataforma — confirmar isso é uma lacuna, ver seção 8), via readiness probe
    do orquestrador equivalente.
-2. **Métricas `bullmq_queue_*`**: já cobertas pelo grupo `prospector-atlas.filas.ativos-hoje` em
+2. **Métricas `bullmq_queue_*`**: já cobertas pelo grupo `birthhub-360.filas.ativos-hoje` em
    `alert.rules.yml` — continuam corretas independente de rodar em `server.ts` ou `worker.ts`
    (mesmo módulo `src/lib/queue/metrics.ts`), desde que o processo que efetivamente roda os
    workers exponha `/metrics` com `EXPOSE_METRICS=true`.
@@ -690,7 +690,7 @@ grupos `ativos-hoje` deste arquivo) para promover isso a uma regra real.
 | `MigrationJobFailed` (grupo k8s) não tem contraparte real no Render | Não é uma lacuna a fechar — é a confirmação de que o caminho k8s é aspiracional. A garantia equivalente no Render já existe via `startCommand`+`healthCheckPath` (seção 0.2); na Oracle, via o `CMD` da imagem (seção 0-OCI item 2). Nenhuma ação necessária a menos que o projeto migre para k8s de verdade. | N/A |
 | Quem aciona rollback e por qual canal | Ver seção 0.4 — decisão organizacional, não técnica. Vale para os dois caminhos com tráfego real (Render e Oracle). | Usuário/gestão |
 | Worker dedicado sem observabilidade aplicável (Render) | Ver seção 7 — não há processo separado rodando ainda no Render. Não se aplica à Oracle, onde o worker (profile `queues`) já existe como serviço real. | Agente 08 (ativação) + Agente 10 (regra de alerta quando ativar) |
-| `http_request_count` nativo do Render vazio para `prospector-atlas` | Confirmado via `get_metrics` do MCP Render nesta rodada — pode ser limitação do plano `free`, falta de tráfego capturado no intervalo consultado, ou outra causa não identificada. Não impede os `/health/*` nem os logs de servirem como fonte de verdade, mas reduz a confiança em métricas nativas do Render para SLO de erro 5xx (reforça a importância de resolver a lacuna de `HighErrorRate5xx` acima). | Confirmação humana (dashboard Render, plano pago) se for crítico |
+| `http_request_count` nativo do Render vazio para `birthhub-360` | Confirmado via `get_metrics` do MCP Render nesta rodada — pode ser limitação do plano `free`, falta de tráfego capturado no intervalo consultado, ou outra causa não identificada. Não impede os `/health/*` nem os logs de servirem como fonte de verdade, mas reduz a confiança em métricas nativas do Render para SLO de erro 5xx (reforça a importância de resolver a lacuna de `HighErrorRate5xx` acima). | Confirmação humana (dashboard Render, plano pago) se for crítico |
 | Sem Alertmanager configurado | Já documentado no cabeçalho de `alert.rules.yml` desde a Onda 4 — alertas ficam visíveis em `/alerts` do Prometheus mas não notificam ninguém (Slack/e-mail/PagerDuty) até um receptor ser configurado. Continua verdade nesta rodada, e continuaria mesmo se a lacuna de observabilidade da Oracle acima fosse fechada. | Decisão de produto/operação (qual canal usar) |
 
 ## 9. Verificação pós-incidente

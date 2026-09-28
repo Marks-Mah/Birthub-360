@@ -22,9 +22,9 @@ kind: Job
 metadata:
   # sufixo por revisão: cada `helm upgrade` cria um Job novo (nomes de Job são imutáveis em
   # campos como `spec.template`, então reaproveitar o nome quebraria upgrades subsequentes).
-  name: {{ include "prospector-atlas.fullname" . }}-migrate-{{ .Release.Revision }}
+  name: {{ include "birthhub-360.fullname" . }}-migrate-{{ .Release.Revision }}
   labels:
-    {{- include "prospector-atlas.labels" . | nindent 4 }}
+    {{- include "birthhub-360.labels" . | nindent 4 }}
     app.kubernetes.io/component: migration
   annotations:
     "helm.sh/hook": pre-install,pre-upgrade
@@ -39,7 +39,7 @@ spec:
   template:
     metadata:
       labels:
-        {{- include "prospector-atlas.selectorLabels" . | nindent 8 }}
+        {{- include "birthhub-360.selectorLabels" . | nindent 8 }}
         app.kubernetes.io/component: migration
     spec:
       restartPolicy: Never
@@ -58,9 +58,9 @@ spec:
           command: ["npx", "prisma", "migrate", "deploy"]
           envFrom:
             - configMapRef:
-                name: {{ include "prospector-atlas.fullname" . }}-config
+                name: {{ include "birthhub-360.fullname" . }}-config
             - secretRef:
-                name: {{ include "prospector-atlas.fullname" . }}-secret
+                name: {{ include "birthhub-360.fullname" . }}-secret
           resources:
             {{- toYaml .Values.migrations.resources | nindent 12 }}
 {{- end }}

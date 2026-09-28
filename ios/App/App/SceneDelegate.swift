@@ -12,7 +12,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
 
     // Espelha o default de PRODUCTION_URL em capacitor.config.ts — mantenha os dois em sincronia.
-    private static let serverURL = "https://prospector-atlas.onrender.com"
+    private static let serverURL = "https://birthhub-360.onrender.com"
 
     // Espelha TAB_ROUTE_SET de src/lib/navigationBus.ts. Mantenha sincronizado manualmente sempre
     // que o contrato de navegação mudar — ver o mesmo aviso em MainActivity.java (Android).

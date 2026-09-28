@@ -1,14 +1,14 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: prospector-atlas-homolog
+  name: birthhub-360-homolog
   namespace: argocd
 spec:
   project: default
   source:
     repoURL: 'https://github.com/maarkss1/Birthub-360.git'
     targetRevision: develop
-    path: charts/prospector-atlas
+    path: charts/birthhub-360
     helm:
       valueFiles:
         - values.yaml
