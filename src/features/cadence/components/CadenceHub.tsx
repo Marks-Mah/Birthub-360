@@ -16,10 +16,12 @@ import {
   Square,
   Trash2,
 } from 'lucide-react';
+import confetti from 'canvas-confetti';
 import { useCallback, useEffect, useState } from 'react';
 import { Badge, type BadgeProps } from '../../../components/ui/Badge.js';
 import { Button } from '../../../components/ui/Button.js';
 import { Card } from '../../../components/ui/Card.js';
+import { SoundFX } from '../../../lib/soundEffects.js';
 import { useConfirmDialog } from '../../../components/ui/ConfirmDialog.js';
 import { Dialog } from '../../../components/ui/Dialog.js';
 import { EmptyState } from '../../../components/ui/EmptyState.js';
@@ -279,7 +281,9 @@ function OptOutsSection() {
   const errorMessage = error;
 
   return (
-    <Card padding="sm">
+    <Card padding="sm" variant="bento" spotlight className="relative overflow-hidden">
+      {/* 2026 Top Specular Highlight */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-brand/40 to-transparent" />
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <ShieldOff className="w-4 h-4 text-brand" aria-hidden="true" />
@@ -292,7 +296,10 @@ function OptOutsSection() {
         </div>
         <button
           type="button"
-          onClick={load}
+          onClick={() => {
+            SoundFX.play('navigate');
+            load();
+          }}
           className="p-1.5 text-ink-2 hover:text-ink hover:bg-surface-2 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
           title="Atualizar"
           aria-label="Atualizar registros de opt-out"
@@ -673,6 +680,7 @@ function CadenceRunsSection() {
   useEffect(() => load(), [load]);
 
   const toggleStatus = (status: CadenceRunStatus) => {
+    SoundFX.play('click');
     setStatusFilter((prev) => {
       const next = new Set(prev);
       if (next.has(status)) next.delete(status);
@@ -682,7 +690,9 @@ function CadenceRunsSection() {
   };
 
   return (
-    <Card padding="sm">
+    <Card padding="sm" variant="bento" spotlight className="relative overflow-hidden">
+      {/* 2026 Top Specular Highlight */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-brand/40 to-transparent" />
       <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
         <div className="flex items-center gap-2">
           <Repeat className="w-4 h-4 text-brand" aria-hidden="true" />
@@ -704,9 +714,9 @@ function CadenceRunsSection() {
                 type="button"
                 onClick={() => toggleStatus(status)}
                 aria-pressed={statusFilter.has(status)}
-                className={`px-2.5 py-1 rounded-full text-[11px] font-semibold border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand ${
+                className={`px-2.5 py-1 rounded-full text-[11px] font-semibold border transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand ${
                   statusFilter.has(status)
-                    ? 'bg-brand-active text-on-brand border-brand-active'
+                    ? 'bg-brand-active text-on-brand border-brand-active shadow-sm'
                     : 'bg-surface-2 text-ink-2 border-line hover:text-ink'
                 }`}
               >
@@ -716,7 +726,10 @@ function CadenceRunsSection() {
           </div>
           <button
             type="button"
-            onClick={load}
+            onClick={() => {
+              SoundFX.play('navigate');
+              load();
+            }}
             className="p-1.5 text-ink-2 hover:text-ink hover:bg-surface-2 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
             title="Atualizar"
             aria-label="Atualizar execuções de cadência"
@@ -861,7 +874,9 @@ function SequencesSection({ canManage }: { canManage: boolean }) {
   };
 
   return (
-    <Card padding="sm">
+    <Card padding="sm" variant="bento" spotlight className="relative overflow-hidden">
+      {/* 2026 Top Specular Highlight */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-brand/40 to-transparent" />
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <ListChecks className="w-4 h-4 text-brand" aria-hidden="true" />
@@ -874,7 +889,10 @@ function SequencesSection({ canManage }: { canManage: boolean }) {
         </div>
         <button
           type="button"
-          onClick={load}
+          onClick={() => {
+            SoundFX.play('navigate');
+            load();
+          }}
           className="p-1.5 text-ink-2 hover:text-ink hover:bg-surface-2 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
           title="Atualizar"
           aria-label="Atualizar sequências"
@@ -1574,6 +1592,7 @@ export function CadenceHub() {
               type="button"
               variant="secondary"
               size="sm"
+              soundClick
               onClick={() => setJourneyTemplatesOpen(true)}
             >
               <Sparkles className="w-3.5 h-3.5 mr-1" aria-hidden="true" /> Modelos de Jornada
@@ -1582,11 +1601,19 @@ export function CadenceHub() {
               type="button"
               variant="outline"
               size="sm"
+              soundClick
               onClick={() => setNewSequenceOpen(true)}
             >
               <Plus className="w-3.5 h-3.5 mr-1" aria-hidden="true" /> Nova sequência
             </Button>
-            <Button type="button" size="sm" onClick={() => setStartRunOpen(true)}>
+            <Button
+              type="button"
+              size="sm"
+              variant="cosmic"
+              shine
+              soundClick
+              onClick={() => setStartRunOpen(true)}
+            >
               <Play className="w-3.5 h-3.5 mr-1" aria-hidden="true" /> Iniciar cadência
             </Button>
           </div>
@@ -1608,6 +1635,7 @@ export function CadenceHub() {
         isOpen={journeyTemplatesOpen}
         onClose={() => setJourneyTemplatesOpen(false)}
         onCreated={() => {
+          SoundFX.play('confirm');
           setRunsKey((k) => k + 1);
           setSequencesKey((k) => k + 1);
         }}
@@ -1616,6 +1644,7 @@ export function CadenceHub() {
         isOpen={newSequenceOpen}
         onClose={() => setNewSequenceOpen(false)}
         onCreated={() => {
+          SoundFX.play('confirm');
           setRunsKey((k) => k + 1);
           setSequencesKey((k) => k + 1);
         }}
@@ -1623,7 +1652,16 @@ export function CadenceHub() {
       <StartRunDialog
         isOpen={startRunOpen}
         onClose={() => setStartRunOpen(false)}
-        onStarted={() => setRunsKey((k) => k + 1)}
+        onStarted={() => {
+          SoundFX.play('success');
+          confetti({
+            particleCount: 50,
+            spread: 60,
+            origin: { y: 0.6 },
+            colors: ['#D4AF37', '#1677FF', '#C53678', '#10B981'],
+          });
+          setRunsKey((k) => k + 1);
+        }}
       />
     </div>
   );
