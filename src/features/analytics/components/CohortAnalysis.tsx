@@ -62,8 +62,9 @@ export function CohortAnalysis() {
   if (error) return <div className="text-red-500">{error}</div>;
 
   return (
-    <Card className="mt-6">
-      <CardHeader className="flex flex-row items-center justify-between">
+    <Card className="mt-6 relative overflow-hidden group/cohort" spotlight padding="sm">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-brand/40 to-transparent opacity-0 group-hover/cohort:opacity-100 transition-opacity duration-700 z-20" aria-hidden="true" />
+      <CardHeader className="flex flex-row items-center justify-between relative z-30">
         <CardTitle>Análise de Cohort (Conversão por mês de criação)</CardTitle>
         <button
           type="button"
