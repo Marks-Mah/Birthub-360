@@ -436,7 +436,7 @@ export function StyleShowcase() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Card com Ícones 3D */}
-          <Card variant="bento" spotlight padding="md">
+          <Card variant="bento" spotlight padding="default">
             <CardHeader className="pb-3">
               <CardTitle className="text-sm font-bold flex items-center gap-2">
                 <Trophy3DIcon size={20} /> Ícones Isométricos 3D Vetoriais
@@ -485,7 +485,7 @@ export function StyleShowcase() {
           </Card>
 
           {/* Card com Console de Sons e Confetes */}
-          <Card variant="bento" spotlight padding="md">
+          <Card variant="bento" spotlight padding="default">
             <CardHeader className="pb-3">
               <CardTitle className="text-sm font-bold flex items-center gap-2">
                 <Zap className="h-4 w-4 text-brand" /> Micro-interações Sonoras & Confetes 2026
