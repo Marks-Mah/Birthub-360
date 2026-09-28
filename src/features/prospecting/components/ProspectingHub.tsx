@@ -173,6 +173,13 @@ export function ProspectingHub() {
           setPromoted((prev) => ({ ...prev, [key]: result }));
         }
       }
+      SoundFX.play('success');
+      try {
+        const confetti = (await import('canvas-confetti')).default;
+        confetti({ particleCount: 75, spread: 80, origin: { y: 0.5 } });
+      } catch {
+        // ignore
+      }
     } catch (error: any) {
       setDiscoverError(getErrorMessage(error, 'Falha ao salvar lista de leads em massa'));
     } finally {
@@ -213,6 +220,13 @@ export function ProspectingHub() {
           );
           setPromoted((prev) => ({ ...prev, [key]: result }));
         }
+      }
+      SoundFX.play('success');
+      try {
+        const confetti = (await import('canvas-confetti')).default;
+        confetti({ particleCount: 90, spread: 90, origin: { y: 0.5 } });
+      } catch {
+        // ignore
       }
     } catch (error: any) {
       setDiscoverError(getErrorMessage(error, 'Falha ao enriquecer leads em massa'));
@@ -457,6 +471,13 @@ export function ProspectingHub() {
         autoEnrich: false, // Salvar como lead cru para economizar créditos; enriquecimento ocorre sob demanda no CRM
       });
       setPromoted((prev) => ({ ...prev, [key]: result }));
+      SoundFX.play('success');
+      try {
+        const confetti = (await import('canvas-confetti')).default;
+        confetti({ particleCount: 50, spread: 60, origin: { y: 0.6 } });
+      } catch {
+        // ignore
+      }
     } catch (error: any) {
       setCnpjError(getErrorMessage(error, 'Falha ao adicionar ao CRM'));
     } finally {
@@ -488,6 +509,13 @@ export function ProspectingHub() {
         savedSearchId: activeSavedSearchId || undefined,
       });
       setPromoted((prev) => ({ ...prev, [key]: result }));
+      SoundFX.play('success');
+      try {
+        const confetti = (await import('canvas-confetti')).default;
+        confetti({ particleCount: 50, spread: 60, origin: { y: 0.6 } });
+      } catch {
+        // ignore
+      }
     } catch (error: any) {
       setDiscoverError(getErrorMessage(error, 'Falha ao adicionar ao CRM'));
     } finally {
@@ -516,7 +544,7 @@ export function ProspectingHub() {
 
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div
-            className="relative z-10 flex max-w-full gap-1 overflow-x-auto rounded-card border border-line bg-surface-subtle p-1 shadow-sm"
+            className="relative z-10 flex max-w-full gap-1.5 overflow-x-auto rounded-card border border-line bg-surface-subtle/80 backdrop-blur-md p-1.5 shadow-sm"
             role="tablist"
             aria-label="Métodos de prospecção"
           >
@@ -528,7 +556,11 @@ export function ProspectingHub() {
               }}
               role="tab"
               aria-selected={tab === 'cnpj'}
-              className={`flex items-center gap-2 whitespace-nowrap rounded-control px-4 py-2 text-sm font-semibold transition-colors ${tab === 'cnpj' ? 'bg-brand-active text-on-brand shadow-sm' : 'text-ink-2 hover:bg-surface-interactive hover:text-ink'}`}
+              className={`flex items-center gap-2 whitespace-nowrap rounded-control px-4 py-2 text-sm font-semibold transition-all duration-200 cursor-pointer ${
+                tab === 'cnpj'
+                  ? 'bg-brand text-on-brand shadow-glow-brand font-bold scale-[1.02]'
+                  : 'text-ink-2 hover:bg-surface-interactive hover:text-ink'
+              }`}
             >
               <Landmark size={18} /> Busca Direta (CNPJ/Nome)
             </button>
@@ -540,7 +572,11 @@ export function ProspectingHub() {
               }}
               role="tab"
               aria-selected={tab === 'discovery'}
-              className={`flex items-center gap-2 whitespace-nowrap rounded-control px-4 py-2 text-sm font-semibold transition-colors ${tab === 'discovery' ? 'bg-brand-active text-on-brand shadow-sm' : 'text-ink-2 hover:bg-surface-interactive hover:text-ink'}`}
+              className={`flex items-center gap-2 whitespace-nowrap rounded-control px-4 py-2 text-sm font-semibold transition-all duration-200 cursor-pointer ${
+                tab === 'discovery'
+                  ? 'bg-brand text-on-brand shadow-glow-brand font-bold scale-[1.02]'
+                  : 'text-ink-2 hover:bg-surface-interactive hover:text-ink'
+              }`}
             >
               <Database size={18} /> Radar Discovery (Fontes abertas)
             </button>
@@ -552,7 +588,11 @@ export function ProspectingHub() {
               }}
               role="tab"
               aria-selected={tab === 'ocr'}
-              className={`flex items-center gap-2 whitespace-nowrap rounded-control px-4 py-2 text-sm font-semibold transition-colors ${tab === 'ocr' ? 'bg-brand-active text-on-brand shadow-sm' : 'text-ink-2 hover:bg-surface-interactive hover:text-ink'}`}
+              className={`flex items-center gap-2 whitespace-nowrap rounded-control px-4 py-2 text-sm font-semibold transition-all duration-200 cursor-pointer ${
+                tab === 'ocr'
+                  ? 'bg-brand text-on-brand shadow-glow-brand font-bold scale-[1.02]'
+                  : 'text-ink-2 hover:bg-surface-interactive hover:text-ink'
+              }`}
             >
               <Camera size={18} /> Cadastrar por Foto (OCR)
             </button>
@@ -564,7 +604,11 @@ export function ProspectingHub() {
               }}
               role="tab"
               aria-selected={tab === 'tools'}
-              className={`flex items-center gap-2 whitespace-nowrap rounded-control px-4 py-2 text-sm font-semibold transition-colors ${tab === 'tools' ? 'bg-brand-active text-on-brand shadow-sm' : 'text-ink-2 hover:bg-surface-interactive hover:text-ink'}`}
+              className={`flex items-center gap-2 whitespace-nowrap rounded-control px-4 py-2 text-sm font-semibold transition-all duration-200 cursor-pointer ${
+                tab === 'tools'
+                  ? 'bg-brand text-on-brand shadow-glow-brand font-bold scale-[1.02]'
+                  : 'text-ink-2 hover:bg-surface-interactive hover:text-ink'
+              }`}
             >
               <Wrench size={18} /> Ferramentas
             </button>
@@ -576,9 +620,9 @@ export function ProspectingHub() {
               SoundFX.play('focus');
               setIsSavedSearchesOpen(true);
             }}
-            className="flex items-center gap-2 rounded-control border border-line bg-surface-elevated px-4 py-2.5 text-xs font-semibold text-ink shadow-sm transition-colors hover:border-brand/35 hover:bg-surface-interactive"
+            className="flex items-center gap-2 rounded-control border border-line bg-surface-elevated/90 px-4 py-2.5 text-xs font-semibold text-ink shadow-sm transition-all hover:border-brand/40 hover:bg-surface-interactive hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
           >
-            <Bookmark size={16} className="text-brand" /> Listas Salvas & Agendamentos
+            <Bookmark size={16} className="text-brand animate-pulse" /> Listas Salvas & Agendamentos
           </button>
         </div>
 

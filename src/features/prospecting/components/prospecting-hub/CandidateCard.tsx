@@ -22,6 +22,7 @@ import {
 import { useState } from 'react';
 import { LinkedinIcon as Linkedin } from '../../../../components/ui/icons/LinkedinIcon.js';
 import { api } from '../../../../lib/api.js';
+import { SoundFX } from '../../../../lib/soundEffects.js';
 import {
   getTelephoneLink,
   getWhatsAppLink,
@@ -155,14 +156,17 @@ export function CandidateCard({
   };
 
   return (
-    <div className="bg-surface p-6 rounded-2xl border border-line hover:border-brand/40 transition-colors shadow-sm group">
+    <div className="relative bg-surface/90 backdrop-blur-sm p-6 rounded-2xl border border-line hover:border-brand/40 transition-all duration-300 shadow-sm hover:shadow-card-elevated group overflow-hidden before:absolute before:inset-x-0 before:top-0 before:h-[2px] before:bg-gradient-to-r before:from-transparent before:via-brand/35 before:to-transparent before:opacity-0 group-hover:before:opacity-100 before:transition-opacity">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div className="mt-1 mr-3">
           <input
             type="checkbox"
-            className="rounded border-line text-brand focus:ring-brand w-5 h-5 cursor-pointer"
+            className="rounded border-line text-brand focus:ring-brand w-5 h-5 cursor-pointer transition-transform active:scale-90"
             checked={isSelected}
-            onChange={onToggleSelect}
+            onChange={() => {
+              SoundFX.play('click');
+              onToggleSelect?.();
+            }}
           />
         </div>
         <div className="flex-1">
@@ -174,9 +178,18 @@ export function CandidateCard({
                             token semântico bg-warning/text-warning (mesmo já usado 2 linhas abaixo
                             pro badge de rating do Google), não atlas-yellow. */}
             <div
-              className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${finalScore >= 75 ? 'bg-success/15 text-success-active dark:text-success' : finalScore >= 45 ? 'bg-info/15 text-info-active dark:text-info' : 'bg-warning/15 text-warning-active dark:text-warning'}`}
+              className={`flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase transition-all ${
+                finalScore >= 75
+                  ? 'bg-success/15 text-success-active dark:text-success border border-success/30 shadow-[0_0_10px_rgba(34,197,94,0.15)]'
+                  : finalScore >= 45
+                    ? 'bg-info/15 text-info-active dark:text-info border border-info/30'
+                    : 'bg-warning/15 text-warning-active dark:text-warning border border-warning/30'
+              }`}
             >
-              <TrendingUp size={10} /> Fit {finalScore}% {isEstimate && '(estimado)'}
+              {finalScore >= 75 && (
+                <span className="w-1.5 h-1.5 rounded-full bg-success animate-ping" />
+              )}
+              <TrendingUp size={11} /> Fit {finalScore}% {isEstimate && '(estimado)'}
             </div>
             {enrichment?.company.googleRating && (
               <span className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase bg-warning/10 text-warning-active dark:text-warning border border-warning/30">
@@ -513,10 +526,13 @@ export function CandidateCard({
             {onReject && (
               <button
                 type="button"
-                onClick={onReject}
+                onClick={() => {
+                  SoundFX.play('click');
+                  onReject();
+                }}
                 disabled={isPromoting || isRejecting}
                 title="Descarta este candidato e o exclui de buscas futuras"
-                className="bg-surface-2 border border-line text-ink-2 px-4 py-2.5 rounded-xl font-bold text-xs hover:border-danger/50 hover:text-danger-active dark:hover:text-danger transition-colors flex items-center gap-2 w-full sm:w-auto justify-center disabled:opacity-60 cursor-pointer"
+                className="bg-surface-2 border border-line text-ink-2 px-4 py-2.5 rounded-xl font-bold text-xs hover:border-danger/50 hover:text-danger-active dark:hover:text-danger transition-all hover:scale-[1.01] active:scale-[0.98] flex items-center gap-2 w-full sm:w-auto justify-center disabled:opacity-60 cursor-pointer"
               >
                 {isRejecting ? (
                   <Loader2 className="animate-spin" size={15} />
@@ -528,10 +544,17 @@ export function CandidateCard({
             )}
             <button
               type="button"
-              onClick={onPromote}
+              onClick={() => {
+                SoundFX.play('focus');
+                onPromote();
+              }}
               disabled={isPromoting || isRejecting}
-              className="bg-brand-active text-on-brand px-5 py-2.5 rounded-xl font-bold text-xs hover:brightness-110 transition-colors flex items-center gap-2 shadow-md hover:scale-[1.02] w-full sm:w-auto justify-center disabled:opacity-60 cursor-pointer"
+              className="relative overflow-hidden bg-brand text-on-brand px-5 py-2.5 rounded-xl font-bold text-xs hover:brightness-110 active:scale-95 transition-all flex items-center gap-2 shadow-md hover:shadow-glow-brand hover:scale-[1.02] w-full sm:w-auto justify-center disabled:opacity-60 cursor-pointer"
             >
+              <div
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full hover:translate-x-full transition-transform duration-1000 pointer-events-none"
+                aria-hidden="true"
+              />
               {isPromoting ? (
                 <Loader2 className="animate-spin" size={15} />
               ) : (
