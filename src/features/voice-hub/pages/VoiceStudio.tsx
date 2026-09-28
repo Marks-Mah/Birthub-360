@@ -6,7 +6,8 @@ export default function VoiceStudioPage(): React.ReactElement {
       <div className="max-w-md space-y-4">
         <h2 className="text-xl font-bold text-slate-100">Voice Studio (Birth Hub Voices)</h2>
         <p className="text-sm text-slate-400">
-          O módulo visual de criação de fluxos de voz está em homologação com o enxame autônomo 24/7.
+          O módulo visual de criação de fluxos de voz está em homologação com o enxame autônomo
+          24/7.
         </p>
       </div>
     </div>
