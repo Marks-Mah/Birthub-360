@@ -20,6 +20,7 @@ import {
   Wrench,
 } from 'lucide-react';
 import { useState } from 'react';
+import confetti from 'canvas-confetti';
 import { LinkedinIcon as Linkedin } from '../../../../components/ui/icons/LinkedinIcon.js';
 import { api } from '../../../../lib/api.js';
 import { SoundFX } from '../../../../lib/soundEffects.js';
@@ -136,6 +137,16 @@ export function CandidateCard({
     candidate.icebreakerHook ?? null,
   );
   const [isLoadingIcebreaker, setIsLoadingIcebreaker] = useState(false);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [isHovered, setIsHovered] = useState(false);
+
+  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    setMousePos({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    });
+  };
 
   const handleFetchIcebreaker = async () => {
     setIsLoadingIcebreaker(true);
@@ -156,8 +167,32 @@ export function CandidateCard({
   };
 
   return (
-    <div className="relative bg-surface/90 backdrop-blur-sm p-6 rounded-2xl border border-line hover:border-brand/40 transition-all duration-300 shadow-sm hover:shadow-card-elevated group overflow-hidden before:absolute before:inset-x-0 before:top-0 before:h-[2px] before:bg-gradient-to-r before:from-transparent before:via-brand/35 before:to-transparent before:opacity-0 group-hover:before:opacity-100 before:transition-opacity">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+    <div
+      onPointerMove={handlePointerMove}
+      onMouseEnter={() => {
+        setIsHovered(true);
+        SoundFX.play('hover');
+      }}
+      onMouseLeave={() => setIsHovered(false)}
+      className="relative bg-surface/90 backdrop-blur-md p-6 rounded-2xl border border-line hover:border-brand/40 transition-all duration-300 shadow-sm hover:shadow-card-elevated group overflow-hidden"
+    >
+      {/* 2026 Bento Spotlight */}
+      {isHovered && (
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute -inset-px rounded-[inherit] transition-opacity duration-300 z-10"
+          style={{
+            background: `radial-gradient(240px circle at ${mousePos.x}px ${mousePos.y}px, rgba(212,175,55,0.1), transparent 70%)`,
+          }}
+        />
+      )}
+
+      {/* Luz especular de topo 2026 */}
+      <div
+        className="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-brand to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-20"
+        aria-hidden="true"
+      />
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 relative z-20">
         <div className="mt-1 mr-3">
           <input
             type="checkbox"
@@ -518,11 +553,11 @@ export function CandidateCard({
           )}
         </div>
         {promoted ? (
-          <span className="flex items-center gap-2 text-green-700 font-bold text-sm shrink-0">
-            <CheckCircle2 size={16} /> ✅ No CRM
+          <span className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-bold text-sm shrink-0 bg-emerald-500/10 border border-emerald-500/25 px-3 py-1.5 rounded-xl shadow-[0_0_12px_rgba(16,185,129,0.2)]">
+            <CheckCircle2 size={16} className="text-emerald-500" /> ✅ No CRM
           </span>
         ) : (
-          <div className="flex flex-col sm:flex-row gap-2 shrink-0 w-full sm:w-auto">
+          <div className="flex flex-col sm:flex-row gap-2 shrink-0 w-full sm:w-auto relative z-20">
             {onReject && (
               <button
                 type="button"
@@ -532,7 +567,7 @@ export function CandidateCard({
                 }}
                 disabled={isPromoting || isRejecting}
                 title="Descarta este candidato e o exclui de buscas futuras"
-                className="bg-surface-2 border border-line text-ink-2 px-4 py-2.5 rounded-xl font-bold text-xs hover:border-danger/50 hover:text-danger-active dark:hover:text-danger transition-all hover:scale-[1.01] active:scale-[0.98] flex items-center gap-2 w-full sm:w-auto justify-center disabled:opacity-60 cursor-pointer"
+                className="bg-surface-2 border border-line text-ink-2 px-4 py-2.5 rounded-xl font-bold text-xs hover:border-danger/50 hover:text-danger-active dark:hover:text-danger transition-all hover:scale-[1.01] active:scale-95 flex items-center gap-2 w-full sm:w-auto justify-center disabled:opacity-60 cursor-pointer"
               >
                 {isRejecting ? (
                   <Loader2 className="animate-spin" size={15} />
@@ -545,14 +580,20 @@ export function CandidateCard({
             <button
               type="button"
               onClick={() => {
-                SoundFX.play('focus');
+                SoundFX.play('success');
+                confetti({
+                  particleCount: 50,
+                  spread: 60,
+                  origin: { y: 0.7 },
+                  colors: ['#D4AF37', '#10B981', '#3B82F6'],
+                });
                 onPromote();
               }}
               disabled={isPromoting || isRejecting}
-              className="relative overflow-hidden bg-brand text-on-brand px-5 py-2.5 rounded-xl font-bold text-xs hover:brightness-110 active:scale-95 transition-all flex items-center gap-2 shadow-md hover:shadow-glow-brand hover:scale-[1.02] w-full sm:w-auto justify-center disabled:opacity-60 cursor-pointer"
+              className="relative overflow-hidden bg-gradient-to-r from-brand via-brand-2 to-brand text-on-brand px-5 py-2.5 rounded-xl font-bold text-xs hover:brightness-110 active:scale-95 transition-all flex items-center gap-2 shadow-[0_4px_16px_rgba(212,175,55,0.35)] hover:shadow-glow-brand hover:scale-[1.02] w-full sm:w-auto justify-center disabled:opacity-60 cursor-pointer"
             >
               <div
-                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full hover:translate-x-full transition-transform duration-1000 pointer-events-none"
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent -translate-x-full hover:translate-x-full transition-transform duration-1000 pointer-events-none"
                 aria-hidden="true"
               />
               {isPromoting ? (

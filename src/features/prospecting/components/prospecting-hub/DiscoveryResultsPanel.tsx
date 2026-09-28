@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import type { FitScoreResult } from '../../services/enrichment.service.js';
 import type { ProspectCandidate } from '../../services/prospecting.service.js';
+import { SoundFX } from '../../../../lib/soundEffects.js';
 import { CandidateCard } from './CandidateCard.js';
 
 interface PromoteResult {
@@ -85,16 +86,22 @@ export function DiscoveryResultsPanel({
           <div className="flex items-center gap-3">
             <button
               type="button"
-              onClick={onSaveAll}
+              onClick={() => {
+                SoundFX.play('click');
+                onSaveAll();
+              }}
               disabled={isSavingBatch}
-              className="bg-brand-active text-on-brand px-4 py-2 rounded-[2rem] text-xs font-bold hover:bg-orange-600 transition-colors shadow-sm flex items-center gap-2 disabled:opacity-50"
+              className="bg-brand text-on-brand px-4 py-2 rounded-xl text-xs font-bold hover:brightness-110 active:scale-95 transition-all shadow-[0_2px_10px_rgba(212,175,55,0.3)] flex items-center gap-2 disabled:opacity-50 cursor-pointer"
             >
               <UserPlus size={14} /> {isSavingBatch ? 'Salvando Lista...' : 'Salvar Lista de Leads'}
             </button>
             <button
               type="button"
-              onClick={onExport}
-              className="bg-green-600 text-white px-4 py-2 rounded-[2rem] text-xs font-bold hover:bg-green-700 transition-colors shadow-sm flex items-center gap-2"
+              onClick={() => {
+                SoundFX.play('click');
+                onExport();
+              }}
+              className="bg-emerald-600 text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-emerald-700 active:scale-95 transition-all shadow-sm flex items-center gap-2 cursor-pointer"
             >
               <Database size={14} /> Exportar Excel
             </button>
@@ -172,17 +179,23 @@ export function DiscoveryResultsPanel({
 
             <button
               type="button"
-              onClick={onBulkSave}
+              onClick={() => {
+                SoundFX.play('click');
+                onBulkSave();
+              }}
               disabled={selectedCandidates.size === 0 || isSavingBatch}
-              className="text-[10px] font-bold bg-surface-2 hover:bg-line text-ink px-3 py-1.5 rounded-lg transition-colors disabled:opacity-50"
+              className="text-[10px] font-bold bg-surface-2 hover:bg-line text-ink px-3 py-1.5 rounded-lg active:scale-95 transition-all disabled:opacity-50 cursor-pointer shadow-sm"
             >
               Salvar em Massa
             </button>
             <button
               type="button"
-              onClick={onBulkEnrich}
+              onClick={() => {
+                SoundFX.play('confirm');
+                onBulkEnrich();
+              }}
               disabled={selectedCandidates.size === 0 || isSavingBatch}
-              className="text-[10px] font-bold bg-brand-active hover:bg-orange-600 text-on-brand px-3 py-1.5 rounded-lg transition-colors disabled:opacity-50"
+              className="text-[10px] font-bold bg-brand text-on-brand px-3 py-1.5 rounded-lg active:scale-95 transition-all disabled:opacity-50 hover:brightness-110 cursor-pointer shadow-sm"
             >
               Enriquecer em Massa
             </button>
@@ -220,9 +233,12 @@ export function DiscoveryResultsPanel({
 
           <button
             type="button"
-            onClick={onDiscoverMore}
+            onClick={() => {
+              SoundFX.play('click');
+              onDiscoverMore();
+            }}
             disabled={isSearching}
-            className="w-full py-3 rounded-xl border border-dashed border-line text-xs font-bold text-ink-2 hover:text-brand hover:border-brand/40 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+            className="w-full py-3 rounded-xl border border-dashed border-line text-xs font-bold text-ink-2 hover:text-brand hover:border-brand/40 active:scale-[0.99] transition-all flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
           >
             {isSearching ? <Loader2 className="animate-spin" size={14} /> : <RefreshCw size={14} />}
             Buscar mais resultados (próxima página)
