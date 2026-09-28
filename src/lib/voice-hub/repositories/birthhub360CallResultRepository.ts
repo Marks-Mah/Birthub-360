@@ -1,9 +1,9 @@
 import { prisma } from '@/lib/prisma.js';
 
 /**
- * Persists the result of a call dispatched via the birthhub360/Bland AI prospecting integration.
+ * Persists the result of a call dispatched via the Birth Hub 360/Bland AI prospecting integration.
  * Resolves .agents/handoffs/onda-1/06-para-01-persistir-resultado-bland.md — see the
- * `birthhub360CallResult` model in `prisma/schema.prisma` for the full rationale, including why
+ * `Birthub360CallResult` model in `prisma/schema.prisma` for the full rationale, including why
  * `organizationId` is optional (this integration has no verifiable per-call tenant signal today).
  *
  * Intended caller: the Bland AI result callback handler in
@@ -12,7 +12,7 @@ import { prisma } from '@/lib/prisma.js';
  * (see `.agents/handoffs/onda-4/01-para-06-persistir-resultado-bland-pronto.md`).
  */
 
-export interface Upsertbirthhub360CallResultInput {
+export interface UpsertBirthub360CallResultInput {
   callId: string;
   organizationId?: string | null;
   leadId?: string | null;
@@ -29,7 +29,7 @@ export interface Upsertbirthhub360CallResultInput {
  * it intentionally is NOT bumped on a later redelivery, since it records when this call result was
  * first observed, not when it was last confirmed.
  */
-export function upsertbirthhub360CallResult(input: Upsertbirthhub360CallResultInput) {
+export function upsertBirthub360CallResult(input: UpsertBirthub360CallResultInput) {
   const shared = {
     organizationId: input.organizationId ?? null,
     leadId: input.leadId ?? null,
@@ -48,13 +48,13 @@ export function upsertbirthhub360CallResult(input: Upsertbirthhub360CallResultIn
   });
 }
 
-export function findbirthhub360CallResultByCallId(callId: string) {
+export function findBirthub360CallResultByCallId(callId: string) {
   return prisma.birthhub360CallResult.findUnique({ where: { callId } });
 }
 
 /**
  * Tenant-scoped, paginated read of dispatched-call results, for a future "quantas ligações a
- * birthhub360 disparou e qual foi o resultado de cada uma" view. `organizationId` must come from the
+ * Birth Hub 360 disparou e qual foi o resultado de cada uma" view. `organizationId` must come from the
  * authenticated session (requireTenant), never from client input, same rule as every other
  * tenant-scoped query in this codebase — see AGENTS.md §15.
  *
@@ -65,7 +65,7 @@ export function findbirthhub360CallResultByCallId(callId: string) {
  * A separate, explicitly-labelled admin/operational view is the right place to list untenanted
  * rows, not this function.
  */
-export async function listbirthhub360CallResultsForTenant(
+export async function listBirthub360CallResultsForTenant(
   organizationId: string,
   { page, pageSize }: { page: number; pageSize: number },
 ) {

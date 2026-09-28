@@ -26,7 +26,7 @@ import {
  * Substitui o handler inline que vivia em server.ts, que tinha quatro defeitos graves:
  *  1. Montado antes do express.json() global — req.body chegava undefined e o handler quebrava
  *     na desestruturação (o webhook nunca funcionou nessa forma).
- *  2. Segredo com fallback hardcoded ('segredo_compartilhado_atlasgr_123') versionado no git —
+ *  2. Segredo com fallback hardcoded ('segredo_compartilhado_birthhub360_123') versionado no git —
  *     sem a env definida, qualquer um que lesse o repositório podia forjar resultados de chamada.
  *     Agora é fail-closed: sem BIRTHHUB360_WEBHOOK_SECRET configurado, responde 503 (mesmo padrão do
  *     BIRTH_VOICES_WEBHOOK_SECRET em birthVoice.webhook.ts).

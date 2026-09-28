@@ -119,7 +119,7 @@ export {
 } from './service/syncRules.js';
 export type { BitrixUserOption } from './service/userMapping.js';
 export {
-  resolveAtlasUserIdByEmail,
-  resolveAtlasUserNameByEmail,
+  resolveBirthubUserIdByEmail,
+  resolveBirthubUserNameByEmail,
   resolveOwnBitrixUserId,
 } from './service/userMapping.js';

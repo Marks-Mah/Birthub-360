@@ -6,9 +6,9 @@ import {
   ExternalAiConsentRequiredError,
 } from '../services/voice.service.js';
 import {
-  atlasGROutboundPayloadSchema,
+  birthhub360OutboundPayloadSchema,
   blandCallResultSchema,
-} from '../validators/atlasgr.schema.js';
+} from '../validators/birthhub360.schema.js';
 import { safeEqual } from '../lib/safeCompare.js';
 import {
   beginBlandCallbackProcessing,
@@ -16,7 +16,7 @@ import {
   IdempotencyCheckFailedError,
   releaseBlandCallbackProcessing,
 } from '../lib/webhookIdempotency.js';
-import { upsertAtlasGRCallResult } from '../../../repositories/atlasGRCallResultRepository.js';
+import { upsertBirthub360CallResult } from '../../../repositories/birthhub360CallResultRepository.js';
 
 const router = express.Router();
 
@@ -44,27 +44,27 @@ function asBoolean(value: unknown, fallback: boolean): boolean {
 }
 
 /**
- * Authenticates the AtlasGR CRM as the caller via a pre-shared secret sent in a custom header.
+ * Authenticates the Birth Hub 360 CRM as the caller via a pre-shared secret sent in a custom header.
  * Fails closed: if the secret isn't configured server-side, every request is rejected rather than
  * silently accepted.
  */
-function validateAtlasGRSecret(
+function validateBirthhub360Secret(
   req: express.Request,
   res: express.Response,
   next: express.NextFunction,
 ) {
-  const expectedSecret = process.env.ATLASGR_WEBHOOK_SECRET;
+  const expectedSecret = process.env.BIRTHHUB360_WEBHOOK_SECRET;
   if (!expectedSecret) {
     logger.error(
-      'AtlasGR webhook rejected: ATLASGR_WEBHOOK_SECRET is not configured (failing closed)',
+      'Birth Hub 360 webhook rejected: BIRTHHUB360_WEBHOOK_SECRET is not configured (failing closed)',
     );
-    return res.status(503).json({ error: 'Integração AtlasGR não está configurada.' });
+    return res.status(503).json({ error: 'Integração Birth Hub 360 não está configurada.' });
     return;
   }
 
-  const provided = req.headers['x-atlasgr-webhook-secret'];
+  const provided = req.headers['x-birthhub360-webhook-secret'];
   if (typeof provided !== 'string' || !safeEqual(provided, expectedSecret)) {
-    logger.warn('AtlasGR webhook rejected: missing or invalid shared secret', {
+    logger.warn('Birth Hub 360 webhook rejected: missing or invalid shared secret', {
       hasHeader: typeof provided === 'string',
     });
     return res.status(401).json({ error: 'Não autorizado.' });
@@ -103,10 +103,10 @@ function validateBlandCallbackToken(
   return next();
 }
 
-router.post('/webhook/atlasgr/outbound', validateAtlasGRSecret, async (req, res) => {
-  const parsed = atlasGROutboundPayloadSchema.safeParse(req.body);
+router.post('/webhook/birthhub360/outbound', validateBirthhub360Secret, async (req, res) => {
+  const parsed = birthhub360OutboundPayloadSchema.safeParse(req.body);
   if (!parsed.success) {
-    logger.warn('AtlasGR webhook rejected: invalid payload', { issues: parsed.error.issues });
+    logger.warn('Birth Hub 360 webhook rejected: invalid payload', { issues: parsed.error.issues });
     return res
       .status(400)
       .json({ error: 'Payload inválido.', issues: parsed.error.issues.map((i) => i.message) });
@@ -119,7 +119,7 @@ router.post('/webhook/atlasgr/outbound', validateAtlasGRSecret, async (req, res)
   } catch (error: any) {
     if (error instanceof ExternalAiConsentRequiredError) {
       logger.warn(
-        'AtlasGR webhook rejected: external AI consent is not granted for the configured tenant',
+        'Birth Hub 360 webhook rejected: external AI consent is not granted for the configured tenant',
       );
       return res.status(403).json({
         error: 'Consentimento para processamento por provedor externo de IA é obrigatório.',
@@ -129,7 +129,7 @@ router.post('/webhook/atlasgr/outbound', validateAtlasGRSecret, async (req, res)
     }
     if (error instanceof IdempotencyCheckFailedError) {
       logger.error(
-        'AtlasGR webhook: idempotency check failed, rejecting to avoid a duplicate call',
+        'Birth Hub 360 webhook: idempotency check failed, rejecting to avoid a duplicate call',
         {
           error: error.message,
         },
@@ -140,16 +140,16 @@ router.post('/webhook/atlasgr/outbound', validateAtlasGRSecret, async (req, res)
       return;
     }
     if (error instanceof BlandConfigurationError) {
-      logger.error('AtlasGR webhook: Bland AI integration is misconfigured', {
+      logger.error('Birth Hub 360 webhook: Bland AI integration is misconfigured', {
         error: error.message,
       });
       return res.status(503).json({ error: 'Integração com Bland AI não está configurada.' });
       return;
     }
-    logger.error('AtlasGR webhook: failed to process outbound call request', {
+    logger.error('Birth Hub 360 webhook: failed to process outbound call request', {
       error: error instanceof Error ? error.message : String(error),
     });
-    return res.status(502).json({ error: 'Failed to process AtlasGR webhook' });
+    return res.status(502).json({ error: 'Failed to process Birth Hub 360 webhook' });
   }
 });
 
@@ -171,10 +171,10 @@ router.post('/webhooks/bland/:token', validateBlandCallbackToken, async (req, re
   // There must never be a built-in credential or localhost destination in this production path.
   // Both values are external configuration and the callback fails closed when either is absent.
   const atlasBaseUrl = process.env.ATLASGR_BASE_URL?.trim();
-  const webhookSecret = process.env.ATLASGR_WEBHOOK_SECRET?.trim();
+  const webhookSecret = process.env.BIRTHHUB360_WEBHOOK_SECRET?.trim();
   if (!atlasBaseUrl || !webhookSecret) {
     logger.error(
-      'Bland AI callback cannot be forwarded: AtlasGR destination or signing secret is missing',
+      'Bland AI callback cannot be forwarded: Birth Hub 360 destination or signing secret is missing',
       {
         callId,
         hasBaseUrl: Boolean(atlasBaseUrl),
@@ -183,7 +183,7 @@ router.post('/webhooks/bland/:token', validateBlandCallbackToken, async (req, re
     );
     return res
       .status(503)
-      .json({ error: 'Integração de retorno com AtlasGR não está configurada.' });
+      .json({ error: 'Integração de retorno com Birth Hub 360 não está configurada.' });
     return;
   }
 
@@ -222,24 +222,24 @@ router.post('/webhooks/bland/:token', validateBlandCallbackToken, async (req, re
   };
 
   // Persist the call result for audit/historical lookup before attempting to forward it to
-  // AtlasGR, so a later forwarding failure doesn't also cost us the only record that Bland AI
+  // Birth Hub 360, so a later forwarding failure doesn't also cost us the only record that Bland AI
   // reported this result at all (see
   // .agents/handoffs/onda-4/01-para-06-persistir-resultado-bland-pronto.md). Fire-and-forget on
   // purpose: this local bookkeeping must never fail or delay the response to Bland AI, but a
   // failure here is never swallowed silently either — it is always logged.
-  // `organizationId` is best-effort only: `ATLASGR_TENANT_ID` identifies the tenant at call *dispatch*
+  // `organizationId` is best-effort only: `BIRTHHUB360_TENANT_ID` identifies the tenant at call *dispatch*
   // time, but that id is never sent to Bland AI as call metadata and never comes back in this
-  // callback, so it cannot be verified against the actual call — see the `AtlasGRCallResult`
+  // callback, so it cannot be verified against the actual call — see the `Birthub360CallResult`
   // model comment in prisma/schema.prisma for the full rationale.
-  upsertAtlasGRCallResult({
+  upsertBirthub360CallResult({
     callId,
     status: data.status ?? null,
     completed: forwardPayload.completed,
     callLength: forwardPayload.call_length || null,
     leadId: asString(variables.lead_id) || null,
-    organizationId: process.env.ATLASGR_TENANT_ID?.trim() || null,
+    organizationId: process.env.BIRTHHUB360_TENANT_ID?.trim() || null,
   }).catch((error) => {
-    logger.error('Failed to persist AtlasGR/Bland AI call result', {
+    logger.error('Failed to persist Birth Hub 360/Bland AI call result', {
       callId,
       error: error instanceof Error ? error.message : String(error),
     });
@@ -250,20 +250,20 @@ router.post('/webhooks/bland/:token', validateBlandCallbackToken, async (req, re
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-atlasgr-webhook-secret': webhookSecret,
+        'x-birthhub360-webhook-secret': webhookSecret,
         // Lets the receiving CRM make its own update idempotent even if this service crashes after
-        // AtlasGR accepts the request but before Redis is marked `done`.
+        // Birth Hub 360 accepts the request but before Redis is marked `done`.
         'x-idempotency-key': `bland-call-result:${callId}`,
       },
       body: JSON.stringify(forwardPayload),
     });
 
     if (!response.ok) {
-      throw new Error(`AtlasGR voice-result returned HTTP ${response.status}`);
+      throw new Error(`Birth Hub 360 voice-result returned HTTP ${response.status}`);
     }
 
     await completeBlandCallbackProcessing(callId);
-    logger.info('Successfully forwarded voice call result to AtlasGR', { callId });
+    logger.info('Successfully forwarded voice call result to Birth Hub 360', { callId });
     return res.status(200).json({ received: true, duplicate: false });
   } catch (error: any) {
     try {
@@ -275,13 +275,13 @@ router.post('/webhooks/bland/:token', validateBlandCallbackToken, async (req, re
       });
     }
 
-    logger.error('Failed to forward voice call result to AtlasGR CRM', {
+    logger.error('Failed to forward voice call result to Birth Hub 360 CRM', {
       callId,
       error: error instanceof Error ? error.message : String(error),
     });
     return res
       .status(502)
-      .json({ error: 'Falha ao encaminhar resultado da chamada para AtlasGR.' });
+      .json({ error: 'Falha ao encaminhar resultado da chamada para Birth Hub 360.' });
   }
 });
 

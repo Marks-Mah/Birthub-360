@@ -1,13 +1,13 @@
 import type React from 'react';
 
-interface TotalTracLogoProps {
+interface Birthub360LogoProps {
   variant?: 'full' | 'symbol' | 'with-subtitle';
   theme?: 'dark' | 'light' | 'blue';
   size?: 'sm' | 'md' | 'lg' | 'xl';
   className?: string;
 }
 
-export const TotalTracLogo: React.FC<TotalTracLogoProps> = ({
+export const Birthub360Logo: React.FC<Birthub360LogoProps> = ({
   variant = 'with-subtitle',
   theme = 'dark',
   size = 'md',

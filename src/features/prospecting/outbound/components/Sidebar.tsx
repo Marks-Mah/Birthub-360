@@ -1,6 +1,6 @@
 import type React from 'react';
 import { useState } from 'react';
-import { AtlasLogo } from './AtlasLogo.js';
+import { BirthubLogo } from './BirthubLogo.js';
 import type {
   AIConfig,
   DatabaseStats,
@@ -163,7 +163,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           }`}
         >
           <div className="flex items-center justify-between">
-            <AtlasLogo variant="with-subtitle" size="sm" theme={theme} />
+            <BirthubLogo variant="with-subtitle" size="sm" theme={theme} />
             <button
               onClick={() => setIsOpenMobile(false)}
               className={`lg:hidden p-1.5 rounded-lg transition ${
@@ -646,7 +646,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               </div>
               <div
                 className={`p-1.5 rounded-lg border flex items-center justify-between ${
-                  integrationsConfig.bitrixTotalTracWebhook
+                  integrationsConfig.bitrixBirthhub360Webhook
                     ? 'border-[var(--brand-primary)]/30 bg-[var(--brand-primary)]/10 text-[var(--brand-primary)]'
                     : 'border-slate-800 bg-slate-900 text-slate-400'
                 }`}
@@ -714,7 +714,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   >
                     <option value="auto">Automático (conforme sua marca)</option>
                     <option value="totaltrac">Forçar Total Trac</option>
-                    <option value="atlasgr">Forçar AtlasGR</option>
+                    <option value="birthhub360">Forçar Birth Hub 360</option>
                     <option value="custom">Personalizado</option>
                   </select>
                   <p className={`text-[10px] mt-1 ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>

@@ -15,7 +15,7 @@ const TERMINAL_STATUSES: LeadStatus[] = [
   LeadStatus.Negocios_Ganhos,
   LeadStatus.Negocios_Perdidos,
   LeadStatus.Lead_Desqualificado,
-  LeadStatus.Piloto_Atlas_Profile_Cancelado,
+  LeadStatus.Piloto_Birthub360_Profile_Cancelado,
   LeadStatus.Piloto_Logistico_Cancelado,
 ];
 
@@ -34,7 +34,7 @@ export interface OwnershipConflict {
  * dono) — nesse caso o import segue normalmente.
  *
  * `incomingOwnerId` é o `User.id` que vai ser gravado em `Lead.owner` (ver `userMapping.ts` →
- * `resolveAtlasUserIdByEmail`). Leads importados ANTES da correção de
+ * `resolveBirthubUserIdByEmail`). Leads importados ANTES da correção de
  * `.agents/handoffs/onda-7/04-para-06-owner-bitrix-nome-nao-id.md` ainda têm `owner` = nome
  * (`User.name`) até o backfill proposto em
  * `.agents/handoffs/onda-10/06-para-01-backfill-lead-owner.md` rodar — nesse intervalo, um

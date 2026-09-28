@@ -8,7 +8,7 @@ import { BITRIX_FIELD_MAP } from '../bitrixFieldMap.js';
 import { callBitrix, getConnectionWebhookUrl } from './client.js';
 import { applyInboundCustomFields, resolveEnumMaps } from './customFields.js';
 import { findOwnershipConflict, notifyOwnershipConflict } from './ownershipGuard.js';
-import { type BitrixUserOption, resolveAtlasUserIdByEmail } from './userMapping.js';
+import { type BitrixUserOption, resolveBirthubUserIdByEmail } from './userMapping.js';
 
 const DEAL_UF_CRM_CODES = BITRIX_FIELD_MAP.map((m) => m.dealCode).filter((c): c is string =>
   Boolean(c),
@@ -420,7 +420,7 @@ export async function importSelectedBitrixDeals(
         : null;
       // Lead.owner grava User.id (não o nome) para casar com a convenção de leads criados no
       // app — ver .agents/handoffs/onda-7/04-para-06-owner-bitrix-nome-nao-id.md.
-      const ownerId = await resolveAtlasUserIdByEmail(organizationId, assigneeEmail);
+      const ownerId = await resolveBirthubUserIdByEmail(organizationId, assigneeEmail);
 
       const conflict = await findOwnershipConflict(organizationId, { phone, email }, ownerId);
       if (conflict) {

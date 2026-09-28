@@ -452,7 +452,7 @@ export class LeadUseCases extends BaseUseCases<Lead, LeadRepository> {
       cols[91] = qual.cadastroAtual || '';
       cols[92] = qual.dorPrincipal || '';
       cols[93] = qual.detalhamentoDor || '';
-      cols[94] = qual.solucaoAtlas || '';
+      cols[94] = qual.solucaoBirthub360 || '';
       cols[95] = linkedin;
       cols[96] = contact?.role || '';
       cols[97] = qual.nivelAutoridade || '';

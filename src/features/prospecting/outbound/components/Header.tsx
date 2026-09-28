@@ -1,6 +1,6 @@
 import type React from 'react';
-import { AtlasLogo } from './AtlasLogo.js';
-import { TotalTracLogo } from './TotalTracLogo.js';
+import { BirthubLogo } from './BirthubLogo.js';
+import { Birthub360Logo } from './Birthub360Logo.js';
 import type { ThemeMode, User } from '../types.js';
 import {
   Sparkles,
@@ -81,9 +81,9 @@ export const Header: React.FC<HeaderProps> = ({
               <Menu className="w-5 h-5" />
             </button>
             {user.company === 'totaltrac' ? (
-              <TotalTracLogo variant="with-subtitle" size="sm" theme={theme} />
+              <Birthub360Logo variant="with-subtitle" size="sm" theme={theme} />
             ) : (
-              <AtlasLogo variant="with-subtitle" size="sm" theme={theme} />
+              <BirthubLogo variant="with-subtitle" size="sm" theme={theme} />
             )}
           </div>
 

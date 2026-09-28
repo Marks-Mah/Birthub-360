@@ -66,7 +66,7 @@ async function claimOutboundSync(leadId: string, organizationId: string): Promis
 }
 
 /**
- * Envia (ou atualiza) um lead do Atlas como Lead no Bitrix24. Núcleo compartilhado pelas duas
+ * Envia (ou atualiza) um lead do Birth Hub 360 como Lead no Bitrix24. Núcleo compartilhado pelas duas
  * entradas públicas abaixo — lança AppError em qualquer falha; cada chamador decide se propaga
  * (botão manual) ou engole (push automático). Sempre grava o resultado (sucesso ou falha) em
  * `Lead.bitrixSyncStatus`/`bitrixSyncError`/`bitrixSyncedAt` e em BitrixSyncLog — antes desta
@@ -103,7 +103,7 @@ async function syncLeadToBitrix(
     // Bitrix em vez de preso num campo de texto livre).
     const commentsParts = [
       lead.company?.observations,
-      `Etapa no Atlas: ${statusLabel}`,
+      `Etapa no Birth Hub 360: ${statusLabel}`,
       lead.temperature ? `Temperatura: ${lead.temperature}` : null,
       lead.score != null ? `Fit Score: ${lead.score}` : null,
       lead.pic ? `Perfil (PIC): ${lead.pic}` : null,
@@ -113,7 +113,7 @@ async function syncLeadToBitrix(
 
     const fields: Record<string, unknown> = {
       ...customFields,
-      TITLE: lead.company?.tradeName || lead.company?.legalName || 'Lead Atlas',
+      TITLE: lead.company?.tradeName || lead.company?.legalName || 'Lead Birth Hub 360',
       NAME: lead.contact?.name?.split(' ')[0],
       LAST_NAME: lead.contact?.name?.split(' ').slice(1).join(' ') || undefined,
       COMPANY_TITLE: lead.company?.legalName || lead.company?.tradeName,
@@ -386,11 +386,11 @@ async function findDuplicateBitrixLeadId(
 }
 
 /**
- * Chamado automaticamente sempre que um lead nasce no Atlas (ver promoteToCrm) — não precisa de
+ * Chamado automaticamente sempre que um lead nasce no Birth Hub 360 (ver promoteToCrm) — não precisa de
  * clique manual. Fire-and-forget por design: nunca propaga erro, já que o Bitrix é um sistema
- * secundário e uma falha aqui não pode impedir o lead de existir no Atlas.
+ * secundário e uma falha aqui não pode impedir o lead de existir no Birth Hub 360.
  *
- * O `catch` abaixo continua só logando (correto — o Atlas não pode travar por causa do Bitrix),
+ * O `catch` abaixo continua só logando (correto — o Birth Hub 360 não pode travar por causa do Bitrix),
  * mas `syncLeadToBitrix` agora grava o resultado em `Lead.bitrixSyncStatus`/`bitrixSyncError` e em
  * BitrixSyncLog ANTES de propagar o erro pra cá — a falha deixou de ser invisível na tela: o
  * LeadDetailDrawer lê esses campos para mostrar "Falha ao sincronizar" com o motivo (achado P1-3

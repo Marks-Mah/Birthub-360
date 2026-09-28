@@ -33,7 +33,7 @@ interface LeadDistributionTabProps {
 }
 
 const BRAND_LABEL: Record<'atlas' | 'totaltrac', string> = {
-  atlas: 'AtlasGR',
+  atlas: 'Birth Hub 360',
   totaltrac: 'Total Trac',
 };
 

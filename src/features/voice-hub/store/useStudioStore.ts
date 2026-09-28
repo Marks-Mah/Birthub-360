@@ -421,7 +421,7 @@ export const nodeRegistry: Record<string, NodeRegistryItem> = {
     dependencies: ['node-fetch-middleware'],
     defaultConfig: {
       method: 'POST',
-      endpoint: 'https://api.atlasgr.com.br/v1/leads',
+      endpoint: 'https://api.birthhub360.com.br/v1/leads',
       headers: '{"Authorization": "Bearer token_secret"}',
       bodyPayload: '{"name": "{{customer_name}}", "date": "{{meeting_date}}"}',
       timeoutMs: 4000,

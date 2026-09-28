@@ -1,7 +1,7 @@
 import { logger } from '../../../lib/logger.js';
-import type { AtlasGROutboundPayload } from '../validators/atlasgr.schema.js';
+import type { Birthhub360OutboundPayload } from '../validators/birthhub360.schema.js';
 import {
-  buildAtlasGROutboundIdempotencyKey,
+  buildBirth Hub 360OutboundIdempotencyKey,
   claimIdempotencyKey,
 } from '../lib/webhookIdempotency.js';
 import { getAiConsent } from '../../../services/settingService.js';
@@ -28,15 +28,15 @@ export class VoiceProspectingService {
   /**
    * Configures and triggers an outbound qualification call using Bland AI.
    *
-   * Idempotent by design: a redelivered webhook for the same lead (`lead_id` when AtlasGR sends
+   * Idempotent by design: a redelivered webhook for the same lead (`lead_id` when Birth Hub 360 sends
    * one, otherwise a hash of phone/name/company) is detected via Redis and short-circuited before
    * any request reaches Bland AI.
    *
-   * Privacy boundary: AtlasGR/Bland is mapped to one Birth Voices tenant through
-   * `ATLASGR_TENANT_ID`. That tenant must have an explicit AI-provider consent record before any
+   * Privacy boundary: Birth Hub 360/Bland is mapped to one Birth Voices tenant through
+   * `BIRTHHUB360_TENANT_ID`. That tenant must have an explicit AI-provider consent record before any
    * lead data is sent to Bland. This avoids treating a server-to-server shared secret as consent.
    */
-  async triggerOutboundCall(payload: AtlasGROutboundPayload): Promise<TriggerOutboundCallResult> {
+  async triggerOutboundCall(payload: Birthhub360OutboundPayload): Promise<TriggerOutboundCallResult> {
     const apiKey = process.env.BLAND_API_KEY?.trim();
     if (!apiKey) {
       logger.warn('BLAND_API_KEY is not set in the environment');
@@ -55,10 +55,10 @@ export class VoiceProspectingService {
       throw new BlandConfigurationError('WEBHOOK_BASE_URL missing or insecure');
     }
 
-    const organizationId = process.env.ATLASGR_TENANT_ID?.trim();
+    const organizationId = process.env.BIRTHHUB360_TENANT_ID?.trim();
     if (!organizationId) {
-      logger.warn('ATLASGR_TENANT_ID is required to enforce tenant-scoped AI consent');
-      throw new BlandConfigurationError('ATLASGR_TENANT_ID missing');
+      logger.warn('BIRTHHUB360_TENANT_ID is required to enforce tenant-scoped AI consent');
+      throw new BlandConfigurationError('BIRTHHUB360_TENANT_ID missing');
     }
 
     const consent = await getAiConsent(organizationId);
@@ -69,7 +69,7 @@ export class VoiceProspectingService {
       throw new ExternalAiConsentRequiredError('AI provider consent required');
     }
 
-    const idempotencyKey = buildAtlasGROutboundIdempotencyKey({
+    const idempotencyKey = buildBirth Hub 360OutboundIdempotencyKey({
       leadId: payload.lead_id,
       phoneNumber: payload.phone_number,
       name: payload.name,
@@ -80,7 +80,7 @@ export class VoiceProspectingService {
     // risking a duplicate billed call to a real person.
     const claimed = await claimIdempotencyKey(idempotencyKey);
     if (!claimed) {
-      logger.info('VoiceProspectingService: duplicate AtlasGR webhook delivery ignored', {
+      logger.info('VoiceProspectingService: duplicate Birth Hub 360 webhook delivery ignored', {
         organizationId,
         leadId: payload.lead_id,
         idempotencyKey,

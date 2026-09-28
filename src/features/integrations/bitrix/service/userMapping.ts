@@ -3,7 +3,7 @@ import { prisma } from '../../../../lib/prisma.js';
 /**
  * Formato de usuário do Bitrix já normalizado (id/nome/e-mail) — definido aqui, não em `deals.ts`,
  * porque este módulo é quem consome o tipo (`resolveOwnBitrixUserId`) e `deals.ts` já importa
- * `resolveAtlasUserIdByEmail` daqui; declarar o tipo do lado que só consome, nunca produz, evitava
+ * `resolveBirthubUserIdByEmail` daqui; declarar o tipo do lado que só consome, nunca produz, evitava
  * uma dependência circular real entre os dois módulos (`no-circular`,
  * `.dependency-cruiser-known-violations.json`) sem mudar nenhum comportamento — `deals.ts` importa
  * o tipo daqui normalmente.
@@ -65,7 +65,7 @@ export function resolveOwnBitrixUserId(
  * `bitrixEmail` informado. `null` quando não há usuário Atlas com esse e-mail (nunca fabrica um
  * nome).
  *
- * NÃO use esta função para preencher `Lead.owner` — use `resolveAtlasUserIdByEmail` abaixo.
+ * NÃO use esta função para preencher `Lead.owner` — use `resolveBirthubUserIdByEmail` abaixo.
  * `Lead.owner` precisa sempre gravar `User.id`, a mesma convenção usada por leads criados dentro
  * do app (`LeadUseCases.createLead`, `assignment.service.ts`); gravar o nome aqui é o que quebrava
  * `requireLeadOwnership` (RBAC) e duplicava vendedores no ranking de BI por owner — ver
@@ -73,7 +73,7 @@ export function resolveOwnBitrixUserId(
  * porque é reexportada como parte da API pública deste módulo (`bitrix.service.ts`) e pode ter
  * consumidores futuros que precisem do nome para exibição — não porque ainda alimenta `Lead.owner`.
  */
-export async function resolveAtlasUserNameByEmail(
+export async function resolveBirthubUserNameByEmail(
   organizationId: string,
   bitrixEmail: string | null,
 ): Promise<string | null> {
@@ -87,12 +87,12 @@ export async function resolveAtlasUserNameByEmail(
 
 /**
  * Devolve o `User.id` do usuário Atlas desta organização cujo e-mail bate com o `bitrixEmail`
- * informado — use esta função (não `resolveAtlasUserNameByEmail`) para preencher `Lead.owner` no
+ * informado — use esta função (não `resolveBirthubUserNameByEmail`) para preencher `Lead.owner` no
  * import a partir de quem está marcado como responsável (ASSIGNED_BY_ID) no Bitrix, para manter a
  * mesma convenção usada por leads criados dentro do app. `null` quando não há usuário Atlas com
  * esse e-mail (o registro ainda é importado, só fica sem responsável — nunca fabrica um vínculo).
  */
-export async function resolveAtlasUserIdByEmail(
+export async function resolveBirthubUserIdByEmail(
   organizationId: string,
   bitrixEmail: string | null,
 ): Promise<string | null> {

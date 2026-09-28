@@ -22,9 +22,9 @@ export interface BitrixDuplicateResult {
 export function resolveBitrixWebhookForCompany(company?: string): string {
   const cleanCompany = (company || '').toLowerCase();
   if (cleanCompany === 'atlas') {
-    return (process.env.BITRIX_ATLASGR_WEBHOOK || '').replace(/\/$/, '');
+    return (process.env.BITRIX_BIRTHHUB360_WEBHOOK || '').replace(/\/$/, '');
   }
-  return (process.env.BITRIX_TOTALTRAC_WEBHOOK || '').replace(/\/$/, '');
+  return (process.env.BITRIX_BIRTHHUB360_WEBHOOK || '').replace(/\/$/, '');
 }
 
 // Consulta o Bitrix ANTES de criar um lead novo: existe como Empresa/Contato (cliente

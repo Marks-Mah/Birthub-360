@@ -59,25 +59,25 @@ describe('resolveOwnBitrixUserId', () => {
   });
 });
 
-describe('resolveAtlasUserNameByEmail', () => {
+describe('resolveBirthubUserNameByEmail', () => {
   it('e-mail nulo devolve null sem consultar o banco', async () => {
-    const { resolveAtlasUserNameByEmail } = await import('../userMapping.js');
-    const result = await resolveAtlasUserNameByEmail('org-1', null);
+    const { resolveBirthubUserNameByEmail } = await import('../userMapping.js');
+    const result = await resolveBirthubUserNameByEmail('org-1', null);
     expect(result).toBeNull();
     expect(prismaMock.user.findFirst).not.toHaveBeenCalled();
   });
 
   it('usuário Atlas encontrado pelo e-mail devolve o nome', async () => {
     prismaMock.user.findFirst.mockResolvedValue({ name: 'Ana Souza' });
-    const { resolveAtlasUserNameByEmail } = await import('../userMapping.js');
-    const result = await resolveAtlasUserNameByEmail('org-1', 'ana@birthhub360.com.br');
+    const { resolveBirthubUserNameByEmail } = await import('../userMapping.js');
+    const result = await resolveBirthubUserNameByEmail('org-1', 'ana@birthhub360.com.br');
     expect(result).toBe('Ana Souza');
   });
 
   it('sem usuário Atlas com esse e-mail, devolve null (não fabrica nome)', async () => {
     prismaMock.user.findFirst.mockResolvedValue(null);
-    const { resolveAtlasUserNameByEmail } = await import('../userMapping.js');
-    const result = await resolveAtlasUserNameByEmail('org-1', 'desconhecido@bitrix.com');
+    const { resolveBirthubUserNameByEmail } = await import('../userMapping.js');
+    const result = await resolveBirthubUserNameByEmail('org-1', 'desconhecido@bitrix.com');
     expect(result).toBeNull();
   });
 });

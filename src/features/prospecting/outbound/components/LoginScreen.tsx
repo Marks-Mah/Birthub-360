@@ -12,8 +12,8 @@ import {
   ListChecks,
 } from 'lucide-react';
 import type { User, ThemeMode } from '../types.js';
-import { AtlasLogo } from './AtlasLogo.js';
-import { TotalTracLogo } from './TotalTracLogo.js';
+import { BirthubLogo } from './BirthubLogo.js';
+import { Birthub360Logo } from './Birthub360Logo.js';
 
 interface LoginScreenProps {
   onLogin: (user: User) => void;
@@ -25,11 +25,11 @@ type Company = 'atlas' | 'totaltrac';
 
 const BRAND = {
   atlas: {
-    label: 'AtlasGR',
-    title: 'AtlasGR CRM',
+    label: 'Birth Hub 360',
+    title: 'Birth Hub 360 CRM',
     tagline: 'Segurança e Inteligência Logística',
     subtitle: 'Login exclusivo Equipe Atlas',
-    placeholder: 'nome@atlasgr.com.br',
+    placeholder: 'nome@birthhub360.com.br',
     gradientFrom: '#FF5618',
     gradientTo: '#FF8020',
     hoverFrom: '#FF4500',
@@ -68,7 +68,7 @@ export function LoginScreen({ onLogin, isDark, setTheme }: LoginScreenProps) {
   const [loading, setLoading] = useState(false);
 
   const brand = BRAND[company];
-  const Logo = company === 'atlas' ? AtlasLogo : TotalTracLogo;
+  const Logo = company === 'atlas' ? BirthubLogo : Birthub360Logo;
 
   const handleCompanyChange = (next: Company) => {
     if (next === company) return;

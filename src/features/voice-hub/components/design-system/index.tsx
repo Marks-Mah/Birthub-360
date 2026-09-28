@@ -21,10 +21,10 @@ const FOCUSABLE_SELECTOR =
 // 0. ATLAS BRAND MARK
 // ============================================================================
 
-export function AtlasLogo({ className = 'h-5 w-5' }: { className?: string }) {
+export function BirthubLogo({ className = 'h-5 w-5' }: { className?: string }) {
   return (
     <span className={`inline-flex items-center justify-center ${className}`} aria-hidden="true">
-      <img src="/brand/atlasgr-symbol.svg" className="h-full w-full object-contain" alt="" />
+      <img src="/brand/birthhub360-symbol.svg" className="h-full w-full object-contain" alt="" />
     </span>
   );
 }
@@ -1064,3 +1064,6 @@ export function ToastContainer({ toasts }: { toasts: Toast[] }) {
     </div>
   );
 }
+
+export const AtlasLogo = BirthubLogo;
+

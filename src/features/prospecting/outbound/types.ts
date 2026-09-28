@@ -473,11 +473,11 @@ export interface IntegrationsConfig {
   groqApiKey: string;
   hunterApiKey: string;
   blandAiApiKey: string;
-  bitrixTotalTracWebhook: string;
+  bitrixBirthhub360Webhook: string;
   bitrixAtlasGrWebhook: string;
   // 'auto' (padrão recomendado) escolhe o webhook pela marca do usuário logado;
   // as demais opções seguem disponíveis como substituição manual explícita.
-  activeBitrixTarget: 'auto' | 'totaltrac' | 'atlasgr' | 'custom';
+  activeBitrixTarget: 'auto' | 'totaltrac' | 'birthhub360' | 'custom';
   customBitrixWebhook: string;
 }
 

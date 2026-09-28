@@ -1,13 +1,13 @@
 import type React from 'react';
 
-interface AtlasLogoProps {
+interface BirthubLogoProps {
   variant?: 'full' | 'symbol' | 'with-subtitle';
   theme?: 'dark' | 'light' | 'orange';
   size?: 'sm' | 'md' | 'lg' | 'xl';
   className?: string;
 }
 
-export const AtlasLogo: React.FC<AtlasLogoProps> = ({
+export const BirthubLogo: React.FC<BirthubLogoProps> = ({
   variant = 'with-subtitle',
   theme = 'dark',
   size = 'md',

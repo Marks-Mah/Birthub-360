@@ -1,5 +1,5 @@
 import React from 'react';
-import { AtlasLogo } from './AtlasLogo.js';
+import { BirthubLogo } from './BirthubLogo.js';
 import { X, Sparkles, Target, HeartHandshake, Check, Copy, Palette, Type } from 'lucide-react';
 
 interface BrandGuideModalProps {
@@ -81,7 +81,7 @@ export const BrandGuideModal: React.FC<BrandGuideModalProps> = ({ isOpen, onClos
         {/* Header */}
         <div className="p-6 border-b border-slate-800 bg-slate-950/60 flex items-center justify-between sticky top-0 z-10">
           <div className="flex items-center gap-3">
-            <AtlasLogo variant="with-subtitle" size="md" />
+            <BirthubLogo variant="with-subtitle" size="md" />
             <span className="hidden sm:inline-block h-6 w-px bg-slate-800" />
             <span className="hidden sm:inline-block text-xs font-semibold text-slate-400">
               Manual de Identidade Visual v1.0
