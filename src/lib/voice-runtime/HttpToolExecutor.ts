@@ -1,4 +1,4 @@
-import { isPrivateOrReservedHost } from '../../src/validators/index.js';
+import { isPrivateOrReservedHost } from '../voice-hub/validators/index.js';
 import { logger } from '../logger.js';
 
 /**
@@ -98,11 +98,14 @@ export async function executeHttpTool(request: HttpToolRequest): Promise<HttpToo
     return { ok: false, error: 'invalid_url' };
   }
   if (!isSafeToolUrl(parsedUrl.toString())) {
-    logger.warn('Workflow tool node refused: target URL is not an allowed public endpoint', {
-      // Never log the full URL/query string here — a tenant-configured endpoint can carry
-      // sensitive tokens or contact data in its query string.
-      host: parsedUrl.hostname,
-    });
+    logger.warn(
+      {
+        // Never log the full URL/query string here — a tenant-configured endpoint can carry
+        // sensitive tokens or contact data in its query string.
+        host: parsedUrl.hostname,
+      },
+      'Workflow tool node refused: target URL is not an allowed public endpoint',
+    );
     return { ok: false, error: 'blocked_url' };
   }
 

@@ -9,7 +9,7 @@ export class TwilioProvider extends BaseProvider {
   private wss?: WebSocket;
 
   public async initialize(config: Record<string, unknown>): Promise<void> {
-    logger.debug(`[${this.name}] Initialized with config`, config);
+    logger.debug(config, `[${this.name}] Initialized with config`);
   }
 
   public async process(
@@ -30,7 +30,7 @@ export class TwilioProvider extends BaseProvider {
     this.wss.on('message', (msg) => {
       // Decode twilio media payload
       // Extract mu-law or similar and process to raw PCM for AudioPipeline
-      logger.debug('Received Twilio chunk length', msg.toString().length);
+      logger.debug({ length: msg.toString().length }, 'Received Twilio chunk length');
     });
   }
 

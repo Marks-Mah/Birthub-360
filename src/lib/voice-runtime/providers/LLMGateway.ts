@@ -1,7 +1,7 @@
 import { GoogleGenAI } from '@google/genai';
 import { otelCollector, SYSTEM_TENANT_ID } from '../otel.js';
-import { getAiConsent } from '../../../services/settingService.js';
-import { createMetric } from '../../../services/metricService.js';
+import { getAiConsent } from '../../voice-hub/services/settingService.js';
+import { createMetric } from '../../voice-hub/services/metricService.js';
 import { logger } from '../../logger.js';
 
 export interface GatewayResponse {
@@ -75,7 +75,7 @@ class LLMProviderGateway {
       createMetric(tenantId, null, { name: 'ai_call_tokens', value: tokensUsed, tags }),
       createMetric(tenantId, null, { name: 'ai_call_latency_ms', value: latencyMs, tags }),
     ]).catch((err: unknown) => {
-      logger.error('[LLMProviderGateway] Failed to persist AI call metrics', err);
+      logger.error({ err }, '[LLMProviderGateway] Failed to persist AI call metrics');
     });
   }
 

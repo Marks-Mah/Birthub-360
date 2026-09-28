@@ -18,7 +18,7 @@ export class VoiceboxProvider extends BaseProvider {
       this.isAvailable = true;
       logger.debug(`[${this.name}] Initialized pointing to ${this.apiUrl}`);
     } catch (err) {
-      logger.warn(`[${this.name}] Failed to initialize`, err);
+      logger.warn({ err }, `[${this.name}] Failed to initialize`);
     }
   }
 
@@ -52,7 +52,7 @@ export class VoiceboxProvider extends BaseProvider {
       };
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
-      logger.error(`[${this.name}] Error processing TTS`, err);
+      logger.error({ err }, `[${this.name}] Error processing TTS`);
       // Must throw, not return silent empty/non-speech audio — a swallowed failure here means
       // FailoverEngine never tries the next TTS provider. See ElevenLabsProvider.process for
       // the same rule.

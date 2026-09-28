@@ -51,7 +51,7 @@ export class ElevenLabsProvider extends BaseProvider {
       };
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
-      logger.error(`[${this.name}] Error processing TTS`, err);
+      logger.error({ err }, `[${this.name}] Error processing TTS`);
       throw new Error(`ElevenLabs API Error: ${msg}`);
     }
   }

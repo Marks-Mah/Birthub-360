@@ -54,7 +54,7 @@ export class OpenAIRealtimeProvider extends BaseProvider {
       };
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
-      logger.error(`[${this.name}] Error processing LLM request`, err);
+      logger.error({ err }, `[${this.name}] Error processing LLM request`);
       throw new Error(`OpenAI API Error: ${msg}`);
     }
   }

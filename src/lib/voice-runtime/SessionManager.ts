@@ -5,8 +5,8 @@ import { memoryPipeline } from './MemoryPipeline.js';
 import { streamingEngine } from './StreamingEngine.js';
 import { audioPipeline } from './AudioPipeline.js';
 import { failoverEngine } from './FailoverEngine.js';
-import { webhookService } from '../../services/webhook.service.js';
-import { getAiConsent } from '../../services/settingService.js';
+import { webhookService } from '../voice-hub/services/webhook.service.js';
+import { getAiConsent } from '../voice-hub/services/settingService.js';
 
 // A session with no activity for this long is considered abandoned. Without this, a session that
 // never reaches endSession() (dropped WebSocket, crashed client, etc.) lives in `sessions` /
@@ -234,7 +234,7 @@ export class SessionManager {
           agentId: session.agentId,
           history: session.history,
         })
-        .catch((err) => {
+        .catch((err: unknown) => {
           observability.logEvent(sessionId, 'WEBHOOK_DISPATCH_ERROR', { error: String(err) });
         });
     }

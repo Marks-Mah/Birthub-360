@@ -115,6 +115,7 @@ function jsonHeaders(cookie) {
     'Content-Type': 'application/json',
     Accept: 'application/json',
     Cookie: `${SESSION_COOKIE_NAME}=${cookie}`,
+    Origin: baseUrl,
   };
 }
 
@@ -146,7 +147,10 @@ export function setup() {
   const signUpRes = http.post(
     `${baseUrl}/api/auth/sign-up/email`,
     JSON.stringify({ email, password: 'K6LoadTest123!', name: `K6 Load Test ${email}` }),
-    { headers: { 'Content-Type': 'application/json' }, tags: { endpoint: 'auth_signup' } },
+    {
+      headers: { 'Content-Type': 'application/json', Origin: baseUrl },
+      tags: { endpoint: 'auth_signup' },
+    },
   );
 
   const signedUp = check(signUpRes, {

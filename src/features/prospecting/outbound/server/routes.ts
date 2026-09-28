@@ -98,7 +98,7 @@ import {
   buildSessionCookie,
   buildLogoutCookie,
 } from './auth.js';
-import type { Lead, DecisionMaker } from '../src/types.js';
+import type { Lead, DecisionMaker } from '../types.js';
 
 // Só valida um campo quando ele está sendo de fato alterado para um valor novo —
 // nunca quando é reenviado sem mudança (o botão "Salvar" manda o lead inteiro de

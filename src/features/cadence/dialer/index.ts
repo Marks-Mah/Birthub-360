@@ -1,4 +1,4 @@
-import { env } from '../../../config/env.js';
+import { loadEnv } from './config/env.js';
 import { logger } from '../../../lib/logger.js';
 import { prisma } from '../../../lib/prisma.js';
 import { PgCampaignRepository } from './infrastructure/db/repositories/PgCampaignRepository.js';
@@ -18,6 +18,7 @@ import { createServer } from './interface/http/server.js';
 import { startDialerLoop } from './interface/scheduler/dialerLoop.js';
 
 async function main(): Promise<void> {
+  const env = loadEnv();
   // --- Infraestrutura ---
   const campaignRepository = new PgCampaignRepository(prisma);
   const leadRepository = new PgLeadRepository(prisma);

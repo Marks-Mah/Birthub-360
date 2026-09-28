@@ -24,7 +24,7 @@ export class ObservabilityEngine {
     this.events.get(sessionId)!.push(event);
 
     // In production, this would stream to DataDog, OpenTelemetry, etc.
-    logger.debug(`[Observability] [${sessionId}] ${type}`, payload);
+    logger.debug(payload, `[Observability] [${sessionId}] ${type}`);
     return event;
   }
 
