@@ -60,7 +60,7 @@ const KNOWN_RLS_ONLY_MODELS = [
   'APIKey',
   'Agent',
   'AgentSession',
-  'AtlasGRCallResult',
+  'Birthub360CallResult',
   'CallLog',
   'Campaign',
   'DncList',

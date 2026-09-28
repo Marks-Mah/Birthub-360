@@ -58,9 +58,9 @@ enum LeadStatus {
   // Etapas do funil Negócio adicionadas pela migration 20260805220000_two_funnels_and_bitrix_fields
   // (pipeline de pilotos comerciais) — não têm mapeamento de UI ainda, só refletem o que já está no banco.
   Piloto_VTECH                   @map("Piloto VTECH")
-  Piloto_Atlas_Profile           @map("Piloto Atlas Profile")
-  Piloto_Atlas_Profile_Concluido @map("Piloto Atlas Profile - Concluído")
-  Piloto_Atlas_Profile_Cancelado @map("Piloto Atlas Profile - Cancelado")
+  Piloto_Birthub360_Profile           @map("Piloto Birthub 360 Profile")
+  Piloto_Birthub360_Profile_Concluido @map("Piloto Birthub 360 Profile - Concluído")
+  Piloto_Birthub360_Profile_Cancelado @map("Piloto Birthub 360 Profile - Cancelado")
   Piloto_Logistica               @map("Piloto Logística")
   Piloto_Logistico_Concluido     @map("Piloto Logístico - Concluído")
   Piloto_Logistico_Cancelado     @map("Piloto Logístico - Cancelado")
@@ -1018,7 +1018,7 @@ model Organization {
   agents             Agent[]
   settings           Setting[]
   aiConsent          OrganizationAiConsent?
-  atlasGRCallResults AtlasGRCallResult[]
+  birthhub360CallResults Birthub360CallResult[]
   wallet             Wallet?
   transactions       Transaction[]
   apiKeys            APIKey[]
@@ -5156,7 +5156,7 @@ model OrganizationAiConsent {
   @@index([organizationId])
 }
 
-model AtlasGRCallResult {
+model Birthub360CallResult {
   id             String        @id @default(uuid())
   organizationId String?
   organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)

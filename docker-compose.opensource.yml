@@ -76,7 +76,7 @@ services:
       retries: 20
 
   langfuse-minio:
-    image: quay.io/minio/minio:latest
+    image: elestio/minio:latest
     command: ['server', '/data', '--console-address', ':9001']
     environment:
       MINIO_ROOT_USER: ${LANGFUSE_MINIO_USER:-langfuse}
@@ -91,15 +91,18 @@ services:
       retries: 10
 
   langfuse-minio-init:
-    image: quay.io/minio/mc:latest
+    image: alpine:latest
     depends_on:
       langfuse-minio:
         condition: service_healthy
     entrypoint: ['/bin/sh', '-c']
     command:
       - >-
-        mc alias set local http://langfuse-minio:9000 "$${MINIO_ROOT_USER}" "$${MINIO_ROOT_PASSWORD}" &&
-        mc mb --ignore-existing local/langfuse
+        apk add --no-cache curl &&
+        curl -O https://dl.min.io/client/mc/release/linux-amd64/mc &&
+        chmod +x mc &&
+        ./mc alias set local http://langfuse-minio:9000 "$${MINIO_ROOT_USER}" "$${MINIO_ROOT_PASSWORD}" &&
+        ./mc mb --ignore-existing local/langfuse
     environment:
       MINIO_ROOT_USER: ${LANGFUSE_MINIO_USER:-langfuse}
       MINIO_ROOT_PASSWORD: ${LANGFUSE_MINIO_PASSWORD:-change-this-langfuse-minio-password}
