@@ -1,5 +1,21 @@
 import type { Lead, LeadQualityMetric } from '../types.js';
 
+function isValidLinkedinUrl(linkedinUrl?: string): boolean {
+  if (!linkedinUrl || linkedinUrl.length <= 15) return false;
+
+  try {
+    const { hostname } = new URL(linkedinUrl);
+    const normalizedHost = hostname.toLowerCase();
+    return (
+      normalizedHost === 'linkedin.com' ||
+      normalizedHost === 'www.linkedin.com' ||
+      normalizedHost.endsWith('.linkedin.com')
+    );
+  } catch {
+    return false;
+  }
+}
+
 export function calculateLeadQuality(lead: Lead): LeadQualityMetric {
   const mainDm = lead.decision_makers?.[0] || {
     name: lead.decision_maker_name || '',
@@ -27,9 +43,7 @@ export function calculateLeadQuality(lead: Lead): LeadQualityMetric {
       !mainDm.email.startsWith('contato@'),
   );
 
-  const hasLinkedin = Boolean(
-    mainDm.linkedin?.includes('linkedin.com') && mainDm.linkedin.length > 15,
-  );
+  const hasLinkedin = isValidLinkedinUrl(mainDm.linkedin);
 
   const hasPhone = Boolean(
     lead.phone &&
