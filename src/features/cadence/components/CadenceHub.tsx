@@ -1,3 +1,4 @@
+import confetti from 'canvas-confetti';
 import {
   AlertTriangle,
   CalendarClock,
@@ -16,12 +17,10 @@ import {
   Square,
   Trash2,
 } from 'lucide-react';
-import confetti from 'canvas-confetti';
 import { useCallback, useEffect, useState } from 'react';
 import { Badge, type BadgeProps } from '../../../components/ui/Badge.js';
 import { Button } from '../../../components/ui/Button.js';
 import { Card } from '../../../components/ui/Card.js';
-import { SoundFX } from '../../../lib/soundEffects.js';
 import { useConfirmDialog } from '../../../components/ui/ConfirmDialog.js';
 import { Dialog } from '../../../components/ui/Dialog.js';
 import { EmptyState } from '../../../components/ui/EmptyState.js';
@@ -29,6 +28,7 @@ import { Skeleton } from '../../../components/ui/Skeleton.js';
 import { useAuth } from '../../../contexts/AuthContext.js';
 import { hasRequiredRole } from '../../../lib/auth/authorization.js';
 import { leadsDB } from '../../../lib/db.js';
+import { SoundFX } from '../../../lib/soundEffects.js';
 import { toast } from '../../../lib/toast.js';
 import type { Lead } from '../../../types/index.js';
 import {
