@@ -44,7 +44,7 @@ vi.mock('../../../../src/lib/queue/redis.js', () => ({ queuesEnabled: true }));
 vi.mock('../../../../src/lib/queue/search.queue.js', () => ({ searchQueue: {} }));
 
 describe('mountBullBoard', () => {
-  it('mounts bullBoard on the express app with quad-lock middleware (SEC-003)', () => {
+  it('mounts bullBoard on the express app with quad-lock middleware and rate limiting (SEC-003)', () => {
     const mockApp = {
       use: vi.fn(),
     };
@@ -53,6 +53,7 @@ describe('mountBullBoard', () => {
 
     expect(mockApp.use).toHaveBeenCalledWith(
       '/admin/queues',
+      expect.any(Function), // bullBoardLimiter
       expect.any(Function), // authenticateToken
       expect.any(Function), // requireTenant
       expect.any(Function), // requireRole(['ADMIN'])
