@@ -9,9 +9,11 @@ export interface FunnelBarItem {
 }
 
 const TONE_BAR = {
-  brand: 'bg-gradient-to-r from-brand via-brand-2 to-brand shadow-[0_0_12px_rgba(212,175,55,0.3)]',
-  ok: 'bg-gradient-to-r from-emerald-600 to-teal-500 shadow-[0_0_12px_rgba(16,185,129,0.3)]',
-  critical: 'bg-gradient-to-r from-rose-600 to-red-500 shadow-[0_0_12px_rgba(239,68,68,0.3)]',
+  brand:
+    'bg-brand bg-gradient-to-r from-brand via-brand-2 to-brand shadow-[0_0_12px_rgba(212,175,55,0.3)]',
+  ok: 'bg-ok bg-gradient-to-r from-emerald-600 to-teal-500 shadow-[0_0_12px_rgba(16,185,129,0.3)]',
+  critical:
+    'bg-critical bg-gradient-to-r from-rose-600 to-red-500 shadow-[0_0_12px_rgba(239,68,68,0.3)]',
 } as const;
 
 export function FunnelBars({
