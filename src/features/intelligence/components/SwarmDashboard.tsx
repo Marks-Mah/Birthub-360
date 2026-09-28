@@ -1,4 +1,6 @@
+import canvasConfetti from 'canvas-confetti';
 import { AnimatePresence, motion } from 'framer-motion';
+import { SoundFX } from '../../../lib/soundEffects.js';
 import {
   AlertTriangle,
   Bot,
@@ -136,6 +138,12 @@ export function SwarmDashboard() {
   const abortRef = useRef<AbortController | null>(null);
   const scrollRef = useRef<HTMLDivElement | null>(null);
 
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const handleMouseMove = useCallback((e: React.MouseEvent) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    setMousePos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+  }, []);
+
   const fetchSlo = useCallback(async () => {
     setSloLoading(true);
     setSloError(null);
@@ -191,6 +199,7 @@ export function SwarmDashboard() {
     const missionText = (overrideMission ?? mission).trim();
     if (!missionText) return;
 
+    SoundFX.play('click');
     setIsExecuting(true);
     setActiveStep(0);
     setEngagedAgents(new Set());
@@ -392,6 +401,13 @@ export function SwarmDashboard() {
     }
 
     if (event.type === 'final') {
+      SoundFX.play('success');
+      canvasConfetti({
+        particleCount: 120,
+        spread: 80,
+        origin: { y: 0.6 },
+        colors: ['#D4AF37', '#F3E5AB', '#10b981', '#34d399', '#ffffff'],
+      });
       setMessages((prev) => [
         ...prev,
         {
@@ -532,14 +548,20 @@ export function SwarmDashboard() {
       <div className="px-8 pt-4 border-b border-line bg-surface-2/40 z-10 flex items-center gap-2">
         <button
           type="button"
-          onClick={() => setView('mission')}
+          onClick={() => {
+            SoundFX.play('click');
+            setView('mission');
+          }}
           className={`flex items-center gap-1.5 px-3 py-2 text-xs font-bold uppercase tracking-widest rounded-t-lg border-b-2 transition-colors cursor-pointer ${view === 'mission' ? `${accent.text} border-current` : 'text-ink-2 border-transparent hover:text-ink'}`}
         >
           <Send size={12} /> Missão ao vivo
         </button>
         <button
           type="button"
-          onClick={() => setView('slo')}
+          onClick={() => {
+            SoundFX.play('click');
+            setView('slo');
+          }}
           className={`flex items-center gap-1.5 px-3 py-2 text-xs font-bold uppercase tracking-widest rounded-t-lg border-b-2 transition-colors cursor-pointer ${view === 'slo' ? `${accent.text} border-current` : 'text-ink-2 border-transparent hover:text-ink'}`}
         >
           <Gauge size={12} /> SLO por agente
@@ -654,9 +676,19 @@ export function SwarmDashboard() {
                     )}
                   </div>
                   <div
-                    className={`p-5 rounded-2xl border backdrop-blur-xl shadow-card flex-1 ${getAgentBg(msg.agent, msg.status)}`}
+                    className={`p-5 rounded-2xl border backdrop-blur-xl shadow-card flex-1 relative overflow-hidden group/message transition-all duration-300 ${getAgentBg(msg.agent, msg.status)}`}
+                    onPointerMove={handleMouseMove}
                   >
-                    <div className="flex items-center justify-between mb-2">
+                    {/* Bento Spotlight */}
+                    <div
+                      className="pointer-events-none absolute -inset-px opacity-0 transition-opacity duration-300 group-hover/message:opacity-100 z-10 rounded-[inherit]"
+                      style={{
+                        background: `radial-gradient(350px circle at ${mousePos.x}px ${mousePos.y}px, rgba(255,255,255,0.06), transparent 40%)`,
+                      }}
+                      aria-hidden="true"
+                    />
+                    <div className="relative z-30">
+                      <div className="flex items-center justify-between mb-2">
                       <span className="font-bold text-sm tracking-wide text-ink">
                         {getAgentName(msg.agent)}
                       </span>
@@ -673,6 +705,7 @@ export function SwarmDashboard() {
                         {msg.text}
                       </p>
                     )}
+                    </div>
                   </div>
                 </motion.div>
               );
@@ -711,7 +744,7 @@ export function SwarmDashboard() {
                 type="button"
                 onClick={stopMission}
                 aria-label="Cancelar missão"
-                className="absolute right-3 top-1/2 -translate-y-1/2 w-12 h-12 bg-danger-active hover:brightness-110 hover:scale-105 rounded-xl flex items-center justify-center text-white transition-colors shadow-lg z-50 pointer-events-auto cursor-pointer"
+                className="absolute right-3 top-1/2 -translate-y-1/2 w-12 h-12 bg-danger-active hover:brightness-110 active:scale-95 rounded-xl flex items-center justify-center text-white transition-all shadow-lg z-50 pointer-events-auto cursor-pointer"
                 title="Cancelar missão"
               >
                 <Square size={16} fill="currentColor" />
@@ -722,9 +755,10 @@ export function SwarmDashboard() {
                 onClick={() => runSimulation()}
                 disabled={!mission.trim()}
                 aria-label="Executar missão"
-                className={`absolute right-3 top-1/2 -translate-y-1/2 w-12 h-12 bg-gradient-to-r ${accent.gradient} hover:scale-105 disabled:opacity-50 disabled:hover:scale-100 disabled:cursor-not-allowed rounded-xl flex items-center justify-center text-on-brand transition-colors shadow-lg z-50 pointer-events-auto cursor-pointer`}
+                className={`absolute right-3 top-1/2 -translate-y-1/2 w-12 h-12 bg-gradient-to-r ${accent.gradient} active:scale-95 hover:-translate-y-1 hover:shadow-lg hover:shadow-brand/20 disabled:opacity-50 disabled:hover:scale-100 disabled:hover:-translate-y-1/2 disabled:cursor-not-allowed rounded-xl flex items-center justify-center text-on-brand transition-all shadow-md z-50 pointer-events-auto cursor-pointer relative overflow-hidden group/btn`}
               >
-                <Send size={20} className="ml-1" />
+                <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent group-hover/btn:animate-[shimmer_1.5s_infinite] pointer-events-none" />
+                <Send size={20} className="ml-1 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform" />
               </button>
             )}
           </div>
