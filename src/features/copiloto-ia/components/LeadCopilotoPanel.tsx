@@ -9,8 +9,8 @@ import {
   COACHING_DIMENSION_LABELS,
   type CoachingRubricOutput,
   type CopilotoConversationDTO,
-  type HandoffSummaryDTO,
   copilotoIaApi,
+  type HandoffSummaryDTO,
 } from '../copilotoIa.api.js';
 
 /** Mesma paleta de `MeetingSynthesisOutput.sentimentScore` (meetingSynthesis.contract.ts) — só os

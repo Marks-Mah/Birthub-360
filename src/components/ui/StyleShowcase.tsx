@@ -15,6 +15,7 @@ import {
   Zap,
 } from 'lucide-react';
 import { useState } from 'react';
+import { SoundFX } from '../../lib/soundEffects.js';
 import { Badge } from './Badge.js';
 import { Button } from './Button.js';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './Card.js';
@@ -31,9 +32,8 @@ import {
 import { KpiCard } from './KpiCard.js';
 import { NeonButton } from './NeonButton.js';
 import { ParticleSystem } from './ParticleSystem.js';
-import { SoundFX } from '../../lib/soundEffects.js';
 import { TabNavCards } from './TabNavCards.js';
-import { ThemeSwitcher, type ThemeStyle } from './ThemeSwitcher.js';
+import { type ThemeStyle, ThemeSwitcher } from './ThemeSwitcher.js';
 import { Toggle } from './Toggle.js';
 
 export function StyleShowcase() {
@@ -442,39 +442,44 @@ export function StyleShowcase() {
                 <Trophy3DIcon size={20} /> Ícones Isométricos 3D Vetoriais
               </CardTitle>
               <CardDescription>
-                Ilustrações SVG 3D puras, escaláveis e sem perda de resolução, otimizadas para alto contraste e performance.
+                Ilustrações SVG 3D puras, escaláveis e sem perda de resolução, otimizadas para alto
+                contraste e performance.
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
-                <div
+                <button
+                  type="button"
                   onClick={() => SoundFX.play('click')}
                   className="p-4 rounded-xl border border-line bg-surface-2/60 hover:border-brand/40 hover:scale-105 active:scale-95 transition-all flex flex-col items-center gap-2 cursor-pointer shadow-xs"
                 >
                   <Trophy3DIcon size={40} />
                   <span className="text-xs font-bold text-ink">Troféu 1º Lugar</span>
-                </div>
-                <div
+                </button>
+                <button
+                  type="button"
                   onClick={() => SoundFX.play('click')}
                   className="p-4 rounded-xl border border-line bg-surface-2/60 hover:border-brand/40 hover:scale-105 active:scale-95 transition-all flex flex-col items-center gap-2 cursor-pointer shadow-xs"
                 >
                   <Gem3DIcon size={40} />
                   <span className="text-xs font-bold text-ink">Gema Rubi/Ouro</span>
-                </div>
-                <div
+                </button>
+                <button
+                  type="button"
                   onClick={() => SoundFX.play('click')}
                   className="p-4 rounded-xl border border-line bg-surface-2/60 hover:border-brand/40 hover:scale-105 active:scale-95 transition-all flex flex-col items-center gap-2 cursor-pointer shadow-xs"
                 >
                   <FlameStreakIcon size={40} />
                   <span className="text-xs font-bold text-ink">Chama Streak</span>
-                </div>
-                <div
+                </button>
+                <button
+                  type="button"
                   onClick={() => SoundFX.play('click')}
                   className="p-4 rounded-xl border border-line bg-surface-2/60 hover:border-brand/40 hover:scale-105 active:scale-95 transition-all flex flex-col items-center gap-2 cursor-pointer shadow-xs"
                 >
                   <ShieldSecurityIcon size={40} />
                   <span className="text-xs font-bold text-ink">Escudo Blindado</span>
-                </div>
+                </button>
               </div>
             </CardContent>
           </Card>
@@ -486,7 +491,8 @@ export function StyleShowcase() {
                 <Zap className="h-4 w-4 text-brand" /> Micro-interações Sonoras & Confetes 2026
               </CardTitle>
               <CardDescription>
-                Web Audio sintetizado em tempo real (zero latência, zero arquivos .mp3 pesados) e partículas celebratórias.
+                Web Audio sintetizado em tempo real (zero latência, zero arquivos .mp3 pesados) e
+                partículas celebratórias.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -534,7 +540,9 @@ export function StyleShowcase() {
               </div>
 
               <div className="pt-2 border-t border-line flex items-center justify-between">
-                <span className="text-xs font-medium text-ink-2">Disparar Celebração de Vitória:</span>
+                <span className="text-xs font-medium text-ink-2">
+                  Disparar Celebração de Vitória:
+                </span>
                 <Button
                   size="sm"
                   variant="cosmic"
