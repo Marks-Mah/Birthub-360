@@ -13,6 +13,12 @@ import '@testing-library/jest-dom/vitest';
 
 import { RealtimeFeed } from '@/features/dashboard/components/RealtimeFeed';
 
+vi.mock('canvas-confetti', () => {
+  return {
+    default: vi.fn(),
+  };
+});
+
 /** Monta um `Response` cujo `body` entrega os frames SSE dados, um por `read()`, como readSseStream espera. */
 function sseResponse(frames: string[], ok = true): Response {
   const encoder = new TextEncoder();
