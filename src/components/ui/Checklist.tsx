@@ -1,11 +1,9 @@
 import { Check } from 'lucide-react';
 import type { ReactNode } from 'react';
+import { SoundFX } from '../../lib/soundEffects.js';
 import { cn } from '../../lib/utils.js';
 
-/* Novo primitivo — checklist de leitura/orientação (ex.: pontos de um relatório, não uma lista
-   de tarefas com estado). Para checklist interativo com toggle/progresso, veja o padrão já usado
-   em JoaoReisDiagnosticHub.tsx ("Roteiro do Dia") — mais rico (bloco de horário, meta, progresso)
-   e deliberadamente não generalizado aqui pra não perder esse detalhe. */
+/* Primitivo — checklist de leitura/orientação com feedback tátil 2026. */
 export interface ChecklistItemData {
   id: string;
   text: ReactNode;
@@ -13,24 +11,35 @@ export interface ChecklistItemData {
   checked?: boolean;
 }
 
-export function Checklist({ items }: { items: ChecklistItemData[] }) {
+export function Checklist({
+  items,
+  soundHover = false,
+}: {
+  items: ChecklistItemData[];
+  soundHover?: boolean;
+}) {
   return (
     <ul className="flex flex-col gap-2">
       {items.map((item) => (
         <li
           key={item.id}
-          className="flex items-start gap-2.5 rounded-card border border-line bg-surface-2 p-3 px-3.5 transition-[transform,box-shadow,background-color] duration-150 hover:translate-x-1 hover:bg-surface hover:shadow-[0_8px_18px_-12px_rgba(0,0,0,0.18)]"
+          onMouseEnter={() => {
+            if (soundHover) SoundFX.play('hover');
+          }}
+          className="group flex items-start gap-3 rounded-xl border border-line/75 bg-surface/70 p-3 px-3.5 transition-all duration-200 hover:translate-x-1 hover:border-brand/35 hover:bg-surface-elevated hover:shadow-card backdrop-blur-xs"
         >
           <span
             aria-hidden="true"
             className={cn(
-              'flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-[7px]',
-              item.checked ? 'bg-ok/15 text-ok-active dark:text-ok' : 'bg-brand/10 text-brand',
+              'flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border transition-transform duration-200 group-hover:scale-110',
+              item.checked
+                ? 'border-ok/35 bg-ok/15 text-ok shadow-[0_0_10px_rgba(16,185,129,0.2)]'
+                : 'border-brand/25 bg-brand/10 text-brand shadow-xs',
             )}
           >
-            <Check className="h-3 w-3" strokeWidth={3} />
+            <Check className="h-3.5 w-3.5" strokeWidth={2.5} />
           </span>
-          <span className="text-[13px] leading-relaxed text-ink">{item.text}</span>
+          <span className="text-[13px] leading-relaxed text-ink font-medium">{item.text}</span>
         </li>
       ))}
     </ul>

@@ -5,6 +5,7 @@ import { playbookInfo } from '../../config/playbooks.js';
 import { useActivePlaybook } from '../../hooks/useActivePlaybook.js';
 import { clientLogger } from '../../lib/clientLogger.js';
 import { navigationBus } from '../../lib/navigationBus.js';
+import { SoundFX } from '../../lib/soundEffects.js';
 import { toast } from '../../lib/toast.js';
 import { voiceCommandBus } from '../../lib/voiceCommandBus.js';
 
@@ -46,6 +47,11 @@ export function VoiceCommandWidget() {
 
         const navigateOrReportFailure = (tab: string, successLabel: string) => {
           const navigated = navigationBus.requestNavigation(tab);
+          if (navigated) {
+            SoundFX.play('confirm');
+          } else {
+            SoundFX.play('error');
+          }
           setLastAction(
             navigated
               ? successLabel
@@ -59,6 +65,7 @@ export function VoiceCommandWidget() {
         // abaixo: são mais específicos e, quando existem, é porque a tela precisa deles agora.
         const localHint = voiceCommandBus.tryHandle(textLower);
         if (localHint) {
+          SoundFX.play('confirm');
           setLastAction(localHint);
           stopListening();
         } else if (textLower.includes('crm') || textLower.includes('pipeline')) {
@@ -74,6 +81,7 @@ export function VoiceCommandWidget() {
           // Este comando alternava entre as duas marcas então existentes (hoje um único
           // playbook geral) — mantido como confirmação de que o playbook comercial está ativo.
           setPlaybook('geral');
+          SoundFX.play('confirm');
           setLastAction(`Playbook ativo: ${playbookInfo('geral').label}`);
           stopListening();
         } else if (textLower.includes('inteligência') || textLower.includes('metodologia')) {
@@ -86,9 +94,7 @@ export function VoiceCommandWidget() {
           currentText.trim().length > 0 &&
           event.results[event.results.length - 1]?.isFinal
         ) {
-          // Só reporta "não entendi" quando o reconhecimento terminou de processar a frase
-          // (isFinal) — resultados interinos (enquanto a pessoa ainda está falando) não devem
-          // disparar esse aviso a cada palavra parcial reconhecida.
+          SoundFX.play('error');
           setLastAction(
             'Não entendi o comando. Tente: CRM, Prospector, Contatos, Empresas ou Inteligência.',
           );
@@ -120,6 +126,7 @@ export function VoiceCommandWidget() {
     if (isListening) {
       stopListening();
     } else {
+      SoundFX.play('focus');
       setTranscript('');
       setLastAction(null);
       setIsListening(true);
@@ -149,21 +156,24 @@ export function VoiceCommandWidget() {
           type="button"
           onClick={toggleListening}
           aria-label="Comando de Voz por Microfone"
-          className={`flex items-center justify-center w-10 h-10 rounded-xl text-white shadow-xl transition-colors duration-300 border border-line cursor-pointer ${
+          className={`relative flex items-center justify-center w-11 h-11 rounded-2xl text-white shadow-xl transition-all duration-300 border cursor-pointer ${
             isListening
-              ? 'bg-red-600 animate-pulse ring-4 ring-red-500/40'
-              : 'bg-gradient-to-br from-brand via-orange-400 to-white hover:scale-105 active:scale-95 shadow-[inset_0_1px_0_rgba(255,255,255,0.4),0_6px_20px_rgba(255,86,24,0.4)]'
+              ? 'border-critical/60 bg-critical animate-pulse ring-4 ring-critical/40 shadow-[0_0_25px_rgba(239,68,68,0.5)]'
+              : 'border-brand/40 bg-gradient-to-br from-brand via-brand-2 to-brand text-on-brand hover:scale-105 active:scale-95 shadow-[0_6px_25px_rgba(212,175,55,0.4)] hover:shadow-[0_8px_30px_rgba(212,175,55,0.55)]'
           }`}
         >
+          {/* Luz especular interna */}
+          <div className="absolute inset-x-0 top-0 h-1/2 rounded-t-2xl bg-gradient-to-b from-white/30 to-transparent pointer-events-none" />
+
           {isListening ? (
-            <Volume2 className="w-5 h-5 animate-bounce text-white" />
+            <Volume2 className="w-5 h-5 animate-bounce text-white relative z-10" />
           ) : (
-            <Mic className="w-5 h-5 group-hover:scale-110 transition-transform" />
+            <Mic className="w-5 h-5 group-hover:scale-110 transition-transform relative z-10" />
           )}
         </button>
 
         {/* Tooltip Hover */}
-        <div className="absolute right-16 top-1/2 -translate-y-1/2 px-3 py-1.5 rounded-xl bg-surface text-ink text-xs font-bold whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-xl border border-line flex items-center gap-1.5">
+        <div className="absolute right-16 top-1/2 -translate-y-1/2 px-3 py-1.5 rounded-xl bg-surface-elevated/95 backdrop-blur-md text-ink text-xs font-bold whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-xl border border-line flex items-center gap-1.5">
           <Command className="w-3.5 h-3.5 text-brand" />
           <span>Comando por Voz ({isListening ? 'Ouvindo...' : 'Clique para Falar'})</span>
         </div>
@@ -176,11 +186,14 @@ export function VoiceCommandWidget() {
             initial={{ opacity: 0, y: 10, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.95 }}
-            className="absolute bottom-16 right-0 w-72 p-4 rounded-2xl bg-surface border border-brand/30 shadow-2xl backdrop-blur-xl text-xs space-y-2 z-50"
+            className="absolute bottom-16 right-0 w-80 p-4 rounded-2xl bg-surface-elevated/95 border border-brand/35 shadow-[0_20px_50px_rgba(0,0,0,0.45)] backdrop-blur-2xl text-xs space-y-3 z-50 relative overflow-hidden"
           >
-            <div className="flex items-center justify-between border-b border-line pb-2">
+            {/* Top specular highlight */}
+            <div className="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-brand to-transparent pointer-events-none" />
+
+            <div className="flex items-center justify-between border-b border-line/80 pb-2.5">
               <span className="font-extrabold text-brand flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-brand animate-pulse" /> Assistente de Voz B2B
+                <Sparkles className="w-3.5 h-3.5 text-brand animate-pulse" /> Assistente de Voz 2026
               </span>
               <button
                 type="button"
@@ -188,31 +201,46 @@ export function VoiceCommandWidget() {
                   setTranscript('');
                   setLastAction(null);
                 }}
-                className="text-[10px] text-ink-2 hover:text-ink"
+                className="text-[10px] text-ink-2 hover:text-ink font-semibold"
               >
                 Limpar
               </button>
             </div>
 
             {isListening && (
-              <div className="space-y-1 text-center py-2">
-                <p className="text-ink-2 italic animate-pulse">
-                  &quot;Diga: CRM, Prospector, Contatos, Empresas, Logística, Frota
-                  {voiceCommandBus.getPhrases().length > 0
-                    ? `, ${voiceCommandBus.getPhrases().join(', ')}`
-                    : ''}
-                  ...&quot;
+              <div className="space-y-2 text-center py-1">
+                {/* Visualizador de Onda Sonora 2026 */}
+                <div className="flex items-center justify-center gap-1 h-6">
+                  {[0.4, 0.8, 1, 0.6, 0.9, 0.5, 0.7].map((height, i) => (
+                    <motion.span
+                      key={`sound-wave-${i}`}
+                      className="w-1 rounded-full bg-brand"
+                      animate={{
+                        height: ['4px', `${height * 20}px`, '4px'],
+                      }}
+                      transition={{
+                        duration: 0.6 + i * 0.1,
+                        repeat: Infinity,
+                        ease: 'easeInOut' as const,
+                      }}
+                    />
+                  ))}
+                </div>
+
+                <p className="text-[11px] text-ink-2 italic">
+                  &quot;Diga: CRM, Prospector, Contatos, Empresas, Logística...&quot;
                 </p>
+
                 {transcript && (
-                  <p className="text-ink font-bold bg-surface-2 p-2 rounded-xl border border-line">
-                    {transcript}
+                  <p className="text-ink font-bold bg-surface p-2.5 rounded-xl border border-brand/30 shadow-xs">
+                    &ldquo;{transcript}&rdquo;
                   </p>
                 )}
               </div>
             )}
 
             {lastAction && (
-              <div className="p-2.5 rounded-xl bg-success/10 border border-success/30 text-success-active dark:text-success flex items-center gap-2">
+              <div className="p-3 rounded-xl bg-success/15 border border-success/35 text-success-active dark:text-success flex items-center gap-2.5 backdrop-blur-sm">
                 <Check className="w-4 h-4 text-success-active dark:text-success shrink-0" />
                 <span className="font-bold">{lastAction}</span>
               </div>

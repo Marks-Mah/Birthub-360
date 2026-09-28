@@ -1,11 +1,9 @@
 import { motion, useReducedMotion } from 'framer-motion';
 import type { ComponentType, ReactNode } from 'react';
+import { SoundFX } from '../../lib/soundEffects.js';
 import { cn } from '../../lib/utils.js';
 
-/* Novo primitivo — "achados" (findings) de um relatório: cada item marca um ganho (win) ou uma
-   lacuna (gap) encontrada na análise, com destaque opcional de 2 pulsos (nunca em loop — regra
-   §6 da Constituição: toda animação contínua precisa justificar o que comunica; aqui é "achado
-   novo/crítico", disparo único no mount, respeita prefers-reduced-motion). */
+/* Primitivo — "achados" (findings) de um relatório com estética tátil 2026. */
 export interface Finding {
   id: string;
   tone: 'win' | 'gap';
@@ -19,41 +17,57 @@ export interface Finding {
 const TONE = {
   win: {
     border: 'border-l-ok',
-    chip: 'bg-ok/15 text-ok-active dark:text-ok',
+    chip: 'bg-ok/15 text-ok-active dark:text-ok border-ok/30 shadow-[0_0_10px_rgba(16,185,129,0.2)]',
     ring: 'rgba(15,157,100,.55)',
   },
   gap: {
     border: 'border-l-critical',
-    chip: 'bg-critical/15 text-critical',
+    chip: 'bg-critical/15 text-critical border-critical/30 shadow-[0_0_10px_rgba(239,68,68,0.2)]',
     ring: 'rgba(214,69,69,.55)',
   },
 } as const;
 
-export function FindingsList({ items }: { items: Finding[] }) {
+export function FindingsList({
+  items,
+  soundHover = false,
+}: {
+  items: Finding[];
+  soundHover?: boolean;
+}) {
   return (
     <div className="flex flex-col gap-2.5">
       {items.map((item) => (
-        <FindingRow key={item.id} {...item} />
+        <FindingRow key={item.id} {...item} soundHover={soundHover} />
       ))}
     </div>
   );
 }
 
-function FindingRow({ tone, icon: Icon, text, meta, emphasize }: Finding) {
+function FindingRow({
+  tone,
+  icon: Icon,
+  text,
+  meta,
+  emphasize,
+  soundHover = false,
+}: Finding & { soundHover?: boolean }) {
   const reduceMotion = useReducedMotion();
   const t = TONE[tone];
   const shouldEmphasize = Boolean(emphasize) && !reduceMotion;
   return (
     <div
+      onMouseEnter={() => {
+        if (soundHover) SoundFX.play('hover');
+      }}
       className={cn(
-        'flex gap-3 rounded-card border border-l-[3px] border-line bg-surface-2 p-3.5 transition-[transform,box-shadow,background-color] duration-150 hover:translate-x-1 hover:bg-surface hover:shadow-[0_8px_18px_-12px_rgba(0,0,0,0.18)]',
+        'group flex gap-3.5 rounded-xl border border-l-[3.5px] border-line/75 bg-surface/75 p-3.5 transition-all duration-200 hover:translate-x-1 hover:border-brand/35 hover:bg-surface-elevated hover:shadow-card backdrop-blur-xs',
         t.border,
       )}
     >
       <motion.span
         aria-hidden="true"
         className={cn(
-          'flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-[9px]',
+          'flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border transition-transform duration-200 group-hover:scale-110',
           t.chip,
         )}
         animate={
@@ -71,10 +85,10 @@ function FindingRow({ tone, icon: Icon, text, meta, emphasize }: Finding) {
       >
         <Icon className="h-3.5 w-3.5" />
       </motion.span>
-      <p className="text-[13px] leading-relaxed text-ink">
+      <div className="text-[13px] leading-relaxed text-ink font-medium">
         {text}
-        {meta && <span className="mt-0.5 block text-[11px] text-ink-2">{meta}</span>}
-      </p>
+        {meta && <span className="mt-0.5 block text-[11px] text-ink-2 font-normal">{meta}</span>}
+      </div>
     </div>
   );
 }
