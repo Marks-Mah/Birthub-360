@@ -16,7 +16,7 @@ arquitetura de produção real, mas está **congelado** (`autoDeployTrigger: off
 para local-first; não há Vercel neste projeto (`vercel.json` tem `git.deploymentEnabled: false` e
 nunca serviu produção). Ver [`docs/deploy/README.md`](../docs/deploy/README.md) para o caminho
 canônico atual por ambiente. O caminho Kubernetes "oficial"/versionado para um cluster real (se
-algum dia for ativado) é `charts/prospector-atlas/` via ArgoCD (`argocd/application-*.yaml`), não
+algum dia for ativado) é `charts/birthhub-360/` via ArgoCD (`argocd/application-*.yaml`), não
 estes manifests avulsos — ver `charts/README.md` e `argocd/README.md` para o mesmo aviso do lado
 deles. Estes manifests aqui existem para desenvolvimento/teste local contra um minikube, não para
 produção.
@@ -24,7 +24,7 @@ produção.
 ## Ordem de aplicação (migração antes do app)
 
 Diferente do chart Helm (que usa um hook `pre-install,pre-upgrade` — ver
-`charts/prospector-atlas/templates/migration-job.yaml`), manifests avulsos não têm mecanismo de
+`charts/birthhub-360/templates/migration-job.yaml`), manifests avulsos não têm mecanismo de
 "rodar isto antes daquilo". A ordem precisa ser manual:
 
 ```bash
@@ -42,7 +42,7 @@ pendente. Ver `/AGENTS.md` → bloqueador #5.
 ## CLI do Prisma na imagem: resolvido
 
 `migration-job.yaml` roda `npx prisma migrate deploy` usando a mesma imagem
-`prospector-atlas:latest` do `api-deployment.yaml`. O `Dockerfile` da raiz (propriedade do
+`birthhub-360:latest` do `api-deployment.yaml`. O `Dockerfile` da raiz (propriedade do
 Agente 08) roda `npm prune --omit=dev` no estágio final, removendo o pacote `prisma` (a CLI, hoje
 em devDependencies) — mas reinstala só a CLI (`npm install --no-save prisma@...`, mesma versão
 fixada em devDependencies) logo em seguida, antes do estágio runner copiar `node_modules`.

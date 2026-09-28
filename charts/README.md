@@ -2,7 +2,7 @@
 
 # charts/ — status real
 
-Estes manifests Helm (`prospector-atlas/`) são **aspiracionais/legados**, não são o caminho de
+Estes manifests Helm (`birthhub-360/`) são **aspiracionais/legados**, não são o caminho de
 deploy ativo hoje.
 
 **Correção (ITEM-12, 2026-08-25):** nenhum caminho cloud está ativo hoje — o projeto está em modo
@@ -79,7 +79,7 @@ Achado novo corrigido nesta rodada:
 
 - **`templates/deployment.yaml`, `rollout.yaml`, `service.yaml`, `service-preview.yaml`,
   `pdb.yaml`** (selector de label incompleto): o selector do app principal usava só
-  `prospector-atlas.selectorLabels` (`app.kubernetes.io/name` + `.../instance`), sem nenhum
+  `birthhub-360.selectorLabels` (`app.kubernetes.io/name` + `.../instance`), sem nenhum
   discriminador de componente — enquanto `worker-deployment.yaml`/`worker-hpa.yaml` já usam
   `app.kubernetes.io/component: worker` para o lado deles. Como um selector `matchLabels` em
   Kubernetes casa por presença/igualdade das chaves especificadas (labels extras no pod não

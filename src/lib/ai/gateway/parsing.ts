@@ -129,7 +129,7 @@ export async function cleanParseAndValidate<T>(
 
     return {
       success: false,
-      error: `Zod validation failed: ${result.error.errors.map((e) => e.message).join(', ')}`,
+      error: `Zod validation failed: ${result.error.issues.map((e) => e.message).join(', ')}`,
     };
   } catch (error) {
     return {

@@ -355,7 +355,7 @@ export function Base() {
     // biome-ignore lint/a11y/noStaticElementInteractions: drag-and-drop é mouse-only por natureza, ver comentário acima
     <div
       role="presentation"
-      className="flex-1 overflow-y-auto bg-transparent p-8"
+      className="flex-1 overflow-y-auto bg-transparent p-4 md:p-8 relative transition-colors duration-1000"
       onDragOver={(e) => {
         if (!canWrite) return;
         e.preventDefault();
@@ -364,6 +364,9 @@ export function Base() {
       onDragLeave={() => setDragging(false)}
       onDrop={canWrite ? handleDrop : undefined}
     >
+      <div className="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-brand/10 blur-[120px] pointer-events-none" />
+      <div className="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-brand-2/10 blur-[120px] pointer-events-none" />
+
       <div className="max-w-6xl mx-auto space-y-6">
         {/* Cabeçalho */}
         <div className="flex items-center justify-between gap-4 border-b border-line pb-6">
@@ -424,17 +427,19 @@ export function Base() {
 
         {/* Busca */}
         <form onSubmit={handleSearch}>
-          <div className="relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-ink-2" />
+          <div className="relative group">
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-brand/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 z-20 rounded-t-2xl" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-ink-2 group-hover:text-brand transition-colors" />
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Pergunte em linguagem natural: como reduzir sinistro de carga?"
-              className="w-full bg-surface border border-line rounded-2xl pl-12 pr-32 py-4 text-sm text-ink placeholder-ink-2 outline-none transition-colors focus:border-brand"
+              className="w-full bg-surface-elevated/70 backdrop-blur-xl border border-line/80 shadow-[0_20px_40px_rgba(0,0,0,0.03)] rounded-2xl pl-12 pr-32 py-4 text-sm text-ink placeholder-ink-2 outline-none transition-all duration-300 focus:border-brand/50 focus:ring-1 focus:ring-brand/30 hover:bg-surface-interactive/60"
             />
             <Button
               type="submit"
-              className="absolute right-2 top-1/2 -translate-y-1/2"
+              soundClick
+              className="absolute right-2 top-1/2 -translate-y-1/2 active:scale-95 transition-transform"
               disabled={searching}
             >
               {searching ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Buscar'}

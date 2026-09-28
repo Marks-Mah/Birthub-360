@@ -20,7 +20,7 @@ spec:
             allowPrivilegeEscalation: false
             runAsNonRoot: true
             runAsUser: 10001
-          image: prospector-atlas:latest
+          image: birthhub-360:latest
           imagePullPolicy: Never # using local docker image for minikube
           ports:
             - containerPort: 3000
@@ -65,7 +65,7 @@ spec:
 ---
 # Evita que um drain de nó (minikube com múltiplos nós, ou o mesmo padrão replicado num cluster
 # real) derrube as 2 réplicas de uma vez — mesmo item já corrigido no chart Helm
-# (charts/prospector-atlas/templates/pdb.yaml).
+# (charts/birthhub-360/templates/pdb.yaml).
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:

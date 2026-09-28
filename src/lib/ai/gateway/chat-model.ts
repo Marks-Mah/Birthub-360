@@ -123,15 +123,14 @@ export const getAiModel = (
         // Log tentativa bloqueada em AILog
         const { logAiUsage } = await import('../usage-log.js');
         await logAiUsage({
-          tenantId: requestContext.getStore()?.tenantId,
           model: response.model || resolvedModel,
-          provider: providerUsed,
-          agentContext,
-          promptTokens: usage?.prompt_tokens ?? 0,
-          completionTokens: usage?.completion_tokens ?? 0,
-          totalTokens: usage?.total_tokens ?? 0,
-          success: false,
-          error: `PII blocked: ${piiCheck.reason}`,
+          usage: {
+            promptTokens: usage?.prompt_tokens ?? 0,
+            completionTokens: usage?.completion_tokens ?? 0,
+            totalTokens: usage?.total_tokens ?? 0,
+          },
+          latencyMs: Date.now() - startTime,
+          agentRole: agentContext,
         });
 
         throw new Error(`Resposta bloqueada por conter PII: ${piiCheck.matches.join(', ')}`);
@@ -142,15 +141,14 @@ export const getAiModel = (
         // Log tentativa bloqueada em AILog
         const { logAiUsage } = await import('../usage-log.js');
         await logAiUsage({
-          tenantId: requestContext.getStore()?.tenantId,
           model: response.model || resolvedModel,
-          provider: providerUsed,
-          agentContext,
-          promptTokens: usage?.prompt_tokens ?? 0,
-          completionTokens: usage?.completion_tokens ?? 0,
-          totalTokens: usage?.total_tokens ?? 0,
-          success: false,
-          error: `Toxicity blocked: ${toxicityCheck.reason}`,
+          usage: {
+            promptTokens: usage?.prompt_tokens ?? 0,
+            completionTokens: usage?.completion_tokens ?? 0,
+            totalTokens: usage?.total_tokens ?? 0,
+          },
+          latencyMs: Date.now() - startTime,
+          agentRole: agentContext,
         });
 
         throw new Error(`Resposta bloqueada por conter linguagem tóxica: ${toxicityCheck.matches.join(', ')}`);

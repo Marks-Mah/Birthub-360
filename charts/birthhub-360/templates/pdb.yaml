@@ -6,14 +6,14 @@
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
-  name: {{ include "prospector-atlas.fullname" . }}
+  name: {{ include "birthhub-360.fullname" . }}
   labels:
-    {{- include "prospector-atlas.labels" . | nindent 4 }}
+    {{- include "birthhub-360.labels" . | nindent 4 }}
 spec:
   minAvailable: {{ .Values.podDisruptionBudget.minAvailable }}
   selector:
     matchLabels:
-      {{- include "prospector-atlas.selectorLabels" . | nindent 6 }}
+      {{- include "birthhub-360.selectorLabels" . | nindent 6 }}
       # Sem isto, este PDB também contava pods do worker no total de "pods que casam com o
       # selector" (nome+instance é subconjunto dos labels do worker) — um drain de nó podia
       # evictar as duas réplicas do app principal (minAvailable:1 satisfeito só com réplicas
@@ -26,14 +26,14 @@ spec:
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
-  name: {{ include "prospector-atlas.fullname" . }}-worker
+  name: {{ include "birthhub-360.fullname" . }}-worker
   labels:
-    {{- include "prospector-atlas.labels" . | nindent 4 }}
+    {{- include "birthhub-360.labels" . | nindent 4 }}
     app.kubernetes.io/component: worker
 spec:
   minAvailable: {{ .Values.podDisruptionBudget.workerMinAvailable }}
   selector:
     matchLabels:
-      {{- include "prospector-atlas.selectorLabels" . | nindent 6 }}
+      {{- include "birthhub-360.selectorLabels" . | nindent 6 }}
       app.kubernetes.io/component: worker
 {{- end }}

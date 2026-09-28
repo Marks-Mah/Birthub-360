@@ -7,7 +7,7 @@
 
 services:
   - type: web
-    name: prospector-atlas
+    name: birthhub-360
     runtime: node
     plan: starter
     autoDeployTrigger: off
@@ -88,7 +88,7 @@ services:
         sync: false
 
   - type: worker
-    name: prospector-atlas-worker
+    name: birthhub-360-worker
     runtime: node
     autoDeployTrigger: off
     plan: free

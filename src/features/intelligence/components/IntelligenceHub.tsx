@@ -193,6 +193,16 @@ export function IntelligenceHub({ initialTab }: IntelligenceHubProps) {
     }
   }, []);
 
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+
+  const handleMouseMove = useCallback((e: React.MouseEvent) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    setMousePos({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    });
+  }, []);
+
   useEffect(() => {
     if (activeTab === 'rag') void loadRagSummary();
   }, [activeTab, loadRagSummary]);
@@ -226,27 +236,47 @@ export function IntelligenceHub({ initialTab }: IntelligenceHubProps) {
                   variants={staggerItem}
                   transition={SPRING_SOFT}
                   onClick={() => setActiveTab(tab.id)}
-                  className="text-left cursor-pointer group"
+                  onPointerMove={handleMouseMove}
+                  className="text-left cursor-pointer group outline-none active:scale-[0.98] transition-transform"
                 >
                   <Card
                     variant="default"
                     padding="sm"
-                    className={`h-full ${accent.hoverBorder} group-focus-visible:border-brand/50 group-focus-visible:shadow-card-hover`}
+                    className={`h-full ${accent.hoverBorder} group-focus-visible:border-brand/50 group-focus-visible:shadow-card-hover relative overflow-hidden transition-all duration-300 group-hover:shadow-lg`}
                   >
+                    {/* Bento Spotlight */}
                     <div
-                      className={`mb-3 flex h-9 w-9 shrink-0 items-center justify-center rounded-control border border-line ${accent.bgSoft} ${accent.text}`}
-                    >
-                      <Icon size={16} />
+                      className="pointer-events-none absolute -inset-px opacity-0 transition-opacity duration-300 group-hover:opacity-100 z-10 rounded-[inherit]"
+                      style={{
+                        background: `radial-gradient(350px circle at ${mousePos.x}px ${mousePos.y}px, rgba(212,175,55,0.08), transparent 40%)`,
+                      }}
+                      aria-hidden="true"
+                    />
+
+                    {/* Specular Top Line */}
+                    <div
+                      className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-brand to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-20"
+                      aria-hidden="true"
+                    />
+
+                    <div className="relative z-30 flex flex-col h-full">
+                      <div
+                        className={`mb-3 flex h-9 w-9 shrink-0 items-center justify-center rounded-control border border-line ${accent.bgSoft} ${accent.text} group-hover:shadow-md transition-shadow`}
+                      >
+                        <Icon size={16} />
+                      </div>
+                      <CardTitle className={`${accent.text} text-sm group-hover:text-brand transition-colors`}>{tab.label}</CardTitle>
+                      <CardDescription className="mt-1 text-xs leading-snug line-clamp-2">
+                        {tab.description}
+                      </CardDescription>
+                      <div className="mt-auto pt-3 flex items-center">
+                        <span
+                          className={`inline-flex items-center gap-1 text-xs font-semibold ${accent.text} group-hover:translate-x-1 transition-transform`}
+                        >
+                          Abrir <ArrowRight className="w-3.5 h-3.5" />
+                        </span>
+                      </div>
                     </div>
-                    <CardTitle className={`${accent.text} text-sm`}>{tab.label}</CardTitle>
-                    <CardDescription className="mt-1 text-xs leading-snug line-clamp-2">
-                      {tab.description}
-                    </CardDescription>
-                    <span
-                      className={`mt-3 inline-flex items-center gap-1 text-xs font-semibold ${accent.text}`}
-                    >
-                      Abrir <ArrowRight className="w-3.5 h-3.5" />
-                    </span>
                   </Card>
                 </motion.button>
               );

@@ -49,7 +49,7 @@
 # `.agents/handoffs/onda-4/10-para-01-metricas-http-otel.md` para o histórico completo.
 
 groups:
-  - name: prospector-atlas.process-health.ativos-hoje
+  - name: birthhub-360.process-health.ativos-hoje
     rules:
       - alert: InstanceDown
         expr: up{job="central-comercial"} == 0
@@ -57,7 +57,7 @@ groups:
         labels:
           severity: critical
         annotations:
-          summary: 'Instância do Prospector-Atlas não responde ao scrape do Prometheus'
+          summary: 'Instância do birthhub-360 não responde ao scrape do Prometheus'
           description: >-
             `up == 0` para o job central-comercial por mais de 2 minutos. Verificar
             /health/live e /health/ready diretamente, depois logs do processo. Ver runbook
@@ -86,7 +86,7 @@ groups:
           summary: 'Heap V8 acima de 90% do heap total alocado por 10min+'
           description: >-
             Candidato a memory leak ou carga real acima do dimensionado. Cruzar com
-            `resources.limits.memory` do Deployment/Rollout (charts/prospector-atlas/values.yaml)
+            `resources.limits.memory` do Deployment/Rollout (charts/birthhub-360/values.yaml)
             — se o pod está sendo OOMKilled, ver runbook → "Pod reiniciando (OOMKilled)".
 
       - alert: ProcessRestarted
@@ -95,7 +95,7 @@ groups:
         labels:
           severity: warning
         annotations:
-          summary: 'Processo/Container do Prospector-Atlas reiniciou recentemente (<5min)'
+          summary: 'Processo/Container do birthhub-360 reiniciou recentemente (<5min)'
           description: >-
             Processo do Node emitiu uptime menor que 300 segundos. Investigar crash, restart de container ou OOMKilled.
 
@@ -120,12 +120,12 @@ groups:
           description: >-
             Processo consumindo muita CPU. Verificar se há loops ou tarefas síncronas pesadas.
 
-  - name: prospector-atlas.migracao.pendente-instrumentacao
+  - name: birthhub-360.migracao.pendente-instrumentacao
     rules:
       # Requer kube-state-metrics rodando num cluster Kubernetes real — não existe hoje (nenhum
       # cluster registrado, ver charts/README.md/argocd/README.md) e NÃO é o caminho de deploy
       # ativo (Render, ver RUNBOOK.md → "Go-live"). Esta regra cobre o Job criado por
-      # charts/prospector-atlas/templates/migration-job.yaml (hook pre-upgrade) e só passa a
+      # charts/birthhub-360/templates/migration-job.yaml (hook pre-upgrade) e só passa a
       # fazer sentido operacional se/quando o caminho k8s/Helm/ArgoCD virar o deploy real. Para o
       # Render de hoje, falha de migração já é coberta pela combinação `startCommand: npx prisma
       # migrate deploy && npm run start` + `healthCheckPath: /health/ready` (a instância nova
@@ -146,7 +146,7 @@ groups:
           contract_metric_source: kube-state-metrics
           contract_owner: 'Agente 10 (cluster real ainda não provisionado; caminho k8s aspiracional)'
 
-  - name: prospector-atlas.filas.ativos-hoje
+  - name: birthhub-360.filas.ativos-hoje
     rules:
       # RESOLVIDO (Onda 8, confirmado em código): bullmq_queue_waiting_jobs/active_jobs/
       # failed_jobs (Gauge) e bullmq_queue_completed_jobs (Counter) existem de verdade em
@@ -168,7 +168,7 @@ groups:
           summary: 'Fila BullMQ com mais de 500 jobs aguardando por 10min+'
           description: >-
             Fila travada ou worker sem capacidade. Ver runbook → "Fila travada". No Render, o
-            worker dedicado (`prospector-atlas-worker`, `render.yaml`) ainda não foi ativado de
+            worker dedicado (`birthhub-360-worker`, `render.yaml`) ainda não foi ativado de
             verdade (ver RUNBOOK.md → "Go-live"/handoff onda-6/16-para-08) — hoje `server.ts` é
             quem processaria a fila, se `ENABLE_QUEUES=true` fosse ligado nele.
           contract_metric_source: 'src/lib/queue/metrics.ts (real desde Onda 5-7)'
@@ -182,7 +182,7 @@ groups:
           summary: 'Fila com jobs aguardando mas zero jobs completados em 15min — fila travada'
           contract_metric_source: 'src/lib/queue/metrics.ts (real desde Onda 5-7)'
 
-  - name: prospector-atlas.bitrix.ativos-hoje
+  - name: birthhub-360.bitrix.ativos-hoje
     rules:
       # RESOLVIDO (Onda 8, confirmado em código): bitrix_sync_failures_total (Counter, labels
       # tenant/entity) existe em src/features/integrations/bitrix/service/metrics.ts e é
@@ -203,7 +203,7 @@ groups:
             silenciosamente"). Ver runbook → "Sync Bitrix falhando".
           contract_metric_source: 'src/features/integrations/bitrix/service/metrics.ts (real desde Onda 5)'
 
-  - name: prospector-atlas.http-5xx.ativos-hoje
+  - name: birthhub-360.http-5xx.ativos-hoje
     rules:
       # RESOLVIDO (2026-08-21): http_server_duration_milliseconds_* agora é produzida por
       # src/shared/middlewares/httpMetrics.ts (prom-client Histogram, montado em server.ts quando
@@ -244,7 +244,7 @@ groups:
             Volume anormal de respostas 4xx (pode indicar falhas de autenticação, erros de cliente ou ataques).
           contract_metric_source: 'src/shared/middlewares/httpMetrics.ts (real desde 2026-08-21)'
 
-  - name: prospector-atlas.orcamento-ia.ativos-hoje
+  - name: birthhub-360.orcamento-ia.ativos-hoje
     rules:
       # RESOLVIDO (Onda 8, confirmado em código): ai_usage_cost_usd_total (Counter, labels
       # provider/tenant) existe em src/lib/ai/metrics.ts e é incrementada de dentro de
@@ -270,7 +270,7 @@ groups:
             no ambiente — confirmar se está setada em produção antes de confiar neste alerta.
           contract_metric_source: 'src/lib/ai/metrics.ts (real desde Onda 5-7, condicionado a AI_MONTHLY_BUDGET_USD)'
 
-  - name: prospector-atlas.database.ativos-hoje
+  - name: birthhub-360.database.ativos-hoje
     rules:
       # RESOLVIDO (Onda 39, auditoria CPI): "Alerta real de DB pool saturation / Redis health"
       # estava listado como puramente aspiracional (nenhum produtor no código). pg_pool_* e

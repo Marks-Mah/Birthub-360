@@ -51,7 +51,7 @@ export async function validateStructuredOutput<T>(
         };
       }
 
-      lastError = `Zod validation error: ${result.error.errors.map((e) => e.message).join(', ')}`;
+      lastError = `Zod validation error: ${result.error.issues.map((e) => e.message).join(', ')}`;
 
       // Se fallbackToPartial, tentar extrair dados parciais
       if (fallbackToPartial && i === maxRetries - 1) {
