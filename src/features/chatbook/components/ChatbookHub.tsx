@@ -43,37 +43,47 @@ export function ChatbookHub() {
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-surface/70 backdrop-blur-2xl rounded-[2.5rem] p-8 border border-line shadow-[0_20px_40px_rgba(0,0,0,0.03)] flex items-center gap-4 relative overflow-hidden"
+          className="bg-surface/75 backdrop-blur-2xl rounded-[2.5rem] p-8 border border-line/80 shadow-[0_20px_40px_rgba(0,0,0,0.03)] flex items-center gap-4 relative overflow-hidden"
         >
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-brand to-brand-2 flex items-center justify-center text-on-brand shadow-lg shadow-brand/20 shrink-0">
-            <Bot className="w-7 h-7" />
+          {/* Luz Especular de Fundo 2026 */}
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-brand to-transparent opacity-80" />
+          <div className="pointer-events-none absolute -right-12 -top-12 h-36 w-36 rounded-full bg-brand/15 blur-2xl" />
+
+          <div className="relative shrink-0">
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-brand via-brand-2 to-brand flex items-center justify-center text-on-brand shadow-lg shadow-brand/25 relative overflow-hidden group">
+              <Bot className="w-7 h-7" />
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-white/15 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+            </div>
+            <span className="absolute -bottom-0.5 -right-0.5 flex h-3.5 w-3.5" title="Motor de IA Ativo">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-emerald-500 border-2 border-surface" />
+            </span>
           </div>
+
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
               <h1 className="text-2xl font-black text-ink tracking-tight">
                 {BRAND.shortName} Copilot
               </h1>
-              {/* bg-emerald-500/20 text-emerald-500 cru (contra bg-surface, tema claro) dava
-                                ~1.8:1 — achado real do axe-core, tests/e2e/accessibility.spec.ts. Mesmo
-                                padrão de badge "soft" já usado em Badge.tsx (variant="success"). */}
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-success/15 text-success-active dark:text-success font-bold border border-success/30 shrink-0">
+              <span className="text-[10px] px-2.5 py-0.5 rounded-full bg-success/15 text-success-active dark:text-success font-bold border border-success/30 shrink-0 inline-flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                 Groq IA
               </span>
             </div>
             <p className="text-sm text-ink-2 flex items-center gap-1.5">
-              <Sparkles size={12} className="text-brand" /> Assistente comercial com base interna da
+              <Sparkles size={12} className="text-brand shrink-0" /> Assistente comercial com base interna da
               marca; sem navegação web em tempo real.
             </p>
           </div>
         </motion.div>
 
-        <div className="bg-surface/80 rounded-[2rem] border border-line shadow-[0_20px_40px_rgba(0,0,0,0.03)] flex-1 flex flex-col overflow-hidden min-h-[500px]">
-          <div className="p-3 border-b border-line bg-surface-2 flex items-center justify-between gap-3 text-xs flex-wrap">
+        <div className="bg-surface/85 backdrop-blur-xl rounded-[2rem] border border-line/80 shadow-[0_20px_40px_rgba(0,0,0,0.03)] flex-1 flex flex-col overflow-hidden min-h-[500px] relative">
+          {/* Specular highlight border */}
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-brand/50 to-transparent" />
+
+          <div className="p-3 border-b border-line bg-surface-2/80 flex items-center justify-between gap-3 text-xs flex-wrap">
             <div className="flex items-center gap-3 flex-wrap">
               <span className="text-ink-2 font-medium">Fonte única do copiloto:</span>
-              {/* Registro aberto (empresa/negócio/contato) que o copiloto já recebe em toda
-                  pergunta via localContext — antes só aparecia uma vez na saudação inicial, que
-                  rola pra fora da tela (achado do Piloto 010). */}
               {activeRecord && (
                 <span className="flex items-center gap-1.5 text-[11px] font-bold text-brand-ink dark:text-brand bg-brand/10 border border-brand/20 rounded-full px-2.5 py-1">
                   <Link2 className="w-3 h-3" /> Contexto: {activeRecord.label}
@@ -88,9 +98,9 @@ export function ChatbookHub() {
                   setSearchMode('general');
                 }}
                 aria-pressed={searchMode === 'general'}
-                className={`px-3 py-1.5 rounded-lg font-bold transition-colors flex items-center gap-1.5 ${
+                className={`px-3 py-1.5 rounded-lg font-bold transition-all active:scale-95 flex items-center gap-1.5 ${
                   searchMode === 'general'
-                    ? 'bg-brand-active text-on-brand shadow-sm'
+                    ? 'bg-brand-active text-on-brand shadow-sm ring-1 ring-brand/30'
                     : 'text-ink-2 hover:text-ink'
                 }`}
               >
@@ -103,9 +113,9 @@ export function ChatbookHub() {
                   setSearchMode('internal');
                 }}
                 aria-pressed={searchMode === 'internal'}
-                className={`px-3 py-1.5 rounded-lg font-bold transition-colors flex items-center gap-1.5 ${
+                className={`px-3 py-1.5 rounded-lg font-bold transition-all active:scale-95 flex items-center gap-1.5 ${
                   searchMode === 'internal'
-                    ? 'bg-brand-active text-on-brand shadow-sm'
+                    ? 'bg-brand-active text-on-brand shadow-sm ring-1 ring-brand/30'
                     : 'text-ink-2 hover:text-ink'
                 }`}
               >
@@ -115,6 +125,39 @@ export function ChatbookHub() {
           </div>
 
           <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-4">
+            {messages.length === 0 && (
+              <div className="py-8 text-center space-y-4">
+                <div className="w-12 h-12 rounded-2xl bg-brand/10 text-brand flex items-center justify-center mx-auto shadow-sm">
+                  <Sparkles className="w-6 h-6 animate-pulse" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-bold text-ink">Inicie a conversa comercial inteligente</h3>
+                  <p className="text-xs text-ink-2 mt-1 max-w-sm mx-auto">
+                    Faça perguntas sobre contorno de objeções, roteiros de abordagem ou estratégia de produto:
+                  </p>
+                </div>
+                <div className="flex flex-wrap items-center justify-center gap-2 max-w-md mx-auto pt-2">
+                  {[
+                    'Como contornar objeção de preço?',
+                    'Qual o principal diferencial competitivo?',
+                    'Qual o ICP prioritário da solução?',
+                  ].map((suggestion) => (
+                    <button
+                      key={suggestion}
+                      type="button"
+                      onClick={() => {
+                        SoundFX.play('click');
+                        setInputQuery(suggestion);
+                      }}
+                      className="px-3 py-1.5 text-xs font-medium rounded-full bg-surface-2 border border-line text-ink-2 hover:text-brand hover:border-brand/40 transition-all active:scale-95"
+                    >
+                      {suggestion}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {messages.map((msg) => (
               <div
                 key={msg.id}
@@ -123,7 +166,7 @@ export function ChatbookHub() {
                 <div
                   className={`max-w-[85%] p-4 rounded-2xl text-sm space-y-2 leading-relaxed shadow-md ${
                     msg.sender === 'user'
-                      ? 'bg-brand-active text-on-brand rounded-br-none font-medium'
+                      ? 'bg-brand-active text-on-brand rounded-br-none font-medium shadow-brand/10'
                       : 'bg-surface-2 text-ink border border-line rounded-bl-none'
                   }`}
                 >
@@ -152,7 +195,7 @@ export function ChatbookHub() {
               SoundFX.play('focus');
               handleSendMessage(e);
             }}
-            className="p-4 border-t border-line bg-surface flex items-center gap-2"
+            className="p-4 border-t border-line bg-surface/80 backdrop-blur-md flex items-center gap-2"
           >
             <input
               type="text"
@@ -163,13 +206,13 @@ export function ChatbookHub() {
               }
               value={inputQuery}
               onChange={(e) => setInputQuery(e.target.value)}
-              className="flex-1 px-4 py-3 rounded-xl bg-surface-2 text-ink text-sm border border-line focus:outline-none focus:ring-1 focus:ring-brand"
+              className="flex-1 px-4 py-3 rounded-xl bg-surface-2 text-ink text-sm border border-line focus:outline-none focus:ring-2 focus:ring-brand/40 focus:border-brand/40 transition-all"
             />
             <button
               type="submit"
               disabled={isSearching || !inputQuery.trim()}
               aria-label="Enviar mensagem"
-              className="p-3 rounded-xl bg-brand-active text-on-brand font-bold disabled:opacity-50 hover:bg-brand-2 transition-colors shrink-0"
+              className="p-3 rounded-xl bg-brand-active text-on-brand font-bold disabled:opacity-50 hover:bg-brand-2 transition-all active:scale-95 shadow-md shadow-brand/20 shrink-0"
             >
               <Send className="w-5 h-5" />
             </button>
