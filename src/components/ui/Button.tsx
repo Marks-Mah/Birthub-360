@@ -97,6 +97,7 @@ export interface ButtonProps
   loading?: boolean;
   sound?: UiSound;
   soundHover?: boolean;
+  soundClick?: boolean;
   shine?: boolean;
 }
 
@@ -111,6 +112,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       loading = false,
       sound,
       soundHover = false,
+      soundClick = false,
       shine,
       children,
       onClick,
@@ -122,8 +124,8 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     const Comp = asChild ? Slot : 'button';
 
     const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-      if (sound && !loading && !props.disabled) {
-        SoundFX.play(sound);
+      if ((sound || soundClick) && !loading && !props.disabled) {
+        SoundFX.play(sound ?? 'click');
       }
       onClick?.(e);
     };

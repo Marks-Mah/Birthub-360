@@ -176,7 +176,7 @@ export function RevenueSignalOrb({
           </p>
         </div>
         <Badge
-          variant={shouldAnimate ? 'success' : 'neutral'}
+          variant={shouldAnimate ? 'success' : 'default'}
           dot={shouldAnimate}
           className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1"
         >

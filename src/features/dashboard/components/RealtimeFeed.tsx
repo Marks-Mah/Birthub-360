@@ -1,7 +1,8 @@
-import { Activity, AlertTriangle } from 'lucide-react';
+import { Activity, AlertTriangle, Radio } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { Badge } from '../../../components/ui/Badge.js';
 import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/Card.js';
+import { SoundFX } from '../../../lib/soundEffects.js';
 import { readSseStream, type SseEvent } from '../../../lib/sse.js';
 
 interface FeedEvent {
@@ -47,9 +48,23 @@ export function RealtimeFeed() {
           if (sseEvent.event === 'crm_event') {
             const payload = JSON.parse(sseEvent.data);
             let message: string;
-            if (payload.type === 'DEAL_WON') message = 'Negócio ganho!';
-            else if (payload.type === 'DEAL_LOST') message = 'Negócio perdido/desqualificado.';
-            else message = payload.type;
+            if (payload.type === 'DEAL_WON') {
+              message = 'Negócio ganho!';
+              SoundFX.play('success');
+              try {
+                import('canvas-confetti').then((m) => {
+                  m.default({ particleCount: 50, spread: 60, origin: { y: 0.6 } });
+                });
+              } catch {
+                // ignore
+              }
+            } else if (payload.type === 'DEAL_LOST') {
+              message = 'Negócio perdido/desqualificado.';
+              SoundFX.play('click');
+            } else {
+              message = payload.type;
+              SoundFX.play('focus');
+            }
 
             const newEvent: FeedEvent = {
               id: Math.random().toString(36).substring(7),
@@ -76,7 +91,11 @@ export function RealtimeFeed() {
   }, [retryToken]);
 
   return (
-    <Card className="col-span-3 overflow-hidden border border-line bg-surface shadow-card">
+    <Card
+      variant="bento"
+      spotlight
+      className="col-span-3 overflow-hidden border border-line bg-surface shadow-card"
+    >
       <CardHeader className="flex flex-row items-center justify-between border-b border-line pb-3 bg-surface/50">
         <CardTitle className="text-sm font-bold flex items-center gap-2 text-ink">
           <Activity
@@ -84,9 +103,13 @@ export function RealtimeFeed() {
           />
           Intelligence Stream
         </CardTitle>
-        <span className="text-[10px] uppercase font-bold tracking-widest px-2 py-0.5 rounded-full border border-line bg-surface-2 text-ink-2">
+        <Badge
+          variant={connectionError ? 'outline' : 'success'}
+          dot={!connectionError}
+          className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5"
+        >
           {connectionError ? 'Offline' : 'Ao vivo'}
-        </span>
+        </Badge>
       </CardHeader>
       <CardContent className="pt-4">
         {connectionError ? (
@@ -113,10 +136,14 @@ export function RealtimeFeed() {
             {events.map((ev) => (
               <li
                 key={ev.id}
-                className="flex items-center justify-between text-xs p-2.5 rounded-xl border border-line bg-surface-2/40 hover:bg-surface-2/80 transition-colors"
+                className="flex items-center justify-between text-xs p-3 rounded-xl border border-line bg-surface-2/40 hover:bg-surface-2/80 hover:border-brand/30 transition-all duration-200 shadow-xs"
               >
                 <div className="flex items-center gap-2.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-brand animate-ping" />
+                  <span
+                    className={`w-2 h-2 rounded-full ${
+                      ev.type === 'DEAL_WON' ? 'bg-success animate-ping' : 'bg-brand animate-pulse'
+                    }`}
+                  />
                   <span className="font-semibold text-ink">{ev.message}</span>
                 </div>
                 <div className="flex items-center gap-2">
@@ -125,6 +152,7 @@ export function RealtimeFeed() {
                   </span>
                   <Badge
                     variant={ev.type === 'DEAL_WON' ? 'success' : 'outline'}
+                    dot={ev.type === 'DEAL_WON'}
                     className="text-[10px] px-2 py-0.5"
                   >
                     {ev.type === 'DEAL_WON' ? 'Sucesso' : 'Evento'}

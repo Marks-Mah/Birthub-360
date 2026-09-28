@@ -11,6 +11,7 @@ import {
   CardTitle,
 } from '../../../components/ui/Card.js';
 import { api } from '../../../lib/api.js';
+import { SoundFX } from '../../../lib/soundEffects.js';
 
 /** Perfis realmente disponíveis no runtime atual. Os values são aliases lógicos do gateway. */
 const MODEL_OPTIONS = [
@@ -134,17 +135,21 @@ export const AIConfigCenter: React.FC = () => {
   };
 
   const handleModelChange = (toolKey: string, model: string) => {
+    SoundFX.play('navigate');
     updateTool(toolKey, { model, provider: PROVIDER_BY_MODEL[model] ?? 'Google' });
   };
 
   const handleSave = async () => {
+    SoundFX.play('focus');
     setSaving(true);
     setError(null);
     try {
       await api.put('/api/intelligence/ai-settings', { settings: Object.values(settings) });
       setSaved(true);
+      SoundFX.play('success');
       setTimeout(() => setSaved(false), 2500);
     } catch (err: any) {
+      SoundFX.play('error');
       setError(err instanceof Error ? err.message : 'Falha ao salvar configurações.');
     } finally {
       setSaving(false);
@@ -152,10 +157,10 @@ export const AIConfigCenter: React.FC = () => {
   };
 
   return (
-    <Card variant="default" padding="lg" className="font-sans" accentBar>
+    <Card variant="bento" spotlight padding="lg" className="font-sans">
       <CardHeader className="flex-row items-center justify-between gap-4 flex-wrap">
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-brand/15 border border-brand/30 flex items-center justify-center text-brand shrink-0">
+          <div className="w-12 h-12 rounded-2xl bg-brand/15 border border-brand/30 flex items-center justify-center text-brand shrink-0 shadow-sm">
             <Cpu size={22} />
           </div>
           <div>
@@ -166,7 +171,16 @@ export const AIConfigCenter: React.FC = () => {
             </CardDescription>
           </div>
         </div>
-        <Button onClick={handleSave} loading={saving} disabled={loading} className="shrink-0">
+        <Button
+          variant="cosmic"
+          shine
+          soundHover
+          soundClick
+          onClick={handleSave}
+          loading={saving}
+          disabled={loading}
+          className="shrink-0 font-bold"
+        >
           {!saving && (saved ? <Check size={16} /> : <Save size={16} />)}
           <span className="ml-2">
             {saved ? 'Salvo!' : saving ? 'Salvando…' : 'Salvar Configurações'}
@@ -193,11 +207,11 @@ export const AIConfigCenter: React.FC = () => {
               return (
                 <div
                   key={tool.key}
-                  className="rounded-card border border-line bg-surface-2 p-4 flex flex-col gap-3"
+                  className="rounded-card border border-line bg-surface-2/60 backdrop-blur-sm p-4 flex flex-col gap-3 hover:border-brand/40 hover:bg-surface-2 transition-all duration-200 shadow-xs"
                 >
                   <div className="flex items-center justify-between gap-2">
                     <span className="font-semibold text-sm text-ink">{tool.label}</span>
-                    <Badge variant="gradient">{setting.provider}</Badge>
+                    <Badge variant="holographic">{setting.provider}</Badge>
                   </div>
 
                   <div className="grid grid-cols-2 gap-3">
@@ -206,7 +220,7 @@ export const AIConfigCenter: React.FC = () => {
                       <select
                         value={setting.model}
                         onChange={(e) => handleModelChange(tool.key, e.target.value)}
-                        className="bg-surface-2 border border-line rounded-lg px-2 py-1.5 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-brand"
+                        className="bg-surface/90 border border-line rounded-lg px-2 py-1.5 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-brand/30 hover:border-brand/40 transition-all cursor-pointer"
                       >
                         {MODEL_OPTIONS.map((m) => (
                           <option key={m.value} value={m.value}>
@@ -227,7 +241,7 @@ export const AIConfigCenter: React.FC = () => {
                         onChange={(e) =>
                           updateTool(tool.key, { temperature: Number(e.target.value) })
                         }
-                        className="accent-brand mt-2"
+                        className="accent-brand mt-2 cursor-pointer"
                       />
                     </label>
                   </div>

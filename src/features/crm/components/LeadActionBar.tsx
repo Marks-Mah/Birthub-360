@@ -58,10 +58,9 @@ export function LeadActionBar({
         variant="cosmic"
         shine
         soundHover
-        soundClick
+        sound="focus"
         size="sm"
         onClick={() => {
-          SoundFX.play('focus');
           onEnrich();
         }}
         disabled={enriching}
@@ -98,10 +97,9 @@ export function LeadActionBar({
           type="button"
           variant="secondary"
           soundHover
-          soundClick
+          sound="navigate"
           size="sm"
           onClick={() => {
-            SoundFX.play('navigate');
             onVoiceCall();
           }}
           disabled={callingVoice}
@@ -120,10 +118,9 @@ export function LeadActionBar({
         type="button"
         variant="secondary"
         soundHover
-        soundClick
+        sound="navigate"
         size="sm"
         onClick={() => {
-          SoundFX.play('navigate');
           onOpenWhatsapp();
         }}
         disabled={!leadPhone}
@@ -139,10 +136,9 @@ export function LeadActionBar({
         type="button"
         variant="secondary"
         soundHover
-        soundClick
+        sound="focus"
         size="sm"
         onClick={() => {
-          SoundFX.play('focus');
           onExportBitrix();
         }}
         disabled={exportingBitrix}
@@ -160,10 +156,9 @@ export function LeadActionBar({
         type="button"
         variant="destructive"
         soundHover
-        soundClick
+        sound="click"
         size="sm"
         onClick={() => {
-          SoundFX.play('click');
           onDelete();
         }}
         disabled={deleting}
