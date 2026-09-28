@@ -74,26 +74,30 @@ export function FuturisticSidebar({
     'settings',
   ];
 
+  // Convergência da Navegação: Arquitetura dos 3 Pilares Canônicos
+  // (ver .agents/PLAN-V4/03-PRODUCT/04-THREE-PILLARS-NAVIGATION-CONVERGENCE.md)
   const navGroupsByJourney: NavGroupDefinition[] = isRestrictedSdrProfile
     ? [
         { title: 'COMMAND CENTER', items: ['daily-plan'] },
-        { title: 'BUSINESS', items: ['prospect'] },
         {
-          title: 'EXECUTION',
+          title: 'PROSPECÇÃO INTELIGENTE',
+          items: ['prospect', 'cadence'],
+        },
+        {
+          title: 'CRM COMERCIAL',
           items: [
             'companies',
             'contacts',
             ...(canAccessMesaTratamento ? (['mesa-tratamento'] as TabType[]) : []),
             'activities',
             'calendar',
-            'cadence',
           ],
         },
         {
-          title: 'CAPACITATION',
+          title: 'COPILOTO COMERCIAL IA',
           items: ['roleplay', 'objections_matrix', 'chatbook', 'topic_training'],
         },
-        { title: 'ADMINISTRATION', items: ['notifications', 'bitrix', 'settings'] },
+        { title: 'ADMINISTRAÇÃO', items: ['notifications', 'bitrix', 'settings'] },
       ]
     : [
         {
@@ -101,80 +105,79 @@ export function FuturisticSidebar({
           items: ['dashboard', 'workspace', 'daily-plan'],
         },
         {
-          title: 'INTELLIGENCE',
+          title: 'CRM COMERCIAL',
+          items: [
+            'crm',
+            'crm360',
+            'companies',
+            'contacts',
+            'activities',
+            'calendar',
+            'propostas',
+            ...(canAccessMesaTratamento ? (['mesa-tratamento'] as TabType[]) : []),
+          ],
+        },
+        {
+          title: 'PROSPECÇÃO INTELIGENTE',
+          items: ['prospect', 'cadence'],
+        },
+        {
+          title: 'COPILOTO COMERCIAL IA',
           items: [
             ...(canAccessCommercialIntelligence ? (['commercial_intelligence'] as TabType[]) : []),
             ...(canAccessCopilotoIa ? (['copiloto_ia'] as TabType[]) : []),
             'intelligence',
             'market-intelligence',
+            'knowledge',
             'analytics',
             'winloss',
             'reports',
-          ],
-        },
-        {
-          title: 'BUSINESS',
-          items: [
-            'prospect',
-            'crm',
-            'crm360',
-            'propostas',
-            'companies',
-            'contacts',
-            ...(canAccessMesaTratamento ? (['mesa-tratamento'] as TabType[]) : []),
-          ],
-        },
-        {
-          title: 'EXECUTION',
-          items: ['activities', 'calendar', 'cadence'],
-        },
-        {
-          title: 'CAPACITATION',
-          items: [
             'roleplay',
+            'chatbook',
             'qualification_matrix',
             'objections_matrix',
             'topic_training',
-            'chatbook',
-            'knowledge',
             'editor',
           ],
         },
-        { title: 'ADMINISTRATION', items: administrationItems },
+        { title: 'ADMINISTRAÇÃO', items: administrationItems },
       ];
 
   const GROUP_ORDER_BY_ROLE: Partial<Record<string, string[]>> = {
     CLOSER: [
       'COMMAND CENTER',
-      'EXECUTION',
-      'BUSINESS',
-      'INTELLIGENCE',
-      'CAPACITATION',
-      'ADMINISTRATION',
+      'CRM COMERCIAL',
+      'PROSPECÇÃO INTELIGENTE',
+      'COPILOTO COMERCIAL IA',
+      'ADMINISTRAÇÃO',
     ],
     GESTOR: [
       'COMMAND CENTER',
-      'INTELLIGENCE',
-      'BUSINESS',
-      'EXECUTION',
-      'CAPACITATION',
-      'ADMINISTRATION',
+      'CRM COMERCIAL',
+      'PROSPECÇÃO INTELIGENTE',
+      'COPILOTO COMERCIAL IA',
+      'ADMINISTRAÇÃO',
     ],
     ADMIN: [
       'COMMAND CENTER',
-      'INTELLIGENCE',
-      'BUSINESS',
-      'EXECUTION',
-      'CAPACITATION',
-      'ADMINISTRATION',
+      'CRM COMERCIAL',
+      'PROSPECÇÃO INTELIGENTE',
+      'COPILOTO COMERCIAL IA',
+      'ADMINISTRAÇÃO',
     ],
     VISUALIZADOR: [
       'COMMAND CENTER',
-      'INTELLIGENCE',
-      'BUSINESS',
-      'EXECUTION',
-      'CAPACITATION',
-      'ADMINISTRATION',
+      'CRM COMERCIAL',
+      'PROSPECÇÃO INTELIGENTE',
+      'COPILOTO COMERCIAL IA',
+      'ADMINISTRAÇÃO',
+    ],
+    SDR: [
+      'COMMAND CENTER',
+      'PROSPECÇÃO INTELIGENTE',
+      'CRM COMERCIAL',
+      'COPILOTO COMERCIAL IA',
+      'ADMINISTRAÇÃO',
     ],
   };
 

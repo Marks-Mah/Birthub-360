@@ -129,41 +129,35 @@ export function Sidebar({
     'settings',
   ];
 
-  // Navegação transformada para paradigma Command Center: estruturada por função de comando
-  // (COMMAND CENTER → INTELLIGENCE → BUSINESS → EXECUTION → CAPACITATION → DATA → ADMINISTRATION)
-  // mantendo a lógica de jornada comercial e acesso por papel. TAB_META é a fonte única de
-  // rótulo/ícone e TabType impede destinos fantasma.
-  //
-  // Os módulos executivos (Social Selling, Treinamento Comercial, Proposta Comercial, Hub
-  // Inteligência & Mkt) NÃO aparecem mais aqui — pedido explícito do usuário: "não quero que
-  // apareça no CRM, só nos círculos" do Hub Executivo standalone (rotas top-level em App.tsx,
-  // fora de /app/*). Quem administra quem vê cada módulo é 'module-access' acima, não a Sidebar.
-  //
-  // Perfil SDR focado (role SDR, ver isRestrictedSdrProfile acima): Command Center simplificado
-  // focado em execução diária — Plano Diário em primeiro, ferramentas de prospecção/qualificação,
-  // cadência e treinamento. Sem dashboards/analytics/administração de integrações.
+  // Convergência da Navegação: Arquitetura dos 3 Pilares Canônicos
+  // (ver .agents/PLAN-V4/03-PRODUCT/04-THREE-PILLARS-NAVIGATION-CONVERGENCE.md)
+  // 1. COMMAND CENTER (Cockpit de entrada executiva / diária)
+  // 2. PILAR 1: CRM COMERCIAL (Pipeline, Contas, Decisores, Atividades e Propostas)
+  // 3. PILAR 2: PROSPECÇÃO INTELIGENTE (Busca ICP, Outbound, Cadências, Telefonia & Dialer)
+  // 4. PILAR 3: COPILOTO COMERCIAL IA (IA generativa, inteligência de mercado, RAG, analytics & capacitação)
+  // 5. ADMINISTRAÇÃO (Camada segregada de governança e integrações)
   const navGroupsByJourney: NavGroupDefinition[] = isRestrictedSdrProfile
     ? [
         { title: 'COMMAND CENTER', items: ['daily-plan'] },
-        { title: 'BUSINESS', items: ['prospect', 'outbound'] },
         {
-          title: 'EXECUTION',
+          title: 'PROSPECÇÃO INTELIGENTE',
+          items: ['prospect', 'outbound', 'cadence', 'voice-hub', 'dialer'],
+        },
+        {
+          title: 'CRM COMERCIAL',
           items: [
             'companies',
             'contacts',
             ...(canAccessMesaTratamento ? (['mesa-tratamento'] as TabType[]) : []),
             'activities',
             'calendar',
-            'cadence',
-            'voice-hub',
-            'dialer',
           ],
         },
         {
-          title: 'CAPACITATION',
-          items: ['roleplay', 'objections_matrix', 'chatbook', 'topic_training'],
+          title: 'COPILOTO COMERCIAL IA',
+          items: ['intelligence', 'roleplay', 'objections_matrix', 'chatbook', 'topic_training'],
         },
-        { title: 'ADMINISTRATION', items: ['notifications', 'bitrix', 'settings'] },
+        { title: 'ADMINISTRAÇÃO', items: ['notifications', 'bitrix', 'settings'] },
       ]
     : [
         {
@@ -171,81 +165,79 @@ export function Sidebar({
           items: ['dashboard', 'workspace', 'daily-plan'],
         },
         {
-          title: 'INTELLIGENCE',
+          title: 'CRM COMERCIAL',
+          items: [
+            'crm',
+            'crm360',
+            'companies',
+            'contacts',
+            'activities',
+            'calendar',
+            'propostas',
+            ...(canAccessMesaTratamento ? (['mesa-tratamento'] as TabType[]) : []),
+          ],
+        },
+        {
+          title: 'PROSPECÇÃO INTELIGENTE',
+          items: ['prospect', 'outbound', 'cadence', 'voice-hub', 'dialer'],
+        },
+        {
+          title: 'COPILOTO COMERCIAL IA',
           items: [
             ...(canAccessCommercialIntelligence ? (['commercial_intelligence'] as TabType[]) : []),
             ...(canAccessCopilotoIa ? (['copiloto_ia'] as TabType[]) : []),
             'intelligence',
             'market-intelligence',
+            'knowledge',
             'analytics',
             'winloss',
             'reports',
-          ],
-        },
-        {
-          title: 'BUSINESS',
-          items: [
-            'prospect',
-            'outbound',
-            'crm',
-            'crm360',
-            'propostas',
-            'companies',
-            'contacts',
-            ...(canAccessMesaTratamento ? (['mesa-tratamento'] as TabType[]) : []),
-          ],
-        },
-        {
-          title: 'EXECUTION',
-          items: ['activities', 'calendar', 'cadence', 'voice-hub', 'dialer'],
-        },
-        {
-          title: 'CAPACITATION',
-          items: [
             'roleplay',
+            'chatbook',
             'qualification_matrix',
             'objections_matrix',
             'topic_training',
-            'chatbook',
-            'knowledge',
             'editor',
           ],
         },
-        { title: 'ADMINISTRATION', items: administrationItems },
+        { title: 'ADMINISTRAÇÃO', items: administrationItems },
       ];
 
   const GROUP_ORDER_BY_ROLE: Partial<Record<string, string[]>> = {
     CLOSER: [
       'COMMAND CENTER',
-      'EXECUTION',
-      'BUSINESS',
-      'INTELLIGENCE',
-      'CAPACITATION',
-      'ADMINISTRATION',
+      'CRM COMERCIAL',
+      'PROSPECÇÃO INTELIGENTE',
+      'COPILOTO COMERCIAL IA',
+      'ADMINISTRAÇÃO',
     ],
     GESTOR: [
       'COMMAND CENTER',
-      'INTELLIGENCE',
-      'BUSINESS',
-      'EXECUTION',
-      'CAPACITATION',
-      'ADMINISTRATION',
+      'CRM COMERCIAL',
+      'PROSPECÇÃO INTELIGENTE',
+      'COPILOTO COMERCIAL IA',
+      'ADMINISTRAÇÃO',
     ],
     ADMIN: [
       'COMMAND CENTER',
-      'INTELLIGENCE',
-      'BUSINESS',
-      'EXECUTION',
-      'CAPACITATION',
-      'ADMINISTRATION',
+      'CRM COMERCIAL',
+      'PROSPECÇÃO INTELIGENTE',
+      'COPILOTO COMERCIAL IA',
+      'ADMINISTRAÇÃO',
     ],
     VISUALIZADOR: [
       'COMMAND CENTER',
-      'INTELLIGENCE',
-      'BUSINESS',
-      'EXECUTION',
-      'CAPACITATION',
-      'ADMINISTRATION',
+      'CRM COMERCIAL',
+      'PROSPECÇÃO INTELIGENTE',
+      'COPILOTO COMERCIAL IA',
+      'ADMINISTRAÇÃO',
+    ],
+    SDR: [
+      'COMMAND CENTER',
+      'PROSPECÇÃO INTELIGENTE',
+      'CRM COMERCIAL',
+      'COPILOTO COMERCIAL IA',
+      'ADMINISTRAÇÃO',
     ],
   };
 
