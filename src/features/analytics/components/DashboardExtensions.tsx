@@ -100,7 +100,7 @@ export function AgentPerformanceWidget({
       {data.map((agent, i) => (
         <div
           key={i}
-          className="flex items-center gap-3 p-2.5 rounded-lg bg-surface-2 border border-line hover:border-brand/40 transition-colors"
+          className="flex items-center gap-3 p-2.5 rounded-lg bg-surface-2 border border-line hover:border-brand/40 transition-all hover:scale-[1.02] active:scale-[0.98]"
         >
           <span className="text-lg shrink-0">{agent.isAi ? '🤖' : '👤'}</span>
           <div className="flex-1 min-w-0">

@@ -90,7 +90,7 @@ export interface User {
   email: string;
   name: string;
   role: 'admin' | 'user' | 'gestor';
-  company?: 'atlas' | 'totaltrac';
+  company?: string;
   created_at?: string;
 }
 
@@ -103,7 +103,7 @@ export interface Lead {
   // encontrou - "por que esta empresa apareceu?" via GET /api/search-runs/:searchId.
   // Aditivo: leads gravados antes desta wave simplesmente não têm o campo.
   search_id?: string;
-  company?: 'atlas' | 'totaltrac';
+  company?: string;
   name: string;
   cnpj?: string;
   razao_social?: string;
@@ -218,14 +218,14 @@ export interface LeadTask {
   created_at: string;
   // Presentes só nas listagens consolidadas (por usuário / todas), via JOIN.
   lead_name?: string;
-  lead_company?: 'atlas' | 'totaltrac';
+  lead_company?: string;
   user_name?: string;
 }
 
 export interface Campaign {
   id: string;
   title: string;
-  company?: 'atlas' | 'totaltrac';
+  company?: string;
   segment: string;
   pitch: string;
   provider: string;
@@ -473,11 +473,11 @@ export interface IntegrationsConfig {
   groqApiKey: string;
   hunterApiKey: string;
   blandAiApiKey: string;
-  bitrixTotalTracWebhook: string;
+  bitrixBirthhub360Webhook: string;
   bitrixAtlasGrWebhook: string;
-  // 'auto' (padrão recomendado) escolhe o webhook pela marca do usuário logado;
-  // as demais opções seguem disponíveis como substituição manual explícita.
-  activeBitrixTarget: 'auto' | 'totaltrac' | 'atlasgr' | 'custom';
+  // 'auto' (padrão recomendado) usa o webhook BITRIX_BIRTHHUB360_WEBHOOK do servidor;
+  // 'birthhub360' força o mesmo; 'custom' permite um webhook personalizado explícito.
+  activeBitrixTarget: 'auto' | 'birthhub360' | 'custom';
   customBitrixWebhook: string;
 }
 

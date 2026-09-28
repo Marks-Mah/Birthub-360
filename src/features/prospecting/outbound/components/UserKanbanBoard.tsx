@@ -197,7 +197,7 @@ export function UserKanbanBoard({ user, isDark }: UserKanbanBoardProps) {
             </h4>
             <p className={`text-[10px] ${isDark ? 'text-slate-400' : 'text-slate-500'} mb-2`}>
               "Liste 3 objeções comuns sobre preço em rastreamento e como contorná-las usando os
-              diferenciais da TotalTrac."
+              diferenciais da Birth Hub 360."
             </p>
             <button className="w-full py-1.5 text-xs bg-[#008FCE]/10 text-[#008FCE] hover:bg-[#008FCE]/20 rounded font-medium transition-colors">
               Usar Template

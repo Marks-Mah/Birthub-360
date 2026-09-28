@@ -20,11 +20,12 @@ export interface BitrixDuplicateResult {
 // Qual webhook usar de acordo com a marca do vendedor/campanha — para não depender
 // de um seletor manual que qualquer usuário pode trocar (ver Sidebar "Bitrix").
 export function resolveBitrixWebhookForCompany(company?: string): string {
-  const cleanCompany = (company || '').toLowerCase();
-  if (cleanCompany === 'atlas') {
-    return (process.env.BITRIX_ATLASGR_WEBHOOK || '').replace(/\/$/, '');
-  }
-  return (process.env.BITRIX_TOTALTRAC_WEBHOOK || '').replace(/\/$/, '');
+  return (
+    process.env.BITRIX_BIRTHHUB360_WEBHOOK ||
+    process.env.BITRIX_TOTALTRAC_WEBHOOK ||
+    process.env.BITRIX_ATLASGR_WEBHOOK ||
+    ''
+  ).replace(/\/$/, '');
 }
 
 // Consulta o Bitrix ANTES de criar um lead novo: existe como Empresa/Contato (cliente

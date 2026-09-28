@@ -889,6 +889,7 @@ model User {
 model Organization {
   id                       String                    @id @default(cuid())
   name                     String                    @unique
+  setupCompleted           Boolean                   @default(false)
   users                    User[]
   companies                Company[]
   contacts                 Contact[]
@@ -1025,6 +1026,9 @@ model Organization {
   webhookEndpoints   OrganizationWebhookEndpoint[]
   campaigns          Campaign[]
   dncLists           DncList[]
+
+  onboardingCompletedAt DateTime?
+  organizationModuleGrants OrganizationModuleGrant[]
 }
 
 // ─── Comercial Inteligente (Revenue Command Center) ────────────────────────
@@ -3334,6 +3338,20 @@ model ModuleAccessGrant {
   @@unique([userId, moduleKey])
   @@index([organizationId])
   @@index([userId])
+}
+
+model OrganizationModuleGrant {
+  id              String       @id @default(cuid())
+  organizationId  String
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  moduleKey       String
+  /// Id do usuário ADMIN que ativou o módulo — auditoria leve, sem FK
+  enabledByUserId String?
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  @@unique([organizationId, moduleKey])
+  @@index([organizationId])
 }
 
 // ─── Mesa de Tratamento SDR — dashboard de atividade e Pomodoro ────────────────────────────

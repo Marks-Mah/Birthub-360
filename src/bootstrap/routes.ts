@@ -48,11 +48,13 @@ import { memoryRoutes } from '../features/job-roles/routes/memory.routes.js';
 import { roleSupervisorRoutes } from '../features/job-roles/routes/roleSupervisor.routes.js';
 import { workspaceRoutes } from '../features/job-roles/routes/workspace.routes.js';
 import { knowledgeRoutes } from '../features/knowledge/knowledge.routes.js';
+import { onboardingRoutes } from '../features/onboarding/routes/onboarding.routes.js';
 import { lgpdRouter } from '../features/lgpd/lgpd.routes.js';
 import { accountIntelligenceRoutes } from '../features/market-intelligence/server/accountIntelligence.routes.js';
 import { marketIntelligenceCompanyRoutes } from '../features/market-intelligence/server/marketIntelligenceCompany.routes.js';
 import { mesaTratamentoRoutes } from '../features/mesa-tratamento/routes/mesaTratamento.routes.js';
 import { moduleAccessRoutes } from '../features/module-access/routes/moduleAccess.routes.js';
+import { organizationModulesRoutes } from '../features/module-access/routes/organizationModules.routes.js';
 import { noteRoutes } from '../features/notes/routes/note.routes.js';
 import { notificationRoutes } from '../features/notifications/notification.routes.js';
 import { sseService } from '../features/notifications/sse.service.js';
@@ -159,6 +161,7 @@ export function mountFeatureRoutes(app: Express): void {
     copilotoIaRoutes,
   );
   app.use('/api/knowledge', requireTenant, knowledgeRoutes);
+  app.use('/api/onboarding', authenticateToken, requireTenant, onboardingRoutes);
   app.use('/api/lgpd', authenticateToken, requireTenant, lgpdRouter);
   app.use('/api/feature-flags', authenticateToken, requireTenant, featureFlagsRouter);
   // authenticateToken + bugReportLimiter já rodaram pra esta rota (ver rateLimiters.ts) — só
@@ -209,6 +212,7 @@ export function mountFeatureRoutes(app: Express): void {
   app.use('/api/bitrix', authenticateToken, requireTenant, hubTasksRoutes);
   app.use('/api/team', authenticateToken, requireTenant, teamRoutes);
   app.use('/api/module-access', authenticateToken, requireTenant, moduleAccessRoutes);
+  app.use('/api/organization-modules', authenticateToken, requireTenant, organizationModulesRoutes);
   // Fundação Multi-Cargo (PROMPT 1) — catálogo de cargos/agentes é leitura livre por usuário
   // autenticado; gestão de atribuição de cargo (`/assignments/**`) exige ADMIN dentro do próprio
   // router (mesmo padrão de team.routes.ts/moduleAccess.routes.ts).

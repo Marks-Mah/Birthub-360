@@ -315,17 +315,13 @@ export const DEFAULT_SCORING_WEIGHTS: ScoringWeights = {
   dataQuality: 0.25,
 };
 
-// Pesos configuráveis por marca/ICP (pacote CPI pede explicitamente "pesos
-// configuráveis por marca/ICP"). Atlas (agro/frigorificado) e TotalTrac
-// (transporte/logística geral) têm perfis de decisão um pouco diferentes:
-// TotalTrac historicamente qualifica mais por completude cadastral/contato
-// (venda mais transacional, decisor mais difícil de confirmar) do que por
-// aderência fina de segmento; Atlas prioriza aderência de segmento primeiro.
-// Ambos ainda somam 1 (fit + intent + dataQuality) — resolveScoringWeights
-// normaliza defensivamente mesmo assim.
+// Pesos configuráveis por ICP (pacote CPI pede explicitamente "pesos
+// configuráveis por ICP"). Birth Hub 360 prioriza aderência de segmento (Fit)
+// como critério principal, com Data Quality como fator secundário relevante
+// (venda consultiva exige dado confiável do decisor). Ambos ainda somam 1
+// (fit + intent + dataQuality) — resolveScoringWeights normaliza defensivamente.
 export const SCORING_WEIGHTS_BY_COMPANY: Record<string, ScoringWeights> = {
-  atlas: { fit: 0.65, intent: 0.15, dataQuality: 0.2 },
-  totaltrac: { fit: 0.55, intent: 0.15, dataQuality: 0.3 },
+  birthhub360: { fit: 0.6, intent: 0.15, dataQuality: 0.25 },
 };
 
 export function resolveScoringWeights(

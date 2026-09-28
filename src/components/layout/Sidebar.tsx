@@ -8,6 +8,8 @@ import { BrandEmblemBadge } from '../brand/BrandEmblemBadge.js';
 import { SoundFX } from '../../lib/soundEffects.js';
 import { NavLaunchTransition, type NavLaunch } from './NavLaunchTransition.js';
 import { NAV_ACCENT_VAR, TAB_META, type TabType } from './tabMeta.js';
+import { useOrganizationModules } from '../../../hooks/useOrganizationModules.js';
+import { isTabInActiveModule } from '../../../config/product-modules.js';
 
 /** Preferência de menu recolhido. A chave anterior era prefixada com o nome da
  *  marca antiga; a leitura do valor legado existe só para não zerar a

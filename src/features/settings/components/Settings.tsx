@@ -162,7 +162,7 @@ export function Settings() {
           <div className="space-y-6">
             {activeTab === 'profile' && (
               <div className="space-y-6">
-                <Card>
+                <Card variant="bento" spotlight>
                   <CardHeader>
                     <CardTitle>Perfil</CardTitle>
                     <CardDescription>Dados da conta autenticada — somente leitura.</CardDescription>
@@ -197,7 +197,7 @@ export function Settings() {
                   </CardContent>
                 </Card>
 
-                <Card>
+                <Card variant="bento" spotlight>
                   <CardHeader>
                     <CardTitle>Aparência e Tema</CardTitle>
                     <CardDescription>Escolha o tema visual e a marca da interface.</CardDescription>

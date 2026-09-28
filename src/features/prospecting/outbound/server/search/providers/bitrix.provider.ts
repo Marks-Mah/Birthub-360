@@ -30,7 +30,8 @@ const CAPABILITIES: ProviderCapability[] = ['crm_duplicate_check', 'crm_export']
 
 function isConfigured(): boolean {
   return Boolean(
-    (process.env.BITRIX_TOTALTRAC_WEBHOOK || '').trim() ||
+    (process.env.BITRIX_BIRTHHUB360_WEBHOOK || '').trim() ||
+      (process.env.BITRIX_TOTALTRAC_WEBHOOK || '').trim() ||
       (process.env.BITRIX_ATLASGR_WEBHOOK || '').trim(),
   );
 }
@@ -183,7 +184,7 @@ export const bitrixProvider: SearchProvider = {
         status: 'not_configured',
         checkedAt: new Date().toISOString(),
         message:
-          'Nenhum webhook do Bitrix24 configurado (BITRIX_TOTALTRAC_WEBHOOK / BITRIX_ATLASGR_WEBHOOK).',
+          'Nenhum webhook do Bitrix24 configurado (BITRIX_BIRTHHUB360_WEBHOOK).',
       };
     }
     // "online" aqui significa "configurado", não "testado agora" - checar de
