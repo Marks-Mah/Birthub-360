@@ -209,7 +209,10 @@ export function RevenueSignalOrb({
           onMouseEnter={() => SoundFX.play('hover')}
           className="group px-3 py-3.5 text-center transition-colors hover:bg-surface-elevated/70 cursor-default"
         >
-          <Handshake className="mx-auto mb-1 h-4 w-4 text-brand transition-transform duration-200 group-hover:scale-110" aria-hidden="true" />
+          <Handshake
+            className="mx-auto mb-1 h-4 w-4 text-brand transition-transform duration-200 group-hover:scale-110"
+            aria-hidden="true"
+          />
           <p className="text-sm font-black text-ink [font-variant-numeric:tabular-nums]">
             {conversionRate.toFixed(1)}%
           </p>
@@ -219,7 +222,10 @@ export function RevenueSignalOrb({
           onMouseEnter={() => SoundFX.play('hover')}
           className="group border-x border-line/80 px-3 py-3.5 text-center transition-colors hover:bg-surface-elevated/70 cursor-default"
         >
-          <Activity className="mx-auto mb-1 h-4 w-4 text-warning transition-transform duration-200 group-hover:scale-110" aria-hidden="true" />
+          <Activity
+            className="mx-auto mb-1 h-4 w-4 text-warning transition-transform duration-200 group-hover:scale-110"
+            aria-hidden="true"
+          />
           <p className="text-sm font-black text-ink [font-variant-numeric:tabular-nums]">
             {pendingActivities.toLocaleString('pt-BR')}
           </p>
@@ -229,7 +235,10 @@ export function RevenueSignalOrb({
           onMouseEnter={() => SoundFX.play('hover')}
           className="group px-3 py-3.5 text-center transition-colors hover:bg-surface-elevated/70 cursor-default"
         >
-          <Target className="mx-auto mb-1 h-4 w-4 text-success transition-transform duration-200 group-hover:scale-110" aria-hidden="true" />
+          <Target
+            className="mx-auto mb-1 h-4 w-4 text-success transition-transform duration-200 group-hover:scale-110"
+            aria-hidden="true"
+          />
           <p className="text-sm font-black text-ink [font-variant-numeric:tabular-nums]">
             {closedThisMonth.toLocaleString('pt-BR')}
           </p>

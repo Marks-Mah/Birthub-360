@@ -13,6 +13,8 @@ const selectVariants = cva(
           'border-transparent bg-surface-2 hover:bg-surface-interactive hover:border-brand/30 hover:scale-[1.005] focus-visible:bg-surface focus-visible:border-brand focus-visible:ring-4 focus-visible:ring-brand/20 focus-visible:scale-[1.01]',
         ghost:
           'border-transparent bg-transparent hover:bg-surface-subtle hover:border-brand/20 hover:scale-[1.005] focus-visible:bg-surface-subtle focus-visible:border-brand/30 focus-visible:ring-4 focus-visible:ring-brand/20 focus-visible:scale-[1.01]',
+        cosmic:
+          'border-brand/30 bg-surface-elevated/80 shadow-[0_0_15px_rgba(212,175,55,0.08)] hover:border-brand/60 focus-visible:border-brand focus-visible:ring-4 focus-visible:ring-brand/25 focus-visible:scale-[1.01] focus-visible:shadow-[0_0_20px_rgba(212,175,55,0.18)]',
       },
       size: {
         default: 'h-10 px-3 py-2',

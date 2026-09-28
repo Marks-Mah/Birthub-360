@@ -31,6 +31,7 @@ import {
 } from '../hooks/useUnifiedLeadConversation.js';
 import { api } from '../../../lib/api.js';
 import { LEAD_STATUS_EMOJI as STATUS_EMOJI } from '../../../lib/enumMap.js';
+import { SoundFX } from '../../../lib/soundEffects.js';
 import { toast } from '../../../lib/toast.js';
 // LEAD_STATUS é reexportado como tipo em ../../../types (export type {...}) — o array em
 // runtime só existe na fonte original.
@@ -240,6 +241,19 @@ export function LeadDetailDrawer({ leadId, onClose, onChanged }: LeadDetailDrawe
       const updated = await api.put<Lead>(`/api/leads/${lead.id}`, { status: newStatus });
       setLead(updated);
       onChanged();
+      const isWon =
+        newStatus.toLowerCase().includes('ganho') || newStatus.toLowerCase().includes('convert');
+      if (isWon) {
+        SoundFX.play('success');
+        try {
+          const confetti = (await import('canvas-confetti')).default;
+          confetti({ particleCount: 65, spread: 70, origin: { y: 0.6 } });
+        } catch {
+          // ignore
+        }
+      } else {
+        SoundFX.play('navigate');
+      }
       toast.success(`Status atualizado para "${newStatus}"`);
     } catch {
       toast.error('Erro ao atualizar status');
@@ -272,6 +286,7 @@ export function LeadDetailDrawer({ leadId, onClose, onChanged }: LeadDetailDrawe
       const result = await api.post<{ lead: Lead }>(`/api/leads/${lead.id}/enrich`, {});
       setLead(result.lead);
       onChanged();
+      SoundFX.play('success');
       toast.success('Lead enriquecido com sucesso!');
     } catch {
       toast.error('Erro ao enriquecer lead');
@@ -390,7 +405,7 @@ export function LeadDetailDrawer({ leadId, onClose, onChanged }: LeadDetailDrawe
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
-        className="relative w-full max-w-2xl bg-surface border-l border-line shadow-2xl flex flex-col h-full overflow-hidden z-10"
+        className="relative w-full max-w-2xl bg-surface border-l border-line shadow-2xl flex flex-col h-full overflow-hidden z-10 before:absolute before:inset-x-0 before:top-0 before:h-[2px] before:bg-gradient-to-r before:from-transparent before:via-brand/50 before:to-transparent before:z-20"
       >
         {loading ? (
           <div className="flex-1 flex items-center justify-center p-8">
@@ -398,10 +413,10 @@ export function LeadDetailDrawer({ leadId, onClose, onChanged }: LeadDetailDrawe
           </div>
         ) : !lead ? null : (
           <>
-            <div className="p-6 border-b border-line bg-surface-2/50 shrink-0">
+            <div className="p-6 border-b border-line bg-surface-2/50 backdrop-blur-sm shrink-0">
               <div className="flex items-start justify-between gap-4 mb-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-2xl bg-brand/10 text-brand-ink dark:text-brand flex items-center justify-center shrink-0 border border-brand/20">
+                  <div className="w-12 h-12 rounded-2xl bg-brand/10 text-brand-ink dark:text-brand flex items-center justify-center shrink-0 border border-brand/20 shadow-sm">
                     <Building2 size={24} />
                   </div>
                   <div>
@@ -426,10 +441,13 @@ export function LeadDetailDrawer({ leadId, onClose, onChanged }: LeadDetailDrawe
                   <button
                     type="button"
                     ref={closeButtonRef}
-                    onClick={onClose}
+                    onClick={() => {
+                      SoundFX.play('click');
+                      onClose();
+                    }}
                     aria-label="Fechar detalhes do lead"
                     title="Fechar detalhes do lead"
-                    className="p-2 rounded-xl text-ink-2 hover:text-ink hover:bg-surface-2 transition-colors"
+                    className="p-2 rounded-xl text-ink-2 hover:text-ink hover:bg-surface-2 transition-all hover:scale-105 active:scale-95 cursor-pointer"
                   >
                     <X className="w-5 h-5" />
                   </button>
@@ -449,7 +467,7 @@ export function LeadDetailDrawer({ leadId, onClose, onChanged }: LeadDetailDrawe
                       id={statusSelectId}
                       value={lead.status}
                       onChange={(e) => handleStatusChange(e.target.value)}
-                      className="w-full pl-3 pr-8 py-2 bg-surface border border-line rounded-xl text-sm font-semibold text-ink appearance-none focus:outline-none focus:border-brand"
+                      className="w-full pl-3 pr-8 py-2 bg-surface/90 border border-line rounded-xl text-sm font-semibold text-ink appearance-none focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/20 hover:border-brand/40 transition-all cursor-pointer"
                     >
                       {LEAD_STATUSES.map((st) => (
                         <option key={st} value={st}>

@@ -1,5 +1,6 @@
 import { Loader2, MessageCircle, PhoneCall, Send, Sparkles, Trash } from 'lucide-react';
 import { Button } from '../../../components/ui/Button.js';
+import { SoundFX } from '../../../lib/soundEffects.js';
 import type { Lead } from '../../../types/index.js';
 
 interface LeadActionBarProps {
@@ -50,21 +51,28 @@ export function LeadActionBar({
     <div
       role="group"
       aria-label="Ações da oportunidade"
-      className="flex flex-wrap items-center gap-2 px-6 py-3 border-b border-line bg-surface-2/30 shrink-0"
+      className="flex flex-wrap items-center gap-2 px-6 py-3 border-b border-line bg-surface-2/60 backdrop-blur-md shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] shrink-0"
     >
       <Button
         type="button"
-        variant="secondary"
+        variant="cosmic"
+        shine
+        soundHover
+        soundClick
         size="sm"
-        onClick={onEnrich}
+        onClick={() => {
+          SoundFX.play('focus');
+          onEnrich();
+        }}
         disabled={enriching}
         loading={enriching}
         title="Enriquecer dados via IA"
+        className="font-bold"
       >
         {enriching ? (
           <Loader2 className="w-3.5 h-3.5 animate-spin" />
         ) : (
-          <Sparkles className="w-3.5 h-3.5" />
+          <Sparkles className="w-3.5 h-3.5 animate-pulse text-brand-active" />
         )}
         Enriquecer
       </Button>
@@ -76,8 +84,11 @@ export function LeadActionBar({
         <select
           id="lead-action-bar-agent-type"
           value={agentType}
-          onChange={(e) => onAgentTypeChange(e.target.value)}
-          className="h-8 px-2 bg-surface border border-line rounded-lg text-xs font-medium text-ink focus:outline-none focus:border-brand"
+          onChange={(e) => {
+            SoundFX.play('navigate');
+            onAgentTypeChange(e.target.value);
+          }}
+          className="h-8 px-2 bg-surface/90 border border-line rounded-lg text-xs font-medium text-ink focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/20 transition-all"
         >
           <option value="sdr">SDR Frio</option>
           <option value="reactivation">Reativação</option>
@@ -86,8 +97,13 @@ export function LeadActionBar({
         <Button
           type="button"
           variant="secondary"
+          soundHover
+          soundClick
           size="sm"
-          onClick={onVoiceCall}
+          onClick={() => {
+            SoundFX.play('navigate');
+            onVoiceCall();
+          }}
           disabled={callingVoice}
           loading={callingVoice}
         >
@@ -103,29 +119,39 @@ export function LeadActionBar({
       <Button
         type="button"
         variant="secondary"
+        soundHover
+        soundClick
         size="sm"
-        onClick={onOpenWhatsapp}
+        onClick={() => {
+          SoundFX.play('navigate');
+          onOpenWhatsapp();
+        }}
         disabled={!leadPhone}
         title={
           leadPhone ? 'Enviar WhatsApp para este lead' : 'Este lead não possui telefone cadastrado'
         }
       >
-        <MessageCircle className="w-3.5 h-3.5" />
+        <MessageCircle className="w-3.5 h-3.5 text-emerald-400" />
         WhatsApp
       </Button>
 
       <Button
         type="button"
         variant="secondary"
+        soundHover
+        soundClick
         size="sm"
-        onClick={onExportBitrix}
+        onClick={() => {
+          SoundFX.play('focus');
+          onExportBitrix();
+        }}
         disabled={exportingBitrix}
         loading={exportingBitrix}
       >
         {exportingBitrix ? (
           <Loader2 className="w-3.5 h-3.5 animate-spin" />
         ) : (
-          <Send className="w-3.5 h-3.5" />
+          <Send className="w-3.5 h-3.5 text-sky-400" />
         )}
         {isSyncedToBitrix ? 'Reenviar ao Bitrix' : 'Enviar ao Bitrix24'}
       </Button>
@@ -133,8 +159,13 @@ export function LeadActionBar({
       <Button
         type="button"
         variant="destructive"
+        soundHover
+        soundClick
         size="sm"
-        onClick={onDelete}
+        onClick={() => {
+          SoundFX.play('click');
+          onDelete();
+        }}
         disabled={deleting}
         loading={deleting}
         className="ml-auto"

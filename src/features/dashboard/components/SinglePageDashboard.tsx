@@ -418,7 +418,9 @@ export function SinglePageDashboard() {
                   {/* Luz especular interna */}
                   <div className="absolute top-0 inset-x-0 h-1/2 bg-white/20 rounded-t-xl pointer-events-none" />
                   <Zap className="w-4 h-4 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-300 relative z-10" />
-                  <span className="relative z-10">{totalLeads > 0 ? 'Agir nos Deals' : 'Prospectar Agora'}</span>
+                  <span className="relative z-10">
+                    {totalLeads > 0 ? 'Agir nos Deals' : 'Prospectar Agora'}
+                  </span>
                 </button>
               </div>
             </div>

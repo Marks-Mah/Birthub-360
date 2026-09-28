@@ -40,7 +40,11 @@ export const KanbanColumn = React.memo(function KanbanColumn({
   return (
     <div
       ref={setNodeRef}
-      className={`flex flex-col bg-surface/80 backdrop-blur-md rounded-2xl min-w-[320px] max-w-[320px] max-h-full shrink-0 border transition-all duration-300 shadow-sm ${isOver ? 'border-brand dark:border-brand-2 bg-brand/5 shadow-glow-brand' : 'border-line'}`}
+      className={`relative flex flex-col bg-surface/80 backdrop-blur-md rounded-2xl min-w-[320px] max-w-[320px] max-h-full shrink-0 border transition-all duration-300 shadow-sm overflow-hidden before:absolute before:inset-x-0 before:top-0 before:h-[2px] before:bg-gradient-to-r before:from-transparent before:via-brand/35 before:to-transparent before:z-20 ${
+        isOver
+          ? 'border-brand dark:border-brand-2 bg-brand/10 shadow-[0_0_25px_rgba(212,175,55,0.18)] scale-[1.01]'
+          : 'border-line hover:border-brand/25'
+      }`}
     >
       <div className="p-4 border-b border-line bg-surface-2/60 rounded-t-2xl sticky top-0 backdrop-blur-xl z-10 flex flex-col gap-1 shadow-sm">
         <div className="flex justify-between items-center gap-2">
@@ -48,9 +52,12 @@ export const KanbanColumn = React.memo(function KanbanColumn({
             <span className="text-xs opacity-60 shrink-0" aria-hidden="true">
               {STATUS_EMOJI[status] || '📌'}
             </span>
-            <span className="line-clamp-2 leading-tight">{status}</span>
+            <span className="line-clamp-2 leading-tight text-ink">{status}</span>
           </h3>
-          <span className="bg-surface-2 text-ink-2 text-xs font-bold px-2.5 py-1 rounded-full shrink-0">
+          <span className="bg-surface-2 text-ink-2 text-xs font-bold px-2.5 py-0.5 rounded-full shrink-0 border border-line flex items-center gap-1.5">
+            {leads.length > 0 && (
+              <span className="w-1.5 h-1.5 rounded-full bg-brand animate-pulse" />
+            )}
             {leads.length}
           </span>
         </div>
@@ -101,8 +108,11 @@ export const KanbanColumn = React.memo(function KanbanColumn({
           ))}
         </SortableContext>
         {leads.length === 0 && (
-          <div className="h-full min-h-[100px] border-2 border-dashed border-line rounded-xl flex items-center justify-center text-ink-2 text-sm">
-            📥 Solte cards aqui
+          <div className="h-full min-h-[110px] border-2 border-dashed border-line/80 hover:border-brand/40 bg-surface-2/20 rounded-xl flex flex-col items-center justify-center text-ink-2 text-xs gap-1.5 transition-colors">
+            <span className="text-base" aria-hidden="true">
+              📥
+            </span>
+            <span className="font-semibold text-ink-2">Solte cards aqui</span>
           </div>
         )}
       </div>

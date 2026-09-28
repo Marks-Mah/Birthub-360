@@ -18,6 +18,8 @@ const inputVariants = cva(
           'bg-surface-2 border-transparent hover:bg-surface-interactive focus-visible:bg-surface focus-visible:border-brand',
         ghost:
           'bg-transparent border-transparent hover:bg-surface-subtle focus-visible:bg-surface-subtle focus-visible:border-brand/30',
+        cosmic:
+          'bg-surface-elevated/80 border-brand/30 shadow-[0_0_15px_rgba(212,175,55,0.08)] hover:border-brand/60 focus-visible:border-brand focus-visible:ring-4 focus-visible:ring-brand/25 focus-visible:shadow-[0_0_20px_rgba(212,175,55,0.18)]',
       },
     },
     defaultVariants: {
