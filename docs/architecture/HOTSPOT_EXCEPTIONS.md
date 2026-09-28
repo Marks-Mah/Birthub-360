@@ -124,10 +124,26 @@ propósito por estar fora de "## Exceções ativas"):
 
 ### `src/features/prospecting/outbound/server/routes.ts`
 
-- **Limite excepcional:** 3500 linhas
+- **Limite excepcional:** 3700 linhas
 - **Dono:** Agente 07 — IA e Automações
-- **Motivo:** Integração massiva e bruta da aplicação satélite Leads-Outbound na onda 13.
+- **Motivo:** Integração massiva e bruta da aplicação satélite Leads-Outbound na onda 13 (ajustado após Biome format).
 - **Registrado em:** 2026-09-24
+- **Reavaliar até:** 2026-11-30
+
+### `src/features/voice-hub/components/design-system/index.tsx`
+
+- **Limite excepcional:** 1200 linhas
+- **Dono:** Agente 06 — Integrações e Telefonia
+- **Motivo:** Catálogo de componentes de design system do Voice Hub.
+- **Registrado em:** 2026-09-28
+- **Reavaliar até:** 2026-11-30
+
+### `src/features/voice-hub/components/index.tsx`
+
+- **Limite excepcional:** 1200 linhas
+- **Dono:** Agente 06 — Integrações e Telefonia
+- **Motivo:** Barrel de componentes do Voice Hub.
+- **Registrado em:** 2026-09-28
 - **Reavaliar até:** 2026-11-30
 
 ### `src/features/voice-hub/pages/Dashboard/Overview.tsx`
@@ -140,9 +156,9 @@ propósito por estar fora de "## Exceções ativas"):
 
 ### `src/features/voice-hub/pages/Landing.tsx`
 
-- **Limite excepcional:** 2000 linhas
+- **Limite excepcional:** 2200 linhas
 - **Dono:** Agente 06 — Integrações e Telefonia
-- **Motivo:** Integração massiva e bruta da aplicação satélite Voice Hub na onda 13.
+- **Motivo:** Integração massiva e bruta da aplicação satélite Voice Hub na onda 13 (ajustado após Biome format).
 - **Registrado em:** 2026-09-24
 - **Reavaliar até:** 2026-11-30
 
