@@ -2,6 +2,7 @@ import { createBullBoard } from '@bull-board/api';
 import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
 import { ExpressAdapter } from '@bull-board/express';
 import type { Express } from 'express';
+import rateLimit from 'express-rate-limit';
 import { getTenantId } from '../lib/async-context.js';
 import { agentQueue } from '../lib/queue/agent.worker.js';
 import { leadsQueue } from '../lib/queue/index.js';
@@ -9,8 +10,19 @@ import { queuesEnabled } from '../lib/queue/redis.js';
 import { searchQueue } from '../lib/queue/search.queue.js';
 import { authenticateToken } from '../shared/middlewares/authenticateToken.js';
 import { requireTenant } from '../shared/middlewares/authorization.js';
-import { requireRole } from '../shared/middlewares/requireRole.js';
 import { requirePlatformOperator } from '../shared/middlewares/requirePlatformOperator.js';
+import { requireRole } from '../shared/middlewares/requireRole.js';
+
+/**
+ * Limitador específico da rota administrativa do BullBoard para mitigar abuso e
+ * satisfazer análise estática de segurança (CodeQL: Missing rate limiting).
+ */
+const bullBoardLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 600,
+  standardHeaders: true,
+  legacyHeaders: false,
+});
 
 /**
  * SEC-003: Isolamento multi-tenant de dados de filas na origem (BullMQ).
@@ -76,6 +88,7 @@ export function mountBullBoard(app: Express): void {
 
   app.use(
     '/admin/queues',
+    bullBoardLimiter,
     authenticateToken,
     requireTenant,
     requireRole(['ADMIN']),
