@@ -337,7 +337,12 @@ export function AIEmailGenerator({
             </Button>
 
             <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" onClick={copyToClipboard} className="text-xs active:scale-95">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={copyToClipboard}
+                className="text-xs active:scale-95"
+              >
                 {copied ? (
                   <Check className="w-3.5 h-3.5 text-green-400 mr-1.5" />
                 ) : (
