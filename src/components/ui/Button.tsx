@@ -67,6 +67,13 @@ const buttonVariants = cva(
         // Nova variante gradient para destaque
         gradient:
           'bg-gradient-to-r from-brand to-brand-2 text-on-brand shadow-brand-sm hover:shadow-glow-brand hover:scale-[1.02] hover:-translate-y-0.5 active:scale-95',
+        // --- Tendências 2026: Spatial UI, Cosmic Gold e Cyber Iridescence ---
+        cosmic:
+          'bg-gradient-to-r from-brand-active via-brand to-brand-2 text-on-brand shadow-glow-brand border border-white/20 hover:shadow-[0_0_24px_rgba(212,175,55,0.45)] hover:scale-[1.03] hover:-translate-y-0.5 active:scale-95 font-bold',
+        holographic:
+          'border border-brand/40 bg-surface/70 backdrop-blur-xl text-ink shadow-[0_0_15px_rgba(212,175,55,0.18)] hover:border-brand hover:shadow-glow-brand hover:scale-[1.02] active:scale-95',
+        cyber:
+          'border border-accent-cyan/50 bg-surface-elevated/90 text-accent-cyan hover:bg-accent-cyan/15 hover:border-accent-cyan hover:shadow-glow-accent-cyan hover:scale-[1.02] active:scale-95 font-mono tracking-wider text-xs uppercase',
       },
       size: {
         default: 'h-9 px-4 py-2',
@@ -89,6 +96,8 @@ export interface ButtonProps
   magnetic?: boolean;
   loading?: boolean;
   sound?: UiSound;
+  soundHover?: boolean;
+  shine?: boolean;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
@@ -101,8 +110,11 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       magnetic = false,
       loading = false,
       sound,
+      soundHover = false,
+      shine,
       children,
       onClick,
+      onMouseEnter,
       ...props
     },
     ref,
@@ -116,18 +128,35 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       onClick?.(e);
     };
 
+    const handleMouseEnter = (e: React.MouseEvent<HTMLButtonElement>) => {
+      if (soundHover && !loading && !props.disabled) {
+        SoundFX.play('hover');
+      }
+      onMouseEnter?.(e);
+    };
+
+    const shouldShine = shine ?? (variant === 'cosmic' || variant === 'gradient');
+
     const buttonNode = (
       <Comp
         className={cn(
+          'group relative overflow-hidden [&_svg]:transition-transform [&_svg]:duration-200 group-hover:[&_svg]:scale-110',
           buttonVariants({ variant, size, className }),
           loading && 'bh-state-loading opacity-75 cursor-wait',
         )}
         ref={ref}
         disabled={loading || props.disabled}
         onClick={handleClick}
+        onMouseEnter={handleMouseEnter}
         {...props}
       >
         {loading && <Loader2 className="mr-2 h-4 w-4 shrink-0 animate-spin" aria-hidden="true" />}
+        {shouldShine && !props.disabled && (
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute -inset-full top-0 block -skew-x-12 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 transition-all duration-700 ease-out group-hover:inset-full group-hover:opacity-100"
+          />
+        )}
         {children}
       </Comp>
     );
@@ -142,3 +171,4 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 Button.displayName = 'Button';
 
 export { Button, buttonVariants };
+

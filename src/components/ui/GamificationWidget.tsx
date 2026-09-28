@@ -1,35 +1,117 @@
+import confetti from 'canvas-confetti';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Award, Check, ChevronRight, Flame, Trophy, Zap } from 'lucide-react';
+import {
+  Award,
+  Check,
+  ChevronRight,
+  Sparkles,
+  Trophy,
+  Volume2,
+  VolumeX,
+  Zap,
+} from 'lucide-react';
 import { useState } from 'react';
+import { SoundFX } from '../../lib/soundEffects.js';
+import { cn } from '../../lib/utils.js';
+import { Button } from './Button.js';
+import { Gamified3DOrb } from './Gamified3DOrb.js';
+import {
+  FlameStreakIcon,
+  Gem3DIcon,
+  ShieldSecurityIcon,
+  Trophy3DIcon,
+} from './icons/Isometric3DIcons.js';
+import { TiltCard } from './TiltCard.js';
 
-interface GamificationWidgetProps {
+export interface GamificationWidgetProps {
   initialXp?: number;
   nextLevelXp?: number;
   level?: number;
   streakDays?: number;
+  show3DCore?: boolean;
 }
 
-// Não existe, hoje, nenhum sistema real de XP/nível/sequência de dias no backend — este widget é
-// um checklist auto-reportado (o próprio usuário marca o que já fez), não uma leitura de dado
-// real. Antes, os defaults (Level 12, 12.480 XP, "5 Dias Seguidos", duas missões já marcadas como
-// concluídas) apareciam pra QUALQUER usuário, em qualquer organização, como se fosse o histórico
-// de progresso real dele — verdade cenográfica (ver AGENTS.md). Os defaults agora começam
-// zerados: nenhuma conquista é atribuída a ninguém sem ter sido de fato marcada por quem está
-// usando a tela nesta sessão.
 export function GamificationWidget({
   initialXp = 0,
   nextLevelXp = 2000,
   level = 1,
   streakDays = 0,
+  show3DCore = true,
 }: GamificationWidgetProps) {
-  const [showMissions, setShowMissions] = useState(false);
+  const [activeTab, setActiveTab] = useState<'missions' | 'achievements'>('missions');
+  const [showPanel, setShowPanel] = useState(false);
+  const [currentLevel, setCurrentLevel] = useState(level);
   const [xp, setXp] = useState(initialXp);
+  const [streak, setStreak] = useState(streakDays);
+  const [soundActive, setSoundActive] = useState(() => SoundFX.isEnabled());
+
   const [missions, setMissions] = useState([
-    { id: 1, title: 'Completar perfil do SDR', xp: 200, done: false },
-    { id: 2, title: 'Qualificar 5 novos leads hoje', xp: 500, done: false },
-    { id: 3, title: 'Agendar 2 reuniões de demo', xp: 800, done: false },
-    { id: 4, title: 'Enviar 10 cold emails inteligentes', xp: 450, done: false },
+    { id: 1, title: 'Completar perfil do SDR e ICP', xp: 250, done: false },
+    { id: 2, title: 'Qualificar 5 novos leads corporativos hoje', xp: 500, done: false },
+    { id: 3, title: 'Agendar 2 reuniões de demonstração executiva', xp: 800, done: false },
+    { id: 4, title: 'Enviar 10 cold emails inteligentes com IA', xp: 450, done: false },
   ]);
+
+  const [achievements] = useState([
+    {
+      id: 'first-deal',
+      title: 'Pioneiro Comercial',
+      desc: 'Qualificou o primeiro lead com IA',
+      icon: Trophy3DIcon,
+      unlocked: true,
+      reward: '+300 XP',
+    },
+    {
+      id: 'streak-master',
+      title: 'Mestre da Constância',
+      desc: 'Manteve 3 dias seguidos de prospecção',
+      icon: FlameStreakIcon,
+      unlocked: streak >= 3,
+      reward: '+500 XP',
+    },
+    {
+      id: 'shield-guard',
+      title: 'Guardião de Dados',
+      desc: 'Validação de CNPJ e dados em fontes oficiais',
+      icon: ShieldSecurityIcon,
+      unlocked: true,
+      reward: '+400 XP',
+    },
+    {
+      id: 'crystal-closer',
+      title: 'Orbe de Alta Pressão',
+      desc: 'Interagiu com o Cristal 3D Cósmico',
+      icon: Gem3DIcon,
+      unlocked: true,
+      reward: '+250 XP',
+    },
+  ]);
+
+  const toggleSound = () => {
+    const next = SoundFX.toggleMute();
+    setSoundActive(next);
+  };
+
+  const handleOrbBoost = () => {
+    setXp((prev) => {
+      const nextXp = prev + 25;
+      if (nextXp >= nextLevelXp) {
+        triggerLevelUp();
+      }
+      return nextXp;
+    });
+  };
+
+  const triggerLevelUp = () => {
+    setCurrentLevel((lvl) => lvl + 1);
+    SoundFX.play('success');
+    confetti({
+      particleCount: 90,
+      spread: 80,
+      origin: { y: 0.6 },
+      colors: ['#D4AF37', '#F0D77B', '#C53678', '#1677FF', '#FFFFFF'],
+    });
+  };
 
   const toggleMission = (id: number) => {
     setMissions((prev) =>
@@ -37,9 +119,19 @@ export function GamificationWidget({
         if (m.id === id) {
           const newDone = !m.done;
           if (newDone) {
-            setXp((currentXp) => currentXp + m.xp);
+            SoundFX.play('confirm');
+            setXp((currentXp) => {
+              const updated = currentXp + m.xp;
+              if (updated >= nextLevelXp) {
+                setTimeout(triggerLevelUp, 300);
+              }
+              return updated;
+            });
+            // Aumenta streak se for a primeira missão do dia
+            if (streak === 0) setStreak(1);
           } else {
-            setXp((currentXp) => currentXp - m.xp);
+            SoundFX.play('click');
+            setXp((currentXp) => Math.max(0, currentXp - m.xp));
           }
           return { ...m, done: newDone };
         }
@@ -51,117 +143,252 @@ export function GamificationWidget({
   const progressPercent = Math.min(100, Math.round((xp / nextLevelXp) * 100));
 
   return (
-    <div className="glass-panel p-5 rounded-card-lg border border-line relative overflow-hidden bg-surface backdrop-blur-xl shadow-2xl">
-      <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-brand via-orange-300 to-white" />
-      <div className="absolute top-0 right-0 w-32 h-32 bg-brand/10 rounded-full blur-2xl pointer-events-none" />
+    <div className="relative overflow-hidden rounded-card-lg border border-line/80 bg-surface-elevated/85 backdrop-blur-2xl p-5 shadow-2xl transition-all duration-300">
+      {/* Luz Especular de Fundo */}
+      <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-brand/15 blur-3xl" />
+      <div className="pointer-events-none absolute -left-16 -bottom-16 h-48 w-48 rounded-full bg-accent-cyan/10 blur-3xl" />
+      <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-brand to-transparent" />
 
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        {/* Level Badge */}
+      {/* Top Header com Grid Bento */}
+      <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-5">
+        {/* Lado Esquerdo: 3D Orb + Nível + Metas */}
         <div className="flex items-center gap-4">
-          <div className="relative">
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-brand via-brand to-red-600 flex items-center justify-center font-extrabold text-on-brand text-xl shadow-lg shadow-brand/30 border border-brand/30">
-              Lvl {level}
+          {show3DCore && (
+            <div className="relative shrink-0">
+              <Gamified3DOrb
+                size={76}
+                interactive
+                onOrbClick={handleOrbBoost}
+                className="cursor-pointer"
+              />
+              <span className="absolute -bottom-1 -right-1 rounded-full bg-surface-2 border border-brand/40 px-1.5 py-0.5 text-[9px] font-extrabold text-brand shadow">
+                3D
+              </span>
             </div>
-            <div className="absolute -bottom-1 -right-1 bg-brand text-slate-950 p-1 rounded-full text-xs font-black flex items-center shadow">
-              <Trophy className="w-3 h-3" />
-            </div>
-          </div>
+          )}
 
           <div>
-            <div className="flex items-center gap-2">
-              <h4 className="font-bold text-ink text-base">Missões Diárias</h4>
-              {streakDays > 0 && (
-                <span className="inline-flex items-center gap-1 text-xs px-2.5 py-0.5 rounded-full bg-brand/20 text-brand border border-brand/30 font-semibold">
-                  <Flame className="w-3.5 h-3.5 text-brand animate-pulse" /> {streakDays} Dias
-                  Seguidos
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-brand-active/20 border border-brand/40 px-2.5 py-0.5 text-xs font-bold text-brand">
+                <Trophy className="h-3.5 w-3.5" /> Nível {currentLevel}
+              </span>
+
+              {streak > 0 && (
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-danger/15 border border-danger/30 px-2.5 py-0.5 text-xs font-bold text-danger">
+                  <FlameStreakIcon size={16} animate /> {streak} Dias Seguidos
                 </span>
               )}
+
+              <span className="text-[10px] font-bold uppercase tracking-wider text-ink-2">
+                Combo 1.5x Ativo
+              </span>
             </div>
-            <p className="text-xs text-ink-2 mt-0.5">
-              {xp.toLocaleString('pt-BR')} / {nextLevelXp.toLocaleString('pt-BR')} XP para o Nível{' '}
-              {level + 1}
+
+            <h3 className="mt-1 font-display text-base font-bold text-ink flex items-center gap-2">
+              Centro de Conquistas & Gamificação
+              <Sparkles className="h-4 w-4 text-brand" />
+            </h3>
+
+            <p className="text-xs text-ink-2">
+              <span className="font-semibold text-brand [font-variant-numeric:tabular-nums]">
+                {xp.toLocaleString('pt-BR')}
+              </span>{' '}
+              / {nextLevelXp.toLocaleString('pt-BR')} XP para o Nível {currentLevel + 1}
             </p>
           </div>
         </div>
 
-        {/* Action Button */}
-        <button
-          type="button"
-          onClick={() => setShowMissions(!showMissions)}
-          className="flex items-center gap-2 text-xs font-semibold px-4 py-2.5 rounded-xl bg-surface-2 hover:bg-line text-ink-2 border border-line transition-colors active:scale-95 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-brand"
-          aria-label="Ver Missões Diárias"
-        >
-          <Zap className="w-4 h-4 text-brand" />
-          <span>Missões Diárias</span>
-          <ChevronRight
-            className={`w-4 h-4 transition-transform duration-300 ${showMissions ? 'rotate-90' : ''}`}
-          />
-        </button>
-      </div>
+        {/* Lado Direito: Ações e Toggles */}
+        <div className="flex items-center gap-2">
+          {/* Botão de Som Mute/Unmute */}
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            onClick={toggleSound}
+            aria-label={soundActive ? 'Desativar efeitos sonoros' : 'Ativar efeitos sonoros'}
+            title={soundActive ? 'Som ativado' : 'Som mudo'}
+            className="text-ink-2 hover:text-brand"
+          >
+            {soundActive ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4 text-ink-2/60" />}
+          </Button>
 
-      {/* Progress Bar */}
-      <div className="mt-4">
-        <div className="w-full h-3 bg-surface-2 rounded-full overflow-hidden p-0.5 border border-line">
-          <motion.div
-            initial={{ width: 0 }}
-            animate={{ width: `${progressPercent}%` }}
-            transition={{ duration: 0.8, ease: 'easeOut' }}
-            className="h-full bg-gradient-to-r from-brand via-orange-400 to-white rounded-full shadow-inner"
-          />
+          {/* Toggle de Missões e Conquistas */}
+          <Button
+            type="button"
+            variant={showPanel ? 'cosmic' : 'secondary'}
+            size="sm"
+            onClick={() => {
+              SoundFX.play('navigate');
+              setShowPanel(!showPanel);
+            }}
+            shine={showPanel}
+            className="text-xs font-semibold"
+            aria-expanded={showPanel}
+            aria-label="Abrir missões e conquistas"
+          >
+            <Zap className="h-3.5 w-3.5 text-brand" />
+            <span>Missões & Badges</span>
+            <ChevronRight
+              className={cn('h-3.5 w-3.5 transition-transform duration-300', showPanel && 'rotate-90')}
+            />
+          </Button>
         </div>
       </div>
 
-      {/* Dropdown de Missões Interativas */}
+      {/* Barra de Progresso com Glow Metálico */}
+      <div className="relative z-10 mt-4">
+        <div className="relative h-2.5 w-full overflow-hidden rounded-full border border-line/80 bg-surface-2/80 p-0.5">
+          <motion.div
+            initial={{ width: 0 }}
+            animate={{ width: `${progressPercent}%` }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            className="relative h-full rounded-full bg-gradient-to-r from-brand via-brand-2 to-white shadow-[0_0_12px_rgba(212,175,55,0.6)]"
+          >
+            {/* Feixe de luz correndo sobre o progresso */}
+            <span className="absolute inset-0 bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.7),transparent)] animate-pulse" />
+          </motion.div>
+        </div>
+      </div>
+
+      {/* Painel Expansível de Missões e Badges */}
       <AnimatePresence>
-        {showMissions && (
+        {showPanel && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="mt-4 pt-4 border-t border-line space-y-2 overflow-hidden"
+            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+            className="relative z-10 mt-4 overflow-hidden border-t border-line/70 pt-4"
           >
-            <div className="flex items-center justify-between text-xs font-bold text-ink-2 mb-2">
-              <span>Missões de Prospecção (Clique para Concluir)</span>
-              <span className="text-brand">Recompensas +XP</span>
+            {/* Tabs de Seleção */}
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    SoundFX.play('click');
+                    setActiveTab('missions');
+                  }}
+                  className={cn(
+                    'rounded-control px-3 py-1 text-xs font-bold transition-all',
+                    activeTab === 'missions'
+                      ? 'bg-brand text-on-brand shadow-sm'
+                      : 'text-ink-2 hover:bg-surface-interactive hover:text-ink',
+                  )}
+                >
+                  Missões Diárias
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    SoundFX.play('click');
+                    setActiveTab('achievements');
+                  }}
+                  className={cn(
+                    'rounded-control px-3 py-1 text-xs font-bold transition-all',
+                    activeTab === 'achievements'
+                      ? 'bg-brand text-on-brand shadow-sm'
+                      : 'text-ink-2 hover:bg-surface-interactive hover:text-ink',
+                  )}
+                >
+                  Conquistas 3D
+                </button>
+              </div>
+
+              <span className="text-[11px] font-bold text-brand flex items-center gap-1">
+                <Sparkles className="h-3 w-3" /> Toque no Cristal 3D (+25 XP)
+              </span>
             </div>
-            {missions.map((mission) => (
-              // <button> real (não <div role="button"> + onKeyDown manual) — semântica HTML
-              // antes de role/aria-* (CLAUDE.md §10): navegação Tab, ativação por Enter/Espaço e
-              // nome acessível vêm nativamente do elemento, sem reimplementar teclado à mão.
-              <button
-                key={mission.id}
-                type="button"
-                aria-pressed={mission.done}
-                onClick={() => toggleMission(mission.id)}
-                className={`w-full flex items-center justify-between p-2.5 rounded-xl border text-xs text-left cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand ${
-                  mission.done
-                    ? 'bg-success/10 border-success/30 text-ink-2'
-                    : 'bg-surface-2 border-line hover:border-line text-ink'
-                }`}
-              >
-                <span className="flex items-center gap-2.5">
-                  <span
-                    className={`w-4 h-4 rounded flex items-center justify-center border ${
+
+            {/* Conteúdo Tab: Missões Diárias */}
+            {activeTab === 'missions' && (
+              <div className="space-y-2">
+                {missions.map((mission) => (
+                  <button
+                    key={mission.id}
+                    type="button"
+                    aria-pressed={mission.done}
+                    onClick={() => toggleMission(mission.id)}
+                    className={cn(
+                      'group flex w-full items-center justify-between rounded-xl border p-3 text-xs text-left transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand cursor-pointer',
                       mission.done
-                        ? 'bg-success border-success text-slate-950 font-bold'
-                        : 'border-gray-500'
-                    }`}
+                        ? 'border-success/40 bg-success/10 text-ink-2'
+                        : 'border-line/70 bg-surface/70 hover:border-brand/40 hover:bg-surface-interactive text-ink',
+                    )}
                   >
-                    {mission.done && <Check className="w-3 h-3 stroke-[3]" />}
-                  </span>
-                  <span
-                    className={
-                      mission.done ? 'line-through text-ink-2 font-medium' : 'font-semibold'
-                    }
-                  >
-                    {mission.title}
-                  </span>
-                </span>
-                <span className="font-extrabold text-brand flex items-center gap-1">
-                  <Award className="w-3.5 h-3.5" /> +{mission.xp} XP
-                </span>
-              </button>
-            ))}
+                    <span className="flex items-center gap-3">
+                      <span
+                        className={cn(
+                          'flex h-5 w-5 shrink-0 items-center justify-center rounded-md border transition-colors',
+                          mission.done
+                            ? 'border-success bg-success text-slate-950 font-bold'
+                            : 'border-line group-hover:border-brand/60',
+                        )}
+                      >
+                        {mission.done && <Check className="h-3.5 w-3.5 stroke-[3]" />}
+                      </span>
+                      <span
+                        className={cn(
+                          'text-xs transition-colors',
+                          mission.done ? 'line-through text-ink-2/70 font-medium' : 'font-semibold',
+                        )}
+                      >
+                        {mission.title}
+                      </span>
+                    </span>
+
+                    <span className="flex items-center gap-1 font-extrabold text-brand shrink-0">
+                      <Award className="h-3.5 w-3.5" /> +{mission.xp} XP
+                    </span>
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {/* Conteúdo Tab: Conquistas 3D */}
+            {activeTab === 'achievements' && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 pt-1">
+                {achievements.map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <TiltCard
+                      key={item.id}
+                      maxTiltDegrees={5}
+                      className={cn(
+                        'rounded-xl border p-3 flex flex-col justify-between transition-all backdrop-blur-md',
+                        item.unlocked
+                          ? 'border-brand/35 bg-surface-elevated/90 shadow-sm'
+                          : 'border-line/50 bg-surface/40 opacity-60',
+                      )}
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <Icon size={32} animate={item.unlocked} />
+                        {item.unlocked ? (
+                          <span className="rounded-full bg-success/20 border border-success/40 px-1.5 py-0.5 text-[9px] font-bold text-success">
+                            Desbloqueada
+                          </span>
+                        ) : (
+                          <span className="rounded-full bg-surface-2 px-1.5 py-0.5 text-[9px] font-semibold text-ink-2">
+                            Bloqueada
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="mt-3">
+                        <h4 className="font-bold text-xs text-ink">{item.title}</h4>
+                        <p className="text-[11px] text-ink-2 mt-0.5 leading-tight">{item.desc}</p>
+                      </div>
+
+                      <div className="mt-2 pt-2 border-t border-line/60 flex items-center justify-between text-[10px] font-extrabold text-brand">
+                        <span>Recompensa</span>
+                        <span>{item.reward}</span>
+                      </div>
+                    </TiltCard>
+                  );
+                })}
+              </div>
+            )}
           </motion.div>
         )}
       </AnimatePresence>

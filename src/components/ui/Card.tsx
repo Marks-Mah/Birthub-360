@@ -2,6 +2,7 @@
 
 import { cva, type VariantProps } from 'class-variance-authority';
 import * as React from 'react';
+import { SoundFX } from '../../lib/soundEffects.js';
 import { cn } from '../../lib/utils.js';
 import { BorderBeam, type BorderBeamProps } from './BorderBeam.js';
 
@@ -34,6 +35,13 @@ const cardVariants = cva('relative overflow-hidden rounded-card text-ink', {
       // Nova variante para metálico
       metallic:
         'bg-gradient-to-br from-surface to-surface-2 border border-line/60 shadow-card transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-brand/30 hover:shadow-card-hover hover:-translate-y-0.5 hover:scale-[1.005]',
+      // --- Tendências 2026: Spatial UI, Bento & Specular Lighting ---
+      bento:
+        'bg-surface-elevated/85 backdrop-blur-xl border border-line/80 shadow-card hover:border-brand/40 hover:shadow-card-hover hover:-translate-y-1 hover:scale-[1.006] transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]',
+      cosmic:
+        'bg-surface-elevated/90 backdrop-blur-2xl border border-brand/40 shadow-glow-brand hover:border-brand/70 hover:shadow-[0_12px_36px_rgba(212,175,55,0.22)] hover:-translate-y-1 transition-all duration-300',
+      specular:
+        'bg-surface/75 backdrop-blur-2xl border border-line/60 shadow-[inset_0_1px_1px_rgba(255,255,255,0.15),0_10px_30px_rgba(0,0,0,0.25)] hover:border-brand/35 hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300',
     },
     padding: {
       default: 'p-6',
@@ -63,6 +71,12 @@ export interface CardProps
   borderBeamDuration?: number;
   /** Comprimento do feixe em pixels. */
   borderBeamSize?: number;
+  /** Ativa o holofote especular que segue o cursor em tempo real (2026 Spatial UI). */
+  spotlight?: boolean;
+  /** Emite som sutil ao passar o cursor sobre o card. */
+  soundHover?: boolean;
+  /** Emite som ao clicar no card. */
+  soundClick?: boolean;
 }
 
 const Card = React.forwardRef<HTMLDivElement, CardProps>(
@@ -77,55 +91,111 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
       borderBeamVariant = 'cyan',
       borderBeamDuration = 12,
       borderBeamSize = 220,
+      spotlight = false,
+      soundHover = false,
+      soundClick = false,
       children,
+      onPointerMove,
+      onMouseEnter,
+      onMouseLeave,
+      onClick,
       ...props
     },
     ref,
-  ) => (
-    <div
-      ref={ref}
-      className={cn(
-        cardVariants({ variant, padding, className }),
-        (isLoading || borderBeam) && 'overflow-hidden isolate',
-      )}
-      {...props}
-    >
-      {isLoading && (
-        <BorderBeam
-          variant="brand"
-          size={200}
-          duration={3.5}
-          borderWidth={2}
-          glow
-          radius="var(--radius-card)"
-        />
-      )}
-      {!isLoading && borderBeam && (
-        <BorderBeam
-          variant={borderBeamVariant}
-          size={borderBeamSize}
-          duration={borderBeamDuration}
-          borderWidth={1.5}
-          glow
-          radius="var(--radius-card)"
-        />
-      )}
-      {accentBar && (
-        <>
-          <span className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-brand to-transparent" />
-          <span className="pointer-events-none absolute -right-12 -top-16 h-28 w-28 rounded-full bg-brand/10 blur-[38px]" />
-        </>
-      )}
+  ) => {
+    const [mousePos, setMousePos] = React.useState({ x: 0, y: 0 });
+    const [isHovered, setIsHovered] = React.useState(false);
+
+    const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+      if (spotlight) {
+        const rect = e.currentTarget.getBoundingClientRect();
+        setMousePos({
+          x: e.clientX - rect.left,
+          y: e.clientY - rect.top,
+        });
+      }
+      onPointerMove?.(e);
+    };
+
+    const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
+      setIsHovered(true);
+      if (soundHover) {
+        SoundFX.play('hover');
+      }
+      onMouseEnter?.(e);
+    };
+
+    const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
+      setIsHovered(false);
+      onMouseLeave?.(e);
+    };
+
+    const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+      if (soundClick) {
+        SoundFX.play('click');
+      }
+      onClick?.(e);
+    };
+
+    return (
       <div
+        ref={ref}
         className={cn(
-          'relative z-10 transition-opacity duration-300',
-          isLoading && 'opacity-60 pointer-events-none select-none',
+          cardVariants({ variant, padding, className }),
+          (isLoading || borderBeam || spotlight) && 'overflow-hidden isolate',
         )}
+        onPointerMove={handlePointerMove}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        onClick={handleClick}
+        {...props}
       >
-        {children}
+        {spotlight && isHovered && (
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute -inset-px rounded-[inherit] transition-opacity duration-300"
+            style={{
+              background: `radial-gradient(350px circle at ${mousePos.x}px ${mousePos.y}px, rgba(212, 175, 55, 0.12), transparent 70%)`,
+            }}
+          />
+        )}
+        {isLoading && (
+          <BorderBeam
+            variant="brand"
+            size={200}
+            duration={3.5}
+            borderWidth={2}
+            glow
+            radius="var(--radius-card)"
+          />
+        )}
+        {!isLoading && borderBeam && (
+          <BorderBeam
+            variant={borderBeamVariant}
+            size={borderBeamSize}
+            duration={borderBeamDuration}
+            borderWidth={1.5}
+            glow
+            radius="var(--radius-card)"
+          />
+        )}
+        {accentBar && (
+          <>
+            <span className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-brand to-transparent" />
+            <span className="pointer-events-none absolute -right-12 -top-16 h-28 w-28 rounded-full bg-brand/10 blur-[38px]" />
+          </>
+        )}
+        <div
+          className={cn(
+            'relative z-10 transition-opacity duration-300',
+            isLoading && 'opacity-60 pointer-events-none select-none',
+          )}
+        >
+          {children}
+        </div>
       </div>
-    </div>
-  ),
+    );
+  },
 );
 Card.displayName = 'Card';
 

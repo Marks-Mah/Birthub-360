@@ -5,7 +5,7 @@ import {
   useTransform,
   type Variants,
 } from 'framer-motion';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 
 export const EASE_PREMIUM = [0.22, 1, 0.36, 1] as const;
 export const EASE_SPRING_SOFT = [0.34, 1.56, 0.64, 1] as const;
@@ -27,6 +27,8 @@ export const SPRING_SNAPPY = { type: 'spring', stiffness: 420, damping: 32, mass
 export const SPRING_SOFT = { type: 'spring', stiffness: 260, damping: 24, mass: 0.9 } as const;
 export const SPRING_ELASTIC = { type: 'spring', stiffness: 500, damping: 30, mass: 0.8 } as const;
 export const SPRING_BOUNCY = { type: 'spring', stiffness: 400, damping: 20, mass: 0.6 } as const;
+export const SPRING_TACTILE = { type: 'spring', stiffness: 500, damping: 28, mass: 0.6 } as const;
+export const SPRING_MOMENTUM = { type: 'spring', stiffness: 350, damping: 25, mass: 0.8 } as const;
 
 export const fadeIn: Variants = {
   hidden: { opacity: 0 },
@@ -213,4 +215,78 @@ export function useMagnetic(strength = 0.35) {
   };
 
   return { ref, style: { x, y }, onPointerMove, onPointerLeave };
+}
+
+export const shimmerBeam: Variants = {
+  initial: { x: '-100%', opacity: 0 },
+  hover: {
+    x: '200%',
+    opacity: [0, 0.7, 0],
+    transition: { duration: 0.85, ease: [0.16, 1, 0.3, 1] },
+  },
+};
+
+export const pulseGlowInfinite: Variants = {
+  initial: { scale: 1, opacity: 0.7 },
+  animate: {
+    scale: [1, 1.04, 1],
+    opacity: [0.7, 1, 0.7],
+    transition: { duration: 2.4, repeat: Infinity, ease: EASE_SMOOTH },
+  },
+};
+
+export const badgePop: Variants = {
+  hidden: { scale: 0, opacity: 0 },
+  show: {
+    scale: 1,
+    opacity: 1,
+    transition: { type: 'spring', stiffness: 450, damping: 22 },
+  },
+};
+
+export const float3D: Variants = {
+  initial: { y: 0, rotateZ: 0 },
+  animate: {
+    y: [-3, 3, -3],
+    rotateZ: [-0.8, 0.8, -0.8],
+    transition: { duration: 4, repeat: Infinity, ease: 'easeInOut' },
+  },
+};
+
+/**
+ * 2026 Spatial UI: Spotlight dinâmico que rastreia a posição do cursor sobre o card/botão.
+ * Projeta um gradiente radial suave simulando iluminação especular em tempo real.
+ */
+export function useCursorSpotlight() {
+  const ref = useRef<HTMLElement | null>(null);
+  const [coords, setCoords] = useState({ x: 0, y: 0 });
+  const [isHovered, setIsHovered] = useState(false);
+  const reduceMotion = useReducedMotion();
+
+  const onPointerMove = (e: React.PointerEvent<HTMLElement>) => {
+    if (reduceMotion || !ref.current) return;
+    const rect = ref.current.getBoundingClientRect();
+    setCoords({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    });
+  };
+
+  const onPointerEnter = () => setIsHovered(true);
+  const onPointerLeave = () => setIsHovered(false);
+
+  return {
+    ref,
+    coords,
+    isHovered,
+    onPointerMove,
+    onPointerEnter,
+    onPointerLeave,
+    spotlightStyle:
+      isHovered && !reduceMotion
+        ? {
+            background: `radial-gradient(400px circle at ${coords.x}px ${coords.y}px, rgba(212, 175, 55, 0.14), transparent 65%)`,
+          }
+        : undefined,
+  };
 }

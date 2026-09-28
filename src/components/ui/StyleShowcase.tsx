@@ -1,10 +1,31 @@
 import { motion } from 'framer-motion';
-import { ArrowRight, Sparkles, Zap, Cpu, Globe, Shield } from 'lucide-react';
+import {
+  ArrowRight,
+  Cpu,
+  Flame,
+  Globe,
+  Rocket,
+  Shield,
+  Sparkles,
+  Trophy,
+  Zap,
+} from 'lucide-react';
 import { useState } from 'react';
+import { Button } from './Button.js';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './Card.js';
 import { CyberInput } from './CyberInput.js';
-import { DigitalRain, GlitchEffect, ParticleSystem } from './ParticleSystem.js';
+import { GamificationWidget } from './GamificationWidget.js';
+import { Gamified3DOrb } from './Gamified3DOrb.js';
 import { HolographicCard } from './HolographicCard.js';
+import { AnimatedIcon } from './icons/AnimatedIcon.js';
+import {
+  FlameStreakIcon,
+  Gem3DIcon,
+  ShieldSecurityIcon,
+  Trophy3DIcon,
+} from './icons/Isometric3DIcons.js';
 import { NeonButton } from './NeonButton.js';
+import { DigitalRain, GlitchEffect, ParticleSystem } from './ParticleSystem.js';
 import { ThemeSwitcher, type ThemeStyle } from './ThemeSwitcher.js';
 import { Toggle } from './Toggle.js';
 
@@ -13,239 +34,300 @@ export function StyleShowcase() {
   const [toggles, setToggles] = useState({ classic: true, neon: true, cyber: true });
 
   return (
-    <div className="min-h-screen bg-bg text-ink p-8">
-      {/* Partículas de fundo */}
-      <ParticleSystem count={30} color="mixed" intensity="medium" />
+    <div className="min-h-screen bg-bg text-ink p-6 md:p-10 font-sans">
+      {/* Partículas de atmosfera */}
+      <ParticleSystem count={25} color="mixed" intensity="low" />
 
-      {/* Header */}
-      <div className="relative z-10 mb-12">
+      {/* Header Institucional 2026 */}
+      <div className="relative z-10 mb-10 max-w-5xl">
         <motion.div
-          initial={{ opacity: 0, y: -20 }}
+          initial={{ opacity: 0, y: -16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.5 }}
         >
-          <GlitchEffect intensity="medium">
-            <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-brand via-iris to-orbit-blue bg-clip-text text-transparent">
-              Novo Sistema Visual
-            </h1>
-          </GlitchEffect>
-          <p className="text-ink-2 text-lg max-w-2xl">
-            Explore os novos componentes futuristas, efeitos holográficos e interfaces cyberpunk
+          <div className="inline-flex items-center gap-2 rounded-full border border-brand/35 bg-brand/10 px-3 py-1 text-xs font-bold uppercase tracking-widest text-brand mb-3">
+            <Sparkles className="h-3.5 w-3.5" /> Design System & Tendências 2026
+          </div>
+          <h1 className="font-display text-4xl md:text-5xl font-black tracking-tight bg-gradient-to-r from-brand via-brand-2 to-white bg-clip-text text-transparent">
+            Spatial UI, Elementos 3D & Gamificação
+          </h1>
+          <p className="mt-3 text-ink-2 text-base max-w-3xl leading-relaxed">
+            Catálogo completo com botões táteis especulares, ícones SVG 3D isométricos, cards com
+            holofote de cursor em tempo real, física de movimento e enxame de gamificação 3D interativo.
           </p>
         </motion.div>
 
-        <div className="mt-6">
+        <div className="mt-5">
           <ThemeSwitcher currentStyle={currentStyle} onStyleChange={setCurrentStyle} />
         </div>
       </div>
 
-      {/* Grid de componentes */}
-      <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {/* Card Holográfico */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-        >
-          <HolographicCard variant="mixed" intensity="medium">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="p-2 rounded-lg bg-brand/20">
-                <Sparkles className="text-brand" size={20} />
-              </div>
-              <h3 className="font-bold text-lg">Card Holográfico</h3>
-            </div>
-            <p className="text-ink-2 text-sm mb-4">
-              Efeito de linhas de scan com brilho animado e bordas holográficas
+      {/* SEÇÃO 1: Centro de Gamificação & Elemento 3D Interativo */}
+      <section className="relative z-10 mb-12">
+        <div className="mb-4 flex items-center justify-between">
+          <div>
+            <h2 className="font-display text-xl font-bold text-ink flex items-center gap-2">
+              <Trophy className="h-5 w-5 text-brand" />
+              1. Enxame de Gamificação Comercial & Cristal 3D Interativo
+            </h2>
+            <p className="text-xs text-ink-2">
+              Clique no Cristal 3D para obter impulsos de energia (+XP e confetes reais via Canvas).
             </p>
-            <NeonButton variant="cyan" size="sm">
-              Explorar
-            </NeonButton>
-          </HolographicCard>
-        </motion.div>
-
-        {/* Card Neon */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-        >
-          <HolographicCard variant="cyan" intensity="high">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="p-2 rounded-lg bg-cyan-400/20">
-                <Zap className="text-cyan-400" size={20} />
-              </div>
-              <h3 className="font-bold text-lg">Interface Neon</h3>
-            </div>
-            <p className="text-ink-2 text-sm mb-4">
-              Botões com glow neon intenso e partículas de luz animadas
-            </p>
-            <div className="flex gap-2">
-              <NeonButton variant="purple" size="sm">
-                Roxo
-              </NeonButton>
-              <NeonButton variant="gold" size="sm">
-                Dourado
-              </NeonButton>
-            </div>
-          </HolographicCard>
-        </motion.div>
-
-        {/* Card Cyber */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-        >
-          <HolographicCard variant="purple" intensity="medium">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="p-2 rounded-lg bg-purple-400/20">
-                <Cpu className="text-purple-400" size={20} />
-              </div>
-              <h3 className="font-bold text-lg">Sistema Cyber</h3>
-            </div>
-            <p className="text-ink-2 text-sm mb-4">
-              Inputs com indicadores de canto e efeitos de scan line
-            </p>
-            <CyberInput
-              variant="neon"
-              glowColor="cyan"
-              placeholder="Digite algo..."
-              className="mb-2"
-            />
-          </HolographicCard>
-        </motion.div>
-
-        {/* Seção de controles */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-          className="md:col-span-2 lg:col-span-3"
-        >
-          <HolographicCard variant="gold" intensity="low">
-            <h3 className="font-bold text-xl mb-6 flex items-center gap-2">
-              <Shield className="text-brand" size={24} />
-              Controles Interativos
-            </h3>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {/* Toggles */}
-              <div className="space-y-4">
-                <h4 className="font-semibold text-sm text-ink-2 uppercase tracking-wider">
-                  Toggles
-                </h4>
-                <Toggle
-                  checked={toggles.classic}
-                  onChange={(v) => setToggles((t) => ({ ...t, classic: v }))}
-                  label="Modo Clássico"
-                  variant="classic"
-                />
-                <Toggle
-                  checked={toggles.neon}
-                  onChange={(v) => setToggles((t) => ({ ...t, neon: v }))}
-                  label="Modo Neon"
-                  variant="neon"
-                  glowColor="cyan"
-                />
-                <Toggle
-                  checked={toggles.cyber}
-                  onChange={(v) => setToggles((t) => ({ ...t, cyber: v }))}
-                  label="Modo Cyber"
-                  variant="cyber"
-                  glowColor="purple"
-                />
-              </div>
-
-              {/* Inputs */}
-              <div className="space-y-4">
-                <h4 className="font-semibold text-sm text-ink-2 uppercase tracking-wider">
-                  Inputs
-                </h4>
-                <CyberInput variant="neon" glowColor="cyan" placeholder="Input Neon" />
-                <CyberInput variant="glass" placeholder="Input Glass" />
-                <CyberInput variant="metallic" placeholder="Input Metálico" />
-              </div>
-
-              {/* Botões */}
-              <div className="space-y-4">
-                <h4 className="font-semibold text-sm text-ink-2 uppercase tracking-wider">
-                  Botões
-                </h4>
-                <div className="flex flex-wrap gap-2">
-                  <NeonButton variant="cyan" size="sm">
-                    Cyan
-                  </NeonButton>
-                  <NeonButton variant="purple" size="sm">
-                    Purple
-                  </NeonButton>
-                  <NeonButton variant="gold" size="sm">
-                    Gold
-                  </NeonButton>
-                  <NeonButton variant="pink" size="sm">
-                    Pink
-                  </NeonButton>
-                  <NeonButton variant="green" size="sm">
-                    Green
-                  </NeonButton>
-                </div>
-              </div>
-            </div>
-          </HolographicCard>
-        </motion.div>
-
-        {/* Efeitos especiais */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.5 }}
-          className="md:col-span-2 lg:col-span-3"
-        >
-          <HolographicCard variant="mixed" intensity="medium">
-            <h3 className="font-bold text-xl mb-6 flex items-center gap-2">
-              <Globe className="text-iris" size={24} />
-              Efeitos Especiais
-            </h3>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Digital Rain */}
-              <div className="relative h-48 rounded-xl overflow-hidden bg-surface-elevated/50 border border-line/30">
-                <DigitalRain color="cyan" />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="text-sm font-mono text-cyan-400/80">Digital Rain</span>
-                </div>
-              </div>
-
-              {/* Glitch Effect */}
-              <div className="h-48 rounded-xl bg-surface-elevated/50 border border-line/30 flex items-center justify-center">
-                <GlitchEffect intensity="high">
-                  <div className="text-center">
-                    <span className="text-2xl font-bold">GLITCH</span>
-                    <p className="text-sm text-ink-2 mt-2">Efeito RGB</p>
-                  </div>
-                </GlitchEffect>
-              </div>
-            </div>
-          </HolographicCard>
-        </motion.div>
-
-        {/* Call to Action */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.6 }}
-          className="md:col-span-2 lg:col-span-3"
-        >
-          <div className="text-center py-12">
-            <h2 className="text-3xl font-bold mb-4">Pronto para transformar sua interface?</h2>
-            <p className="text-ink-2 mb-8 max-w-xl mx-auto">
-              Escolha um estilo e aplique os novos componentes em toda a plataforma
-            </p>
-            <NeonButton variant="gold" size="lg" className="inline-flex items-center gap-2">
-              Aplicar Estilo Futurista
-              <ArrowRight size={20} />
-            </NeonButton>
           </div>
-        </motion.div>
+        </div>
+
+        <GamificationWidget initialXp={650} level={2} streakDays={3} />
+      </section>
+
+      {/* SEÇÃO 2: Botões Modernos 2026 */}
+      <section className="relative z-10 mb-12">
+        <h2 className="font-display text-xl font-bold text-ink flex items-center gap-2 mb-4">
+          <Zap className="h-5 w-5 text-brand" />
+          2. Botões com Tendências 2026 (Micro-interações, Brilho Especular & Áudio)
+        </h2>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {/* Cosmic Gold */}
+          <Card variant="bento" padding="sm" spotlight>
+            <h4 className="font-bold text-xs uppercase tracking-wider text-brand mb-2">Cosmic Gold</h4>
+            <p className="text-xs text-ink-2 mb-3">
+              Gradiente com reflexo de feixe luminoso contínuo no hover e sombra dourada.
+            </p>
+            <Button variant="cosmic" size="sm" magnetic sound="success" soundHover className="w-full">
+              <Sparkles className="h-3.5 w-3.5 text-on-brand" /> Cosmic Action
+            </Button>
+          </Card>
+
+          {/* Holographic */}
+          <Card variant="bento" padding="sm" spotlight>
+            <h4 className="font-bold text-xs uppercase tracking-wider text-iris mb-2">Holographic</h4>
+            <p className="text-xs text-ink-2 mb-3">
+              Vidro com refração prismática sutil e iluminação translúcida.
+            </p>
+            <Button variant="holographic" size="sm" magnetic sound="confirm" soundHover className="w-full">
+              <Globe className="h-3.5 w-3.5 text-iris" /> Hologram Touch
+            </Button>
+          </Card>
+
+          {/* Cyber Tech */}
+          <Card variant="bento" padding="sm" spotlight>
+            <h4 className="font-bold text-xs uppercase tracking-wider text-accent-cyan mb-2">Cyber Cyan</h4>
+            <p className="text-xs text-ink-2 mb-3">
+              Tipografia mono com bordas néon e micro-detalhes de alta precisão.
+            </p>
+            <Button variant="cyber" size="sm" magnetic sound="click" soundHover className="w-full">
+              <Cpu className="h-3.5 w-3.5 text-accent-cyan" /> EXECUTE_NODE
+            </Button>
+          </Card>
+
+          {/* Magnetic Primary */}
+          <Card variant="bento" padding="sm" spotlight>
+            <h4 className="font-bold text-xs uppercase tracking-wider text-ink mb-2">Magnético Tátil</h4>
+            <p className="text-xs text-ink-2 mb-3">
+              Física de atração magnética seguindo o cursor com spring suave.
+            </p>
+            <Button variant="default" size="sm" magnetic sound="navigate" soundHover className="w-full">
+              <Rocket className="h-3.5 w-3.5 text-on-brand" /> Atração Spring
+            </Button>
+          </Card>
+        </div>
+      </section>
+
+      {/* SEÇÃO 3: Ícones SVG 3D Isométricos & Micro-animações */}
+      <section className="relative z-10 mb-12">
+        <h2 className="font-display text-xl font-bold text-ink flex items-center gap-2 mb-4">
+          <Flame className="h-5 w-5 text-brand" />
+          3. Ícones SVG 3D Isométricos & Sistema AnimatedIcon
+        </h2>
+
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-4">
+          <Card variant="bento" padding="sm" spotlight className="flex flex-col items-center text-center">
+            <Trophy3DIcon size={44} animate />
+            <h4 className="mt-2 font-bold text-xs text-ink">Troféu 3D</h4>
+            <p className="text-[10px] text-ink-2">Reflexo Especular</p>
+          </Card>
+
+          <Card variant="bento" padding="sm" spotlight className="flex flex-col items-center text-center">
+            <Gem3DIcon size={44} animate />
+            <h4 className="mt-2 font-bold text-xs text-ink">Gema 3D</h4>
+            <p className="text-[10px] text-ink-2">Refração Cósmica</p>
+          </Card>
+
+          <Card variant="bento" padding="sm" spotlight className="flex flex-col items-center text-center">
+            <FlameStreakIcon size={44} animate />
+            <h4 className="mt-2 font-bold text-xs text-ink">Chama Streak</h4>
+            <p className="text-[10px] text-ink-2">Labareda Multi-camada</p>
+          </Card>
+
+          <Card variant="bento" padding="sm" spotlight className="flex flex-col items-center text-center">
+            <ShieldSecurityIcon size={44} animate />
+            <h4 className="mt-2 font-bold text-xs text-ink">Escudo 3D</h4>
+            <p className="text-[10px] text-ink-2">Segurança LGPD</p>
+          </Card>
+
+          <Card variant="bento" padding="sm" spotlight className="flex flex-col items-center text-center">
+            <AnimatedIcon icon={Sparkles} animation="glow" glowColor="brand" size="lg" badge interactive />
+            <h4 className="mt-2 font-bold text-xs text-ink">AnimatedIcon</h4>
+            <p className="text-[10px] text-ink-2">Efeito Glow</p>
+          </Card>
+
+          <Card variant="bento" padding="sm" spotlight className="flex flex-col items-center text-center">
+            <AnimatedIcon icon={Rocket} animation="float" glowColor="cyan" size="lg" badge interactive />
+            <h4 className="mt-2 font-bold text-xs text-ink">AnimatedIcon</h4>
+            <p className="text-[10px] text-ink-2">Efeito Float 3D</p>
+          </Card>
+        </div>
+      </section>
+
+      {/* SEÇÃO 4: Cards Espaciais com Spotlight de Cursor em Tempo Real */}
+      <section className="relative z-10 mb-12">
+        <h2 className="font-display text-xl font-bold text-ink flex items-center gap-2 mb-4">
+          <Globe className="h-5 w-5 text-brand" />
+          4. Cards 2026 (Spotlight Interativo & Bento Grid)
+        </h2>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <Card variant="bento" spotlight soundHover>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle>Bento Card 2026</CardTitle>
+                <span className="rounded-full bg-brand/15 px-2 py-0.5 text-[10px] font-bold text-brand">
+                  Spotlight Ativo
+                </span>
+              </div>
+              <CardDescription>
+                Passe o cursor sobre este card para visualizar o holofote especular acompanhando o mouse.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-xs text-ink-2">
+                Simula iluminação física em tempo real utilizando coordenadas relativas do ponteiro
+                sem comprometer a taxa de quadros (60+ FPS).
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card variant="cosmic" spotlight soundHover>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle>Cosmic Specular</CardTitle>
+                <span className="rounded-full bg-brand/20 px-2 py-0.5 text-[10px] font-bold text-brand">
+                  Dourado Cósmico
+                </span>
+              </div>
+              <CardDescription>
+                Borda metálica iluminada com acentos da marca e vidro fosco de alta profundidade.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-xs text-ink-2">
+                Ideal para widgets analíticos, KPIs de alta relevância comercial e destaques de liderança.
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card variant="specular" spotlight soundHover>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle>Vidro Especular</CardTitle>
+                <span className="rounded-full bg-accent-cyan/15 px-2 py-0.5 text-[10px] font-bold text-accent-cyan">
+                  Glassmorphism 2.0
+                </span>
+              </div>
+              <CardDescription>
+                Reflexo interno com sombra volumétrica suave e contorno translúcido.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-xs text-ink-2">
+                Aderente a WCAG AA com contraste calculado e suporte imediato a temas escuro e claro.
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
+      {/* SEÇÃO 5: Laboratório de Efeitos & Toggles */}
+      <section className="relative z-10 mb-12">
+        <HolographicCard variant="mixed" intensity="low">
+          <h3 className="font-bold text-xl mb-6 flex items-center gap-2">
+            <Shield className="text-brand" size={24} />
+            Laboratório de Efeitos & Controles
+          </h3>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Toggles */}
+            <div className="space-y-4">
+              <h4 className="font-semibold text-xs text-ink-2 uppercase tracking-wider">
+                Toggles Táteis
+              </h4>
+              <Toggle
+                checked={toggles.classic}
+                onChange={(v) => setToggles((t) => ({ ...t, classic: v }))}
+                label="Modo Clássico"
+                variant="classic"
+              />
+              <Toggle
+                checked={toggles.neon}
+                onChange={(v) => setToggles((t) => ({ ...t, neon: v }))}
+                label="Modo Neon"
+                variant="neon"
+                glowColor="cyan"
+              />
+              <Toggle
+                checked={toggles.cyber}
+                onChange={(v) => setToggles((t) => ({ ...t, cyber: v }))}
+                label="Modo Cyber"
+                variant="cyber"
+                glowColor="purple"
+              />
+            </div>
+
+            {/* Inputs */}
+            <div className="space-y-4">
+              <h4 className="font-semibold text-xs text-ink-2 uppercase tracking-wider">
+                Cyber Inputs
+              </h4>
+              <CyberInput variant="neon" glowColor="cyan" placeholder="Input Neon..." />
+              <CyberInput variant="glass" placeholder="Input Glass..." />
+              <CyberInput variant="metallic" placeholder="Input Metálico..." />
+            </div>
+
+            {/* Botões Néon */}
+            <div className="space-y-4">
+              <h4 className="font-semibold text-xs text-ink-2 uppercase tracking-wider">
+                Neon Tokyo Buttons
+              </h4>
+              <div className="flex flex-wrap gap-2">
+                <NeonButton variant="cyan" size="sm">
+                  Cyan
+                </NeonButton>
+                <NeonButton variant="purple" size="sm">
+                  Purple
+                </NeonButton>
+                <NeonButton variant="gold" size="sm">
+                  Gold
+                </NeonButton>
+                <NeonButton variant="green" size="sm">
+                  Green
+                </NeonButton>
+              </div>
+            </div>
+          </div>
+        </HolographicCard>
+      </section>
+
+      {/* Rodapé CTA */}
+      <div className="relative z-10 text-center py-10">
+        <h3 className="text-2xl font-bold mb-2">Pronto para a Experiência 2026?</h3>
+        <p className="text-ink-2 text-sm mb-6 max-w-lg mx-auto">
+          Todos os componentes foram construídos com foco em acessibilidade, suporte a
+          prefers-reduced-motion e alto rendimento gráfico.
+        </p>
+        <Button variant="cosmic" size="lg" magnetic sound="success" shine className="gap-2">
+          <span>Explorar Central de Inteligência</span>
+          <ArrowRight className="h-4 w-4" />
+        </Button>
       </div>
     </div>
   );
