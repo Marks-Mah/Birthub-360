@@ -73,7 +73,7 @@ export function AnimatedIcon({
     xl: 'p-5 rounded-3xl',
   };
 
-  const getAnimationVariants = () => {
+  const getAnimationVariants = (): { animate?: any; transition?: any } => {
     if (reduceMotion || animation === 'none') {
       return {};
     }
@@ -81,32 +81,23 @@ export function AnimatedIcon({
     switch (animation) {
       case 'float':
         return {
-          animate: {
-            y: [-3, 3, -3],
-            transition: { duration: 3, repeat: Infinity, ease: 'easeInOut' },
-          },
+          animate: { y: [-3, 3, -3] },
+          transition: { duration: 3, repeat: Infinity, ease: 'easeInOut' },
         };
       case 'pulse':
         return {
-          animate: {
-            scale: [1, 1.08, 1],
-            opacity: [0.85, 1, 0.85],
-            transition: { duration: 2, repeat: Infinity, ease: 'easeInOut' },
-          },
+          animate: { scale: [1, 1.08, 1], opacity: [0.85, 1, 0.85] },
+          transition: { duration: 2, repeat: Infinity, ease: 'easeInOut' },
         };
       case 'spin':
         return {
-          animate: {
-            rotate: 360,
-            transition: { duration: 8, repeat: Infinity, ease: 'linear' },
-          },
+          animate: { rotate: 360 },
+          transition: { duration: 8, repeat: Infinity, ease: 'linear' },
         };
       case 'bounce':
         return {
-          animate: {
-            y: [0, -6, 0],
-            transition: { duration: 1.8, repeat: Infinity, ease: 'easeInOut' },
-          },
+          animate: { y: [0, -6, 0] },
+          transition: { duration: 1.8, repeat: Infinity, ease: 'easeInOut' },
         };
       case 'glow':
         return {
@@ -117,15 +108,13 @@ export function AnimatedIcon({
               'drop-shadow(0 0 8px currentColor)',
               'drop-shadow(0 0 2px currentColor)',
             ],
-            transition: { duration: 2.2, repeat: Infinity, ease: 'easeInOut' },
           },
+          transition: { duration: 2.2, repeat: Infinity, ease: 'easeInOut' },
         };
       case 'orbit':
         return {
-          animate: {
-            rotateZ: [0, 10, -10, 0],
-            transition: { duration: 4, repeat: Infinity, ease: 'easeInOut' },
-          },
+          animate: { rotateZ: [0, 10, -10, 0] },
+          transition: { duration: 4, repeat: Infinity, ease: 'easeInOut' },
         };
       default:
         return {};
@@ -145,10 +134,13 @@ export function AnimatedIcon({
     }
   };
 
+  const animVariants = getAnimationVariants();
+
   const iconContent = (
     <motion.span
       className={cn('inline-flex items-center justify-center', className)}
-      {...getAnimationVariants()}
+      animate={animVariants.animate}
+      transition={animVariants.transition}
       whileHover={interactive && !reduceMotion ? { scale: 1.12, rotate: 4 } : undefined}
       whileTap={interactive && !reduceMotion ? { scale: 0.92 } : undefined}
       onMouseEnter={handleMouseEnter}

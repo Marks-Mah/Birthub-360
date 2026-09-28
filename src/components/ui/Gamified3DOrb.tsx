@@ -61,7 +61,12 @@ function GemScene({
           e.stopPropagation();
           onClick();
         }}
-        cursor="pointer"
+        onPointerOver={() => {
+          if (typeof document !== 'undefined') document.body.style.cursor = 'pointer';
+        }}
+        onPointerOut={() => {
+          if (typeof document !== 'undefined') document.body.style.cursor = 'auto';
+        }}
       >
         <icosahedronGeometry args={[1, 1]} />
         <MeshDistortMaterial
