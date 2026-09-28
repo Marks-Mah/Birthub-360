@@ -100,16 +100,22 @@ export function LiveStatsWidget() {
       transition={{ delay: 0.2 }}
       className="w-full"
     >
-      <div className="p-5 rounded-card-lg border border-line bg-surface shadow-card relative overflow-hidden text-ink font-sans">
-        <div className="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-brand to-brand-2" />
+      <div className="p-6 rounded-card-lg border border-line/80 bg-surface-elevated/85 backdrop-blur-2xl shadow-card relative overflow-hidden text-ink font-sans">
+        <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-brand to-transparent" />
+        <div className="pointer-events-none absolute -right-16 -top-16 h-36 w-36 rounded-full bg-brand/10 blur-2xl" />
 
         {/* Header Row */}
         <div className="flex items-center justify-between mb-5 flex-wrap gap-3">
           <div>
-            <h3 className="text-sm font-black text-ink">Visão Geral da Plataforma</h3>
-            <p className="text-[11px] text-ink-2 font-medium">
+            <h3 className="text-base font-bold text-ink flex items-center gap-2">
+              Visão Geral da Plataforma
+              <span className="text-[10px] uppercase tracking-wider text-brand font-extrabold px-1.5 py-0.5 rounded bg-brand/15 border border-brand/30">
+                LIVE
+              </span>
+            </h3>
+            <p className="text-xs text-ink-2 font-medium mt-0.5">
               {connected
-                ? 'Dados em tempo real do banco de dados PostgreSQL'
+                ? 'Métricas corporativas sincronizadas em tempo real com PostgreSQL'
                 : 'Dados indisponíveis: nenhum valor demonstrativo será exibido'}
             </p>
           </div>
@@ -118,7 +124,8 @@ export function LiveStatsWidget() {
           <div className="flex items-center gap-2">
             <Badge
               variant={connected ? 'success' : 'warning'}
-              className={`flex items-center gap-2 px-3.5 py-1.5 ${connected ? 'bg-green-50 text-green-700 border-green-200' : 'bg-amber-50 text-amber-800 border-amber-200'}`}
+              dot
+              className="flex items-center gap-2 px-3.5 py-1.5 font-bold"
             >
               {loading ? (
                 <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -137,7 +144,7 @@ export function LiveStatsWidget() {
                 onClick={load}
                 title="Tentar reconectar"
                 aria-label="Tentar reconectar ao banco de dados"
-                className="p-1.5 rounded-lg bg-slate-100 border border-slate-200 hover:border-brand text-slate-500 hover:text-brand transition-colors cursor-pointer"
+                className="p-1.5 rounded-lg bg-surface-2 border border-line hover:border-brand text-ink-2 hover:text-brand transition-colors cursor-pointer"
               >
                 <RotateCw className="w-3.5 h-3.5" />
               </button>
@@ -147,14 +154,14 @@ export function LiveStatsWidget() {
 
         {!loading && !connected && (
           <div
-            className="mb-4 p-4 rounded-card border border-amber-500/30 bg-amber-500/10 flex items-start justify-between gap-3"
+            className="mb-4 p-4 rounded-xl border border-warning/30 bg-warning/10 flex items-start justify-between gap-3 backdrop-blur-md"
             role="status"
           >
-            <div className="flex items-start gap-2.5 text-sm text-amber-100">
-              <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5 text-amber-300" />
+            <div className="flex items-start gap-2.5 text-sm text-warning">
+              <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5 text-warning" />
               <div>
                 <p className="font-bold">Métricas executivas offline.</p>
-                <p className="text-xs text-amber-100/80">
+                <p className="text-xs text-ink-2">
                   Não há conexão confirmada com o backend; os cards abaixo mostram travessões, não
                   zeros reais.
                   {errorMessage ? ` Detalhe técnico: ${errorMessage}` : ''}
@@ -169,19 +176,21 @@ export function LiveStatsWidget() {
           {statCards.map((s, idx) => (
             <motion.div
               key={idx}
-              initial={{ opacity: 0, scale: 0.9 }}
+              initial={{ opacity: 0, scale: 0.92 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.1 * idx }}
-              className="p-4 rounded-card border border-line bg-surface-2 flex items-center gap-3"
+              transition={{ delay: 0.08 * idx }}
+              className="group p-4 rounded-xl border border-line/80 bg-surface/75 backdrop-blur-xl flex items-center gap-3.5 shadow-sm transition-all duration-300 hover:scale-[1.02] hover:-translate-y-0.5 hover:border-brand/40 hover:shadow-card-hover"
             >
-              <div className="p-2 rounded-xl bg-surface border border-line shadow-sm shrink-0">
+              <div className="p-2.5 rounded-xl bg-brand/10 border border-brand/20 shadow-[0_0_12px_rgba(212,175,55,0.15)] shrink-0 transition-transform duration-200 group-hover:scale-110 group-hover:rotate-3">
                 {s.icon}
               </div>
-              <div>
-                <p className={`text-xl font-black ${s.color}`}>
+              <div className="min-w-0">
+                <p className={`text-xl font-mono font-black tabular-nums ${s.color}`}>
                   {loading || s.value == null ? '—' : s.value.toLocaleString('pt-BR')}
                 </p>
-                <p className="text-[11px] text-ink-2 font-semibold">{s.label}</p>
+                <p className="text-[11px] text-ink-2 font-semibold uppercase tracking-wider truncate">
+                  {s.label}
+                </p>
               </div>
             </motion.div>
           ))}

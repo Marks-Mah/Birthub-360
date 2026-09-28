@@ -1,6 +1,7 @@
 import { X } from 'lucide-react';
 import type React from 'react';
 import { useEffect, useId, useRef } from 'react';
+import { SoundFX } from '../../lib/soundEffects.js';
 import { cn } from '../../lib/utils.js';
 
 type DialogProps = {
@@ -21,7 +22,7 @@ type DialogProps = {
   /** Ativa o efeito cinematográfico de borda em órbita contínua (ex: salvando formulário). */
   isLoading?: boolean;
   /** Estilo visual do dialog */
-  variant?: 'classic' | 'holographic' | 'neon';
+  variant?: 'classic' | 'holographic' | 'neon' | 'cosmic';
 };
 
 export function Dialog({
@@ -52,6 +53,7 @@ export function Dialog({
         previouslyFocused.current = document.activeElement as HTMLElement | null;
         dialog.showModal();
         document.body.style.overflow = 'hidden';
+        SoundFX.play('focus');
       }
     } else {
       if (dialog.open) {
@@ -126,6 +128,8 @@ export function Dialog({
           'border-brand/30 bg-surface-elevated/60 backdrop-blur-xl shadow-[0_0_40px_rgba(212,175,55,0.2)]',
         variant === 'neon' &&
           'border-cyan-400/30 bg-surface-elevated/60 backdrop-blur-xl shadow-[0_0_40px_rgba(34,211,238,0.2)]',
+        variant === 'cosmic' &&
+          'border-brand/45 bg-surface-elevated/85 backdrop-blur-2xl shadow-[0_0_50px_rgba(212,175,55,0.22)]',
         maxWidth,
         isLoading && 'border-transparent overflow-hidden isolate',
       )}
@@ -138,7 +142,7 @@ export function Dialog({
       )}
 
       {/* Efeito holográfico adicional para variantes especiais */}
-      {(variant === 'holographic' || variant === 'neon') && !isLoading && (
+      {(variant === 'holographic' || variant === 'neon' || variant === 'cosmic') && !isLoading && (
         <div className="absolute inset-0 overflow-hidden pointer-events-none rounded-2xl">
           <div className="absolute inset-0 bg-[linear-gradient(transparent_49%,rgba(255,255,255,0.05)_50%,transparent_51%)] bg-[length:100%_4px] animate-pulse-slow" />
           <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
@@ -156,7 +160,7 @@ export function Dialog({
           className={cn(
             'flex shrink-0 items-center justify-between px-5 py-4',
             variant === 'classic' && 'border-b border-line',
-            variant === 'holographic' && 'border-b border-brand/20',
+            (variant === 'holographic' || variant === 'cosmic') && 'border-b border-brand/20',
             variant === 'neon' && 'border-b border-cyan-400/20',
           )}
         >
@@ -166,6 +170,7 @@ export function Dialog({
               className={cn(
                 'font-display text-lg font-bold tracking-tight',
                 variant === 'neon' && 'text-cyan-300',
+                variant === 'cosmic' && 'text-brand',
               )}
             >
               {title}
@@ -175,10 +180,14 @@ export function Dialog({
           )}
           <button
             type="button"
-            onClick={onClose}
+            onClick={() => {
+              SoundFX.play('click');
+              onClose();
+            }}
             className={cn(
               'rounded-full p-1.5 text-ink-2 transition-all duration-200 hover:bg-surface-interactive hover:text-ink hover:scale-110 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand',
               variant === 'neon' && 'hover:text-cyan-200 focus-visible:ring-cyan-400',
+              variant === 'cosmic' && 'hover:text-brand focus-visible:ring-brand',
             )}
             aria-label="Fechar modal"
           >

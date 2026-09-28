@@ -2,8 +2,14 @@ import { motion } from 'framer-motion';
 import { AlertTriangle, Award, Medal, Trophy, Users } from 'lucide-react';
 import { Button } from '../../../components/ui/Button.js';
 import { Card } from '../../../components/ui/Card.js';
+import {
+  FlameStreakIcon,
+  Gem3DIcon,
+  Trophy3DIcon,
+} from '../../../components/ui/icons/Isometric3DIcons.js';
 import { Skeleton } from '../../../components/ui/Skeleton.js';
 import { fadeInUp, staggerContainer, staggerItem } from '../../../lib/motion.js';
+import { SoundFX } from '../../../lib/soundEffects.js';
 
 interface RankingRow {
   label: string;
@@ -19,12 +25,9 @@ interface TeamRankingWidgetProps {
   onRetry: () => void;
 }
 
-const POSITION_ICONS = [Trophy, Medal, Award];
-
 /**
- * Ranking real por negócios fechados (`byOwner`, de GET /api/analytics/dashboard) — a mecânica de
- * jogo é o próprio ranking sobre dado real, sem XP/nível/sequência fabricados (Piloto 007, ver
- * .claude/PILOTS.md e o GamificationWidget "falso" em ProspectingHub.tsx, fora de escopo aqui).
+ * Ranking comercial real com estética gamificada 2026:
+ * Troféu 3D para o 1º lugar, gema facetada para o 2º lugar, e holofote de cursor em tempo real.
  */
 export function TeamRankingWidget({
   byOwner,
@@ -40,22 +43,24 @@ export function TeamRankingWidget({
 
   return (
     <motion.div variants={fadeInUp} initial="hidden" animate="show" className="rounded-card-lg">
-      <Card padding="lg">
-        <div className="mb-5 flex flex-wrap items-start justify-between gap-3 border-b border-line pb-4">
-          <div className="flex items-center gap-2">
-            <span className="rounded-lg border border-brand/20 bg-soft p-2 text-brand-ink dark:text-brand">
-              <Users className="h-4 w-4" aria-hidden="true" />
+      <Card variant="bento" padding="lg" spotlight soundHover>
+        <div className="mb-5 flex flex-wrap items-start justify-between gap-3 border-b border-line/70 pb-4">
+          <div className="flex items-center gap-3">
+            <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-brand/30 bg-brand/10 shadow-[0_0_15px_rgba(212,175,55,0.2)] text-brand">
+              <Users className="h-5 w-5" aria-hidden="true" />
             </span>
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-brand-ink dark:text-brand">
-                Performance da equipe
+              <p className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-brand-ink dark:text-brand">
+                Performance da equipe · 2026
               </p>
-              <h3 className="mt-0.5 text-base font-bold text-ink">Ranking comercial</h3>
+              <h3 className="mt-0.5 text-base font-bold text-ink flex items-center gap-1.5">
+                Ranking Comercial & Fechamentos
+              </h3>
             </div>
           </div>
-          <p className="max-w-48 text-right text-xs leading-relaxed text-ink-2">
-            Negócios fechados neste recorte
-          </p>
+          <span className="rounded-full bg-brand/15 border border-brand/30 px-3 py-1 text-[11px] font-bold text-brand">
+            Top Fechadores
+          </span>
         </div>
 
         {loading ? (
@@ -87,32 +92,72 @@ export function TeamRankingWidget({
             variants={staggerContainer()}
             initial="hidden"
             animate="show"
-            className="space-y-2"
+            className="space-y-2.5"
           >
             {ranked.map((row, index) => {
-              const Icon = POSITION_ICONS[index];
+              const isFirst = index === 0;
+              const isSecond = index === 1;
+              const isThird = index === 2;
               const isCurrentUser =
                 !!currentUserName &&
                 row.label.trim().toLowerCase() === currentUserName.trim().toLowerCase();
+
               return (
                 <motion.div
                   key={row.label}
                   variants={staggerItem}
-                  className={`flex items-center gap-3 rounded-card border p-3.5 transition-colors ${
-                    isCurrentUser ? 'border-brand/40 bg-soft' : 'border-line bg-surface-2'
+                  onMouseEnter={() => {
+                    SoundFX.play('hover');
+                  }}
+                  className={`group flex items-center gap-3.5 rounded-xl border p-3 transition-all duration-300 hover:scale-[1.01] hover:-translate-y-0.5 ${
+                    isFirst
+                      ? 'border-brand/50 bg-gradient-to-r from-brand/15 via-surface-elevated to-surface-elevated shadow-[0_4px_20px_rgba(212,175,55,0.15)]'
+                      : isCurrentUser
+                        ? 'border-brand/40 bg-brand/10'
+                        : 'border-line/70 bg-surface/70 hover:border-brand/35 hover:bg-surface-interactive'
                   }`}
                 >
-                  <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 bg-surface border border-line text-ink-2 font-black text-xs">
-                    {Icon ? <Icon className="w-4 h-4 text-brand" /> : index + 1}
+                  {/* Posição / Ícone 3D */}
+                  <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0">
+                    {isFirst ? (
+                      <Trophy3DIcon size={28} animate />
+                    ) : isSecond ? (
+                      <Gem3DIcon size={26} animate />
+                    ) : isThird ? (
+                      <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-warning/15 border border-warning/30 font-black text-xs text-warning">
+                        3
+                      </span>
+                    ) : (
+                      <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-surface-2 border border-line text-xs font-bold text-ink-2">
+                        {index + 1}
+                      </span>
+                    )}
                   </div>
+
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm font-bold text-ink truncate">
+                    <p className="text-sm font-bold text-ink truncate flex items-center gap-1.5">
                       {row.label}
-                      {isCurrentUser && <span className="text-brand"> · você</span>}
+                      {isCurrentUser && (
+                        <span className="rounded-full bg-brand px-1.5 py-0.2 text-[9px] font-black text-on-brand">
+                          VOCÊ
+                        </span>
+                      )}
+                      {isFirst && (
+                        <span className="text-[10px] text-brand flex items-center gap-0.5 font-bold">
+                          <FlameStreakIcon size={14} animate /> LÍDER
+                        </span>
+                      )}
                     </p>
-                    <p className="text-[11px] text-ink-2">{row.count} leads no funil</p>
+                    <p className="text-[11px] text-ink-2">{row.count} leads sob gestão</p>
                   </div>
-                  <p className="text-lg font-black text-brand shrink-0">{row.won}</p>
+
+                  {/* Número de Ganhos / Fechamentos */}
+                  <div className="text-right shrink-0">
+                    <p className="text-base font-black text-brand [font-variant-numeric:tabular-nums]">
+                      {row.won}
+                    </p>
+                    <p className="text-[9px] uppercase tracking-wider text-ink-2">fechados</p>
+                  </div>
                 </motion.div>
               );
             })}
@@ -122,3 +167,4 @@ export function TeamRankingWidget({
     </motion.div>
   );
 }
+

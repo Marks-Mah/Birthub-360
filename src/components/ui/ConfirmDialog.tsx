@@ -40,13 +40,16 @@ export function useConfirmDialog() {
       isOpen
       onClose={() => settle(false)}
       title={options.title}
+      variant={options.variant === 'danger' ? 'classic' : 'cosmic'}
       footer={
         <>
-          <Button variant="secondary" onClick={() => settle(false)}>
+          <Button variant="secondary" sound="click" onClick={() => settle(false)}>
             {options.cancelLabel ?? 'Cancelar'}
           </Button>
           <Button
-            variant={options.variant === 'danger' ? 'destructive' : 'default'}
+            variant={options.variant === 'danger' ? 'destructive' : 'cosmic'}
+            sound="confirm"
+            shine={options.variant !== 'danger'}
             onClick={() => settle(true)}
           >
             {options.confirmLabel ?? 'Confirmar'}
@@ -54,7 +57,7 @@ export function useConfirmDialog() {
         </>
       }
     >
-      <p className="text-sm text-ink-2">{options.description}</p>
+      <p className="text-sm text-ink-2 leading-relaxed">{options.description}</p>
     </Dialog>
   ) : null;
 
