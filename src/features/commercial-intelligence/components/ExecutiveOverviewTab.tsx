@@ -63,7 +63,7 @@ function CoverageProtectionTable({
   entries: ExecutiveOverview['coverageProtection'];
 }) {
   return (
-    <Card padding="sm">
+    <Card padding="sm" spotlight>
       <h3 className="text-sm font-bold text-ink mb-1">Proteção 90 dias</h3>
       <p className="text-[11px] text-ink-2 mb-3">
         Pipeline elegível por mês de calendário frente à meta daquele mês — não confundir com

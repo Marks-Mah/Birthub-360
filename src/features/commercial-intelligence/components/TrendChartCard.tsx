@@ -37,7 +37,7 @@ export function TrendChartCard({ trends }: TrendChartCardProps) {
   if (chartData.length < 2) return null;
 
   return (
-    <Card padding="sm">
+    <Card padding="sm" spotlight>
       <h3 className="text-sm font-bold text-ink mb-1">Evolução do Win Rate</h3>
       <p className="text-[11px] text-ink-2 mb-3">
         Taxa de ganho por mês, calculada sobre os negócios fechados de cada período.

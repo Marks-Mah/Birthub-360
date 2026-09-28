@@ -45,7 +45,7 @@ export function KpiTile({
 
   if (!onClick) {
     return (
-      <Card variant="stat" padding="sm" accentBar>
+      <Card variant="stat" padding="sm" accentBar spotlight>
         {header}
         {figures}
       </Card>
@@ -57,7 +57,7 @@ export function KpiTile({
   // achado real ao rodar a Visão Executiva com meta cadastrada, em que Commit/Best Case têm
   // metricKey e onClick ao mesmo tempo. O botão continua nomeado pelo rótulo via aria-label.
   return (
-    <Card variant="interactive" padding="sm" accentBar>
+    <Card variant="interactive" padding="sm" accentBar spotlight soundHover>
       {header}
       <button
         type="button"

@@ -136,19 +136,37 @@ export function CommercialIntelligenceHub() {
     setSearchParams(params, { replace: true });
   };
 
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const handleMouseMove = useCallback((e: React.MouseEvent) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    setMousePos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+  }, []);
+
   return (
     <main className="mx-auto w-full max-w-[92rem] flex-1 space-y-5 overflow-y-auto p-4 md:p-8">
-      <header className="relative overflow-hidden rounded-[1.7rem] border border-line bg-surface/94 p-5 shadow-[0_30px_72px_-48px_rgba(0,0,0,0.95),inset_0_1px_0_rgba(255,255,255,0.07)] md:p-6">
+      <header 
+        className="relative overflow-hidden rounded-[1.7rem] border border-line bg-surface/94 p-5 shadow-[0_30px_72px_-48px_rgba(0,0,0,0.95),inset_0_1px_0_rgba(255,255,255,0.07)] md:p-6 group/header transition-all duration-500 hover:shadow-brand/10"
+        onPointerMove={handleMouseMove}
+      >
+        {/* Bento Spotlight */}
         <div
-          className="pointer-events-none absolute -right-24 -top-28 h-72 w-72 rounded-full bg-brand/10 blur-[90px]"
+          className="pointer-events-none absolute -inset-px opacity-0 transition-opacity duration-500 group-hover/header:opacity-100 z-10 rounded-[inherit]"
+          style={{
+            background: `radial-gradient(500px circle at ${mousePos.x}px ${mousePos.y}px, rgba(212,175,55,0.06), transparent 40%)`,
+          }}
+          aria-hidden="true"
+        />
+        
+        <div
+          className="pointer-events-none absolute -right-24 -top-28 h-72 w-72 rounded-full bg-brand/10 blur-[90px] z-0"
           aria-hidden="true"
         />
         <div
-          className="pointer-events-none absolute inset-x-10 top-0 h-px bg-gradient-to-r from-transparent via-brand/45 to-transparent"
+          className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-brand to-transparent opacity-30 group-hover/header:opacity-100 transition-opacity duration-700 z-20"
           aria-hidden="true"
         />
 
-        <div className="relative z-10 flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
+        <div className="relative z-30 flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
           <div className="flex items-start gap-3">
             <div className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl border border-brand/20 bg-brand/10 text-brand-ink shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] dark:text-brand">
               <LineChart className="h-5 w-5" aria-hidden="true" />

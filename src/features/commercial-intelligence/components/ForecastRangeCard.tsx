@@ -65,7 +65,7 @@ export function ForecastRangeCard({ overview, trends }: ForecastRangeCardProps) 
   const max = Math.max(range.optimistic.amount, 1);
 
   return (
-    <Card padding="sm">
+    <Card padding="sm" spotlight>
       <div className="flex flex-wrap items-start justify-between gap-3 mb-3">
         <div>
           <h2 className="text-sm font-bold text-ink">Faixa de Previsão — {overview.period}</h2>
