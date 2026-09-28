@@ -38,9 +38,7 @@ export function calculateLeadQuality(lead: Lead): LeadQualityMetric {
       !mainDm.email.startsWith('contato@'),
   );
 
-  const hasLinkedin = Boolean(
-    isLinkedinHost(mainDm.linkedin) && mainDm.linkedin.length > 15,
-  );
+  const hasLinkedin = Boolean(isLinkedinHost(mainDm.linkedin) && mainDm.linkedin.length > 15);
 
   const hasPhone = Boolean(
     lead.phone &&
