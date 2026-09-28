@@ -186,11 +186,7 @@ export function Gamified3DOrb({
         <pointLight position={[4, 4, 4]} intensity={2.8} color={BRAND.colors.brandAccent} />
         <pointLight position={[-4, -3, 2]} intensity={2} color={BRAND.colors.iris} />
         <directionalLight position={[0, 5, 2]} intensity={1.2} />
-        <GemScene
-          animate={shouldAnimate}
-          onClick={handleInteract}
-          isBoosting={isBoosting}
-        />
+        <GemScene animate={shouldAnimate} onClick={handleInteract} isBoosting={isBoosting} />
       </Canvas>
     </div>
   );

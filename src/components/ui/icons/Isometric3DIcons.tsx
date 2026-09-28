@@ -11,12 +11,7 @@ interface IconBaseProps extends React.SVGAttributes<SVGElement> {
 /**
  * Troféu Dourado 3D Isométrico com reflexos especulares e gradientes metálicos (Tendência 2026).
  */
-export function Trophy3DIcon({
-  size = 40,
-  className,
-  animate = true,
-  ...props
-}: IconBaseProps) {
+export function Trophy3DIcon({ size = 40, className, animate = true, ...props }: IconBaseProps) {
   const reduceMotion = useReducedMotion();
   const shouldAnimate = animate && !reduceMotion;
 
@@ -40,11 +35,25 @@ export function Trophy3DIcon({
           <stop offset="70%" stopColor="#997A15" />
           <stop offset="100%" stopColor="#5E4B0D" />
         </linearGradient>
-        <linearGradient id="gold-highlight" x1="18" y1="8" x2="30" y2="24" gradientUnits="userSpaceOnUse">
+        <linearGradient
+          id="gold-highlight"
+          x1="18"
+          y1="8"
+          x2="30"
+          y2="24"
+          gradientUnits="userSpaceOnUse"
+        >
           <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.8" />
           <stop offset="100%" stopColor="#D4AF37" stopOpacity="0.1" />
         </linearGradient>
-        <linearGradient id="gold-base" x1="14" y1="36" x2="34" y2="44" gradientUnits="userSpaceOnUse">
+        <linearGradient
+          id="gold-base"
+          x1="14"
+          y1="36"
+          x2="34"
+          y2="44"
+          gradientUnits="userSpaceOnUse"
+        >
           <stop offset="0%" stopColor="#D4AF37" />
           <stop offset="50%" stopColor="#7A5E10" />
           <stop offset="100%" stopColor="#3D2E05" />
@@ -87,10 +96,7 @@ export function Trophy3DIcon({
       />
 
       {/* Brilho Especular na Taça */}
-      <path
-        d="M15 10H22V23C18 21 16 17 15 10Z"
-        fill="url(#gold-highlight)"
-      />
+      <path d="M15 10H22V23C18 21 16 17 15 10Z" fill="url(#gold-highlight)" />
 
       {/* Estrela de Conquista no Centro */}
       <polygon
@@ -117,12 +123,7 @@ export function Trophy3DIcon({
 /**
  * Diamante / Gema 3D Facetada com refração cromática e bordas reluzentes.
  */
-export function Gem3DIcon({
-  size = 40,
-  className,
-  animate = true,
-  ...props
-}: IconBaseProps) {
+export function Gem3DIcon({ size = 40, className, animate = true, ...props }: IconBaseProps) {
   const reduceMotion = useReducedMotion();
   const shouldAnimate = animate && !reduceMotion;
 
@@ -149,12 +150,26 @@ export function Gem3DIcon({
           <stop offset="0%" stopColor="#54A5FF" />
           <stop offset="100%" stopColor="#0A3370" />
         </linearGradient>
-        <linearGradient id="gem-center" x1="16" y1="18" x2="32" y2="40" gradientUnits="userSpaceOnUse">
+        <linearGradient
+          id="gem-center"
+          x1="16"
+          y1="18"
+          x2="32"
+          y2="40"
+          gradientUnits="userSpaceOnUse"
+        >
           <stop offset="0%" stopColor="#B3DCFF" />
           <stop offset="40%" stopColor="#2484FF" />
           <stop offset="100%" stopColor="#0E4294" />
         </linearGradient>
-        <linearGradient id="gem-right" x1="24" y1="18" x2="42" y2="40" gradientUnits="userSpaceOnUse">
+        <linearGradient
+          id="gem-right"
+          x1="24"
+          y1="18"
+          x2="42"
+          y2="40"
+          gradientUnits="userSpaceOnUse"
+        >
           <stop offset="0%" stopColor="#1963CC" />
           <stop offset="100%" stopColor="#07224F" />
         </linearGradient>
@@ -190,12 +205,7 @@ export function Gem3DIcon({
 /**
  * Chama de Fogo 3D Multi-camada para Gamificação e Streaks contínuos.
  */
-export function FlameStreakIcon({
-  size = 40,
-  className,
-  animate = true,
-  ...props
-}: IconBaseProps) {
+export function FlameStreakIcon({ size = 40, className, animate = true, ...props }: IconBaseProps) {
   const reduceMotion = useReducedMotion();
   const shouldAnimate = animate && !reduceMotion;
 
@@ -284,16 +294,37 @@ export function ShieldSecurityIcon({
       {...props}
     >
       <defs>
-        <linearGradient id="shield-border" x1="10" y1="6" x2="38" y2="42" gradientUnits="userSpaceOnUse">
+        <linearGradient
+          id="shield-border"
+          x1="10"
+          y1="6"
+          x2="38"
+          y2="42"
+          gradientUnits="userSpaceOnUse"
+        >
           <stop offset="0%" stopColor="#FFF2B2" />
           <stop offset="50%" stopColor="#D4AF37" />
           <stop offset="100%" stopColor="#6E5507" />
         </linearGradient>
-        <linearGradient id="shield-left" x1="12" y1="8" x2="24" y2="38" gradientUnits="userSpaceOnUse">
+        <linearGradient
+          id="shield-left"
+          x1="12"
+          y1="8"
+          x2="24"
+          y2="38"
+          gradientUnits="userSpaceOnUse"
+        >
           <stop offset="0%" stopColor="#1E2A4A" />
           <stop offset="100%" stopColor="#0B132B" />
         </linearGradient>
-        <linearGradient id="shield-right" x1="24" y1="8" x2="36" y2="38" gradientUnits="userSpaceOnUse">
+        <linearGradient
+          id="shield-right"
+          x1="24"
+          y1="8"
+          x2="36"
+          y2="38"
+          gradientUnits="userSpaceOnUse"
+        >
           <stop offset="0%" stopColor="#2E3F6E" />
           <stop offset="100%" stopColor="#111B3B" />
         </linearGradient>
@@ -306,16 +337,10 @@ export function ShieldSecurityIcon({
       />
 
       {/* Interior Esquerdo */}
-      <path
-        d="M24 7L13 12V22C13 30.5 18 37.5 24 40.5V7Z"
-        fill="url(#shield-left)"
-      />
+      <path d="M24 7L13 12V22C13 30.5 18 37.5 24 40.5V7Z" fill="url(#shield-left)" />
 
       {/* Interior Direito */}
-      <path
-        d="M24 7L35 12V22C35 30.5 30 37.5 24 40.5V7Z"
-        fill="url(#shield-right)"
-      />
+      <path d="M24 7L35 12V22C35 30.5 30 37.5 24 40.5V7Z" fill="url(#shield-right)" />
 
       {/* Ícone de Check / Segurança Central */}
       <path

@@ -62,7 +62,8 @@ export function StyleShowcase() {
           </h1>
           <p className="mt-3 text-ink-2 text-base max-w-3xl leading-relaxed">
             Catálogo completo com botões táteis especulares, ícones SVG 3D isométricos, cards com
-            holofote de cursor em tempo real, física de movimento e enxame de gamificação 3D interativo.
+            holofote de cursor em tempo real, física de movimento e enxame de gamificação 3D
+            interativo.
           </p>
         </motion.div>
 
@@ -98,29 +99,49 @@ export function StyleShowcase() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Cosmic Gold */}
           <Card variant="bento" padding="sm" spotlight>
-            <h4 className="font-bold text-xs uppercase tracking-wider text-brand mb-2">Cosmic Gold</h4>
+            <h4 className="font-bold text-xs uppercase tracking-wider text-brand mb-2">
+              Cosmic Gold
+            </h4>
             <p className="text-xs text-ink-2 mb-3">
               Gradiente com reflexo de feixe luminoso contínuo no hover e sombra dourada.
             </p>
-            <Button variant="cosmic" size="sm" magnetic sound="success" soundHover className="w-full">
+            <Button
+              variant="cosmic"
+              size="sm"
+              magnetic
+              sound="success"
+              soundHover
+              className="w-full"
+            >
               <Sparkles className="h-3.5 w-3.5 text-on-brand" /> Cosmic Action
             </Button>
           </Card>
 
           {/* Holographic */}
           <Card variant="bento" padding="sm" spotlight>
-            <h4 className="font-bold text-xs uppercase tracking-wider text-iris mb-2">Holographic</h4>
+            <h4 className="font-bold text-xs uppercase tracking-wider text-iris mb-2">
+              Holographic
+            </h4>
             <p className="text-xs text-ink-2 mb-3">
               Vidro com refração prismática sutil e iluminação translúcida.
             </p>
-            <Button variant="holographic" size="sm" magnetic sound="confirm" soundHover className="w-full">
+            <Button
+              variant="holographic"
+              size="sm"
+              magnetic
+              sound="confirm"
+              soundHover
+              className="w-full"
+            >
               <Globe className="h-3.5 w-3.5 text-iris" /> Hologram Touch
             </Button>
           </Card>
 
           {/* Cyber Tech */}
           <Card variant="bento" padding="sm" spotlight>
-            <h4 className="font-bold text-xs uppercase tracking-wider text-accent-cyan mb-2">Cyber Cyan</h4>
+            <h4 className="font-bold text-xs uppercase tracking-wider text-accent-cyan mb-2">
+              Cyber Cyan
+            </h4>
             <p className="text-xs text-ink-2 mb-3">
               Tipografia mono com bordas néon e micro-detalhes de alta precisão.
             </p>
@@ -131,11 +152,20 @@ export function StyleShowcase() {
 
           {/* Magnetic Primary */}
           <Card variant="bento" padding="sm" spotlight>
-            <h4 className="font-bold text-xs uppercase tracking-wider text-ink mb-2">Magnético Tátil</h4>
+            <h4 className="font-bold text-xs uppercase tracking-wider text-ink mb-2">
+              Magnético Tátil
+            </h4>
             <p className="text-xs text-ink-2 mb-3">
               Física de atração magnética seguindo o cursor com spring suave.
             </p>
-            <Button variant="default" size="sm" magnetic sound="navigate" soundHover className="w-full">
+            <Button
+              variant="default"
+              size="sm"
+              magnetic
+              sound="navigate"
+              soundHover
+              className="w-full"
+            >
               <Rocket className="h-3.5 w-3.5 text-on-brand" /> Atração Spring
             </Button>
           </Card>
@@ -150,38 +180,82 @@ export function StyleShowcase() {
         </h2>
 
         <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-4">
-          <Card variant="bento" padding="sm" spotlight className="flex flex-col items-center text-center">
+          <Card
+            variant="bento"
+            padding="sm"
+            spotlight
+            className="flex flex-col items-center text-center"
+          >
             <Trophy3DIcon size={44} animate />
             <h4 className="mt-2 font-bold text-xs text-ink">Troféu 3D</h4>
             <p className="text-[10px] text-ink-2">Reflexo Especular</p>
           </Card>
 
-          <Card variant="bento" padding="sm" spotlight className="flex flex-col items-center text-center">
+          <Card
+            variant="bento"
+            padding="sm"
+            spotlight
+            className="flex flex-col items-center text-center"
+          >
             <Gem3DIcon size={44} animate />
             <h4 className="mt-2 font-bold text-xs text-ink">Gema 3D</h4>
             <p className="text-[10px] text-ink-2">Refração Cósmica</p>
           </Card>
 
-          <Card variant="bento" padding="sm" spotlight className="flex flex-col items-center text-center">
+          <Card
+            variant="bento"
+            padding="sm"
+            spotlight
+            className="flex flex-col items-center text-center"
+          >
             <FlameStreakIcon size={44} animate />
             <h4 className="mt-2 font-bold text-xs text-ink">Chama Streak</h4>
             <p className="text-[10px] text-ink-2">Labareda Multi-camada</p>
           </Card>
 
-          <Card variant="bento" padding="sm" spotlight className="flex flex-col items-center text-center">
+          <Card
+            variant="bento"
+            padding="sm"
+            spotlight
+            className="flex flex-col items-center text-center"
+          >
             <ShieldSecurityIcon size={44} animate />
             <h4 className="mt-2 font-bold text-xs text-ink">Escudo 3D</h4>
             <p className="text-[10px] text-ink-2">Segurança LGPD</p>
           </Card>
 
-          <Card variant="bento" padding="sm" spotlight className="flex flex-col items-center text-center">
-            <AnimatedIcon icon={Sparkles} animation="glow" glowColor="brand" size="lg" badge interactive />
+          <Card
+            variant="bento"
+            padding="sm"
+            spotlight
+            className="flex flex-col items-center text-center"
+          >
+            <AnimatedIcon
+              icon={Sparkles}
+              animation="glow"
+              glowColor="brand"
+              size="lg"
+              badge
+              interactive
+            />
             <h4 className="mt-2 font-bold text-xs text-ink">AnimatedIcon</h4>
             <p className="text-[10px] text-ink-2">Efeito Glow</p>
           </Card>
 
-          <Card variant="bento" padding="sm" spotlight className="flex flex-col items-center text-center">
-            <AnimatedIcon icon={Rocket} animation="float" glowColor="cyan" size="lg" badge interactive />
+          <Card
+            variant="bento"
+            padding="sm"
+            spotlight
+            className="flex flex-col items-center text-center"
+          >
+            <AnimatedIcon
+              icon={Rocket}
+              animation="float"
+              glowColor="cyan"
+              size="lg"
+              badge
+              interactive
+            />
             <h4 className="mt-2 font-bold text-xs text-ink">AnimatedIcon</h4>
             <p className="text-[10px] text-ink-2">Efeito Float 3D</p>
           </Card>
@@ -205,7 +279,8 @@ export function StyleShowcase() {
                 </span>
               </div>
               <CardDescription>
-                Passe o cursor sobre este card para visualizar o holofote especular acompanhando o mouse.
+                Passe o cursor sobre este card para visualizar o holofote especular acompanhando o
+                mouse.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -230,7 +305,8 @@ export function StyleShowcase() {
             </CardHeader>
             <CardContent>
               <p className="text-xs text-ink-2">
-                Ideal para widgets analíticos, KPIs de alta relevância comercial e destaques de liderança.
+                Ideal para widgets analíticos, KPIs de alta relevância comercial e destaques de
+                liderança.
               </p>
             </CardContent>
           </Card>
@@ -249,7 +325,8 @@ export function StyleShowcase() {
             </CardHeader>
             <CardContent>
               <p className="text-xs text-ink-2">
-                Aderente a WCAG AA com contraste calculado e suporte imediato a temas escuro e claro.
+                Aderente a WCAG AA com contraste calculado e suporte imediato a temas escuro e
+                claro.
               </p>
             </CardContent>
           </Card>
@@ -267,10 +344,25 @@ export function StyleShowcase() {
         <div className="mb-6">
           <TabNavCards
             items={[
-              { id: 'pipeline', icon: Activity, title: 'Pipeline Ativo', subtitle: 'R$ 2.4M sob gestão' },
-              { id: 'ai-agents', icon: Cpu, title: 'Agentes de IA', subtitle: '7 robôs autônomos 24/7' },
+              {
+                id: 'pipeline',
+                icon: Activity,
+                title: 'Pipeline Ativo',
+                subtitle: 'R$ 2.4M sob gestão',
+              },
+              {
+                id: 'ai-agents',
+                icon: Cpu,
+                title: 'Agentes de IA',
+                subtitle: '7 robôs autônomos 24/7',
+              },
               { id: 'conversion', icon: Target, title: 'Meta do Mês', subtitle: '88% atingida' },
-              { id: 'sdr-team', icon: Users, title: 'Equipe SDR', subtitle: '12 operadores ativos' },
+              {
+                id: 'sdr-team',
+                icon: Users,
+                title: 'Equipe SDR',
+                subtitle: '12 operadores ativos',
+              },
             ]}
             activeId={activeTabId}
             onSelect={setActiveTabId}
@@ -320,10 +412,18 @@ export function StyleShowcase() {
         {/* Badges 2026 com Pulse Dot */}
         <div className="flex flex-wrap items-center gap-3 p-4 rounded-xl border border-line bg-surface/60 backdrop-blur-md">
           <span className="text-xs font-bold text-ink-2 mr-2">Status ao Vivo (2026 Badges):</span>
-          <Badge variant="cosmic" dot>Operação Ativa 24/7</Badge>
-          <Badge variant="success" dot>Banco de Dados Conectado</Badge>
-          <Badge variant="warning" dot>Sincronização Bitrix24</Badge>
-          <Badge variant="cyan" dot>Enxame Autônomo</Badge>
+          <Badge variant="cosmic" dot>
+            Operação Ativa 24/7
+          </Badge>
+          <Badge variant="success" dot>
+            Banco de Dados Conectado
+          </Badge>
+          <Badge variant="warning" dot>
+            Sincronização Bitrix24
+          </Badge>
+          <Badge variant="cyan" dot>
+            Enxame Autônomo
+          </Badge>
           <Badge variant="holographic">Prismatic Sheen</Badge>
         </div>
       </section>

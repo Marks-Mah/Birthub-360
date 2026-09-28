@@ -1,15 +1,6 @@
 import confetti from 'canvas-confetti';
 import { AnimatePresence, motion } from 'framer-motion';
-import {
-  Award,
-  Check,
-  ChevronRight,
-  Sparkles,
-  Trophy,
-  Volume2,
-  VolumeX,
-  Zap,
-} from 'lucide-react';
+import { Award, Check, ChevronRight, Sparkles, Trophy, Volume2, VolumeX, Zap } from 'lucide-react';
 import { useState } from 'react';
 import { SoundFX } from '../../lib/soundEffects.js';
 import { cn } from '../../lib/utils.js';
@@ -210,7 +201,11 @@ export function GamificationWidget({
             title={soundActive ? 'Som ativado' : 'Som mudo'}
             className="text-ink-2 hover:text-brand"
           >
-            {soundActive ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4 text-ink-2/60" />}
+            {soundActive ? (
+              <Volume2 className="h-4 w-4" />
+            ) : (
+              <VolumeX className="h-4 w-4 text-ink-2/60" />
+            )}
           </Button>
 
           {/* Toggle de Missões e Conquistas */}
@@ -230,7 +225,10 @@ export function GamificationWidget({
             <Zap className="h-3.5 w-3.5 text-brand" />
             <span>Missões & Badges</span>
             <ChevronRight
-              className={cn('h-3.5 w-3.5 transition-transform duration-300', showPanel && 'rotate-90')}
+              className={cn(
+                'h-3.5 w-3.5 transition-transform duration-300',
+                showPanel && 'rotate-90',
+              )}
             />
           </Button>
         </div>

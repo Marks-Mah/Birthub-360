@@ -5,7 +5,11 @@ import { cn } from '../../../lib/utils.js';
 
 export interface AnimatedIconProps {
   /** Componente de ícone (Lucide, SVG ou elemento JSX) */
-  icon?: React.ComponentType<{ className?: string; size?: number | string; 'aria-hidden'?: boolean | 'true' | 'false' }>;
+  icon?: React.ComponentType<{
+    className?: string;
+    size?: number | string;
+    'aria-hidden'?: boolean | 'true' | 'false';
+  }>;
   children?: React.ReactNode;
   /** Tipo de animação 2026 */
   animation?: 'float' | 'pulse' | 'spin' | 'bounce' | 'glow' | 'orbit' | 'none';
@@ -165,6 +169,7 @@ export function AnimatedIcon({
           'inline-flex items-center justify-center border backdrop-blur-md shadow-sm transition-all duration-300',
           badgeSizes[size],
           badgeGradients[glowColor],
+          animation === 'glow' && glowStyles[glowColor],
           interactive && 'cursor-pointer hover:shadow-card hover:-translate-y-0.5 active:scale-95',
         )}
       >
