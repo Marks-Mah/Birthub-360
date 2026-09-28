@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import React, { useEffect, useRef, useState } from 'react';
 import { TechToolLogo } from '../../../components/ui/TechToolLogo.js';
+import { SoundFX } from '../../../lib/soundEffects.js';
 import type { Lead } from '../../../types/index.js';
 
 const TEMPERATURE_EMOJI: Record<string, string> = { Quente: '🔥', Morno: '🌤️', Frio: '❄️' };
@@ -101,6 +102,7 @@ export const KanbanCard = React.memo(function KanbanCard({
   const stagnation = getStagnationBadge(daysStale);
 
   const isBitrixSynced = Boolean(lead.bitrixLeadId || lead.bitrixDealId);
+  const isHighPriority = (lead.score ?? 0) >= 70 || lead.temperature === 'Quente';
 
   useEffect(() => {
     const buttons = techRowRef.current?.querySelectorAll('button');
@@ -112,9 +114,11 @@ export const KanbanCard = React.memo(function KanbanCard({
   const handleEnrich = async (e: React.MouseEvent) => {
     e.stopPropagation();
     if (!onEnrich || enriching) return;
+    SoundFX.play('click');
     setEnriching(true);
     try {
       await onEnrich(lead.id);
+      SoundFX.play('success');
     } finally {
       setEnriching(false);
     }
@@ -123,9 +127,11 @@ export const KanbanCard = React.memo(function KanbanCard({
   const handleConvert = async (e: React.MouseEvent) => {
     e.stopPropagation();
     if (!onConvert || converting) return;
+    SoundFX.play('click');
     setConverting(true);
     try {
       await onConvert(lead.id);
+      SoundFX.play('success');
     } finally {
       setConverting(false);
     }
@@ -133,6 +139,7 @@ export const KanbanCard = React.memo(function KanbanCard({
 
   const handleCheckboxClick = (e: React.MouseEvent) => {
     e.stopPropagation();
+    SoundFX.play('click');
     onToggleSelect?.(lead.id);
   };
 
@@ -140,19 +147,27 @@ export const KanbanCard = React.memo(function KanbanCard({
     <div
       ref={setNodeRef}
       style={style}
-      className={`bg-surface rounded-2xl border transition-colors group relative ${
+      onMouseEnter={() => SoundFX.play('hover')}
+      className={`bg-surface-elevated/90 backdrop-blur-md rounded-2xl border transition-all duration-200 group relative overflow-hidden ${
         isSelected
-          ? 'border-brand ring-2 ring-brand shadow-lg bg-surface-2/70'
-          : 'border-line shadow-md hover:border-brand/50 dark:hover:border-brand-2/50 hover:shadow-xl'
-      } ${isDragging ? 'shadow-2xl ring-2 ring-brand dark:ring-brand-2 z-50 bg-surface-2' : ''}`}
+          ? 'border-brand ring-2 ring-brand shadow-[0_0_20px_rgba(212,175,55,0.25)] bg-surface-2/80'
+          : isHighPriority
+            ? 'border-brand/40 shadow-card hover:border-brand hover:shadow-card-hover hover:-translate-y-0.5'
+            : 'border-line/80 shadow-sm hover:border-brand/40 hover:shadow-card hover:-translate-y-0.5'
+      } ${isDragging ? 'shadow-2xl ring-2 ring-brand dark:ring-brand-2 z-50 scale-105 rotate-1 bg-surface-2' : ''}`}
     >
+      {/* Luz especular de topo para leads de alta relevância */}
+      {isHighPriority && (
+        <div className="absolute top-0 inset-x-3 h-[1.5px] bg-gradient-to-r from-transparent via-brand/60 to-transparent pointer-events-none rounded-t-2xl" />
+      )}
+
       {/* Checkbox de seleção múltipla (visível no hover ou quando selectionMode está ativo) */}
       {(selectionMode || isSelected) && (
         <button
           type="button"
           onClick={handleCheckboxClick}
           aria-label={isSelected ? `Desmarcar ${companyName}` : `Selecionar ${companyName}`}
-          className="absolute top-3 left-3 z-20 p-1 rounded-lg bg-surface border border-line text-brand hover:scale-110 transition-transform shadow-sm"
+          className="absolute top-3 left-3 z-20 p-1 rounded-lg bg-surface border border-line text-brand hover:scale-110 active:scale-95 transition-all shadow-sm"
         >
           {isSelected ? (
             <CheckSquare className="w-4 h-4 text-brand fill-brand/20" />
@@ -170,10 +185,16 @@ export const KanbanCard = React.memo(function KanbanCard({
         {...listeners}
         role="button"
         tabIndex={0}
-        onClick={() => onClick(lead)}
+        onClick={() => {
+          SoundFX.play('click');
+          onClick(lead);
+        }}
         onKeyDown={(e) => {
           listeners?.onKeyDown?.(e);
-          if (e.key === 'Enter') onClick(lead);
+          if (e.key === 'Enter') {
+            SoundFX.play('click');
+            onClick(lead);
+          }
         }}
         className={`p-4 pb-0 cursor-grab active:cursor-grabbing ${selectionMode || isSelected ? 'pl-9' : ''}`}
       >

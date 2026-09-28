@@ -27,6 +27,7 @@ import { BRAND } from '../../../config/brand.js';
 import { PLAYBOOKS } from '../../../config/playbooks.js';
 import { useActivePlaybook } from '../../../hooks/useActivePlaybook.js';
 import { useAssistantChat } from '../../../hooks/useAssistantChat.js';
+import { SoundFX } from '../../../lib/soundEffects.js';
 import { usePlaybookMatrixData } from '../../../hooks/usePlaybookMatrixData.js';
 import { usePlaybookMatrixFilters } from '../../../hooks/usePlaybookMatrixFilters.js';
 import { useRoleplaySimulator } from '../../../hooks/useRoleplaySimulator.js';
@@ -121,12 +122,15 @@ export function FloatingChatbook({ isOpen, onClose }: FloatingChatbookProps) {
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: '100%', opacity: 0 }}
             transition={{ type: 'spring', damping: 25, stiffness: 220 }}
-            className="fixed top-0 right-0 h-full w-[540px] max-w-[95vw] bg-surface border-l border-line shadow-2xl z-[1000] flex flex-col overflow-hidden text-ink"
+            className="fixed top-0 right-0 h-full w-[540px] max-w-[95vw] bg-surface-elevated/95 backdrop-blur-2xl border-l border-line/80 shadow-[0_25px_70px_rgba(0,0,0,0.6)] z-[1000] flex flex-col overflow-hidden text-ink"
           >
+            {/* Linha de luz especular 2026 */}
+            <div className="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-brand to-transparent pointer-events-none z-20" />
+
             {/* Header Superior */}
-            <div className="p-5 border-b border-line bg-surface backdrop-blur-md flex items-center justify-between sticky top-0 z-10">
+            <div className="p-5 border-b border-line/80 bg-surface/70 backdrop-blur-md flex items-center justify-between sticky top-0 z-10">
               <div className="flex items-center gap-3">
-                <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-brand to-brand-2 flex items-center justify-center text-on-brand shadow-lg shadow-brand/20">
+                <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-brand via-brand-2 to-brand flex items-center justify-center text-on-brand shadow-[0_0_20px_rgba(212,175,55,0.35)]">
                   <Bot className="w-6 h-6" />
                 </div>
                 <div>
@@ -134,10 +138,6 @@ export function FloatingChatbook({ isOpen, onClose }: FloatingChatbookProps) {
                     <h2 className="font-extrabold text-base text-ink tracking-tight">
                       {BRAND.shortName} Copilot
                     </h2>
-                    {/* bg-emerald-500/20 text-emerald-300 cru (contra bg-surface, tema claro) dava
-                        contraste ainda pior que o achado do axe-core em ChatbookHub.tsx (mesmo badge,
-                        mesma superfície) — mesmo padrão de badge "soft" já usado em Badge.tsx
-                        (variant="success"). */}
                     <span className="text-[10px] px-2 py-0.5 rounded-full bg-success/15 text-success-active dark:text-success font-bold border border-success/30">
                       Groq IA
                     </span>
@@ -150,48 +150,60 @@ export function FloatingChatbook({ isOpen, onClose }: FloatingChatbookProps) {
 
               <button
                 type="button"
-                onClick={onClose}
+                onClick={() => {
+                  SoundFX.play('click');
+                  onClose();
+                }}
                 aria-label="Fechar assistente"
-                className="p-2 text-ink-2 hover:text-ink hover:bg-surface-2 rounded-xl transition-colors outline-none focus-visible:ring-2 focus-visible:ring-brand"
+                className="p-2 text-ink-2 hover:text-ink hover:bg-surface-2 rounded-xl transition-all hover:scale-110 active:scale-95 outline-none focus-visible:ring-2 focus-visible:ring-brand"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             {/* Selector de 3 Abas Principais */}
-            <div className="flex border-b border-line bg-surface-2 p-1">
+            <div className="flex border-b border-line/80 bg-surface-2/60 p-1.5 gap-1">
               <button
                 type="button"
-                onClick={() => setActiveTab('assistant')}
+                onClick={() => {
+                  SoundFX.play('focus');
+                  setActiveTab('assistant');
+                }}
                 aria-pressed={activeTab === 'assistant'}
-                className={`flex-1 py-2.5 rounded-xl text-xs font-bold transition-colors flex items-center justify-center gap-2 cursor-pointer ${
+                className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
                   activeTab === 'assistant'
-                    ? 'bg-brand-active text-on-brand shadow-md font-extrabold'
-                    : 'text-ink-2 hover:text-ink'
+                    ? 'bg-brand text-on-brand shadow-[0_0_12px_rgba(212,175,55,0.3)] font-extrabold scale-[1.02]'
+                    : 'text-ink-2 hover:text-ink hover:bg-surface-2'
                 }`}
               >
                 <Globe className="w-4 h-4" /> Assistente IA
               </button>
               <button
                 type="button"
-                onClick={() => setActiveTab('roleplay')}
+                onClick={() => {
+                  SoundFX.play('focus');
+                  setActiveTab('roleplay');
+                }}
                 aria-pressed={activeTab === 'roleplay'}
-                className={`flex-1 py-2.5 rounded-xl text-xs font-bold transition-colors flex items-center justify-center gap-2 cursor-pointer ${
+                className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
                   activeTab === 'roleplay'
-                    ? 'bg-brand-active text-on-brand shadow-md font-extrabold'
-                    : 'text-ink-2 hover:text-ink'
+                    ? 'bg-brand text-on-brand shadow-[0_0_12px_rgba(212,175,55,0.3)] font-extrabold scale-[1.02]'
+                    : 'text-ink-2 hover:text-ink hover:bg-surface-2'
                 }`}
               >
                 <User className="w-4 h-4" /> Roleplay Simulator
               </button>
               <button
                 type="button"
-                onClick={() => setActiveTab('playbook')}
+                onClick={() => {
+                  SoundFX.play('focus');
+                  setActiveTab('playbook');
+                }}
                 aria-pressed={activeTab === 'playbook'}
-                className={`flex-1 py-2.5 rounded-xl text-xs font-bold transition-colors flex items-center justify-center gap-2 cursor-pointer ${
+                className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
                   activeTab === 'playbook'
-                    ? 'bg-brand-active text-on-brand shadow-md font-extrabold'
-                    : 'text-ink-2 hover:text-ink'
+                    ? 'bg-brand text-on-brand shadow-[0_0_12px_rgba(212,175,55,0.3)] font-extrabold scale-[1.02]'
+                    : 'text-ink-2 hover:text-ink hover:bg-surface-2'
                 }`}
               >
                 <Target className="w-4 h-4" /> Matrizes & Objeções
@@ -279,8 +291,11 @@ export function FloatingChatbook({ isOpen, onClose }: FloatingChatbookProps) {
 
                 {/* Input Prompt Footer */}
                 <form
-                  onSubmit={handleSendMessage}
-                  className="p-4 border-t border-line bg-surface flex items-center gap-2"
+                  onSubmit={(e) => {
+                    SoundFX.play('click');
+                    handleSendMessage(e);
+                  }}
+                  className="p-4 border-t border-line/80 bg-surface/80 backdrop-blur-md flex items-center gap-2"
                 >
                   <input
                     type="text"
@@ -291,16 +306,18 @@ export function FloatingChatbook({ isOpen, onClose }: FloatingChatbookProps) {
                     }
                     value={inputQuery}
                     onChange={(e) => setInputQuery(e.target.value)}
-                    className="flex-1 px-4 py-2.5 rounded-xl bg-surface-2 text-ink text-xs border border-line focus:outline-none focus:ring-1 focus:ring-brand"
+                    className="flex-1 px-4 py-2.5 rounded-xl bg-surface-2 text-ink text-xs border border-line/80 focus:outline-none focus:ring-1 focus:ring-brand shadow-inner"
                   />
                   <Button
                     type="submit"
+                    variant="cosmic"
+                    shine
                     disabled={isSearching}
                     size="sm"
                     aria-label="Enviar mensagem"
-                    className="px-4 py-2.5 bg-brand-active text-on-brand font-bold cursor-pointer"
+                    className="px-4 py-2.5 font-bold cursor-pointer shrink-0"
                   >
-                    <Send className="w-4 h-4" />
+                    <Send className="w-4 h-4 text-on-brand" />
                   </Button>
                 </form>
               </div>

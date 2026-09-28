@@ -20,6 +20,7 @@ import { BorderBeam } from '../../../components/ui/BorderBeam.js';
 import { Skeleton } from '../../../components/ui/Skeleton.js';
 import { useAuth } from '../../../contexts/AuthContext.js';
 import { useAnalyticsDashboard } from '../../../hooks/useDatabase.js';
+import { SoundFX } from '../../../lib/soundEffects.js';
 
 function greeting() {
   const hour = new Date().getHours();
@@ -97,19 +98,29 @@ export function SinglePageDashboard() {
             <div className="flex items-center gap-3 shrink-0">
               <button
                 type="button"
-                onClick={() => navigate('/app/prospect')}
-                className="group inline-flex items-center gap-2.5 px-4.5 py-2.5 rounded-xl bg-surface-elevated/90 hover:bg-surface-interactive text-ink border border-line shadow-card hover:shadow-card-hover text-xs font-semibold transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
+                onMouseEnter={() => SoundFX.play('hover')}
+                onClick={() => {
+                  SoundFX.play('click');
+                  navigate('/app/prospect');
+                }}
+                className="group inline-flex items-center gap-2.5 px-4.5 py-2.5 rounded-xl bg-surface-elevated/90 hover:bg-surface-interactive text-ink border border-line/80 shadow-card hover:shadow-card-hover text-xs font-semibold transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
               >
                 <Search className="w-4 h-4 text-ink-2 group-hover:text-brand transition-colors" />
                 <span>Prospecção</span>
               </button>
               <button
                 type="button"
-                onClick={() => navigate('/app/crm')}
-                className="group relative inline-flex items-center gap-2.5 px-5 py-2.5 rounded-xl bg-gradient-to-r from-brand to-brand-2 text-on-brand text-xs font-bold transition-all duration-300 shadow-glow-brand hover:brightness-105 hover:-translate-y-0.5 active:translate-y-0 cursor-pointer overflow-hidden"
+                onMouseEnter={() => SoundFX.play('hover')}
+                onClick={() => {
+                  SoundFX.play('confirm');
+                  navigate('/app/crm');
+                }}
+                className="group relative inline-flex items-center gap-2.5 px-5 py-2.5 rounded-xl bg-gradient-to-r from-brand via-brand-2 to-brand text-on-brand text-xs font-bold transition-all duration-300 shadow-[0_4px_20px_rgba(212,175,55,0.4)] hover:brightness-105 hover:-translate-y-0.5 active:translate-y-0 cursor-pointer overflow-hidden"
               >
-                <Sparkles className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                <span>Novo Negócio</span>
+                {/* Luz especular interna */}
+                <div className="absolute top-0 inset-x-0 h-1/2 bg-white/20 rounded-t-xl pointer-events-none" />
+                <Sparkles className="w-4 h-4 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-300 relative z-10" />
+                <span className="relative z-10">Novo Negócio</span>
               </button>
             </div>
           </div>
@@ -213,7 +224,11 @@ export function SinglePageDashboard() {
                 </span>
                 <button
                   type="button"
-                  onClick={() => navigate(totalLeads > 0 ? '/app/crm' : '/app/prospect')}
+                  onMouseEnter={() => SoundFX.play('hover')}
+                  onClick={() => {
+                    SoundFX.play('click');
+                    navigate(totalLeads > 0 ? '/app/crm' : '/app/prospect');
+                  }}
                   className="inline-flex items-center gap-1.5 text-xs font-bold text-white hover:text-gold transition-colors cursor-pointer group"
                 >
                   <span>{totalLeads > 0 ? 'Ver Pipeline Completo' : 'Iniciar Prospecção'}</span>
@@ -381,7 +396,11 @@ export function SinglePageDashboard() {
               <div className="flex items-center gap-3 shrink-0">
                 <button
                   type="button"
-                  onClick={() => navigate('/app/intelligence')}
+                  onMouseEnter={() => SoundFX.play('hover')}
+                  onClick={() => {
+                    SoundFX.play('click');
+                    navigate('/app/intelligence');
+                  }}
                   className="group inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-surface hover:bg-surface-interactive text-ink border border-line text-xs font-semibold transition-all hover:shadow-card hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
                 >
                   <LineChart className="w-4 h-4 text-brand" />
@@ -389,11 +408,17 @@ export function SinglePageDashboard() {
                 </button>
                 <button
                   type="button"
-                  onClick={() => navigate(totalLeads > 0 ? '/app/crm' : '/app/prospect')}
-                  className="group relative inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-brand to-brand-2 text-on-brand text-xs font-bold transition-all duration-300 shadow-glow-brand hover:brightness-105 hover:-translate-y-0.5 active:translate-y-0 cursor-pointer overflow-hidden"
+                  onMouseEnter={() => SoundFX.play('hover')}
+                  onClick={() => {
+                    SoundFX.play('confirm');
+                    navigate(totalLeads > 0 ? '/app/crm' : '/app/prospect');
+                  }}
+                  className="group relative inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-brand via-brand-2 to-brand text-on-brand text-xs font-bold transition-all duration-300 shadow-[0_4px_20px_rgba(212,175,55,0.4)] hover:brightness-105 hover:-translate-y-0.5 active:translate-y-0 cursor-pointer overflow-hidden"
                 >
-                  <Zap className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                  <span>{totalLeads > 0 ? 'Agir nos Deals' : 'Prospectar Agora'}</span>
+                  {/* Luz especular interna */}
+                  <div className="absolute top-0 inset-x-0 h-1/2 bg-white/20 rounded-t-xl pointer-events-none" />
+                  <Zap className="w-4 h-4 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-300 relative z-10" />
+                  <span className="relative z-10">{totalLeads > 0 ? 'Agir nos Deals' : 'Prospectar Agora'}</span>
                 </button>
               </div>
             </div>
