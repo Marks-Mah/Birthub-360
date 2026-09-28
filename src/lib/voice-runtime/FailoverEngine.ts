@@ -14,7 +14,6 @@ export interface FailoverResult<T> {
 }
 
 export class FailoverEngine {
-
   public async executeWithFailover<T>(
     sessionId: string,
     operationName: string,
@@ -22,9 +21,8 @@ export class FailoverEngine {
     type: 'STT' | 'LLM' | 'TTS' | 'E2E',
     fallbacks: string[],
     operation: (provider: BaseProvider) => Promise<T>,
-    tenantId?: string
+    tenantId?: string,
   ): Promise<FailoverResult<T>> {
-
     let currentProviderId = preferredProviderId;
     const attempts = [preferredProviderId, ...fallbacks];
     const failedProviders: string[] = [];
@@ -39,9 +37,8 @@ export class FailoverEngine {
           result,
           providerUsed: currentProviderId,
           usedFallback: i > 0,
-          failedProviders
+          failedProviders,
         };
-
       } catch (error: unknown) {
         const message = error instanceof Error ? error.message : String(error);
         failedProviders.push(attempts[i]);
@@ -54,13 +51,13 @@ export class FailoverEngine {
           operation: operationName,
           failedProvider: attempts[i],
           error: message,
-          nextProvider: attempts[i + 1] || 'NONE'
+          nextProvider: attempts[i + 1] || 'NONE',
         });
         const failSpan = otelCollector.startLocalSpan(
           `FailoverEngine.${operationName}.attempt`,
           sessionId,
           { provider: attempts[i], type },
-          tenantId
+          tenantId,
         );
         otelCollector.endLocalSpan(failSpan, { error: message, failed: true });
 

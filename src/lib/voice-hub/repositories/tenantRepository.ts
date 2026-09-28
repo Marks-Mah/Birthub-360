@@ -13,6 +13,9 @@ export function findTenantById(id: string) {
 // `Tenant` (see prisma/schema.prisma), so a platform-wide event with no tenant cannot be persisted
 // there directly; this returns only the ids of tenants that still have a real row to attach to.
 export async function listActiveTenantIds(): Promise<string[]> {
-  const tenants = await prisma.tenant.findMany({ where: { deletedAt: null }, select: { id: true } });
+  const tenants = await prisma.tenant.findMany({
+    where: { deletedAt: null },
+    select: { id: true },
+  });
   return tenants.map((t) => t.id);
 }

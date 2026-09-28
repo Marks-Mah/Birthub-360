@@ -17,16 +17,20 @@ import {
 } from './workflowRuntimeService.js';
 import { logger } from '../../../lib/logger.js';
 
-const DEFAULT_GREETING = 'Olá! Aqui é a assistente virtual do Birth Voices Hub. Como posso ajudar você hoje?';
+const DEFAULT_GREETING =
+  'Olá! Aqui é a assistente virtual do Birth Voices Hub. Como posso ajudar você hoje?';
 const DEFAULT_OUTBOUND_GREETING =
   'Olá! Aqui é a assistente virtual do Birth Voices Hub. Você tem um minuto para conversarmos?';
 const DEFAULT_SYSTEM_PROMPT =
   'Você é uma assistente de voz do Birth Voices Hub, especializada em atendimento e qualificação de contatos. ' +
   'Seja acolhedora, clara e objetiva nas respostas, adequadas para serem faladas em voz alta.';
 const REPROMPT_MESSAGE = 'Desculpe, não consegui ouvir. Pode repetir, por favor?';
-const GOODBYE_MESSAGE = 'Não foi possível captar sua resposta. Vamos encerrar por aqui, tente novamente em instantes.';
-const TOOL_CHAIN_ERROR_MESSAGE = 'Desculpe, não consegui concluir essa etapa agora. Vamos encerrar por aqui, tente novamente em instantes.';
-const TRANSFER_MISSING_DETAILS_MESSAGE = 'Desculpe, não foi possível transferir sua ligação agora. Vamos encerrar por aqui, tente novamente em instantes.';
+const GOODBYE_MESSAGE =
+  'Não foi possível captar sua resposta. Vamos encerrar por aqui, tente novamente em instantes.';
+const TOOL_CHAIN_ERROR_MESSAGE =
+  'Desculpe, não consegui concluir essa etapa agora. Vamos encerrar por aqui, tente novamente em instantes.';
+const TRANSFER_MISSING_DETAILS_MESSAGE =
+  'Desculpe, não foi possível transferir sua ligação agora. Vamos encerrar por aqui, tente novamente em instantes.';
 // Defensive bound on consecutive `tool` nodes resolved in a single turn (see
 // `resolvePreparedTurn` below). `resumeAfterTool` never loops on its own — this only guards
 // against a corrupted/cyclical published graph turning one Twilio webhook request into an
@@ -89,15 +93,21 @@ export async function startCall(params: { callSid: string; from: string; to: str
     return { configured: false as const };
   }
 
-  const workflow = await initializeWorkflowRuntime(agent.organizationId, {
-    direction: 'inbound',
-    from: params.from,
-    to: params.to,
-  }, agent.id);
+  const workflow = await initializeWorkflowRuntime(
+    agent.organizationId,
+    {
+      direction: 'inbound',
+      from: params.from,
+      to: params.to,
+    },
+    agent.id,
+  );
 
   const configuredGreeting = configString(agent.configuration, 'greeting', DEFAULT_GREETING);
   const openingQuestion = getWorkflowOpeningQuestion(workflow);
-  const greeting = openingQuestion ? `${configuredGreeting} ${openingQuestion}` : configuredGreeting;
+  const greeting = openingQuestion
+    ? `${configuredGreeting} ${openingQuestion}`
+    : configuredGreeting;
 
   // Persist the opening prompt as part of the transcript. Besides making transcripts complete, it
   // lets a Twilio retry return the exact same first response from the existing CallSid session.
@@ -146,7 +156,9 @@ export async function startOutboundCall(params: { sessionId: string; callSid: st
   const agent = await agentRepository.findAgentById(session.agentId);
   if (!agent) return { found: false as const };
 
-  const metadata = (session.metadata as unknown as PhoneSessionMetadata) || ({ turns: [] } as unknown as PhoneSessionMetadata);
+  const metadata =
+    (session.metadata as unknown as PhoneSessionMetadata) ||
+    ({ turns: [] } as unknown as PhoneSessionMetadata);
   metadata.turns = metadata.turns || [];
 
   // Twilio may retry the outbound TwiML request. Once this CallSid has already been bound to the
@@ -159,12 +171,16 @@ export async function startOutboundCall(params: { sessionId: string; callSid: st
     }
   }
 
-  const workflow = await initializeWorkflowRuntime(session.organizationId, {
-    direction: 'outbound',
-    from: metadata.from ?? '',
-    to: metadata.to ?? '',
-    ...(metadata.context ?? {}),
-  }, agent.id);
+  const workflow = await initializeWorkflowRuntime(
+    session.organizationId,
+    {
+      direction: 'outbound',
+      from: metadata.from ?? '',
+      to: metadata.to ?? '',
+      ...(metadata.context ?? {}),
+    },
+    agent.id,
+  );
   if (workflow) metadata.workflow = workflow;
 
   const baseGreeting = renderTemplate(
@@ -177,7 +193,9 @@ export async function startOutboundCall(params: { sessionId: string; callSid: st
   metadata.turns.push({ role: 'assistant', content: greeting, timestamp: Date.now() });
   if (params.callSid) metadata.callSid = params.callSid;
 
-  await sessionRepository.updateSession(session.id, { metadata: metadata as unknown as Prisma.InputJsonValue });
+  await sessionRepository.updateSession(session.id, {
+    metadata: metadata as unknown as Prisma.InputJsonValue,
+  });
 
   return { found: true as const, greeting };
 }
@@ -207,7 +225,12 @@ async function resolvePreparedTurn(prepared: PreparedWorkflowTurn): Promise<Prep
         workflowId: current.state.workflowId,
         currentNodeId: current.state.currentNodeId,
       });
-      return { state: current.state, mode: 'direct', directReply: TOOL_CHAIN_ERROR_MESSAGE, shouldEnd: true };
+      return {
+        state: current.state,
+        mode: 'direct',
+        directReply: TOOL_CHAIN_ERROR_MESSAGE,
+        shouldEnd: true,
+      };
     }
 
     const pendingNode = current.state.nodes.find(
@@ -219,7 +242,12 @@ async function resolvePreparedTurn(prepared: PreparedWorkflowTurn): Promise<Prep
         workflowId: current.state.workflowId,
         currentNodeId: current.state.currentNodeId,
       });
-      return { state: current.state, mode: 'direct', directReply: TOOL_CHAIN_ERROR_MESSAGE, shouldEnd: true };
+      return {
+        state: current.state,
+        mode: 'direct',
+        directReply: TOOL_CHAIN_ERROR_MESSAGE,
+        shouldEnd: true,
+      };
     }
 
     // Sequential by necessity: each tool's result may feed the graph position/variables the next
@@ -239,7 +267,13 @@ async function resolvePreparedTurn(prepared: PreparedWorkflowTurn): Promise<Prep
 // unchanged. See `.agents/handoffs/onda-6/04-para-05-voiceOverride-contrato.md` and
 // `.agents/handoffs/onda-6/04-para-05-transferDetails-contrato.md`.
 export type HandleTurnResult =
-  | { found: false; reply?: undefined; shouldEnd?: undefined; voiceOverride?: undefined; transferDetails?: undefined }
+  | {
+      found: false;
+      reply?: undefined;
+      shouldEnd?: undefined;
+      voiceOverride?: undefined;
+      transferDetails?: undefined;
+    }
   | {
       found: true;
       reply: string;
@@ -255,9 +289,10 @@ export type HandleTurnResult =
       transferDetails?: TransferDetails;
     };
 
-export async function handleTurn(
-  params: { sessionId: string; speechResult: string },
-): Promise<HandleTurnResult> {
+export async function handleTurn(params: {
+  sessionId: string;
+  speechResult: string;
+}): Promise<HandleTurnResult> {
   const session = await sessionRepository.findSessionById(params.sessionId);
   if (!session?.agentId) return { found: false as const };
 
@@ -278,7 +313,9 @@ export async function handleTurn(
     // node mid-call (see `.agents/handoffs/onda-6/04-para-05-tool-pending-contrato.md`);
     // `resolvePreparedTurn` drives it to a terminal `'llm'`/`'direct'`/`'transfer'` mode before this
     // function decides how to reply, exactly as it would for the original synchronous result.
-    const prepared = await resolvePreparedTurn(prepareWorkflowTurn(metadata.workflow, params.speechResult));
+    const prepared = await resolvePreparedTurn(
+      prepareWorkflowTurn(metadata.workflow, params.speechResult),
+    );
     voiceOverride = prepared.voiceOverride;
 
     if (prepared.mode === 'transfer') {
@@ -303,10 +340,13 @@ export async function handleTurn(
         // Defensive only: the contract guarantees `transferDetails` is always present when
         // `mode === 'transfer'` — a missing one here would be a bug in `workflowRuntimeService.ts`
         // (Agente 04's domain), never a case to paper over with an invented destination number.
-        logger.error('transfer mode without transferDetails; ending the call instead of guessing a destination', {
-          workflowId: prepared.state.workflowId,
-          currentNodeId: prepared.state.currentNodeId,
-        });
+        logger.error(
+          'transfer mode without transferDetails; ending the call instead of guessing a destination',
+          {
+            workflowId: prepared.state.workflowId,
+            currentNodeId: prepared.state.currentNodeId,
+          },
+        );
         reply = TRANSFER_MISSING_DETAILS_MESSAGE;
         shouldEnd = true;
       }
@@ -315,8 +355,9 @@ export async function handleTurn(
       reply = prepared.directReply || 'Pode continuar.';
       shouldEnd = prepared.shouldEnd;
     } else {
-      const systemInstruction = prepared.systemInstruction
-        || configString(agent.configuration, 'systemPrompt', DEFAULT_SYSTEM_PROMPT);
+      const systemInstruction =
+        prepared.systemInstruction ||
+        configString(agent.configuration, 'systemPrompt', DEFAULT_SYSTEM_PROMPT);
       const preferredProvider = prepared.preferredProvider ?? 'GoogleGemini';
       const gatewayResponse = await llmProviderGateway.processRequest(
         params.speechResult,
@@ -336,7 +377,11 @@ export async function handleTurn(
       }
     }
   } else {
-    const systemInstruction = configString(agent.configuration, 'systemPrompt', DEFAULT_SYSTEM_PROMPT);
+    const systemInstruction = configString(
+      agent.configuration,
+      'systemPrompt',
+      DEFAULT_SYSTEM_PROMPT,
+    );
     const gatewayResponse = await llmProviderGateway.processRequest(
       params.speechResult,
       'GoogleGemini',
@@ -348,7 +393,9 @@ export async function handleTurn(
 
   metadata.turns.push({ role: 'assistant', content: reply, timestamp: Date.now() });
 
-  await sessionRepository.updateSession(session.id, { metadata: metadata as unknown as Prisma.InputJsonValue });
+  await sessionRepository.updateSession(session.id, {
+    metadata: metadata as unknown as Prisma.InputJsonValue,
+  });
 
   return { found: true as const, reply, shouldEnd, voiceOverride, transferDetails };
 }
@@ -367,19 +414,29 @@ const TWILIO_STATUS_TO_CALL_LOG: Record<string, string> = {
   canceled: 'Cancelada',
 };
 
-export async function endCall(params: { callSid: string; status: string; durationSeconds: number }) {
+export async function endCall(params: {
+  callSid: string;
+  status: string;
+  durationSeconds: number;
+}) {
   const session = await sessionRepository.findActivePhoneSessionByCallSid(params.callSid);
   if (!session) return { found: false as const };
 
-  await sessionRepository.updateSession(session.id, { status: params.status === 'completed' ? 'completed' : 'failed' });
+  await sessionRepository.updateSession(session.id, {
+    status: params.status === 'completed' ? 'completed' : 'failed',
+  });
 
   const agent = session.agentId ? await agentRepository.findAgentById(session.agentId) : null;
-  const metadata = (session.metadata as unknown as PhoneSessionMetadata) || ({ turns: [] } as unknown as PhoneSessionMetadata);
+  const metadata =
+    (session.metadata as unknown as PhoneSessionMetadata) ||
+    ({ turns: [] } as unknown as PhoneSessionMetadata);
   const outcome = TWILIO_STATUS_TO_CALL_LOG[params.status] || params.status;
   const isOutbound = metadata.direction === 'outbound';
 
   await callLogService.createCallLog(session.organizationId, null, {
-    contactName: isOutbound ? String(metadata.context?.name ?? metadata.to ?? 'Ligação Telefônica') : 'Ligação Telefônica',
+    contactName: isOutbound
+      ? String(metadata.context?.name ?? metadata.to ?? 'Ligação Telefônica')
+      : 'Ligação Telefônica',
     duration: formatDuration(params.durationSeconds),
     status: outcome,
     agent: agent?.name || 'Agente não identificado',

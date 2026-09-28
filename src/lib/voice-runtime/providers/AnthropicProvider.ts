@@ -19,7 +19,7 @@ export class AnthropicProvider extends BaseProvider {
     }
 
     const start = Date.now();
-    const systemMessage = context ? JSON.stringify(context) : "Você é um assistente de voz.";
+    const systemMessage = context ? JSON.stringify(context) : 'Você é um assistente de voz.';
 
     try {
       const res = await fetch('https://api.anthropic.com/v1/messages', {
@@ -27,16 +27,14 @@ export class AnthropicProvider extends BaseProvider {
         headers: {
           'Content-Type': 'application/json',
           'x-api-key': apiKey,
-          'anthropic-version': '2023-06-01'
+          'anthropic-version': '2023-06-01',
         },
         body: JSON.stringify({
           model: 'claude-3-5-sonnet-20241022',
           system: systemMessage,
-          messages: [
-            { role: 'user', content: String(input) }
-          ],
-          max_tokens: 1024
-        })
+          messages: [{ role: 'user', content: String(input) }],
+          max_tokens: 1024,
+        }),
       });
 
       if (!res.ok) {
@@ -51,7 +49,7 @@ export class AnthropicProvider extends BaseProvider {
 
       return {
         text,
-        latencyMs: Date.now() - start
+        latencyMs: Date.now() - start,
       };
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);

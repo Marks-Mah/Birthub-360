@@ -114,9 +114,17 @@ describe('telephonyService.handleTurn — human_handoff transfer', () => {
   it('does not call the LLM gateway and surfaces transferDetails on a mode: "transfer" turn', async () => {
     const state = workflowState({ currentNodeId: 'handoff-1' });
 
-    mockFindSessionById.mockResolvedValue(session({
-      metadata: { callSid: 'CA123', from: '+1000', to: '+15551234567', turns: [], workflow: workflowState() },
-    }));
+    mockFindSessionById.mockResolvedValue(
+      session({
+        metadata: {
+          callSid: 'CA123',
+          from: '+1000',
+          to: '+15551234567',
+          turns: [],
+          workflow: workflowState(),
+        },
+      }),
+    );
     mockFindById.mockResolvedValue(agent());
     mockPrepareWorkflowTurn.mockReturnValue({
       state,
@@ -130,7 +138,10 @@ describe('telephonyService.handleTurn — human_handoff transfer', () => {
       },
     });
 
-    const result = await handleTurn({ sessionId: 'sess-1', speechResult: 'Quero falar com um atendente' });
+    const result = await handleTurn({
+      sessionId: 'sess-1',
+      speechResult: 'Quero falar com um atendente',
+    });
 
     expect(mockProcessRequest).not.toHaveBeenCalled();
     expect(result).toEqual({
@@ -146,16 +157,26 @@ describe('telephonyService.handleTurn — human_handoff transfer', () => {
       },
     });
 
-    const persisted = mockUpdateSession.mock.calls[0][1].metadata as unknown as { workflow: WorkflowRuntimeState };
+    const persisted = mockUpdateSession.mock.calls[0][1].metadata as unknown as {
+      workflow: WorkflowRuntimeState;
+    };
     expect(persisted.workflow.currentNodeId).toBe('handoff-1');
   });
 
   it('propagates a department label as-is, without resolving it to any number', async () => {
     const state = workflowState({ currentNodeId: 'handoff-1' });
 
-    mockFindSessionById.mockResolvedValue(session({
-      metadata: { callSid: 'CA123', from: '+1000', to: '+15551234567', turns: [], workflow: workflowState() },
-    }));
+    mockFindSessionById.mockResolvedValue(
+      session({
+        metadata: {
+          callSid: 'CA123',
+          from: '+1000',
+          to: '+15551234567',
+          turns: [],
+          workflow: workflowState(),
+        },
+      }),
+    );
     mockFindById.mockResolvedValue(agent());
     mockPrepareWorkflowTurn.mockReturnValue({
       state,
@@ -170,7 +191,10 @@ describe('telephonyService.handleTurn — human_handoff transfer', () => {
       },
     });
 
-    const result = await handleTurn({ sessionId: 'sess-1', speechResult: 'Preciso de suporte técnico' });
+    const result = await handleTurn({
+      sessionId: 'sess-1',
+      speechResult: 'Preciso de suporte técnico',
+    });
 
     expect(result.transferDetails).toEqual({
       to: '+5511988887777',
@@ -185,11 +209,23 @@ describe('telephonyService.handleTurn — human_handoff transfer', () => {
     const pendingState = workflowState({ currentNodeId: 'tool-1', nodes: [toolNode('tool-1')] });
     const transferState = workflowState({ currentNodeId: 'handoff-1', nodes: [] });
 
-    mockFindSessionById.mockResolvedValue(session({
-      metadata: { callSid: 'CA123', from: '+1000', to: '+15551234567', turns: [], workflow: workflowState({ currentNodeId: 'tool-1', nodes: [toolNode('tool-1')] }) },
-    }));
+    mockFindSessionById.mockResolvedValue(
+      session({
+        metadata: {
+          callSid: 'CA123',
+          from: '+1000',
+          to: '+15551234567',
+          turns: [],
+          workflow: workflowState({ currentNodeId: 'tool-1', nodes: [toolNode('tool-1')] }),
+        },
+      }),
+    );
     mockFindById.mockResolvedValue(agent());
-    mockPrepareWorkflowTurn.mockReturnValue({ state: pendingState, mode: 'tool_pending', shouldEnd: false });
+    mockPrepareWorkflowTurn.mockReturnValue({
+      state: pendingState,
+      mode: 'tool_pending',
+      shouldEnd: false,
+    });
     mockResumeAfterTool.mockResolvedValue({
       state: transferState,
       mode: 'transfer',
@@ -202,7 +238,10 @@ describe('telephonyService.handleTurn — human_handoff transfer', () => {
       },
     });
 
-    const result = await handleTurn({ sessionId: 'sess-1', speechResult: 'Verifica meu pedido e me transfere' });
+    const result = await handleTurn({
+      sessionId: 'sess-1',
+      speechResult: 'Verifica meu pedido e me transfere',
+    });
 
     expect(mockResumeAfterTool).toHaveBeenCalledTimes(1);
     expect(result.found).toBe(true);
@@ -213,9 +252,17 @@ describe('telephonyService.handleTurn — human_handoff transfer', () => {
   it('ends the call honestly instead of inventing a destination if transferDetails is ever missing on a transfer turn', async () => {
     const state = workflowState({ currentNodeId: 'handoff-1' });
 
-    mockFindSessionById.mockResolvedValue(session({
-      metadata: { callSid: 'CA123', from: '+1000', to: '+15551234567', turns: [], workflow: workflowState() },
-    }));
+    mockFindSessionById.mockResolvedValue(
+      session({
+        metadata: {
+          callSid: 'CA123',
+          from: '+1000',
+          to: '+15551234567',
+          turns: [],
+          workflow: workflowState(),
+        },
+      }),
+    );
     mockFindById.mockResolvedValue(agent());
     // Defensive case only — the real contract guarantees `transferDetails` is always present when
     // `mode === 'transfer'`; this simulates a contract violation to prove we never guess a number.

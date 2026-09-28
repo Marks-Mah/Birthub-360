@@ -80,7 +80,7 @@ function toMetadata(row: apiKeyRepository.SafeApiKey): ApiKeyMetadata {
 export async function createApiKeyForTenant(
   organizationId: string,
   createdByUserId: string,
-  data: { name: string; expiresAt?: Date | null }
+  data: { name: string; expiresAt?: Date | null },
 ): Promise<CreatedApiKey> {
   const plaintextKey = generateApiKeySecret();
   const keyHash = hashApiKey(plaintextKey);
@@ -112,7 +112,10 @@ export async function listApiKeysForTenant(organizationId: string): Promise<ApiK
 // existence of — a key belonging to tenant B (AGENTS.md §15). Idempotent: revoking an
 // already-revoked key succeeds without error rather than surfacing a confusing double-revoke
 // failure to the caller.
-export async function revokeApiKeyForTenant(organizationId: string, id: string): Promise<ApiKeyMetadata> {
+export async function revokeApiKeyForTenant(
+  organizationId: string,
+  id: string,
+): Promise<ApiKeyMetadata> {
   const existing = await apiKeyRepository.findApiKeyForTenant(id, organizationId);
   if (!existing) {
     throw new ApiKeyServiceError('Chave de API não encontrada.', 404);

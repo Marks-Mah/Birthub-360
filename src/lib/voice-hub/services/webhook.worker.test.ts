@@ -14,7 +14,10 @@ const mockOn = vi.fn();
 let lastProcessor: ((job: { data: unknown; id?: string }) => unknown) | undefined;
 
 vi.mock('bullmq', () => ({
-  Worker: vi.fn().mockImplementation(function Worker(_name: string, processor: (job: unknown) => unknown) {
+  Worker: vi.fn().mockImplementation(function Worker(
+    _name: string,
+    processor: (job: unknown) => unknown,
+  ) {
     lastProcessor = processor as (job: { data: unknown; id?: string }) => unknown;
     return { on: mockOn };
   }),
@@ -77,7 +80,10 @@ describe('webhook.worker SSRF defense', () => {
     expect(lastProcessor).toBeDefined();
 
     await expect(
-      lastProcessor!({ id: 'job-1', data: { url: 'https://169.254.169.254/latest/meta-data', payload: makePayload() } }),
+      lastProcessor!({
+        id: 'job-1',
+        data: { url: 'https://169.254.169.254/latest/meta-data', payload: makePayload() },
+      }),
     ).rejects.toThrow(MockUnrecoverableError);
 
     expect(mockFetch).not.toHaveBeenCalled();
@@ -88,7 +94,10 @@ describe('webhook.worker SSRF defense', () => {
     startWebhookWorker();
 
     await expect(
-      lastProcessor!({ id: 'job-2', data: { url: 'http://example.com/hook', payload: makePayload() } }),
+      lastProcessor!({
+        id: 'job-2',
+        data: { url: 'http://example.com/hook', payload: makePayload() },
+      }),
     ).rejects.toThrow(MockUnrecoverableError);
     expect(mockFetch).not.toHaveBeenCalled();
   });
@@ -114,7 +123,10 @@ describe('webhook.worker HMAC signing — legacy global secret (no endpointId)',
 
   it('sends unsigned (no header) when WEBHOOK_SIGNING_SECRET is unset', async () => {
     startWebhookWorker();
-    await lastProcessor!({ id: 'job-4', data: { url: 'https://example.com/hook', payload: makePayload() } });
+    await lastProcessor!({
+      id: 'job-4',
+      data: { url: 'https://example.com/hook', payload: makePayload() },
+    });
 
     const [, init] = mockFetch.mock.calls[0];
     expect(init.headers['x-birthvoices-signature']).toBeUndefined();
@@ -122,7 +134,7 @@ describe('webhook.worker HMAC signing — legacy global secret (no endpointId)',
 });
 
 describe('webhook.worker HMAC signing — per-tenant endpoint (endpointId present)', () => {
-  it('resolves the secret by endpointId and signs with THAT endpoint\'s secretHash, not the global one', async () => {
+  it("resolves the secret by endpointId and signs with THAT endpoint's secretHash, not the global one", async () => {
     process.env.WEBHOOK_SIGNING_SECRET = 'deployment-secret-must-not-be-used-here';
     mockFindActiveSigningSecretHash.mockImplementation(async (endpointId: string) =>
       endpointId === 'ep-1' ? 'secret-hash-for-ep-1' : null,
@@ -130,14 +142,21 @@ describe('webhook.worker HMAC signing — per-tenant endpoint (endpointId presen
 
     startWebhookWorker();
     const payload = makePayload();
-    await lastProcessor!({ id: 'job-5', data: { url: 'https://a.example.com/hook', payload, endpointId: 'ep-1' } });
+    await lastProcessor!({
+      id: 'job-5',
+      data: { url: 'https://a.example.com/hook', payload, endpointId: 'ep-1' },
+    });
 
     expect(mockFindActiveSigningSecretHash).toHaveBeenCalledWith('ep-1');
     const [, init] = mockFetch.mock.calls[0];
-    const expected = createHmac('sha256', 'secret-hash-for-ep-1').update(init.body as string).digest('hex');
+    const expected = createHmac('sha256', 'secret-hash-for-ep-1')
+      .update(init.body as string)
+      .digest('hex');
     expect(init.headers['x-birthvoices-signature']).toBe(expected);
     expect(init.headers['x-birthvoices-signature']).not.toBe(
-      createHmac('sha256', 'deployment-secret-must-not-be-used-here').update(init.body as string).digest('hex'),
+      createHmac('sha256', 'deployment-secret-must-not-be-used-here')
+        .update(init.body as string)
+        .digest('hex'),
     );
   });
 
@@ -148,11 +167,17 @@ describe('webhook.worker HMAC signing — per-tenant endpoint (endpointId presen
     startWebhookWorker();
 
     const payload = makePayload();
-    await lastProcessor!({ id: 'job-6', data: { url: 'https://a.example.com/hook', payload, endpointId: 'ep-1' } });
+    await lastProcessor!({
+      id: 'job-6',
+      data: { url: 'https://a.example.com/hook', payload, endpointId: 'ep-1' },
+    });
     const sigForEp1 = mockFetch.mock.calls[0][1].headers['x-birthvoices-signature'];
 
     mockFetch.mockClear();
-    await lastProcessor!({ id: 'job-7', data: { url: 'https://b.example.com/hook', payload, endpointId: 'ep-2' } });
+    await lastProcessor!({
+      id: 'job-7',
+      data: { url: 'https://b.example.com/hook', payload, endpointId: 'ep-2' },
+    });
     const sigForEp2 = mockFetch.mock.calls[0][1].headers['x-birthvoices-signature'];
 
     expect(sigForEp1).not.toBe(sigForEp2);
@@ -163,7 +188,10 @@ describe('webhook.worker HMAC signing — per-tenant endpoint (endpointId presen
     startWebhookWorker();
 
     await expect(
-      lastProcessor!({ id: 'job-8', data: { url: 'https://a.example.com/hook', payload: makePayload(), endpointId: 'gone' } }),
+      lastProcessor!({
+        id: 'job-8',
+        data: { url: 'https://a.example.com/hook', payload: makePayload(), endpointId: 'gone' },
+      }),
     ).rejects.toThrow(MockUnrecoverableError);
     expect(mockFetch).not.toHaveBeenCalled();
   });
@@ -172,7 +200,10 @@ describe('webhook.worker HMAC signing — per-tenant endpoint (endpointId presen
     mockFindActiveSigningSecretHash.mockResolvedValue('some-hash');
     startWebhookWorker();
 
-    await lastProcessor!({ id: 'job-9', data: { url: 'https://a.example.com/hook', payload: makePayload(), endpointId: 'ep-1' } });
+    await lastProcessor!({
+      id: 'job-9',
+      data: { url: 'https://a.example.com/hook', payload: makePayload(), endpointId: 'ep-1' },
+    });
     // recordDeliveryResult is fire-and-forget (.catch(() => undefined)) — flush microtasks.
     await new Promise((resolve) => setTimeout(resolve, 0));
 
@@ -181,7 +212,10 @@ describe('webhook.worker HMAC signing — per-tenant endpoint (endpointId presen
 
   it('never calls recordDeliveryResult for a legacy delivery with no endpointId', async () => {
     startWebhookWorker();
-    await lastProcessor!({ id: 'job-10', data: { url: 'https://example.com/hook', payload: makePayload() } });
+    await lastProcessor!({
+      id: 'job-10',
+      data: { url: 'https://example.com/hook', payload: makePayload() },
+    });
     await new Promise((resolve) => setTimeout(resolve, 0));
 
     expect(mockRecordDeliveryResult).not.toHaveBeenCalled();
@@ -197,7 +231,12 @@ describe('webhook.worker delivery failure bookkeeping', () => {
       err: Error,
     ) => void;
 
-    const job = { id: 'job-11', data: { url: 'https://a.example.com/hook', endpointId: 'ep-1' }, attemptsMade: 5, opts: { attempts: 5 } };
+    const job = {
+      id: 'job-11',
+      data: { url: 'https://a.example.com/hook', endpointId: 'ep-1' },
+      attemptsMade: 5,
+      opts: { attempts: 5 },
+    };
     failedHandler(job, new Error('HTTP 500'));
 
     await new Promise((resolve) => setTimeout(resolve, 0));
@@ -211,7 +250,12 @@ describe('webhook.worker delivery failure bookkeeping', () => {
       err: Error,
     ) => void;
 
-    const job = { id: 'job-12', data: { url: 'https://a.example.com/hook', endpointId: 'ep-1' }, attemptsMade: 2, opts: { attempts: 5 } };
+    const job = {
+      id: 'job-12',
+      data: { url: 'https://a.example.com/hook', endpointId: 'ep-1' },
+      attemptsMade: 2,
+      opts: { attempts: 5 },
+    };
     failedHandler(job, new Error('HTTP 500'));
 
     await new Promise((resolve) => setTimeout(resolve, 0));
@@ -225,7 +269,10 @@ describe('webhook.worker delivery failure propagation (retry, not swallowed)', (
     startWebhookWorker();
 
     await expect(
-      lastProcessor!({ id: 'job-13', data: { url: 'https://example.com/hook', payload: makePayload() } }),
+      lastProcessor!({
+        id: 'job-13',
+        data: { url: 'https://example.com/hook', payload: makePayload() },
+      }),
     ).rejects.toThrow('HTTP 500');
   });
 });

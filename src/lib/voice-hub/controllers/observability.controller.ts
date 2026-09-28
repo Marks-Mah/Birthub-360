@@ -9,6 +9,6 @@ import { otelCollector } from '@/lib/voice-runtime/otel.js';
 export function observabilityMetricsHandler(req: Request, res: Response) {
   return res.json({
     spans: otelCollector.getSpans(req.organizationId!),
-    metrics: otelCollector.getMetrics(req.organizationId!)
+    metrics: otelCollector.getMetrics(req.organizationId!),
   });
 }

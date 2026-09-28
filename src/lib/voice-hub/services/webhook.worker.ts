@@ -27,7 +27,10 @@ function isSafeWebhookUrl(url: string): boolean {
   } catch {
     return false;
   }
-  if (parsed.protocol !== 'https:' && !(parsed.protocol === 'http:' && process.env.NODE_ENV !== 'production')) {
+  if (
+    parsed.protocol !== 'https:' &&
+    !(parsed.protocol === 'http:' && process.env.NODE_ENV !== 'production')
+  ) {
     return false;
   }
   return !isPrivateOrReservedHost(parsed.hostname);
@@ -55,7 +58,9 @@ async function signBody(body: string, endpointId?: string): Promise<string | nul
   if (endpointId) {
     const secretHash = await findActiveSigningSecretHash(endpointId);
     if (!secretHash) {
-      throw new WebhookEndpointGoneError(`Webhook endpoint ${endpointId} no longer exists or is inactive`);
+      throw new WebhookEndpointGoneError(
+        `Webhook endpoint ${endpointId} no longer exists or is inactive`,
+      );
     }
     return createHmac('sha256', secretHash).update(body).digest('hex');
   }
@@ -82,7 +87,9 @@ export function startWebhookWorker() {
         logger.error(
           `[WebhookWorker] Refusing to deliver event ${payload.type} for tenant ${payload.organizationId} (job ${job.id}): target URL is not an allowed public HTTPS endpoint.`,
         );
-        throw new UnrecoverableError('Webhook target URL is not allowed (private/reserved host or disallowed scheme)');
+        throw new UnrecoverableError(
+          'Webhook target URL is not allowed (private/reserved host or disallowed scheme)',
+        );
       }
 
       const body = JSON.stringify(payload);
@@ -138,11 +145,13 @@ export function startWebhookWorker() {
         }
       } catch (error: unknown) {
         const msg = error instanceof Error ? error.message : String(error);
-        logger.error(`[WebhookWorker] Failed to deliver event ${payload.type} to ${url}. Error: ${msg}`);
+        logger.error(
+          `[WebhookWorker] Failed to deliver event ${payload.type} to ${url}. Error: ${msg}`,
+        );
         throw error; // Let BullMQ handle the retry based on backoff config
       }
     },
-    { connection }
+    { connection },
   );
 
   worker.on('failed', (job, err) => {

@@ -29,7 +29,10 @@ import {
 } from '../../../../shared/utils/contact-links.js';
 import { WhatsAppChatPanel } from '../../../integrations/whatsapp/components/WhatsAppChatPanel.js';
 import type { FitScoreResult } from '../../services/enrichment.service.js';
-import type { ProspectCandidate, RequirementEvaluation } from '../../services/prospecting.service.js';
+import type {
+  ProspectCandidate,
+  RequirementEvaluation,
+} from '../../services/prospecting.service.js';
 import { getDecisionMakerLinkedInLink } from '../../utils/linkedin.js';
 import { DecisionMakerSearch } from './DecisionMakerSearch.js';
 

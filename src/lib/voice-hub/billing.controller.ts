@@ -15,11 +15,18 @@ import { createNotification } from '../services/notificationService.js';
 const BILLING_DEFAULT_PAGE_SIZE = 20;
 const BILLING_MAX_PAGE_SIZE = 100;
 
-function parsePagination(rawPage: unknown, rawPageSize: unknown): { page: number; pageSize: number } {
+function parsePagination(
+  rawPage: unknown,
+  rawPageSize: unknown,
+): { page: number; pageSize: number } {
   const page = Math.max(1, Number.parseInt(String(rawPage ?? '1'), 10) || 1);
   const pageSize = Math.min(
     BILLING_MAX_PAGE_SIZE,
-    Math.max(1, Number.parseInt(String(rawPageSize ?? BILLING_DEFAULT_PAGE_SIZE), 10) || BILLING_DEFAULT_PAGE_SIZE)
+    Math.max(
+      1,
+      Number.parseInt(String(rawPageSize ?? BILLING_DEFAULT_PAGE_SIZE), 10) ||
+        BILLING_DEFAULT_PAGE_SIZE,
+    ),
   );
   return { page, pageSize };
 }
@@ -64,9 +71,11 @@ export async function changePlanHandler(req: Request, res: Response) {
       req.organizationId!,
       parsed.data.planId,
       req.user?.id,
-      parsed.data.effectiveAt ?? 'immediate'
+      parsed.data.effectiveAt ?? 'immediate',
     );
-    writeAuditLog(req.organizationId, req.user?.id, 'BILLING_PLAN_CHANGED', { planId: parsed.data.planId });
+    writeAuditLog(req.organizationId, req.user?.id, 'BILLING_PLAN_CHANGED', {
+      planId: parsed.data.planId,
+    });
     // Best-effort: a notification write failing must never fail the plan change itself (the
     // money/plan side-effect already succeeded). See notificationService.ts module doc — this is
     // the first of potentially several domains calling the same generic entry point, not a
@@ -81,7 +90,8 @@ export async function changePlanHandler(req: Request, res: Response) {
     return res.json({ wallet });
   } catch (err: any) {
     if (err instanceof PlanNotFoundError) return res.status(404).json({ error: err.message });
-    if (err instanceof ProrationNotSupportedError) return res.status(400).json({ error: err.message });
+    if (err instanceof ProrationNotSupportedError)
+      return res.status(400).json({ error: err.message });
     throw err;
   }
 }

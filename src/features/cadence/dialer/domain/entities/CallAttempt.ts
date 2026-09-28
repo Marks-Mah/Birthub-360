@@ -9,21 +9,21 @@
  * ser conferidos contra a própria instância antes de ir para produção.
  */
 export type CallAttemptStatus =
-  | "dialing" // makecall foi enviado para o ramal do agente
-  | "ringing_agent" // ramal do agente está tocando
-  | "connected" // agente atendeu e foi conectado ao lead
-  | "completed" // ligação terminou após conexão bem-sucedida
-  | "no_answer" // agente (ou lead) não atendeu dentro do timeout
-  | "busy" // ramal do agente ou número do lead estava ocupado
-  | "agent_unavailable" // nenhum ramal de agente livre no momento do ciclo
-  | "failed"; // erro de API / rejeição da 3CX
+  | 'dialing' // makecall foi enviado para o ramal do agente
+  | 'ringing_agent' // ramal do agente está tocando
+  | 'connected' // agente atendeu e foi conectado ao lead
+  | 'completed' // ligação terminou após conexão bem-sucedida
+  | 'no_answer' // agente (ou lead) não atendeu dentro do timeout
+  | 'busy' // ramal do agente ou número do lead estava ocupado
+  | 'agent_unavailable' // nenhum ramal de agente livre no momento do ciclo
+  | 'failed'; // erro de API / rejeição da 3CX
 
 export const TERMINAL_CALL_ATTEMPT_STATUSES: readonly CallAttemptStatus[] = [
-  "completed",
-  "no_answer",
-  "busy",
-  "agent_unavailable",
-  "failed",
+  'completed',
+  'no_answer',
+  'busy',
+  'agent_unavailable',
+  'failed',
 ];
 
 export interface CallAttemptProps {
@@ -53,7 +53,7 @@ export class CallAttempt {
       leadId: input.leadId,
       campaignId: input.campaignId,
       agentDn: input.agentDn,
-      status: "dialing",
+      status: 'dialing',
       providerCallId: null,
       startedAt: input.now ?? new Date(),
       endedAt: null,

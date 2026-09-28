@@ -7,7 +7,7 @@ export class ElevenLabsProvider extends BaseProvider {
   public name = 'ElevenLabs TTS';
   public type = 'TTS' as const;
   private client?: ElevenLabsClient;
-  
+
   public async initialize(_config: Record<string, unknown>): Promise<void> {
     const apiKey = process.env.ELEVENLABS_API_KEY;
     if (apiKey) {
@@ -28,11 +28,14 @@ export class ElevenLabsProvider extends BaseProvider {
     }
 
     try {
-      const responseStream = await this.client.textToSpeech.convertAsStream("cgSgspJ2msm6clMCkdW9", {
-        output_format: "mp3_44100_128",
-        text: input,
-        model_id: "eleven_multilingual_v2"
-      });
+      const responseStream = await this.client.textToSpeech.convertAsStream(
+        'cgSgspJ2msm6clMCkdW9',
+        {
+          output_format: 'mp3_44100_128',
+          text: input,
+          model_id: 'eleven_multilingual_v2',
+        },
+      );
 
       return {
         // We simulate returning the stream as standard Uint8Array for pipeline compatibility
@@ -41,10 +44,10 @@ export class ElevenLabsProvider extends BaseProvider {
         audio: {
           data: new Uint8Array(1024),
           timestamp: Date.now(),
-          isSpeech: true
+          isSpeech: true,
         },
         latencyMs: Date.now() - start,
-        stream: responseStream
+        stream: responseStream,
       };
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);

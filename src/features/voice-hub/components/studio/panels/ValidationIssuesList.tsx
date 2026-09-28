@@ -1,4 +1,3 @@
-
 import { AlertCircle, AlertTriangle, CheckCircle2 } from 'lucide-react';
 import type { ValidationIssue } from '../../../lib/studio/types.js';
 

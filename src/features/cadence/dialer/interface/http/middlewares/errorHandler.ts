@@ -1,9 +1,9 @@
-import type { NextFunction, Request, Response } from "express";
-import { ZodError } from "zod";
-import type { Logger } from "../../../infrastructure/logger.js";
-import { InvalidCampaignTransitionError } from "../../../domain/entities/Campaign.js";
-import { InvalidPhoneNumberError } from "../../../domain/value-objects/PhoneNumber.js";
-import { CampaignNotFoundError } from "../../../application/use-cases/ManageCampaign.js";
+import type { NextFunction, Request, Response } from 'express';
+import { ZodError } from 'zod';
+import type { Logger } from '../../../infrastructure/logger.js';
+import { InvalidCampaignTransitionError } from '../../../domain/entities/Campaign.js';
+import { InvalidPhoneNumberError } from '../../../domain/value-objects/PhoneNumber.js';
+import { CampaignNotFoundError } from '../../../application/use-cases/ManageCampaign.js';
 
 /**
  * Traduz erros de domínio/aplicação conhecidos em respostas HTTP com o
@@ -19,26 +19,26 @@ export function createErrorHandler(logger: Logger) {
     _next: NextFunction,
   ): void {
     if (error instanceof ZodError) {
-      res.status(400).json({ error: "validation_error", details: error.flatten() });
+      res.status(400).json({ error: 'validation_error', details: error.flatten() });
       return;
     }
 
     if (error instanceof CampaignNotFoundError) {
-      res.status(404).json({ error: "campaign_not_found", message: error.message });
+      res.status(404).json({ error: 'campaign_not_found', message: error.message });
       return;
     }
 
     if (error instanceof InvalidCampaignTransitionError) {
-      res.status(409).json({ error: "invalid_campaign_transition", message: error.message });
+      res.status(409).json({ error: 'invalid_campaign_transition', message: error.message });
       return;
     }
 
     if (error instanceof InvalidPhoneNumberError) {
-      res.status(400).json({ error: "invalid_phone_number", message: error.message });
+      res.status(400).json({ error: 'invalid_phone_number', message: error.message });
       return;
     }
 
-    logger.error({ err: error }, "Erro não tratado ao processar requisição");
-    res.status(500).json({ error: "internal_error" });
+    logger.error({ err: error }, 'Erro não tratado ao processar requisição');
+    res.status(500).json({ error: 'internal_error' });
   };
 }

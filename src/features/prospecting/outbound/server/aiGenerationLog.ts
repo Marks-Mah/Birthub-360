@@ -45,7 +45,9 @@ export interface AiGenerationLogEntry {
 const MAX_LOG_ENTRIES = 500;
 const logBuffer: AiGenerationLogEntry[] = [];
 
-export function recordAiGenerationLog(entry: Omit<AiGenerationLogEntry, 'timestamp'>): AiGenerationLogEntry {
+export function recordAiGenerationLog(
+  entry: Omit<AiGenerationLogEntry, 'timestamp'>,
+): AiGenerationLogEntry {
   const fullEntry: AiGenerationLogEntry = { ...entry, timestamp: new Date().toISOString() };
   logBuffer.push(fullEntry);
   if (logBuffer.length > MAX_LOG_ENTRIES) {
@@ -71,27 +73,41 @@ export function clearAiGenerationLogs(): void {
 // métrica - "log null, never a guess" (ver 18_AGENTE_IA_GUARDRAILS.txt e a
 // tarefa desta wave).
 
-export function extractOllamaTokenUsage(data: any): { promptTokens: number | null; completionTokens: number | null; totalTokens: number | null } {
+export function extractOllamaTokenUsage(data: any): {
+  promptTokens: number | null;
+  completionTokens: number | null;
+  totalTokens: number | null;
+} {
   const promptTokens = typeof data?.prompt_eval_count === 'number' ? data.prompt_eval_count : null;
   const completionTokens = typeof data?.eval_count === 'number' ? data.eval_count : null;
-  const totalTokens = promptTokens !== null && completionTokens !== null ? promptTokens + completionTokens : null;
+  const totalTokens =
+    promptTokens !== null && completionTokens !== null ? promptTokens + completionTokens : null;
   return { promptTokens, completionTokens, totalTokens };
 }
 
-export function extractGroqTokenUsage(data: any): { promptTokens: number | null; completionTokens: number | null; totalTokens: number | null } {
+export function extractGroqTokenUsage(data: any): {
+  promptTokens: number | null;
+  completionTokens: number | null;
+  totalTokens: number | null;
+} {
   const usage = data?.usage;
   return {
     promptTokens: typeof usage?.prompt_tokens === 'number' ? usage.prompt_tokens : null,
     completionTokens: typeof usage?.completion_tokens === 'number' ? usage.completion_tokens : null,
-    totalTokens: typeof usage?.total_tokens === 'number' ? usage.total_tokens : null
+    totalTokens: typeof usage?.total_tokens === 'number' ? usage.total_tokens : null,
   };
 }
 
-export function extractGeminiTokenUsage(response: any): { promptTokens: number | null; completionTokens: number | null; totalTokens: number | null } {
+export function extractGeminiTokenUsage(response: any): {
+  promptTokens: number | null;
+  completionTokens: number | null;
+  totalTokens: number | null;
+} {
   const usage = response?.usageMetadata;
   return {
     promptTokens: typeof usage?.promptTokenCount === 'number' ? usage.promptTokenCount : null,
-    completionTokens: typeof usage?.candidatesTokenCount === 'number' ? usage.candidatesTokenCount : null,
-    totalTokens: typeof usage?.totalTokenCount === 'number' ? usage.totalTokenCount : null
+    completionTokens:
+      typeof usage?.candidatesTokenCount === 'number' ? usage.candidatesTokenCount : null,
+    totalTokens: typeof usage?.totalTokenCount === 'number' ? usage.totalTokenCount : null,
   };
 }

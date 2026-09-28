@@ -1,15 +1,15 @@
 import type React from 'react';
 import { useState } from 'react';
 import type { AIConfig } from '../types.js';
-import { 
-  Terminal, 
-  Play, 
-  CheckCircle2, 
-  XCircle, 
-  RefreshCw, 
-  Server, 
-  Copy, 
-  Check, 
+import {
+  Terminal,
+  Play,
+  CheckCircle2,
+  XCircle,
+  RefreshCw,
+  Server,
+  Copy,
+  Check,
 } from 'lucide-react';
 
 interface OllamaTerminalTabProps {
@@ -31,9 +31,11 @@ export const OllamaTerminalTab: React.FC<OllamaTerminalTabProps> = ({
   setAiConfig,
   ollamaStatus,
   onCheckOllama,
-  isChecking
+  isChecking,
 }) => {
-  const [testPrompt, setTestPrompt] = useState('Gere uma mensagem curta de abertura de cold call para a Atlas Inteligência Logística.');
+  const [testPrompt, setTestPrompt] = useState(
+    'Gere uma mensagem curta de abertura de cold call para a Atlas Inteligência Logística.',
+  );
   const [testResult, setTestResult] = useState<any>(null);
   const [isRunningTest, setIsRunningTest] = useState(false);
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
@@ -57,22 +59,22 @@ export const OllamaTerminalTab: React.FC<OllamaTerminalTabProps> = ({
           message: testPrompt,
           aiConfig: {
             ...aiConfig,
-            provider: 'ollama'
-          }
-        })
+            provider: 'ollama',
+          },
+        }),
       });
 
       const data = await res.json();
       setTestResult({
         success: res.ok,
         timeMs: Date.now() - startTime,
-        data
+        data,
       });
     } catch (err: any) {
       setTestResult({
         success: false,
         timeMs: Date.now() - startTime,
-        error: err.message
+        error: err.message,
       });
     } finally {
       setIsRunningTest(false);
@@ -90,7 +92,10 @@ export const OllamaTerminalTab: React.FC<OllamaTerminalTabProps> = ({
               <span>Execução & Diagnóstico do Modelo LLaMA3 com Ollama</span>
             </h2>
             <p className="text-xs text-slate-400 mt-1">
-              Painel de verificação e comunicação direta com o binário do Ollama local em <code className="text-[var(--brand-primary)] font-mono">{aiConfig.ollamaUrl}</code> rodando o modelo <strong className="text-white font-mono">{aiConfig.ollamaModel || 'llama3'}</strong>.
+              Painel de verificação e comunicação direta com o binário do Ollama local em{' '}
+              <code className="text-[var(--brand-primary)] font-mono">{aiConfig.ollamaUrl}</code>{' '}
+              rodando o modelo{' '}
+              <strong className="text-white font-mono">{aiConfig.ollamaModel || 'llama3'}</strong>.
             </p>
           </div>
 
@@ -119,7 +124,9 @@ export const OllamaTerminalTab: React.FC<OllamaTerminalTabProps> = ({
               {ollamaStatus?.online ? 'Online & Pronto' : 'Offline / Emulado'}
             </div>
             <div className="text-[11px] text-slate-500 font-mono">
-              {ollamaStatus?.latencyMs ? `${ollamaStatus.latencyMs}ms latência` : 'Fallback Server-Side Ativo'}
+              {ollamaStatus?.latencyMs
+                ? `${ollamaStatus.latencyMs}ms latência`
+                : 'Fallback Server-Side Ativo'}
             </div>
           </div>
 
@@ -129,14 +136,16 @@ export const OllamaTerminalTab: React.FC<OllamaTerminalTabProps> = ({
               {aiConfig.ollamaModel || 'llama3'}
             </div>
             <div className="text-[11px] text-slate-500">
-              {ollamaStatus?.hasRequestedModel ? '✅ Modelo instalado no Ollama' : 'ℹ️ Fallback inteligente disponível'}
+              {ollamaStatus?.hasRequestedModel
+                ? '✅ Modelo instalado no Ollama'
+                : 'ℹ️ Fallback inteligente disponível'}
             </div>
           </div>
 
           <div className="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-1">
             <div className="text-xs text-slate-400">Modelos Detectados</div>
             <div className="text-xs font-mono text-slate-300 truncate">
-              {ollamaStatus?.availableModels?.length 
+              {ollamaStatus?.availableModels?.length
                 ? ollamaStatus.availableModels.join(', ')
                 : 'llama3, llama3.1, mistral'}
             </div>
@@ -155,7 +164,9 @@ export const OllamaTerminalTab: React.FC<OllamaTerminalTabProps> = ({
 
         <div className="space-y-3">
           <div>
-            <label className="text-xs text-slate-400 mb-1 block">Prompt de Teste para o LLaMA3</label>
+            <label className="text-xs text-slate-400 mb-1 block">
+              Prompt de Teste para o LLaMA3
+            </label>
             <textarea
               rows={2}
               value={testPrompt}
@@ -166,7 +177,9 @@ export const OllamaTerminalTab: React.FC<OllamaTerminalTabProps> = ({
 
           <div className="flex justify-between items-center">
             <span className="text-[11px] text-slate-500">
-              Envia uma requisição direta para a API <code className="text-[var(--brand-primary)]">/api/chat</code> usando o motor configurado.
+              Envia uma requisição direta para a API{' '}
+              <code className="text-[var(--brand-primary)]">/api/chat</code> usando o motor
+              configurado.
             </span>
             <button
               onClick={handleRunOllamaTest}
@@ -184,9 +197,12 @@ export const OllamaTerminalTab: React.FC<OllamaTerminalTabProps> = ({
           <div className="space-y-2 pt-2">
             <div className="flex items-center justify-between text-xs text-slate-400">
               <span className="font-mono text-emerald-400">
-                ✅ Resposta recebida em {testResult.timeMs}ms (Modelo: {testResult.data?.modelUsed || 'LLaMA3'})
+                ✅ Resposta recebida em {testResult.timeMs}ms (Modelo:{' '}
+                {testResult.data?.modelUsed || 'LLaMA3'})
               </span>
-              <span className="text-[11px]">Tokens est.: {testResult.data?.tokensEstimated || 0}</span>
+              <span className="text-[11px]">
+                Tokens est.: {testResult.data?.tokensEstimated || 0}
+              </span>
             </div>
 
             <div className="bg-slate-950 rounded-xl p-4 border border-slate-800 font-mono text-xs text-slate-200 whitespace-pre-wrap leading-relaxed">
@@ -205,7 +221,8 @@ export const OllamaTerminalTab: React.FC<OllamaTerminalTabProps> = ({
 
         <div className="space-y-3 text-xs text-slate-300 leading-relaxed">
           <p>
-            Para executar o modelo <strong>LLaMA3</strong> 100% privado e localmente na sua máquina com o Ollama, execute os seguintes passos no seu terminal:
+            Para executar o modelo <strong>LLaMA3</strong> 100% privado e localmente na sua máquina
+            com o Ollama, execute os seguintes passos no seu terminal:
           </p>
 
           <div className="space-y-2">
@@ -215,7 +232,11 @@ export const OllamaTerminalTab: React.FC<OllamaTerminalTabProps> = ({
                 onClick={() => handleCopy('curl -fsSL https://ollama.com/install.sh | sh', 'c1')}
                 className="text-slate-400 hover:text-white flex items-center gap-1 text-[11px]"
               >
-                {copiedCode === 'c1' ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                {copiedCode === 'c1' ? (
+                  <Check className="w-3 h-3 text-emerald-400" />
+                ) : (
+                  <Copy className="w-3 h-3" />
+                )}
                 <span>Copiar</span>
               </button>
             </div>
@@ -231,7 +252,11 @@ export const OllamaTerminalTab: React.FC<OllamaTerminalTabProps> = ({
                 onClick={() => handleCopy('ollama run llama3', 'c2')}
                 className="text-slate-400 hover:text-white flex items-center gap-1 text-[11px]"
               >
-                {copiedCode === 'c2' ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                {copiedCode === 'c2' ? (
+                  <Check className="w-3 h-3 text-emerald-400" />
+                ) : (
+                  <Copy className="w-3 h-3" />
+                )}
                 <span>Copiar</span>
               </button>
             </div>
@@ -241,7 +266,9 @@ export const OllamaTerminalTab: React.FC<OllamaTerminalTabProps> = ({
           </div>
 
           <div className="p-3.5 rounded-xl bg-[var(--brand-primary)]/10 border border-[var(--brand-primary)]/30 text-[var(--brand-primary)] text-[11px] leading-relaxed">
-            💡 <strong>Dica de Integração:</strong> Quando o Ollama estiver rodando, a interface da Atlas detectará automaticamente o endpoint na porta padrão <code>11434</code> e utilizará o <code>llama3</code> com resposta imediata e privacidade total.
+            💡 <strong>Dica de Integração:</strong> Quando o Ollama estiver rodando, a interface da
+            Atlas detectará automaticamente o endpoint na porta padrão <code>11434</code> e
+            utilizará o <code>llama3</code> com resposta imediata e privacidade total.
           </div>
         </div>
       </div>

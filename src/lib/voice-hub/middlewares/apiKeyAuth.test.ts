@@ -60,7 +60,12 @@ function makeRes() {
   return res as Response;
 }
 
-const VALID_SESSION = { id: 'user-1', email: 'admin@tenant-1.com', role: 'admin', organizationId: 'tenant-1' };
+const VALID_SESSION = {
+  id: 'user-1',
+  email: 'admin@tenant-1.com',
+  role: 'admin',
+  organizationId: 'tenant-1',
+};
 
 describe('getAuthUser — API key path', () => {
   it('routes an API-key-shaped Bearer token to authenticateApiKey, never to JWT verification', async () => {
@@ -112,7 +117,10 @@ describe('attachAuthIfPresent — per-API-key rate limit', () => {
   });
 
   it('returns 429 once the per-key limit is exceeded, without calling next()', async () => {
-    vi.mocked(authenticateApiKey).mockResolvedValue({ apiKeyId: 'key-heavy', session: VALID_SESSION });
+    vi.mocked(authenticateApiKey).mockResolvedValue({
+      apiKeyId: 'key-heavy',
+      session: VALID_SESSION,
+    });
 
     const res = makeRes();
     const next = vi.fn() as unknown as NextFunction;
@@ -127,7 +135,9 @@ describe('attachAuthIfPresent — per-API-key rate limit', () => {
     }
 
     expect(lastRes.status).toHaveBeenCalledWith(429);
-    expect(lastRes.json).toHaveBeenCalledWith(expect.objectContaining({ error: expect.any(String) }));
+    expect(lastRes.json).toHaveBeenCalledWith(
+      expect.objectContaining({ error: expect.any(String) }),
+    );
   });
 
   it('never rate-limits a JWT-authenticated request (req.apiKeyId stays unset)', async () => {

@@ -1,13 +1,13 @@
-export type SessionState = 
-  | 'Idle' 
-  | 'Connecting' 
-  | 'Listening' 
-  | 'Thinking' 
-  | 'Speaking' 
-  | 'Executing Tool' 
-  | 'Waiting' 
-  | 'Transferring' 
-  | 'Finished' 
+export type SessionState =
+  | 'Idle'
+  | 'Connecting'
+  | 'Listening'
+  | 'Thinking'
+  | 'Speaking'
+  | 'Executing Tool'
+  | 'Waiting'
+  | 'Transferring'
+  | 'Finished'
   | 'Error';
 
 export interface VoiceSession {
@@ -133,4 +133,3 @@ export interface KnowledgeConfidence {
   // KnowledgeConfidenceEngine.CONFIDENCE_THRESHOLD for the cutoff.
   isLowConfidence: boolean;
 }
-

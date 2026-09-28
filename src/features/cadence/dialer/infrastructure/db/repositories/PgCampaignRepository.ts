@@ -1,6 +1,10 @@
-import type { PrismaClient } from "@prisma/client";
-import { Campaign, type CampaignProps, type CampaignStatus } from "../../../domain/entities/Campaign.js";
-import type { CampaignRepository } from "../../../application/ports/CampaignRepository.js";
+import type { PrismaClient } from '@prisma/client';
+import {
+  Campaign,
+  type CampaignProps,
+  type CampaignStatus,
+} from '../../../domain/entities/Campaign.js';
+import type { CampaignRepository } from '../../../application/ports/CampaignRepository.js';
 
 interface CampaignRow {
   id: string;
@@ -38,9 +42,10 @@ export class PgCampaignRepository implements CampaignRepository {
   }
 
   async findById(id: string): Promise<Campaign | null> {
-    const rows = await this.prisma.$queryRawUnsafe<CampaignRow[]>("SELECT * FROM campaigns WHERE id = $1", [
-      id,
-    ]);
+    const rows = await this.prisma.$queryRawUnsafe<CampaignRow[]>(
+      'SELECT * FROM campaigns WHERE id = $1',
+      [id],
+    );
     const row = rows[0];
     return row === undefined ? null : Campaign.restore(rowToProps(row));
   }
@@ -54,7 +59,7 @@ export class PgCampaignRepository implements CampaignRepository {
 
   async findAll(): Promise<Campaign[]> {
     const rows = await this.prisma.$queryRawUnsafe<CampaignRow[]>(
-      "SELECT * FROM campaigns ORDER BY created_at DESC",
+      'SELECT * FROM campaigns ORDER BY created_at DESC',
     );
     return rows.map((row) => Campaign.restore(rowToProps(row)));
   }

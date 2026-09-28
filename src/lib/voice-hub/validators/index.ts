@@ -59,7 +59,10 @@ export const changePlanSchema = z.object({
 // apiKey.controller.ts (Agente 01) — POST /api/developers/keys.
 export const createApiKeySchema = z.object({
   name: z.string().min(1, 'Nome da chave é obrigatório').max(200, 'Nome da chave muito longo'),
-  expiresAt: z.string().datetime({ message: 'expiresAt deve ser uma data ISO 8601 válida' }).optional(),
+  expiresAt: z
+    .string()
+    .datetime({ message: 'expiresAt deve ser uma data ISO 8601 válida' })
+    .optional(),
 });
 
 export const agentSchema = z.object({
@@ -95,7 +98,7 @@ export function isPrivateOrReservedHost(hostname: string): boolean {
 
   // IPv4 literal (including IPv4-mapped IPv6 forms like ::ffff:127.0.0.1)
   const ipv4Match = host.match(/(?:^|:)(\d{1,3}(?:\.\d{1,3}){3})$/);
-  const ipv4 = ipv4Match ? ipv4Match[1] : (/^\d{1,3}(\.\d{1,3}){3}$/.test(host) ? host : null);
+  const ipv4 = ipv4Match ? ipv4Match[1] : /^\d{1,3}(\.\d{1,3}){3}$/.test(host) ? host : null;
   if (ipv4) {
     const octets = ipv4.split('.').map(Number);
     if (octets.some((o) => Number.isNaN(o) || o < 0 || o > 255)) return true; // malformed -> reject
@@ -114,7 +117,14 @@ export function isPrivateOrReservedHost(hostname: string): boolean {
   // IPv6 literal (bracketed by URL parsing rules, hostname comes without brackets)
   if (host.includes(':')) {
     if (host === '::1') return true; // loopback
-    if (host.startsWith('fe80:') || host.startsWith('fe8') || host.startsWith('fe9') || host.startsWith('fea') || host.startsWith('feb')) return true; // link-local fe80::/10
+    if (
+      host.startsWith('fe80:') ||
+      host.startsWith('fe8') ||
+      host.startsWith('fe9') ||
+      host.startsWith('fea') ||
+      host.startsWith('feb')
+    )
+      return true; // link-local fe80::/10
     if (host.startsWith('fc') || host.startsWith('fd')) return true; // unique local fc00::/7
     return false;
   }
@@ -132,7 +142,10 @@ function isSafePublicUrl(value: string): boolean {
   } catch {
     return false;
   }
-  if (parsed.protocol !== 'https:' && !(parsed.protocol === 'http:' && process.env.NODE_ENV !== 'production')) {
+  if (
+    parsed.protocol !== 'https:' &&
+    !(parsed.protocol === 'http:' && process.env.NODE_ENV !== 'production')
+  ) {
     return false;
   }
   return !isPrivateOrReservedHost(parsed.hostname);
@@ -142,7 +155,8 @@ const callbackUrlSchema = z
   .string()
   .url('callbackUrl deve ser uma URL válida')
   .refine(isSafePublicUrl, {
-    message: 'callbackUrl deve ser uma URL pública válida (HTTPS, sem apontar para rede interna/privada).',
+    message:
+      'callbackUrl deve ser uma URL pública válida (HTTPS, sem apontar para rede interna/privada).',
   });
 
 export const outboundCallSchema = z.object({
@@ -173,6 +187,9 @@ export const createWebhookEndpointSchema = z.object({
   url: webhookEndpointUrlSchema,
   events: z
     .array(z.string().min(1, 'Tipo de evento inválido'))
-    .min(1, 'events deve conter ao menos um tipo de evento (ex.: ["call.completed"] ou ["*"] para todos)')
+    .min(
+      1,
+      'events deve conter ao menos um tipo de evento (ex.: ["call.completed"] ou ["*"] para todos)',
+    )
     .max(20, 'events aceita no máximo 20 tipos por endpoint'),
 });

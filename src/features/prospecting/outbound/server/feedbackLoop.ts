@@ -59,7 +59,7 @@ export interface FeedbackLeadRecord {
 // endpoint de feedback próprio, então ficam fora da agregação por canal
 // para não fingir que há dado onde não há.
 export const COPY_FEEDBACK_CHANNELS = ['cold_call', 'cold_email', 'whatsapp', 'linkedin'] as const;
-export type CopyFeedbackChannel = typeof COPY_FEEDBACK_CHANNELS[number];
+export type CopyFeedbackChannel = (typeof COPY_FEEDBACK_CHANNELS)[number];
 
 export const VALID_COPY_FEEDBACK_VALUES = ['used_as_is', 'edited', 'not_used'] as const;
 
@@ -131,16 +131,19 @@ function round(value: number, decimals = 4): number {
  * fabricaria um dado que ninguém informou.
  */
 export function summarizeCopyFeedbackByChannel(
-  messages: FeedbackMessageRecord[]
+  messages: FeedbackMessageRecord[],
 ): CopyFeedbackChannelSummary[] {
-  return COPY_FEEDBACK_CHANNELS.map(channel => {
+  return COPY_FEEDBACK_CHANNELS.map((channel) => {
     const withFeedback = messages.filter(
-      m => m.channel === channel && m.feedback && (VALID_COPY_FEEDBACK_VALUES as readonly string[]).includes(m.feedback)
+      (m) =>
+        m.channel === channel &&
+        m.feedback &&
+        (VALID_COPY_FEEDBACK_VALUES as readonly string[]).includes(m.feedback),
     );
     const total = withFeedback.length;
-    const usedAsIs = withFeedback.filter(m => m.feedback === 'used_as_is').length;
-    const edited = withFeedback.filter(m => m.feedback === 'edited').length;
-    const notUsed = withFeedback.filter(m => m.feedback === 'not_used').length;
+    const usedAsIs = withFeedback.filter((m) => m.feedback === 'used_as_is').length;
+    const edited = withFeedback.filter((m) => m.feedback === 'edited').length;
+    const notUsed = withFeedback.filter((m) => m.feedback === 'not_used').length;
 
     return {
       channel,
@@ -151,7 +154,7 @@ export function summarizeCopyFeedbackByChannel(
       usedAsIsRate: total > 0 ? round(usedAsIs / total) : null,
       editedRate: total > 0 ? round(edited / total) : null,
       notUsedRate: total > 0 ? round(notUsed / total) : null,
-      insufficientData: total < MIN_SAMPLE_SIZE
+      insufficientData: total < MIN_SAMPLE_SIZE,
     };
   });
 }
@@ -172,25 +175,25 @@ function summarizeReasons(reasons: (string | null | undefined)[]): ReasonSummary
   return {
     totalWithReason: total,
     reasons: reasonCounts,
-    insufficientData: total < MIN_SAMPLE_SIZE
+    insufficientData: total < MIN_SAMPLE_SIZE,
   };
 }
 
 /** Motivos de perda mais comuns, a partir de `leads.loss_reason`. */
 export function summarizeLossReasons(leads: FeedbackLeadRecord[]): ReasonSummary {
-  return summarizeReasons(leads.filter(l => l.stage === 'perdido').map(l => l.loss_reason));
+  return summarizeReasons(leads.filter((l) => l.stage === 'perdido').map((l) => l.loss_reason));
 }
 
 /** Motivos de ganho mais comuns, a partir de `leads.win_reason` (novo nesta onda). */
 export function summarizeWinReasons(leads: FeedbackLeadRecord[]): ReasonSummary {
-  return summarizeReasons(leads.filter(l => l.stage === 'ganho').map(l => l.win_reason));
+  return summarizeReasons(leads.filter((l) => l.stage === 'ganho').map((l) => l.win_reason));
 }
 
 function summarizeConversionByKey(
   leads: FeedbackLeadRecord[],
-  keyOf: (lead: FeedbackLeadRecord) => string | null | undefined
+  keyOf: (lead: FeedbackLeadRecord) => string | null | undefined,
 ): ConversionRateSummary {
-  const decided = leads.filter(l => l.stage === 'ganho' || l.stage === 'perdido');
+  const decided = leads.filter((l) => l.stage === 'ganho' || l.stage === 'perdido');
   const groups = new Map<string, { won: number; lost: number }>();
 
   for (const lead of decided) {
@@ -211,25 +214,25 @@ function summarizeConversionByKey(
         lost,
         total,
         conversionRate: total > 0 ? round(won / total) : null,
-        insufficientData: total < MIN_SAMPLE_SIZE
+        insufficientData: total < MIN_SAMPLE_SIZE,
       };
     })
     .sort((a, b) => b.total - a.total || a.key.localeCompare(b.key));
 
   return {
     entries,
-    insufficientData: entries.length === 0
+    insufficientData: entries.length === 0,
   };
 }
 
 /** Taxa de conversão (ganho / (ganho + perdido)) por segmento. */
 export function summarizeConversionBySegment(leads: FeedbackLeadRecord[]): ConversionRateSummary {
-  return summarizeConversionByKey(leads, l => l.segment);
+  return summarizeConversionByKey(leads, (l) => l.segment);
 }
 
 /** Taxa de conversão (ganho / (ganho + perdido)) por marca/empresa cliente (`company`). */
 export function summarizeConversionByCompany(leads: FeedbackLeadRecord[]): ConversionRateSummary {
-  return summarizeConversionByKey(leads, l => l.company);
+  return summarizeConversionByKey(leads, (l) => l.company);
 }
 
 /**
@@ -242,7 +245,7 @@ export function summarizeConversionByCompany(leads: FeedbackLeadRecord[]): Conve
 export function buildFeedbackSummary(
   messages: FeedbackMessageRecord[],
   leads: FeedbackLeadRecord[],
-  now: Date = new Date()
+  now: Date = new Date(),
 ): FeedbackSummary {
   return {
     copyFeedbackByChannel: summarizeCopyFeedbackByChannel(messages),
@@ -250,6 +253,6 @@ export function buildFeedbackSummary(
     winReasons: summarizeWinReasons(leads),
     conversionBySegment: summarizeConversionBySegment(leads),
     conversionByCompany: summarizeConversionByCompany(leads),
-    generatedAt: now.toISOString()
+    generatedAt: now.toISOString(),
   };
 }

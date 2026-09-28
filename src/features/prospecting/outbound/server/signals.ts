@@ -74,7 +74,7 @@ function daysBetween(from: Date, to: Date): number {
  */
 export function detectNewOperationSignalFromCnpj(
   cnpjData: CnpjData | undefined,
-  now: Date = new Date()
+  now: Date = new Date(),
 ): Signal | undefined {
   if (!cnpjData?.data_inicio_atividade) return undefined;
 
@@ -87,7 +87,7 @@ export function detectNewOperationSignalFromCnpj(
 
   const source = cnpjData.source === 'minhareceita' ? 'minhareceita' : 'cnpj_receita_federal';
   const evidence = [
-    `Data de início de atividade registrada na Receita Federal: ${cnpjData.data_inicio_atividade} (${ageDays} dia(s) atrás).`
+    `Data de início de atividade registrada na Receita Federal: ${cnpjData.data_inicio_atividade} (${ageDays} dia(s) atrás).`,
   ];
 
   // Corroboração: quando a situação cadastral está ATIVA e sua própria data
@@ -101,7 +101,9 @@ export function detectNewOperationSignalFromCnpj(
   const statusDate = parseOfficialDate(cnpjData.data_situacao_cadastral);
   const isAtiva = (cnpjData.situacao_cadastral || '').toUpperCase() === 'ATIVA';
   if (isAtiva && statusDate && Math.abs(daysBetween(founded, statusDate)) <= 30) {
-    evidence.push(`Situação cadastral ATIVA desde ${cnpjData.data_situacao_cadastral}, próxima da data de abertura — reforça que a operação é de fato recente.`);
+    evidence.push(
+      `Situação cadastral ATIVA desde ${cnpjData.data_situacao_cadastral}, próxima da data de abertura — reforça que a operação é de fato recente.`,
+    );
     confidence = 0.85;
   }
 
@@ -124,7 +126,7 @@ export function detectNewOperationSignalFromCnpj(
     // fortes (ex: vaga de logística aberta, novo contrato, expansão de CD) —
     // nenhum dos quais este código consegue detectar honestamente hoje.
     commercialRelevance: 0.5,
-    expiresAt: new Date(founded.getTime() + NEW_OPERATION_WINDOW_DAYS * MS_PER_DAY).toISOString()
+    expiresAt: new Date(founded.getTime() + NEW_OPERATION_WINDOW_DAYS * MS_PER_DAY).toISOString(),
   };
 }
 
@@ -151,7 +153,7 @@ export interface DetectSignalsOptions {
  */
 export function detectSignalsForLead(
   _lead: { name: string },
-  opts: DetectSignalsOptions = {}
+  opts: DetectSignalsOptions = {},
 ): Signal[] {
   const signals: Signal[] = [];
   const now = opts.now ?? new Date();

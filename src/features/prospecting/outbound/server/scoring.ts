@@ -23,7 +23,7 @@ import type {
   Signal,
   DataQualityScore,
   ScoringWeights,
-  LeadScores
+  LeadScores,
 } from '../src/types.js';
 import type { EvidenceRecord, VerificationStatus } from './evidence.js';
 import { isSignalActive } from './signals.js';
@@ -34,7 +34,7 @@ export type {
   Signal,
   DataQualityScore,
   ScoringWeights,
-  LeadScores
+  LeadScores,
 } from '../src/types.js';
 
 /** Versão do modelo de score. Muda só quando a fórmula abaixo muda de forma
@@ -54,13 +54,13 @@ export const SCORING_MODEL_VERSION = 'v1';
 const FIT_CONSIDERED_TYPES: RequirementEvaluation['type'][] = ['HARD_FILTER', 'SOFT_FILTER'];
 
 export function computeFitScore(evaluations: RequirementEvaluation[]): FitScore {
-  const considered = evaluations.filter(e => FIT_CONSIDERED_TYPES.includes(e.type));
-  const unknownCount = considered.filter(e => e.status === 'unknown').length;
+  const considered = evaluations.filter((e) => FIT_CONSIDERED_TYPES.includes(e.type));
+  const unknownCount = considered.filter((e) => e.status === 'unknown').length;
   // "known" = requisito de fato confirmado ou refutado por alguma fonte —
   // nunca inclui 'unknown', que fica fora do numerador E do denominador.
-  const known = considered.filter(e => e.status === 'matched' || e.status === 'unmatched');
+  const known = considered.filter((e) => e.status === 'matched' || e.status === 'unmatched');
 
-  const failedHard = considered.find(e => e.type === 'HARD_FILTER' && e.status === 'unmatched');
+  const failedHard = considered.find((e) => e.type === 'HARD_FILTER' && e.status === 'unmatched');
   if (failedHard) {
     // Um HARD_FILTER observado e reprovado domina o Fit Score: a empresa
     // provavelmente não serve, independente de quantos SOFT_FILTER combinem.
@@ -68,12 +68,12 @@ export function computeFitScore(evaluations: RequirementEvaluation[]): FitScore 
       score: 0,
       confidence: 1,
       reasons: [
-        `Requisito obrigatório "${failedHard.criterion}" foi observado e diverge do pedido (${failedHard.reason}) — reprova o lead, independente dos demais critérios.`
+        `Requisito obrigatório "${failedHard.criterion}" foi observado e diverge do pedido (${failedHard.reason}) — reprova o lead, independente dos demais critérios.`,
       ],
       matchedWeight: 0,
       consideredWeight: known.reduce((sum, e) => sum + e.weight, 0),
       unknownCount,
-      hardFilterFailed: true
+      hardFilterFailed: true,
     };
   }
 
@@ -81,31 +81,49 @@ export function computeFitScore(evaluations: RequirementEvaluation[]): FitScore 
     return {
       score: null,
       confidence: 0,
-      reasons: considered.length === 0
-        ? ['Nenhum critério de segmentação foi pedido nesta busca — sem base para calcular aderência.']
-        : ['Nenhum critério pedido foi confirmado ou refutado por uma fonte até agora — sem base para calcular aderência.'],
+      reasons:
+        considered.length === 0
+          ? [
+              'Nenhum critério de segmentação foi pedido nesta busca — sem base para calcular aderência.',
+            ]
+          : [
+              'Nenhum critério pedido foi confirmado ou refutado por uma fonte até agora — sem base para calcular aderência.',
+            ],
       matchedWeight: 0,
       consideredWeight: 0,
       unknownCount,
-      hardFilterFailed: false
+      hardFilterFailed: false,
     };
   }
 
   const consideredWeight = known.reduce((sum, e) => sum + e.weight, 0);
-  const matchedWeight = known.filter(e => e.status === 'matched').reduce((sum, e) => sum + e.weight, 0);
+  const matchedWeight = known
+    .filter((e) => e.status === 'matched')
+    .reduce((sum, e) => sum + e.weight, 0);
   const score = Math.round((matchedWeight / consideredWeight) * 100);
   // Confiança do Fit Score = proporção do que foi pedido que de fato teve
   // alguma fonte confirmando ou refutando (não apenas "unknown").
   const confidence = known.length / considered.length;
 
-  const reasons = known.map(e =>
-    `"${e.criterion}" (peso ${e.weight}, fonte ${e.source}): ${e.status === 'matched' ? 'confirmado e compatível com o pedido' : 'confirmado, mas diverge do pedido (SOFT_FILTER — reduz, não reprova)'}.`
+  const reasons = known.map(
+    (e) =>
+      `"${e.criterion}" (peso ${e.weight}, fonte ${e.source}): ${e.status === 'matched' ? 'confirmado e compatível com o pedido' : 'confirmado, mas diverge do pedido (SOFT_FILTER — reduz, não reprova)'}.`,
   );
   if (unknownCount > 0) {
-    reasons.push(`${unknownCount} critério(s) pedido(s) sem confirmação de nenhuma fonte ainda — não contam a favor nem contra o score.`);
+    reasons.push(
+      `${unknownCount} critério(s) pedido(s) sem confirmação de nenhuma fonte ainda — não contam a favor nem contra o score.`,
+    );
   }
 
-  return { score, confidence, reasons, matchedWeight, consideredWeight, unknownCount, hardFilterFailed: false };
+  return {
+    score,
+    confidence,
+    reasons,
+    matchedWeight,
+    consideredWeight,
+    unknownCount,
+    hardFilterFailed: false,
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -123,13 +141,18 @@ export function computeFitScore(evaluations: RequirementEvaluation[]): FitScore 
 // resultado continua honesto: sem score, confiança zero, motivo declarado.
 // NUNCA inventamos um número aqui só para a UI parecer completa.
 export function computeIntentScore(signals: Signal[] = [], now: Date = new Date()): IntentScore {
-  const active = signals.filter(s => isSignalActive(s, now));
+  const active = signals.filter((s) => isSignalActive(s, now));
   const expiredCount = signals.length - active.length;
 
   if (active.length === 0) {
-    const reasons = signals.length === 0
-      ? ['Nenhum provider de sinais de compra (crescimento, vagas, nova filial, novos contratos, notícias etc.) está integrado ainda — não é possível medir propensão temporal para este lead. Isto reflete ausência de instrumento de medição, não ausência de sinais no mercado.']
-      : [`${expiredCount} sinal(is) recebido(s), mas todos já expiraram (expiresAt no passado) — nenhum sinal ativo para calcular propensão.`];
+    const reasons =
+      signals.length === 0
+        ? [
+            'Nenhum provider de sinais de compra (crescimento, vagas, nova filial, novos contratos, notícias etc.) está integrado ainda — não é possível medir propensão temporal para este lead. Isto reflete ausência de instrumento de medição, não ausência de sinais no mercado.',
+          ]
+        : [
+            `${expiredCount} sinal(is) recebido(s), mas todos já expiraram (expiresAt no passado) — nenhum sinal ativo para calcular propensão.`,
+          ];
     return { score: null, confidence: 0, reasons, signalsUsed: [], signalsAvailable: false };
   }
 
@@ -141,7 +164,7 @@ export function computeIntentScore(signals: Signal[] = [], now: Date = new Date(
   // se somar de forma sub-aditiva, sem nunca estourar 100 nem crescer
   // linearmente sem limite conforme mais sinais fracos se acumulam.
   const clamp01 = (n: number) => Math.max(0, Math.min(1, n));
-  const contributions = active.map(s => clamp01(s.commercialRelevance) * clamp01(s.confidence));
+  const contributions = active.map((s) => clamp01(s.commercialRelevance) * clamp01(s.confidence));
   const combinedProbability = 1 - contributions.reduce((acc, c) => acc * (1 - c), 1);
   const score = Math.round(clamp01(combinedProbability) * 100);
 
@@ -152,11 +175,14 @@ export function computeIntentScore(signals: Signal[] = [], now: Date = new Date(
   const avgConfidence = active.reduce((sum, s) => sum + clamp01(s.confidence), 0) / active.length;
   const confidence = Math.min(1, avgConfidence * Math.min(1, active.length / 3));
 
-  const reasons = active.map(s =>
-    `${s.type} (fonte: ${s.source}, confiança ${s.confidence.toFixed(2)}, relevância comercial ${s.commercialRelevance.toFixed(2)}): ${s.evidence.join(' | ')}`
+  const reasons = active.map(
+    (s) =>
+      `${s.type} (fonte: ${s.source}, confiança ${s.confidence.toFixed(2)}, relevância comercial ${s.commercialRelevance.toFixed(2)}): ${s.evidence.join(' | ')}`,
   );
   if (expiredCount > 0) {
-    reasons.push(`${expiredCount} sinal(is) excluído(s) do cálculo por estarem expirados (expiresAt no passado).`);
+    reasons.push(
+      `${expiredCount} sinal(is) excluído(s) do cálculo por estarem expirados (expiresAt no passado).`,
+    );
   }
 
   return { score, confidence, reasons, signalsUsed: active, signalsAvailable: true };
@@ -179,7 +205,7 @@ export const DATA_QUALITY_RELEVANT_FIELDS: readonly string[] = [
   'decision_maker_name',
   'decision_maker_title',
   'decision_maker_email',
-  'decision_maker_linkedin'
+  'decision_maker_linkedin',
 ];
 
 // Pontuação por status de verificação. 'conflicted' é negativo de propósito
@@ -192,37 +218,42 @@ const VERIFICATION_STATUS_POINTS: Record<VerificationStatus, number> = {
   unverified: 0.5,
   inferred: 0.25,
   conflicted: -1,
-  unknown: 0
+  unknown: 0,
 };
 
 export function computeDataQualityScore(evidences: EvidenceRecord[]): DataQualityScore {
-  const relevant = evidences.filter(e => DATA_QUALITY_RELEVANT_FIELDS.includes(e.field));
+  const relevant = evidences.filter((e) => DATA_QUALITY_RELEVANT_FIELDS.includes(e.field));
   // "unknown" nunca é produzido pelos builders atuais (campo ausente = sem
   // EvidenceRecord nenhuma), mas o tipo VerificationStatus permite — excluído
   // do denominador aqui pelo mesmo motivo que um requisito 'unknown' não
   // penaliza o Fit Score.
-  const considered = relevant.filter(e => e.verificationStatus !== 'unknown');
+  const considered = relevant.filter((e) => e.verificationStatus !== 'unknown');
 
   if (considered.length === 0) {
     return {
       score: null,
       confidence: 0,
-      reasons: ['Nenhuma evidência disponível para os campos relevantes deste lead — nenhuma fonte confirmou, inferiu ou conflitou nada ainda.'],
+      reasons: [
+        'Nenhuma evidência disponível para os campos relevantes deste lead — nenhuma fonte confirmou, inferiu ou conflitou nada ainda.',
+      ],
       verifiedCount: 0,
       conflictedCount: 0,
       unverifiedCount: 0,
       inferredCount: 0,
       consideredCount: 0,
-      relevantFieldCount: DATA_QUALITY_RELEVANT_FIELDS.length
+      relevantFieldCount: DATA_QUALITY_RELEVANT_FIELDS.length,
     };
   }
 
-  const verifiedCount = considered.filter(e => e.verificationStatus === 'verified').length;
-  const conflictedCount = considered.filter(e => e.verificationStatus === 'conflicted').length;
-  const unverifiedCount = considered.filter(e => e.verificationStatus === 'unverified').length;
-  const inferredCount = considered.filter(e => e.verificationStatus === 'inferred').length;
+  const verifiedCount = considered.filter((e) => e.verificationStatus === 'verified').length;
+  const conflictedCount = considered.filter((e) => e.verificationStatus === 'conflicted').length;
+  const unverifiedCount = considered.filter((e) => e.verificationStatus === 'unverified').length;
+  const inferredCount = considered.filter((e) => e.verificationStatus === 'inferred').length;
 
-  const rawPoints = considered.reduce((sum, e) => sum + VERIFICATION_STATUS_POINTS[e.verificationStatus], 0);
+  const rawPoints = considered.reduce(
+    (sum, e) => sum + VERIFICATION_STATUS_POINTS[e.verificationStatus],
+    0,
+  );
   // clamp em 0: um lead cheio de conflitos não vira "score negativo", só chão zero.
   const score = Math.max(0, Math.round((rawPoints / considered.length) * 100));
   // Confiança = quanto da "superfície" de campos relevantes tem alguma
@@ -231,22 +262,42 @@ export function computeDataQualityScore(evidences: EvidenceRecord[]): DataQualit
   // com 8/8 campos confirmados.
   const confidence = Math.min(1, considered.length / DATA_QUALITY_RELEVANT_FIELDS.length);
 
-  const reasons = [`${verifiedCount}/${considered.length} campo(s) relevante(s) com evidência confirmados por fonte verificada.`];
+  const reasons = [
+    `${verifiedCount}/${considered.length} campo(s) relevante(s) com evidência confirmados por fonte verificada.`,
+  ];
   if (conflictedCount > 0) {
-    reasons.push(`${conflictedCount} campo(s) com fontes conflitantes (resolveFieldConflict) — penaliza a confiabilidade.`);
+    reasons.push(
+      `${conflictedCount} campo(s) com fontes conflitantes (resolveFieldConflict) — penaliza a confiabilidade.`,
+    );
   }
   if (unverifiedCount > 0) {
-    reasons.push(`${unverifiedCount} campo(s) vindo(s) de fonte não verificada (ex: Apollo) — soma parcialmente.`);
+    reasons.push(
+      `${unverifiedCount} campo(s) vindo(s) de fonte não verificada (ex: Apollo) — soma parcialmente.`,
+    );
   }
   if (inferredCount > 0) {
-    reasons.push(`${inferredCount} campo(s) inferido(s), não confirmado(s) diretamente — soma pouco.`);
+    reasons.push(
+      `${inferredCount} campo(s) inferido(s), não confirmado(s) diretamente — soma pouco.`,
+    );
   }
   const missingCount = DATA_QUALITY_RELEVANT_FIELDS.length - considered.length;
   if (missingCount > 0) {
-    reasons.push(`${missingCount} campo(s) relevante(s) sem nenhuma evidência ainda — não contam a favor nem contra o score.`);
+    reasons.push(
+      `${missingCount} campo(s) relevante(s) sem nenhuma evidência ainda — não contam a favor nem contra o score.`,
+    );
   }
 
-  return { score, confidence, reasons, verifiedCount, conflictedCount, unverifiedCount, inferredCount, consideredCount: considered.length, relevantFieldCount: DATA_QUALITY_RELEVANT_FIELDS.length };
+  return {
+    score,
+    confidence,
+    reasons,
+    verifiedCount,
+    conflictedCount,
+    unverifiedCount,
+    inferredCount,
+    consideredCount: considered.length,
+    relevantFieldCount: DATA_QUALITY_RELEVANT_FIELDS.length,
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -258,7 +309,11 @@ export function computeDataQualityScore(evidences: EvidenceRecord[]): DataQualit
 // quase sempre chega como `null` (sem provider integrado — ver
 // computeIntentScore), então seu peso é redistribuído entre Fit e Data
 // Quality na prática (ver computeLeadScores) até existir algum provider real.
-export const DEFAULT_SCORING_WEIGHTS: ScoringWeights = { fit: 0.6, intent: 0.15, dataQuality: 0.25 };
+export const DEFAULT_SCORING_WEIGHTS: ScoringWeights = {
+  fit: 0.6,
+  intent: 0.15,
+  dataQuality: 0.25,
+};
 
 // Pesos configuráveis por marca/ICP (pacote CPI pede explicitamente "pesos
 // configuráveis por marca/ICP"). Atlas (agro/frigorificado) e TotalTrac
@@ -270,16 +325,23 @@ export const DEFAULT_SCORING_WEIGHTS: ScoringWeights = { fit: 0.6, intent: 0.15,
 // normaliza defensivamente mesmo assim.
 export const SCORING_WEIGHTS_BY_COMPANY: Record<string, ScoringWeights> = {
   atlas: { fit: 0.65, intent: 0.15, dataQuality: 0.2 },
-  totaltrac: { fit: 0.55, intent: 0.15, dataQuality: 0.3 }
+  totaltrac: { fit: 0.55, intent: 0.15, dataQuality: 0.3 },
 };
 
-export function resolveScoringWeights(company?: string, override?: Partial<ScoringWeights>): ScoringWeights {
+export function resolveScoringWeights(
+  company?: string,
+  override?: Partial<ScoringWeights>,
+): ScoringWeights {
   const base = (company && SCORING_WEIGHTS_BY_COMPANY[company]) || DEFAULT_SCORING_WEIGHTS;
   const merged: ScoringWeights = { ...base, ...override };
   const total = merged.fit + merged.intent + merged.dataQuality;
   if (total <= 0) return DEFAULT_SCORING_WEIGHTS;
   // Normaliza para somar 1 mesmo se o override não somar exatamente 1.
-  return { fit: merged.fit / total, intent: merged.intent / total, dataQuality: merged.dataQuality / total };
+  return {
+    fit: merged.fit / total,
+    intent: merged.intent / total,
+    dataQuality: merged.dataQuality / total,
+  };
 }
 
 export interface ComputeLeadScoresParams {
@@ -308,36 +370,67 @@ export function computeLeadScores(params: ComputeLeadScoresParams): LeadScores {
   const dataQuality = computeDataQualityScore(params.evidences);
   const weights = resolveScoringWeights(params.company, params.weightsOverride);
 
-  const components: Array<{ key: keyof ScoringWeights; label: string; value: number | null; weight: number }> = [
+  const components: Array<{
+    key: keyof ScoringWeights;
+    label: string;
+    value: number | null;
+    weight: number;
+  }> = [
     { key: 'fit', label: 'fit', value: fit.score, weight: weights.fit },
     { key: 'intent', label: 'intent', value: intent.score, weight: weights.intent },
-    { key: 'dataQuality', label: 'dataQuality', value: dataQuality.score, weight: weights.dataQuality }
+    {
+      key: 'dataQuality',
+      label: 'dataQuality',
+      value: dataQuality.score,
+      weight: weights.dataQuality,
+    },
   ];
-  const available = components.filter(c => c.value !== null) as Array<{ key: keyof ScoringWeights; label: string; value: number; weight: number }>;
+  const available = components.filter((c) => c.value !== null) as Array<{
+    key: keyof ScoringWeights;
+    label: string;
+    value: number;
+    weight: number;
+  }>;
   const availableWeightSum = available.reduce((sum, c) => sum + c.weight, 0);
 
   const reasons: string[] = [];
   let final: number | null = null;
 
   if (available.length === 0) {
-    reasons.push('Nenhum dos três componentes (fit, intent, dataQuality) tem base suficiente para gerar um Final Score.');
+    reasons.push(
+      'Nenhum dos três componentes (fit, intent, dataQuality) tem base suficiente para gerar um Final Score.',
+    );
   } else if (availableWeightSum === 0) {
     // Pesos configurados são 0 para tudo que está disponível — cai para
     // média simples em vez de dividir por zero.
     final = Math.round(available.reduce((sum, c) => sum + c.value, 0) / available.length);
-    reasons.push('Pesos configurados somam 0 entre os componentes disponíveis — usando média simples como fallback.');
+    reasons.push(
+      'Pesos configurados somam 0 entre os componentes disponíveis — usando média simples como fallback.',
+    );
   } else {
-    final = Math.round(available.reduce((sum, c) => sum + c.value * c.weight, 0) / availableWeightSum);
+    final = Math.round(
+      available.reduce((sum, c) => sum + c.value * c.weight, 0) / availableWeightSum,
+    );
   }
 
   if (available.length < components.length) {
-    const missing = components.filter(c => c.value === null).map(c => c.label);
-    reasons.push(`Componente(s) sem score calculado: ${missing.join(', ')} — peso redistribuído entre os demais, nunca tratado como 0.`);
+    const missing = components.filter((c) => c.value === null).map((c) => c.label);
+    reasons.push(
+      `Componente(s) sem score calculado: ${missing.join(', ')} — peso redistribuído entre os demais, nunca tratado como 0.`,
+    );
   }
 
-  reasons.push(...fit.reasons.map(r => `[fit] ${r}`));
-  reasons.push(...intent.reasons.map(r => `[intent] ${r}`));
-  reasons.push(...dataQuality.reasons.map(r => `[dataQuality] ${r}`));
+  reasons.push(...fit.reasons.map((r) => `[fit] ${r}`));
+  reasons.push(...intent.reasons.map((r) => `[intent] ${r}`));
+  reasons.push(...dataQuality.reasons.map((r) => `[dataQuality] ${r}`));
 
-  return { fit, intent, dataQuality, final, weights, reasons, scoringModelVersion: SCORING_MODEL_VERSION };
+  return {
+    fit,
+    intent,
+    dataQuality,
+    final,
+    weights,
+    reasons,
+    scoringModelVersion: SCORING_MODEL_VERSION,
+  };
 }

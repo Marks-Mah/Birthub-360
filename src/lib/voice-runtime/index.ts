@@ -9,5 +9,5 @@ export * from './FailoverEngine.js';
 export * from './ProviderManager.js';
 export * from './Observability.js';
 export * from './providers/BaseProvider.js';
-export * from "./providers/TwilioProvider.js";
+export * from './providers/TwilioProvider.js';
 export * from './intelligence/KnowledgeConfidenceEngine.js';

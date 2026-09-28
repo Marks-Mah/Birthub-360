@@ -21,6 +21,6 @@ export function setLoggedInCookie(res: Response) {
   res.cookie('logged_in', 'true', {
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'strict',
-    path: '/'
+    path: '/',
   });
 }

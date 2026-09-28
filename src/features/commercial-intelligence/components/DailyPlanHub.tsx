@@ -34,7 +34,10 @@ import type {
   DailyPlanPriorityLevel,
   UserDailyPlanSummary,
 } from '../../../shared/contracts/dailyPlan.contract.js';
-import { commercialIntelligenceApi, type DailyPlanTeamMember } from '../commercialIntelligence.api.js';
+import {
+  commercialIntelligenceApi,
+  type DailyPlanTeamMember,
+} from '../commercialIntelligence.api.js';
 import { DailyPlanTeamOverview } from './DailyPlanTeamOverview.js';
 import { type DailyTask, DEFAULT_DAILY_PLAN, PITCHES_BY_SEGMENT } from './dailyPlanHub.content.js';
 import { NewActivityModal } from './NewActivityModal.js';

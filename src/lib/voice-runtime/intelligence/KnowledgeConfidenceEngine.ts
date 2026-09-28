@@ -14,7 +14,10 @@ export class KnowledgeConfidenceEngine {
   // infer certainty from `confidence` alone — see AGENTS.md "Missão da Onda 2" item 4.
   public static readonly CONFIDENCE_THRESHOLD = 0.6;
 
-  public evaluateKnowledge(query: string, availableDocuments: KnowledgeDocument[]): KnowledgeConfidence {
+  public evaluateKnowledge(
+    query: string,
+    availableDocuments: KnowledgeDocument[],
+  ): KnowledgeConfidence {
     // RAG Simulator: In a real scenario, this would query a vector DB (Pinecone, PgVector).
     // Due to sandbox constraints, we simulate semantic search over JSON.
 
@@ -27,13 +30,13 @@ export class KnowledgeConfidenceEngine {
     const lowerQuery = query.toLowerCase();
 
     for (const doc of availableDocuments) {
-        if (lowerQuery.includes(doc.keyword) || doc.content.toLowerCase().includes(lowerQuery)) {
-            bestMatchScore = 0.85; // Simulated high confidence
-            snippetUsed = doc.content;
-            documentName = doc.name;
-            isUpToDate = true;
-            break;
-        }
+      if (lowerQuery.includes(doc.keyword) || doc.content.toLowerCase().includes(lowerQuery)) {
+        bestMatchScore = 0.85; // Simulated high confidence
+        snippetUsed = doc.content;
+        documentName = doc.name;
+        isUpToDate = true;
+        break;
+      }
     }
 
     const isLowConfidence = bestMatchScore < KnowledgeConfidenceEngine.CONFIDENCE_THRESHOLD;
@@ -51,7 +54,7 @@ export class KnowledgeConfidenceEngine {
         ? `[Baixa confiança — verificar com um humano antes de repassar como fato] ${snippetUsed}`
         : snippetUsed,
       embeddingsScore: bestMatchScore,
-      isLowConfidence
+      isLowConfidence,
     };
   }
 }

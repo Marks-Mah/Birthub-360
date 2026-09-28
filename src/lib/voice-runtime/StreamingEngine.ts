@@ -20,7 +20,7 @@ export class StreamingEngine {
         const chunk: AudioChunk = {
           data,
           timestamp: Date.now(),
-          isSpeech: true
+          isSpeech: true,
         };
         this.writeInput(sessionId, chunk);
       });
@@ -36,7 +36,7 @@ export class StreamingEngine {
       },
       cancel: () => {
         this.inputStreams.delete(sessionId);
-      }
+      },
     });
 
     const output = new ReadableStream<AudioChunk>({
@@ -45,7 +45,7 @@ export class StreamingEngine {
       },
       cancel: () => {
         this.outputStreams.delete(sessionId);
-      }
+      },
     });
 
     this.outputCallbacks.set(sessionId, []);
@@ -67,11 +67,12 @@ export class StreamingEngine {
     }
 
     const callbacks = this.outputCallbacks.get(sessionId) || [];
-    callbacks.forEach(cb => cb(chunk));
+    callbacks.forEach((cb) => cb(chunk));
 
     // Also send over WebSocket if connected
     const ws = this.webSockets.get(sessionId);
-    if (ws && ws.readyState === 1) { // 1 = OPEN
+    if (ws && ws.readyState === 1) {
+      // 1 = OPEN
       ws.send(chunk.data);
     }
   }
@@ -87,21 +88,29 @@ export class StreamingEngine {
 
     const ws = this.webSockets.get(sessionId);
     if (ws && ws.readyState === 1) {
-       // Twilio specific clear instruction if using Media Streams, or general abort signal
-       ws.send(JSON.stringify({ event: 'clear' }));
+      // Twilio specific clear instruction if using Media Streams, or general abort signal
+      ws.send(JSON.stringify({ event: 'clear' }));
     }
   }
 
   public cleanup(sessionId: string) {
     const inCtrl = this.inputStreams.get(sessionId);
     if (inCtrl) {
-      try { inCtrl.close(); } catch { /* already closed */ }
+      try {
+        inCtrl.close();
+      } catch {
+        /* already closed */
+      }
       this.inputStreams.delete(sessionId);
     }
 
     const outCtrl = this.outputStreams.get(sessionId);
     if (outCtrl) {
-      try { outCtrl.close(); } catch { /* already closed */ }
+      try {
+        outCtrl.close();
+      } catch {
+        /* already closed */
+      }
       this.outputStreams.delete(sessionId);
     }
 

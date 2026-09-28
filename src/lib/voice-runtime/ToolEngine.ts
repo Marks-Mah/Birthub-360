@@ -47,7 +47,7 @@ export class ToolExecutionEngine {
     sessionId: string,
     toolName: string,
     args: Record<string, unknown>,
-    ctx: ToolExecutionContext
+    ctx: ToolExecutionContext,
   ): Promise<unknown> {
     const tool = this.registeredTools.get(toolName);
     if (!tool) {
@@ -62,7 +62,7 @@ export class ToolExecutionEngine {
       observability.logEvent(sessionId, 'TOOL_EXECUTION_DENIED', {
         tool: toolName,
         tenantId: ctx.tenantId,
-        reason: 'tool_not_enabled_for_tenant'
+        reason: 'tool_not_enabled_for_tenant',
       });
       throw new ToolPermissionError(`Tool ${toolName} is not enabled for tenant ${ctx.tenantId}`);
     }
@@ -74,36 +74,50 @@ export class ToolExecutionEngine {
         tool: toolName,
         tenantId: ctx.tenantId,
         reason: 'missing_permission',
-        requiredPermission: tool.requiredPermission
+        requiredPermission: tool.requiredPermission,
       });
-      throw new ToolPermissionError(`Tool ${toolName} requires permission '${tool.requiredPermission}', which tenant ${ctx.tenantId} does not hold for this session`);
+      throw new ToolPermissionError(
+        `Tool ${toolName} requires permission '${tool.requiredPermission}', which tenant ${ctx.tenantId} does not hold for this session`,
+      );
     }
 
     observability.startSpan(`tool-${sessionId}`);
-    observability.logEvent(sessionId, 'TOOL_EXECUTION_STARTED', { tool: toolName, args, tenantId: ctx.tenantId });
+    observability.logEvent(sessionId, 'TOOL_EXECUTION_STARTED', {
+      tool: toolName,
+      args,
+      tenantId: ctx.tenantId,
+    });
 
     try {
       const result = await tool.execute(args, ctx);
-      observability.endSpan(`tool-${sessionId}`, sessionId, 'TOOL_EXECUTION_COMPLETED', { tool: toolName, result });
+      observability.endSpan(`tool-${sessionId}`, sessionId, 'TOOL_EXECUTION_COMPLETED', {
+        tool: toolName,
+        result,
+      });
       return result;
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : String(error);
-      observability.endSpan(`tool-${sessionId}`, sessionId, 'TOOL_EXECUTION_FAILED', { tool: toolName, error: message });
+      observability.endSpan(`tool-${sessionId}`, sessionId, 'TOOL_EXECUTION_FAILED', {
+        tool: toolName,
+        error: message,
+      });
       throw error;
     }
   }
 
-  public getAvailableTools(ctx?: Pick<ToolExecutionContext, 'allowedTools'>): Array<{ name: string; description: string; parameters: Record<string, unknown> }> {
+  public getAvailableTools(
+    ctx?: Pick<ToolExecutionContext, 'allowedTools'>,
+  ): Array<{ name: string; description: string; parameters: Record<string, unknown> }> {
     const tools = Array.from(this.registeredTools.values())
       // Without a context, callers get the full catalog (e.g. an admin-facing tool registry
       // page); with one, only what that tenant/agent may actually invoke — never advertise a
       // tool as "available" that executeTool would then refuse.
-      .filter(t => !ctx || ctx.allowedTools.includes(t.name));
+      .filter((t) => !ctx || ctx.allowedTools.includes(t.name));
 
-    return tools.map(t => ({
+    return tools.map((t) => ({
       name: t.name,
       description: t.description,
-      parameters: t.parameters
+      parameters: t.parameters,
     }));
   }
 }

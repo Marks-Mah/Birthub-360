@@ -1,6 +1,19 @@
 import crypto from 'node:crypto';
-import { hashPassword, verifyPassword, generateToken, generateRefreshToken, verifyRefreshToken, type TokenPayload } from '../lib/auth-tokens.js';
-import { findUserByEmail, findUserById, createUser, createMembership, findMembershipWithRole } from '../repositories/userRepository.js';
+import {
+  hashPassword,
+  verifyPassword,
+  generateToken,
+  generateRefreshToken,
+  verifyRefreshToken,
+  type TokenPayload,
+} from '../lib/auth-tokens.js';
+import {
+  findUserByEmail,
+  findUserById,
+  createUser,
+  createMembership,
+  findMembershipWithRole,
+} from '../repositories/userRepository.js';
 import { createTenant } from '../repositories/organizationRepository.js';
 import { getOrCreateSystemRole } from '../repositories/roleRepository.js';
 
@@ -30,10 +43,20 @@ export async function register(email: string, password: string, companyName: str
 
   const tenant = await createTenant(companyName);
   const adminRole = await getOrCreateSystemRole('admin');
-  const user = await createUser({ email, passwordHash: hashPassword(password), companyName, organizationId: tenant.id });
+  const user = await createUser({
+    email,
+    passwordHash: hashPassword(password),
+    companyName,
+    organizationId: tenant.id,
+  });
   await createMembership(user.id, tenant.id, adminRole.id);
 
-  const payload: TokenPayload = { id: user.id, email: user.email, role: 'admin', organizationId: tenant.id };
+  const payload: TokenPayload = {
+    id: user.id,
+    email: user.email,
+    role: 'admin',
+    organizationId: tenant.id,
+  };
   const token = generateToken(payload);
   const refreshToken = generateRefreshToken({ id: user.id });
 
@@ -49,11 +72,21 @@ export async function login(email: string, password: string) {
   const membership = await findMembershipWithRole(user.id, user.organizationId);
   const role = membership?.role.name || 'user';
 
-  const payload: TokenPayload = { id: user.id, email: user.email, role, organizationId: user.organizationId };
+  const payload: TokenPayload = {
+    id: user.id,
+    email: user.email,
+    role,
+    organizationId: user.organizationId,
+  };
   const token = generateToken(payload);
   const refreshToken = generateRefreshToken({ id: user.id });
 
-  return { token, refreshToken, user: toPublicUser(user, role), organizationId: user.organizationId };
+  return {
+    token,
+    refreshToken,
+    user: toPublicUser(user, role),
+    organizationId: user.organizationId,
+  };
 }
 
 export async function refreshSession(refreshToken: string) {
@@ -66,7 +99,12 @@ export async function refreshSession(refreshToken: string) {
   const membership = await findMembershipWithRole(user.id, user.organizationId);
   const role = membership?.role.name || 'user';
 
-  const payload: TokenPayload = { id: user.id, email: user.email, role, organizationId: user.organizationId };
+  const payload: TokenPayload = {
+    id: user.id,
+    email: user.email,
+    role,
+    organizationId: user.organizationId,
+  };
   return { token: generateToken(payload), session: payload };
 }
 

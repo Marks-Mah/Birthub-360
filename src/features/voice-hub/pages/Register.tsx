@@ -34,9 +34,9 @@ export default function RegisterPage() {
       const response = await fetch('/api/auth/register', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password, companyName })
+        body: JSON.stringify({ email, password, companyName }),
       });
 
       const data = await response.json();
@@ -67,7 +67,9 @@ export default function RegisterPage() {
             <h1 className="text-2xl font-bold text-slate-900">Birth Voices Hub</h1>
           </div>
 
-          <h2 className="text-xl font-semibold text-center mb-6 text-slate-700">Criar Nova Organização</h2>
+          <h2 className="text-xl font-semibold text-center mb-6 text-slate-700">
+            Criar Nova Organização
+          </h2>
 
           {error && (
             <div className="mb-4 p-3 bg-red-50 text-red-600 text-sm rounded-lg text-center">
@@ -77,35 +79,44 @@ export default function RegisterPage() {
 
           <form onSubmit={handleRegister} className="space-y-4">
             <div>
-              <label htmlFor={companyNameId} className="block text-sm font-medium text-slate-700 mb-1">Nome da Empresa</label>
+              <label
+                htmlFor={companyNameId}
+                className="block text-sm font-medium text-slate-700 mb-1"
+              >
+                Nome da Empresa
+              </label>
               <input
                 id={companyNameId}
                 type="text"
                 value={companyName}
-                onChange={e => setCompanyName(e.target.value)}
+                onChange={(e) => setCompanyName(e.target.value)}
                 className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand outline-none"
                 required
                 minLength={2}
               />
             </div>
             <div>
-              <label htmlFor={emailId} className="block text-sm font-medium text-slate-700 mb-1">Email Profissional</label>
+              <label htmlFor={emailId} className="block text-sm font-medium text-slate-700 mb-1">
+                Email Profissional
+              </label>
               <input
                 id={emailId}
                 type="email"
                 value={email}
-                onChange={e => setEmail(e.target.value)}
+                onChange={(e) => setEmail(e.target.value)}
                 className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand outline-none"
                 required
               />
             </div>
             <div>
-              <label htmlFor={passwordId} className="block text-sm font-medium text-slate-700 mb-1">Senha</label>
+              <label htmlFor={passwordId} className="block text-sm font-medium text-slate-700 mb-1">
+                Senha
+              </label>
               <input
                 id={passwordId}
                 type="password"
                 value={password}
-                onChange={e => setPassword(e.target.value)}
+                onChange={(e) => setPassword(e.target.value)}
                 className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand outline-none"
                 required
                 minLength={6}
@@ -117,12 +128,21 @@ export default function RegisterPage() {
               className="w-full bg-brand hover:opacity-90 font-bold py-3 rounded-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50"
               style={{ color: accessibleBrandText }}
             >
-              {loading ? 'Criando...' : <>Começar Grátis <ArrowRight className="h-4 w-4" /></>}
+              {loading ? (
+                'Criando...'
+              ) : (
+                <>
+                  Começar Grátis <ArrowRight className="h-4 w-4" />
+                </>
+              )}
             </button>
           </form>
 
           <div className="mt-6 text-center text-sm text-slate-500">
-            Já tem uma conta? <Link to="/login" className="text-brand hover:underline">Faça Login</Link>
+            Já tem uma conta?{' '}
+            <Link to="/login" className="text-brand hover:underline">
+              Faça Login
+            </Link>
           </div>
         </div>
       </div>

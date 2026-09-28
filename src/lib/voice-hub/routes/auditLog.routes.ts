@@ -9,6 +9,12 @@ const router = express.Router();
 // management (GET /users) since audit entries can reveal sensitive operational history.
 // Additional per-IP limiter on top of server.ts's general 200 req/min — an admin reviewing the
 // trail never needs more than occasional page loads.
-router.get('/audit-log', requireTenant, requireRole(['admin']), createRateLimiter('auditLog', 30, 60), listAuditLogHandler);
+router.get(
+  '/audit-log',
+  requireTenant,
+  requireRole(['admin']),
+  createRateLimiter('auditLog', 30, 60),
+  listAuditLogHandler,
+);
 
 export default router;

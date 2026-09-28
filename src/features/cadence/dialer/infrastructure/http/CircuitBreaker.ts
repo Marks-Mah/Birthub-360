@@ -1,4 +1,4 @@
-export type CircuitState = "closed" | "open" | "half_open";
+export type CircuitState = 'closed' | 'open' | 'half_open';
 
 export interface CircuitBreakerOptions {
   /** Falhas consecutivas para abrir o circuito. */
@@ -11,8 +11,8 @@ export interface CircuitBreakerOptions {
 
 export class CircuitBreakerOpenError extends Error {
   constructor() {
-    super("Circuito aberto: chamadas à 3CX bloqueadas preventivamente após falhas consecutivas");
-    this.name = "CircuitBreakerOpenError";
+    super('Circuito aberto: chamadas à 3CX bloqueadas preventivamente após falhas consecutivas');
+    this.name = 'CircuitBreakerOpenError';
   }
 }
 
@@ -24,7 +24,7 @@ export class CircuitBreakerOpenError extends Error {
  * para decidir se o circuito fecha de novo ou reabre.
  */
 export class CircuitBreaker {
-  private state: CircuitState = "closed";
+  private state: CircuitState = 'closed';
   private consecutiveFailures = 0;
   private openedAt = 0;
   private readonly now: () => number;
@@ -34,11 +34,11 @@ export class CircuitBreaker {
   }
 
   async execute<T>(operation: () => Promise<T>): Promise<T> {
-    if (this.state === "open") {
+    if (this.state === 'open') {
       if (this.now() - this.openedAt < this.options.cooldownMs) {
         throw new CircuitBreakerOpenError();
       }
-      this.transitionTo("half_open");
+      this.transitionTo('half_open');
     }
 
     try {
@@ -57,14 +57,14 @@ export class CircuitBreaker {
 
   private onSuccess(): void {
     this.consecutiveFailures = 0;
-    this.transitionTo("closed");
+    this.transitionTo('closed');
   }
 
   private onFailure(): void {
     this.consecutiveFailures += 1;
-    if (this.state === "half_open" || this.consecutiveFailures >= this.options.failureThreshold) {
+    if (this.state === 'half_open' || this.consecutiveFailures >= this.options.failureThreshold) {
       this.openedAt = this.now();
-      this.transitionTo("open");
+      this.transitionTo('open');
     }
   }
 

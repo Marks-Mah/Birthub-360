@@ -120,9 +120,11 @@ function getRuntimeVoiceOverride(state: WorkflowRuntimeState): VoiceOverride | u
   try {
     const parsed: unknown = JSON.parse(raw);
     if (
-      parsed && typeof parsed === 'object' && !Array.isArray(parsed)
-      && typeof (parsed as Record<string, unknown>).voice === 'string'
-      && (parsed as Record<string, unknown>).voice
+      parsed &&
+      typeof parsed === 'object' &&
+      !Array.isArray(parsed) &&
+      typeof (parsed as Record<string, unknown>).voice === 'string' &&
+      (parsed as Record<string, unknown>).voice
     ) {
       const language = (parsed as Record<string, unknown>).language;
       return {
@@ -219,7 +221,7 @@ function asRecord(value: unknown): RuntimeConfig {
   // narrows that already-validated JSON boundary; the runtime never accepts arbitrary JS objects
   // directly from request bodies here.
   return value && typeof value === 'object' && !Array.isArray(value)
-    ? value as RuntimeConfig
+    ? (value as RuntimeConfig)
     : {};
 }
 
@@ -239,10 +241,13 @@ function asOptionalNumber(value: unknown): number | undefined {
   return typeof value === 'number' && Number.isFinite(value) ? value : undefined;
 }
 
-function toStudioGraph(nodes: unknown, edges: unknown): { nodes: StudioNode[]; edges: StudioEdge[] } {
+function toStudioGraph(
+  nodes: unknown,
+  edges: unknown,
+): { nodes: StudioNode[]; edges: StudioEdge[] } {
   return {
-    nodes: Array.isArray(nodes) ? nodes as StudioNode[] : [],
-    edges: Array.isArray(edges) ? edges as StudioEdge[] : [],
+    nodes: Array.isArray(nodes) ? (nodes as StudioNode[]) : [],
+    edges: Array.isArray(edges) ? (edges as StudioEdge[]) : [],
   };
 }
 
@@ -271,15 +276,15 @@ function branchHandles(edges: StudioEdge[], nodeId: string): Set<string> {
 // prefix, against whatever a tenant typed into the Studio inspector's `voiceId` field.
 const KNOWN_TWILIO_VOICE_NAMES: Record<string, string> = {
   'polly.camila': 'Polly.Camila',
-  'camila': 'Polly.Camila',
+  camila: 'Polly.Camila',
   'polly.camila-neural': 'Polly.Camila-Neural',
   'camila-neural': 'Polly.Camila-Neural',
   'polly.vitoria': 'Polly.Vitoria',
-  'vitoria': 'Polly.Vitoria',
+  vitoria: 'Polly.Vitoria',
   'polly.vitória': 'Polly.Vitoria',
-  'vitória': 'Polly.Vitoria',
+  vitória: 'Polly.Vitoria',
   'polly.ricardo': 'Polly.Ricardo',
-  'ricardo': 'Polly.Ricardo',
+  ricardo: 'Polly.Ricardo',
   'google.pt-br-standard-a': 'Google.pt-BR-Standard-A',
   'pt-br-standard-a': 'Google.pt-BR-Standard-A',
 };
@@ -287,7 +292,15 @@ const KNOWN_TWILIO_VOICE_NAMES: Record<string, string> = {
 // Only a `provider` naming Twilio's own TTS engines is even eligible for the lookup above — this
 // is a second, independent guard (not a substitute for the allowlist itself) against an
 // accidental short-name collision with an unrelated provider's voice id.
-const TWILIO_NATIVE_VOICE_PROVIDERS = new Set(['twilio', 'amazonpolly', 'amazon', 'polly', 'google', 'googletts', 'googlecloudtts']);
+const TWILIO_NATIVE_VOICE_PROVIDERS = new Set([
+  'twilio',
+  'amazonpolly',
+  'amazon',
+  'polly',
+  'google',
+  'googletts',
+  'googlecloudtts',
+]);
 
 /**
  * Resolves a Studio `voice` node's `provider`/`voiceId` into the Twilio-native voice name
@@ -299,7 +312,9 @@ const TWILIO_NATIVE_VOICE_PROVIDERS = new Set(['twilio', 'amazonpolly', 'amazon'
  * mapping — the caller must never fall back to guessing a voice name.
  */
 function resolveVoiceOverride(config: RuntimeConfig): VoiceOverride | undefined {
-  const provider = asString(config.provider).toLowerCase().replace(/[\s_-]+/g, '');
+  const provider = asString(config.provider)
+    .toLowerCase()
+    .replace(/[\s_-]+/g, '');
   const voiceId = asString(config.voiceId);
   if (!voiceId || !TWILIO_NATIVE_VOICE_PROVIDERS.has(provider)) return undefined;
 
@@ -333,7 +348,9 @@ function resolveTransferDetails(config: RuntimeConfig): TransferDetails | undefi
 }
 
 export function mapRuntimeProvider(value: unknown): RuntimeProvider | null {
-  const normalized = asString(value).toLowerCase().replace(/[\s_-]+/g, '');
+  const normalized = asString(value)
+    .toLowerCase()
+    .replace(/[\s_-]+/g, '');
   if (normalized === 'gemini' || normalized === 'googlegemini') return 'GoogleGemini';
   if (normalized === 'openai') return 'OpenAI';
   if (normalized === 'claude' || normalized === 'anthropic') return 'Claude';
@@ -346,7 +363,10 @@ export function mapRuntimeProvider(value: unknown): RuntimeProvider | null {
  * telephony executor cannot honestly execute. Those graphs fail closed at publish time instead
  * of being marked active and silently ignored during a real call.
  */
-export function validateRuntimeCompatibility(nodes: StudioNode[], edges: StudioEdge[]): ValidationIssue[] {
+export function validateRuntimeCompatibility(
+  nodes: StudioNode[],
+  edges: StudioEdge[],
+): ValidationIssue[] {
   const issues: ValidationIssue[] = [];
 
   for (const node of nodes) {
@@ -363,12 +383,17 @@ export function validateRuntimeCompatibility(nodes: StudioNode[], edges: StudioE
     }
 
     const outgoing = outgoingFor(edges, node.id);
-    if (!['condition', 'switch', 'question'].includes(type) && type !== 'end' && outgoing.length > 1) {
+    if (
+      !['condition', 'switch', 'question'].includes(type) &&
+      type !== 'end' &&
+      outgoing.length > 1
+    ) {
       issues.push({
         id: `err-runtime-fanout-${node.id}`,
         nodeId: node.id,
         type: 'error',
-        message: 'O runtime exige uma única saída para nós não condicionais; fan-out paralelo ainda não é executado de forma determinística.',
+        message:
+          'O runtime exige uma única saída para nós não condicionais; fan-out paralelo ainda não é executado de forma determinística.',
       });
     }
 
@@ -401,12 +426,23 @@ export function validateRuntimeCompatibility(nodes: StudioNode[], edges: StudioE
           id: `err-runtime-nl-condition-${node.id}`,
           nodeId: node.id,
           type: 'error',
-          message: 'Condição em linguagem natural ainda não é executável. Use uma variável de sessão e operador determinístico.',
+          message:
+            'Condição em linguagem natural ainda não é executável. Use uma variável de sessão e operador determinístico.',
         });
       }
 
       const operator = asString(config.operator).toLowerCase() || 'equals';
-      if (!['equals', 'not_equals', 'contains', 'not_contains', 'exists', 'not_exists', 'regex'].includes(operator)) {
+      if (
+        ![
+          'equals',
+          'not_equals',
+          'contains',
+          'not_contains',
+          'exists',
+          'not_exists',
+          'regex',
+        ].includes(operator)
+      ) {
         issues.push({
           id: `err-runtime-condition-operator-${node.id}`,
           nodeId: node.id,
@@ -433,7 +469,8 @@ export function validateRuntimeCompatibility(nodes: StudioNode[], edges: StudioE
           id: `err-runtime-question-edges-${node.id}`,
           nodeId: node.id,
           type: 'error',
-          message: 'Question precisa conectar out-0 (resposta válida) e out-1 (tentativas esgotadas).',
+          message:
+            'Question precisa conectar out-0 (resposta válida) e out-1 (tentativas esgotadas).',
         });
       }
 
@@ -455,7 +492,9 @@ export function validateRuntimeCompatibility(nodes: StudioNode[], edges: StudioE
     if (type === 'switch') {
       const outgoingSwitch = outgoingFor(edges, node.id);
       const invalidHandle = outgoingSwitch.find(
-        (edge) => !edge.data?.isFallback && !(typeof edge.sourceHandle === 'string' && /^out-\d+$/.test(edge.sourceHandle)),
+        (edge) =>
+          !edge.data?.isFallback &&
+          !(typeof edge.sourceHandle === 'string' && /^out-\d+$/.test(edge.sourceHandle)),
       );
       if (invalidHandle) {
         issues.push({
@@ -463,7 +502,8 @@ export function validateRuntimeCompatibility(nodes: StudioNode[], edges: StudioE
           nodeId: node.id,
           edgeId: invalidHandle.id,
           type: 'error',
-          message: 'Cada saída do Switch precisa usar um sourceHandle out-N ou ser marcada explicitamente como fallback.',
+          message:
+            'Cada saída do Switch precisa usar um sourceHandle out-N ou ser marcada explicitamente como fallback.',
         });
       }
     }
@@ -474,7 +514,9 @@ export function validateRuntimeCompatibility(nodes: StudioNode[], edges: StudioE
 
 function compileNodes(nodes: StudioNode[]): RuntimeNode[] {
   return nodes
-    .filter((node): node is StudioNode & { type: RuntimeNodeType } => Boolean(node.type && SUPPORTED_TYPES.has(node.type as RuntimeNodeType)))
+    .filter((node): node is StudioNode & { type: RuntimeNodeType } =>
+      Boolean(node.type && SUPPORTED_TYPES.has(node.type as RuntimeNodeType)),
+    )
     .map((node) => ({ id: node.id, type: node.type, config: asRecord(node.data.config) }));
 }
 
@@ -500,11 +542,17 @@ function orderedOutgoing(state: WorkflowRuntimeState, nodeId: string): RuntimeEd
     .sort((a, b) => b.priority - a.priority || a.id.localeCompare(b.id));
 }
 
-function selectHandle(state: WorkflowRuntimeState, nodeId: string, handle: string): RuntimeEdge | null {
+function selectHandle(
+  state: WorkflowRuntimeState,
+  nodeId: string,
+  handle: string,
+): RuntimeEdge | null {
   const outgoing = orderedOutgoing(state, nodeId);
-  return outgoing.find((edge) => edge.sourceHandle === handle)
-    ?? outgoing.find((edge) => edge.isFallback)
-    ?? null;
+  return (
+    outgoing.find((edge) => edge.sourceHandle === handle) ??
+    outgoing.find((edge) => edge.isFallback) ??
+    null
+  );
 }
 
 function selectDefaultEdge(state: WorkflowRuntimeState, nodeId: string): RuntimeEdge | null {
@@ -512,7 +560,10 @@ function selectDefaultEdge(state: WorkflowRuntimeState, nodeId: string): Runtime
 }
 
 function renderTemplate(template: string, variables: Record<string, string>): string {
-  return template.replace(/\{\{\s*([\w.-]+)\s*\}\}/g, (_match, key: string) => variables[key] ?? '');
+  return template.replace(
+    /\{\{\s*([\w.-]+)\s*\}\}/g,
+    (_match, key: string) => variables[key] ?? '',
+  );
 }
 
 function normalizeComparable(value: string): string {
@@ -528,12 +579,18 @@ function evaluateCondition(config: RuntimeConfig, variables: Record<string, stri
   const b = normalizeComparable(expected);
 
   switch (operator) {
-    case 'equals': return a === b;
-    case 'not_equals': return a !== b;
-    case 'contains': return a.includes(b);
-    case 'not_contains': return !a.includes(b);
-    case 'exists': return actual.trim().length > 0;
-    case 'not_exists': return actual.trim().length === 0;
+    case 'equals':
+      return a === b;
+    case 'not_equals':
+      return a !== b;
+    case 'contains':
+      return a.includes(b);
+    case 'not_contains':
+      return !a.includes(b);
+    case 'exists':
+      return actual.trim().length > 0;
+    case 'not_exists':
+      return actual.trim().length === 0;
     case 'regex': {
       try {
         return new RegExp(expected, 'i').test(actual);
@@ -541,7 +598,8 @@ function evaluateCondition(config: RuntimeConfig, variables: Record<string, stri
         return false;
       }
     }
-    default: return false;
+    default:
+      return false;
   }
 }
 
@@ -556,7 +614,11 @@ function applyMemoryNode(config: RuntimeConfig, variables: Record<string, string
 
   if (!variableName) return;
 
-  if (operation === 'delete variable' || operation === 'remove variable' || operation === 'delete') {
+  if (
+    operation === 'delete variable' ||
+    operation === 'remove variable' ||
+    operation === 'delete'
+  ) {
     delete variables[variableName];
     return;
   }
@@ -602,7 +664,9 @@ function applyKnowledgeNode(state: WorkflowRuntimeState, node: RuntimeNode): voi
   const requestedDatabase = asString(node.config.database);
   const documents = getRuntimeKnowledgeDocuments(state);
   const pool = requestedDatabase
-    ? documents.filter((doc) => normalizeComparable(doc.name) === normalizeComparable(requestedDatabase))
+    ? documents.filter(
+        (doc) => normalizeComparable(doc.name) === normalizeComparable(requestedDatabase),
+      )
     : documents;
 
   const result = knowledgeConfidenceEngine.evaluateKnowledge(query, pool);
@@ -714,9 +778,10 @@ async function executeToolNodeAsync(state: WorkflowRuntimeState, node: RuntimeNo
   }
 
   const endpoint = renderTemplate(asString(node.config.endpoint), state.variables);
-  const bodyPayload = typeof node.config.bodyPayload === 'string'
-    ? renderTemplate(node.config.bodyPayload, state.variables)
-    : node.config.bodyPayload;
+  const bodyPayload =
+    typeof node.config.bodyPayload === 'string'
+      ? renderTemplate(node.config.bodyPayload, state.variables)
+      : node.config.bodyPayload;
 
   const result = await executeHttpTool({
     method: asString(node.config.method) || 'GET',
@@ -754,7 +819,10 @@ async function executeToolNodeAsync(state: WorkflowRuntimeState, node: RuntimeNo
   applyToolFallback(state, node, result.error ?? 'unknown_error');
 }
 
-async function loadAgentKnowledgeDocuments(organizationId: string, agentId: string): Promise<KnowledgeDocument[]> {
+async function loadAgentKnowledgeDocuments(
+  organizationId: string,
+  agentId: string,
+): Promise<KnowledgeDocument[]> {
   try {
     // Tenant-scoped lookup: `agentRepository.getAgent` only returns a row when `agentId` actually
     // belongs to `organizationId`, so a mismatched/foreign agentId yields no documents rather than
@@ -835,11 +903,17 @@ function hasResolvableTransfer(node: RuntimeNode): boolean {
  * `handoff_ok`/`handoff_error` pair for a downstream `condition` node, and continue the walk past
  * it on its single outgoing edge (or stop the call if it has none). Never invents a phone number.
  */
-function skipUnresolvableHumanHandoff(state: WorkflowRuntimeState, node: RuntimeNode): string | null {
-  logger.warn('Workflow human_handoff node has no fallbackNumber configured; skipping the transfer and continuing on the default path', {
-    workflowId: state.workflowId,
-    nodeId: node.id,
-  });
+function skipUnresolvableHumanHandoff(
+  state: WorkflowRuntimeState,
+  node: RuntimeNode,
+): string | null {
+  logger.warn(
+    'Workflow human_handoff node has no fallbackNumber configured; skipping the transfer and continuing on the default path',
+    {
+      workflowId: state.workflowId,
+      nodeId: node.id,
+    },
+  );
   state.variables.handoff_ok = 'false';
   state.variables.handoff_error = 'fallback_number_missing';
   state.variables[`handoff_${node.id}_ok`] = 'false';
@@ -857,7 +931,10 @@ function skipUnresolvableHumanHandoff(state: WorkflowRuntimeState, node: Runtime
  * caller must resume with `resumeAfterTool` (below), which performs the real HTTP call and then
  * continues the walk from there. See `.agents/handoffs/onda-6/04-para-05-tool-pending-contrato.md`.
  */
-function advanceUntilInteraction(state: WorkflowRuntimeState, fromNodeId: string | null): WorkflowRuntimeState {
+function advanceUntilInteraction(
+  state: WorkflowRuntimeState,
+  fromNodeId: string | null,
+): WorkflowRuntimeState {
   let currentId = fromNodeId;
   const visited = new Set<string>();
 
@@ -865,7 +942,10 @@ function advanceUntilInteraction(state: WorkflowRuntimeState, fromNodeId: string
     if (visited.has(currentId)) {
       state.ended = true;
       state.currentNodeId = null;
-      logger.error('Workflow runtime stopped an unexpected cycle', { workflowId: state.workflowId, nodeId: currentId });
+      logger.error('Workflow runtime stopped an unexpected cycle', {
+        workflowId: state.workflowId,
+        nodeId: currentId,
+      });
       return state;
     }
     visited.add(currentId);
@@ -874,7 +954,10 @@ function advanceUntilInteraction(state: WorkflowRuntimeState, fromNodeId: string
     if (!node) {
       state.ended = true;
       state.currentNodeId = null;
-      logger.error('Workflow runtime could not resolve node', { workflowId: state.workflowId, nodeId: currentId });
+      logger.error('Workflow runtime could not resolve node', {
+        workflowId: state.workflowId,
+        nodeId: currentId,
+      });
       return state;
     }
 
@@ -914,7 +997,10 @@ function advanceUntilInteraction(state: WorkflowRuntimeState, fromNodeId: string
  * goes through `advanceUntilInteraction` (sync) + `resumeAfterTool` — see that pair's doc
  * comments for why the two entry points cannot share one code path.
  */
-async function advanceUntilInteractionAsync(state: WorkflowRuntimeState, fromNodeId: string | null): Promise<WorkflowRuntimeState> {
+async function advanceUntilInteractionAsync(
+  state: WorkflowRuntimeState,
+  fromNodeId: string | null,
+): Promise<WorkflowRuntimeState> {
   let currentId = fromNodeId;
   const visited = new Set<string>();
 
@@ -922,7 +1008,10 @@ async function advanceUntilInteractionAsync(state: WorkflowRuntimeState, fromNod
     if (visited.has(currentId)) {
       state.ended = true;
       state.currentNodeId = null;
-      logger.error('Workflow runtime stopped an unexpected cycle', { workflowId: state.workflowId, nodeId: currentId });
+      logger.error('Workflow runtime stopped an unexpected cycle', {
+        workflowId: state.workflowId,
+        nodeId: currentId,
+      });
       return state;
     }
     visited.add(currentId);
@@ -931,7 +1020,10 @@ async function advanceUntilInteractionAsync(state: WorkflowRuntimeState, fromNod
     if (!node) {
       state.ended = true;
       state.currentNodeId = null;
-      logger.error('Workflow runtime could not resolve node', { workflowId: state.workflowId, nodeId: currentId });
+      logger.error('Workflow runtime could not resolve node', {
+        workflowId: state.workflowId,
+        nodeId: currentId,
+      });
       return state;
     }
 
@@ -981,8 +1073,14 @@ function cloneState(state: WorkflowRuntimeState): WorkflowRuntimeState {
   return structuredClone(state);
 }
 
-function advancePastCurrent(state: WorkflowRuntimeState, current: RuntimeNode, handle?: string): WorkflowRuntimeState {
-  const edge = handle ? selectHandle(state, current.id, handle) : selectDefaultEdge(state, current.id);
+function advancePastCurrent(
+  state: WorkflowRuntimeState,
+  current: RuntimeNode,
+  handle?: string,
+): WorkflowRuntimeState {
+  const edge = handle
+    ? selectHandle(state, current.id, handle)
+    : selectDefaultEdge(state, current.id);
   return advanceUntilInteraction(state, edge?.target ?? null);
 }
 
@@ -1027,7 +1125,9 @@ export async function initializeWorkflowRuntime(
   const start = nodes.find((node) => node.type === 'start');
   if (!start) return null;
 
-  const knowledgeDocuments = agentId ? await loadAgentKnowledgeDocuments(organizationId, agentId) : [];
+  const knowledgeDocuments = agentId
+    ? await loadAgentKnowledgeDocuments(organizationId, agentId)
+    : [];
 
   const state: WorkflowRuntimeState = {
     workflowId: workflow.id,
@@ -1096,11 +1196,17 @@ function pendingInterruptTurn(state: WorkflowRuntimeState): PreparedWorkflowTurn
   return null;
 }
 
-export function prepareWorkflowTurn(state: WorkflowRuntimeState, userText: string): PreparedWorkflowTurn {
+export function prepareWorkflowTurn(
+  state: WorkflowRuntimeState,
+  userText: string,
+): PreparedWorkflowTurn {
   return attachVoiceOverride(prepareWorkflowTurnInternal(state, userText));
 }
 
-function prepareWorkflowTurnInternal(state: WorkflowRuntimeState, userText: string): PreparedWorkflowTurn {
+function prepareWorkflowTurnInternal(
+  state: WorkflowRuntimeState,
+  userText: string,
+): PreparedWorkflowTurn {
   const next = cloneState(state);
   next.variables.lastUserText = userText;
 
@@ -1140,7 +1246,9 @@ function prepareWorkflowTurnInternal(state: WorkflowRuntimeState, userText: stri
       next.retries[current.id] = attempts;
       const maxRetryCount = Math.max(0, asNumber(current.config.maxRetryCount, 3));
       const fallbackPrompt = renderTemplate(
-        asString(current.config.fallbackPrompt) || asString(current.config.questionText) || 'Não entendi. Pode repetir?',
+        asString(current.config.fallbackPrompt) ||
+          asString(current.config.questionText) ||
+          'Não entendi. Pode repetir?',
         next.variables,
       );
 
@@ -1189,7 +1297,8 @@ function prepareWorkflowTurnInternal(state: WorkflowRuntimeState, userText: stri
     return {
       state: next,
       mode: 'direct',
-      directReply: nextQuestion ?? (next.ended ? closingMessage(next) : 'Obrigado. Pode continuar.'),
+      directReply:
+        nextQuestion ?? (next.ended ? closingMessage(next) : 'Obrigado. Pode continuar.'),
       shouldEnd: next.ended,
     };
   }
@@ -1229,7 +1338,10 @@ function prepareWorkflowTurnInternal(state: WorkflowRuntimeState, userText: stri
  * on the same fallback path a live call-start failure already takes (`applyToolFallback`) — never
  * a fabricated success and never an unhandled exception back into `telephonyService.ts`.
  */
-export async function resumeAfterTool(state: WorkflowRuntimeState, node: WorkflowNode): Promise<PreparedWorkflowTurn> {
+export async function resumeAfterTool(
+  state: WorkflowRuntimeState,
+  node: WorkflowNode,
+): Promise<PreparedWorkflowTurn> {
   const next = cloneState(state);
   const toolNode = nodeById(next, node.id);
 
@@ -1239,7 +1351,12 @@ export async function resumeAfterTool(state: WorkflowRuntimeState, node: Workflo
       nodeId: node.id,
     });
     next.ended = true;
-    return attachVoiceOverride({ state: next, mode: 'direct', directReply: closingMessage(next), shouldEnd: true });
+    return attachVoiceOverride({
+      state: next,
+      mode: 'direct',
+      directReply: closingMessage(next),
+      shouldEnd: true,
+    });
   }
 
   await executeToolNodeAsync(next, toolNode);
@@ -1269,10 +1386,16 @@ export async function resumeAfterTool(state: WorkflowRuntimeState, node: Workflo
     return attachVoiceOverride({
       state: next,
       mode: 'direct',
-      directReply: questionText(next) ?? (next.ended ? closingMessage(next) : 'Obrigado. Pode continuar.'),
+      directReply:
+        questionText(next) ?? (next.ended ? closingMessage(next) : 'Obrigado. Pode continuar.'),
       shouldEnd: next.ended,
     });
   }
 
-  return attachVoiceOverride({ state: next, mode: 'direct', directReply: closingMessage(next), shouldEnd: true });
+  return attachVoiceOverride({
+    state: next,
+    mode: 'direct',
+    directReply: closingMessage(next),
+    shouldEnd: true,
+  });
 }

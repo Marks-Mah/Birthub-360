@@ -182,7 +182,9 @@ describe('webhookEndpointRepository', () => {
 
       await deleteEndpoint('endpoint-1');
 
-      expect(prisma.tenantWebhookEndpoint.delete).toHaveBeenCalledWith({ where: { id: 'endpoint-1' } });
+      expect(prisma.tenantWebhookEndpoint.delete).toHaveBeenCalledWith({
+        where: { id: 'endpoint-1' },
+      });
     });
   });
 
@@ -215,10 +217,14 @@ describe('webhookEndpointRepository', () => {
       });
     });
 
-    it('propagates a Prisma failure to the caller (fire-and-forget is the caller webhook.worker.ts\'s responsibility, not this function\'s)', async () => {
-      vi.mocked(prisma.tenantWebhookEndpoint.update).mockRejectedValue(new Error('endpoint was deleted'));
+    it("propagates a Prisma failure to the caller (fire-and-forget is the caller webhook.worker.ts's responsibility, not this function's)", async () => {
+      vi.mocked(prisma.tenantWebhookEndpoint.update).mockRejectedValue(
+        new Error('endpoint was deleted'),
+      );
 
-      await expect(recordDeliveryResult('endpoint-1', 'delivered')).rejects.toThrow('endpoint was deleted');
+      await expect(recordDeliveryResult('endpoint-1', 'delivered')).rejects.toThrow(
+        'endpoint was deleted',
+      );
     });
   });
 });

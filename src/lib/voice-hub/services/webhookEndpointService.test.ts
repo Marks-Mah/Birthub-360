@@ -52,7 +52,12 @@ describe('webhookEndpointService.createWebhookEndpointForTenant', () => {
   it('returns the plaintext secret exactly once and only the SHA-256 hash reaches the repository', async () => {
     vi.mocked(webhookEndpointRepository.countActiveEndpointsForTenant).mockResolvedValue(0);
     vi.mocked(webhookEndpointRepository.createEndpoint).mockImplementation(async (data) =>
-      makeRow({ organizationId: data.organizationId, url: data.url, secretHash: data.secretHash, events: data.events }),
+      makeRow({
+        organizationId: data.organizationId,
+        url: data.url,
+        secretHash: data.secretHash,
+        events: data.events,
+      }),
     );
 
     const result = await createWebhookEndpointForTenant('tenant-a', {
@@ -77,7 +82,10 @@ describe('webhookEndpointService.createWebhookEndpointForTenant', () => {
     vi.mocked(webhookEndpointRepository.countActiveEndpointsForTenant).mockResolvedValue(5);
 
     await expect(
-      createWebhookEndpointForTenant('tenant-a', { url: 'https://example.com/hook', events: ['*'] }),
+      createWebhookEndpointForTenant('tenant-a', {
+        url: 'https://example.com/hook',
+        events: ['*'],
+      }),
     ).rejects.toThrow(WebhookEndpointServiceError);
 
     expect(webhookEndpointRepository.createEndpoint).not.toHaveBeenCalled();
@@ -86,11 +94,19 @@ describe('webhookEndpointService.createWebhookEndpointForTenant', () => {
   it('allows creation of the 5th endpoint (limit is on active count reaching the max, not before)', async () => {
     vi.mocked(webhookEndpointRepository.countActiveEndpointsForTenant).mockResolvedValue(4);
     vi.mocked(webhookEndpointRepository.createEndpoint).mockImplementation(async (data) =>
-      makeRow({ organizationId: data.organizationId, url: data.url, secretHash: data.secretHash, events: data.events }),
+      makeRow({
+        organizationId: data.organizationId,
+        url: data.url,
+        secretHash: data.secretHash,
+        events: data.events,
+      }),
     );
 
     await expect(
-      createWebhookEndpointForTenant('tenant-a', { url: 'https://example.com/hook', events: ['*'] }),
+      createWebhookEndpointForTenant('tenant-a', {
+        url: 'https://example.com/hook',
+        events: ['*'],
+      }),
     ).resolves.toBeTruthy();
   });
 });
@@ -119,20 +135,23 @@ describe('webhookEndpointService cross-tenant isolation', () => {
     // tenant-b's endpoint does not exist from tenant-a's point of view.
     vi.mocked(webhookEndpointRepository.findEndpointForTenant).mockResolvedValue(null);
 
-    await expect(deleteWebhookEndpointForTenant('tenant-a', 'ep-owned-by-tenant-b')).rejects.toThrow(
-      WebhookEndpointServiceError,
-    );
+    await expect(
+      deleteWebhookEndpointForTenant('tenant-a', 'ep-owned-by-tenant-b'),
+    ).rejects.toThrow(WebhookEndpointServiceError);
 
-    expect(webhookEndpointRepository.findEndpointForTenant).toHaveBeenCalledWith('ep-owned-by-tenant-b', 'tenant-a');
+    expect(webhookEndpointRepository.findEndpointForTenant).toHaveBeenCalledWith(
+      'ep-owned-by-tenant-b',
+      'tenant-a',
+    );
     expect(webhookEndpointRepository.deleteEndpoint).not.toHaveBeenCalled();
   });
 
   it('regenerate for a foreign tenant 404s the same way', async () => {
     vi.mocked(webhookEndpointRepository.findEndpointForTenant).mockResolvedValue(null);
 
-    await expect(regenerateWebhookEndpointSecret('tenant-a', 'ep-owned-by-tenant-b')).rejects.toThrow(
-      WebhookEndpointServiceError,
-    );
+    await expect(
+      regenerateWebhookEndpointSecret('tenant-a', 'ep-owned-by-tenant-b'),
+    ).rejects.toThrow(WebhookEndpointServiceError);
     expect(webhookEndpointRepository.regenerateSecret).not.toHaveBeenCalled();
   });
 });
@@ -199,7 +218,12 @@ describe('webhookEndpointService signature verifiability', () => {
     let stored: Row | null = null;
     vi.mocked(webhookEndpointRepository.countActiveEndpointsForTenant).mockResolvedValue(0);
     vi.mocked(webhookEndpointRepository.createEndpoint).mockImplementation(async (data) => {
-      stored = makeRow({ organizationId: data.organizationId, url: data.url, secretHash: data.secretHash, events: data.events });
+      stored = makeRow({
+        organizationId: data.organizationId,
+        url: data.url,
+        secretHash: data.secretHash,
+        events: data.events,
+      });
       return stored;
     });
     vi.mocked(webhookEndpointRepository.findActiveEndpointById).mockImplementation(async (id) =>
@@ -211,7 +235,13 @@ describe('webhookEndpointService signature verifiability', () => {
       events: ['*'],
     });
 
-    const body = JSON.stringify({ id: 'evt_1', type: 'call.completed', timestamp: '2026-01-01T00:00:00Z', organizationId: 'tenant-a', data: {} });
+    const body = JSON.stringify({
+      id: 'evt_1',
+      type: 'call.completed',
+      timestamp: '2026-01-01T00:00:00Z',
+      organizationId: 'tenant-a',
+      data: {},
+    });
 
     // What webhook.worker.ts#signBody does internally for a per-endpoint delivery.
     const secretHashForSigning = await findActiveSigningSecretHash(created.id);
@@ -226,7 +256,7 @@ describe('webhookEndpointService signature verifiability', () => {
     expect(receiverSignature).toBe(signature);
   });
 
-  it('a signature computed with a different endpoint\'s secret never matches', async () => {
+  it("a signature computed with a different endpoint's secret never matches", async () => {
     const secretA = 'whsec_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
     const secretB = 'whsec_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb';
     const body = 'irrelevant-body-bytes';
@@ -237,7 +267,7 @@ describe('webhookEndpointService signature verifiability', () => {
     expect(sigWithA).not.toBe(sigWithB);
   });
 
-  it('findActiveSigningSecretHash resolves null for a deleted/deactivated endpoint (never falls back to another endpoint\'s secret)', async () => {
+  it("findActiveSigningSecretHash resolves null for a deleted/deactivated endpoint (never falls back to another endpoint's secret)", async () => {
     vi.mocked(webhookEndpointRepository.findActiveEndpointById).mockResolvedValue(null);
 
     await expect(findActiveSigningSecretHash('gone-endpoint')).resolves.toBeNull();

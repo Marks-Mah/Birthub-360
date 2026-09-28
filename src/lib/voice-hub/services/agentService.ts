@@ -9,11 +9,19 @@ export function getAgent(id: string, organizationId: string) {
   return agentRepository.getAgent(id, organizationId);
 }
 
-export function createAgent(organizationId: string, userId: string, data: { name: string; model: string; configuration?: unknown }) {
+export function createAgent(
+  organizationId: string,
+  userId: string,
+  data: { name: string; model: string; configuration?: unknown },
+) {
   return agentRepository.createAgent(organizationId, userId, data);
 }
 
-export async function updateAgentConfig(id: string, organizationId: string, configData: Partial<AgentConfiguration>) {
+export async function updateAgentConfig(
+  id: string,
+  organizationId: string,
+  configData: Partial<AgentConfiguration>,
+) {
   const existing = await agentRepository.getAgent(id, organizationId);
   if (!existing) throw new Error('Agente não encontrado.');
 

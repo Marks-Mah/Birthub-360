@@ -27,7 +27,9 @@ export default function SupervisionPage() {
           <PhoneCall className="w-6 h-6 text-iris" />
           Supervisão ao Vivo
         </h1>
-        <p className="text-gray-500 mt-1">Acompanhe métricas emocionais e cognitivas em tempo real durante chamadas ativas.</p>
+        <p className="text-gray-500 mt-1">
+          Acompanhe métricas emocionais e cognitivas em tempo real durante chamadas ativas.
+        </p>
       </div>
 
       <div className="flex-1 flex overflow-hidden">
@@ -59,8 +61,9 @@ export default function SupervisionPage() {
           <div className="mt-4 p-3 bg-indigo-50 border border-indigo-100 rounded-lg text-xs text-iris flex gap-2">
             <Info className="w-4 h-4 flex-shrink-0 mt-0.5" />
             <span>
-              Uma lista de chamadas ativas do tenant em tempo real ainda depende de um endpoint dedicado
-              (ver handoff ao Agente 05). Até lá, informe o id da sessão que deseja supervisionar.
+              Uma lista de chamadas ativas do tenant em tempo real ainda depende de um endpoint
+              dedicado (ver handoff ao Agente 05). Até lá, informe o id da sessão que deseja
+              supervisionar.
             </span>
           </div>
         </div>

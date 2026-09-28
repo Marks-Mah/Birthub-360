@@ -1,7 +1,12 @@
 import type { Prisma } from '@prisma/client';
 import { prisma } from '@/lib/prisma.js';
 
-export function createAuditLog(data: { organizationId?: string; userId: string; action: string; details: unknown }) {
+export function createAuditLog(data: {
+  organizationId?: string;
+  userId: string;
+  action: string;
+  details: unknown;
+}) {
   return prisma.auditLog.create({
     data: {
       organizationId: data.organizationId,
@@ -19,7 +24,7 @@ export function createAuditLog(data: { organizationId?: string; userId: string; 
 // client input, same rule as every other tenant-scoped query in this codebase.
 export async function listAuditLogsForTenant(
   organizationId: string,
-  { page, pageSize }: { page: number; pageSize: number }
+  { page, pageSize }: { page: number; pageSize: number },
 ) {
   const skip = (page - 1) * pageSize;
   const [items, total] = await Promise.all([

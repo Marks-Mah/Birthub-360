@@ -1,12 +1,12 @@
-import { randomUUID } from "node:crypto";
-import { Campaign } from "../../domain/entities/Campaign.js";
-import type { CampaignRepository } from "../ports/CampaignRepository.js";
-import type { LeadRepository, CampaignStats } from "../ports/LeadRepository.js";
+import { randomUUID } from 'node:crypto';
+import { Campaign } from '../../domain/entities/Campaign.js';
+import type { CampaignRepository } from '../ports/CampaignRepository.js';
+import type { LeadRepository, CampaignStats } from '../ports/LeadRepository.js';
 
 export class CampaignNotFoundError extends Error {
   constructor(id: string) {
     super(`Campanha não encontrada: ${id}`);
-    this.name = "CampaignNotFoundError";
+    this.name = 'CampaignNotFoundError';
   }
 }
 
@@ -37,7 +37,7 @@ export class ManageCampaign {
   async getStats(campaignId: string): Promise<CampaignStats> {
     await this.getById(campaignId);
     if (!this.leadRepository) {
-      throw new Error("LeadRepository não configurado em ManageCampaign");
+      throw new Error('LeadRepository não configurado em ManageCampaign');
     }
     return this.leadRepository.getCampaignStats(campaignId);
   }

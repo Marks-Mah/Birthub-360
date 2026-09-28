@@ -12,15 +12,20 @@ const mockLogout = vi.fn();
 vi.mock('../lib/auth.js', () => ({
   auth: {
     getToken: () => 'true',
-    logout: () => mockLogout()
-  }
+    logout: () => mockLogout(),
+  },
 }));
 
 // Sidebar reads the real logged-in user (id/email/role/organizationId) from useSessionStore, which is
 // populated from GET /api/auth/me by DashboardLayout — not from a client-writable cookie. Mock
 // the store's selector-based API directly rather than a fabricated `user_info` cookie.
 vi.mock('../store/useSessionStore.js', () => ({
-  useSessionStore: (selector: (state: { user: { id: string; email: string; role: string; organizationId: string } | null; sessionStatus: string }) => unknown) =>
+  useSessionStore: (
+    selector: (state: {
+      user: { id: string; email: string; role: string; organizationId: string } | null;
+      sessionStatus: string;
+    }) => unknown,
+  ) =>
     selector({
       user: { id: 'user-1', email: 'maria@teste.com', role: 'admin', organizationId: 'tenant-1' },
       sessionStatus: 'authenticated',
@@ -28,28 +33,28 @@ vi.mock('../store/useSessionStore.js', () => ({
 }));
 
 vi.mock('./design-system/ThemeContext.js', () => ({
-  useTheme: () => ({ theme: 'light', setTheme: mockSetTheme, resolvedTheme: 'light' })
+  useTheme: () => ({ theme: 'light', setTheme: mockSetTheme, resolvedTheme: 'light' }),
 }));
 
 vi.mock('./design-system.js', async (importOriginal) => {
   const actual = await importOriginal<typeof import('./design-system/index.js')>();
   return {
     ...actual,
-    useToast: () => ({ toasts: [], showToast: mockShowToast })
+    useToast: () => ({ toasts: [], showToast: mockShowToast }),
   };
 });
 
 // NotificationCenter (Agente 12) owns its own fetch/open-close/state — isolate the Sidebar tree
 // from it here and cover its real behavior in components/NotificationCenter/NotificationCenter.test.tsx.
 vi.mock('./NotificationCenter.js', () => ({
-  NotificationCenter: () => <div data-testid="notification-center-stub" />
+  NotificationCenter: () => <div data-testid="notification-center-stub" />,
 }));
 
 function renderSidebar() {
   return render(
     <MemoryRouter initialEntries={['/dashboard']}>
       <Sidebar />
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 }
 
@@ -59,8 +64,8 @@ describe('Sidebar', () => {
       'fetch',
       vi.fn().mockResolvedValue({
         ok: true,
-        json: async () => ({ settings: {} })
-      })
+        json: async () => ({ settings: {} }),
+      }),
     );
   });
 

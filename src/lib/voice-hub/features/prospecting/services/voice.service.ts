@@ -1,6 +1,9 @@
 import { logger } from '../../../lib/logger.js';
 import type { AtlasGROutboundPayload } from '../validators/atlasgr.schema.js';
-import { buildAtlasGROutboundIdempotencyKey, claimIdempotencyKey } from '../lib/webhookIdempotency.js';
+import {
+  buildAtlasGROutboundIdempotencyKey,
+  claimIdempotencyKey,
+} from '../lib/webhookIdempotency.js';
 import { getAiConsent } from '../../../services/settingService.js';
 
 export interface TriggerOutboundCallResult {
@@ -60,7 +63,9 @@ export class VoiceProspectingService {
 
     const consent = await getAiConsent(organizationId);
     if (!consent.granted) {
-      logger.warn('Bland outbound call blocked: tenant has not granted external AI consent', { organizationId });
+      logger.warn('Bland outbound call blocked: tenant has not granted external AI consent', {
+        organizationId,
+      });
       throw new ExternalAiConsentRequiredError('AI provider consent required');
     }
 
@@ -83,7 +88,8 @@ export class VoiceProspectingService {
       return {
         success: true,
         duplicate: true,
-        message: 'Esta chamada já havia sido disparada anteriormente para este lead (webhook duplicado ignorado).',
+        message:
+          'Esta chamada já havia sido disparada anteriormente para este lead (webhook duplicado ignorado).',
       };
     }
 
@@ -158,8 +164,10 @@ Pessoa de Contato: ${payload.name}
         },
         webhook: `${webhookBaseUrl.replace(/\/$/, '')}/api/webhooks/bland/${callbackToken}`,
         analysis_schema: {
-          solicitou_material: 'boolean - true se o lead pediu, concordou ou sugeriu receber apresentação, material ou contato pelo WhatsApp ou E-mail.',
-          canal_preferido: "string - o canal que o lead preferiu ('whatsapp', 'email') ou 'nenhum' se ele não aceitou nada.",
+          solicitou_material:
+            'boolean - true se o lead pediu, concordou ou sugeriu receber apresentação, material ou contato pelo WhatsApp ou E-mail.',
+          canal_preferido:
+            "string - o canal que o lead preferiu ('whatsapp', 'email') ou 'nenhum' se ele não aceitou nada.",
         },
       };
 
@@ -180,19 +188,27 @@ Pessoa de Contato: ${payload.name}
       let data: BlandCallResponse = {};
       try {
         const parsed = JSON.parse(responseText) as unknown;
-        data = parsed && typeof parsed === 'object' && !Array.isArray(parsed)
-          ? parsed as BlandCallResponse
-          : { message: responseText };
+        data =
+          parsed && typeof parsed === 'object' && !Array.isArray(parsed)
+            ? (parsed as BlandCallResponse)
+            : { message: responseText };
       } catch {
         data = { message: responseText };
       }
 
       if (!response.ok) {
-        logger.error('Failed to trigger call via Bland AI', { status: response.status, body: data });
+        logger.error('Failed to trigger call via Bland AI', {
+          status: response.status,
+          body: data,
+        });
         throw new Error(data.message || `Bland AI call failed with status ${response.status}`);
       }
 
-      logger.info('Call successfully dispatched via Bland AI', { organizationId, callId: data.call_id, status: data.status });
+      logger.info('Call successfully dispatched via Bland AI', {
+        organizationId,
+        callId: data.call_id,
+        status: data.status,
+      });
 
       return {
         success: true,

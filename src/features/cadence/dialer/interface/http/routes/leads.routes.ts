@@ -1,7 +1,7 @@
-import { Router } from "express";
-import { z } from "zod";
-import type { ImportLeads } from "../../../application/use-cases/ImportLeads.js";
-import { asyncHandler } from "../middlewares/asyncHandler.js";
+import { Router } from 'express';
+import { z } from 'zod';
+import type { ImportLeads } from '../../../application/use-cases/ImportLeads.js';
+import { asyncHandler } from '../middlewares/asyncHandler.js';
 
 const importLeadsSchema = z.object({
   leads: z
@@ -12,14 +12,14 @@ const importLeadsSchema = z.object({
       }),
     )
     .min(1)
-    .max(5000, "Envie no máximo 5000 leads por requisição"),
+    .max(5000, 'Envie no máximo 5000 leads por requisição'),
 });
 
 export function leadsRoutes(deps: { importLeads: ImportLeads }): Router {
   const router = Router();
 
   router.post(
-    "/campaigns/:campaignId/leads/import",
+    '/campaigns/:campaignId/leads/import',
     asyncHandler(async (req, res) => {
       const campaignId = z.string().uuid().parse(req.params.campaignId);
       const body = importLeadsSchema.parse(req.body);

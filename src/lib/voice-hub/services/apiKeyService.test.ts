@@ -123,8 +123,12 @@ describe('apiKeyService.revokeApiKeyForTenant', () => {
   it('throws a 404 ApiKeyServiceError when the key does not belong to this tenant', async () => {
     vi.mocked(apiKeyRepository.findApiKeyForTenant).mockResolvedValue(null);
 
-    await expect(revokeApiKeyForTenant('tenant-A', 'key-owned-by-tenant-B')).rejects.toThrow(ApiKeyServiceError);
-    await expect(revokeApiKeyForTenant('tenant-A', 'key-owned-by-tenant-B')).rejects.toMatchObject({ status: 404 });
+    await expect(revokeApiKeyForTenant('tenant-A', 'key-owned-by-tenant-B')).rejects.toThrow(
+      ApiKeyServiceError,
+    );
+    await expect(revokeApiKeyForTenant('tenant-A', 'key-owned-by-tenant-B')).rejects.toMatchObject({
+      status: 404,
+    });
     expect(apiKeyRepository.revokeApiKey).not.toHaveBeenCalled();
   });
 
@@ -240,7 +244,12 @@ describe('apiKeyService.authenticateApiKey', () => {
 
     expect(result).toEqual({
       apiKeyId: 'key-1',
-      session: { id: 'user-1', email: 'admin@tenant-1.com', role: 'admin', organizationId: 'tenant-1' },
+      session: {
+        id: 'user-1',
+        email: 'admin@tenant-1.com',
+        role: 'admin',
+        organizationId: 'tenant-1',
+      },
     });
     expect(apiKeyRepository.touchLastUsed).toHaveBeenCalledWith('key-1');
   });

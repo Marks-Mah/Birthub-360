@@ -30,7 +30,7 @@ const TTL_DAYS_BY_FIELD: Record<string, number> = {
   decision_maker_title: 14,
   decision_maker_email: 14,
   decision_maker_linkedin: 30,
-  company_linkedin: 30
+  company_linkedin: 30,
 };
 const DEFAULT_TTL_DAYS = 30;
 
@@ -58,7 +58,7 @@ export function buildEvidence(params: {
     retrievedAt: retrievedAt.toISOString(),
     expiresAt: computeExpiresAt(params.field, retrievedAt),
     confidence: params.confidence,
-    verificationStatus: params.verificationStatus
+    verificationStatus: params.verificationStatus,
   };
 }
 
@@ -68,31 +68,36 @@ export function buildEvidence(params: {
  * evidência para campos que de fato vieram preenchidos - nunca para um
  * campo ausente (isso ficaria "unknown", que não é evidência nenhuma).
  */
-export function buildCnpjEvidence(cnpjData: {
-  razao_social?: string;
-  situacao_cadastral?: string;
-  cnae_fiscal_descricao?: string;
-  capital_social?: string;
-  source?: string;
-}, retrievedAt?: Date): EvidenceRecord[] {
+export function buildCnpjEvidence(
+  cnpjData: {
+    razao_social?: string;
+    situacao_cadastral?: string;
+    cnae_fiscal_descricao?: string;
+    capital_social?: string;
+    source?: string;
+  },
+  retrievedAt?: Date,
+): EvidenceRecord[] {
   const provider = cnpjData.source || 'cnpj_receita_federal';
   const fields: Array<[string, unknown]> = [
     ['razao_social', cnpjData.razao_social],
     ['situacao_cadastral', cnpjData.situacao_cadastral],
     ['cnae_fiscal_descricao', cnpjData.cnae_fiscal_descricao],
-    ['capital_social', cnpjData.capital_social]
+    ['capital_social', cnpjData.capital_social],
   ];
 
   return fields
     .filter(([, value]) => value !== undefined && value !== null && value !== '')
-    .map(([field, value]) => buildEvidence({
-      field,
-      value,
-      provider,
-      confidence: 0.95, // fonte oficial (Receita Federal), mas não é o próprio CNPJ informado pelo usuário
-      verificationStatus: 'verified',
-      retrievedAt
-    }));
+    .map(([field, value]) =>
+      buildEvidence({
+        field,
+        value,
+        provider,
+        confidence: 0.95, // fonte oficial (Receita Federal), mas não é o próprio CNPJ informado pelo usuário
+        verificationStatus: 'verified',
+        retrievedAt,
+      }),
+    );
 }
 
 /**
@@ -101,29 +106,35 @@ export function buildCnpjEvidence(cnpjData: {
  * registro público oficial - por isso "unverified" (Apollo relatou, mas
  * ninguém confirmou o e-mail/telefone de fato funciona) em vez de "verified".
  */
-export function buildDecisionMakerEvidence(dm: {
-  name?: string;
-  title?: string;
-  email?: string;
-  linkedin?: string;
-}, provider: string, retrievedAt?: Date): EvidenceRecord[] {
+export function buildDecisionMakerEvidence(
+  dm: {
+    name?: string;
+    title?: string;
+    email?: string;
+    linkedin?: string;
+  },
+  provider: string,
+  retrievedAt?: Date,
+): EvidenceRecord[] {
   const fields: Array<[string, unknown]> = [
     ['decision_maker_name', dm.name],
     ['decision_maker_title', dm.title],
     ['decision_maker_email', dm.email],
-    ['decision_maker_linkedin', dm.linkedin]
+    ['decision_maker_linkedin', dm.linkedin],
   ];
 
   return fields
     .filter(([, value]) => value !== undefined && value !== null && value !== '')
-    .map(([field, value]) => buildEvidence({
-      field,
-      value,
-      provider,
-      confidence: 0.7,
-      verificationStatus: 'unverified',
-      retrievedAt
-    }));
+    .map(([field, value]) =>
+      buildEvidence({
+        field,
+        value,
+        provider,
+        confidence: 0.7,
+        verificationStatus: 'unverified',
+        retrievedAt,
+      }),
+    );
 }
 
 /**
@@ -132,26 +143,34 @@ export function buildDecisionMakerEvidence(dm: {
  * não puder receber a escrita, o chamador decide se propaga o erro -
  * mas evidência nunca bloqueia a gravação do lead em si (ver /prospect).
  */
-export async function saveFieldEvidence(db: DbHandle, entityType: string, entityId: string, evidences: EvidenceRecord[]): Promise<void> {
+export async function saveFieldEvidence(
+  db: DbHandle,
+  entityType: string,
+  entityId: string,
+  evidences: EvidenceRecord[],
+): Promise<void> {
   for (const ev of evidences) {
-    await db.run(`
+    await db.run(
+      `
       INSERT INTO field_evidence (
         entity_type, entity_id, field_name, value_json, provider,
         source_reference, retrieved_at, expires_at, confidence, verification_status
       )
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `, [
-      entityType,
-      entityId,
-      ev.field,
-      JSON.stringify(ev.value),
-      ev.provider,
-      ev.sourceReference || null,
-      ev.retrievedAt,
-      ev.expiresAt || null,
-      ev.confidence,
-      ev.verificationStatus
-    ]);
+    `,
+      [
+        entityType,
+        entityId,
+        ev.field,
+        JSON.stringify(ev.value),
+        ev.provider,
+        ev.sourceReference || null,
+        ev.retrievedAt,
+        ev.expiresAt || null,
+        ev.confidence,
+        ev.verificationStatus,
+      ],
+    );
   }
 }
 
@@ -159,15 +178,19 @@ export interface StoredEvidence extends EvidenceRecord {
   id: number;
 }
 
-export async function getFieldEvidence(db: DbHandle, entityType: string, entityId: string): Promise<StoredEvidence[]> {
+export async function getFieldEvidence(
+  db: DbHandle,
+  entityType: string,
+  entityId: string,
+): Promise<StoredEvidence[]> {
   const result = await db.exec(
     `SELECT id, field_name, value_json, provider, source_reference, retrieved_at, expires_at, confidence, verification_status
      FROM field_evidence WHERE entity_type = ? AND entity_id = ? ORDER BY retrieved_at DESC`,
-    [entityType, entityId]
+    [entityType, entityId],
   );
   if (result.length === 0) return [];
 
-  return result[0].values.map(row => {
+  return result[0].values.map((row) => {
     let value: unknown = null;
     try {
       value = row[2] ? JSON.parse(row[2] as string) : null;
@@ -183,7 +206,7 @@ export async function getFieldEvidence(db: DbHandle, entityType: string, entityI
       retrievedAt: row[5] as string,
       expiresAt: (row[6] as string) || undefined,
       confidence: row[7] as number,
-      verificationStatus: row[8] as VerificationStatus
+      verificationStatus: row[8] as VerificationStatus,
     };
   });
 }

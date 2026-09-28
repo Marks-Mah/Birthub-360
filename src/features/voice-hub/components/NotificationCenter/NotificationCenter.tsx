@@ -51,7 +51,9 @@ export function NotificationCenter({ className = '' }: { className?: string }) {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         return res.json() as Promise<NotificationsResponse>;
       })
-      .then((data) => setState({ status: 'ready', items: data.items, unreadCount: data.unreadCount }))
+      .then((data) =>
+        setState({ status: 'ready', items: data.items, unreadCount: data.unreadCount }),
+      )
       .catch((err) => {
         logger.error('Failed to load notifications', { err });
         setState({ status: 'error' });
@@ -73,9 +75,12 @@ export function NotificationCenter({ className = '' }: { className?: string }) {
           ? {
               status: 'ready',
               items: prev.items.map((n) => (n.id === id && !n.isRead ? { ...n, isRead: true } : n)),
-              unreadCount: Math.max(0, prev.unreadCount - (prev.items.find((n) => n.id === id && !n.isRead) ? 1 : 0)),
+              unreadCount: Math.max(
+                0,
+                prev.unreadCount - (prev.items.find((n) => n.id === id && !n.isRead) ? 1 : 0),
+              ),
             }
-          : prev
+          : prev,
       );
     } catch (err: any) {
       logger.error('Failed to mark notification as read', { err, id });
@@ -95,8 +100,12 @@ export function NotificationCenter({ className = '' }: { className?: string }) {
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       setState((prev) =>
         prev.status === 'ready'
-          ? { status: 'ready', items: prev.items.map((n) => ({ ...n, isRead: true })), unreadCount: 0 }
-          : prev
+          ? {
+              status: 'ready',
+              items: prev.items.map((n) => ({ ...n, isRead: true })),
+              unreadCount: 0,
+            }
+          : prev,
       );
     } catch (err: any) {
       logger.error('Failed to mark all notifications as read', { err });
@@ -166,7 +175,9 @@ export function NotificationCenter({ className = '' }: { className?: string }) {
             {state.status === 'ready' && state.items.length === 0 && (
               <div className="py-12 text-center text-slate-500">
                 <p className="text-xs font-bold">Nenhuma notificação</p>
-                <p className="text-[10px] text-slate-600 mt-1">Você será avisado aqui quando algo importante acontecer.</p>
+                <p className="text-[10px] text-slate-600 mt-1">
+                  Você será avisado aqui quando algo importante acontecer.
+                </p>
               </div>
             )}
 

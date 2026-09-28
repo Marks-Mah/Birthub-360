@@ -9,7 +9,12 @@ export function findUserById(id: string) {
   return prisma.user.findFirst({ where: { id, deletedAt: null } });
 }
 
-export function createUser(data: { email: string; passwordHash: string; companyName: string; organizationId: string }) {
+export function createUser(data: {
+  email: string;
+  passwordHash: string;
+  companyName: string;
+  organizationId: string;
+}) {
   return prisma.user.create({
     data: {
       email: data.email.toLowerCase(),

@@ -42,7 +42,12 @@ export class SessionManager {
     this.lastActivityAt.set(sessionId, Date.now());
   }
 
-  public createSession(agentId: string, callerId: string, config: AgentRuntimeConfig, tenantId: string): VoiceSession {
+  public createSession(
+    agentId: string,
+    callerId: string,
+    config: AgentRuntimeConfig,
+    tenantId: string,
+  ): VoiceSession {
     const sessionId = `sess_${crypto.randomUUID()}`;
 
     const session: VoiceSession = {
@@ -62,7 +67,7 @@ export class SessionManager {
       language: 'pt-BR',
       region: 'sa-east-1',
       history: [],
-      events: []
+      events: [],
     };
 
     this.sessions.set(sessionId, session);
@@ -113,7 +118,7 @@ export class SessionManager {
       id: crypto.randomUUID(),
       role: 'user',
       content: text,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     };
 
     memoryPipeline.addTurn(sessionId, turn);
@@ -135,23 +140,29 @@ export class SessionManager {
 
       observability.startSpan(`llm-${sessionId}`);
 
-      const { result: response, providerUsed: llmProviderUsed, usedFallback: llmUsedFallback } =
-        await failoverEngine.executeWithFailover(
-          sessionId,
-          'GenerateResponse',
-          session.provider,
-          'LLM',
-          // 'GoogleGemini' is always the last link in the chain — the guaranteed fallback (see
-          // AGENTS.md bloqueador #6). Deduplicated automatically if session.provider already is it.
-          ['OpenAI', 'Anthropic', 'GoogleGemini'],
-          async (provider) => {
-            return await provider.process(text, context);
-          },
-          session.tenantId
-        );
+      const {
+        result: response,
+        providerUsed: llmProviderUsed,
+        usedFallback: llmUsedFallback,
+      } = await failoverEngine.executeWithFailover(
+        sessionId,
+        'GenerateResponse',
+        session.provider,
+        'LLM',
+        // 'GoogleGemini' is always the last link in the chain — the guaranteed fallback (see
+        // AGENTS.md bloqueador #6). Deduplicated automatically if session.provider already is it.
+        ['OpenAI', 'Anthropic', 'GoogleGemini'],
+        async (provider) => {
+          return await provider.process(text, context);
+        },
+        session.tenantId,
+      );
 
       latencyMonitor.recordProviderUsed(sessionId, 'llm', llmProviderUsed, llmUsedFallback);
-      const latency = observability.endSpan(`llm-${sessionId}`, sessionId, 'LLM_COMPLETED', { providerUsed: llmProviderUsed, usedFallback: llmUsedFallback });
+      const latency = observability.endSpan(`llm-${sessionId}`, sessionId, 'LLM_COMPLETED', {
+        providerUsed: llmProviderUsed,
+        usedFallback: llmUsedFallback,
+      });
       if (latency) latencyMonitor.recordMetric(sessionId, 'llmMs', latency);
 
       // Handle Tools if LLM returned tool calls
@@ -164,27 +175,33 @@ export class SessionManager {
           id: crypto.randomUUID(),
           role: 'assistant',
           content: responseText,
-          timestamp: Date.now()
+          timestamp: Date.now(),
         };
 
         memoryPipeline.addTurn(sessionId, assistantTurn);
 
         // TTS processing
         observability.startSpan(`tts-${sessionId}`);
-        const { result: ttsResponse, providerUsed: ttsProviderUsed, usedFallback: ttsUsedFallback } =
-          await failoverEngine.executeWithFailover(
-            sessionId,
-            'TextToSpeech',
-            'Voicebox',
-            'TTS',
-            ['ElevenLabs'], // 'Deepgram' was never a registered provider — a phantom fallback id.
-            async (provider) => {
-              return await provider.process(responseText);
-            },
-            session.tenantId
-          );
+        const {
+          result: ttsResponse,
+          providerUsed: ttsProviderUsed,
+          usedFallback: ttsUsedFallback,
+        } = await failoverEngine.executeWithFailover(
+          sessionId,
+          'TextToSpeech',
+          'Voicebox',
+          'TTS',
+          ['ElevenLabs'], // 'Deepgram' was never a registered provider — a phantom fallback id.
+          async (provider) => {
+            return await provider.process(responseText);
+          },
+          session.tenantId,
+        );
         latencyMonitor.recordProviderUsed(sessionId, 'tts', ttsProviderUsed, ttsUsedFallback);
-        const ttsLatency = observability.endSpan(`tts-${sessionId}`, sessionId, 'TTS_COMPLETED', { providerUsed: ttsProviderUsed, usedFallback: ttsUsedFallback });
+        const ttsLatency = observability.endSpan(`tts-${sessionId}`, sessionId, 'TTS_COMPLETED', {
+          providerUsed: ttsProviderUsed,
+          usedFallback: ttsUsedFallback,
+        });
         if (ttsLatency) latencyMonitor.recordMetric(sessionId, 'ttsMs', ttsLatency);
 
         if (ttsResponse.audio) {
@@ -193,7 +210,6 @@ export class SessionManager {
       }
 
       this.updateState(sessionId, 'Listening');
-
     } catch (error: unknown) {
       this.updateState(sessionId, 'Error');
       const message = error instanceof Error ? error.message : String(error);
@@ -211,14 +227,16 @@ export class SessionManager {
     if (session) {
       // `webhookService.dispatch` is tenant-scoped. The legacy organizationId/workspaceId/projectId
       // fields are placeholders and must never be used as an ownership key for external delivery.
-      webhookService.dispatch(session.tenantId, 'call.completed', {
-        sessionId,
-        durationMs: session.durationMs,
-        agentId: session.agentId,
-        history: session.history
-      }).catch((err) => {
-        observability.logEvent(sessionId, 'WEBHOOK_DISPATCH_ERROR', { error: String(err) });
-      });
+      webhookService
+        .dispatch(session.tenantId, 'call.completed', {
+          sessionId,
+          durationMs: session.durationMs,
+          agentId: session.agentId,
+          history: session.history,
+        })
+        .catch((err) => {
+          observability.logEvent(sessionId, 'WEBHOOK_DISPATCH_ERROR', { error: String(err) });
+        });
     }
 
     // Release all per-session state. Previously nothing here ever removed the session from

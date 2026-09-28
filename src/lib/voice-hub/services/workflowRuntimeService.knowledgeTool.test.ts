@@ -45,7 +45,13 @@ function node(id: string, type: NodeType, config: Record<string, unknown> = {}):
   } as StudioNode;
 }
 
-function edge(id: string, source: string, target: string, sourceHandle?: string, isFallback = false): StudioEdge {
+function edge(
+  id: string,
+  source: string,
+  target: string,
+  sourceHandle?: string,
+  isFallback = false,
+): StudioEdge {
   return {
     id,
     source,
@@ -56,7 +62,11 @@ function edge(id: string, source: string, target: string, sourceHandle?: string,
   } as StudioEdge;
 }
 
-function activeWorkflow(nodes: StudioNode[], edges: StudioEdge[], version = 1): NonNullable<ActiveWorkflow> {
+function activeWorkflow(
+  nodes: StudioNode[],
+  edges: StudioEdge[],
+  version = 1,
+): NonNullable<ActiveWorkflow> {
   return {
     id: 'wf-1',
     organizationId: 'tenant-1',
@@ -75,7 +85,11 @@ function activeWorkflow(nodes: StudioNode[], edges: StudioEdge[], version = 1): 
   } as unknown as NonNullable<ActiveWorkflow>;
 }
 
-function agentWithKnowledge(id: string, organizationId: string, knowledge: KnowledgeDocument[]): NonNullable<Agent> {
+function agentWithKnowledge(
+  id: string,
+  organizationId: string,
+  knowledge: KnowledgeDocument[],
+): NonNullable<Agent> {
   return {
     id,
     organizationId,
@@ -109,7 +123,10 @@ describe('validateRuntimeCompatibility: knowledge/tool/human_handoff are no long
       node('start-1', 'start'),
       node('knowledge-1', 'knowledge', { database: 'faq' }),
       node('tool-1', 'tool', { method: 'GET', endpoint: 'https://api.example.com/lookup' }),
-      node('handoff-1', 'human_handoff', { department: 'vendas', fallbackNumber: '+5511999999999' }),
+      node('handoff-1', 'human_handoff', {
+        department: 'vendas',
+        fallbackNumber: '+5511999999999',
+      }),
       node('end-1', 'end'),
     ];
     const edges = [
@@ -130,10 +147,7 @@ describe('validateRuntimeCompatibility: knowledge/tool/human_handoff are no long
       node('handoff-1', 'human_handoff', { department: 'vendas' }),
       node('end-1', 'end'),
     ];
-    const edges = [
-      edge('e1', 'start-1', 'handoff-1'),
-      edge('e2', 'handoff-1', 'end-1'),
-    ];
+    const edges = [edge('e1', 'start-1', 'handoff-1'), edge('e2', 'handoff-1', 'end-1')];
 
     const issues = validateRuntimeCompatibility(nodes, edges);
 
@@ -150,9 +164,11 @@ describe('validateRuntimeCompatibility: knowledge/tool/human_handoff are no long
 
     const issues = validateRuntimeCompatibility(nodes, edges);
 
-    expect(issues).toEqual(expect.arrayContaining([
-      expect.objectContaining({ id: 'err-runtime-tool-method-tool-1', type: 'error' }),
-    ]));
+    expect(issues).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ id: 'err-runtime-tool-method-tool-1', type: 'error' }),
+      ]),
+    );
   });
 });
 
@@ -167,7 +183,10 @@ describe('knowledge node execution', () => {
     };
     const nodes = [
       node('start-1', 'start'),
-      node('question-1', 'question', { questionText: 'Como posso ajudar?', variableToSave: 'pergunta' }),
+      node('question-1', 'question', {
+        questionText: 'Como posso ajudar?',
+        variableToSave: 'pergunta',
+      }),
       node('knowledge-1', 'knowledge', { database: 'faq' }),
       node('prompt-1', 'prompt', { promptText: 'Responda usando: {{knowledge_result}}' }),
       node('end-1', 'end'),
@@ -203,7 +222,10 @@ describe('knowledge node execution', () => {
     };
     const nodes = [
       node('start-1', 'start'),
-      node('question-1', 'question', { questionText: 'Como posso ajudar?', variableToSave: 'pergunta' }),
+      node('question-1', 'question', {
+        questionText: 'Como posso ajudar?',
+        variableToSave: 'pergunta',
+      }),
       node('knowledge-1', 'knowledge', { database: 'faq' }),
       node('prompt-1', 'prompt', { promptText: 'Responda usando: {{knowledge_result}}' }),
       node('end-1', 'end'),
@@ -223,12 +245,14 @@ describe('knowledge node execution', () => {
 
     expect(prepared.state.variables.knowledge_is_low_confidence).toBe('true');
     // The engine's own honest "no match" caveat, never a fabricated fact from the unrelated doc.
-    expect(prepared.systemInstruction).toContain('Não encontrei informações específicas sobre isso.');
+    expect(prepared.systemInstruction).toContain(
+      'Não encontrei informações específicas sobre isso.',
+    );
     expect(prepared.systemInstruction).toContain('Baixa confiança');
     expect(prepared.systemInstruction).not.toContain('Atendemos de segunda a sexta');
   });
 
-  it('never leaks another tenant\'s knowledge documents (agentId not owned by organizationId yields zero documents)', async () => {
+  it("never leaks another tenant's knowledge documents (agentId not owned by organizationId yields zero documents)", async () => {
     const nodes = [
       node('start-1', 'start'),
       node('knowledge-1', 'knowledge', { database: 'faq' }),
@@ -249,7 +273,9 @@ describe('knowledge node execution', () => {
 
     expect(mockGetAgent).toHaveBeenCalledWith('agent-from-another-tenant', 'tenant-1');
     expect(state?.variables.knowledge_is_low_confidence).toBe('true');
-    expect(state?.variables.knowledge_result).toContain('Não encontrei informações específicas sobre isso.');
+    expect(state?.variables.knowledge_result).toContain(
+      'Não encontrei informações específicas sobre isso.',
+    );
   });
 
   it('runs with zero documents (never crashes) when no agentId is supplied', async () => {
@@ -276,7 +302,11 @@ describe('tool node execution', () => {
 
     const nodes = [
       node('start-1', 'start'),
-      node('tool-1', 'tool', { method: 'GET', endpoint: 'https://api.example.com/balance', timeoutMs: 2000 }),
+      node('tool-1', 'tool', {
+        method: 'GET',
+        endpoint: 'https://api.example.com/balance',
+        timeoutMs: 2000,
+      }),
       node('prompt-1', 'prompt', { promptText: 'Saldo: {{tool_result}}' }),
       node('end-1', 'end'),
     ];
@@ -299,7 +329,10 @@ describe('tool node execution', () => {
       node('start-1', 'start'),
       // Points at a cloud-metadata address: must be refused before any network call, and must not
       // take down call setup.
-      node('tool-1', 'tool', { method: 'GET', endpoint: 'https://169.254.169.254/latest/meta-data' }),
+      node('tool-1', 'tool', {
+        method: 'GET',
+        endpoint: 'https://169.254.169.254/latest/meta-data',
+      }),
       node('condition-1', 'condition', { variable: 'tool_ok', operator: 'equals', value: 'true' }),
       node('end-ok', 'end'),
       node('end-fail', 'end'),
@@ -323,7 +356,12 @@ describe('tool node execution', () => {
   });
 
   it('never calls the external endpoint when the tenant has not granted consent', async () => {
-    mockGetAiConsent.mockResolvedValue({ granted: false, grantedAt: null, revokedAt: null, grantedByUserId: null });
+    mockGetAiConsent.mockResolvedValue({
+      granted: false,
+      grantedAt: null,
+      revokedAt: null,
+      grantedByUserId: null,
+    });
     const fetchMock = vi.fn();
     global.fetch = fetchMock as unknown as typeof fetch;
 
@@ -402,7 +440,10 @@ describe('tool node execution', () => {
       })),
     };
 
-    const prepared = prepareWorkflowTurn(syntheticState as Parameters<typeof prepareWorkflowTurn>[0], '12345678900');
+    const prepared = prepareWorkflowTurn(
+      syntheticState as Parameters<typeof prepareWorkflowTurn>[0],
+      '12345678900',
+    );
 
     // Never performs a real network call synchronously — that would require blocking the event
     // loop, which this runtime refuses to do. As of Onda 6, it also never fakes a tool failure:
@@ -416,13 +457,18 @@ describe('tool node execution', () => {
   });
 
   it('resumeAfterTool executes the real HTTP call for a tool node reached mid-call and continues the graph (start -> question -> tool -> prompt)', async () => {
-    const fetchMock = vi.fn().mockResolvedValue(new Response('{"cpf_status":"valido"}', { status: 200 }));
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValue(new Response('{"cpf_status":"valido"}', { status: 200 }));
     global.fetch = fetchMock as unknown as typeof fetch;
 
     const nodes = [
       node('start-1', 'start'),
       node('question-1', 'question', { questionText: 'Qual seu CPF?', variableToSave: 'cpf' }),
-      node('tool-1', 'tool', { method: 'GET', endpoint: 'https://api.example.com/cpf-lookup?cpf={{cpf}}' }),
+      node('tool-1', 'tool', {
+        method: 'GET',
+        endpoint: 'https://api.example.com/cpf-lookup?cpf={{cpf}}',
+      }),
       node('prompt-1', 'prompt', { promptText: 'Resultado da consulta: {{tool_result}}' }),
       node('end-1', 'end'),
     ];
@@ -446,7 +492,9 @@ describe('tool node execution', () => {
     expect(afterQuestion.state.variables.cpf).toBe('12345678900');
     expect(fetchMock).not.toHaveBeenCalled();
 
-    const pendingNode = afterQuestion.state.nodes.find((n) => n.id === afterQuestion.state.currentNodeId)!;
+    const pendingNode = afterQuestion.state.nodes.find(
+      (n) => n.id === afterQuestion.state.currentNodeId,
+    )!;
     const resumed = await resumeAfterTool(afterQuestion.state, pendingNode);
 
     expect(fetchMock).toHaveBeenCalledTimes(1);
@@ -460,7 +508,12 @@ describe('tool node execution', () => {
   });
 
   it('resumeAfterTool degrades to the tool_error fallback (never crashes) when the real call fails, and consent gates it exactly like call-start', async () => {
-    mockGetAiConsent.mockResolvedValue({ granted: false, grantedAt: null, revokedAt: null, grantedByUserId: null });
+    mockGetAiConsent.mockResolvedValue({
+      granted: false,
+      grantedAt: null,
+      revokedAt: null,
+      grantedByUserId: null,
+    });
     const fetchMock = vi.fn();
     global.fetch = fetchMock as unknown as typeof fetch;
 
@@ -484,7 +537,9 @@ describe('tool node execution', () => {
 
     const state = await initializeWorkflowRuntime('tenant-1');
     const afterQuestion = prepareWorkflowTurn(state!, '12345678900');
-    const pendingNode = afterQuestion.state.nodes.find((n) => n.id === afterQuestion.state.currentNodeId)!;
+    const pendingNode = afterQuestion.state.nodes.find(
+      (n) => n.id === afterQuestion.state.currentNodeId,
+    )!;
 
     const resumed = await resumeAfterTool(afterQuestion.state, pendingNode);
 
@@ -554,11 +609,14 @@ describe('voice node execution (Onda 6 MVP: Twilio-native named TTS)', () => {
   });
 });
 
-describe('human_handoff node execution (Onda 6 rodada 2 MVP: direct dial to the node\'s own literal fallbackNumber)', () => {
+describe("human_handoff node execution (Onda 6 rodada 2 MVP: direct dial to the node's own literal fallbackNumber)", () => {
   it('mid-call: prepareWorkflowTurn reaching human_handoff returns mode "transfer" with transferDetails.to equal to the configured fallbackNumber (start -> question -> human_handoff -> end)', async () => {
     const nodes = [
       node('start-1', 'start'),
-      node('question-1', 'question', { questionText: 'Como posso ajudar?', variableToSave: 'intent' }),
+      node('question-1', 'question', {
+        questionText: 'Como posso ajudar?',
+        variableToSave: 'intent',
+      }),
       node('handoff-1', 'human_handoff', {
         department: 'Suporte Técnico',
         fallbackNumber: '+5511999999999',
@@ -596,7 +654,10 @@ describe('human_handoff node execution (Onda 6 rodada 2 MVP: direct dial to the 
   it('applies honest defaults when ringTimeoutSec/recordCall/transferMessage/department are absent', async () => {
     const nodes = [
       node('start-1', 'start'),
-      node('question-1', 'question', { questionText: 'Como posso ajudar?', variableToSave: 'intent' }),
+      node('question-1', 'question', {
+        questionText: 'Como posso ajudar?',
+        variableToSave: 'intent',
+      }),
       node('handoff-1', 'human_handoff', { fallbackNumber: '+5511988887777' }),
       node('end-1', 'end'),
     ];
@@ -623,7 +684,10 @@ describe('human_handoff node execution (Onda 6 rodada 2 MVP: direct dial to the 
   it('never fabricates a transfer destination when fallbackNumber is missing/empty — degrades like a failed tool and continues on the default path instead', async () => {
     const nodes = [
       node('start-1', 'start'),
-      node('question-1', 'question', { questionText: 'Como posso ajudar?', variableToSave: 'intent' }),
+      node('question-1', 'question', {
+        questionText: 'Como posso ajudar?',
+        variableToSave: 'intent',
+      }),
       node('handoff-1', 'human_handoff', { department: 'vendas', fallbackNumber: '' }),
       node('prompt-1', 'prompt', { promptText: 'Sem transferência disponível: {{handoff_error}}' }),
       node('end-1', 'end'),
@@ -643,7 +707,9 @@ describe('human_handoff node execution (Onda 6 rodada 2 MVP: direct dial to the 
     expect(prepared.mode).not.toBe('transfer');
     expect(prepared.transferDetails).toBeUndefined();
     expect(prepared.mode).toBe('llm');
-    expect(prepared.systemInstruction).toBe('Sem transferência disponível: fallback_number_missing');
+    expect(prepared.systemInstruction).toBe(
+      'Sem transferência disponível: fallback_number_missing',
+    );
     expect(prepared.state.variables.handoff_ok).toBe('false');
     expect(prepared.state.variables.handoff_error).toBe('fallback_number_missing');
   });
@@ -692,7 +758,9 @@ describe('human_handoff node execution (Onda 6 rodada 2 MVP: direct dial to the 
     const afterQuestion = prepareWorkflowTurn(state!, '12345678900');
     expect(afterQuestion.mode).toBe('tool_pending');
 
-    const pendingNode = afterQuestion.state.nodes.find((n) => n.id === afterQuestion.state.currentNodeId)!;
+    const pendingNode = afterQuestion.state.nodes.find(
+      (n) => n.id === afterQuestion.state.currentNodeId,
+    )!;
     const resumed = await resumeAfterTool(afterQuestion.state, pendingNode);
 
     expect(resumed.mode).toBe('transfer');

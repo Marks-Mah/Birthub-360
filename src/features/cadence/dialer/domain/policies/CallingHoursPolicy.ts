@@ -20,9 +20,9 @@ const WEEKDAY_MAP: Record<string, number> = {
 };
 
 function parseMinutesSinceMidnight(hhmm: string): number {
-  const [hoursRaw, minutesRaw] = hhmm.split(":");
-  const hours = Number.parseInt(hoursRaw ?? "0", 10);
-  const minutes = Number.parseInt(minutesRaw ?? "0", 10);
+  const [hoursRaw, minutesRaw] = hhmm.split(':');
+  const hours = Number.parseInt(hoursRaw ?? '0', 10);
+  const minutes = Number.parseInt(minutesRaw ?? '0', 10);
   return hours * 60 + minutes;
 }
 
@@ -61,23 +61,23 @@ export class CallingHoursPolicy {
       };
     }
 
-    const formatter = new Intl.DateTimeFormat("en-US", {
+    const formatter = new Intl.DateTimeFormat('en-US', {
       timeZone: this.config.timezone,
-      weekday: "short",
-      hour: "numeric",
-      minute: "numeric",
+      weekday: 'short',
+      hour: 'numeric',
+      minute: 'numeric',
       hour12: false,
     });
 
     const parts = formatter.formatToParts(date);
-    let weekdayStr = "Sun";
+    let weekdayStr = 'Sun';
     let hour = 0;
     let minute = 0;
 
     for (const part of parts) {
-      if (part.type === "weekday") weekdayStr = part.value;
-      else if (part.type === "hour") hour = Number.parseInt(part.value, 10) % 24;
-      else if (part.type === "minute") minute = Number.parseInt(part.value, 10);
+      if (part.type === 'weekday') weekdayStr = part.value;
+      else if (part.type === 'hour') hour = Number.parseInt(part.value, 10) % 24;
+      else if (part.type === 'minute') minute = Number.parseInt(part.value, 10);
     }
 
     return {

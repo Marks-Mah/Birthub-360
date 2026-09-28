@@ -21,7 +21,9 @@ beforeEach(() => {
 describe('scanBufferForViruses', () => {
   it('resolves cleanly for a file with no viruses', async () => {
     mockScanStream.mockResolvedValue({ isInfected: false, viruses: [] });
-    await expect(scanBufferForViruses(Buffer.from('hello'), 'doc.pdf')).resolves.toEqual({ clean: true });
+    await expect(scanBufferForViruses(Buffer.from('hello'), 'doc.pdf')).resolves.toEqual({
+      clean: true,
+    });
   });
 
   it('rejects with InfectedFileError when the file is infected — never resolves', async () => {

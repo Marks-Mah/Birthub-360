@@ -29,7 +29,8 @@ export async function ensureRecordingsBucket(): Promise<void> {
   try {
     await objectStorage.send(new HeadBucketCommand({ Bucket: recordingsBucket }));
   } catch (error: unknown) {
-    const statusCode = (error as { $metadata?: { httpStatusCode?: number } }).$metadata?.httpStatusCode;
+    const statusCode = (error as { $metadata?: { httpStatusCode?: number } }).$metadata
+      ?.httpStatusCode;
     if (statusCode && statusCode !== 404) throw error;
     await objectStorage.send(new CreateBucketCommand({ Bucket: recordingsBucket }));
   }
@@ -64,17 +65,26 @@ export class InvalidObjectKeyError extends Error {
  */
 export function buildTenantObjectKey(organizationId: string, ...segments: string[]): string {
   if (!SAFE_SEGMENT.test(organizationId)) {
-    throw new InvalidObjectKeyError(`organizationId inválido para chave de objeto: "${organizationId}"`);
+    throw new InvalidObjectKeyError(
+      `organizationId inválido para chave de objeto: "${organizationId}"`,
+    );
   }
   if (segments.length === 0) {
-    throw new InvalidObjectKeyError('É necessário ao menos um segmento de caminho para a chave de objeto.');
+    throw new InvalidObjectKeyError(
+      'É necessário ao menos um segmento de caminho para a chave de objeto.',
+    );
   }
 
   const cleanSegments = segments.map((segment) => {
     // Allow a single trailing file extension (dot) on the last-level segment (e.g. "call-123.wav")
     // while still rejecting traversal/hidden-path tricks like "..", "/", or empty segments.
     const normalized = segment.trim();
-    if (!normalized || normalized.includes('..') || normalized.includes('/') || normalized.includes('\\')) {
+    if (
+      !normalized ||
+      normalized.includes('..') ||
+      normalized.includes('/') ||
+      normalized.includes('\\')
+    ) {
       throw new InvalidObjectKeyError(`Segmento de chave de objeto inválido: "${segment}"`);
     }
     return normalized;
@@ -118,7 +128,11 @@ export async function getPresignedUploadUrl(
   expiresInSeconds: number = DEFAULT_PRESIGNED_URL_TTL_SECONDS,
 ): Promise<string> {
   assertKeyBelongsToTenant(organizationId, key);
-  const command = new PutObjectCommand({ Bucket: recordingsBucket, Key: key, ContentType: contentType });
+  const command = new PutObjectCommand({
+    Bucket: recordingsBucket,
+    Key: key,
+    ContentType: contentType,
+  });
   return getSignedUrl(objectStorage, command, { expiresIn: clampTtl(expiresInSeconds) });
 }
 

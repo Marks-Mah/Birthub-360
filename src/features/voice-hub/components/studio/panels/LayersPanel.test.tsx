@@ -48,7 +48,7 @@ describe('LayersPanel accessibility', () => {
     await user.click(screen.getByRole('button', { name: 'Layers' }));
 
     const nodeButton = await screen.findByRole('button', {
-      name: /Selecionar nó Atendimento Inicial e abrir no inspetor/i
+      name: /Selecionar nó Atendimento Inicial e abrir no inspetor/i,
     });
 
     nodeButton.focus();
@@ -69,7 +69,7 @@ describe('LayersPanel accessibility', () => {
     const startCountBefore = useStudioStore.getState().nodes.length;
 
     const registryItem = screen.getByRole('button', {
-      name: /Adicionar nó REST API Integration ao canvas/i
+      name: /Adicionar nó REST API Integration ao canvas/i,
     });
     registryItem.focus();
     await user.keyboard(' ');

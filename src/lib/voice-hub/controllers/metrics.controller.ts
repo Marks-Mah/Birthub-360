@@ -16,7 +16,9 @@ export async function createMetricHandler(req: Request, res: Response) {
 }
 
 export async function updateMetricsHandler(_req: Request, res: Response) {
-  return res.status(501).json({ error: 'Métricas consolidadas não podem ser editadas diretamente.' });
+  return res
+    .status(501)
+    .json({ error: 'Métricas consolidadas não podem ser editadas diretamente.' });
 }
 
 export async function clearMetricsHandler(req: Request, res: Response) {

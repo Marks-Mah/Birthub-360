@@ -1,8 +1,8 @@
-import { GoogleGenAI } from "@google/genai";
-import { otelCollector, SYSTEM_TENANT_ID } from "../otel.js";
-import { getAiConsent } from "../../../services/settingService.js";
-import { createMetric } from "../../../services/metricService.js";
-import { logger } from "../../logger.js";
+import { GoogleGenAI } from '@google/genai';
+import { otelCollector, SYSTEM_TENANT_ID } from '../otel.js';
+import { getAiConsent } from '../../../services/settingService.js';
+import { createMetric } from '../../../services/metricService.js';
+import { logger } from '../../logger.js';
 
 export interface GatewayResponse {
   text: string;
@@ -27,16 +27,17 @@ class LLMProviderGateway {
 
   // Standard pricing in USD per 1K tokens. This is an estimate only; provider invoices remain the
   // source of truth. Models can be overridden by environment without a code release.
-  private PRICING: Record<ProviderName, { prompt: number, completion: number }> = {
-    'GoogleGemini': { prompt: 0.000075, completion: 0.0003 },
-    'OpenAI': { prompt: 0.0015, completion: 0.002 },
-    'Claude': { prompt: 0.003, completion: 0.015 }
+  private PRICING: Record<ProviderName, { prompt: number; completion: number }> = {
+    GoogleGemini: { prompt: 0.000075, completion: 0.0003 },
+    OpenAI: { prompt: 0.0015, completion: 0.002 },
+    Claude: { prompt: 0.003, completion: 0.015 },
   };
 
   private checkRateLimit(tenantId: string): boolean {
     const now = Date.now();
-    const timestamps = (this.activeRequestTimestamps.get(tenantId) || [])
-      .filter(ts => now - ts < this.rateLimitWindowMs);
+    const timestamps = (this.activeRequestTimestamps.get(tenantId) || []).filter(
+      (ts) => now - ts < this.rateLimitWindowMs,
+    );
 
     if (timestamps.length >= this.rateLimitMax) {
       this.activeRequestTimestamps.set(tenantId, timestamps);
@@ -81,19 +82,26 @@ class LLMProviderGateway {
   public async processRequest(
     prompt: string,
     preferredProvider: ProviderName = 'GoogleGemini',
-    systemInstruction: string = "Você é um assistente atencioso de atendimento e qualificação por voz.",
-    tenantId: string = SYSTEM_TENANT_ID
+    systemInstruction: string = 'Você é um assistente atencioso de atendimento e qualificação por voz.',
+    tenantId: string = SYSTEM_TENANT_ID,
   ): Promise<GatewayResponse> {
-    const spanId = otelCollector.startLocalSpan('LLMProviderGateway.processRequest', 'system', {
-      preferredProvider,
-      promptLength: prompt.length
-    }, tenantId);
+    const spanId = otelCollector.startLocalSpan(
+      'LLMProviderGateway.processRequest',
+      'system',
+      {
+        preferredProvider,
+        promptLength: prompt.length,
+      },
+      tenantId,
+    );
 
     const startTime = Date.now();
 
     if (!this.checkRateLimit(tenantId)) {
       otelCollector.endLocalSpan(spanId, { error: 'Rate limit exceeded' });
-      throw new Error('Rate limit exceeded (Max 60 requests/min). Por favor, aguarde alguns segundos.');
+      throw new Error(
+        'Rate limit exceeded (Max 60 requests/min). Por favor, aguarde alguns segundos.',
+      );
     }
 
     // Consent is checked before any provider, including the fallback, sees the prompt.
@@ -107,7 +115,7 @@ class LLMProviderGateway {
         tokensUsed: 0,
         costUSD: 0,
         fromFallback: false,
-        blockedByConsent: true
+        blockedByConsent: true,
       };
     }
 
@@ -133,12 +141,12 @@ class LLMProviderGateway {
             httpOptions: {
               headers: {
                 'User-Agent': 'aistudio-build',
-              }
-            }
+              },
+            },
           });
 
           const response = await ai.models.generateContent({
-            model: process.env.GEMINI_MODEL || "gemini-3.5-flash",
+            model: process.env.GEMINI_MODEL || 'gemini-3.5-flash',
             contents: prompt,
             config: {
               systemInstruction,
@@ -161,23 +169,23 @@ class LLMProviderGateway {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              'Authorization': `Bearer ${apiKey}`
+              Authorization: `Bearer ${apiKey}`,
             },
             body: JSON.stringify({
               model: process.env.OPENAI_MODEL || 'gpt-4o-mini',
               messages: [
                 { role: 'system', content: systemInstruction },
-                { role: 'user', content: prompt }
+                { role: 'user', content: prompt },
               ],
-              temperature: 0.7
-            })
+              temperature: 0.7,
+            }),
           });
 
           if (!response.ok) {
             throw new Error(`OpenAI API Error: ${response.status} ${response.statusText}`);
           }
 
-          const data = await response.json() as {
+          const data = (await response.json()) as {
             choices?: Array<{ message?: { content?: string } }>;
             usage?: { total_tokens?: number };
           };
@@ -197,29 +205,28 @@ class LLMProviderGateway {
             headers: {
               'Content-Type': 'application/json',
               'x-api-key': apiKey,
-              'anthropic-version': '2023-06-01'
+              'anthropic-version': '2023-06-01',
             },
             body: JSON.stringify({
               model: process.env.ANTHROPIC_MODEL || 'claude-3-5-sonnet-20241022',
               system: systemInstruction,
-              messages: [
-                { role: 'user', content: prompt }
-              ],
-              max_tokens: 1024
-            })
+              messages: [{ role: 'user', content: prompt }],
+              max_tokens: 1024,
+            }),
           });
 
           if (!response.ok) {
             throw new Error(`Claude API Error: ${response.status} ${response.statusText}`);
           }
 
-          const data = await response.json() as {
+          const data = (await response.json()) as {
             content?: Array<{ text?: string }>;
             usage?: { input_tokens?: number; output_tokens?: number };
           };
           text = data.content?.[0]?.text || '';
           if (!text) throw new Error('Claude retornou resposta vazia.');
-          tokensUsed = (data.usage?.input_tokens || 0) + (data.usage?.output_tokens || 0) || tokensUsed;
+          tokensUsed =
+            (data.usage?.input_tokens || 0) + (data.usage?.output_tokens || 0) || tokensUsed;
           successfulProvider = provider;
           break;
         }
@@ -231,8 +238,12 @@ class LLMProviderGateway {
         const failSpan = otelCollector.startLocalSpan(
           'LLMProviderGateway.providerFailure',
           'llm-gateway',
-          { provider, error: message, nextProvider: uniqueChain[uniqueChain.indexOf(provider) + 1] || 'NONE' },
-          tenantId
+          {
+            provider,
+            error: message,
+            nextProvider: uniqueChain[uniqueChain.indexOf(provider) + 1] || 'NONE',
+          },
+          tenantId,
         );
         otelCollector.endLocalSpan(failSpan, { failed: true });
       }
@@ -240,7 +251,8 @@ class LLMProviderGateway {
 
     if (!successfulProvider) {
       // Never fabricate a provider success or a business confirmation when every provider failed.
-      text = 'Peço desculpas, estou com uma instabilidade técnica no momento. Por favor, tente novamente em alguns instantes.';
+      text =
+        'Peço desculpas, estou com uma instabilidade técnica no momento. Por favor, tente novamente em alguns instantes.';
     }
 
     const latencyMs = Date.now() - startTime;
@@ -249,7 +261,7 @@ class LLMProviderGateway {
     const promptTokens = Math.ceil(tokensUsed * 0.7);
     const completionTokens = Math.ceil(tokensUsed * 0.3);
     const costUSD = pricing
-      ? ((promptTokens * pricing.prompt) + (completionTokens * pricing.completion)) / 1000
+      ? (promptTokens * pricing.prompt + completionTokens * pricing.completion) / 1000
       : 0;
 
     otelCollector.endLocalSpan(spanId, {
@@ -259,7 +271,7 @@ class LLMProviderGateway {
       latencyMs,
       fromFallback: isFallback,
       allProvidersFailed: successfulProvider === null,
-      errors: errorLog
+      errors: errorLog,
     });
 
     otelCollector.recordLocalMetric('llm_cost', costUSD, { provider: providerUsed }, tenantId);
@@ -273,7 +285,14 @@ class LLMProviderGateway {
     // the Tenant table (see otel.ts), so it is excluded to avoid a foreign-key failure and
     // because there is no real tenant to scope a billing/usage metric to.
     if (successfulProvider && tenantId !== SYSTEM_TENANT_ID) {
-      this.recordProviderCallMetrics(tenantId, providerUsed, tokensUsed, costUSD, latencyMs, isFallback);
+      this.recordProviderCallMetrics(
+        tenantId,
+        providerUsed,
+        tokensUsed,
+        costUSD,
+        latencyMs,
+        isFallback,
+      );
     }
 
     return {
@@ -282,7 +301,7 @@ class LLMProviderGateway {
       latencyMs,
       tokensUsed,
       costUSD,
-      fromFallback: isFallback
+      fromFallback: isFallback,
     };
   }
 }

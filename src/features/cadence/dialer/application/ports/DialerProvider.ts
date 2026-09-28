@@ -1,4 +1,4 @@
-import type { CallAttemptStatus } from "../../domain/entities/CallAttempt.js";
+import type { CallAttemptStatus } from '../../domain/entities/CallAttempt.js';
 
 export interface OriginateCallInput {
   /** Ramal (DN) do agente que a 3CX vai chamar primeiro. */

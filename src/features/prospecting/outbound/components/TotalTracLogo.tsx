@@ -11,7 +11,7 @@ export const TotalTracLogo: React.FC<TotalTracLogoProps> = ({
   variant = 'with-subtitle',
   theme = 'dark',
   size = 'md',
-  className = ''
+  className = '',
 }) => {
   const sizeMap = {
     sm: { symbolH: 22, textH: 'text-lg', subH: 'text-[9px]' },
@@ -43,8 +43,18 @@ export const TotalTracLogo: React.FC<TotalTracLogoProps> = ({
           fill={theme === 'dark' ? '#93DBF2' : primaryBlue}
         />
         <circle cx="60" cy="45" r="12" fill={theme === 'dark' ? '#374898' : '#FFFFFF'} />
-        <path d="M78 30 A 25 25 0 0 1 78 60" stroke={theme === 'dark' ? '#374898' : '#FFFFFF'} strokeWidth="5" strokeLinecap="round" />
-        <path d="M88 20 A 40 40 0 0 1 88 70" stroke={theme === 'dark' ? '#374898' : '#FFFFFF'} strokeWidth="5" strokeLinecap="round" />
+        <path
+          d="M78 30 A 25 25 0 0 1 78 60"
+          stroke={theme === 'dark' ? '#374898' : '#FFFFFF'}
+          strokeWidth="5"
+          strokeLinecap="round"
+        />
+        <path
+          d="M88 20 A 40 40 0 0 1 88 70"
+          stroke={theme === 'dark' ? '#374898' : '#FFFFFF'}
+          strokeWidth="5"
+          strokeLinecap="round"
+        />
       </svg>
 
       {variant !== 'symbol' && (

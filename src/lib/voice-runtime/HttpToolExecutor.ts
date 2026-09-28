@@ -64,7 +64,10 @@ export function isSafeToolUrl(rawUrl: string): boolean {
   } catch {
     return false;
   }
-  if (parsed.protocol !== 'https:' && !(parsed.protocol === 'http:' && process.env.NODE_ENV !== 'production')) {
+  if (
+    parsed.protocol !== 'https:' &&
+    !(parsed.protocol === 'http:' && process.env.NODE_ENV !== 'production')
+  ) {
     return false;
   }
   return !isPrivateOrReservedHost(parsed.hostname);
@@ -111,7 +114,10 @@ export async function executeHttpTool(request: HttpToolRequest): Promise<HttpToo
     headers: { 'Content-Type': 'application/json', ...(request.headers ?? {}) },
   };
   if (method !== 'GET' && method !== 'DELETE' && request.bodyPayload !== undefined) {
-    init.body = typeof request.bodyPayload === 'string' ? request.bodyPayload : JSON.stringify(request.bodyPayload);
+    init.body =
+      typeof request.bodyPayload === 'string'
+        ? request.bodyPayload
+        : JSON.stringify(request.bodyPayload);
   }
 
   let lastError: HttpToolFailureReason = 'network_error';
@@ -122,7 +128,8 @@ export async function executeHttpTool(request: HttpToolRequest): Promise<HttpToo
         signal: AbortSignal.timeout(timeoutMs),
       });
       const text = await response.text().catch(() => '');
-      const body = text.length > MAX_RESPONSE_BODY_CHARS ? text.slice(0, MAX_RESPONSE_BODY_CHARS) : text;
+      const body =
+        text.length > MAX_RESPONSE_BODY_CHARS ? text.slice(0, MAX_RESPONSE_BODY_CHARS) : text;
 
       if (!response.ok) {
         lastError = `http_${response.status}`;
@@ -131,7 +138,8 @@ export async function executeHttpTool(request: HttpToolRequest): Promise<HttpToo
 
       return { ok: true, status: response.status, body };
     } catch (error: unknown) {
-      lastError = error instanceof Error && error.name === 'TimeoutError' ? 'timeout' : 'network_error';
+      lastError =
+        error instanceof Error && error.name === 'TimeoutError' ? 'timeout' : 'network_error';
     }
   }
 

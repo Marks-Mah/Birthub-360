@@ -37,8 +37,8 @@ export function ReportErrorButton({ user, page, isDark = true }: ReportErrorButt
           page,
           userId: user?.id,
           userEmail: user?.email,
-          userAgent: navigator.userAgent
-        })
+          userAgent: navigator.userAgent,
+        }),
       });
       setSent(true);
       setMessage('');
@@ -78,7 +78,7 @@ export function ReportErrorButton({ user, page, isDark = true }: ReportErrorButt
             className={`w-full max-w-sm rounded-2xl shadow-2xl p-5 animate-in fade-in slide-in-from-bottom-2 duration-200 ${
               isDark ? 'bg-slate-900 border border-slate-800' : 'bg-white border border-slate-200'
             }`}
-            onClick={e => e.stopPropagation()}
+            onClick={(e) => e.stopPropagation()}
           >
             {sent ? (
               <div className="flex flex-col items-center gap-2 py-6 text-center">
@@ -90,13 +90,19 @@ export function ReportErrorButton({ user, page, isDark = true }: ReportErrorButt
             ) : (
               <form onSubmit={handleSubmit}>
                 <div className="flex items-center justify-between mb-3">
-                  <h3 className={`text-sm font-bold flex items-center gap-2 ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                  <h3
+                    className={`text-sm font-bold flex items-center gap-2 ${isDark ? 'text-white' : 'text-slate-900'}`}
+                  >
                     <Bug className="w-4 h-4 text-red-500" /> Reportar um problema
                   </h3>
                   <button
                     type="button"
                     onClick={close}
-                    className={isDark ? 'text-slate-500 hover:text-slate-300' : 'text-slate-400 hover:text-slate-600'}
+                    className={
+                      isDark
+                        ? 'text-slate-500 hover:text-slate-300'
+                        : 'text-slate-400 hover:text-slate-600'
+                    }
                   >
                     <X className="w-4 h-4" />
                   </button>
@@ -107,7 +113,7 @@ export function ReportErrorButton({ user, page, isDark = true }: ReportErrorButt
                 <textarea
                   required
                   value={message}
-                  onChange={e => setMessage(e.target.value)}
+                  onChange={(e) => setMessage(e.target.value)}
                   rows={4}
                   placeholder="O que você esperava que acontecesse, e o que aconteceu de fato?"
                   className={`w-full rounded-xl text-sm p-3 outline-none border resize-none focus:ring-2 ${
@@ -122,7 +128,9 @@ export function ReportErrorButton({ user, page, isDark = true }: ReportErrorButt
                   disabled={sending || !message.trim()}
                   className="w-full mt-3 flex items-center justify-center gap-2 bg-red-500 hover:bg-red-600 text-white text-sm font-medium py-2.5 rounded-xl transition disabled:opacity-50"
                 >
-                  {sending ? 'Enviando...' : (
+                  {sending ? (
+                    'Enviando...'
+                  ) : (
                     <>
                       Enviar reporte
                       <Send className="w-3.5 h-3.5" />

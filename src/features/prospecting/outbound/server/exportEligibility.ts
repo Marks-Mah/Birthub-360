@@ -32,7 +32,14 @@ export type ExportPolicy = 'strict' | 'lenient';
 // '/integrations/hunter/verify') e com o verificationStatus da Wave 6 (Evidence),
 // para quando qualquer uma dessas integrações passar a persistir o resultado no
 // Lead. Enquanto isso não acontece, ausência do campo é tratada como "não verificado".
-export type EmailVerificationStatus = 'valid' | 'invalid' | 'accept_all' | 'webmail' | 'disposable' | 'unknown' | string;
+export type EmailVerificationStatus =
+  | 'valid'
+  | 'invalid'
+  | 'accept_all'
+  | 'webmail'
+  | 'disposable'
+  | 'unknown'
+  | string;
 
 export interface ExportEligibilityLead {
   id?: string;
@@ -66,18 +73,23 @@ function isConfirmedCnpj(lead: ExportEligibilityLead): { confirmed: boolean; rea
   const hasCnpj = digits.length === 14;
 
   if (!hasCnpj) {
-    return { confirmed: false, reason: 'Lead sem CNPJ — nenhuma fonte oficial identificou a empresa.' };
+    return {
+      confirmed: false,
+      reason: 'Lead sem CNPJ — nenhuma fonte oficial identificou a empresa.',
+    };
   }
   if (lead.cnpj_consultado !== true) {
     return {
       confirmed: false,
-      reason: 'CNPJ presente, porém nunca consultado em fonte oficial (cnpj_consultado=false) — origem não confirmada.'
+      reason:
+        'CNPJ presente, porém nunca consultado em fonte oficial (cnpj_consultado=false) — origem não confirmada.',
     };
   }
   if (lead.is_estimated === true) {
     return {
       confirmed: false,
-      reason: 'Situação cadastral/CNAE/capital social não confirmados na Receita Federal — dados fiscais estimados (is_estimated=true).'
+      reason:
+        'Situação cadastral/CNAE/capital social não confirmados na Receita Federal — dados fiscais estimados (is_estimated=true).',
     };
   }
   return { confirmed: true };
@@ -101,7 +113,7 @@ function isConfirmedCnpj(lead: ExportEligibilityLead): { confirmed: boolean; rea
  */
 export function checkExportEligibility(
   lead: ExportEligibilityLead,
-  policy: ExportPolicy = 'strict'
+  policy: ExportPolicy = 'strict',
 ): ExportEligibilityResult {
   const reasons: string[] = [];
   const warnings: string[] = [];
@@ -114,7 +126,7 @@ export function checkExportEligibility(
   }
 
   // Regra 2 — e-mail do decisor verificado (quando existe e-mail para checar).
-  const email = lead.decision_maker_email || (lead.decision_maker_emails?.[0]) || '';
+  const email = lead.decision_maker_email || lead.decision_maker_emails?.[0] || '';
   if (email) {
     const status = lead.email_verification_status || 'unverified';
     if (!VERIFIED_EMAIL_STATUSES.has(status)) {
@@ -126,13 +138,16 @@ export function checkExportEligibility(
 
   // Regra 3 — duplicidade: já é Cliente/Contato existente no Bitrix. Sempre bloqueia.
   if (lead.bitrix_check_status === 'existing_client') {
-    const msg = 'Empresa já é Cliente/Contato existente no Bitrix24 — exportar de novo criaria duplicidade de cadastro.';
+    const msg =
+      'Empresa já é Cliente/Contato existente no Bitrix24 — exportar de novo criaria duplicidade de cadastro.';
     warnings.push(msg);
     reasons.push(msg);
   } else if (lead.bitrix_check_status === 'existing_lead') {
     // Ainda não é cliente — pode ser legítimo reenviar para atualizar o Lead
     // existente, então isso fica só como aviso, não como bloqueio automático.
-    warnings.push('Empresa já existe como Lead no Bitrix24 (ainda não convertida) — confirme antes de duplicar.');
+    warnings.push(
+      'Empresa já existe como Lead no Bitrix24 (ainda não convertida) — confirme antes de duplicar.',
+    );
   }
 
   return { eligible: reasons.length === 0, policy, reasons, warnings };

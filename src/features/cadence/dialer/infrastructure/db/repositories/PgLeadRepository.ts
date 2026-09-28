@@ -1,7 +1,7 @@
-import type { PrismaClient } from "@prisma/client";
-import { Lead, type LeadProps, type LeadStatus } from "../../../domain/entities/Lead.js";
-import { PhoneNumber } from "../../../domain/value-objects/PhoneNumber.js";
-import type { LeadRepository } from "../../../application/ports/LeadRepository.js";
+import type { PrismaClient } from '@prisma/client';
+import { Lead, type LeadProps, type LeadStatus } from '../../../domain/entities/Lead.js';
+import { PhoneNumber } from '../../../domain/value-objects/PhoneNumber.js';
+import type { LeadRepository } from '../../../application/ports/LeadRepository.js';
 
 interface LeadRow {
   id: string;
@@ -71,7 +71,9 @@ export class PgLeadRepository implements LeadRepository {
   }
 
   async findById(id: string): Promise<Lead | null> {
-    const rows = await this.prisma.$queryRawUnsafe<LeadRow[]>("SELECT * FROM leads WHERE id = $1", [id]);
+    const rows = await this.prisma.$queryRawUnsafe<LeadRow[]>('SELECT * FROM leads WHERE id = $1', [
+      id,
+    ]);
     const row = rows[0];
     return row === undefined ? null : Lead.restore(rowToProps(row));
   }
@@ -112,10 +114,10 @@ export class PgLeadRepository implements LeadRepository {
 
   async existsByCampaignAndPhone(campaignId: string, phoneE164: string): Promise<boolean> {
     const rows = await this.prisma.$executeRawUnsafe(
-      "SELECT 1 FROM leads WHERE campaign_id = $1 AND phone = $2 LIMIT 1",
+      'SELECT 1 FROM leads WHERE campaign_id = $1 AND phone = $2 LIMIT 1',
       [campaignId, phoneE164],
     );
-    return (((rows as any)?.length ?? rows) ?? 0) > 0;
+    return ((rows as any)?.length ?? rows ?? 0) > 0;
   }
 
   async getCampaignStats(campaignId: string): Promise<{
@@ -129,15 +131,17 @@ export class PgLeadRepository implements LeadRepository {
     invalidNumber: number;
     contactRatePercent: number;
   }> {
-    const rows = await this.prisma.$queryRawUnsafe<{
-      total_leads: string;
-      pending: string;
-      in_progress: string;
-      contacted: string;
-      exhausted: string;
-      do_not_call: string;
-      invalid_number: string;
-    }[]>(
+    const rows = await this.prisma.$queryRawUnsafe<
+      {
+        total_leads: string;
+        pending: string;
+        in_progress: string;
+        contacted: string;
+        exhausted: string;
+        do_not_call: string;
+        invalid_number: string;
+      }[]
+    >(
       `SELECT
          COUNT(*)::text AS total_leads,
          COUNT(*) FILTER (WHERE status = 'pending')::text AS pending,
@@ -176,10 +180,7 @@ export class PgLeadRepository implements LeadRepository {
     };
   }
 
-  private async upsertMany(
-    leads: readonly Lead[],
-    executor: any = this.prisma,
-  ): Promise<void> {
+  private async upsertMany(leads: readonly Lead[], executor: any = this.prisma): Promise<void> {
     const columnsPerRow = 9;
     const placeholderRows: string[] = [];
     const values: unknown[] = [];
@@ -190,7 +191,7 @@ export class PgLeadRepository implements LeadRepository {
       const placeholders = Array.from(
         { length: columnsPerRow },
         (_, column) => `$${base + column + 1}`,
-      ).join(", ");
+      ).join(', ');
       placeholderRows.push(`(${placeholders})`);
       values.push(
         props.id,
@@ -207,7 +208,7 @@ export class PgLeadRepository implements LeadRepository {
 
     await executor.query(
       `INSERT INTO leads (id, campaign_id, name, phone, status, attempts, next_attempt_at, created_at, updated_at)
-       VALUES ${placeholderRows.join(", ")}
+       VALUES ${placeholderRows.join(', ')}
        ON CONFLICT (id) DO UPDATE SET
          status = EXCLUDED.status,
          attempts = EXCLUDED.attempts,

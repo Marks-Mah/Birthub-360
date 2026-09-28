@@ -26,15 +26,15 @@ export function StudioEdge({
 
   return (
     <>
-      <BaseEdge 
-        path={edgePath} 
-        markerEnd={markerEnd} 
+      <BaseEdge
+        path={edgePath}
+        markerEnd={markerEnd}
         style={{
           ...style,
           strokeWidth: selected ? 3 : 2,
-          stroke: selected ? '#6366f1' : (isFallback ? '#f97316' : '#94a3b8'),
+          stroke: selected ? '#6366f1' : isFallback ? '#f97316' : '#94a3b8',
           strokeDasharray: isFallback ? '5,5' : 'none',
-        }} 
+        }}
       />
       {data?.condition && (
         <foreignObject
@@ -45,7 +45,9 @@ export function StudioEdge({
           className="overflow-visible pointer-events-none"
         >
           <div className="flex items-center justify-center w-full h-full">
-            <div className={`px-2 py-1 text-[10px] font-semibold text-white rounded-full shadow-sm ${isFallback ? 'bg-orange-500' : 'bg-slate-700'}`}>
+            <div
+              className={`px-2 py-1 text-[10px] font-semibold text-white rounded-full shadow-sm ${isFallback ? 'bg-orange-500' : 'bg-slate-700'}`}
+            >
               {data.condition}
             </div>
           </div>

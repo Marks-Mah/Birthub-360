@@ -2,19 +2,19 @@ import type React from 'react';
 import { useState, useRef, useEffect } from 'react';
 import type { Lead, LeadStage, ThemeMode } from '../types.js';
 import { PREDEFINED_TAGS_SUGGESTIONS } from '../utils/searchOptions.js';
-import { 
-  Tag, 
-  Plus, 
-  X, 
-  ChevronDown, 
-  Check, 
-  Layers, 
-  Flame, 
-  CheckCircle2, 
-  Clock, 
-  XCircle, 
+import {
+  Tag,
+  Plus,
+  X,
+  ChevronDown,
+  Check,
+  Layers,
+  Flame,
+  CheckCircle2,
+  Clock,
+  XCircle,
   TrendingUp,
-  Sparkles
+  Sparkles,
 } from 'lucide-react';
 
 interface LeadStageAndTagsProps {
@@ -47,7 +47,7 @@ export const STAGE_CONFIG: {
     borderDark: 'border-[#008FCE]/40',
     borderLight: 'border-[#93DBF2]',
     textColor: 'text-[#93DBF2]',
-    icon: <Clock className="w-3 h-3" />
+    icon: <Clock className="w-3 h-3" />,
   },
   qualificado: {
     label: 'Qualificado',
@@ -58,7 +58,7 @@ export const STAGE_CONFIG: {
     borderDark: 'border-purple-500/40',
     borderLight: 'border-purple-300',
     textColor: 'text-purple-400',
-    icon: <Sparkles className="w-3 h-3" />
+    icon: <Sparkles className="w-3 h-3" />,
   },
   contatado: {
     label: 'Contatado',
@@ -69,7 +69,7 @@ export const STAGE_CONFIG: {
     borderDark: 'border-[var(--brand-primary)]/40',
     borderLight: 'border-orange-300',
     textColor: 'text-[var(--brand-primary)]',
-    icon: <Flame className="w-3 h-3" />
+    icon: <Flame className="w-3 h-3" />,
   },
   negociacao: {
     label: 'Em Negociação',
@@ -80,7 +80,7 @@ export const STAGE_CONFIG: {
     borderDark: 'border-amber-500/40',
     borderLight: 'border-amber-300',
     textColor: 'text-amber-400',
-    icon: <TrendingUp className="w-3 h-3" />
+    icon: <TrendingUp className="w-3 h-3" />,
   },
   ganho: {
     label: 'Fechado / Ganho',
@@ -91,7 +91,7 @@ export const STAGE_CONFIG: {
     borderDark: 'border-emerald-500/40',
     borderLight: 'border-emerald-300',
     textColor: 'text-emerald-400',
-    icon: <CheckCircle2 className="w-3 h-3" />
+    icon: <CheckCircle2 className="w-3 h-3" />,
   },
   perdido: {
     label: 'Perdido / Desqualificado',
@@ -102,8 +102,8 @@ export const STAGE_CONFIG: {
     borderDark: 'border-slate-700',
     borderLight: 'border-slate-300',
     textColor: 'text-slate-400',
-    icon: <XCircle className="w-3 h-3" />
-  }
+    icon: <XCircle className="w-3 h-3" />,
+  },
 };
 
 // Motivo estruturado ao perder um lead — vira relatório por causa de perda em vez de
@@ -114,7 +114,7 @@ export const LOSS_REASONS = [
   'Perdeu para concorrente',
   'Timing / não é o momento',
   'Sem resposta do lead',
-  'Outro'
+  'Outro',
 ] as const;
 
 // Wave 13 (CPI) - Feedback Loop: contraparte simétrica de LOSS_REASONS para
@@ -126,7 +126,7 @@ export const WIN_REASONS = [
   'Prazo de entrega',
   'Indicação/confiança na marca',
   'Diferencial técnico/operacional',
-  'Outro'
+  'Outro',
 ] as const;
 
 export const LeadStageAndTags: React.FC<LeadStageAndTagsProps> = ({
@@ -134,7 +134,7 @@ export const LeadStageAndTags: React.FC<LeadStageAndTagsProps> = ({
   theme = 'dark',
   onUpdateStage,
   onUpdateTags,
-  userId
+  userId,
 }) => {
   const isDark = theme === 'dark';
   const currentStage: LeadStage = lead.stage || 'prospecto';
@@ -166,7 +166,11 @@ export const LeadStageAndTags: React.FC<LeadStageAndTagsProps> = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleStageChange = async (newStage: LeadStage, lossReason?: string, winReason?: string) => {
+  const handleStageChange = async (
+    newStage: LeadStage,
+    lossReason?: string,
+    winReason?: string,
+  ) => {
     setIsStageOpen(false);
     setIsPickingLossReason(false);
     setIsPickingWinReason(false);
@@ -183,7 +187,7 @@ export const LeadStageAndTags: React.FC<LeadStageAndTagsProps> = ({
         await fetch(`/api/leads/${lead.id}/stage`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ stage: newStage, userId, lossReason, winReason })
+          body: JSON.stringify({ stage: newStage, userId, lossReason, winReason }),
         });
       } catch (err: any) {
         console.error('Erro ao persistir novo stage:', err);
@@ -227,7 +231,7 @@ export const LeadStageAndTags: React.FC<LeadStageAndTagsProps> = ({
         await fetch(`/api/leads/${lead.id}/tags`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ tags: newTags, userId })
+          body: JSON.stringify({ tags: newTags, userId }),
         });
       } catch (err: any) {
         console.error('Erro ao salvar tags:', err);
@@ -238,7 +242,7 @@ export const LeadStageAndTags: React.FC<LeadStageAndTagsProps> = ({
   };
 
   const handleRemoveTag = async (tagToRemove: string) => {
-    const newTags = currentTags.filter(t => t !== tagToRemove);
+    const newTags = currentTags.filter((t) => t !== tagToRemove);
     if (onUpdateTags && lead.id) {
       onUpdateTags(lead.id, newTags);
     }
@@ -248,7 +252,7 @@ export const LeadStageAndTags: React.FC<LeadStageAndTagsProps> = ({
         await fetch(`/api/leads/${lead.id}/tags`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ tags: newTags, userId })
+          body: JSON.stringify({ tags: newTags, userId }),
         });
       } catch (err: any) {
         console.error('Erro ao remover tag:', err);
@@ -268,7 +272,11 @@ export const LeadStageAndTags: React.FC<LeadStageAndTagsProps> = ({
           </span>
           <button
             type="button"
-            onClick={() => { setIsStageOpen(!isStageOpen); setIsPickingLossReason(false); setIsPickingWinReason(false); }}
+            onClick={() => {
+              setIsStageOpen(!isStageOpen);
+              setIsPickingLossReason(false);
+              setIsPickingWinReason(false);
+            }}
             className={`px-2.5 py-1 rounded-lg border text-xs font-bold flex items-center gap-1.5 transition shadow-sm ${
               isDark ? currentStageConfig.bgDark : currentStageConfig.bgLight
             } ${
@@ -277,32 +285,42 @@ export const LeadStageAndTags: React.FC<LeadStageAndTagsProps> = ({
           >
             {currentStageConfig.icon}
             <span>{currentStageConfig.label}</span>
-            <ChevronDown className={`w-3.5 h-3.5 transition-transform ${isStageOpen ? 'rotate-180' : ''}`} />
+            <ChevronDown
+              className={`w-3.5 h-3.5 transition-transform ${isStageOpen ? 'rotate-180' : ''}`}
+            />
           </button>
         </div>
 
         {/* Dropdown de Estágios */}
         {isStageOpen && (
-          <div className={`absolute left-0 top-full mt-1.5 z-40 w-56 rounded-xl border shadow-2xl p-1.5 space-y-1 animate-in fade-in zoom-in-95 duration-150 ${
-            isDark
-              ? 'bg-slate-900 border-slate-700 text-slate-200 shadow-black/80'
-              : 'bg-white border-slate-300 text-slate-800 shadow-slate-300/80'
-          }`}>
+          <div
+            className={`absolute left-0 top-full mt-1.5 z-40 w-56 rounded-xl border shadow-2xl p-1.5 space-y-1 animate-in fade-in zoom-in-95 duration-150 ${
+              isDark
+                ? 'bg-slate-900 border-slate-700 text-slate-200 shadow-black/80'
+                : 'bg-white border-slate-300 text-slate-800 shadow-slate-300/80'
+            }`}
+          >
             {isPickingLossReason ? (
               <>
                 <div className="px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-400 font-mono border-b border-slate-700/40 flex items-center justify-between">
                   <span>Motivo da Perda</span>
-                  <button type="button" onClick={() => setIsPickingLossReason(false)} className="hover:text-slate-200">
+                  <button
+                    type="button"
+                    onClick={() => setIsPickingLossReason(false)}
+                    className="hover:text-slate-200"
+                  >
                     <X className="w-3 h-3" />
                   </button>
                 </div>
-                {LOSS_REASONS.map(reason => (
+                {LOSS_REASONS.map((reason) => (
                   <button
                     key={reason}
                     type="button"
                     onClick={() => handleStageChange('perdido', reason)}
                     className={`w-full text-left px-2.5 py-1.5 rounded-lg text-xs transition ${
-                      isDark ? 'hover:bg-slate-800 text-slate-300' : 'hover:bg-slate-100 text-slate-700'
+                      isDark
+                        ? 'hover:bg-slate-800 text-slate-300'
+                        : 'hover:bg-slate-100 text-slate-700'
                     }`}
                   >
                     {reason}
@@ -313,17 +331,23 @@ export const LeadStageAndTags: React.FC<LeadStageAndTagsProps> = ({
               <>
                 <div className="px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-400 font-mono border-b border-slate-700/40 flex items-center justify-between">
                   <span>Motivo do Ganho</span>
-                  <button type="button" onClick={() => setIsPickingWinReason(false)} className="hover:text-slate-200">
+                  <button
+                    type="button"
+                    onClick={() => setIsPickingWinReason(false)}
+                    className="hover:text-slate-200"
+                  >
                     <X className="w-3 h-3" />
                   </button>
                 </div>
-                {WIN_REASONS.map(reason => (
+                {WIN_REASONS.map((reason) => (
                   <button
                     key={reason}
                     type="button"
                     onClick={() => handleStageChange('ganho', undefined, reason)}
                     className={`w-full text-left px-2.5 py-1.5 rounded-lg text-xs transition ${
-                      isDark ? 'hover:bg-slate-800 text-slate-300' : 'hover:bg-slate-100 text-slate-700'
+                      isDark
+                        ? 'hover:bg-slate-800 text-slate-300'
+                        : 'hover:bg-slate-100 text-slate-700'
                     }`}
                   >
                     {reason}
@@ -335,7 +359,7 @@ export const LeadStageAndTags: React.FC<LeadStageAndTagsProps> = ({
                 <div className="px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-400 font-mono border-b border-slate-700/40">
                   Estágio do Lead no Funil
                 </div>
-                {(Object.keys(STAGE_CONFIG) as LeadStage[]).map(stageKey => {
+                {(Object.keys(STAGE_CONFIG) as LeadStage[]).map((stageKey) => {
                   const cfg = STAGE_CONFIG[stageKey];
                   const isSelected = stageKey === currentStage;
                   return (
@@ -346,7 +370,9 @@ export const LeadStageAndTags: React.FC<LeadStageAndTagsProps> = ({
                       className={`w-full text-left px-2.5 py-1.5 rounded-lg text-xs transition flex items-center justify-between gap-2 ${
                         isSelected
                           ? `${isDark ? cfg.bgDark : cfg.bgLight} font-bold ${cfg.textColor} border ${isDark ? cfg.borderDark : cfg.borderLight}`
-                          : isDark ? 'hover:bg-slate-800 text-slate-300' : 'hover:bg-slate-100 text-slate-700'
+                          : isDark
+                            ? 'hover:bg-slate-800 text-slate-300'
+                            : 'hover:bg-slate-100 text-slate-700'
                       }`}
                     >
                       <div className="flex items-center gap-2">
@@ -374,8 +400,8 @@ export const LeadStageAndTags: React.FC<LeadStageAndTagsProps> = ({
           <span
             key={idx}
             className={`px-2 py-0.5 rounded-md text-[11px] font-medium border flex items-center gap-1.5 transition ${
-              isDark 
-                ? 'bg-slate-800/80 border-slate-700 text-slate-200' 
+              isDark
+                ? 'bg-slate-800/80 border-slate-700 text-slate-200'
                 : 'bg-slate-100 border-slate-200 text-slate-800'
             }`}
           >
@@ -397,8 +423,8 @@ export const LeadStageAndTags: React.FC<LeadStageAndTagsProps> = ({
             type="button"
             onClick={() => setIsTagPopoverOpen(!isTagPopoverOpen)}
             className={`px-2 py-0.5 rounded-md text-[11px] font-semibold border border-dashed transition flex items-center gap-1 ${
-              isDark 
-                ? 'border-slate-700 text-slate-400 hover:text-[var(--brand-primary)] hover:border-[var(--brand-primary)]/50 hover:bg-slate-800/60' 
+              isDark
+                ? 'border-slate-700 text-slate-400 hover:text-[var(--brand-primary)] hover:border-[var(--brand-primary)]/50 hover:bg-slate-800/60'
                 : 'border-slate-300 text-slate-600 hover:text-[var(--brand-primary)] hover:border-[var(--brand-primary)]/50 hover:bg-slate-100'
             }`}
           >
@@ -408,11 +434,13 @@ export const LeadStageAndTags: React.FC<LeadStageAndTagsProps> = ({
 
           {/* Add Tag Popover */}
           {isTagPopoverOpen && (
-            <div className={`absolute right-0 sm:left-0 top-full mt-1.5 z-40 w-64 rounded-xl border shadow-2xl p-3 space-y-2.5 animate-in fade-in zoom-in-95 duration-150 ${
-              isDark 
-                ? 'bg-slate-900 border-slate-700 text-slate-200 shadow-black/80' 
-                : 'bg-white border-slate-300 text-slate-800 shadow-slate-300/80'
-            }`}>
+            <div
+              className={`absolute right-0 sm:left-0 top-full mt-1.5 z-40 w-64 rounded-xl border shadow-2xl p-3 space-y-2.5 animate-in fade-in zoom-in-95 duration-150 ${
+                isDark
+                  ? 'bg-slate-900 border-slate-700 text-slate-200 shadow-black/80'
+                  : 'bg-white border-slate-300 text-slate-800 shadow-slate-300/80'
+              }`}
+            >
               {/* Header */}
               <div className="flex items-center justify-between text-[11px] font-bold text-slate-400 uppercase tracking-wider border-b pb-1.5 border-slate-700/40">
                 <span>Adicionar Tag ao Lead</span>
@@ -435,8 +463,8 @@ export const LeadStageAndTags: React.FC<LeadStageAndTagsProps> = ({
                   }}
                   placeholder="Nova tag personalizada..."
                   className={`w-full px-2.5 py-1 text-xs rounded-lg border outline-none ${
-                    isDark 
-                      ? 'bg-slate-950 border-slate-700 text-white placeholder-slate-500 focus:border-[var(--brand-primary)]' 
+                    isDark
+                      ? 'bg-slate-950 border-slate-700 text-white placeholder-slate-500 focus:border-[var(--brand-primary)]'
                       : 'bg-slate-50 border-slate-300 text-slate-900 placeholder-slate-400 focus:border-[var(--brand-primary)]'
                   }`}
                 />
@@ -452,7 +480,9 @@ export const LeadStageAndTags: React.FC<LeadStageAndTagsProps> = ({
 
               {/* Suggested Tags Quick Click */}
               <div className="space-y-1">
-                <div className="text-[10px] text-slate-400 font-semibold uppercase">Sugestões Rápidas:</div>
+                <div className="text-[10px] text-slate-400 font-semibold uppercase">
+                  Sugestões Rápidas:
+                </div>
                 <div className="flex flex-wrap gap-1 max-h-36 overflow-y-auto">
                   {PREDEFINED_TAGS_SUGGESTIONS.map((tagSuggest, sIdx) => {
                     const isAlreadyAdded = currentTags.includes(tagSuggest);

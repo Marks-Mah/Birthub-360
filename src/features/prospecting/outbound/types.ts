@@ -62,7 +62,13 @@ export interface OutreachCopies {
   ice_breaker?: string;
 }
 
-export type LeadStage = 'prospecto' | 'qualificado' | 'contatado' | 'negociacao' | 'ganho' | 'perdido';
+export type LeadStage =
+  | 'prospecto'
+  | 'qualificado'
+  | 'contatado'
+  | 'negociacao'
+  | 'ganho'
+  | 'perdido';
 
 export interface LeadQualityMetric {
   score: number; // 0 to 100

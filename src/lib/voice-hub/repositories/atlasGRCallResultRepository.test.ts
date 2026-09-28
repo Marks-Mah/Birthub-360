@@ -61,17 +61,26 @@ describe('atlasGRCallResultRepository.upsertAtlasGRCallResult', () => {
 
     const call = vi.mocked(prisma.atlasGRCallResult.upsert).mock.calls[0][0];
     expect(call.where).toEqual({ callId: 'call-456' });
-    expect(call.create).toMatchObject({ organizationId: 'tenant-abc', leadId: 'lead-1', callLength: 12.5 });
+    expect(call.create).toMatchObject({
+      organizationId: 'tenant-abc',
+      leadId: 'lead-1',
+      callLength: 12.5,
+    });
   });
 });
 
 describe('atlasGRCallResultRepository.findAtlasGRCallResultByCallId', () => {
   it('looks up by the unique callId', async () => {
-    vi.mocked(prisma.atlasGRCallResult.findUnique).mockResolvedValue({ id: 'row-1', callId: 'call-123' } as any);
+    vi.mocked(prisma.atlasGRCallResult.findUnique).mockResolvedValue({
+      id: 'row-1',
+      callId: 'call-123',
+    } as any);
 
     const result = await findAtlasGRCallResultByCallId('call-123');
 
-    expect(prisma.atlasGRCallResult.findUnique).toHaveBeenCalledWith({ where: { callId: 'call-123' } });
+    expect(prisma.atlasGRCallResult.findUnique).toHaveBeenCalledWith({
+      where: { callId: 'call-123' },
+    });
     expect(result).toEqual({ id: 'row-1', callId: 'call-123' });
   });
 });
@@ -89,7 +98,9 @@ describe('atlasGRCallResultRepository.listAtlasGRCallResultsForTenant', () => {
       skip: 0,
       take: 20,
     });
-    expect(prisma.atlasGRCallResult.count).toHaveBeenCalledWith({ where: { organizationId: 'tenant-abc' } });
+    expect(prisma.atlasGRCallResult.count).toHaveBeenCalledWith({
+      where: { organizationId: 'tenant-abc' },
+    });
     expect(result).toEqual({ items: [{ id: 'row-1' }], total: 1 });
   });
 });

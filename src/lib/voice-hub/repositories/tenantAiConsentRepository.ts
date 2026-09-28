@@ -9,7 +9,11 @@ export function findByTenantId(organizationId: string): Promise<OrganizationAiCo
   return prisma.organizationAiConsent.findUnique({ where: { organizationId } });
 }
 
-export function grant(organizationId: string, grantedAt: Date, grantedByUserId: string): Promise<OrganizationAiConsent> {
+export function grant(
+  organizationId: string,
+  grantedAt: Date,
+  grantedByUserId: string,
+): Promise<OrganizationAiConsent> {
   return prisma.organizationAiConsent.upsert({
     where: { organizationId },
     create: { organizationId, granted: true, grantedAt, grantedByUserId },
@@ -17,7 +21,11 @@ export function grant(organizationId: string, grantedAt: Date, grantedByUserId: 
   });
 }
 
-export function revoke(organizationId: string, revokedAt: Date, grantedByUserId: string): Promise<OrganizationAiConsent> {
+export function revoke(
+  organizationId: string,
+  revokedAt: Date,
+  grantedByUserId: string,
+): Promise<OrganizationAiConsent> {
   return prisma.organizationAiConsent.upsert({
     where: { organizationId },
     create: { organizationId, granted: false, revokedAt, grantedByUserId },

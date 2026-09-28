@@ -2,14 +2,34 @@ import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import {
-  Users, Phone, FileText, Sparkles, CheckCircle2,
-  Play, Code, ShieldCheck, Activity,
-  RefreshCw, Database, Server,
-  ShieldAlert, AlertTriangle
+  Users,
+  Phone,
+  FileText,
+  Sparkles,
+  CheckCircle2,
+  Play,
+  Code,
+  ShieldCheck,
+  Activity,
+  RefreshCw,
+  Database,
+  Server,
+  ShieldAlert,
+  AlertTriangle,
 } from 'lucide-react';
 import {
-  Card, Button, Badge, Progress, Spinner, Skeleton, EmptyState, Alert,
-  Tooltip, Modal, useToast, ToastContainer
+  Card,
+  Button,
+  Badge,
+  Progress,
+  Spinner,
+  Skeleton,
+  EmptyState,
+  Alert,
+  Tooltip,
+  Modal,
+  useToast,
+  ToastContainer,
 } from '../../components/design-system/index.js';
 import { logger } from '../../../../lib/logger.js';
 
@@ -122,18 +142,22 @@ export default function RebuiltExecutiveOverview() {
     status: 'loading',
     agents: [],
   });
-  const [readyState, setReadyState] = useState<{ status: FetchStatus; checks: ReadyChecks | null }>({
-    status: 'loading',
-    checks: null,
-  });
+  const [readyState, setReadyState] = useState<{ status: FetchStatus; checks: ReadyChecks | null }>(
+    {
+      status: 'loading',
+      checks: null,
+    },
+  );
   // Real, tenant-scoped rows from GET /api/metrics — a single fetch, filtered client-side into the
   // SLA samples (platform_ready_check) and the AI cost/tokens/latency cards below. See
   // .agents/handoffs/onda-4/10-para-02-sla-telemetria-overview.md and
   // .agents/handoffs/onda-4/04-para-02-telemetria-custo-ia-disponivel.md. Never a fabricated value.
-  const [metricsState, setMetricsState] = useState<{ status: FetchStatus; metrics: MetricEntry[] }>({
-    status: 'loading',
-    metrics: [],
-  });
+  const [metricsState, setMetricsState] = useState<{ status: FetchStatus; metrics: MetricEntry[] }>(
+    {
+      status: 'loading',
+      metrics: [],
+    },
+  );
 
   const fetchCalls = useCallback(async () => {
     setCallsState((prev) => ({ ...prev, status: 'loading' }));
@@ -214,7 +238,10 @@ export default function RebuiltExecutiveOverview() {
     if (!checklist) return;
     const updated = { ...checklist, [key]: value };
     setChecklist(updated);
-    showToast(`Checklist atualizado! Progresso atualizado para ${Math.round(calculateOnboardingProgress(updated))}%`, 'info');
+    showToast(
+      `Checklist atualizado! Progresso atualizado para ${Math.round(calculateOnboardingProgress(updated))}%`,
+      'info',
+    );
 
     try {
       const res = await fetch('/api/onboarding', {
@@ -271,7 +298,11 @@ export default function RebuiltExecutiveOverview() {
   const callsToday = callsState.calls.filter((c) => {
     if (!c.timestamp) return false;
     const d = new Date(c.timestamp);
-    return d.getFullYear() === today.getFullYear() && d.getMonth() === today.getMonth() && d.getDate() === today.getDate();
+    return (
+      d.getFullYear() === today.getFullYear() &&
+      d.getMonth() === today.getMonth() &&
+      d.getDate() === today.getDate()
+    );
   }).length;
 
   const completedCalls = callsState.calls.filter((c) => c.status === 'Concluído').length;
@@ -280,9 +311,10 @@ export default function RebuiltExecutiveOverview() {
   const parsedDurations = callsState.calls
     .map((c) => parseDurationToSeconds(c.duration))
     .filter((v): v is number => v !== null);
-  const avgDuration = parsedDurations.length > 0
-    ? formatSecondsAsDuration(parsedDurations.reduce((a, b) => a + b, 0) / parsedDurations.length)
-    : null;
+  const avgDuration =
+    parsedDurations.length > 0
+      ? formatSecondsAsDuration(parsedDurations.reduce((a, b) => a + b, 0) / parsedDurations.length)
+      : null;
 
   // SLA (disponibilidade) — real uptime approximation from platform_ready_check samples in the
   // last 24h, never a fabricated percentage. Empty (not zero) until the scheduler has produced at
@@ -291,15 +323,17 @@ export default function RebuiltExecutiveOverview() {
     .filter((m) => m.name === SLA_READY_CHECK_METRIC)
     .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
   const slaWindowSamples = slaSamples.filter(
-    (m) => Date.now() - new Date(m.timestamp).getTime() <= SLA_WINDOW_MS
+    (m) => Date.now() - new Date(m.timestamp).getTime() <= SLA_WINDOW_MS,
   );
-  const slaUptimePercent = slaWindowSamples.length > 0
-    ? (slaWindowSamples.filter((m) => m.value === 1).length / slaWindowSamples.length) * 100
-    : null;
+  const slaUptimePercent =
+    slaWindowSamples.length > 0
+      ? (slaWindowSamples.filter((m) => m.value === 1).length / slaWindowSamples.length) * 100
+      : null;
   const slaLastFailure = describeSlaFailure(slaSamples[0]);
-  const slaCaption = slaUptimePercent !== null
-    ? `${slaWindowSamples.length} amostra${slaWindowSamples.length === 1 ? '' : 's'} (24h) · a cada 5 min${slaLastFailure ? ` · última falha: ${slaLastFailure}` : ''}`
-    : 'Ainda sem amostras suficientes';
+  const slaCaption =
+    slaUptimePercent !== null
+      ? `${slaWindowSamples.length} amostra${slaWindowSamples.length === 1 ? '' : 's'} (24h) · a cada 5 min${slaLastFailure ? ` · última falha: ${slaLastFailure}` : ''}`
+      : 'Ainda sem amostras suficientes';
 
   // Telemetria de IA (custo, tokens, latência) — real, tenant-wide, gravada por
   // lib/voice-runtime/providers/LLMGateway.ts a cada chamada que efetivamente atingiu um provedor.
@@ -310,29 +344,32 @@ export default function RebuiltExecutiveOverview() {
   const aiTokensSamples = metricsState.metrics.filter((m) => m.name === AI_TOKENS_METRIC);
   const aiLatencySamples = metricsState.metrics.filter((m) => m.name === AI_LATENCY_METRIC);
 
-  const aiTotalCost = aiCostSamples.length > 0
-    ? aiCostSamples.reduce((sum, m) => sum + m.value, 0)
-    : null;
-  const aiTotalTokens = aiTokensSamples.length > 0
-    ? aiTokensSamples.reduce((sum, m) => sum + m.value, 0)
-    : null;
-  const aiAvgLatency = aiLatencySamples.length > 0
-    ? aiLatencySamples.reduce((sum, m) => sum + m.value, 0) / aiLatencySamples.length
-    : null;
+  const aiTotalCost =
+    aiCostSamples.length > 0 ? aiCostSamples.reduce((sum, m) => sum + m.value, 0) : null;
+  const aiTotalTokens =
+    aiTokensSamples.length > 0 ? aiTokensSamples.reduce((sum, m) => sum + m.value, 0) : null;
+  const aiAvgLatency =
+    aiLatencySamples.length > 0
+      ? aiLatencySamples.reduce((sum, m) => sum + m.value, 0) / aiLatencySamples.length
+      : null;
   // Total de chamadas de IA reportadas = nº de amostras de latência (uma por chamada bem-sucedida
   // a um provedor real — ver contrato do handoff do Agente 04).
   const aiCallCount = aiLatencySamples.length;
 
   return (
     <div className="space-y-8 animate-slide-up text-left">
-
       {/* HEADER SECTION */}
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 border-b border-slate-200 dark:border-slate-800 pb-6">
         <div>
           <div className="flex items-center gap-2">
             <Sparkles className="h-4 w-4 text-brand" />
             <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
-              {today.toLocaleDateString('pt-BR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+              {today.toLocaleDateString('pt-BR', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+              })}
             </span>
           </div>
           <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-50 font-sans tracking-tight mt-1">
@@ -368,14 +405,18 @@ export default function RebuiltExecutiveOverview() {
                 <Tooltip text="Conexão com o banco de dados (PostgreSQL)">
                   <span className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300">
                     <Database className="h-3 w-3" />
-                    <span className={`h-2 w-2 rounded-full ${readyState.checks?.database === 'ok' ? 'bg-green-500' : 'bg-red-500'}`} />
+                    <span
+                      className={`h-2 w-2 rounded-full ${readyState.checks?.database === 'ok' ? 'bg-green-500' : 'bg-red-500'}`}
+                    />
                     Banco de Dados
                   </span>
                 </Tooltip>
                 <Tooltip text="Fila/cache Redis (sessões, idempotência)">
                   <span className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300">
                     <Server className="h-3 w-3" />
-                    <span className={`h-2 w-2 rounded-full ${readyState.checks?.redis === 'ok' ? 'bg-green-500' : 'bg-red-500'}`} />
+                    <span
+                      className={`h-2 w-2 rounded-full ${readyState.checks?.redis === 'ok' ? 'bg-green-500' : 'bg-red-500'}`}
+                    />
                     Redis
                   </span>
                 </Tooltip>
@@ -387,29 +428,49 @@ export default function RebuiltExecutiveOverview() {
 
       {/* QUICK ACTIONS GRID */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <Card className="p-4 hover:border-brand cursor-pointer transition-colors flex items-center gap-3" onClick={() => setActiveActionModal('agent')}>
-          <div className="p-2 bg-brand/10 text-brand rounded-lg"><Users className="h-5 w-5" /></div>
+        <Card
+          className="p-4 hover:border-brand cursor-pointer transition-colors flex items-center gap-3"
+          onClick={() => setActiveActionModal('agent')}
+        >
+          <div className="p-2 bg-brand/10 text-brand rounded-lg">
+            <Users className="h-5 w-5" />
+          </div>
           <div className="text-left">
             <h4 className="font-bold text-slate-900 dark:text-white text-sm">Criar Agente</h4>
             <p className="text-xs text-slate-500">Configurar novo agente</p>
           </div>
         </Card>
-        <Card className="p-4 hover:border-brand cursor-pointer transition-colors flex items-center gap-3" onClick={() => navigate('/dashboard/analytics')}>
-          <div className="p-2 bg-indigo-50 dark:bg-iris/30 text-iris dark:text-iris rounded-lg"><Activity className="h-5 w-5" /></div>
+        <Card
+          className="p-4 hover:border-brand cursor-pointer transition-colors flex items-center gap-3"
+          onClick={() => navigate('/dashboard/analytics')}
+        >
+          <div className="p-2 bg-indigo-50 dark:bg-iris/30 text-iris dark:text-iris rounded-lg">
+            <Activity className="h-5 w-5" />
+          </div>
           <div className="text-left">
             <h4 className="font-bold text-slate-900 dark:text-white text-sm">Ver Análises</h4>
             <p className="text-xs text-slate-500">Métricas recentes</p>
           </div>
         </Card>
-        <Card className="p-4 hover:border-brand cursor-pointer transition-colors flex items-center gap-3" onClick={() => navigate('/dashboard/playground')}>
-          <div className="p-2 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-lg"><Play className="h-5 w-5" /></div>
+        <Card
+          className="p-4 hover:border-brand cursor-pointer transition-colors flex items-center gap-3"
+          onClick={() => navigate('/dashboard/playground')}
+        >
+          <div className="p-2 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-lg">
+            <Play className="h-5 w-5" />
+          </div>
           <div className="text-left">
             <h4 className="font-bold text-slate-900 dark:text-white text-sm">Acessar Playground</h4>
             <p className="text-xs text-slate-500">Testar chamadas</p>
           </div>
         </Card>
-        <Card className="p-4 hover:border-brand cursor-pointer transition-colors flex items-center gap-3" onClick={() => navigate('/dashboard/knowledge')}>
-          <div className="p-2 bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 rounded-lg"><FileText className="h-5 w-5" /></div>
+        <Card
+          className="p-4 hover:border-brand cursor-pointer transition-colors flex items-center gap-3"
+          onClick={() => navigate('/dashboard/knowledge')}
+        >
+          <div className="p-2 bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 rounded-lg">
+            <FileText className="h-5 w-5" />
+          </div>
           <div className="text-left">
             <h4 className="font-bold text-slate-900 dark:text-white text-sm">Nova Base</h4>
             <p className="text-xs text-slate-500">Importar conhecimento</p>
@@ -441,7 +502,9 @@ export default function RebuiltExecutiveOverview() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Badge variant="primary">Guia de Onboarding</Badge>
-                    <span className="text-xs text-slate-500 font-bold">Inicie sua operação em minutos</span>
+                    <span className="text-xs text-slate-500 font-bold">
+                      Inicie sua operação em minutos
+                    </span>
                   </div>
                   <button
                     onClick={() => setWizardCollapsed(true)}
@@ -452,7 +515,11 @@ export default function RebuiltExecutiveOverview() {
                 </div>
 
                 {checklistError && (
-                  <Alert variant="warning" title="Não foi possível carregar seu progresso salvo" description="Exibindo checklist local; suas próximas alterações ainda serão salvas ao servidor." />
+                  <Alert
+                    variant="warning"
+                    title="Não foi possível carregar seu progresso salvo"
+                    description="Exibindo checklist local; suas próximas alterações ainda serão salvas ao servidor."
+                  />
                 )}
 
                 <div className="text-left space-y-1">
@@ -469,7 +536,9 @@ export default function RebuiltExecutiveOverview() {
                 <div className="space-y-1.5 pt-2">
                   <div className="flex justify-between items-baseline">
                     <span className="text-xs font-bold text-brand">Progresso do Setup</span>
-                    <span className="text-xs font-bold text-brand font-mono">{Math.round(calculateOnboardingProgress())}%</span>
+                    <span className="text-xs font-bold text-brand font-mono">
+                      {Math.round(calculateOnboardingProgress())}%
+                    </span>
                   </div>
                   <Progress value={calculateOnboardingProgress()} />
                 </div>
@@ -491,7 +560,9 @@ export default function RebuiltExecutiveOverview() {
                           : 'bg-transparent border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 hover:bg-white/40'
                       }`}
                     >
-                      <p className="text-[10px] uppercase font-bold text-slate-400">Etapa {item.step + 1}</p>
+                      <p className="text-[10px] uppercase font-bold text-slate-400">
+                        Etapa {item.step + 1}
+                      </p>
                       <p className="text-xs truncate font-semibold">{item.title}</p>
                       <div className="flex justify-center mt-1">
                         {item.active ? (
@@ -508,15 +579,26 @@ export default function RebuiltExecutiveOverview() {
                 <div className="p-4 bg-white dark:bg-slate-800 rounded-xl border border-brand-100 dark:border-brand-900/30 text-left space-y-3">
                   {wizardStep === 0 && (
                     <>
-                      <h4 className="text-sm font-bold text-slate-800 dark:text-slate-100">1. Criar e Configurar Organização</h4>
+                      <h4 className="text-sm font-bold text-slate-800 dark:text-slate-100">
+                        1. Criar e Configurar Organização
+                      </h4>
                       <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                        Defina as cores corporativas, faça upload do logotipo da empresa e gerencie os administradores do sistema.
+                        Defina as cores corporativas, faça upload do logotipo da empresa e gerencie
+                        os administradores do sistema.
                       </p>
                       <div className="flex gap-2 pt-1">
-                        <Button size="sm" variant="primary" onClick={() => navigate('/dashboard/organization')}>
+                        <Button
+                          size="sm"
+                          variant="primary"
+                          onClick={() => navigate('/dashboard/organization')}
+                        >
                           Configurar Organização
                         </Button>
-                        <Button size="sm" variant="outline" onClick={() => updateChecklist('orgCreated', true)}>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => updateChecklist('orgCreated', true)}
+                        >
                           Marcar como feito
                         </Button>
                       </div>
@@ -524,15 +606,26 @@ export default function RebuiltExecutiveOverview() {
                   )}
                   {wizardStep === 1 && (
                     <>
-                      <h4 className="text-sm font-bold text-slate-800 dark:text-slate-100">2. Criar seu Primeiro Agente de Voz</h4>
+                      <h4 className="text-sm font-bold text-slate-800 dark:text-slate-100">
+                        2. Criar seu Primeiro Agente de Voz
+                      </h4>
                       <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                        Configure os prompts comerciais, ajuste o tom de voz e defina as diretrizes de qualificação de leads.
+                        Configure os prompts comerciais, ajuste o tom de voz e defina as diretrizes
+                        de qualificação de leads.
                       </p>
                       <div className="flex gap-2 pt-1">
-                        <Button size="sm" variant="primary" onClick={() => navigate('/dashboard/agents/new')}>
+                        <Button
+                          size="sm"
+                          variant="primary"
+                          onClick={() => navigate('/dashboard/agents/new')}
+                        >
                           Criar Agente
                         </Button>
-                        <Button size="sm" variant="outline" onClick={() => updateChecklist('agentCreated', true)}>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => updateChecklist('agentCreated', true)}
+                        >
                           Marcar como feito
                         </Button>
                       </div>
@@ -540,15 +633,26 @@ export default function RebuiltExecutiveOverview() {
                   )}
                   {wizardStep === 2 && (
                     <>
-                      <h4 className="text-sm font-bold text-slate-800 dark:text-slate-100">3. Conectar Telefonia e SIP Trunk</h4>
+                      <h4 className="text-sm font-bold text-slate-800 dark:text-slate-100">
+                        3. Conectar Telefonia e SIP Trunk
+                      </h4>
                       <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                        Conecte seu número de telefone virtual ou operadora local via protocolo SIP para receber chamadas de leads.
+                        Conecte seu número de telefone virtual ou operadora local via protocolo SIP
+                        para receber chamadas de leads.
                       </p>
                       <div className="flex gap-2 pt-1">
-                        <Button size="sm" variant="primary" onClick={() => navigate('/dashboard/telephony')}>
+                        <Button
+                          size="sm"
+                          variant="primary"
+                          onClick={() => navigate('/dashboard/telephony')}
+                        >
                           Conectar Telefonia
                         </Button>
-                        <Button size="sm" variant="outline" onClick={() => updateChecklist('telephonyConnected', true)}>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => updateChecklist('telephonyConnected', true)}
+                        >
                           Marcar como feito
                         </Button>
                       </div>
@@ -556,15 +660,26 @@ export default function RebuiltExecutiveOverview() {
                   )}
                   {wizardStep === 3 && (
                     <>
-                      <h4 className="text-sm font-bold text-slate-800 dark:text-slate-100">4. Executar Primeiro Teste Real de Chamada</h4>
+                      <h4 className="text-sm font-bold text-slate-800 dark:text-slate-100">
+                        4. Executar Primeiro Teste Real de Chamada
+                      </h4>
                       <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                        Abra o playground reativo de áudio e simule uma chamada de voz para verificar a latência, o tom e as transcrições do agente.
+                        Abra o playground reativo de áudio e simule uma chamada de voz para
+                        verificar a latência, o tom e as transcrições do agente.
                       </p>
                       <div className="flex gap-2 pt-1">
-                        <Button size="sm" variant="primary" onClick={() => navigate('/dashboard/playground')}>
+                        <Button
+                          size="sm"
+                          variant="primary"
+                          onClick={() => navigate('/dashboard/playground')}
+                        >
                           Abrir Playground
                         </Button>
-                        <Button size="sm" variant="outline" onClick={() => updateChecklist('firstCallCompleted', true)}>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => updateChecklist('firstCallCompleted', true)}
+                        >
                           Concluir Setup!
                         </Button>
                       </div>
@@ -582,12 +697,44 @@ export default function RebuiltExecutiveOverview() {
                   </div>
 
                   <div className="space-y-2.5">
-                    <ChecklistItem label="Organização Configurada" checked={!!checklist.orgCreated} onChange={() => updateChecklist('orgCreated', !checklist.orgCreated)} onClick={() => navigate('/dashboard/organization')} />
-                    <ChecklistItem label="Primeiro Agente Criado" checked={!!checklist.agentCreated} onChange={() => updateChecklist('agentCreated', !checklist.agentCreated)} onClick={() => navigate('/dashboard/agents/new')} />
-                    <ChecklistItem label="Telefonia Conectada" checked={!!checklist.telephonyConnected} onChange={() => updateChecklist('telephonyConnected', !checklist.telephonyConnected)} onClick={() => navigate('/dashboard/telephony')} />
-                    <ChecklistItem label="Conhecimento Enviado" checked={!!checklist.knowledgeAdded} onChange={() => updateChecklist('knowledgeAdded', !checklist.knowledgeAdded)} onClick={() => navigate('/dashboard/knowledge')} />
-                    <ChecklistItem label="Primeiro Teste Efetuado" checked={!!checklist.firstTest} onChange={() => updateChecklist('firstTest', !checklist.firstTest)} onClick={() => navigate('/dashboard/playground')} />
-                    <ChecklistItem label="Agente de Voz Ativo" checked={!!checklist.agentPublished} onChange={() => updateChecklist('agentPublished', !checklist.agentPublished)} onClick={() => navigate('/dashboard/agents/new')} />
+                    <ChecklistItem
+                      label="Organização Configurada"
+                      checked={!!checklist.orgCreated}
+                      onChange={() => updateChecklist('orgCreated', !checklist.orgCreated)}
+                      onClick={() => navigate('/dashboard/organization')}
+                    />
+                    <ChecklistItem
+                      label="Primeiro Agente Criado"
+                      checked={!!checklist.agentCreated}
+                      onChange={() => updateChecklist('agentCreated', !checklist.agentCreated)}
+                      onClick={() => navigate('/dashboard/agents/new')}
+                    />
+                    <ChecklistItem
+                      label="Telefonia Conectada"
+                      checked={!!checklist.telephonyConnected}
+                      onChange={() =>
+                        updateChecklist('telephonyConnected', !checklist.telephonyConnected)
+                      }
+                      onClick={() => navigate('/dashboard/telephony')}
+                    />
+                    <ChecklistItem
+                      label="Conhecimento Enviado"
+                      checked={!!checklist.knowledgeAdded}
+                      onChange={() => updateChecklist('knowledgeAdded', !checklist.knowledgeAdded)}
+                      onClick={() => navigate('/dashboard/knowledge')}
+                    />
+                    <ChecklistItem
+                      label="Primeiro Teste Efetuado"
+                      checked={!!checklist.firstTest}
+                      onChange={() => updateChecklist('firstTest', !checklist.firstTest)}
+                      onClick={() => navigate('/dashboard/playground')}
+                    />
+                    <ChecklistItem
+                      label="Agente de Voz Ativo"
+                      checked={!!checklist.agentPublished}
+                      onChange={() => updateChecklist('agentPublished', !checklist.agentPublished)}
+                      onClick={() => navigate('/dashboard/agents/new')}
+                    />
                   </div>
                 </div>
                 <div className="pt-3 border-t border-slate-100 dark:border-slate-800 mt-3 text-left">
@@ -673,14 +820,22 @@ export default function RebuiltExecutiveOverview() {
               title="Duração Média"
               status={callsState.status}
               value={avgDuration ?? '—'}
-              caption={avgDuration ? `${parsedDurations.length} chamadas com duração válida` : 'Sem dados suficientes'}
+              caption={
+                avgDuration
+                  ? `${parsedDurations.length} chamadas com duração válida`
+                  : 'Sem dados suficientes'
+              }
               tooltip="Média calculada a partir das durações registradas"
             />
             <RealStatCard
               title="Taxa de Conclusão"
               status={callsState.status}
               value={completionRate !== null ? `${completionRate.toFixed(0)}%` : '—'}
-              caption={completionRate !== null ? `${completedCalls} de ${totalCalls} concluídas` : 'Sem chamadas registradas'}
+              caption={
+                completionRate !== null
+                  ? `${completedCalls} de ${totalCalls} concluídas`
+                  : 'Sem chamadas registradas'
+              }
               tooltip="Percentual de chamadas com status Concluído"
             />
             <RealStatCard
@@ -704,21 +859,33 @@ export default function RebuiltExecutiveOverview() {
               title="Custo de IA (total)"
               status={metricsState.status}
               value={aiTotalCost !== null ? formatUsd(aiTotalCost) : '—'}
-              caption={aiCallCount > 0 ? `${aiCallCount} chamada${aiCallCount === 1 ? '' : 's'} de IA registrada${aiCallCount === 1 ? '' : 's'}` : 'Ainda sem chamadas de IA para esta organização'}
+              caption={
+                aiCallCount > 0
+                  ? `${aiCallCount} chamada${aiCallCount === 1 ? '' : 's'} de IA registrada${aiCallCount === 1 ? '' : 's'}`
+                  : 'Ainda sem chamadas de IA para esta organização'
+              }
               tooltip="Soma do custo estimado (USD) de todas as chamadas de IA que atingiram um provedor com sucesso, reportado pelo LLM Gateway."
             />
             <RealStatCard
               title="Tokens consumidos"
               status={metricsState.status}
               value={aiTotalTokens !== null ? formatTokens(aiTotalTokens) : '—'}
-              caption={aiCallCount > 0 ? `${aiCallCount} chamada${aiCallCount === 1 ? '' : 's'} de IA registrada${aiCallCount === 1 ? '' : 's'}` : 'Ainda sem chamadas de IA para esta organização'}
+              caption={
+                aiCallCount > 0
+                  ? `${aiCallCount} chamada${aiCallCount === 1 ? '' : 's'} de IA registrada${aiCallCount === 1 ? '' : 's'}`
+                  : 'Ainda sem chamadas de IA para esta organização'
+              }
               tooltip="Soma de tokens totais reportados pelas respostas reais dos provedores de IA (não é uma estimativa pré-chamada)."
             />
             <RealStatCard
               title="Latência média de IA"
               status={metricsState.status}
               value={aiAvgLatency !== null ? formatMs(aiAvgLatency) : '—'}
-              caption={aiCallCount > 0 ? `Média de ${aiCallCount} chamada${aiCallCount === 1 ? '' : 's'}` : 'Ainda sem chamadas de IA para esta organização'}
+              caption={
+                aiCallCount > 0
+                  ? `Média de ${aiCallCount} chamada${aiCallCount === 1 ? '' : 's'}`
+                  : 'Ainda sem chamadas de IA para esta organização'
+              }
               tooltip="Latência média real do processamento completo de chamada de IA (do pedido até a resposta do provedor)."
             />
             <RealStatCard
@@ -732,17 +899,23 @@ export default function RebuiltExecutiveOverview() {
 
           {/* LOWER WIDGETS GRID */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
             {/* Left Column: Recent Activity */}
             <div className="lg:col-span-2 space-y-6">
               {/* CHAMADAS RECENTES (BANCO DE DADOS) */}
               <Card className="p-6 space-y-4">
                 <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-700/60 pb-3">
                   <div className="text-left">
-                    <h3 className="font-bold text-slate-900 dark:text-white text-base">Registro de Chamadas</h3>
-                    <p className="text-xs text-slate-500 dark:text-slate-450 mt-0.5">Últimas interações de voz registradas no banco de dados.</p>
+                    <h3 className="font-bold text-slate-900 dark:text-white text-base">
+                      Registro de Chamadas
+                    </h3>
+                    <p className="text-xs text-slate-500 dark:text-slate-450 mt-0.5">
+                      Últimas interações de voz registradas no banco de dados.
+                    </p>
                   </div>
-                  <button onClick={fetchCalls} className="p-1 px-2.5 border rounded-lg text-xs font-semibold hover:bg-slate-50 flex items-center gap-1.5 dark:hover:bg-slate-800 dark:border-slate-700">
+                  <button
+                    onClick={fetchCalls}
+                    className="p-1 px-2.5 border rounded-lg text-xs font-semibold hover:bg-slate-50 flex items-center gap-1.5 dark:hover:bg-slate-800 dark:border-slate-700"
+                  >
                     <RefreshCw className="h-3 w-3" /> Atualizar
                   </button>
                 </div>
@@ -758,7 +931,11 @@ export default function RebuiltExecutiveOverview() {
                     icon={<AlertTriangle className="h-8 w-8" />}
                     title="Não foi possível carregar as chamadas"
                     description="Verifique sua conexão e tente novamente."
-                    action={<Button size="sm" variant="outline" onClick={fetchCalls}>Tentar novamente</Button>}
+                    action={
+                      <Button size="sm" variant="outline" onClick={fetchCalls}>
+                        Tentar novamente
+                      </Button>
+                    }
                   />
                 )}
                 {callsState.status === 'ready' && callsState.calls.length === 0 && (
@@ -783,9 +960,16 @@ export default function RebuiltExecutiveOverview() {
                       </thead>
                       <tbody className="divide-y divide-slate-100 dark:divide-slate-800 font-semibold">
                         {callsState.calls.slice(0, 5).map((call) => (
-                          <tr key={call.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50">
-                            <td className="py-2.5 font-mono text-[10px] text-slate-400">#{call.id}</td>
-                            <td className="py-2.5 font-bold text-slate-800 dark:text-slate-200">{call.contactName}</td>
+                          <tr
+                            key={call.id}
+                            className="hover:bg-slate-50 dark:hover:bg-slate-900/50"
+                          >
+                            <td className="py-2.5 font-mono text-[10px] text-slate-400">
+                              #{call.id}
+                            </td>
+                            <td className="py-2.5 font-bold text-slate-800 dark:text-slate-200">
+                              {call.contactName}
+                            </td>
                             <td className="py-2.5 font-mono">{call.duration}</td>
                             <td className="py-2.5">{call.agent}</td>
                             <td className="py-2.5">
@@ -793,7 +977,9 @@ export default function RebuiltExecutiveOverview() {
                                 {call.status}
                               </Badge>
                             </td>
-                            <td className="py-2.5 text-right text-slate-400 text-[10px]">{call.time}</td>
+                            <td className="py-2.5 text-right text-slate-400 text-[10px]">
+                              {call.time}
+                            </td>
                           </tr>
                         ))}
                       </tbody>
@@ -806,10 +992,17 @@ export default function RebuiltExecutiveOverview() {
               <Card className="p-6 space-y-4">
                 <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-700/60 pb-3">
                   <div className="text-left">
-                    <h3 className="font-bold text-slate-900 dark:text-white text-base">Seus Agentes</h3>
-                    <p className="text-xs text-slate-500 dark:text-slate-450 mt-0.5">Agentes de voz cadastrados nesta organização.</p>
+                    <h3 className="font-bold text-slate-900 dark:text-white text-base">
+                      Seus Agentes
+                    </h3>
+                    <p className="text-xs text-slate-500 dark:text-slate-450 mt-0.5">
+                      Agentes de voz cadastrados nesta organização.
+                    </p>
                   </div>
-                  <button onClick={() => navigate('/dashboard/agents')} className="p-1 px-2.5 border rounded-lg text-xs font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 dark:border-slate-700">
+                  <button
+                    onClick={() => navigate('/dashboard/agents')}
+                    className="p-1 px-2.5 border rounded-lg text-xs font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 dark:border-slate-700"
+                  >
                     Ver todos
                   </button>
                 </div>
@@ -824,7 +1017,11 @@ export default function RebuiltExecutiveOverview() {
                     icon={<AlertTriangle className="h-8 w-8" />}
                     title="Não foi possível carregar os agentes"
                     description="Verifique sua conexão e tente novamente."
-                    action={<Button size="sm" variant="outline" onClick={fetchAgents}>Tentar novamente</Button>}
+                    action={
+                      <Button size="sm" variant="outline" onClick={fetchAgents}>
+                        Tentar novamente
+                      </Button>
+                    }
                   />
                 )}
                 {agentsState.status === 'ready' && agentsState.agents.length === 0 && (
@@ -832,17 +1029,32 @@ export default function RebuiltExecutiveOverview() {
                     icon={<Users className="h-8 w-8" />}
                     title="Nenhum agente criado ainda"
                     description="Crie seu primeiro agente de voz para começar a qualificar leads."
-                    action={<Button size="sm" variant="primary" onClick={() => navigate('/dashboard/agents/new')}>Criar Agente</Button>}
+                    action={
+                      <Button
+                        size="sm"
+                        variant="primary"
+                        onClick={() => navigate('/dashboard/agents/new')}
+                      >
+                        Criar Agente
+                      </Button>
+                    }
                   />
                 )}
                 {agentsState.status === 'ready' && agentsState.agents.length > 0 && (
                   <div className="space-y-2">
                     {agentsState.agents.slice(0, 5).map((agent) => (
-                      <div key={agent.id} className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-900/40 rounded-lg border border-slate-100 dark:border-slate-800">
+                      <div
+                        key={agent.id}
+                        className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-900/40 rounded-lg border border-slate-100 dark:border-slate-800"
+                      >
                         <div className="flex items-center gap-3">
-                          <div className="p-2 bg-brand/10 text-brand rounded-lg"><Users className="h-4 w-4" /></div>
+                          <div className="p-2 bg-brand/10 text-brand rounded-lg">
+                            <Users className="h-4 w-4" />
+                          </div>
                           <div className="text-left">
-                            <p className="text-xs font-bold text-slate-800 dark:text-slate-200">{agent.name}</p>
+                            <p className="text-xs font-bold text-slate-800 dark:text-slate-200">
+                              {agent.name}
+                            </p>
                             <p className="text-[10px] text-slate-500">{agent.model}</p>
                           </div>
                         </div>
@@ -861,7 +1073,9 @@ export default function RebuiltExecutiveOverview() {
               <Card className="p-6 space-y-4">
                 <div className="flex items-center gap-2 text-slate-800 dark:text-slate-100">
                   <Activity className="h-5 w-5 text-brand" />
-                  <h4 className="font-bold text-sm uppercase tracking-wider">Status da Plataforma</h4>
+                  <h4 className="font-bold text-sm uppercase tracking-wider">
+                    Status da Plataforma
+                  </h4>
                 </div>
                 {readyState.status === 'loading' && <Skeleton className="h-20 w-full" />}
                 {readyState.status !== 'loading' && (
@@ -869,7 +1083,9 @@ export default function RebuiltExecutiveOverview() {
                     <div className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-900/40 rounded-lg border border-slate-100 dark:border-slate-800">
                       <div className="flex items-center gap-3">
                         <Database className="h-4 w-4 text-slate-400" />
-                        <p className="text-xs font-bold text-slate-800 dark:text-slate-200">Banco de Dados</p>
+                        <p className="text-xs font-bold text-slate-800 dark:text-slate-200">
+                          Banco de Dados
+                        </p>
                       </div>
                       <Badge variant={readyState.checks?.database === 'ok' ? 'success' : 'danger'}>
                         {readyState.checks?.database === 'ok' ? 'Operacional' : 'Indisponível'}
@@ -878,7 +1094,9 @@ export default function RebuiltExecutiveOverview() {
                     <div className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-900/40 rounded-lg border border-slate-100 dark:border-slate-800">
                       <div className="flex items-center gap-3">
                         <Server className="h-4 w-4 text-slate-400" />
-                        <p className="text-xs font-bold text-slate-800 dark:text-slate-200">Redis</p>
+                        <p className="text-xs font-bold text-slate-800 dark:text-slate-200">
+                          Redis
+                        </p>
                       </div>
                       <Badge variant={readyState.checks?.redis === 'ok' ? 'success' : 'danger'}>
                         {readyState.checks?.redis === 'ok' ? 'Operacional' : 'Indisponível'}
@@ -892,7 +1110,9 @@ export default function RebuiltExecutiveOverview() {
               <Card className="p-6 space-y-4">
                 <div className="flex items-center gap-2 text-red-600 dark:text-red-400">
                   <ShieldAlert className="h-5 w-5" />
-                  <h4 className="font-bold text-sm uppercase tracking-wider">Alertas & Pendências</h4>
+                  <h4 className="font-bold text-sm uppercase tracking-wider">
+                    Alertas & Pendências
+                  </h4>
                 </div>
                 <div className="space-y-3">
                   {agentsState.status === 'ready' && agentsState.agents.length === 0 && (
@@ -903,14 +1123,16 @@ export default function RebuiltExecutiveOverview() {
                       onAction={() => navigate('/dashboard/agents/new')}
                     />
                   )}
-                  {agentsState.status === 'ready' && agentsState.agents.length > 0 && agentsWithPhone === 0 && (
-                    <PendingAlert
-                      title="Nenhum número de telefonia conectado"
-                      description="Conecte um número de voz SIP para receber ligações reais de leads."
-                      actionLabel="Vincular"
-                      onAction={() => navigate('/dashboard/telephony')}
-                    />
-                  )}
+                  {agentsState.status === 'ready' &&
+                    agentsState.agents.length > 0 &&
+                    agentsWithPhone === 0 && (
+                      <PendingAlert
+                        title="Nenhum número de telefonia conectado"
+                        description="Conecte um número de voz SIP para receber ligações reais de leads."
+                        actionLabel="Vincular"
+                        onAction={() => navigate('/dashboard/telephony')}
+                      />
+                    )}
                   {checklist && !checklist.knowledgeAdded && (
                     <PendingAlert
                       title="Base de conhecimento vazia"
@@ -920,13 +1142,17 @@ export default function RebuiltExecutiveOverview() {
                       tone="amber"
                     />
                   )}
-                  {agentsState.status === 'ready' && agentsState.agents.length > 0 && agentsWithPhone > 0 && checklist?.knowledgeAdded && (
-                    <p className="text-xs text-slate-400 py-4 text-center">Nenhuma pendência identificada.</p>
-                  )}
+                  {agentsState.status === 'ready' &&
+                    agentsState.agents.length > 0 &&
+                    agentsWithPhone > 0 &&
+                    checklist?.knowledgeAdded && (
+                      <p className="text-xs text-slate-400 py-4 text-center">
+                        Nenhuma pendência identificada.
+                      </p>
+                    )}
                 </div>
               </Card>
             </div>
-
           </div>
         </div>
       )}
@@ -939,8 +1165,12 @@ export default function RebuiltExecutiveOverview() {
               <ShieldCheck className="h-6 w-6" />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-slate-900 dark:text-white">UX Audit Report — Birth Hub 360</h2>
-              <p className="text-sm text-slate-500">Mapeamento da jornada do usuário e otimização de fluxos de onboarding.</p>
+              <h2 className="text-xl font-bold text-slate-900 dark:text-white">
+                UX Audit Report — Birth Hub 360
+              </h2>
+              <p className="text-sm text-slate-500">
+                Mapeamento da jornada do usuário e otimização de fluxos de onboarding.
+              </p>
             </div>
           </div>
 
@@ -952,16 +1182,34 @@ export default function RebuiltExecutiveOverview() {
               </h3>
               <div className="space-y-3 font-medium text-xs leading-relaxed text-slate-650 dark:text-slate-300">
                 <div className="p-3 bg-slate-50 dark:bg-slate-900/30 rounded-lg border border-slate-200 dark:border-slate-800">
-                  <p className="font-bold text-slate-900 dark:text-slate-100 text-sm">Cadastro & Primeiros Passos</p>
-                  <p className="mt-1 text-slate-500">O usuário caía em uma tela vazia sem instruções de "qual ação tomar". O Onboarding Wizard de 4 fases elimina essa ambiguidade.</p>
+                  <p className="font-bold text-slate-900 dark:text-slate-100 text-sm">
+                    Cadastro & Primeiros Passos
+                  </p>
+                  <p className="mt-1 text-slate-500">
+                    O usuário caía em uma tela vazia sem instruções de "qual ação tomar". O
+                    Onboarding Wizard de 4 fases elimina essa ambiguidade.
+                  </p>
                 </div>
                 <div className="p-3 bg-slate-50 dark:bg-slate-900/30 rounded-lg border border-slate-200 dark:border-slate-800">
-                  <p className="font-bold text-slate-900 dark:text-slate-100 text-sm">Painel executivo com dados de exemplo</p>
-                  <p className="mt-1 text-slate-500">A Visão Geral exibia KPIs de negócio (tokens, custo, CSAT, SLA, latência) fixos no código, sem fonte de dado real — corrigido nesta revisão: só métricas reais (agentes, chamadas) aparecem como número; o restante mostra estado vazio explícito até existir telemetria real.</p>
+                  <p className="font-bold text-slate-900 dark:text-slate-100 text-sm">
+                    Painel executivo com dados de exemplo
+                  </p>
+                  <p className="mt-1 text-slate-500">
+                    A Visão Geral exibia KPIs de negócio (tokens, custo, CSAT, SLA, latência) fixos
+                    no código, sem fonte de dado real — corrigido nesta revisão: só métricas reais
+                    (agentes, chamadas) aparecem como número; o restante mostra estado vazio
+                    explícito até existir telemetria real.
+                  </p>
                 </div>
                 <div className="p-3 bg-slate-50 dark:bg-slate-900/30 rounded-lg border border-slate-200 dark:border-slate-800">
-                  <p className="font-bold text-slate-900 dark:text-slate-100 text-sm">Sessão do usuário não identificada</p>
-                  <p className="mt-1 text-slate-500">O shell (barra lateral) lia um cookie que o servidor nunca definia, mostrando sempre um usuário de exemplo fixo. Corrigido: a sessão real vem de GET /api/auth/me.</p>
+                  <p className="font-bold text-slate-900 dark:text-slate-100 text-sm">
+                    Sessão do usuário não identificada
+                  </p>
+                  <p className="mt-1 text-slate-500">
+                    O shell (barra lateral) lia um cookie que o servidor nunca definia, mostrando
+                    sempre um usuário de exemplo fixo. Corrigido: a sessão real vem de GET
+                    /api/auth/me.
+                  </p>
                 </div>
               </div>
             </div>
@@ -973,16 +1221,32 @@ export default function RebuiltExecutiveOverview() {
               </h3>
               <div className="space-y-3 font-medium text-xs leading-relaxed text-slate-650 dark:text-slate-300">
                 <div className="p-3 bg-slate-50 dark:bg-slate-900/30 rounded-lg border border-slate-200 dark:border-slate-800">
-                  <p className="font-bold text-slate-900 dark:text-slate-100 text-sm">Onboarding Direcionado</p>
-                  <p className="mt-1 text-slate-500">Wizard reativo exibe a porcentagem real de finalização do checklist, persistida no servidor.</p>
+                  <p className="font-bold text-slate-900 dark:text-slate-100 text-sm">
+                    Onboarding Direcionado
+                  </p>
+                  <p className="mt-1 text-slate-500">
+                    Wizard reativo exibe a porcentagem real de finalização do checklist, persistida
+                    no servidor.
+                  </p>
                 </div>
                 <div className="p-3 bg-slate-50 dark:bg-slate-900/30 rounded-lg border border-slate-200 dark:border-slate-800">
-                  <p className="font-bold text-slate-900 dark:text-slate-100 text-sm">Estados explícitos de loading/erro/vazio</p>
-                  <p className="mt-1 text-slate-500">Toda seção com dado remoto mostra esqueleto de carregamento, mensagem de erro com retry, ou estado vazio — nunca um número inventado no lugar do dado ainda não carregado.</p>
+                  <p className="font-bold text-slate-900 dark:text-slate-100 text-sm">
+                    Estados explícitos de loading/erro/vazio
+                  </p>
+                  <p className="mt-1 text-slate-500">
+                    Toda seção com dado remoto mostra esqueleto de carregamento, mensagem de erro
+                    com retry, ou estado vazio — nunca um número inventado no lugar do dado ainda
+                    não carregado.
+                  </p>
                 </div>
                 <div className="p-3 bg-slate-50 dark:bg-slate-900/30 rounded-lg border border-slate-200 dark:border-slate-800">
-                  <p className="font-bold text-slate-900 dark:text-slate-100 text-sm">Sessão e navegação coerentes</p>
-                  <p className="mt-1 text-slate-500">Expiração de sessão em qualquer chamada autenticada redireciona para o Login em vez de deixar a tela travada com dado obsoleto.</p>
+                  <p className="font-bold text-slate-900 dark:text-slate-100 text-sm">
+                    Sessão e navegação coerentes
+                  </p>
+                  <p className="mt-1 text-slate-500">
+                    Expiração de sessão em qualquer chamada autenticada redireciona para o Login em
+                    vez de deixar a tela travada com dado obsoleto.
+                  </p>
                 </div>
               </div>
             </div>
@@ -1007,14 +1271,19 @@ export default function RebuiltExecutiveOverview() {
         isOpen={activeActionModal !== null}
         onClose={() => setActiveActionModal(null)}
         title={
-          activeActionModal === 'agent' ? 'Criar Novo Agente de Voz' :
-          activeActionModal === 'telephony' ? 'Vincular Número de Telefonia (SIP)' :
-          activeActionModal === 'knowledge' ? 'Importar Base de Conhecimento' :
-          'Executar Teste de Chamada'
+          activeActionModal === 'agent'
+            ? 'Criar Novo Agente de Voz'
+            : activeActionModal === 'telephony'
+              ? 'Vincular Número de Telefonia (SIP)'
+              : activeActionModal === 'knowledge'
+                ? 'Importar Base de Conhecimento'
+                : 'Executar Teste de Chamada'
         }
         footer={
           <div className="flex gap-2">
-            <Button variant="outline" onClick={() => setActiveActionModal(null)}>Cancelar</Button>
+            <Button variant="outline" onClick={() => setActiveActionModal(null)}>
+              Cancelar
+            </Button>
             <Button
               variant="primary"
               onClick={() => handleExecuteQuickAction(activeActionModal || '')}
@@ -1060,29 +1329,53 @@ function RealStatCard({ title, status, value, caption, tooltip, onClick }: RealS
           {status === 'loading' ? (
             <Skeleton className="h-7 w-16" />
           ) : status === 'error' ? (
-            <p className="text-sm font-bold text-red-500 flex items-center gap-1"><AlertTriangle className="h-3.5 w-3.5" /> Erro</p>
+            <p className="text-sm font-bold text-red-500 flex items-center gap-1">
+              <AlertTriangle className="h-3.5 w-3.5" /> Erro
+            </p>
           ) : (
-            <p className="text-xl font-bold text-slate-900 dark:text-white tracking-tight font-sans">{value}</p>
+            <p className="text-xl font-bold text-slate-900 dark:text-white tracking-tight font-sans">
+              {value}
+            </p>
           )}
         </div>
-        <span className="text-[10px] font-semibold text-slate-400">{status === 'ready' ? caption : status === 'error' ? 'Tentar novamente ao atualizar a página' : ' '}</span>
+        <span className="text-[10px] font-semibold text-slate-400">
+          {status === 'ready'
+            ? caption
+            : status === 'error'
+              ? 'Tentar novamente ao atualizar a página'
+              : ' '}
+        </span>
       </Card>
     </Tooltip>
   );
 }
 
 // Subcomponent: an actionable pending item, computed from real state (not hardcoded copy).
-function PendingAlert({ title, description, actionLabel, onAction, tone = 'red' }: {
-  title: string; description: string; actionLabel: string; onAction: () => void; tone?: 'red' | 'amber';
+function PendingAlert({
+  title,
+  description,
+  actionLabel,
+  onAction,
+  tone = 'red',
+}: {
+  title: string;
+  description: string;
+  actionLabel: string;
+  onAction: () => void;
+  tone?: 'red' | 'amber';
 }) {
-  const toneClasses = tone === 'red'
-    ? 'bg-red-50/60 dark:bg-red-950/20 border-red-100 dark:border-red-900/30 text-red-800 dark:text-red-300'
-    : 'bg-amber-50/60 dark:bg-amber-950/20 border-amber-100 dark:border-amber-900/30 text-amber-800 dark:text-amber-300';
+  const toneClasses =
+    tone === 'red'
+      ? 'bg-red-50/60 dark:bg-red-950/20 border-red-100 dark:border-red-900/30 text-red-800 dark:text-red-300'
+      : 'bg-amber-50/60 dark:bg-amber-950/20 border-amber-100 dark:border-amber-900/30 text-amber-800 dark:text-amber-300';
   return (
     <div className={`p-3 border rounded-lg text-left ${toneClasses}`}>
       <div className="flex justify-between items-start">
         <p className="text-xs font-bold">{title}</p>
-        <button onClick={onAction} className="text-[10px] font-bold text-brand hover:underline shrink-0 ml-2">
+        <button
+          onClick={onAction}
+          className="text-[10px] font-bold text-brand hover:underline shrink-0 ml-2"
+        >
           {actionLabel}
         </button>
       </div>
@@ -1116,7 +1409,10 @@ function ChecklistItem({ label, checked, onChange, onClick }: ChecklistItemProps
           {label}
         </button>
       </div>
-      <button onClick={onClick} className="text-[10px] font-bold text-slate-400 hover:text-brand transition-colors">
+      <button
+        onClick={onClick}
+        className="text-[10px] font-bold text-slate-400 hover:text-brand transition-colors"
+      >
         Ir
       </button>
     </div>

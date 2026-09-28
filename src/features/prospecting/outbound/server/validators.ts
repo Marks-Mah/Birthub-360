@@ -10,9 +10,10 @@ export function isValidCnpjFormat(cnpj: string): boolean {
   if (/^(\d)\1{13}$/.test(digits)) return false;
 
   const calcCheckDigit = (base: string): number => {
-    const weights = base.length === 12
-      ? [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]
-      : [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+    const weights =
+      base.length === 12
+        ? [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]
+        : [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
     const sum = base.split('').reduce((acc, digit, idx) => acc + Number(digit) * weights[idx], 0);
     const remainder = sum % 11;
     return remainder < 2 ? 0 : 11 - remainder;
@@ -85,7 +86,7 @@ export function isUrlSafeForOutboundWebhook(rawUrl: string): UrlSafetyResult {
   const ipv4Match = hostname.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/);
   if (ipv4Match) {
     const octets = ipv4Match.slice(1).map(Number);
-    if (octets.some(o => o > 255)) {
+    if (octets.some((o) => o > 255)) {
       return { safe: false, reason: 'URL de webhook com endereço IPv4 inválido.' };
     }
     const [a, b] = octets;
@@ -97,7 +98,10 @@ export function isUrlSafeForOutboundWebhook(rawUrl: string): UrlSafetyResult {
       (a === 169 && b === 254) || // 169.254.0.0/16 - link-local
       a === 0; // 0.0.0.0/8 - "esta rede"
     if (isPrivateOrReserved) {
-      return { safe: false, reason: 'URL de webhook não pode apontar para um IP privado, de loopback ou link-local.' };
+      return {
+        safe: false,
+        reason: 'URL de webhook não pode apontar para um IP privado, de loopback ou link-local.',
+      };
     }
     return { safe: true };
   }
@@ -105,11 +109,18 @@ export function isUrlSafeForOutboundWebhook(rawUrl: string): UrlSafetyResult {
   if (hostname.includes(':')) {
     // Literal IPv6.
     if (hostname === '::1' || hostname === '::') {
-      return { safe: false, reason: 'URL de webhook não pode apontar para um endereço IPv6 de loopback/não especificado.' };
+      return {
+        safe: false,
+        reason:
+          'URL de webhook não pode apontar para um endereço IPv6 de loopback/não especificado.',
+      };
     }
     if (hostname.startsWith('fe80:') || hostname.startsWith('fc') || hostname.startsWith('fd')) {
       // fe80::/10 (link-local) e fc00::/7 (unique local, "IPv6 privado").
-      return { safe: false, reason: 'URL de webhook não pode apontar para um endereço IPv6 privado/link-local.' };
+      return {
+        safe: false,
+        reason: 'URL de webhook não pode apontar para um endereço IPv6 privado/link-local.',
+      };
     }
   }
 
@@ -136,7 +147,9 @@ export function maskWebhookUrl(rawUrl: string | undefined | null): string {
     const maskedPath = parsed.pathname
       .split('/')
       .filter(Boolean)
-      .map(segment => (segment.length > 4 ? `${segment.slice(0, 2)}***${segment.slice(-2)}` : '***'))
+      .map((segment) =>
+        segment.length > 4 ? `${segment.slice(0, 2)}***${segment.slice(-2)}` : '***',
+      )
       .join('/');
     return `${parsed.protocol}//${parsed.host}/${maskedPath}`;
   } catch {

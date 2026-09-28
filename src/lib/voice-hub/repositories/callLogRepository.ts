@@ -1,12 +1,23 @@
 import { prisma } from '@/lib/prisma.js';
 
 export function listCallLogsForTenant(organizationId: string) {
-  return prisma.callLog.findMany({ where: { organizationId }, orderBy: { timestamp: 'desc' }, take: 100 });
+  return prisma.callLog.findMany({
+    where: { organizationId },
+    orderBy: { timestamp: 'desc' },
+    take: 100,
+  });
 }
 
-export function createCallLog(organizationId: string, userId: string | null, data: {
-  contactName?: string; duration?: string; status?: string; agent?: string;
-}) {
+export function createCallLog(
+  organizationId: string,
+  userId: string | null,
+  data: {
+    contactName?: string;
+    duration?: string;
+    status?: string;
+    agent?: string;
+  },
+) {
   return prisma.callLog.create({
     data: {
       organizationId,
@@ -24,7 +35,10 @@ export function findCallLogForTenant(id: string, organizationId: string) {
   return prisma.callLog.findFirst({ where: { id, organizationId } });
 }
 
-export function updateCallLog(id: string, data: { contactName?: string; status?: string; duration?: string }) {
+export function updateCallLog(
+  id: string,
+  data: { contactName?: string; status?: string; duration?: string },
+) {
   return prisma.callLog.update({ where: { id }, data });
 }
 

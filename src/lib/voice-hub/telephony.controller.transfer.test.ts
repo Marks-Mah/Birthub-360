@@ -22,7 +22,11 @@ function fakeRes() {
     send: vi.fn().mockReturnThis(),
     status: vi.fn().mockReturnThis(),
   };
-  return res as unknown as Response & { type: ReturnType<typeof vi.fn>; send: ReturnType<typeof vi.fn>; status: ReturnType<typeof vi.fn> };
+  return res as unknown as Response & {
+    type: ReturnType<typeof vi.fn>;
+    send: ReturnType<typeof vi.fn>;
+    status: ReturnType<typeof vi.fn>;
+  };
 }
 
 beforeEach(() => {
@@ -35,9 +39,17 @@ describe('telephony.controller gatherHandler — human_handoff transfer (Onda 6 
       found: true,
       reply: 'Aguarde um momento enquanto encaminho sua ligação.',
       shouldEnd: false,
-      transferDetails: { to: '+5511999999999', timeoutSec: 25, record: false, message: 'Aguarde um momento enquanto encaminho sua ligação.' },
+      transferDetails: {
+        to: '+5511999999999',
+        timeoutSec: 25,
+        record: false,
+        message: 'Aguarde um momento enquanto encaminho sua ligação.',
+      },
     });
-    const req = { query: { sessionId: 'sess-1' }, body: { SpeechResult: 'Quero falar com alguém' } } as unknown as Request;
+    const req = {
+      query: { sessionId: 'sess-1' },
+      body: { SpeechResult: 'Quero falar com alguém' },
+    } as unknown as Request;
     const res = fakeRes();
 
     await gatherHandler(req, res);
@@ -55,9 +67,17 @@ describe('telephony.controller gatherHandler — human_handoff transfer (Onda 6 
       found: true,
       reply: 'Transferindo, aguarde.',
       shouldEnd: false,
-      transferDetails: { to: '+5511988887777', timeoutSec: 30, record: true, message: 'Transferindo, aguarde.' },
+      transferDetails: {
+        to: '+5511988887777',
+        timeoutSec: 30,
+        record: true,
+        message: 'Transferindo, aguarde.',
+      },
     });
-    const req = { query: { sessionId: 'sess-1' }, body: { SpeechResult: 'ok' } } as unknown as Request;
+    const req = {
+      query: { sessionId: 'sess-1' },
+      body: { SpeechResult: 'ok' },
+    } as unknown as Request;
     const res = fakeRes();
 
     await gatherHandler(req, res);
@@ -71,9 +91,17 @@ describe('telephony.controller gatherHandler — human_handoff transfer (Onda 6 
       found: true,
       reply: 'Transferindo, aguarde.',
       shouldEnd: false,
-      transferDetails: { to: '+5511988887777', timeoutSec: 30, record: false, message: 'Transferindo, aguarde.' },
+      transferDetails: {
+        to: '+5511988887777',
+        timeoutSec: 30,
+        record: false,
+        message: 'Transferindo, aguarde.',
+      },
     });
-    const req = { query: { sessionId: 'sess-1' }, body: { SpeechResult: 'ok' } } as unknown as Request;
+    const req = {
+      query: { sessionId: 'sess-1' },
+      body: { SpeechResult: 'ok' },
+    } as unknown as Request;
     const res = fakeRes();
 
     await gatherHandler(req, res);
@@ -88,9 +116,17 @@ describe('telephony.controller gatherHandler — human_handoff transfer (Onda 6 
       reply: 'Aguarde, por favor.',
       shouldEnd: false,
       voiceOverride: { voice: 'Polly.Camila', language: 'pt-BR' },
-      transferDetails: { to: '+5511977776666', timeoutSec: 30, record: false, message: 'Aguarde, por favor.' },
+      transferDetails: {
+        to: '+5511977776666',
+        timeoutSec: 30,
+        record: false,
+        message: 'Aguarde, por favor.',
+      },
     });
-    const req = { query: { sessionId: 'sess-1' }, body: { SpeechResult: 'ok' } } as unknown as Request;
+    const req = {
+      query: { sessionId: 'sess-1' },
+      body: { SpeechResult: 'ok' },
+    } as unknown as Request;
     const res = fakeRes();
 
     await gatherHandler(req, res);
@@ -100,8 +136,15 @@ describe('telephony.controller gatherHandler — human_handoff transfer (Onda 6 
   });
 
   it('keeps the normal <Gather> flow (no <Dial>) when handleTurn returns no transferDetails', async () => {
-    mockHandleTurn.mockResolvedValue({ found: true, reply: 'Vou te ajudar com isso.', shouldEnd: false });
-    const req = { query: { sessionId: 'sess-1' }, body: { SpeechResult: 'Tenho uma dúvida' } } as unknown as Request;
+    mockHandleTurn.mockResolvedValue({
+      found: true,
+      reply: 'Vou te ajudar com isso.',
+      shouldEnd: false,
+    });
+    const req = {
+      query: { sessionId: 'sess-1' },
+      body: { SpeechResult: 'Tenho uma dúvida' },
+    } as unknown as Request;
     const res = fakeRes();
 
     await gatherHandler(req, res);

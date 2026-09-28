@@ -31,19 +31,19 @@ const ACCOUNT_LOCKED_ERROR_CODE = 'ACCOUNT_LOCKED';
 const socialProviders = {
   ...(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET
     ? {
-      google: {
-        clientId: process.env.GOOGLE_CLIENT_ID,
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      },
-    }
+        google: {
+          clientId: process.env.GOOGLE_CLIENT_ID,
+          clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        },
+      }
     : {}),
   ...(process.env.MICROSOFT_CLIENT_ID && process.env.MICROSOFT_CLIENT_SECRET
     ? {
-      microsoft: {
-        clientId: process.env.MICROSOFT_CLIENT_ID,
-        clientSecret: process.env.MICROSOFT_CLIENT_SECRET,
-      },
-    }
+        microsoft: {
+          clientId: process.env.MICROSOFT_CLIENT_ID,
+          clientSecret: process.env.MICROSOFT_CLIENT_SECRET,
+        },
+      }
     : {}),
 };
 
@@ -69,9 +69,10 @@ export const auth = betterAuth({
     // "Invalid origin" (ver node_modules/better-auth/dist/api/middlewares/origin-check.mjs).
     ...(process.env.NODE_ENV !== 'production' && process.env.CODESPACE_NAME
       ? [
-        `https://${process.env.CODESPACE_NAME}-${process.env.PORT || '3005'}.${process.env.GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN || 'app.github.dev'
-        }`,
-      ]
+          `https://${process.env.CODESPACE_NAME}-${process.env.PORT || '3005'}.${
+            process.env.GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN || 'app.github.dev'
+          }`,
+        ]
       : []),
   ],
   emailAndPassword: {
@@ -270,7 +271,7 @@ export const auth = betterAuth({
       sameSite: 'lax',
       secure: Boolean(
         process.env.SECURE_COOKIES === 'true' ||
-        process.env.BETTER_AUTH_URL?.startsWith('https://'),
+          process.env.BETTER_AUTH_URL?.startsWith('https://'),
       ),
     },
   },

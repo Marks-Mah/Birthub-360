@@ -13,16 +13,26 @@ import {
   ReactFlowProvider,
   SelectionMode,
   useOnSelectionChange,
-  useReactFlow
+  useReactFlow,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 
 import { validationEngine } from '../../../../lib/studio/ValidationEngine.js';
 import { useStudioStore } from '../../store/useStudioStore.js';
 import type { StudioNode, StudioEdge } from '../../lib/studio/types.js';
-import { 
-  StartNode, EndNode, PromptNode, ConditionNode, ToolNode, LlmNode, VoiceNode, 
-  QuestionNode, SwitchNode, MemoryNode, KnowledgeNode, HumanHandoffNode 
+import {
+  StartNode,
+  EndNode,
+  PromptNode,
+  ConditionNode,
+  ToolNode,
+  LlmNode,
+  VoiceNode,
+  QuestionNode,
+  SwitchNode,
+  MemoryNode,
+  KnowledgeNode,
+  HumanHandoffNode,
 } from './nodes/index.js';
 import { StudioEdge as CustomStudioEdge } from './edges/StudioEdge.js';
 import { TopBar } from './panels/TopBar.js';
@@ -30,7 +40,7 @@ import { LayersPanel } from './panels/LayersPanel.js';
 import { InspectorPanel } from './panels/InspectorPanel.js';
 import { BottomDrawer } from './panels/BottomDrawer.js';
 const TestSimulatorModal = lazy(() =>
-  import('./panels/TestSimulatorModal.js').then((m) => ({ default: m.TestSimulatorModal }))
+  import('./panels/TestSimulatorModal.js').then((m) => ({ default: m.TestSimulatorModal })),
 );
 
 const nodeTypes = {
@@ -54,7 +64,7 @@ const edgeTypes = {
 
 function CanvasInner() {
   const [isSimulatorOpen, setIsSimulatorOpen] = useState(false);
-  
+
   const {
     nodes,
     edges,
@@ -69,7 +79,7 @@ function CanvasInner() {
     publishWorkflowToServer,
     publishState,
     publishIssues,
-    openVersionHistory
+    openVersionHistory,
   } = useStudioStore();
 
   useEffect(() => {
@@ -104,14 +114,14 @@ function CanvasInner() {
     },
   });
 
-  const selectedNode = nodes.find(n => n.id === selectedNodeId) || null;
+  const selectedNode = nodes.find((n) => n.id === selectedNodeId) || null;
 
   const result = validationEngine.validate(nodes, edges);
   const health = result.healthScore;
   const issues = result.issues;
 
-  const renderedNodes = nodes.map(n => {
-    const nodeIssues = issues.filter(i => i.nodeId === n.id);
+  const renderedNodes = nodes.map((n) => {
+    const nodeIssues = issues.filter((i) => i.nodeId === n.id);
     const lifecycle = nodeLifecycles[n.id] || 'Ready';
     return {
       ...n,
@@ -119,11 +129,11 @@ function CanvasInner() {
         ...n.data,
         lifecycleState: lifecycle,
         validation: {
-          isValid: nodeIssues.filter(i => i.type === 'error').length === 0,
-          errors: nodeIssues.filter(i => i.type === 'error').map(i => i.message),
-          warnings: nodeIssues.filter(i => i.type === 'warning').map(i => i.message),
-        }
-      }
+          isValid: nodeIssues.filter((i) => i.type === 'error').length === 0,
+          errors: nodeIssues.filter((i) => i.type === 'error').map((i) => i.message),
+          warnings: nodeIssues.filter((i) => i.type === 'warning').map((i) => i.message),
+        },
+      },
     };
   });
 
@@ -137,10 +147,7 @@ function CanvasInner() {
     [setEdges],
   );
 
-  const onConnect = useCallback(
-    (params: Connection) => connectNodes(params),
-    [connectNodes],
-  );
+  const onConnect = useCallback((params: Connection) => connectNodes(params), [connectNodes]);
 
   return (
     <div className="flex flex-col flex-1 min-h-0 bg-[#0B0D14]">
@@ -156,7 +163,7 @@ function CanvasInner() {
         publishState={publishState}
         publishIssues={publishIssues}
       />
-      
+
       {isSimulatorOpen && (
         <Suspense
           fallback={
@@ -171,10 +178,10 @@ function CanvasInner() {
           <TestSimulatorModal onClose={() => setIsSimulatorOpen(false)} />
         </Suspense>
       )}
-      
+
       <div className="flex-1 flex min-h-0 relative">
         <LayersPanel nodes={nodes} />
-        
+
         <div className="flex-1 relative bg-[#0B0D14] overflow-hidden">
           <ReactFlow
             nodes={renderedNodes}
@@ -196,12 +203,17 @@ function CanvasInner() {
             panOnDrag={[1, 2]} // Space + drag also works by default
             selectionOnDrag={true}
           >
-            <Background variant={BackgroundVariant.Dots} gap={24} size={1} color="rgba(255, 255, 255, 0.08)" />
+            <Background
+              variant={BackgroundVariant.Dots}
+              gap={24}
+              size={1}
+              color="rgba(255, 255, 255, 0.08)"
+            />
             <Controls className="!bg-[#1A1D2D]/80 !border-white/10 !shadow-lg rounded-lg overflow-hidden backdrop-blur-xl [&_button]:!bg-transparent [&_button]:!border-white/5 [&_button]:!text-gray-300 hover:[&_button]:!bg-white/10" />
-            <MiniMap 
-              className="!bg-[#1A1D2D]/80 !border-white/10 !shadow-lg rounded-lg overflow-hidden backdrop-blur-xl" 
-              maskColor="rgba(11, 13, 20, 0.8)" 
-              nodeColor="#6366f1" 
+            <MiniMap
+              className="!bg-[#1A1D2D]/80 !border-white/10 !shadow-lg rounded-lg overflow-hidden backdrop-blur-xl"
+              maskColor="rgba(11, 13, 20, 0.8)"
+              nodeColor="#6366f1"
               style={{ backgroundColor: 'transparent' }}
             />
           </ReactFlow>

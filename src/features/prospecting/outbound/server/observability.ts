@@ -193,7 +193,7 @@ export function startSearchRun(params: {
     steps: [],
     providerCalls: [],
     candidateDecisions: [],
-    costSummary: null
+    costSummary: null,
   };
   searchRuns.set(searchId, run);
   evictOldestIfNeeded();
@@ -208,13 +208,17 @@ export function attachSearchPlan(searchId: string, plan: SearchPlan): void {
 }
 
 /** Inicia um passo do pipeline e devolve uma função para concluí-lo. */
-export function recordStep(searchId: string, name: SearchStepName, detail?: string): (result: { status: SearchStepStatus; detail?: string }) => void {
+export function recordStep(
+  searchId: string,
+  name: SearchStepName,
+  detail?: string,
+): (result: { status: SearchStepStatus; detail?: string }) => void {
   const run = searchRuns.get(searchId);
   const step: SearchStep = {
     name,
     startedAt: new Date().toISOString(),
     status: 'in_progress',
-    detail
+    detail,
   };
   if (run) run.steps.push(step);
 
@@ -226,21 +230,31 @@ export function recordStep(searchId: string, name: SearchStepName, detail?: stri
 }
 
 /** Registra uma chamada real a um provider (nunca uma chamada hipotética/pulada silenciosamente). */
-export function recordProviderCall(searchId: string, log: Omit<ProviderCallLog, 'timestamp'>): void {
+export function recordProviderCall(
+  searchId: string,
+  log: Omit<ProviderCallLog, 'timestamp'>,
+): void {
   const run = searchRuns.get(searchId);
   if (!run) return;
   run.providerCalls.push({ ...log, timestamp: new Date().toISOString() });
 }
 
 /** Registra a decisão (incluído/descartado) para um candidato a lead. */
-export function recordCandidateDecision(searchId: string, log: Omit<CandidateDecisionLog, 'timestamp'>): void {
+export function recordCandidateDecision(
+  searchId: string,
+  log: Omit<CandidateDecisionLog, 'timestamp'>,
+): void {
   const run = searchRuns.get(searchId);
   if (!run) return;
   run.candidateDecisions.push({ ...log, timestamp: new Date().toISOString() });
 }
 
 /** Marca o SearchRun como concluído (sucesso ou falha) e calcula o resumo a partir do que foi de fato registrado. */
-export function finishSearchRun(searchId: string, status: Exclude<SearchRunStatus, 'running'>, error?: string): void {
+export function finishSearchRun(
+  searchId: string,
+  status: Exclude<SearchRunStatus, 'running'>,
+  error?: string,
+): void {
   const run = searchRuns.get(searchId);
   if (!run) return;
   run.status = status;
@@ -248,8 +262,8 @@ export function finishSearchRun(searchId: string, status: Exclude<SearchRunStatu
   if (error) run.error = error;
   run.resultSummary = {
     candidatesFound: run.candidateDecisions.length,
-    included: run.candidateDecisions.filter(d => d.decision === 'included').length,
-    discarded: run.candidateDecisions.filter(d => d.decision === 'discarded').length
+    included: run.candidateDecisions.filter((d) => d.decision === 'included').length,
+    discarded: run.candidateDecisions.filter((d) => d.decision === 'discarded').length,
   };
 }
 
@@ -313,12 +327,12 @@ export interface ObservabilitySummary {
  * memória do módulo).
  */
 export function computeObservabilitySummary(runs: SearchRun[]): ObservabilitySummary {
-  const completedSearches = runs.filter(r => r.status === 'completed').length;
-  const failedSearches = runs.filter(r => r.status === 'failed').length;
-  const runningSearches = runs.filter(r => r.status === 'running').length;
+  const completedSearches = runs.filter((r) => r.status === 'completed').length;
+  const failedSearches = runs.filter((r) => r.status === 'failed').length;
+  const runningSearches = runs.filter((r) => r.status === 'running').length;
   const finished = completedSearches + failedSearches;
 
-  const allProviderCalls = runs.flatMap(r => r.providerCalls);
+  const allProviderCalls = runs.flatMap((r) => r.providerCalls);
   const byProvider = new Map<string, ProviderCallLog[]>();
   for (const call of allProviderCalls) {
     const list = byProvider.get(call.provider) || [];
@@ -328,8 +342,12 @@ export function computeObservabilitySummary(runs: SearchRun[]): ObservabilitySum
 
   const providers: ProviderSummary[] = Array.from(byProvider.entries())
     .map(([provider, calls]) => {
-      const errorCalls = calls.filter(c => c.status === 'error' || c.status === 'timeout' || c.status === 'rate_limited').length;
-      const latencies = calls.map(c => c.latencyMs).filter((v): v is number => typeof v === 'number');
+      const errorCalls = calls.filter(
+        (c) => c.status === 'error' || c.status === 'timeout' || c.status === 'rate_limited',
+      ).length;
+      const latencies = calls
+        .map((c) => c.latencyMs)
+        .filter((v): v is number => typeof v === 'number');
       const statusBreakdown: Record<string, number> = {};
       for (const c of calls) {
         statusBreakdown[c.status] = (statusBreakdown[c.status] || 0) + 1;
@@ -339,14 +357,15 @@ export function computeObservabilitySummary(runs: SearchRun[]): ObservabilitySum
         totalCalls: calls.length,
         errorCalls,
         errorRate: calls.length > 0 ? errorCalls / calls.length : 0,
-        avgLatencyMs: latencies.length > 0 ? latencies.reduce((a, b) => a + b, 0) / latencies.length : null,
-        statusBreakdown
+        avgLatencyMs:
+          latencies.length > 0 ? latencies.reduce((a, b) => a + b, 0) / latencies.length : null,
+        statusBreakdown,
       };
     })
     .sort((a, b) => b.totalCalls - a.totalCalls);
 
-  const allDecisions = runs.flatMap(r => r.candidateDecisions);
-  const discarded = allDecisions.filter(d => d.decision === 'discarded');
+  const allDecisions = runs.flatMap((r) => r.candidateDecisions);
+  const discarded = allDecisions.filter((d) => d.decision === 'discarded');
   const discardCounts = new Map<CandidateDecisionReasonCode, number>();
   for (const d of discarded) {
     discardCounts.set(d.reasonCode, (discardCounts.get(d.reasonCode) || 0) + 1);
@@ -364,11 +383,11 @@ export function computeObservabilitySummary(runs: SearchRun[]): ObservabilitySum
     totalProviderCalls: allProviderCalls.length,
     providers,
     totalCandidatesEvaluated: allDecisions.length,
-    totalIncluded: allDecisions.filter(d => d.decision === 'included').length,
+    totalIncluded: allDecisions.filter((d) => d.decision === 'included').length,
     totalDiscarded: discarded.length,
     discardReasons,
     cacheHitRate: null,
-    averageCostPerSearch: null
+    averageCostPerSearch: null,
   };
 }
 

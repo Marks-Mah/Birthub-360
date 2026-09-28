@@ -39,7 +39,7 @@ describe('useStudioStore — version history & rollback', () => {
       expect(useStudioStore.getState().versionHistoryState).toBe('idle');
     });
 
-    it('requests the list scoped to this session\'s own workflow id, newest-first as returned by the server', async () => {
+    it("requests the list scoped to this session's own workflow id, newest-first as returned by the server", async () => {
       useStudioStore.setState({ workflowId: 'wf-tenant-a' });
       vi.mocked(fetch).mockImplementation((url) => {
         expect(String(url)).toBe('/api/workflow/wf-tenant-a/versions');
@@ -57,12 +57,16 @@ describe('useStudioStore — version history & rollback', () => {
       expect(useStudioStore.getState().versionHistoryState).toBe('idle');
     });
 
-    it('never leaves a previous workflow\'s versions displayed as current when the server 404s (e.g. switched to another workflow/tenant)', async () => {
+    it("never leaves a previous workflow's versions displayed as current when the server 404s (e.g. switched to another workflow/tenant)", async () => {
       useStudioStore.setState({
         workflowId: 'wf-of-another-tenant',
-        workflowVersions: [{ version: 9, publishedAt: '2026-01-09T00:00:00.000Z', publishedBy: 'someone-else' }],
+        workflowVersions: [
+          { version: 9, publishedAt: '2026-01-09T00:00:00.000Z', publishedBy: 'someone-else' },
+        ],
       });
-      vi.mocked(fetch).mockImplementation(() => jsonResponse({ error: 'Workflow não encontrado.' }, false, 404));
+      vi.mocked(fetch).mockImplementation(() =>
+        jsonResponse({ error: 'Workflow não encontrado.' }, false, 404),
+      );
 
       await useStudioStore.getState().fetchWorkflowVersions();
 
@@ -85,8 +89,17 @@ describe('useStudioStore — version history & rollback', () => {
   describe('rollbackWorkflowToVersion', () => {
     it('replaces the canvas with the restored content, tracks the new workflow id/version, and refreshes the version list', async () => {
       useStudioStore.setState({ workflowId: 'wf-1' });
-      const restoredNodes = [{ id: 'start-1', type: 'start', position: { x: 0, y: 0 }, data: { label: 'Start', category: 'Start', config: {} } }];
-      const restoredEdges = [{ id: 'e1', source: 'start-1', target: 'end-1', type: 'studioEdge', data: {} }];
+      const restoredNodes = [
+        {
+          id: 'start-1',
+          type: 'start',
+          position: { x: 0, y: 0 },
+          data: { label: 'Start', category: 'Start', config: {} },
+        },
+      ];
+      const restoredEdges = [
+        { id: 'e1', source: 'start-1', target: 'end-1', type: 'studioEdge', data: {} },
+      ];
 
       let listFetchCount = 0;
       vi.mocked(fetch).mockImplementation((url, init) => {
@@ -123,11 +136,17 @@ describe('useStudioStore — version history & rollback', () => {
         jsonResponse(
           {
             error: 'O fluxo contém erros de validação e não pode ser publicado/ativado.',
-            issues: [{ id: 'err-runtime-unsupported-voice-1', type: 'error', message: 'Nó de voz sem suporte no runtime atual.' }],
+            issues: [
+              {
+                id: 'err-runtime-unsupported-voice-1',
+                type: 'error',
+                message: 'Nó de voz sem suporte no runtime atual.',
+              },
+            ],
           },
           false,
-          422
-        )
+          422,
+        ),
       );
 
       await useStudioStore.getState().rollbackWorkflowToVersion(3);

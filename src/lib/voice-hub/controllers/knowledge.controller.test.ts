@@ -10,7 +10,9 @@ vi.mock('../services/agentService.js', () => ({
 // already used by `src/infrastructure/antivirus.test.ts`) so these tests exercise the controller's
 // scan-first ordering and error-mapping without a real ClamAV daemon.
 vi.mock('../infrastructure/antivirus.js', async () => {
-  const actual = await vi.importActual<typeof import('../infrastructure/antivirus.js')>('../infrastructure/antivirus.js');
+  const actual = await vi.importActual<typeof import('../infrastructure/antivirus.js')>(
+    '../infrastructure/antivirus.js',
+  );
   return {
     ...actual,
     scanBufferForViruses: vi.fn(),
@@ -18,7 +20,11 @@ vi.mock('../infrastructure/antivirus.js', async () => {
 });
 
 import { getAgent, updateAgentConfig } from '../services/agentService.js';
-import { AntivirusUnavailableError, InfectedFileError, scanBufferForViruses } from '../infrastructure/antivirus.js';
+import {
+  AntivirusUnavailableError,
+  InfectedFileError,
+  scanBufferForViruses,
+} from '../infrastructure/antivirus.js';
 import { uploadKnowledgeDocumentHandler } from './knowledge.controller.js';
 
 const mockGetAgent = vi.mocked(getAgent);
@@ -57,7 +63,10 @@ function fakeRes() {
     status: vi.fn().mockReturnThis(),
     json: vi.fn().mockReturnThis(),
   };
-  return res as unknown as Response & { status: ReturnType<typeof vi.fn>; json: ReturnType<typeof vi.fn> };
+  return res as unknown as Response & {
+    status: ReturnType<typeof vi.fn>;
+    json: ReturnType<typeof vi.fn>;
+  };
 }
 
 beforeEach(() => {
@@ -117,14 +126,21 @@ describe('uploadKnowledgeDocumentHandler', () => {
     expect(mockUpdateAgentConfig).toHaveBeenCalledTimes(1);
     const [, , configData] = mockUpdateAgentConfig.mock.calls[0];
     expect(configData.knowledge).toEqual([
-      expect.objectContaining({ name: 'Política de reembolso', keyword: 'reembolso', content: markdown }),
+      expect.objectContaining({
+        name: 'Política de reembolso',
+        keyword: 'reembolso',
+        content: markdown,
+      }),
     ]);
   });
 
   it('rejects a binary disguised as .txt (non-UTF-8 bytes) with 422 and never fabricates extracted text', async () => {
     // A real PDF/DOCX starts with binary bytes that are not valid UTF-8 (or, even if a stray
     // sequence is, decode overwhelmingly to control characters) — simulated here directly.
-    const binary = Buffer.from([0x25, 0x50, 0x44, 0x46, 0x2d, 0x31, 0x2e, 0x34, 0x00, 0xff, 0xfe, 0x00, 0x01, 0x02, 0x03, 0x80, 0x81, 0x90]);
+    const binary = Buffer.from([
+      0x25, 0x50, 0x44, 0x46, 0x2d, 0x31, 0x2e, 0x34, 0x00, 0xff, 0xfe, 0x00, 0x01, 0x02, 0x03,
+      0x80, 0x81, 0x90,
+    ]);
     const req = fakeReq({
       name: 'PDF disfarçado',
       keyword: 'pdf',
@@ -156,7 +172,9 @@ describe('uploadKnowledgeDocumentHandler', () => {
     // The virus verdict wins even though the payload would also fail the text-validity check —
     // proving scan-before-anything-else ordering, not merely that both checks independently fail.
     expect(res.status).toHaveBeenCalledWith(422);
-    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ error: expect.stringContaining('infectado') }));
+    expect(res.json).toHaveBeenCalledWith(
+      expect.objectContaining({ error: expect.stringContaining('infectado') }),
+    );
   });
 
   it('returns 404 without scanning when the agent does not belong to the caller tenant', async () => {

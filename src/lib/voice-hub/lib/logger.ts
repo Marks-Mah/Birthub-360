@@ -74,7 +74,10 @@ function normalizeMeta(meta: LogMeta): Record<string, unknown> | undefined {
 // already relied on for traces/metrics elsewhere in this codebase.
 const otelLogger: OtelLogger = logs.getLogger('birth-voices-app-logger');
 
-const OTEL_SEVERITY: Record<'debug' | 'info' | 'warn' | 'error', { number: SeverityNumber; text: string }> = {
+const OTEL_SEVERITY: Record<
+  'debug' | 'info' | 'warn' | 'error',
+  { number: SeverityNumber; text: string }
+> = {
   debug: { number: SeverityNumber.DEBUG, text: 'DEBUG' },
   info: { number: SeverityNumber.INFO, text: 'INFO' },
   warn: { number: SeverityNumber.WARN, text: 'WARN' },
@@ -90,12 +93,21 @@ function isSecretKey(key: string): boolean {
 // pino's own redaction because this object is exported down a second, separate path (OTel Logs ->
 // otel-collector -> Loki) and must never rely on pino's internal serialization to have already
 // scrubbed it in place.
-function redactSecretsForExport(input: Record<string, unknown>, depth = 1): Record<string, unknown> {
+function redactSecretsForExport(
+  input: Record<string, unknown>,
+  depth = 1,
+): Record<string, unknown> {
   const out: Record<string, unknown> = {};
   for (const [key, value] of Object.entries(input)) {
     if (isSecretKey(key)) {
       out[key] = '[REDACTED]';
-    } else if (depth > 0 && value !== null && typeof value === 'object' && !(value instanceof Error) && !Array.isArray(value)) {
+    } else if (
+      depth > 0 &&
+      value !== null &&
+      typeof value === 'object' &&
+      !(value instanceof Error) &&
+      !Array.isArray(value)
+    ) {
       out[key] = redactSecretsForExport(value as Record<string, unknown>, depth - 1);
     } else {
       out[key] = value;
@@ -109,7 +121,8 @@ function redactSecretsForExport(input: Record<string, unknown>, depth = 1): Reco
 // redaction pass) into a string so `emit(...)` never throws on a shape it doesn't accept.
 function toAttributeValue(value: unknown): string | number | boolean {
   if (value === null || value === undefined) return 'null';
-  if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') return value;
+  if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean')
+    return value;
   if (value instanceof Error) {
     return JSON.stringify({ name: value.name, message: value.message, stack: value.stack });
   }
@@ -120,7 +133,11 @@ function toAttributeValue(value: unknown): string | number | boolean {
   }
 }
 
-function emitOtelLogRecord(level: 'debug' | 'info' | 'warn' | 'error', message: string, payload: Record<string, unknown>) {
+function emitOtelLogRecord(
+  level: 'debug' | 'info' | 'warn' | 'error',
+  message: string,
+  payload: Record<string, unknown>,
+) {
   try {
     const severity = OTEL_SEVERITY[level];
     const redacted = redactSecretsForExport(payload);

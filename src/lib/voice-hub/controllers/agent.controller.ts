@@ -1,6 +1,12 @@
 import type { Request, Response } from 'express';
 import { agentSchema } from '../validators/index.js';
-import { listAgents, createAgent, deleteAgent, getAgent, updateAgentConfig } from '../services/agentService.js';
+import {
+  listAgents,
+  createAgent,
+  deleteAgent,
+  getAgent,
+  updateAgentConfig,
+} from '../services/agentService.js';
 
 export async function listAgentsHandler(req: Request, res: Response) {
   const agents = await listAgents(req.organizationId!);
@@ -23,10 +29,10 @@ export async function createAgentHandler(req: Request, res: Response) {
 
 export async function updateAgentConfigHandler(req: Request, res: Response) {
   try {
-     const agent = await updateAgentConfig(String(req.params.id), req.organizationId!, req.body);
-     return res.json({ success: true, agent });
+    const agent = await updateAgentConfig(String(req.params.id), req.organizationId!, req.body);
+    return res.json({ success: true, agent });
   } catch (err: unknown) {
-     return res.status(404).json({ error: err instanceof Error ? err.message : String(err) });
+    return res.status(404).json({ error: err instanceof Error ? err.message : String(err) });
   }
 }
 

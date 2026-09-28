@@ -2,7 +2,16 @@ import { useCallback, useEffect, useState } from 'react';
 import { CreditCard, Zap, History, AlertTriangle, Lock, Check } from 'lucide-react';
 import { useSessionStore } from '../../store/useSessionStore.js';
 import { logger } from '../../../../lib/logger.js';
-import { Badge, Button, EmptyState, Skeleton, Table, TableHead, TableRow, TableCell } from '../../components/design-system/index.js';
+import {
+  Badge,
+  Button,
+  EmptyState,
+  Skeleton,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+} from '../../components/design-system/index.js';
 
 interface WalletSummary {
   organizationId: string;
@@ -41,9 +50,18 @@ interface PlanOption {
   billingInterval: string;
 }
 
-type WalletState = { status: 'loading' } | { status: 'error' } | { status: 'ready'; wallet: WalletSummary | null };
-type TransactionsState = { status: 'loading' } | { status: 'error' } | { status: 'ready'; data: TransactionsPage };
-type PlansState = { status: 'loading' } | { status: 'error' } | { status: 'ready'; plans: PlanOption[] };
+type WalletState =
+  | { status: 'loading' }
+  | { status: 'error' }
+  | { status: 'ready'; wallet: WalletSummary | null };
+type TransactionsState =
+  | { status: 'loading' }
+  | { status: 'error' }
+  | { status: 'ready'; data: TransactionsPage };
+type PlansState =
+  | { status: 'loading' }
+  | { status: 'error' }
+  | { status: 'ready'; plans: PlanOption[] };
 
 const TRANSACTIONS_PAGE_SIZE = 10;
 
@@ -59,7 +77,10 @@ const PLAN_STATUS_LABEL: Record<WalletSummary['planStatus'], string> = {
   inactive: 'Inativo',
 };
 
-const PLAN_STATUS_BADGE: Record<WalletSummary['planStatus'], 'success' | 'warning' | 'danger' | 'secondary'> = {
+const PLAN_STATUS_BADGE: Record<
+  WalletSummary['planStatus'],
+  'success' | 'warning' | 'danger' | 'secondary'
+> = {
   active: 'success',
   trialing: 'success',
   past_due: 'warning',
@@ -79,7 +100,9 @@ export default function BillingPage() {
   const isAdmin = sessionUser?.role === 'admin';
 
   const [walletState, setWalletState] = useState<WalletState>({ status: 'loading' });
-  const [transactionsState, setTransactionsState] = useState<TransactionsState>({ status: 'loading' });
+  const [transactionsState, setTransactionsState] = useState<TransactionsState>({
+    status: 'loading',
+  });
   const [transactionsPage, setTransactionsPage] = useState(1);
   const [plansState, setPlansState] = useState<PlansState>({ status: 'loading' });
   const [changingPlanId, setChangingPlanId] = useState<string | null>(null);
@@ -93,7 +116,9 @@ export default function BillingPage() {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         return res.json();
       })
-      .then((data: { wallet: WalletSummary | null }) => setWalletState({ status: 'ready', wallet: data.wallet }))
+      .then((data: { wallet: WalletSummary | null }) =>
+        setWalletState({ status: 'ready', wallet: data.wallet }),
+      )
       .catch((err) => {
         logger.error('Failed to load wallet summary', { err });
         setWalletState({ status: 'error' });
@@ -115,7 +140,7 @@ export default function BillingPage() {
           setTransactionsState({ status: 'error' });
         });
     },
-    [isAdmin]
+    [isAdmin],
   );
 
   const fetchPlans = useCallback(() => {
@@ -125,16 +150,24 @@ export default function BillingPage() {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         return res.json();
       })
-      .then((data: { plans: PlanOption[] }) => setPlansState({ status: 'ready', plans: data.plans }))
+      .then((data: { plans: PlanOption[] }) =>
+        setPlansState({ status: 'ready', plans: data.plans }),
+      )
       .catch((err) => {
         logger.error('Failed to load billing plans', { err });
         setPlansState({ status: 'error' });
       });
   }, []);
 
-  useEffect(() => { fetchWallet(); }, [fetchWallet]);
-  useEffect(() => { fetchTransactions(transactionsPage); }, [fetchTransactions, transactionsPage]);
-  useEffect(() => { fetchPlans(); }, [fetchPlans]);
+  useEffect(() => {
+    fetchWallet();
+  }, [fetchWallet]);
+  useEffect(() => {
+    fetchTransactions(transactionsPage);
+  }, [fetchTransactions, transactionsPage]);
+  useEffect(() => {
+    fetchPlans();
+  }, [fetchPlans]);
 
   const handleChangePlan = async (planId: string) => {
     setChangingPlanId(planId);
@@ -182,7 +215,11 @@ export default function BillingPage() {
                   icon={<AlertTriangle className="h-8 w-8" />}
                   title="Não foi possível carregar o saldo/plano"
                   description="Tente novamente em alguns instantes."
-                  action={<Button size="sm" variant="outline" onClick={fetchWallet}>Tentar novamente</Button>}
+                  action={
+                    <Button size="sm" variant="outline" onClick={fetchWallet}>
+                      Tentar novamente
+                    </Button>
+                  }
                 />
               </div>
             ) : walletState.wallet === null ? (
@@ -227,7 +264,8 @@ export default function BillingPage() {
                     </Badge>
                     {walletState.wallet.currentPeriodEnd && (
                       <span className="text-xs text-slate-400">
-                        Renova em {new Date(walletState.wallet.currentPeriodEnd).toLocaleDateString('pt-BR')}
+                        Renova em{' '}
+                        {new Date(walletState.wallet.currentPeriodEnd).toLocaleDateString('pt-BR')}
                       </span>
                     )}
                   </div>
@@ -260,7 +298,11 @@ export default function BillingPage() {
                   icon={<AlertTriangle className="h-8 w-8" />}
                   title="Não foi possível carregar os planos"
                   description="Tente novamente em alguns instantes."
-                  action={<Button size="sm" variant="outline" onClick={fetchPlans}>Tentar novamente</Button>}
+                  action={
+                    <Button size="sm" variant="outline" onClick={fetchPlans}>
+                      Tentar novamente
+                    </Button>
+                  }
                 />
               </div>
             ) : plansState.plans.length === 0 ? (
@@ -270,7 +312,8 @@ export default function BillingPage() {
             ) : (
               <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-4">
                 {plansState.plans.map((plan) => {
-                  const isCurrent = walletState.status === 'ready' && walletState.wallet?.planId === plan.id;
+                  const isCurrent =
+                    walletState.status === 'ready' && walletState.wallet?.planId === plan.id;
                   return (
                     <div
                       key={plan.id}
@@ -280,7 +323,9 @@ export default function BillingPage() {
                           : 'border-slate-200 dark:border-slate-700'
                       }`}
                     >
-                      <span className="text-sm font-bold text-slate-800 dark:text-slate-200">{plan.name}</span>
+                      <span className="text-sm font-bold text-slate-800 dark:text-slate-200">
+                        {plan.name}
+                      </span>
                       <span className="text-2xl font-bold text-slate-900 dark:text-white mt-2">
                         {formatCents(plan.priceCents, plan.currency)}
                         <span className="text-xs font-normal text-slate-400">
@@ -328,7 +373,15 @@ export default function BillingPage() {
                   icon={<AlertTriangle className="h-8 w-8" />}
                   title="Não foi possível carregar o histórico de uso"
                   description="Tente novamente em alguns instantes."
-                  action={<Button size="sm" variant="outline" onClick={() => fetchTransactions(transactionsPage)}>Tentar novamente</Button>}
+                  action={
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => fetchTransactions(transactionsPage)}
+                    >
+                      Tentar novamente
+                    </Button>
+                  }
                 />
               </div>
             ) : transactionsState.data.items.length === 0 ? (
@@ -351,22 +404,37 @@ export default function BillingPage() {
                   <tbody>
                     {transactionsState.data.items.map((tx) => (
                       <TableRow key={tx.id}>
-                        <TableCell className="text-xs font-mono font-semibold text-slate-700 dark:text-slate-300">{tx.type}</TableCell>
-                        <TableCell className="text-xs text-slate-500 dark:text-slate-400">{tx.description ?? '—'}</TableCell>
-                        <TableCell className={`text-xs font-semibold ${tx.amountCents >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>
+                        <TableCell className="text-xs font-mono font-semibold text-slate-700 dark:text-slate-300">
+                          {tx.type}
+                        </TableCell>
+                        <TableCell className="text-xs text-slate-500 dark:text-slate-400">
+                          {tx.description ?? '—'}
+                        </TableCell>
+                        <TableCell
+                          className={`text-xs font-semibold ${tx.amountCents >= 0 ? 'text-emerald-600' : 'text-red-600'}`}
+                        >
                           {tx.amountCents >= 0 ? '+' : ''}
                           {formatCents(tx.amountCents, 'BRL')}
                         </TableCell>
-                        <TableCell className="text-xs text-slate-500 dark:text-slate-400">{formatCents(tx.balanceAfterCents, 'BRL')}</TableCell>
-                        <TableCell><Badge variant={tx.status === 'completed' ? 'success' : 'secondary'}>{tx.status}</Badge></TableCell>
-                        <TableCell className="text-xs text-slate-400 whitespace-nowrap">{new Date(tx.createdAt).toLocaleString('pt-BR')}</TableCell>
+                        <TableCell className="text-xs text-slate-500 dark:text-slate-400">
+                          {formatCents(tx.balanceAfterCents, 'BRL')}
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant={tx.status === 'completed' ? 'success' : 'secondary'}>
+                            {tx.status}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="text-xs text-slate-400 whitespace-nowrap">
+                          {new Date(tx.createdAt).toLocaleString('pt-BR')}
+                        </TableCell>
                       </TableRow>
                     ))}
                   </tbody>
                 </Table>
                 <div className="flex items-center justify-between p-4 pt-0">
                   <span className="text-xs text-slate-500">
-                    Página {transactionsState.data.page} de {transactionsState.data.totalPages} · {transactionsState.data.total} lançamento(s)
+                    Página {transactionsState.data.page} de {transactionsState.data.totalPages} ·{' '}
+                    {transactionsState.data.total} lançamento(s)
                   </span>
                   <div className="flex gap-2">
                     <Button

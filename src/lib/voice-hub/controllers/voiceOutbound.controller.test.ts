@@ -57,7 +57,7 @@ describe('voiceOutbound.controller', () => {
 
       expect(res.status).toHaveBeenCalledWith(400);
       expect(res.json).toHaveBeenCalledWith(
-        expect.objectContaining({ error: expect.stringMatching(/expected string|agentId/i) })
+        expect.objectContaining({ error: expect.stringMatching(/expected string|agentId/i) }),
       );
     });
 
@@ -72,7 +72,7 @@ describe('voiceOutbound.controller', () => {
 
       expect(res.status).toHaveBeenCalledWith(400);
       expect(res.json).toHaveBeenCalledWith(
-        expect.objectContaining({ error: expect.stringMatching(/E\.164/i) })
+        expect.objectContaining({ error: expect.stringMatching(/E\.164/i) }),
       );
     });
 
@@ -114,7 +114,7 @@ describe('voiceOutbound.controller', () => {
 
     it('returns 404 when agent is not found', async () => {
       vi.mocked(initiateOutboundCall).mockRejectedValue(
-        new AgentNotFoundError('Agente não encontrado no tenant.')
+        new AgentNotFoundError('Agente não encontrado no tenant.'),
       );
 
       const req = {
@@ -131,7 +131,7 @@ describe('voiceOutbound.controller', () => {
 
     it('returns 409 on duplicate call conflict', async () => {
       vi.mocked(initiateOutboundCall).mockRejectedValue(
-        new DuplicateCallError('Chamada em andamento para este número.')
+        new DuplicateCallError('Chamada em andamento para este número.'),
       );
 
       const req = {
@@ -148,7 +148,7 @@ describe('voiceOutbound.controller', () => {
 
     it('returns 503 when Twilio credentials are not configured', async () => {
       vi.mocked(initiateOutboundCall).mockRejectedValue(
-        new TwilioNotConfiguredError('Twilio não configurado para o ambiente.')
+        new TwilioNotConfiguredError('Twilio não configurado para o ambiente.'),
       );
 
       const req = {

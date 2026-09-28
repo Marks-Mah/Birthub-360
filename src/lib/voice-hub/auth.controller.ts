@@ -4,13 +4,18 @@ import { loginSchema, registerSchema } from '../validators/index.js';
 import { z } from 'zod';
 
 const tokenSchema = z.object({
-  token: z.string().optional()
+  token: z.string().optional(),
 });
 import { register, login, refreshSession, AuthError } from '../services/authService.js';
 import { writeAuditLog } from '../services/audit.js';
 import { createMetric } from '../repositories/metricRepository.js';
 import { getPermissionsForRoleName } from '../repositories/roleRepository.js';
-import { setCookie, setLoggedInCookie, ACCESS_TOKEN_MAX_AGE_MS, REFRESH_TOKEN_MAX_AGE_MS } from '../lib/cookies.js';
+import {
+  setCookie,
+  setLoggedInCookie,
+  ACCESS_TOKEN_MAX_AGE_MS,
+  REFRESH_TOKEN_MAX_AGE_MS,
+} from '../lib/cookies.js';
 
 export async function registerHandler(req: Request, res: Response) {
   const parsed = registerSchema.safeParse(req.body);
@@ -47,7 +52,11 @@ export async function loginHandler(req: Request, res: Response) {
   try {
     const result = await login(email, password);
     writeAuditLog(result.organizationId, result.user.id, 'USER_LOGIN', {});
-    createMetric(result.organizationId, result.user.id, { name: 'user_login', value: 1, tags: { userId: result.user.id } });
+    createMetric(result.organizationId, result.user.id, {
+      name: 'user_login',
+      value: 1,
+      tags: { userId: result.user.id },
+    });
     setCookie(res, 'access_token', result.token, ACCESS_TOKEN_MAX_AGE_MS);
     setLoggedInCookie(res);
     setCookie(res, 'refresh_token', result.refreshToken, REFRESH_TOKEN_MAX_AGE_MS);

@@ -27,32 +27,32 @@ export class GeminiLiveProvider extends BaseProvider {
     // For this implementation, since @google/genai doesn't natively expose the BIDI websocket yet in a simple way for Node,
     // we use the REST fallback for textual response, but correctly using gemini-2.5-flash as the model.
     try {
-        const { GoogleGenAI } = await import('@google/genai');
-        const ai = new GoogleGenAI({
-          apiKey,
-        });
+      const { GoogleGenAI } = await import('@google/genai');
+      const ai = new GoogleGenAI({
+        apiKey,
+      });
 
-        const response = await ai.models.generateContent({
-          model: "gemini-2.5-flash",
-          contents: input,
-          config: {
-            systemInstruction: context ? JSON.stringify(context) : "Você é um assistente de voz.",
-            temperature: 0.7,
-          },
-        });
+      const response = await ai.models.generateContent({
+        model: 'gemini-2.5-flash',
+        contents: input,
+        config: {
+          systemInstruction: context ? JSON.stringify(context) : 'Você é um assistente de voz.',
+          temperature: 0.7,
+        },
+      });
 
-        if (!response.text) {
-          throw new Error('Gemini retornou resposta vazia.');
-        }
+      if (!response.text) {
+        throw new Error('Gemini retornou resposta vazia.');
+      }
 
-        return {
-          text: response.text,
-          latencyMs: Date.now() - start
-        };
+      return {
+        text: response.text,
+        latencyMs: Date.now() - start,
+      };
     } catch (err: unknown) {
-        const msg = err instanceof Error ? err.message : String(err);
-        logger.error(`[${this.name}] Error processing LLM request`, err);
-        throw new Error(`Gemini API Error: ${msg}`);
+      const msg = err instanceof Error ? err.message : String(err);
+      logger.error(`[${this.name}] Error processing LLM request`, err);
+      throw new Error(`Gemini API Error: ${msg}`);
     }
   }
 
@@ -62,7 +62,7 @@ export class GeminiLiveProvider extends BaseProvider {
 
   public async destroy(): Promise<void> {
     if (this.ws) {
-        this.ws.close();
+      this.ws.close();
     }
     logger.debug(`[${this.name}] Destroyed`);
   }

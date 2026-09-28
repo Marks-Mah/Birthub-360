@@ -59,7 +59,9 @@ export class WebhookService {
 
       if (targetUrl) {
         await this.enqueue({ url: targetUrl, payload });
-        logger.info(`[WebhookService] Queued event ${event} for tenant ${organizationId} (explicit targetUrl)`);
+        logger.info(
+          `[WebhookService] Queued event ${event} for tenant ${organizationId} (explicit targetUrl)`,
+        );
         return;
       }
 
@@ -90,7 +92,9 @@ export class WebhookService {
         if (targets.length === 0) {
           // Tenant has active endpoints, just none subscribed to this event type — a deliberate
           // no-op, never redirected to the deployment-wide fallback (see dispatch's doc comment).
-          logger.debug(`[WebhookService] No tenant endpoint subscribed to event ${event} for tenant ${organizationId}`);
+          logger.debug(
+            `[WebhookService] No tenant endpoint subscribed to event ${event} for tenant ${organizationId}`,
+          );
           return;
         }
         for (const target of targets) {
@@ -109,13 +113,19 @@ export class WebhookService {
       }
 
       await this.enqueue({ url: webhookUrl, payload });
-      logger.info(`[WebhookService] Queued event ${event} for tenant ${organizationId} (deployment-wide fallback)`);
+      logger.info(
+        `[WebhookService] Queued event ${event} for tenant ${organizationId} (deployment-wide fallback)`,
+      );
     } catch (error: any) {
       logger.error(`[WebhookService] Error dispatching webhook event ${event}`, error);
     }
   }
 
-  private async enqueue(job: { url: string; payload: WebhookPayload; endpointId?: string }): Promise<void> {
+  private async enqueue(job: {
+    url: string;
+    payload: WebhookPayload;
+    endpointId?: string;
+  }): Promise<void> {
     await this.webhookQueue.add('send_webhook', job, {
       attempts: 5,
       backoff: {

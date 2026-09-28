@@ -1,6 +1,6 @@
-import type { ThreeCxAuthClient } from "./ThreeCxAuthClient.js";
-import { CircuitBreaker } from "../http/CircuitBreaker.js";
-import { isNetworkError, withRetry } from "../http/retry.js";
+import type { ThreeCxAuthClient } from './ThreeCxAuthClient.js';
+import { CircuitBreaker } from '../http/CircuitBreaker.js';
+import { isNetworkError, withRetry } from '../http/retry.js';
 
 /**
  * Formato de "participante" devolvido pela Call Control API.
@@ -37,7 +37,7 @@ export class ThreeCxApiError extends Error {
     public readonly responseBody: string,
   ) {
     super(`Chamada à Call Control API falhou (${path} -> HTTP ${statusCode}): ${responseBody}`);
-    this.name = "ThreeCxApiError";
+    this.name = 'ThreeCxApiError';
   }
 }
 
@@ -87,7 +87,7 @@ export class ThreeCxCallControlClient {
     attachedData: Record<string, string>;
   }): Promise<{ httpStatus: number; body: ThreeCxMakeCallResponse | null }> {
     const response = await this.request(`/callcontrol/${encodeURIComponent(input.dn)}/makecall`, {
-      method: "POST",
+      method: 'POST',
       body: JSON.stringify({
         destination: input.destination,
         timeout: input.timeoutSeconds,
@@ -102,7 +102,7 @@ export class ThreeCxCallControlClient {
 
     if (response.status === 401 || response.status === 403) {
       const text = await response.text();
-      throw new ThreeCxApiError(response.status, "makecall", text);
+      throw new ThreeCxApiError(response.status, 'makecall', text);
     }
 
     // 422/424: PBX entendeu o pedido mas não pôde processá-lo agora
@@ -112,7 +112,7 @@ export class ThreeCxCallControlClient {
 
   async getParticipants(dn: string): Promise<ThreeCxParticipant[]> {
     const response = await this.request(`/callcontrol/${encodeURIComponent(dn)}/participants`, {
-      method: "GET",
+      method: 'GET',
     });
 
     if (response.status === 404) {
@@ -121,7 +121,7 @@ export class ThreeCxCallControlClient {
 
     if (!response.ok) {
       const text = await response.text();
-      throw new ThreeCxApiError(response.status, "participants", text);
+      throw new ThreeCxApiError(response.status, 'participants', text);
     }
 
     return (await response.json()) as ThreeCxParticipant[];
@@ -173,7 +173,7 @@ export class ThreeCxCallControlClient {
       headers: {
         ...init.headers,
         Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       signal: init.signal ?? AbortSignal.timeout(this.requestTimeoutMs),
     });

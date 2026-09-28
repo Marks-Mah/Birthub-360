@@ -130,11 +130,11 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
 
     const result = isSignUp
       ? await authClient.signUp.email({
-        email,
-        password,
-        name: name || email.split('@')[0],
-        callbackURL: '/app',
-      })
+          email,
+          password,
+          name: name || email.split('@')[0],
+          callbackURL: '/app',
+        })
       : await authClient.signIn.email({ email, password, rememberMe, callbackURL: '/app' });
 
     if (result.error) {

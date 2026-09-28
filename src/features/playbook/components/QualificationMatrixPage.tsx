@@ -21,7 +21,11 @@ import { useActivePlaybook } from '../../../hooks/useActivePlaybook.js';
 import { hasRequiredRole } from '../../../lib/auth/authorization.js';
 import { clientLogger } from '../../../lib/clientLogger.js';
 import { toast } from '../../../lib/toast.js';
-import { type PlaybookListMeta, playbookApi, type QualificationMatrixItem } from '../playbook.api.js';
+import {
+  type PlaybookListMeta,
+  playbookApi,
+  type QualificationMatrixItem,
+} from '../playbook.api.js';
 import { QualificationItemForm } from './QualificationItemForm.js';
 
 // Mesmo tamanho de página usado em CompanyList/ContactList (via Pagination compartilhado).

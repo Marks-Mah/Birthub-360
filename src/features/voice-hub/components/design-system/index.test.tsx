@@ -24,7 +24,7 @@ describe('design-system primitives', () => {
       render(
         <Button onClick={onClick} disabled>
           Salvar
-        </Button>
+        </Button>,
       );
 
       const button = screen.getByRole('button', { name: 'Salvar' });
@@ -40,7 +40,7 @@ describe('design-system primitives', () => {
       render(
         <Button onClick={onClick} isLoading>
           Salvar
-        </Button>
+        </Button>,
       );
 
       const button = screen.getByRole('button', { name: 'Salvar' });
@@ -67,17 +67,13 @@ describe('design-system primitives', () => {
     });
 
     it('shows a validation error message when the error prop is set', () => {
-      render(
-        <Input label="Nome" value="" onChange={() => {}} error="Este campo é obrigatório" />
-      );
+      render(<Input label="Nome" value="" onChange={() => {}} error="Este campo é obrigatório" />);
 
       expect(screen.getByText('Este campo é obrigatório')).toBeInTheDocument();
     });
 
     it('marks the input as invalid and describes it by the error message', () => {
-      render(
-        <Input label="Nome" value="" onChange={() => {}} error="Este campo é obrigatório" />
-      );
+      render(<Input label="Nome" value="" onChange={() => {}} error="Este campo é obrigatório" />);
 
       const input = screen.getByLabelText('Nome');
       expect(input).toHaveAttribute('aria-invalid', 'true');
@@ -124,7 +120,10 @@ describe('design-system primitives', () => {
       expect(screen.getByRole('tablist')).toBeInTheDocument();
       const active = screen.getByRole('tab', { name: 'Chamadas' });
       expect(active).toHaveAttribute('aria-selected', 'true');
-      expect(screen.getByRole('tab', { name: 'Visão Geral' })).toHaveAttribute('aria-selected', 'false');
+      expect(screen.getByRole('tab', { name: 'Visão Geral' })).toHaveAttribute(
+        'aria-selected',
+        'false',
+      );
     });
 
     it('only the active tab is in the Tab order (roving tabindex)', () => {
@@ -189,7 +188,7 @@ describe('design-system primitives', () => {
           title="Nenhum agente"
           description="Crie seu primeiro agente de voz."
           action={<button>Criar Agente</button>}
-        />
+        />,
       );
 
       expect(screen.getByRole('button', { name: 'Criar Agente' })).toBeInTheDocument();
@@ -201,7 +200,7 @@ describe('design-system primitives', () => {
       render(
         <Modal isOpen={false} onClose={() => {}} title="Detalhes">
           <p>Conteúdo do modal</p>
-        </Modal>
+        </Modal>,
       );
 
       expect(screen.queryByText('Detalhes')).not.toBeInTheDocument();
@@ -214,7 +213,7 @@ describe('design-system primitives', () => {
       render(
         <Modal isOpen onClose={onClose} title="Detalhes">
           <p>Conteúdo do modal</p>
-        </Modal>
+        </Modal>,
       );
 
       expect(screen.getByText('Detalhes')).toBeInTheDocument();
@@ -232,7 +231,7 @@ describe('design-system primitives', () => {
       render(
         <Modal isOpen onClose={onClose} title="Detalhes">
           <p>Conteúdo do modal</p>
-        </Modal>
+        </Modal>,
       );
 
       await user.keyboard('{Escape}');
@@ -243,7 +242,7 @@ describe('design-system primitives', () => {
       render(
         <Modal isOpen onClose={() => {}} title="Detalhes">
           <p>Conteúdo do modal</p>
-        </Modal>
+        </Modal>,
       );
 
       const dialog = screen.getByRole('dialog');
@@ -281,14 +280,9 @@ describe('design-system primitives', () => {
     it('traps Tab within the dialog instead of leaking focus to the page behind it', async () => {
       const user = userEvent.setup();
       render(
-        <Modal
-          isOpen
-          onClose={() => {}}
-          title="Detalhes"
-          footer={<button>Confirmar</button>}
-        >
+        <Modal isOpen onClose={() => {}} title="Detalhes" footer={<button>Confirmar</button>}>
           <p>Conteúdo do modal</p>
-        </Modal>
+        </Modal>,
       );
 
       const closeButton = screen.getByRole('button', { name: 'Fechar' });

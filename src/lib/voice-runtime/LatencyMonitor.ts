@@ -17,7 +17,7 @@ export class LatencyMonitor {
       toolMs: 0,
       ttsMs: 0,
       streamingMs: 0,
-      totalMs: 0
+      totalMs: 0,
     });
   }
 
@@ -26,16 +26,20 @@ export class LatencyMonitor {
     if (!sessionMetrics) return;
 
     sessionMetrics[stage] = valueMs;
-    
+
     // Recalculate total
-    sessionMetrics.totalMs = 
-      sessionMetrics.sttMs + 
-      sessionMetrics.llmMs + 
-      sessionMetrics.toolMs + 
-      sessionMetrics.ttsMs + 
+    sessionMetrics.totalMs =
+      sessionMetrics.sttMs +
+      sessionMetrics.llmMs +
+      sessionMetrics.toolMs +
+      sessionMetrics.ttsMs +
       sessionMetrics.streamingMs;
 
-    observability.logEvent(sessionId, 'LATENCY_UPDATED', { stage, valueMs, total: sessionMetrics.totalMs });
+    observability.logEvent(sessionId, 'LATENCY_UPDATED', {
+      stage,
+      valueMs,
+      total: sessionMetrics.totalMs,
+    });
   }
 
   // Records which provider actually served a stage of the call — call this with the
@@ -43,7 +47,12 @@ export class LatencyMonitor {
   // the provider that was merely *requested*, so the dashboard reflects reality after a
   // degradation (AGENTS.md, Onda 2, Agente 04 — "LatencyMonitor deve refletir o provedor
   // efetivamente usado").
-  public recordProviderUsed(sessionId: string, stage: 'llm' | 'tts', providerId: string, usedFallback: boolean) {
+  public recordProviderUsed(
+    sessionId: string,
+    stage: 'llm' | 'tts',
+    providerId: string,
+    usedFallback: boolean,
+  ) {
     const sessionMetrics = this.metrics.get(sessionId);
     if (!sessionMetrics) return;
 

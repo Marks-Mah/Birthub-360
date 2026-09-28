@@ -25,7 +25,8 @@ vi.mock('../lib/logger.js', () => ({
 
 const mockResolveActiveEndpointsForEvent = vi.fn();
 vi.mock('./webhookEndpointService.js', () => ({
-  resolveActiveEndpointsForEvent: (...args: unknown[]) => mockResolveActiveEndpointsForEvent(...args),
+  resolveActiveEndpointsForEvent: (...args: unknown[]) =>
+    mockResolveActiveEndpointsForEvent(...args),
 }));
 
 import { WebhookService } from './webhook.service.js';
@@ -46,7 +47,12 @@ afterEach(() => {
 describe('WebhookService.dispatch — explicit targetUrl (legacy per-call path)', () => {
   it('enqueues a single job to targetUrl without consulting tenant endpoints', async () => {
     const service = new WebhookService();
-    await service.dispatch('tenant-a', 'agent.call.ended', { ok: true }, 'https://caller.example.com/callback');
+    await service.dispatch(
+      'tenant-a',
+      'agent.call.ended',
+      { ok: true },
+      'https://caller.example.com/callback',
+    );
 
     expect(mockResolveActiveEndpointsForEvent).not.toHaveBeenCalled();
     expect(mockAdd).toHaveBeenCalledTimes(1);
@@ -81,7 +87,10 @@ describe('WebhookService.dispatch — per-tenant endpoint resolution', () => {
   });
 
   it('does not enqueue anything when the tenant has active endpoints but none subscribe to this event type', async () => {
-    mockResolveActiveEndpointsForEvent.mockResolvedValue({ hasAnyActiveEndpoint: true, targets: [] });
+    mockResolveActiveEndpointsForEvent.mockResolvedValue({
+      hasAnyActiveEndpoint: true,
+      targets: [],
+    });
     process.env.WEBHOOK_URL = 'https://deployment-wide.example.com/hook';
 
     const service = new WebhookService();
@@ -91,7 +100,10 @@ describe('WebhookService.dispatch — per-tenant endpoint resolution', () => {
   });
 
   it('falls back to the deployment-wide WEBHOOK_URL only when the tenant has NO active endpoint at all', async () => {
-    mockResolveActiveEndpointsForEvent.mockResolvedValue({ hasAnyActiveEndpoint: false, targets: [] });
+    mockResolveActiveEndpointsForEvent.mockResolvedValue({
+      hasAnyActiveEndpoint: false,
+      targets: [],
+    });
     process.env.WEBHOOK_URL = 'https://deployment-wide.example.com/hook';
 
     const service = new WebhookService();
@@ -103,7 +115,10 @@ describe('WebhookService.dispatch — per-tenant endpoint resolution', () => {
   });
 
   it('drops the event silently (never throws) when there is no tenant endpoint and no deployment-wide URL configured', async () => {
-    mockResolveActiveEndpointsForEvent.mockResolvedValue({ hasAnyActiveEndpoint: false, targets: [] });
+    mockResolveActiveEndpointsForEvent.mockResolvedValue({
+      hasAnyActiveEndpoint: false,
+      targets: [],
+    });
 
     const service = new WebhookService();
     await expect(service.dispatch('tenant-a', 'call.completed', {})).resolves.toBeUndefined();
@@ -128,7 +143,10 @@ describe('WebhookService.dispatch — per-tenant endpoint resolution', () => {
       if (organizationId !== 'tenant-a') {
         throw new Error('should never be queried for another tenant');
       }
-      return { hasAnyActiveEndpoint: true, targets: [{ endpointId: 'ep-a', url: 'https://a.example.com/hook' }] };
+      return {
+        hasAnyActiveEndpoint: true,
+        targets: [{ endpointId: 'ep-a', url: 'https://a.example.com/hook' }],
+      };
     });
 
     const service = new WebhookService();
@@ -139,7 +157,10 @@ describe('WebhookService.dispatch — per-tenant endpoint resolution', () => {
   });
 
   it('dispatch never throws even if the queue itself rejects', async () => {
-    mockResolveActiveEndpointsForEvent.mockResolvedValue({ hasAnyActiveEndpoint: false, targets: [] });
+    mockResolveActiveEndpointsForEvent.mockResolvedValue({
+      hasAnyActiveEndpoint: false,
+      targets: [],
+    });
     process.env.WEBHOOK_URL = 'https://deployment-wide.example.com/hook';
     mockAdd.mockRejectedValueOnce(new Error('redis is down'));
 

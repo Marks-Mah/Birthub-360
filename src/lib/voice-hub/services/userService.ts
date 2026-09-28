@@ -10,7 +10,13 @@ export class UserServiceError extends Error {
   }
 }
 
-function toSafeUser(user: { id: string; email: string; companyName: string; createdAt: Date; memberships: { role: { name: string } }[] }) {
+function toSafeUser(user: {
+  id: string;
+  email: string;
+  companyName: string;
+  createdAt: Date;
+  memberships: { role: { name: string } }[];
+}) {
   return {
     id: user.id,
     email: user.email,
@@ -25,7 +31,10 @@ export async function listUsers(organizationId: string) {
   return users.map(toSafeUser);
 }
 
-export async function createUserInTenant(organizationId: string, data: { email: string; password: string; companyName?: string; role?: SystemRoleName }) {
+export async function createUserInTenant(
+  organizationId: string,
+  data: { email: string; password: string; companyName?: string; role?: SystemRoleName },
+) {
   const existing = await userRepository.findUserByEmail(data.email);
   if (existing) {
     throw new UserServiceError('Este email já está cadastrado.');
@@ -48,7 +57,7 @@ export async function updateUserProfile(
   targetId: string,
   organizationId: string,
   requester: { id: string; role: string },
-  data: { companyName?: string; role?: SystemRoleName; password?: string }
+  data: { companyName?: string; role?: SystemRoleName; password?: string },
 ) {
   if (requester.role !== 'admin' && requester.id !== targetId) {
     throw new UserServiceError('Você não tem permissão para alterar este perfil.', 403);
@@ -89,10 +98,13 @@ export async function deleteUser(targetId: string, organizationId: string, reque
 export async function anonymizeUserData(
   targetId: string,
   organizationId: string,
-  requester: { id: string; role: string }
+  requester: { id: string; role: string },
 ) {
   if (requester.role !== 'admin' && requester.id !== targetId) {
-    throw new UserServiceError('Você não tem permissão para solicitar a exclusão dos dados deste titular.', 403);
+    throw new UserServiceError(
+      'Você não tem permissão para solicitar a exclusão dos dados deste titular.',
+      403,
+    );
   }
 
   const target = await userRepository.findUserById(targetId);

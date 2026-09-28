@@ -19,7 +19,17 @@ const router = express.Router();
 const notificationRateLimiter = createRateLimiter('notifications', 120, 60);
 
 router.get('/notifications', requireTenant, notificationRateLimiter, listNotificationsHandler);
-router.post('/notifications/:id/read', requireTenant, notificationRateLimiter, markNotificationReadHandler);
-router.post('/notifications/read-all', requireTenant, notificationRateLimiter, markAllNotificationsReadHandler);
+router.post(
+  '/notifications/:id/read',
+  requireTenant,
+  notificationRateLimiter,
+  markNotificationReadHandler,
+);
+router.post(
+  '/notifications/read-all',
+  requireTenant,
+  notificationRateLimiter,
+  markAllNotificationsReadHandler,
+);
 
 export default router;

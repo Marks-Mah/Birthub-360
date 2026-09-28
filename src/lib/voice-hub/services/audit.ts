@@ -8,7 +8,11 @@ const redisUrl = getRedisUrl();
 // BullMQ requires maxRetriesPerRequest: null on its connection; enqueue failures are still caught
 // below so a Redis outage degrades to "audit log skipped" rather than blocking the request path.
 // retryStrategy caps reconnect attempts at 10s apart so a real outage doesn't log-storm.
-const connection = new Redis(redisUrl, { maxRetriesPerRequest: null, connectTimeout: 2000, retryStrategy: getRedisRetryStrategy() });
+const connection = new Redis(redisUrl, {
+  maxRetriesPerRequest: null,
+  connectTimeout: 2000,
+  retryStrategy: getRedisRetryStrategy(),
+});
 connection.on('error', (err) => logger.error('Audit Redis connection error', err.message));
 
 const auditQueue = new Queue('auditLogs', { connection });
@@ -18,11 +22,20 @@ new Worker(
   async (job) => {
     await createAuditLog(job.data);
   },
-  { connection }
+  { connection },
 );
 
-export function writeAuditLog(organizationId: string | undefined, userId: string, action: string, details: unknown) {
+export function writeAuditLog(
+  organizationId: string | undefined,
+  userId: string,
+  action: string,
+  details: unknown,
+) {
   auditQueue
-    .add('log', { organizationId, userId, action, details }, { removeOnComplete: true, removeOnFail: 100 })
+    .add(
+      'log',
+      { organizationId, userId, action, details },
+      { removeOnComplete: true, removeOnFail: 100 },
+    )
     .catch((err) => logger.error('Audit queue enqueue failure', err));
 }

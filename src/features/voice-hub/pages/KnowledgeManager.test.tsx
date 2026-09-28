@@ -99,9 +99,7 @@ describe('KnowledgeManager Page', () => {
         role: 'Vendas',
         status: 'active',
         configuration: {
-          knowledge: [
-            { id: 'doc-1', name: 'Doc 1', keyword: 'doc', content: 'Info' },
-          ],
+          knowledge: [{ id: 'doc-1', name: 'Doc 1', keyword: 'doc', content: 'Info' }],
         },
       },
       {
@@ -131,7 +129,9 @@ describe('KnowledgeManager Page', () => {
 
     await waitFor(() => {
       expect(screen.getByText('Base de conhecimento vazia')).toBeInTheDocument();
-      expect(screen.getByText(/O agente "Suporte Técnico" ainda não possui nenhum documento indexado/)).toBeInTheDocument();
+      expect(
+        screen.getByText(/O agente "Suporte Técnico" ainda não possui nenhum documento indexado/),
+      ).toBeInTheDocument();
     });
   });
 
@@ -169,7 +169,9 @@ describe('KnowledgeManager Page', () => {
     // Click Cancelar
     await user.click(screen.getByRole('button', { name: 'Cancelar' }));
 
-    expect(screen.queryByRole('heading', { name: 'Upload de Conhecimento' })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('heading', { name: 'Upload de Conhecimento' }),
+    ).not.toBeInTheDocument();
   });
 
   it('executes RAG query and displays confidence and matches', async () => {
@@ -182,7 +184,12 @@ describe('KnowledgeManager Page', () => {
         status: 'active',
         configuration: {
           knowledge: [
-            { id: 'doc-1', name: 'FAQ Comercial', keyword: 'horario', content: 'Atendemos das 8h às 18h.' },
+            {
+              id: 'doc-1',
+              name: 'FAQ Comercial',
+              keyword: 'horario',
+              content: 'Atendemos das 8h às 18h.',
+            },
           ],
         },
       },
@@ -221,7 +228,7 @@ describe('KnowledgeManager Page', () => {
     // Type query and submit
     const queryInput = screen.getByPlaceholderText(/Como funciona a política de cancelamento/i);
     await user.type(queryInput, 'Qual o horário de atendimento?');
-    
+
     const consultBtn = screen.getByRole('button', { name: 'Consultar' });
     await user.click(consultBtn);
 

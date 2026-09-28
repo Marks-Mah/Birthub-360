@@ -35,7 +35,10 @@ export abstract class BaseProvider {
   public abstract type: 'STT' | 'LLM' | 'TTS' | 'E2E';
 
   public abstract initialize(config: Record<string, unknown>): Promise<void>;
-  public abstract process(input: ProviderInput, context?: ProviderContext): Promise<ProviderResponse>;
+  public abstract process(
+    input: ProviderInput,
+    context?: ProviderContext,
+  ): Promise<ProviderResponse>;
   public abstract checkHealth(): Promise<boolean>;
   public abstract destroy(): Promise<void>;
 }

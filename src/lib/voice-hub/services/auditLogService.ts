@@ -3,11 +3,18 @@ import { listAuditLogsForTenant } from '../repositories/auditLogRepository.js';
 export const AUDIT_LOG_DEFAULT_PAGE_SIZE = 20;
 export const AUDIT_LOG_MAX_PAGE_SIZE = 100;
 
-export function parsePagination(rawPage: unknown, rawPageSize: unknown): { page: number; pageSize: number } {
+export function parsePagination(
+  rawPage: unknown,
+  rawPageSize: unknown,
+): { page: number; pageSize: number } {
   const page = Math.max(1, Number.parseInt(String(rawPage ?? '1'), 10) || 1);
   const pageSize = Math.min(
     AUDIT_LOG_MAX_PAGE_SIZE,
-    Math.max(1, Number.parseInt(String(rawPageSize ?? AUDIT_LOG_DEFAULT_PAGE_SIZE), 10) || AUDIT_LOG_DEFAULT_PAGE_SIZE)
+    Math.max(
+      1,
+      Number.parseInt(String(rawPageSize ?? AUDIT_LOG_DEFAULT_PAGE_SIZE), 10) ||
+        AUDIT_LOG_DEFAULT_PAGE_SIZE,
+    ),
   );
   return { page, pageSize };
 }

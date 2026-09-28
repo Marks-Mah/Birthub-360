@@ -59,7 +59,10 @@ export async function createAntivirusScanner() {
  * `objectStorage.ts` write and propagate `InfectedFileError`/`AntivirusUnavailableError` as a
  * 4xx/503 to the end user — never swallow them.
  */
-export async function scanBufferForViruses(buffer: Buffer, filename: string): Promise<{ clean: true }> {
+export async function scanBufferForViruses(
+  buffer: Buffer,
+  filename: string,
+): Promise<{ clean: true }> {
   let clam: Awaited<ReturnType<typeof createAntivirusScanner>>;
 
   try {
@@ -86,12 +89,17 @@ export async function scanBufferForViruses(buffer: Buffer, filename: string): Pr
   // `isInfected` is `null` when clamscan could not determine a definitive result (e.g. malformed
   // clamd response) — treated the same as "unavailable", never as "clean by default".
   if (result.isInfected === null) {
-    logger.error('Antivirus scan rejected upload: ClamAV returned an inconclusive result', { filename });
+    logger.error('Antivirus scan rejected upload: ClamAV returned an inconclusive result', {
+      filename,
+    });
     throw new AntivirusUnavailableError(new Error('Inconclusive ClamAV result'));
   }
 
   if (result.isInfected) {
-    logger.warn('Antivirus scan rejected upload: infected file', { filename, viruses: result.viruses });
+    logger.warn('Antivirus scan rejected upload: infected file', {
+      filename,
+      viruses: result.viruses,
+    });
     throw new InfectedFileError(filename, result.viruses);
   }
 

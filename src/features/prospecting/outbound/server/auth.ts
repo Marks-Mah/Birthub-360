@@ -50,8 +50,8 @@ function getSessionSecret(): string {
   // passar despercebido num deploy real.
   console.warn(
     '[AUTH] SESSION_SECRET não configurado (ou com menos de 16 caracteres) em process.env — ' +
-    'usando segredo de DESENVOLVIMENTO. Isso é INSEGURO em produção: configure ' +
-    'SESSION_SECRET (string aleatória longa) nas variáveis de ambiente do servidor.'
+      'usando segredo de DESENVOLVIMENTO. Isso é INSEGURO em produção: configure ' +
+      'SESSION_SECRET (string aleatória longa) nas variáveis de ambiente do servidor.',
   );
   return 'dev-insecure-session-secret-do-not-use-in-production';
 }
@@ -62,13 +62,17 @@ function sign(data: string): string {
 
 // --- Emissão / verificação do token (payload.assinatura) --------------------
 
-export function createSessionToken(user: AuthenticatedUser, now: number = Date.now(), ttlMs: number = SESSION_TTL_MS): string {
+export function createSessionToken(
+  user: AuthenticatedUser,
+  now: number = Date.now(),
+  ttlMs: number = SESSION_TTL_MS,
+): string {
   const payload: SessionPayload = {
     id: user.id,
     role: user.role,
     company: user.company ?? null,
     iat: now,
-    exp: now + ttlMs
+    exp: now + ttlMs,
   };
   const encodedPayload = Buffer.from(JSON.stringify(payload), 'utf8').toString('base64url');
   const signature = sign(encodedPayload);
@@ -80,7 +84,10 @@ export function createSessionToken(user: AuthenticatedUser, now: number = Date.n
 // derrubaria a rota. Comparação de assinatura em tempo constante
 // (`timingSafeEqual`) para não vazar, por timing, quantos bytes da assinatura
 // esperada um valor forjado acertou.
-export function verifySessionToken(token: string | undefined | null, now: number = Date.now()): AuthenticatedUser | null {
+export function verifySessionToken(
+  token: string | undefined | null,
+  now: number = Date.now(),
+): AuthenticatedUser | null {
   if (!token || typeof token !== 'string') return null;
   const dotIndex = token.indexOf('.');
   if (dotIndex === -1) return null;
@@ -92,7 +99,10 @@ export function verifySessionToken(token: string | undefined | null, now: number
   const expectedSignature = sign(encodedPayload);
   const signatureBuffer = Buffer.from(signature);
   const expectedBuffer = Buffer.from(expectedSignature);
-  if (signatureBuffer.length !== expectedBuffer.length || !crypto.timingSafeEqual(signatureBuffer, expectedBuffer)) {
+  if (
+    signatureBuffer.length !== expectedBuffer.length ||
+    !crypto.timingSafeEqual(signatureBuffer, expectedBuffer)
+  ) {
     return null;
   }
 
@@ -103,7 +113,14 @@ export function verifySessionToken(token: string | undefined | null, now: number
     return null;
   }
 
-  if (!payload || typeof payload.exp !== 'number' || typeof payload.id !== 'string' || !payload.id || typeof payload.role !== 'string' || !payload.role) {
+  if (
+    !payload ||
+    typeof payload.exp !== 'number' ||
+    typeof payload.id !== 'string' ||
+    !payload.id ||
+    typeof payload.role !== 'string' ||
+    !payload.role
+  ) {
     return null;
   }
   if (now > payload.exp) return null;
@@ -119,7 +136,7 @@ export function verifySessionToken(token: string | undefined | null, now: number
 export function parseCookies(header: string | undefined | null): Record<string, string> {
   const out: Record<string, string> = {};
   if (!header) return out;
-  header.split(';').forEach(pair => {
+  header.split(';').forEach((pair) => {
     const idx = pair.indexOf('=');
     if (idx === -1) return;
     const key = pair.slice(0, idx).trim();
@@ -148,20 +165,14 @@ export function buildSessionCookie(token: string): string {
     'Path=/',
     'HttpOnly',
     'SameSite=Strict',
-    `Max-Age=${Math.floor(SESSION_TTL_MS / 1000)}`
+    `Max-Age=${Math.floor(SESSION_TTL_MS / 1000)}`,
   ];
   if (isProductionEnv()) attrs.push('Secure');
   return attrs.join('; ');
 }
 
 export function buildLogoutCookie(): string {
-  const attrs = [
-    `${SESSION_COOKIE_NAME}=`,
-    'Path=/',
-    'HttpOnly',
-    'SameSite=Strict',
-    'Max-Age=0'
-  ];
+  const attrs = [`${SESSION_COOKIE_NAME}=`, 'Path=/', 'HttpOnly', 'SameSite=Strict', 'Max-Age=0'];
   if (isProductionEnv()) attrs.push('Secure');
   return attrs.join('; ');
 }

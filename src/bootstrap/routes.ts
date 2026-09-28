@@ -192,7 +192,12 @@ export function mountFeatureRoutes(app: Express): void {
   // Never execute their routers against the shared database before those adapters are verified.
   app.use('/api/voice-hub', authenticateToken, requireTenant, unavailableLegacyModule('voice-hub'));
   app.use('/api/outbound', authenticateToken, requireTenant, unavailableLegacyModule('outbound'));
-  app.use('/api/dialer-3cx', authenticateToken, requireTenant, unavailableLegacyModule('dialer-3cx'));
+  app.use(
+    '/api/dialer-3cx',
+    authenticateToken,
+    requireTenant,
+    unavailableLegacyModule('dialer-3cx'),
+  );
 
   app.use('/api/integrations/email', authenticateToken, requireTenant, emailRoutes);
   app.use('/api/integrations/slack', authenticateToken, requireTenant, slackRoutes);

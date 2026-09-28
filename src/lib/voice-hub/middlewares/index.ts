@@ -7,7 +7,11 @@ import { authenticateApiKey, isApiKeyFormat } from '../services/apiKeyService.js
 import { getRedisUrl, getRedisRetryStrategy } from '../lib/env.js';
 import { logger } from '../../../lib/logger.js';
 
-export const csrfProtection = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+export const csrfProtection = (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
   if (['POST', 'PUT', 'DELETE'].includes(req.method)) {
     // Requests authenticated via a Bearer token in the Authorization header — rather than the
     // ambient session cookie — are not exploitable via CSRF: a malicious page cannot attach an
@@ -70,7 +74,12 @@ function setAccessTokenCookie(res: express.Response, token: string) {
 // (never blocks an otherwise-valid authenticated request) — same tradeoff server.ts's limiters make.
 const API_KEY_RATE_LIMIT = 120;
 const API_KEY_RATE_WINDOW_SECONDS = 60;
-const rateLimitRedis = new Redis(getRedisUrl(), { maxRetriesPerRequest: 1, connectTimeout: 2000, commandTimeout: 2000, retryStrategy: getRedisRetryStrategy() });
+const rateLimitRedis = new Redis(getRedisUrl(), {
+  maxRetriesPerRequest: 1,
+  connectTimeout: 2000,
+  commandTimeout: 2000,
+  retryStrategy: getRedisRetryStrategy(),
+});
 rateLimitRedis.on('error', (err) => logger.error('API key rate limiter Redis error', err));
 
 async function isApiKeyRateLimited(apiKeyId: string): Promise<boolean> {
@@ -86,7 +95,10 @@ async function isApiKeyRateLimited(apiKeyId: string): Promise<boolean> {
   }
 }
 
-export async function getAuthUser(req: express.Request, res?: express.Response): Promise<TokenPayload | null> {
+export async function getAuthUser(
+  req: express.Request,
+  res?: express.Response,
+): Promise<TokenPayload | null> {
   const bearerToken = req.headers.authorization?.startsWith('Bearer ')
     ? req.headers.authorization.substring(7)
     : undefined;
@@ -125,7 +137,11 @@ export async function getAuthUser(req: express.Request, res?: express.Response):
   return null;
 }
 
-export const attachAuthIfPresent = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+export const attachAuthIfPresent = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
   const session = await getAuthUser(req, res);
   if (session) {
     req.user = session;
@@ -138,7 +154,7 @@ export const attachAuthIfPresent = async (req: express.Request, res: express.Res
         await prisma.tenant.upsert({
           where: { id: session.organizationId },
           update: {},
-          create: { id: session.organizationId, name: 'Local Dev Tenant' }
+          create: { id: session.organizationId, name: 'Local Dev Tenant' },
         });
         await prisma.user.upsert({
           where: { id: session.id },
@@ -148,8 +164,8 @@ export const attachAuthIfPresent = async (req: express.Request, res: express.Res
             organizationId: session.organizationId,
             email: session.email || 'dev@local.com',
             companyName: 'Local Dev Corp',
-            passwordHash: 'dummy'
-          }
+            passwordHash: 'dummy',
+          },
         });
       } catch (err: any) {
         console.error('Failed to auto-upsert dev tenant/user:', err);
@@ -163,7 +179,9 @@ export const attachAuthIfPresent = async (req: express.Request, res: express.Res
   if (req.apiKeyId) {
     const limited = await isApiKeyRateLimited(req.apiKeyId);
     if (limited) {
-      return res.status(429).json({ error: 'Limite de requisições excedido para esta chave de API. Tente novamente em breve.' });
+      return res.status(429).json({
+        error: 'Limite de requisições excedido para esta chave de API. Tente novamente em breve.',
+      });
       return;
     }
   }

@@ -13,19 +13,19 @@ vi.mock('react-router-dom', async (importOriginal) => {
   const actual = await importOriginal<typeof import('react-router-dom')>();
   return {
     ...actual,
-    useNavigate: () => mockNavigate
+    useNavigate: () => mockNavigate,
   };
 });
 
 vi.mock('./ThemeContext.js', () => ({
-  useTheme: () => ({ theme: 'light', setTheme: mockSetTheme, resolvedTheme: 'light' })
+  useTheme: () => ({ theme: 'light', setTheme: mockSetTheme, resolvedTheme: 'light' }),
 }));
 
 function renderPalette(isOpen: boolean, onClose = vi.fn()) {
   return render(
     <MemoryRouter>
       <CommandPalette isOpen={isOpen} onClose={onClose} />
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 }
 
@@ -35,8 +35,8 @@ describe('CommandPalette', () => {
       'fetch',
       vi.fn().mockResolvedValue({
         ok: true,
-        json: async () => ({ settings: {} })
-      })
+        json: async () => ({ settings: {} }),
+      }),
     );
   });
 

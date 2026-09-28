@@ -1,4 +1,4 @@
-export type CampaignStatus = "draft" | "active" | "paused" | "finished";
+export type CampaignStatus = 'draft' | 'active' | 'paused' | 'finished';
 
 export interface CampaignProps {
   id: string;
@@ -9,16 +9,16 @@ export interface CampaignProps {
 }
 
 const VALID_TRANSITIONS: Record<CampaignStatus, readonly CampaignStatus[]> = {
-  draft: ["active", "finished"],
-  active: ["paused", "finished"],
-  paused: ["active", "finished"],
+  draft: ['active', 'finished'],
+  active: ['paused', 'finished'],
+  paused: ['active', 'finished'],
   finished: [],
 };
 
 export class InvalidCampaignTransitionError extends Error {
   constructor(from: CampaignStatus, to: CampaignStatus) {
     super(`Transição de campanha inválida: "${from}" -> "${to}"`);
-    this.name = "InvalidCampaignTransitionError";
+    this.name = 'InvalidCampaignTransitionError';
   }
 }
 
@@ -30,7 +30,7 @@ export class Campaign {
     return new Campaign({
       id: input.id,
       name: input.name,
-      status: "draft",
+      status: 'draft',
       createdAt: now,
       updatedAt: now,
     });
@@ -53,7 +53,7 @@ export class Campaign {
   }
 
   get isActive(): boolean {
-    return this.props.status === "active";
+    return this.props.status === 'active';
   }
 
   private transitionTo(next: CampaignStatus, now: Date): void {
@@ -66,19 +66,19 @@ export class Campaign {
   }
 
   start(now = new Date()): void {
-    this.transitionTo("active", now);
+    this.transitionTo('active', now);
   }
 
   pause(now = new Date()): void {
-    this.transitionTo("paused", now);
+    this.transitionTo('paused', now);
   }
 
   resume(now = new Date()): void {
-    this.transitionTo("active", now);
+    this.transitionTo('active', now);
   }
 
   finish(now = new Date()): void {
-    this.transitionTo("finished", now);
+    this.transitionTo('finished', now);
   }
 
   toProps(): CampaignProps {

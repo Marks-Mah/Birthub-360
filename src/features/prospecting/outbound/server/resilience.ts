@@ -41,7 +41,7 @@ const cacheStore = new Map<string, CacheEntry<unknown>>();
 export const CACHE_TTL_MS = {
   LONG_CADASTRAL: 7 * 24 * 60 * 60 * 1000, // 7 dias — CNPJ/razão social/CNAE oficiais
   MEDIUM_CONTACT: 6 * 60 * 60 * 1000, // 6 horas — cargo executivo / e-mail (Apollo)
-  SHORT_SIGNAL: 15 * 60 * 1000 // 15 minutos — notícia/sinal, ou lookup sem resposta útil ainda
+  SHORT_SIGNAL: 15 * 60 * 1000, // 15 minutos — notícia/sinal, ou lookup sem resposta útil ainda
 } as const;
 
 /** Existe uma entrada de cache válida (não expirada) para esta chave agora? */
@@ -71,7 +71,7 @@ export async function withCache<T>(
   key: string,
   ttl: number | ((value: T) => number),
   fn: () => Promise<T>,
-  shouldCache: (value: T) => boolean = () => true
+  shouldCache: (value: T) => boolean = () => true,
 ): Promise<T> {
   const now = Date.now();
   const hit = cacheStore.get(key);
@@ -104,7 +104,7 @@ export async function withCache<T>(
 const RETRYABLE_PROVIDER_STATUSES: ReadonlySet<ProviderResultStatus> = new Set([
   'timeout',
   'rate_limited',
-  'error'
+  'error',
 ]);
 
 export function isRetryableProviderStatus(status: ProviderResultStatus): boolean {
@@ -118,7 +118,7 @@ export interface RetryOptions {
   sleep?: (ms: number) => Promise<void>; // injetável para testes rápidos (sem esperar de verdade)
 }
 
-const realSleep = (ms: number) => new Promise<void>(resolve => setTimeout(resolve, ms));
+const realSleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
 
 /**
  * Reexecuta `fn()` enquanto `isRetryable(resultado)` for verdadeiro, até
@@ -129,7 +129,7 @@ const realSleep = (ms: number) => new Promise<void>(resolve => setTimeout(resolv
 export async function withRetry<T>(
   fn: () => Promise<T>,
   isRetryable: (result: T) => boolean,
-  opts: RetryOptions = {}
+  opts: RetryOptions = {},
 ): Promise<T> {
   const maxRetries = opts.maxRetries ?? 2;
   const baseDelayMs = opts.baseDelayMs ?? 200;
@@ -155,9 +155,9 @@ export async function withRetry<T>(
 /** Atalho de `withRetry` para funções que devolvem `ProviderResult` (Wave 4). */
 export async function withProviderRetry<T>(
   fn: () => Promise<ProviderResult<T>>,
-  opts: RetryOptions = {}
+  opts: RetryOptions = {},
 ): Promise<ProviderResult<T>> {
-  return withRetry(fn, result => isRetryableProviderStatus(result.status), opts);
+  return withRetry(fn, (result) => isRetryableProviderStatus(result.status), opts);
 }
 
 // ---------------------------------------------------------------------------
@@ -222,7 +222,7 @@ export async function withCircuitBreaker<T>(
   fn: () => Promise<T>,
   buildTrippedResult: () => T,
   isFailure: (result: T) => boolean,
-  opts: CircuitBreakerOptions = {}
+  opts: CircuitBreakerOptions = {},
 ): Promise<CircuitBreakerOutcome<T>> {
   const failureThreshold = opts.failureThreshold ?? 3;
   const cooldownMs = opts.cooldownMs ?? 30_000;
@@ -264,7 +264,7 @@ export async function withCircuitBreaker<T>(
 export async function withProviderCircuitBreaker<T>(
   provider: string,
   fn: () => Promise<ProviderResult<T>>,
-  opts: CircuitBreakerOptions = {}
+  opts: CircuitBreakerOptions = {},
 ): Promise<ProviderResult<T>> {
   const { result } = await withCircuitBreaker<ProviderResult<T>>(
     provider,
@@ -273,10 +273,10 @@ export async function withProviderCircuitBreaker<T>(
       status: 'error',
       source: provider,
       latencyMs: 0,
-      errorMessage: `Circuito aberto para "${provider}" — falhas consecutivas recentes; chamada evitada durante o cooldown.`
+      errorMessage: `Circuito aberto para "${provider}" — falhas consecutivas recentes; chamada evitada durante o cooldown.`,
     }),
-    result => isRetryableProviderStatus(result.status),
-    opts
+    (result) => isRetryableProviderStatus(result.status),
+    opts,
   );
   return result;
 }
@@ -302,7 +302,7 @@ export interface SearchBudget {
 export const DEFAULT_SEARCH_BUDGET: SearchBudget = {
   maxApiCalls: 100,
   maxPaidCredits: 500,
-  maxEnrichments: 200
+  maxEnrichments: 200,
 };
 
 export interface BudgetUsage {
@@ -319,7 +319,7 @@ export interface BudgetTracker {
 export function createBudgetTracker(overrides?: Partial<SearchBudget>): BudgetTracker {
   return {
     budget: { ...DEFAULT_SEARCH_BUDGET, ...(overrides || {}) },
-    used: { apiCalls: 0, paidCredits: 0, enrichments: 0 }
+    used: { apiCalls: 0, paidCredits: 0, enrichments: 0 },
   };
 }
 
@@ -343,7 +343,10 @@ export function recordApiCall(tracker: BudgetTracker, cost: { paidCredits?: numb
 }
 
 /** Registra uma operação de enriquecimento (ex: Apollo) — paga por definição. */
-export function recordEnrichment(tracker: BudgetTracker, cost: { apiCalls?: number; paidCredits?: number } = {}): void {
+export function recordEnrichment(
+  tracker: BudgetTracker,
+  cost: { apiCalls?: number; paidCredits?: number } = {},
+): void {
   tracker.used.enrichments += 1;
   tracker.used.apiCalls += cost.apiCalls ?? 1;
   tracker.used.paidCredits += cost.paidCredits ?? 0;

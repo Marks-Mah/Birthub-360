@@ -6,19 +6,19 @@ import {
   buildLeadEvidenceContext,
   computePersonalizationLevel,
   formatEvidenceContextForPrompt,
-  type PersonalizationLevel
+  type PersonalizationLevel,
 } from './leadEvidenceContext.js';
 import {
   safeParseJson,
   validateCopiesShape,
   validateEnrichmentShape,
-  type CopiesStringField
+  type CopiesStringField,
 } from './aiSchemas.js';
 import {
   recordAiGenerationLog,
   extractOllamaTokenUsage,
   extractGroqTokenUsage,
-  extractGeminiTokenUsage
+  extractGeminiTokenUsage,
 } from './aiGenerationLog.js';
 
 // IA & Guardrails (CPI follow-up, pós Wave 0) — versão do prompt-base de
@@ -62,12 +62,12 @@ export async function checkOllamaConnection(url: string, model: string = 'llama3
     const timeoutId = setTimeout(() => controller.abort(), 3500);
 
     const response = await fetch(`${cleanUrl}/api/tags`, {
-      signal: controller.signal
+      signal: controller.signal,
     });
     clearTimeout(timeoutId);
 
     if (response.ok) {
-      const data = await response.json() as any;
+      const data = (await response.json()) as any;
       const models = (data.models || []).map((m: any) => m.name);
       const latency = Date.now() - startTime;
       const modelFound = models.some((m: string) => m.toLowerCase().includes(model.toLowerCase()));
@@ -77,7 +77,7 @@ export async function checkOllamaConnection(url: string, model: string = 'llama3
         latencyMs: latency,
         availableModels: models,
         hasRequestedModel: modelFound,
-        message: `Ollama conectado em ${cleanUrl}. Modelos disponíveis: ${models.join(', ') || 'Nenhum'}`
+        message: `Ollama conectado em ${cleanUrl}. Modelos disponíveis: ${models.join(', ') || 'Nenhum'}`,
       };
     } else {
       return {
@@ -85,7 +85,7 @@ export async function checkOllamaConnection(url: string, model: string = 'llama3
         latencyMs: Date.now() - startTime,
         availableModels: [],
         hasRequestedModel: false,
-        message: `Ollama respondeu com código ${response.status}`
+        message: `Ollama respondeu com código ${response.status}`,
       };
     }
   } catch (err: any) {
@@ -94,7 +94,7 @@ export async function checkOllamaConnection(url: string, model: string = 'llama3
       latencyMs: Date.now() - startTime,
       availableModels: [],
       hasRequestedModel: false,
-      message: `Não foi possível conectar ao Ollama em ${url}. (${err.message || 'Servidor offline'})`
+      message: `Não foi possível conectar ao Ollama em ${url}. (${err.message || 'Servidor offline'})`,
     };
   }
 }
@@ -113,7 +113,7 @@ export async function generateCopiesWithEngine(
   pitch: string,
   config: AIConfig,
   decisionMaker: DecisionMaker,
-  storedEvidence: EvidenceRecord[] = []
+  storedEvidence: EvidenceRecord[] = [],
 ): Promise<EngineCopiesResult> {
   const evidenceContext = buildLeadEvidenceContext(lead, decisionMaker, storedEvidence);
   const personalizationLevel = computePersonalizationLevel(evidenceContext);
@@ -160,36 +160,50 @@ Gere as abordagens comerciais:
           stream: false,
           messages: [
             { role: 'system', content: systemPrompt },
-            { role: 'user', content: userPrompt }
+            { role: 'user', content: userPrompt },
           ],
-          options: { temperature }
-        })
+          options: { temperature },
+        }),
       });
       if (response.ok) {
-        const data = await response.json() as any;
+        const data = (await response.json()) as any;
         const content = data.message?.content || '{}';
         const parseResult = safeParseJson(content);
         const tokenUsage = extractOllamaTokenUsage(data);
         if (parseResult.ok) {
           const shape = validateCopiesShape(parseResult.value);
           recordAiGenerationLog({
-            callType: 'copies', engine: 'ollama', model, temperature, ...tokenUsage,
-            promptVersion: AI_PROMPT_VERSION, personalizationLevel, success: true,
-            error: shape.invalidFields.length > 0
-              ? `campo(s) com forma inválida descartado(s): ${shape.invalidFields.join(', ')}`
-              : undefined,
-            leadId: lead.id
+            callType: 'copies',
+            engine: 'ollama',
+            model,
+            temperature,
+            ...tokenUsage,
+            promptVersion: AI_PROMPT_VERSION,
+            personalizationLevel,
+            success: true,
+            error:
+              shape.invalidFields.length > 0
+                ? `campo(s) com forma inválida descartado(s): ${shape.invalidFields.join(', ')}`
+                : undefined,
+            leadId: lead.id,
           });
           return {
             copies: formatParsedCopies(shape.validFields, lead, decisionMaker),
             engineUsed: `Ollama (${model})`,
-            personalization_level: personalizationLevel
+            personalization_level: personalizationLevel,
           };
         }
         recordAiGenerationLog({
-          callType: 'copies', engine: 'ollama', model, temperature, ...tokenUsage,
-          promptVersion: AI_PROMPT_VERSION, personalizationLevel, success: false,
-          error: `JSON inválido: ${parseResult.error}`, leadId: lead.id
+          callType: 'copies',
+          engine: 'ollama',
+          model,
+          temperature,
+          ...tokenUsage,
+          promptVersion: AI_PROMPT_VERSION,
+          personalizationLevel,
+          success: false,
+          error: `JSON inválido: ${parseResult.error}`,
+          leadId: lead.id,
         });
       }
     } catch (_err: any) {
@@ -199,7 +213,10 @@ Gere as abordagens comerciais:
 
   // 2. If provider is Groq
   const effectiveGroqKey = (config.groqApiKey || process.env.GROQ_API_KEY || '').trim();
-  if (config.provider === 'groq' || (!config.groqApiKey && config.provider !== 'ollama' && config.provider !== 'gemini')) {
+  if (
+    config.provider === 'groq' ||
+    (!config.groqApiKey && config.provider !== 'ollama' && config.provider !== 'gemini')
+  ) {
     const model = config.groqModel || 'llama-3.3-70b-versatile';
     const temperature = config.temperature || 0.7;
     try {
@@ -207,7 +224,7 @@ Gere as abordagens comerciais:
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${effectiveGroqKey}`
+          Authorization: `Bearer ${effectiveGroqKey}`,
         },
         body: JSON.stringify({
           model,
@@ -215,36 +232,50 @@ Gere as abordagens comerciais:
           temperature,
           messages: [
             { role: 'system', content: systemPrompt },
-            { role: 'user', content: userPrompt }
-          ]
-        })
+            { role: 'user', content: userPrompt },
+          ],
+        }),
       });
 
       if (response.ok) {
-        const data = await response.json() as any;
+        const data = (await response.json()) as any;
         const content = data.choices?.[0]?.message?.content || '{}';
         const parseResult = safeParseJson(content);
         const tokenUsage = extractGroqTokenUsage(data);
         if (parseResult.ok) {
           const shape = validateCopiesShape(parseResult.value);
           recordAiGenerationLog({
-            callType: 'copies', engine: 'groq', model, temperature, ...tokenUsage,
-            promptVersion: AI_PROMPT_VERSION, personalizationLevel, success: true,
-            error: shape.invalidFields.length > 0
-              ? `campo(s) com forma inválida descartado(s): ${shape.invalidFields.join(', ')}`
-              : undefined,
-            leadId: lead.id
+            callType: 'copies',
+            engine: 'groq',
+            model,
+            temperature,
+            ...tokenUsage,
+            promptVersion: AI_PROMPT_VERSION,
+            personalizationLevel,
+            success: true,
+            error:
+              shape.invalidFields.length > 0
+                ? `campo(s) com forma inválida descartado(s): ${shape.invalidFields.join(', ')}`
+                : undefined,
+            leadId: lead.id,
           });
           return {
             copies: formatParsedCopies(shape.validFields, lead, decisionMaker),
             engineUsed: `Groq (${model})`,
-            personalization_level: personalizationLevel
+            personalization_level: personalizationLevel,
           };
         }
         recordAiGenerationLog({
-          callType: 'copies', engine: 'groq', model, temperature, ...tokenUsage,
-          promptVersion: AI_PROMPT_VERSION, personalizationLevel, success: false,
-          error: `JSON inválido: ${parseResult.error}`, leadId: lead.id
+          callType: 'copies',
+          engine: 'groq',
+          model,
+          temperature,
+          ...tokenUsage,
+          promptVersion: AI_PROMPT_VERSION,
+          personalizationLevel,
+          success: false,
+          error: `JSON inválido: ${parseResult.error}`,
+          leadId: lead.id,
         });
       }
     } catch (_err: any) {
@@ -262,47 +293,71 @@ Gere as abordagens comerciais:
       contents: `${systemPrompt}\n\n${userPrompt}`,
       config: {
         responseMimeType: 'application/json',
-        temperature: geminiTemperature
-      }
+        temperature: geminiTemperature,
+      },
     });
     const text = response.text || '{}';
     const parseResult = safeParseJson(text);
     const tokenUsage = extractGeminiTokenUsage(response);
     if (!parseResult.ok) {
       recordAiGenerationLog({
-        callType: 'copies', engine: 'gemini', model: geminiModel, temperature: geminiTemperature, ...tokenUsage,
-        promptVersion: AI_PROMPT_VERSION, personalizationLevel, success: false,
-        error: `JSON inválido: ${parseResult.error}`, leadId: lead.id
+        callType: 'copies',
+        engine: 'gemini',
+        model: geminiModel,
+        temperature: geminiTemperature,
+        ...tokenUsage,
+        promptVersion: AI_PROMPT_VERSION,
+        personalizationLevel,
+        success: false,
+        error: `JSON inválido: ${parseResult.error}`,
+        leadId: lead.id,
       });
       throw new Error(`Gemini respondeu JSON inválido: ${parseResult.error}`);
     }
     const shape = validateCopiesShape(parseResult.value);
     recordAiGenerationLog({
-      callType: 'copies', engine: 'gemini', model: geminiModel, temperature: geminiTemperature, ...tokenUsage,
-      promptVersion: AI_PROMPT_VERSION, personalizationLevel, success: true,
-      error: shape.invalidFields.length > 0
-        ? `campo(s) com forma inválida descartado(s): ${shape.invalidFields.join(', ')}`
-        : undefined,
-      leadId: lead.id
+      callType: 'copies',
+      engine: 'gemini',
+      model: geminiModel,
+      temperature: geminiTemperature,
+      ...tokenUsage,
+      promptVersion: AI_PROMPT_VERSION,
+      personalizationLevel,
+      success: true,
+      error:
+        shape.invalidFields.length > 0
+          ? `campo(s) com forma inválida descartado(s): ${shape.invalidFields.join(', ')}`
+          : undefined,
+      leadId: lead.id,
     });
     return {
       copies: formatParsedCopies(shape.validFields, lead, decisionMaker),
       engineUsed: 'Gemini 2.5 Flash',
-      personalization_level: personalizationLevel
+      personalization_level: personalizationLevel,
     };
   } catch (err: any) {
-    console.info('APIs externas com alta demanda, utilizando motor local determinístico (fallback).');
+    console.info(
+      'APIs externas com alta demanda, utilizando motor local determinístico (fallback).',
+    );
     recordAiGenerationLog({
-      callType: 'copies', engine: 'fallback_local', model: null, temperature: null,
-      promptTokens: null, completionTokens: null, totalTokens: null,
-      promptVersion: AI_PROMPT_VERSION, personalizationLevel, success: false,
-      error: err?.message || 'todos os motores de IA indisponíveis ou responderam com formato inválido',
-      leadId: lead.id
+      callType: 'copies',
+      engine: 'fallback_local',
+      model: null,
+      temperature: null,
+      promptTokens: null,
+      completionTokens: null,
+      totalTokens: null,
+      promptVersion: AI_PROMPT_VERSION,
+      personalizationLevel,
+      success: false,
+      error:
+        err?.message || 'todos os motores de IA indisponíveis ou responderam com formato inválido',
+      leadId: lead.id,
     });
     return {
       copies: generateFallbackCopies(lead, pitch, decisionMaker),
       engineUsed: 'Motor local (fallback fixo)',
-      personalization_level: personalizationLevel
+      personalization_level: personalizationLevel,
     };
   }
 }
@@ -311,18 +366,39 @@ Gere as abordagens comerciais:
 // server/aiSchemas.ts) - nunca uma resposta de LLM crua. Um campo ausente ou
 // descartado por forma inválida cai no texto determinístico de fallback,
 // nunca em um valor coagido (ex: um objeto/número transformado em string).
-function formatParsedCopies(parsed: Partial<Record<CopiesStringField, string>>, lead: Lead, dm: DecisionMaker): OutreachCopies {
+function formatParsedCopies(
+  parsed: Partial<Record<CopiesStringField, string>>,
+  lead: Lead,
+  dm: DecisionMaker,
+): OutreachCopies {
   const dmRef = dm.name ? ` ${dm.name}` : '';
   return {
-    cold_call: parsed.cold_call || `Olá${dmRef}, tudo bem? Sou da Atlas. Estou ligando pois notamos a relevância da operação da ${lead.name} e temos apoiado líderes como você a otimizar a segurança e gestão de risco. Teria 5 minutos para conversarmos?`,
-    cold_email: parsed.cold_email || `Assunto: Gestão e Segurança - ${lead.name}\n\nOlá${dmRef},\n\nAcompanhamos a atuação da ${lead.name}. Na Atlas, atuamos lado a lado com gestores para reduzir custos de sinistro e garantir pontualidade logística com tecnologia de ponta.\n\nPodemos falar brevemente nesta semana?\n\nAtenciosamente,\nEquipe Atlas`,
-    whatsapp: parsed.whatsapp || `Olá${dmRef}, como vai? Aqui é da Atlas Inteligência e Segurança Logística. Identifiquei sua atuação na ${lead.name} e gostaria de compartilhar um insight rápido sobre redução de riscos operacionais. Podemos conversar por aqui?`,
-    linkedin: parsed.linkedin || `Olá${dmRef}! Muito bom ver seu trabalho na liderança da ${lead.name}. Conecto-me para trocarmos experiências sobre segurança, logística e tecnologia corporativa.`,
-    followup_strategy: parsed.followup_strategy || 'Follow-up via WhatsApp em 48h caso o e-mail não tenha retorno.',
-    objection_matrix: parsed.objection_matrix || '1. Tá caro. R: Nosso foco é ROI; evitamos um sinistro que cobre meses de operação.\n2. Já temos rastreamento. R: Nós integramos inteligência e pronta resposta de ponta a ponta, não apenas rastreamos.',
-    qualification_matrix: parsed.qualification_matrix || '1. Como vocês lidam com as perdas logísticas hoje?\n2. Qual é a sua atual tecnologia de gerenciamento de risco?\n3. Qual o volume atual da sua operação mensal?',
-    ice_breaker: parsed.ice_breaker || `Notei o crescimento da ${lead.name} e como vocês têm expandido as operações recentemente.`,
-    approach_prompt: parsed.approach_prompt || `Você é o SDR da Atlas falando com o decisor da ${lead.name}. Seu foco: conduzir uma conversa consultiva destacando segurança preditiva, redução de sinistralidade e otimização de apólices.`
+    cold_call:
+      parsed.cold_call ||
+      `Olá${dmRef}, tudo bem? Sou da Atlas. Estou ligando pois notamos a relevância da operação da ${lead.name} e temos apoiado líderes como você a otimizar a segurança e gestão de risco. Teria 5 minutos para conversarmos?`,
+    cold_email:
+      parsed.cold_email ||
+      `Assunto: Gestão e Segurança - ${lead.name}\n\nOlá${dmRef},\n\nAcompanhamos a atuação da ${lead.name}. Na Atlas, atuamos lado a lado com gestores para reduzir custos de sinistro e garantir pontualidade logística com tecnologia de ponta.\n\nPodemos falar brevemente nesta semana?\n\nAtenciosamente,\nEquipe Atlas`,
+    whatsapp:
+      parsed.whatsapp ||
+      `Olá${dmRef}, como vai? Aqui é da Atlas Inteligência e Segurança Logística. Identifiquei sua atuação na ${lead.name} e gostaria de compartilhar um insight rápido sobre redução de riscos operacionais. Podemos conversar por aqui?`,
+    linkedin:
+      parsed.linkedin ||
+      `Olá${dmRef}! Muito bom ver seu trabalho na liderança da ${lead.name}. Conecto-me para trocarmos experiências sobre segurança, logística e tecnologia corporativa.`,
+    followup_strategy:
+      parsed.followup_strategy || 'Follow-up via WhatsApp em 48h caso o e-mail não tenha retorno.',
+    objection_matrix:
+      parsed.objection_matrix ||
+      '1. Tá caro. R: Nosso foco é ROI; evitamos um sinistro que cobre meses de operação.\n2. Já temos rastreamento. R: Nós integramos inteligência e pronta resposta de ponta a ponta, não apenas rastreamos.',
+    qualification_matrix:
+      parsed.qualification_matrix ||
+      '1. Como vocês lidam com as perdas logísticas hoje?\n2. Qual é a sua atual tecnologia de gerenciamento de risco?\n3. Qual o volume atual da sua operação mensal?',
+    ice_breaker:
+      parsed.ice_breaker ||
+      `Notei o crescimento da ${lead.name} e como vocês têm expandido as operações recentemente.`,
+    approach_prompt:
+      parsed.approach_prompt ||
+      `Você é o SDR da Atlas falando com o decisor da ${lead.name}. Seu foco: conduzir uma conversa consultiva destacando segurança preditiva, redução de sinistralidade e otimização de apólices.`,
   };
 }
 
@@ -335,9 +411,11 @@ function generateFallbackCopies(lead: Lead, _pitch: string, dm: DecisionMaker): 
     whatsapp: `Olá${dmRef}, tudo bem? Sou especialista da Atlas Logística. Vi seu perfil${dmRoleRef} da ${lead.name}. Estamos compartilhando com líderes do setor um estudo prático de mitigação de riscos e redução de sinistros em transporte. Posso te enviar o resumo em PDF?`,
     linkedin: `Olá${dmRef}, é um prazer conectar! Acompanho os desafios logísticos da ${lead.name} e gostaria de somar em sua rede profissional com discussões sobre inovação e segurança operacional da Atlas.`,
     followup_strategy: 'Realizar tentativa de contato telefônico após 2 dias do envio do WhatsApp.',
-    objection_matrix: '1. Sem orçamento.\nR: O ROI da Atlas vem da prevenção direta de sinistros que custam muito mais.\n2. Estamos satisfeitos com o atual fornecedor.\nR: Entendemos. Muitas transportadoras também estavam, mas adotaram a Atlas pelo nosso diferencial de pronta-resposta híbrida.',
-    qualification_matrix: '1. Qual a média mensal de viagens?\n2. Qual tecnologia de monitoramento atual?\n3. Quais as principais dores de segurança enfrentadas no último semestre?',
-    ice_breaker: `Notei que a operação logística da ${lead.name} atende regiões chave que acompanhamos de perto na Atlas.`
+    objection_matrix:
+      '1. Sem orçamento.\nR: O ROI da Atlas vem da prevenção direta de sinistros que custam muito mais.\n2. Estamos satisfeitos com o atual fornecedor.\nR: Entendemos. Muitas transportadoras também estavam, mas adotaram a Atlas pelo nosso diferencial de pronta-resposta híbrida.',
+    qualification_matrix:
+      '1. Qual a média mensal de viagens?\n2. Qual tecnologia de monitoramento atual?\n3. Quais as principais dores de segurança enfrentadas no último semestre?',
+    ice_breaker: `Notei que a operação logística da ${lead.name} atende regiões chave que acompanhamos de perto na Atlas.`,
   };
 }
 
@@ -353,13 +431,13 @@ export async function enrichLeadWithPublicNewsAndScripts(
   pitch: string,
   config: AIConfig,
   tone?: string,
-  storedEvidence: EvidenceRecord[] = []
+  storedEvidence: EvidenceRecord[] = [],
 ): Promise<EnrichmentResult> {
   const dm = lead.decision_makers?.[0] || {
     name: lead.decision_maker_name || '',
     title: lead.decision_maker_title || '',
     email: lead.decision_maker_email || '',
-    linkedin: lead.decision_maker_linkedin || ''
+    linkedin: lead.decision_maker_linkedin || '',
   };
 
   const requestedTone = tone || 'consultivo';
@@ -420,8 +498,8 @@ Gere o dossiê e os roteiros com base apenas nos dados acima. Retorne o JSON com
       contents: `${systemPrompt}\n\n${userPrompt}`,
       config: {
         responseMimeType: 'application/json',
-        temperature: geminiTemperature
-      }
+        temperature: geminiTemperature,
+      },
     });
 
     const text = response.text || '{}';
@@ -430,28 +508,41 @@ Gere o dossiê e os roteiros com base apenas nos dados acima. Retorne o JSON com
     if (parseResult.ok) {
       const shape = validateEnrichmentShape(parseResult.value);
       recordAiGenerationLog({
-        callType: 'enrichment', engine: 'gemini', model: geminiModel, temperature: geminiTemperature, ...tokenUsage,
-        promptVersion: AI_PROMPT_VERSION, personalizationLevel, success: shape.valid,
+        callType: 'enrichment',
+        engine: 'gemini',
+        model: geminiModel,
+        temperature: geminiTemperature,
+        ...tokenUsage,
+        promptVersion: AI_PROMPT_VERSION,
+        personalizationLevel,
+        success: shape.valid,
         error: shape.errors.length > 0 ? shape.errors.join('; ') : undefined,
-        leadId: lead.id
+        leadId: lead.id,
       });
       if (shape.valid && shape.newsDossier && shape.copies) {
         return {
           news_dossier: shape.newsDossier,
           copies: formatParsedCopies(shape.copies.validFields, lead, dm),
           engineUsed: 'Gemini 3.7 Flash',
-          personalization_level: personalizationLevel
+          personalization_level: personalizationLevel,
         };
       }
     } else {
       recordAiGenerationLog({
-        callType: 'enrichment', engine: 'gemini', model: geminiModel, temperature: geminiTemperature, ...tokenUsage,
-        promptVersion: AI_PROMPT_VERSION, personalizationLevel, success: false,
-        error: `JSON inválido: ${parseResult.error}`, leadId: lead.id
+        callType: 'enrichment',
+        engine: 'gemini',
+        model: geminiModel,
+        temperature: geminiTemperature,
+        ...tokenUsage,
+        promptVersion: AI_PROMPT_VERSION,
+        personalizationLevel,
+        success: false,
+        error: `JSON inválido: ${parseResult.error}`,
+        leadId: lead.id,
       });
     }
   } catch (_err: any) {
-    console.info("Gemini enrichment com alta demanda, usando fallback.");
+    console.info('Gemini enrichment com alta demanda, usando fallback.');
   }
 
   // 2. Try Groq
@@ -463,7 +554,7 @@ Gere o dossiê e os roteiros com base apenas nos dados acima. Retorne o JSON com
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${effectiveGroqKey}`
+        Authorization: `Bearer ${effectiveGroqKey}`,
       },
       body: JSON.stringify({
         model: groqModel,
@@ -471,50 +562,70 @@ Gere o dossiê e os roteiros com base apenas nos dados acima. Retorne o JSON com
         temperature: groqTemperature,
         messages: [
           { role: 'system', content: systemPrompt },
-          { role: 'user', content: userPrompt }
-        ]
-      })
+          { role: 'user', content: userPrompt },
+        ],
+      }),
     });
 
     if (response.ok) {
-      const data = await response.json() as any;
+      const data = (await response.json()) as any;
       const content = data.choices?.[0]?.message?.content || '{}';
       const parseResult = safeParseJson(content);
       const tokenUsage = extractGroqTokenUsage(data);
       if (parseResult.ok) {
         const shape = validateEnrichmentShape(parseResult.value);
         recordAiGenerationLog({
-          callType: 'enrichment', engine: 'groq', model: groqModel, temperature: groqTemperature, ...tokenUsage,
-          promptVersion: AI_PROMPT_VERSION, personalizationLevel, success: shape.valid,
+          callType: 'enrichment',
+          engine: 'groq',
+          model: groqModel,
+          temperature: groqTemperature,
+          ...tokenUsage,
+          promptVersion: AI_PROMPT_VERSION,
+          personalizationLevel,
+          success: shape.valid,
           error: shape.errors.length > 0 ? shape.errors.join('; ') : undefined,
-          leadId: lead.id
+          leadId: lead.id,
         });
         if (shape.valid && shape.newsDossier && shape.copies) {
           return {
             news_dossier: shape.newsDossier,
             copies: formatParsedCopies(shape.copies.validFields, lead, dm),
             engineUsed: `Groq (${groqModel})`,
-            personalization_level: personalizationLevel
+            personalization_level: personalizationLevel,
           };
         }
       } else {
         recordAiGenerationLog({
-          callType: 'enrichment', engine: 'groq', model: groqModel, temperature: groqTemperature, ...tokenUsage,
-          promptVersion: AI_PROMPT_VERSION, personalizationLevel, success: false,
-          error: `JSON inválido: ${parseResult.error}`, leadId: lead.id
+          callType: 'enrichment',
+          engine: 'groq',
+          model: groqModel,
+          temperature: groqTemperature,
+          ...tokenUsage,
+          promptVersion: AI_PROMPT_VERSION,
+          personalizationLevel,
+          success: false,
+          error: `JSON inválido: ${parseResult.error}`,
+          leadId: lead.id,
         });
       }
     }
   } catch (_err: any) {
-    console.info("Groq enrichment offline, usando fallback.");
+    console.info('Groq enrichment offline, usando fallback.');
   }
 
   recordAiGenerationLog({
-    callType: 'enrichment', engine: 'fallback_local', model: null, temperature: null,
-    promptTokens: null, completionTokens: null, totalTokens: null,
-    promptVersion: AI_PROMPT_VERSION, personalizationLevel, success: false,
+    callType: 'enrichment',
+    engine: 'fallback_local',
+    model: null,
+    temperature: null,
+    promptTokens: null,
+    completionTokens: null,
+    totalTokens: null,
+    promptVersion: AI_PROMPT_VERSION,
+    personalizationLevel,
+    success: false,
     error: 'todos os motores de IA indisponíveis ou responderam com formato inválido',
-    leadId: lead.id
+    leadId: lead.id,
   });
 
   // Fallback sem IA disponível: nunca inventa notícias, fontes, datas, URLs ou
@@ -532,8 +643,8 @@ Gere o dossiê e os roteiros com base apenas nos dados acima. Retorne o JSON com
         : 'Sem decisor mapeado - nenhuma hipótese específica foi gerada.',
       commercial_hooks: [
         'A Atlas apoia operações do seu porte a reduzir custos de sinistro através de inteligência preditiva.',
-        'Proposta de uma auditoria rápida de 15 minutos para mapear os principais riscos operacionais.'
-      ]
+        'Proposta de uma auditoria rápida de 15 minutos para mapear os principais riscos operacionais.',
+      ],
     },
     copies: {
       cold_call: `[Roteiro de Cold Call]\n"Olá${dmRef}, ${dmGreeting}? Aqui é da Atlas (Segurança e Inteligência Logística). Ajudamos operações como a da ${lead.name} a reduzir riscos e custos de sinistro. Você teria 10 minutos para uma troca rápida de experiências?"`,
@@ -541,17 +652,17 @@ Gere o dossiê e os roteiros com base apenas nos dados acima. Retorne o JSON com
       whatsapp: `Olá${dmRef}, ${dmGreeting}? Sou da Atlas Logística. Preparei um resumo prático de como empresas do seu porte estão reduzindo custos operacionais com segurança preditiva. Posso te enviar por aqui?`,
       linkedin: `Olá${dmRef}! Gostaria de conectar para trocar insights sobre inteligência de risco e inovação em segurança logística.`,
       approach_prompt: `Você é o SDR da Atlas falando com o decisor da ${lead.name}. Seu foco: conduzir uma conversa consultiva destacando segurança preditiva, redução de sinistralidade e otimização de apólices.`,
-      followup_strategy: `1º Contato: Cold Call + WhatsApp. 2º Contato (+48h): E-mail. 3º Contato (+4 dias): Interação no LinkedIn.`
+      followup_strategy: `1º Contato: Cold Call + WhatsApp. 2º Contato (+48h): E-mail. 3º Contato (+4 dias): Interação no LinkedIn.`,
     },
     engineUsed: 'Motor local (fallback fixo)',
-    personalization_level: personalizationLevel
+    personalization_level: personalizationLevel,
   };
 }
 
 export async function chatWithLLaMA3(
   history: { role: string; content: string }[],
   userMessage: string,
-  config: AIConfig
+  config: AIConfig,
 ): Promise<{ text: string; modelUsed: string; tokensEstimated: number }> {
   const systemInstruction = `Você é o Assistente Especialista de Inteligência Comercial e Copywriting da Atlas (Segurança e Inteligência Logística).
 Você atende sempre em Português Brasileiro (PT-BR), com tom profissional, dinâmico, estratégico e aderente à identidade da marca Atlas ("Nós conectamos pessoas e tecnologia gerando valores com segurança e inovação").
@@ -566,8 +677,11 @@ Este chat é um assistente de apoio de uso geral (não gera copy final vinculado
       const cleanUrl = (config.ollamaUrl || 'http://localhost:11434').replace(/\/$/, '');
       const messages = [
         { role: 'system', content: systemInstruction },
-        ...history.map(h => ({ role: h.role === 'assistant' ? 'assistant' : 'user', content: h.content })),
-        { role: 'user', content: userMessage }
+        ...history.map((h) => ({
+          role: h.role === 'assistant' ? 'assistant' : 'user',
+          content: h.content,
+        })),
+        { role: 'user', content: userMessage },
       ];
 
       const res = await fetch(`${cleanUrl}/api/chat`, {
@@ -577,66 +691,84 @@ Este chat é um assistente de apoio de uso geral (não gera copy final vinculado
           model,
           stream: false,
           messages,
-          options: { temperature }
-        })
+          options: { temperature },
+        }),
       });
 
       if (res.ok) {
-        const data = await res.json() as any;
+        const data = (await res.json()) as any;
         const reply = data.message?.content || '';
         const tokenUsage = extractOllamaTokenUsage(data);
         recordAiGenerationLog({
-          callType: 'chat', engine: 'ollama', model, temperature, ...tokenUsage,
-          promptVersion: AI_PROMPT_VERSION, personalizationLevel: null, success: true
+          callType: 'chat',
+          engine: 'ollama',
+          model,
+          temperature,
+          ...tokenUsage,
+          promptVersion: AI_PROMPT_VERSION,
+          personalizationLevel: null,
+          success: true,
         });
         return {
           text: reply,
           modelUsed: `Ollama (${model})`,
-          tokensEstimated: Math.round(reply.length / 4)
+          tokensEstimated: Math.round(reply.length / 4),
         };
       }
     } catch (_err: any) {
-      console.info("Ollama chat indisponível, usando fallback.");
+      console.info('Ollama chat indisponível, usando fallback.');
     }
   }
 
   // 2. Try Groq
   const effectiveGroqKey = (config.groqApiKey || process.env.GROQ_API_KEY || '').trim();
-  if (config.provider === 'groq' || (!config.groqApiKey && config.provider !== 'ollama' && config.provider !== 'gemini')) {
+  if (
+    config.provider === 'groq' ||
+    (!config.groqApiKey && config.provider !== 'ollama' && config.provider !== 'gemini')
+  ) {
     const model = config.groqModel || 'llama-3.3-70b-versatile';
     const temperature = config.temperature || 0.7;
     try {
       const messages = [
         { role: 'system', content: systemInstruction },
-        ...history.map(h => ({ role: h.role === 'assistant' ? 'assistant' : 'user', content: h.content })),
-        { role: 'user', content: userMessage }
+        ...history.map((h) => ({
+          role: h.role === 'assistant' ? 'assistant' : 'user',
+          content: h.content,
+        })),
+        { role: 'user', content: userMessage },
       ];
 
       const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${effectiveGroqKey}`
+          Authorization: `Bearer ${effectiveGroqKey}`,
         },
-        body: JSON.stringify({ model, messages, temperature })
+        body: JSON.stringify({ model, messages, temperature }),
       });
 
       if (res.ok) {
-        const data = await res.json() as any;
+        const data = (await res.json()) as any;
         const reply = data.choices?.[0]?.message?.content || '';
         const tokenUsage = extractGroqTokenUsage(data);
         recordAiGenerationLog({
-          callType: 'chat', engine: 'groq', model, temperature, ...tokenUsage,
-          promptVersion: AI_PROMPT_VERSION, personalizationLevel: null, success: true
+          callType: 'chat',
+          engine: 'groq',
+          model,
+          temperature,
+          ...tokenUsage,
+          promptVersion: AI_PROMPT_VERSION,
+          personalizationLevel: null,
+          success: true,
         });
         return {
           text: reply,
           modelUsed: `Groq (${model})`,
-          tokensEstimated: tokenUsage.totalTokens ?? Math.round(reply.length / 4)
+          tokensEstimated: tokenUsage.totalTokens ?? Math.round(reply.length / 4),
         };
       }
     } catch (_err: any) {
-      console.info("Groq chat indisponível, usando fallback.");
+      console.info('Groq chat indisponível, usando fallback.');
     }
   }
 
@@ -650,12 +782,12 @@ Este chat é um assistente de apoio de uso geral (não gera copy final vinculado
     for (const msg of history) {
       contents.push({
         role: msg.role === 'assistant' ? 'model' : 'user',
-        parts: [{ text: msg.content }]
+        parts: [{ text: msg.content }],
       });
     }
     contents.push({
       role: 'user',
-      parts: [{ text: userMessage }]
+      parts: [{ text: userMessage }],
     });
 
     const response = await ai.models.generateContent({
@@ -663,32 +795,45 @@ Este chat é um assistente de apoio de uso geral (não gera copy final vinculado
       contents,
       config: {
         systemInstruction,
-        temperature: geminiTemperature
-      }
+        temperature: geminiTemperature,
+      },
     });
 
     const reply = response.text || 'Desculpe, não consegui processar a resposta no momento.';
     const tokenUsage = extractGeminiTokenUsage(response);
     recordAiGenerationLog({
-      callType: 'chat', engine: 'gemini', model: geminiModel, temperature: geminiTemperature, ...tokenUsage,
-      promptVersion: AI_PROMPT_VERSION, personalizationLevel: null, success: true
+      callType: 'chat',
+      engine: 'gemini',
+      model: geminiModel,
+      temperature: geminiTemperature,
+      ...tokenUsage,
+      promptVersion: AI_PROMPT_VERSION,
+      personalizationLevel: null,
+      success: true,
     });
     return {
       text: reply,
       modelUsed: 'Gemini 3.7 Flash (Motor Inteligente)',
-      tokensEstimated: Math.round(reply.length / 4)
+      tokensEstimated: Math.round(reply.length / 4),
     };
   } catch (err: any) {
     recordAiGenerationLog({
-      callType: 'chat', engine: 'fallback_local', model: null, temperature: null,
-      promptTokens: null, completionTokens: null, totalTokens: null,
-      promptVersion: AI_PROMPT_VERSION, personalizationLevel: null, success: false,
-      error: err?.message || 'todos os motores de IA indisponíveis'
+      callType: 'chat',
+      engine: 'fallback_local',
+      model: null,
+      temperature: null,
+      promptTokens: null,
+      completionTokens: null,
+      totalTokens: null,
+      promptVersion: AI_PROMPT_VERSION,
+      personalizationLevel: null,
+      success: false,
+      error: err?.message || 'todos os motores de IA indisponíveis',
     });
     return {
       text: `Olá! Sou o assistente Atlas. Estou pronto para ajudar a aprimorar suas mensagens comerciais de outbound, qualificar frotistas e estruturar o pitch de segurança e gestão de risco. (Nota: ${err.message || 'Motor local ativo'})`,
       modelUsed: 'Atlas Native Engine',
-      tokensEstimated: 50
+      tokensEstimated: 50,
     };
   }
 }

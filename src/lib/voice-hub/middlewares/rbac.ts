@@ -2,10 +2,14 @@ import type { Request, Response, NextFunction } from 'express';
 import { getPermissionsForRoleName } from '../repositories/roleRepository.js';
 
 export const requireTenant = async (req: Request, res: Response, next: NextFunction) => {
-    if (!req.voiceHubUser || !req.organizationId || req.voiceHubUser.organizationId !== req.organizationId) {
-      return res.status(401).json({ error: 'Não autorizado.' });
-    }
-    return next();
+  if (
+    !req.voiceHubUser ||
+    !req.organizationId ||
+    req.voiceHubUser.organizationId !== req.organizationId
+  ) {
+    return res.status(401).json({ error: 'Não autorizado.' });
+  }
+  return next();
 };
 
 export const requireRole = (allowedRoles: string[]) => {
@@ -16,7 +20,9 @@ export const requireRole = (allowedRoles: string[]) => {
     }
 
     if (!allowedRoles.includes(session.role)) {
-      return res.status(403).json({ error: `Acesso proibido. Requer nível: ${allowedRoles.join(' ou ')}.` });
+      return res
+        .status(403)
+        .json({ error: `Acesso proibido. Requer nível: ${allowedRoles.join(' ou ')}.` });
     }
 
     return next();
@@ -31,7 +37,7 @@ export const requireRole = (allowedRoles: string[]) => {
 // role-name allowlists such as the old `ROLES_ALLOWED_TO_INTERVENE`.
 export async function hasPermission(
   user: { role: string; organizationId: string } | null | undefined,
-  permission: string
+  permission: string,
 ): Promise<boolean> {
   if (!user?.role || !user.organizationId) return false;
   const permissions = await getPermissionsForRoleName(user.role, user.organizationId);
@@ -49,7 +55,9 @@ export const requirePermission = (permission: string) => {
     return hasPermission(req.voiceHubUser, permission)
       .then((allowed) => {
         if (!allowed) {
-          return res.status(403).json({ error: `Acesso proibido. Requer a permissão: ${permission}.` });
+          return res
+            .status(403)
+            .json({ error: `Acesso proibido. Requer a permissão: ${permission}.` });
         }
         return next();
       })

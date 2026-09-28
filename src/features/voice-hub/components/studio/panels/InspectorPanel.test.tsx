@@ -52,7 +52,7 @@ describe('InspectorPanel accessibility', () => {
 
     expect(titleInput).toHaveValue('Saudação Inicial');
     expect(useStudioStore.getState().nodes.find((n) => n.id === 'prompt-1')?.data.label).toBe(
-      'Saudação Inicial'
+      'Saudação Inicial',
     );
   });
 

@@ -50,7 +50,7 @@ export class ProrationNotSupportedError extends Error {
     super(
       "billingService.changePlan: effectiveAt='next_cycle' (troca agendada/com proração) ainda " +
         'não é suportado — requer Wallet.currentPeriodStart no schema (fora do escopo desta ' +
-        'execução, ver limitação documentada em billingService.ts). Use effectiveAt=\'immediate\'.'
+        "execução, ver limitação documentada em billingService.ts). Use effectiveAt='immediate'.",
     );
     this.name = 'ProrationNotSupportedError';
   }
@@ -98,7 +98,9 @@ export interface RecordTransactionInput {
 }
 
 function toPlanStatus(raw: string): PlanStatus {
-  return (['inactive', 'active', 'past_due', 'canceled', 'trialing'] as const).includes(raw as PlanStatus)
+  return (['inactive', 'active', 'past_due', 'canceled', 'trialing'] as const).includes(
+    raw as PlanStatus,
+  )
     ? (raw as PlanStatus)
     : 'inactive';
 }
@@ -167,7 +169,7 @@ export async function getWalletSummary(organizationId: string): Promise<WalletSu
 // Paginated transaction history for the "Histórico de Uso" table in Billing.tsx.
 export async function listTransactions(
   organizationId: string,
-  pagination: { page: number; pageSize: number }
+  pagination: { page: number; pageSize: number },
 ): Promise<{ items: TransactionSummary[]; total: number }> {
   const [items, total] = await findTransactionsForTenant(organizationId, pagination);
   return { items: items.map(mapTransaction), total };
@@ -189,7 +191,7 @@ export async function changePlan(
   organizationId: string,
   newPlanId: string,
   _actorUserId: string,
-  effectiveAt: 'immediate' | 'next_cycle' = 'immediate'
+  effectiveAt: 'immediate' | 'next_cycle' = 'immediate',
 ): Promise<WalletSummary> {
   if (effectiveAt === 'next_cycle') {
     throw new ProrationNotSupportedError();
@@ -218,7 +220,9 @@ export async function changePlan(
 // throwing or crediting/debiting the wallet a second time. Redelivering the same
 // (organizationId, idempotencyKey) request — a payment webhook retry, a client double-submit — is
 // therefore always safe.
-export async function recordTransaction(input: RecordTransactionInput): Promise<TransactionSummary> {
+export async function recordTransaction(
+  input: RecordTransactionInput,
+): Promise<TransactionSummary> {
   try {
     const created = await createTransactionAtomic({
       organizationId: input.organizationId,

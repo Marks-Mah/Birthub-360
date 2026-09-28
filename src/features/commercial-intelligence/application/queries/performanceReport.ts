@@ -18,7 +18,11 @@ import type {
   RevenueConcentrationStats,
 } from '../../domain/CommercialIntelligence.js';
 import { checkEligibility, isDealOpen, STAGE_AGING_CRITICAL_DAYS } from '../pipelineEligibility.js';
-import { buildStageDurationStats, loadScoredDeals, type ScoredDeal } from '../scoring/dealScoring.js';
+import {
+  buildStageDurationStats,
+  loadScoredDeals,
+  type ScoredDeal,
+} from '../scoring/dealScoring.js';
 import { applyScope } from '../scoring/scopeFilter.js';
 import {
   computeHistoricalStageReach,

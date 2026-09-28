@@ -1,6 +1,10 @@
 import type { Request, Response } from 'express';
 import { outboundCallSchema } from '../validators/index.js';
-import { initiateOutboundCall, AgentNotFoundError, DuplicateCallError } from '../services/outboundCallService.js';
+import {
+  initiateOutboundCall,
+  AgentNotFoundError,
+  DuplicateCallError,
+} from '../services/outboundCallService.js';
 import { TwilioNotConfiguredError } from '../services/twilioClient.js';
 import { logger } from '../../../lib/logger.js';
 
@@ -32,6 +36,8 @@ export async function initiateOutboundCallHandler(req: Request, res: Response) {
     }
 
     logger.error('[VoiceOutbound] Failed to initiate call', err);
-    return res.status(502).json({ error: 'Não foi possível iniciar a chamada no provedor de telefonia.' });
+    return res
+      .status(502)
+      .json({ error: 'Não foi possível iniciar a chamada no provedor de telefonia.' });
   }
 }

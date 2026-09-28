@@ -3,9 +3,9 @@ import type {
   OriginateCallInput,
   OriginateCallResult,
   CallStatusSnapshot,
-} from "../../application/ports/DialerProvider.js";
-import type { CallAttemptStatus } from "../../domain/entities/CallAttempt.js";
-import type { ThreeCxCallControlClient } from "./ThreeCxCallControlClient.js";
+} from '../../application/ports/DialerProvider.js';
+import type { CallAttemptStatus } from '../../domain/entities/CallAttempt.js';
+import type { ThreeCxCallControlClient } from './ThreeCxCallControlClient.js';
 
 export interface MinimalLogger {
   warn(obj: Record<string, unknown>, msg: string): void;
@@ -21,13 +21,13 @@ const noopLogger: MinimalLogger = { warn: () => undefined };
  * variações entre versões da 3CX.
  */
 const STATUS_KEYWORD_MAP: ReadonlyArray<readonly [string, CallAttemptStatus]> = [
-  ["dial", "dialing"],
-  ["ring", "ringing_agent"],
-  ["talk", "connected"],
-  ["connect", "connected"],
-  ["busy", "busy"],
-  ["fail", "failed"],
-  ["error", "failed"],
+  ['dial', 'dialing'],
+  ['ring', 'ringing_agent'],
+  ['talk', 'connected'],
+  ['connect', 'connected'],
+  ['busy', 'busy'],
+  ['fail', 'failed'],
+  ['error', 'failed'],
 ];
 
 export class ThreeCxDialerProvider implements DialerProvider {
@@ -49,9 +49,8 @@ export class ThreeCxDialerProvider implements DialerProvider {
     }
 
     const callId = body.result?.callid;
-    const providerCallId = typeof callId === "number" && Number.isFinite(callId)
-      ? String(callId)
-      : null;
+    const providerCallId =
+      typeof callId === 'number' && Number.isFinite(callId) ? String(callId) : null;
 
     return { accepted: true, providerCallId };
   }
@@ -87,8 +86,8 @@ export class ThreeCxDialerProvider implements DialerProvider {
     this.logger.warn(
       { rawStatus },
       "Status de participante da 3CX não mapeado — tratando como 'ringing_agent'. " +
-        "Ajuste STATUS_KEYWORD_MAP em ThreeCxDialerProvider.",
+        'Ajuste STATUS_KEYWORD_MAP em ThreeCxDialerProvider.',
     );
-    return "ringing_agent";
+    return 'ringing_agent';
   }
 }
