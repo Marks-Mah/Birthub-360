@@ -1,7 +1,7 @@
 - De: 00 (Coordenador)
 - Para: 04 (CRM e BI)
 - Onda: techdebt-2026-09-29
-- Status: aberto
+- Status: resolvido
 - Prioridade: alto
 
 ## Problema
@@ -38,3 +38,21 @@ Audit completo em: `c:\Users\marce\OneDrive\Desktop\BirthHub360-Debt-Audit\Birth
 Classificado como P1 (Architecture) no audit. Recomendação: "Decompor por responsabilidade somente quando houver ganho claro de coesão, testabilidade e ownership."
 
 Referência: AGENTS.md em `src/features/commercial-intelligence/AGENTS.md` define Agente 04 como dono desta pasta.
+
+## Resolução (Agente 04)
+
+1. **Decomposição do Monólito (1752 → ~260 linhas):**
+   - Criada a pasta `src/features/commercial-intelligence/components/diagnostic/` contendo:
+     - `types.ts`: interfaces e uniões de tipagem (`DailyTask`, `CallAnalysisResult`, `ChannelTag`, `ActiveTab`, `SegmentKey`).
+     - `constants.ts`: datasets e tabelas de diagnóstico (`DIAGNOSTIC_DATA`, `DEFAULT_DAILY_PLAN`, `PITCHES_BY_SEGMENT`, `OBJECTIONS_DATABASE`, `CHANNEL_HEX`, `DEAL_STAGE_LABEL`).
+     - `DailyTab.tsx`: Pace Diário, SLA Alerts, Sprint Launcher 1-clique, checklist diário e anotações.
+     - `IaCoachTab.tsx`: gerador de pitch por segmento, analisador de chamadas Meet e matriz de quebra de objeções.
+     - `Pauta1to1Tab.tsx`: relatório executivo formatado para exportação e impressão com gestor.
+     - `MonthFunnelTab.tsx`: componente reutilizável para renderização analítica dos funis de Julho e Agosto.
+     - `ComparativeTab.tsx`: comparativo métrico Julho vs Agosto com barras e pills delta.
+     - `EmCadenciaTab.tsx`: monitoramento de estoque de leads parados em cadência e gaps de follow-up.
+     - `DiagnosticBottlenecksTab.tsx`: síntese dos gargalos críticos do diagnóstico.
+     - `index.ts`: exportador central do submódulo.
+2. **Validação de Tipos e Contratos:**
+   - `npx tsc --noEmit` executado e aprovado com 0 erros.
+
