@@ -100,3 +100,6 @@ urls.txt
 tsc_output.txt
 .tmp/
 nul
+
+# Backups temporarios gerados pelos gates locais
+.gate-backups/
