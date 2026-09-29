@@ -31,6 +31,7 @@ Distribuição por severidade:
 **Arquivo:** `.agents/handoffs/techdebt-2026-09-29/00-para-05-arquivos-monoliticos-prospecting.md`
 **Arquivos:** `routes.ts` (3614 linhas), `LeadCard.tsx` (2451 linhas)
 **Prioridade:** Alto
+**Status:** Resolvido (`LeadCard.tsx` reduzido de 2452 para 1367 linhas com 6 subcomponentes modulares; `routes.ts` reduzido de 3614 para 1409 linhas com sub-roteadores modulares em `server/routes/` e serviços em `server/services/` e `server/utils/`)
 
 #### 2.2 Cadência
 **Arquivo:** `.agents/handoffs/techdebt-2026-09-29/00-para-17-arquivo-monolitico-cadence.md`
