@@ -167,7 +167,7 @@
     "meilisearch": "^0.60.0",
     "million": "^3.1.11",
     "motion": "^13.4.3",
-    "multer": "^2.2.0",
+    "multer": "^2.4.0",
     "nodemailer": "^9.0.5",
     "ollama": "^0.6.3",
     "pdf-parse": "^1.1.4",
