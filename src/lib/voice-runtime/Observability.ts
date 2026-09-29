@@ -1,4 +1,4 @@
-import { RuntimeEvent } from './types.js';
+import type { RuntimeEvent } from './types.js';
 import { logger } from '../logger.js';
 
 export class ObservabilityEngine {

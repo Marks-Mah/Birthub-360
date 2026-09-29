@@ -46,42 +46,37 @@ beforeEach(() => {
 
 describe('buildBirth Hub 360OutboundIdempotencyKey', () => {
   it('uses the lead id when provided', () => {
-    const key = buildBirth Hub 360OutboundIdempotencyKey({
+    const key = buildBirth Hub 360OutboundIdempotencyKey(
       leadId: 'lead-123',
       phoneNumber: '+5511999998888',
       name: 'Fulano',
-      company: 'Acme',
-    });
+      company: 'Acme',);
     expect(key).toBe('idempotency:birthhub360-outbound-call:lead:lead-123');
   });
 
   it('falls back to a stable hash of phone/name/company when there is no lead id', () => {
-    const keyA = buildBirth Hub 360OutboundIdempotencyKey({
+    const keyA = buildBirth Hub 360OutboundIdempotencyKey(
       phoneNumber: '+55 (11) 99999-8888',
       name: 'Fulano',
-      company: 'Acme',
-    });
-    const keyB = buildBirth Hub 360OutboundIdempotencyKey({
+      company: 'Acme',);
+    const keyB = buildBirth Hub 360OutboundIdempotencyKey(
       phoneNumber: '5511999998888',
       name: 'FULANO',
-      company: 'acme',
-    });
+      company: 'acme',);
     // Different formatting/casing of the same underlying data must still dedup to the same key.
     expect(keyA).toBe(keyB);
     expect(keyA.startsWith('idempotency:birthhub360-outbound-call:hash:')).toBe(true);
   });
 
   it('produces different hash keys for genuinely different leads', () => {
-    const keyA = buildBirth Hub 360OutboundIdempotencyKey({
+    const keyA = buildBirth Hub 360OutboundIdempotencyKey(
       phoneNumber: '+5511999998888',
       name: 'A',
-      company: 'X',
-    });
-    const keyB = buildBirth Hub 360OutboundIdempotencyKey({
+      company: 'X',);
+    const keyB = buildBirth Hub 360OutboundIdempotencyKey(
       phoneNumber: '+5511999997777',
       name: 'B',
-      company: 'Y',
-    });
+      company: 'Y',);
     expect(keyA).not.toBe(keyB);
   });
 });

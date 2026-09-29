@@ -1,4 +1,4 @@
-import { BaseProvider } from './providers/BaseProvider.js';
+import type { BaseProvider } from './providers/BaseProvider.js';
 import { observability } from './Observability.js';
 import { logger } from '../logger.js';
 import { geminiProvider } from './providers/GeminiProvider.js';

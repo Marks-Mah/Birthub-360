@@ -115,7 +115,7 @@ export const getAiModel = (
       );
 
       const usage = response.usage;
-      let content = response.choices?.[0]?.message?.content?.trim() ?? '';
+      const content = response.choices?.[0]?.message?.content?.trim() ?? '';
 
       // Guardrails: verificar PII e toxicidade antes de retornar
       const piiCheck = detectPII(content);

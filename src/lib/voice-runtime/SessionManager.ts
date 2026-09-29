@@ -1,4 +1,4 @@
-import { VoiceSession, SessionState, AgentRuntimeConfig, ConversationTurn } from './types.js';
+import type { VoiceSession, SessionState, AgentRuntimeConfig, ConversationTurn } from './types.js';
 import { observability } from './Observability.js';
 import { latencyMonitor } from './LatencyMonitor.js';
 import { memoryPipeline } from './MemoryPipeline.js';

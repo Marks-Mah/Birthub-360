@@ -1,4 +1,4 @@
-import { KnowledgeConfidence } from '../types.js';
+import type { KnowledgeConfidence } from '../types.js';
 
 export interface KnowledgeDocument {
   id: string;

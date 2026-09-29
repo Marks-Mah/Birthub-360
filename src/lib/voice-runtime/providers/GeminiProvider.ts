@@ -1,4 +1,4 @@
-import { BaseProvider, ProviderResponse, ProviderInput, ProviderContext } from './BaseProvider.js';
+import { BaseProvider, type ProviderResponse, type ProviderInput, type ProviderContext } from './BaseProvider.js';
 import { logger } from '../../logger.js';
 
 export class GeminiLiveProvider extends BaseProvider {
