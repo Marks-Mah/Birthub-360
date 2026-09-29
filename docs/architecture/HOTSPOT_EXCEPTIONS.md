@@ -116,18 +116,18 @@ propósito por estar fora de "## Exceções ativas"):
 
 ### `src/features/prospecting/outbound/components/LeadCard.tsx`
 
-- **Limite excepcional:** 2500 linhas
-- **Dono:** Agente 07 — IA e Automações
-- **Motivo:** Integração massiva e bruta da aplicação satélite Leads-Outbound na onda 13. Requer refatoração futura para quebrar os componentes do Vite isolados no framework do Birthub-360.
-- **Registrado em:** 2026-09-24
+- **Limite excepcional:** 1500 linhas
+- **Dono:** Agente 05 — Prospecção
+- **Motivo:** Modularizado na campanha techdebt-2026-09-29 (extraídos LeadCnpjDataSection, LeadDecisionMakerSection, LeadActionsBar, LeadNewsDossierSection, LeadOutreachSection, LeadTasksAndActivitySection), reduzindo de 2452 para 1367 linhas.
+- **Registrado em:** 2026-09-29
 - **Reavaliar até:** 2026-11-30
 
 ### `src/features/prospecting/outbound/server/routes.ts`
 
-- **Limite excepcional:** 3700 linhas
-- **Dono:** Agente 07 — IA e Automações
-- **Motivo:** Integração massiva e bruta da aplicação satélite Leads-Outbound na onda 13 (ajustado após Biome format).
-- **Registrado em:** 2026-09-24
+- **Limite excepcional:** 1500 linhas
+- **Dono:** Agente 05 — Prospecção
+- **Motivo:** Modularizado na campanha techdebt-2026-09-29 (extraídos leadSearch.service, formatLead, e sub-routers auth, campaigns, tasks, chat, system, integrations), reduzindo de 3614 para 1409 linhas.
+- **Registrado em:** 2026-09-29
 - **Reavaliar até:** 2026-11-30
 
 ### `src/features/voice-hub/components/design-system/index.tsx`
