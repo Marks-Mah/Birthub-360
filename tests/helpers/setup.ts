@@ -46,3 +46,4 @@ vi.mock('bullmq', async (importOriginal) => {
 vi.mock('canvas-confetti', () => ({
   default: vi.fn(),
 }));
+delete process.env.PII_BLIND_INDEX_KEY;
