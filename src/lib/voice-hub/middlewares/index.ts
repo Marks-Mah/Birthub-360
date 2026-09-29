@@ -179,7 +179,6 @@ export const attachAuthIfPresent = async (
       return res.status(429).json({
         error: 'Limite de requisições excedido para esta chave de API. Tente novamente em breve.',
       });
-      return;
     }
   }
 
