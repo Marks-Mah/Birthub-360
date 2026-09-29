@@ -31,3 +31,6 @@ export const PRODUCT_MODULES: ProductModule[] = [
     colorTheme: 'bg-purple-100 text-purple-600',
   }
 ];
+
+export type ProductModuleKey = string;
+

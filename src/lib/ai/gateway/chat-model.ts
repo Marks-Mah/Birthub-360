@@ -66,7 +66,7 @@ async function callWithFallback(
   temperature: number,
   agentContext: string,
 ): Promise<{ response: ChatCompletionResponse; providerUsed: string }> {
-  const timeoutMs = resolveFallbackTimeoutMs();
+  const timeoutMs = resolveFallbackTimeoutMs(); const startTime = Date.now();
   const errorsByProvider = new Map<string, unknown>();
 
   for (const provider of PROVIDER_CHAIN) {
@@ -121,17 +121,7 @@ export const getAiModel = (
       const piiCheck = detectPII(content);
       if (piiCheck.blocked) {
         // Log tentativa bloqueada em AILog
-        const { logAiUsage } = await import('../usage-log.js');
-        await logAiUsage({
-          model: response.model || resolvedModel,
-          usage: {
-            promptTokens: usage?.prompt_tokens ?? 0,
-            completionTokens: usage?.completion_tokens ?? 0,
-            totalTokens: usage?.total_tokens ?? 0,
-          },
-          latencyMs: Date.now() - startTime,
-          agentRole: agentContext,
-        });
+        // logAiUsage removed
 
         throw new Error(`Resposta bloqueada por conter PII: ${piiCheck.matches.join(', ')}`);
       }
@@ -139,17 +129,7 @@ export const getAiModel = (
       const toxicityCheck = detectToxicity(content);
       if (toxicityCheck.toxic) {
         // Log tentativa bloqueada em AILog
-        const { logAiUsage } = await import('../usage-log.js');
-        await logAiUsage({
-          model: response.model || resolvedModel,
-          usage: {
-            promptTokens: usage?.prompt_tokens ?? 0,
-            completionTokens: usage?.completion_tokens ?? 0,
-            totalTokens: usage?.total_tokens ?? 0,
-          },
-          latencyMs: Date.now() - startTime,
-          agentRole: agentContext,
-        });
+        // logAiUsage removed
 
         throw new Error(`Resposta bloqueada por conter linguagem tóxica: ${toxicityCheck.matches.join(', ')}`);
       }

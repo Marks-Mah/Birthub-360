@@ -1,3 +1,4 @@
+import React from 'react';
 import { LineChart, SlidersHorizontal } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
@@ -137,7 +138,7 @@ export function CommercialIntelligenceHub() {
   };
 
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  const handleMouseMove = useCallback((e: React.MouseEvent) => {
+  const handleMouseMove = React.useCallback((e: React.MouseEvent) => {
     const rect = e.currentTarget.getBoundingClientRect();
     setMousePos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
   }, []);

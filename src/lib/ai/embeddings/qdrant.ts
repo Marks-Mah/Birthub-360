@@ -146,7 +146,7 @@ export async function searchEmbeddings(
       with_payload: true,
     });
 
-    return response.map((result) => ({
+    return (response as any).map((result: any) => ({
       id: result.id as string,
       score: result.score || 0,
       payload: result.payload as EmbeddingMetadata,
