@@ -431,7 +431,7 @@ if __name__ == "__main__":
                       role="option"
                       aria-selected={triggerApp === t.id}
                       tabIndex={0}
-                      onClick={() => {
+                      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={() => {
                         setTriggerApp(t.id);
                         setActiveDropdown(null);
                       }}
@@ -486,7 +486,7 @@ if __name__ == "__main__":
                       role="option"
                       aria-selected={actionApp === a.id}
                       tabIndex={0}
-                      onClick={() => {
+                      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={() => {
                         setActionApp(a.id);
                         setActiveDropdown(null);
                       }}
@@ -539,7 +539,7 @@ if __name__ == "__main__":
                       role="option"
                       aria-selected={tool === t.id}
                       tabIndex={0}
-                      onClick={() => {
+                      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={() => {
                         setTool(t.id);
                         setActiveDropdown(null);
                       }}
@@ -588,7 +588,7 @@ if __name__ == "__main__":
                       role="option"
                       aria-selected={aiLayer === a.id}
                       tabIndex={0}
-                      onClick={() => {
+                      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={() => {
                         setAiLayer(a.id);
                         setActiveDropdown(null);
                       }}

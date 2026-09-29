@@ -57,10 +57,10 @@ export default function AgentRegistry() {
             </p>
           </div>
           <div className="flex gap-3">
-            <button className="px-4 py-2.5 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 text-white font-medium hover:bg-white/20 transition-all flex items-center shadow-[0_0_15px_rgba(255,255,255,0.1)]">
+            <button type="button" className="px-4 py-2.5 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 text-white font-medium hover:bg-white/20 transition-all flex items-center shadow-[0_0_15px_rgba(255,255,255,0.1)]">
               <Filter className="h-4 w-4 mr-2" /> Filtrar
             </button>
-            <button
+            <button type="button"
               onClick={() => navigate('/dashboard/agents/new')}
               className="px-5 py-2.5 rounded-xl bg-white text-brand-900 font-bold hover:bg-brand-50 transition-all flex items-center shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:shadow-[0_0_30px_rgba(255,255,255,0.5)] transform hover:-translate-y-0.5"
             >
@@ -97,7 +97,7 @@ export default function AgentRegistry() {
             Nenhum agente encontrado
           </h3>
           <p className="text-slate-500 mb-6">Você ainda não criou nenhum agente de voz.</p>
-          <button
+          <button type="button"
             onClick={() => navigate('/dashboard/agents/new')}
             className="px-6 py-2.5 rounded-xl bg-brand-600 text-white font-bold hover:bg-brand-700 transition-colors inline-flex items-center"
           >
@@ -119,7 +119,7 @@ export default function AgentRegistry() {
               return (
                 <div
                   key={agent.id}
-                  onClick={() => navigate(`/dashboard/agents/${agent.id}`)}
+                  role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={() => navigate(`/dashboard/agents/${agent.id}`)}
                   className="group relative bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl hover:border-brand-300 dark:hover:border-brand-700 transition-all duration-300 cursor-pointer overflow-hidden transform hover:-translate-y-1"
                   style={{ animationDelay: `${i * 100}ms` }}
                 >
@@ -145,7 +145,7 @@ export default function AgentRegistry() {
                       </div>
                     </div>
                     <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button
+                      <button type="button"
                         onClick={(e) => handleDelete(e, agent.id)}
                         className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-colors"
                       >

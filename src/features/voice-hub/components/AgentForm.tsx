@@ -68,7 +68,7 @@ export function AgentForm() {
       {errorMsg && (
         <div className="bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 p-4 rounded-2xl flex justify-between items-center border border-red-200 dark:border-red-800/50">
           <p className="font-medium text-sm">{errorMsg}</p>
-          <button
+          <button type="button"
             onClick={() => setErrorMsg(null)}
             className="p-1 hover:bg-red-100 dark:hover:bg-red-900/50 rounded-full transition-colors"
           >
@@ -197,14 +197,14 @@ export function AgentForm() {
 
         {/* Footer Actions */}
         <div className="bg-slate-50/80 dark:bg-slate-950/80 border-t border-slate-200 dark:border-slate-800 p-6 md:px-10 flex justify-between items-center backdrop-blur-xl">
-          <button
+          <button type="button"
             onClick={() => navigate(-1)}
             className="px-6 py-3 rounded-xl text-slate-600 dark:text-slate-400 font-medium hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors text-sm"
           >
             Cancelar
           </button>
 
-          <button
+          <button type="button"
             onClick={handleSave}
             disabled={isSaving}
             className="px-8 py-3 bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-700 hover:to-indigo-700 text-white font-bold rounded-xl shadow-lg shadow-brand-500/30 transform hover:-translate-y-0.5 transition-all flex items-center gap-2 text-sm disabled:opacity-50"
@@ -238,7 +238,7 @@ interface TemplateCardProps {
 function TemplateCard({ active, onClick, icon, title, color }: TemplateCardProps) {
   return (
     <div
-      onClick={onClick}
+      role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={onClick}
       className={`group relative overflow-hidden p-6 rounded-2xl border-2 transition-all cursor-pointer ${
         active
           ? 'border-brand-500 bg-brand-50/50 dark:bg-brand-900/10 shadow-md'

@@ -70,9 +70,8 @@ function timeLabel(activity: CalendarActivity): string {
 function ActivityCard({ activity, dragging }: { activity: CalendarActivity; dragging?: boolean }) {
   return (
     <div
-      className={`w-full text-left px-1.5 py-1 rounded-md border text-[10px] leading-tight ${STATUS_STYLE[activity.status]} ${
-        dragging ? 'shadow-lg' : ''
-      }`}
+      className={`w-full text-left px-1.5 py-1 rounded-md border text-[10px] leading-tight ${STATUS_STYLE[activity.status]} ${dragging ? 'shadow-lg' : ''
+        }`}
     >
       <span className="font-semibold">{timeLabel(activity)}</span>{' '}
       <span className="opacity-90">{activity.type}</span>
@@ -101,28 +100,32 @@ function DraggableActivity({
 
   return (
     // Elemento é alvo de useDraggable (dnd-kit) — listeners/attributes esperam um elemento
-    // genérico, não um <button> nativo (padrão já estabelecido no Piloto 020, ver
+    // genérico, não um <button type="button"> nativo (padrão já estabelecido no Piloto 020, ver
     // .claude/PILOTS.md).
     // biome-ignore lint/a11y/useSemanticElements: ver comentário acima
     <div
       ref={setNodeRef}
       {...(canDrag ? listeners : {})}
       {...attributes}
-      onClick={() => onOpen(activity)}
+      role="button"
+      tabIndex={0}
+      aria-label={`${activity.type} — ${activitySubject(activity)} — ${activity.status}`}
       // `{...listeners}` do dnd-kit já traz o próprio onKeyDown (Space ativa o pickup de
       // arrastar) — sobrescrever sem chamá-lo primeiro reproduziria o mesmo bug real já
       // encontrado e corrigido em CrmBoard.tsx/KanbanCard (onKeyDown customizado apagando o do
       // dnd-kit, drag por teclado ficava inoperável). Enter abre o detalhe, sem colidir com Space.
       onKeyDown={(e) => {
         if (canDrag) listeners?.onKeyDown?.(e);
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          e.currentTarget.click();
+        }
         if (e.key === 'Enter') {
           e.preventDefault();
           onOpen(activity);
         }
       }}
-      role="button"
-      tabIndex={0}
-      aria-label={`${activity.type} — ${activitySubject(activity)} — ${activity.status}`}
+      onClick={() => onOpen(activity)}
       className={`${canDrag ? 'cursor-grab active:cursor-grabbing' : 'cursor-pointer'} ${isDragging ? 'opacity-30' : ''}`}
     >
       <ActivityCard activity={activity} />
@@ -156,15 +159,13 @@ function DayCell({
   return (
     <div
       ref={setNodeRef}
-      className={`min-h-[104px] p-1.5 border border-line flex flex-col gap-1 transition-colors ${
-        inMonth ? 'bg-surface-2' : 'bg-surface-2/40'
-      } ${isOver ? `${accent.bgSoft} ring-1 ${accent.border}` : ''}`}
+      className={`min-h-[104px] p-1.5 border border-line flex flex-col gap-1 transition-colors ${inMonth ? 'bg-surface-2' : 'bg-surface-2/40'
+        } ${isOver ? `${accent.bgSoft} ring-1 ${accent.border}` : ''}`}
     >
       <div className="flex items-center justify-between">
         <span
-          className={`text-[11px] font-semibold w-5 h-5 flex items-center justify-center rounded-full ${
-            isToday ? `${accent.bg} text-on-brand` : 'text-ink-2'
-          }`}
+          className={`text-[11px] font-semibold w-5 h-5 flex items-center justify-center rounded-full ${isToday ? `${accent.bg} text-on-brand` : 'text-ink-2'
+            }`}
         >
           {date.getDate()}
         </span>

@@ -82,7 +82,7 @@ export function BottomDrawer() {
       {/* Tabs Header */}
       <div className="h-10 border-b border-white/5 bg-transparent flex items-center justify-between px-4 shrink-0">
         <div className="flex items-center gap-1 h-full">
-          <button
+          <button type="button"
             onClick={() => setActiveTab('runtime')}
             className={`px-3 h-full flex items-center gap-1.5 text-xs font-semibold border-b-2 transition-colors ${
               activeTab === 'runtime'
@@ -96,7 +96,7 @@ export function BottomDrawer() {
             )}
           </button>
 
-          <button
+          <button type="button"
             onClick={() => setActiveTab('errors')}
             className={`px-3 h-full flex items-center gap-1.5 text-xs font-semibold border-b-2 transition-colors ${
               activeTab === 'errors'
@@ -112,7 +112,7 @@ export function BottomDrawer() {
             )}
           </button>
 
-          <button
+          <button type="button"
             onClick={() => setActiveTab('events')}
             className={`px-3 h-full flex items-center gap-1.5 text-xs font-semibold border-b-2 transition-colors ${
               activeTab === 'events'
@@ -123,7 +123,7 @@ export function BottomDrawer() {
             <List className="w-3.5 h-3.5 text-brand-ink dark:text-brand" /> Event Bus Log
           </button>
 
-          <button
+          <button type="button"
             onClick={() => setActiveTab('analytics')}
             className={`px-3 h-full flex items-center gap-1.5 text-xs font-semibold border-b-2 transition-colors ${
               activeTab === 'analytics'
@@ -134,7 +134,7 @@ export function BottomDrawer() {
             <BarChart2 className="w-3.5 h-3.5 text-emerald-500" /> Live Analytics
           </button>
 
-          <button
+          <button type="button"
             onClick={() => setActiveTab('catarina')}
             className={`px-3 h-full flex items-center gap-1.5 text-xs font-semibold border-b-2 transition-colors ${
               activeTab === 'catarina'
@@ -189,7 +189,7 @@ export function BottomDrawer() {
                 {/* Interactive Controls Buttons */}
                 <div className="flex items-center gap-2 mb-4">
                   {!isDebugging ? (
-                    <button
+                    <button type="button"
                       onClick={startSimulation}
                       className="flex-1 py-2 px-3 bg-iris/90 hover:bg-iris text-white rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 shadow-[0_0_15px_rgba(99,102,241,0.3)] border border-indigo-500/50 transition-all"
                     >
@@ -198,14 +198,14 @@ export function BottomDrawer() {
                   ) : (
                     <>
                       {isSimulationPaused ? (
-                        <button
+                        <button type="button"
                           onClick={resumeSimulation}
                           className="flex-1 py-2 px-3 bg-emerald-600/90 hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 shadow-[0_0_15px_rgba(16,185,129,0.3)] border border-emerald-500/50 transition-all"
                         >
                           <Play className="w-3.5 h-3.5 fill-current" /> Resume
                         </button>
                       ) : (
-                        <button
+                        <button type="button"
                           onClick={pauseSimulation}
                           className="flex-1 py-2 px-3 bg-amber-600/90 hover:bg-amber-500 text-white rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 shadow-[0_0_15px_rgba(245,158,11,0.3)] border border-amber-500/50 transition-all"
                         >
@@ -213,7 +213,7 @@ export function BottomDrawer() {
                         </button>
                       )}
 
-                      <button
+                      <button type="button"
                         onClick={stepSimulationForward}
                         title="Step Forward (Next Node)"
                         className="p-2 bg-white/10 hover:bg-white/20 text-gray-300 rounded-lg text-xs font-semibold transition-all border border-white/5"
@@ -221,7 +221,7 @@ export function BottomDrawer() {
                         <FastForward className="w-3.5 h-3.5" />
                       </button>
 
-                      <button
+                      <button type="button"
                         onClick={stopSimulation}
                         className="py-2 px-3 bg-red-600/90 hover:bg-red-500 text-white rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 shadow-[0_0_15px_rgba(239,68,68,0.3)] border border-red-500/50 transition-all"
                       >
@@ -236,7 +236,7 @@ export function BottomDrawer() {
                   <span className="text-xs font-bold text-gray-300 flex items-center gap-1">
                     <Variable className="w-3.5 h-3.5 text-iris" /> Telemetry Variables
                   </span>
-                  <button
+                  <button type="button"
                     onClick={() => setShowAddVar(!showAddVar)}
                     className="text-[10px] font-bold text-iris hover:bg-iris/20 px-1.5 py-0.5 rounded flex items-center gap-0.5 transition-colors border border-transparent hover:border-indigo-500/30"
                   >
@@ -304,7 +304,7 @@ export function BottomDrawer() {
                         >
                           {String(v)}
                         </span>
-                        <button
+                        <button type="button"
                           onClick={() => deleteSimulationVariable(k)}
                           className="text-gray-500 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity"
                         >
@@ -544,7 +544,7 @@ export function BottomDrawer() {
                   dos nós automaticamente.
                 </p>
                 <div className="grid grid-cols-1 gap-1.5">
-                  <button
+                  <button type="button"
                     disabled={isAiLoading}
                     onClick={() => handleAiRefactor('simplify')}
                     className="py-1.5 px-2.5 bg-white/5 border border-white/10 hover:border-indigo-500/50 hover:bg-white/10 text-left rounded-md text-xs font-medium text-gray-300 flex items-center justify-between transition-all"
@@ -552,7 +552,7 @@ export function BottomDrawer() {
                     <span>Simplificar Estrutura</span>
                     <Sparkles className="w-3.5 h-3.5 text-iris shrink-0" />
                   </button>
-                  <button
+                  <button type="button"
                     disabled={isAiLoading}
                     onClick={() => handleAiRefactor('reduceCost')}
                     className="py-1.5 px-2.5 bg-white/5 border border-white/10 hover:border-indigo-500/50 hover:bg-white/10 text-left rounded-md text-xs font-medium text-gray-300 flex items-center justify-between transition-all"
@@ -560,7 +560,7 @@ export function BottomDrawer() {
                     <span>Reduzir Custos (Flash Engines)</span>
                     <Sparkles className="w-3.5 h-3.5 text-purple-400 shrink-0" />
                   </button>
-                  <button
+                  <button type="button"
                     disabled={isAiLoading}
                     onClick={() => handleAiRefactor('reduceLatency')}
                     className="py-1.5 px-2.5 bg-white/5 border border-white/10 hover:border-indigo-500/50 hover:bg-white/10 text-left rounded-md text-xs font-medium text-gray-300 flex items-center justify-between transition-all"
@@ -568,7 +568,7 @@ export function BottomDrawer() {
                     <span>Diminuir Latência Geral</span>
                     <Sparkles className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                   </button>
-                  <button
+                  <button type="button"
                     disabled={isAiLoading}
                     onClick={() => handleAiRefactor('moreHuman')}
                     className="py-1.5 px-2.5 bg-white/5 border border-white/10 hover:border-indigo-500/50 hover:bg-white/10 text-left rounded-md text-xs font-medium text-gray-300 flex items-center justify-between transition-all"
@@ -607,7 +607,7 @@ export function BottomDrawer() {
                   <div className="flex items-center justify-between mt-3">
                     <div className="flex gap-1.5">
                       <span
-                        onClick={() =>
+                        role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={() =>
                           setAiPrompt(
                             'Crie um assistente para qualificar leads e agendar reuniões comerciais.',
                           )
@@ -617,7 +617,7 @@ export function BottomDrawer() {
                         Qualificar leads
                       </span>
                       <span
-                        onClick={() =>
+                        role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={() =>
                           setAiPrompt('Gere um fluxo de suporte técnico para provedor de internet.')
                         }
                         className="text-[10px] text-iris bg-iris/20 hover:bg-iris/30 px-2 py-1 rounded cursor-pointer font-medium border border-indigo-500/30 transition-colors"

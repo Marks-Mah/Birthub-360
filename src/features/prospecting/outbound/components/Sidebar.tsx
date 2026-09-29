@@ -141,7 +141,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       {isOpenMobile && (
         <div
           className="fixed inset-0 bg-black/70 backdrop-blur-sm z-40 lg:hidden"
-          onClick={() => setIsOpenMobile(false)}
+          role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={() => setIsOpenMobile(false)}
         />
       )}
 
@@ -164,7 +164,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         >
           <div className="flex items-center justify-between">
             <BirthubLogo variant="with-subtitle" size="sm" theme={theme} />
-            <button
+            <button type="button"
               onClick={() => setIsOpenMobile(false)}
               className={`lg:hidden p-1.5 rounded-lg transition ${
                 isDark
@@ -217,7 +217,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
               <div className="flex items-center gap-1">
                 {recentSearches.length > 0 && (
-                  <button
+                  <button type="button"
                     onClick={onClearRecentSearches}
                     title="Limpar histórico de buscas"
                     className="text-[10px] text-slate-400 hover:text-red-400 p-1 transition"
@@ -250,7 +250,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   recentSearches.map((search) => (
                     <div
                       key={search.id}
-                      onClick={() => onSelectRecentSearch(search)}
+                      role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={() => onSelectRecentSearch(search)}
                       className={`w-full text-left p-2 rounded-lg text-xs transition border flex flex-col gap-1 group cursor-pointer ${
                         isDark
                           ? 'bg-slate-900/90 hover:bg-slate-850 hover:border-[var(--brand-primary)]/50 border-slate-800 text-slate-300'
@@ -305,7 +305,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <label className="text-xs font-bold uppercase tracking-wider flex items-center gap-1.5">
                 <Cpu className="w-3.5 h-3.5 text-[var(--brand-primary)]" /> Motor de IA (LLM)
               </label>
-              <button
+              <button type="button"
                 onClick={checkOllama}
                 disabled={isCheckingOllama}
                 title="Testar conexão com Ollama"
@@ -430,7 +430,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                         : 'Ollama Offline (Fallback ativo)'}
                     </span>
                   </div>
-                  <button
+                  <button type="button"
                     onClick={() => onNavigateTab('terminal')}
                     className="text-[10px] text-[var(--brand-primary)] hover:underline shrink-0 font-medium"
                   >
@@ -783,7 +783,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <label className="text-xs font-bold uppercase tracking-wider flex items-center gap-1.5">
                 <Database className="w-3.5 h-3.5 text-[var(--brand-primary)]" /> Banco Relacional
               </label>
-              <button
+              <button type="button"
                 onClick={() => onNavigateTab('database')}
                 className="text-[10px] font-semibold text-[var(--brand-primary)] hover:text-[var(--brand-primary-hover)] underline"
               >
@@ -836,7 +836,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             isDark ? 'border-slate-800/80 bg-slate-950/80' : 'border-slate-200 bg-white'
           }`}
         >
-          <button
+          <button type="button"
             onClick={onOpenBrandGuide}
             className={`flex items-center gap-1.5 text-xs transition font-medium ${
               isDark

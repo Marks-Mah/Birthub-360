@@ -356,7 +356,7 @@ export function CommandPalette() {
       role="dialog"
       aria-modal="true"
       aria-label="Command palette"
-      onClick={(e) => {
+      tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={(e) => {
         if (e.target === e.currentTarget) close();
       }}
       onKeyDown={(e) => {

@@ -1,4 +1,4 @@
-import { LatencyMetrics } from './types.js';
+import type { LatencyMetrics } from './types.js';
 import { observability } from './Observability.js';
 
 // The numeric timing fields of LatencyMetrics — distinct from the provider-identity fields

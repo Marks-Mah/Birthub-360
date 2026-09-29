@@ -246,12 +246,12 @@ export function PropostasList() {
                 </thead>
                 <tbody>
                   {filtered.map((doc) => (
-                    // Linha de <table> real — não pode virar <button> (elemento de bloco inválido
+                    // Linha de <table> real — não pode virar <button type="button"> (elemento de bloco inválido
                     // como filho de <tbody>, quebraria a semântica/estrutura da tabela).
                     // biome-ignore lint/a11y/useSemanticElements: ver comentário acima
                     <tr
                       key={doc.id}
-                      onClick={() => setSelectedDocumentId(doc.id)}
+                      role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={() => setSelectedDocumentId(doc.id)}
                       onKeyDown={(e) => {
                         if (e.key === 'Enter' || e.key === ' ') {
                           e.preventDefault();

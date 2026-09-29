@@ -75,7 +75,7 @@ export default function ToolRegistry() {
                   </span>
                 </div>
               </div>
-              <button className="text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">
+              <button type="button" className="text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">
                 <Settings className="h-4 w-4" />
               </button>
             </div>

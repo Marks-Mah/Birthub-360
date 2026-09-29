@@ -86,7 +86,7 @@ export function Dialog({
 
   // Bug real de acessibilidade/teclado corrigido (Onda 3, Agente 03): este componente tinha um
   // onKeyDown('Enter') no <dialog> que chamava onClose() a cada Enter, sem checar o alvo do
-  // evento. Como Enter borbulha de qualquer <input>/<textarea>/<button> focado dentro do corpo
+  // evento. Como Enter borbulha de qualquer <input>/<textarea>/<button type="button"> focado dentro do corpo
   // (todo formulário em Dialog — ContactForm, CompanyForm, PropostaForm, GoalEditorDialog etc. —
   // tem campos de texto), digitar num campo e apertar Enter fechava o modal e descartava o que a
   // pessoa tinha acabado de preencher, sem aviso. Escape para fechar já é tratado nativamente

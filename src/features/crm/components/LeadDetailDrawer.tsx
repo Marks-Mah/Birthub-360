@@ -416,7 +416,7 @@ export function LeadDetailDrawer({ leadId, onClose, onChanged }: LeadDetailDrawe
       <div
         aria-hidden="true"
         className="fixed inset-0 bg-ink/40 backdrop-blur-xs transition-opacity"
-        onClick={onClose}
+        role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={onClose}
       />
       <div
         role="dialog"

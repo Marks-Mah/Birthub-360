@@ -8,6 +8,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import client from 'prom-client';
 
+vi.mock('../../../../../src/features/prospecting/services/providerBudget.js', () => ({
+  recordProspectingProviderSpend: vi.fn(),
+}));
+
 describe('src/features/prospecting/services/providerCostMetrics.ts', () => {
   beforeEach(() => {
     client.register.clear();

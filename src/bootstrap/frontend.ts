@@ -52,6 +52,14 @@ export async function mountFrontend(app: Express): Promise<void> {
       express.static(path.join(process.cwd(), 'public', 'tools')),
     );
 
+    // Protege arquivos estáticos do design-lab com autenticação em desenvolvimento
+    app.use(
+      '/design-lab',
+      toolsLimiter,
+      authenticateToken,
+      express.static(path.join(process.cwd(), 'public', 'design-lab')),
+    );
+
     const vite = await createViteServer({
       server: { middlewareMode: true, host: true, allowedHosts: true },
       appType: 'spa',
@@ -86,6 +94,14 @@ export async function mountFrontend(app: Express): Promise<void> {
       toolsLimiter,
       authenticateToken,
       express.static(path.join(distPath, 'tools')),
+    );
+
+    // Protege arquivos estáticos do design-lab com autenticação
+    app.use(
+      '/design-lab',
+      toolsLimiter,
+      authenticateToken,
+      express.static(path.join(distPath, 'design-lab')),
     );
 
     app.use(express.static(distPath));

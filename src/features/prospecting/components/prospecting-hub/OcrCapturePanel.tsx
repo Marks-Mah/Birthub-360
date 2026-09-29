@@ -349,8 +349,8 @@ export function OcrCapturePanel() {
 
       {/* Área de Dropzone quando não há dados ou não está no split-view */}
       {!cameraActive && !hasExtractedData && (
-        // Contém um <button> real ("Usar Câmera") e um <input type="file"> como controles
-        // próprios — <button> aninhando outro <button>/<input> seria HTML inválido.
+        // Contém um <button type="button"> real ("Usar Câmera") e um <input type="file"> como controles
+        // próprios — <button type="button"> aninhando outro <button type="button">/<input> seria HTML inválido.
         // biome-ignore lint/a11y/useSemanticElements: ver comentário acima
         <div
           role="button"
@@ -453,7 +453,7 @@ export function OcrCapturePanel() {
             <div className="rounded-2xl border border-line bg-surface p-3 shadow-sm">
               <div className="flex items-center justify-between pb-2 border-b border-line mb-2">
                 <span className="text-xs font-bold text-ink">Foto Original</span>
-                <button
+                <button type="button"
                   onClick={() => fileInputRef.current?.click()}
                   type="button"
                   className="text-[11px] font-bold text-brand-ink dark:text-brand hover:underline"

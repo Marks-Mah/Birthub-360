@@ -99,7 +99,7 @@ export const RecentSearchModal: React.FC<RecentSearchModalProps> = ({
             </div>
           </div>
 
-          <button
+          <button type="button"
             onClick={onClose}
             className={`p-2 rounded-xl transition ${
               isDark
@@ -125,7 +125,7 @@ export const RecentSearchModal: React.FC<RecentSearchModalProps> = ({
                 <Database className="w-3.5 h-3.5 text-[var(--brand-primary)]" />
                 Expressão de Busca (Google Places & Apollo Pipeline)
               </span>
-              <button
+              <button type="button"
                 onClick={handleCopyQuery}
                 className="text-xs text-[var(--brand-primary)] hover:underline flex items-center gap-1 font-mono"
               >
@@ -270,7 +270,7 @@ export const RecentSearchModal: React.FC<RecentSearchModalProps> = ({
             isDark ? 'border-slate-800 bg-slate-950/90' : 'border-slate-200 bg-slate-50'
           }`}
         >
-          <button
+          <button type="button"
             onClick={() => {
               onDeleteSearch(search.id);
               onClose();
@@ -282,7 +282,7 @@ export const RecentSearchModal: React.FC<RecentSearchModalProps> = ({
           </button>
 
           <div className="flex flex-wrap items-center gap-2">
-            <button
+            <button type="button"
               onClick={() => {
                 onApplyToForm(search);
                 onClose();
@@ -297,7 +297,7 @@ export const RecentSearchModal: React.FC<RecentSearchModalProps> = ({
               <span>Carregar no Formulário</span>
             </button>
 
-            <button
+            <button type="button"
               onClick={() => {
                 onApplyAndSearch(search);
                 onClose();

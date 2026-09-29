@@ -1,4 +1,4 @@
-import { ConversationTurn, MemoryNode, MemoryLevel } from './types.js';
+import type { ConversationTurn, MemoryNode, MemoryLevel } from './types.js';
 import { observability } from './Observability.js';
 
 export class MemoryPipeline {

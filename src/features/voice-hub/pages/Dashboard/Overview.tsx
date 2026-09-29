@@ -506,7 +506,7 @@ export default function RebuiltExecutiveOverview() {
                       Inicie sua operação em minutos
                     </span>
                   </div>
-                  <button
+                  <button type="button"
                     onClick={() => setWizardCollapsed(true)}
                     className="text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 font-semibold"
                   >
@@ -551,7 +551,7 @@ export default function RebuiltExecutiveOverview() {
                     { step: 2, title: 'Telefonia', active: !!checklist.telephonyConnected },
                     { step: 3, title: 'Atendimento', active: !!checklist.firstCallCompleted },
                   ].map((item) => (
-                    <button
+                    <button type="button"
                       key={item.step}
                       onClick={() => setWizardStep(item.step)}
                       className={`p-2.5 rounded-lg border text-center transition-all ${
@@ -750,7 +750,7 @@ export default function RebuiltExecutiveOverview() {
 
       {/* DASHBOARD TAB SELECTOR */}
       <div className="flex border-b border-slate-200 dark:border-slate-800">
-        <button
+        <button type="button"
           onClick={() => setActiveTab('kpis')}
           className={`px-5 py-3 font-bold text-sm border-b-2 transition-all ${
             activeTab === 'kpis'
@@ -760,7 +760,7 @@ export default function RebuiltExecutiveOverview() {
         >
           Visão Geral
         </button>
-        <button
+        <button type="button"
           onClick={() => setActiveTab('audit')}
           className={`px-5 py-3 font-bold text-sm border-b-2 transition-all flex items-center gap-2 ${
             activeTab === 'audit'
@@ -770,7 +770,7 @@ export default function RebuiltExecutiveOverview() {
         >
           Relatório de UX Audit
         </button>
-        <button
+        <button type="button"
           onClick={() => setActiveTab('analytics')}
           className={`px-5 py-3 font-bold text-sm border-b-2 transition-all flex items-center gap-2 ${
             activeTab === 'analytics'
@@ -912,7 +912,7 @@ export default function RebuiltExecutiveOverview() {
                       Últimas interações de voz registradas no banco de dados.
                     </p>
                   </div>
-                  <button
+                  <button type="button"
                     onClick={fetchCalls}
                     className="p-1 px-2.5 border rounded-lg text-xs font-semibold hover:bg-slate-50 flex items-center gap-1.5 dark:hover:bg-slate-800 dark:border-slate-700"
                   >
@@ -999,7 +999,7 @@ export default function RebuiltExecutiveOverview() {
                       Agentes de voz cadastrados nesta organização.
                     </p>
                   </div>
-                  <button
+                  <button type="button"
                     onClick={() => navigate('/dashboard/agents')}
                     className="p-1 px-2.5 border rounded-lg text-xs font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 dark:border-slate-700"
                   >
@@ -1372,7 +1372,7 @@ function PendingAlert({
     <div className={`p-3 border rounded-lg text-left ${toneClasses}`}>
       <div className="flex justify-between items-start">
         <p className="text-xs font-bold">{title}</p>
-        <button
+        <button type="button"
           onClick={onAction}
           className="text-[10px] font-bold text-brand hover:underline shrink-0 ml-2"
         >
@@ -1402,14 +1402,14 @@ function ChecklistItem({ label, checked, onChange, onClick }: ChecklistItemProps
           onChange={onChange}
           className="h-3.5 w-3.5 text-brand rounded border-slate-300 focus:ring-brand accent-brand cursor-pointer"
         />
-        <button
+        <button type="button"
           onClick={onClick}
           className={`font-semibold hover:text-brand transition-colors text-left ${checked ? 'line-through text-slate-400' : 'text-slate-700 dark:text-slate-300'}`}
         >
           {label}
         </button>
       </div>
-      <button
+      <button type="button"
         onClick={onClick}
         className="text-[10px] font-bold text-slate-400 hover:text-brand transition-colors"
       >

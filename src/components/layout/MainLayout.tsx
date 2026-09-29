@@ -71,7 +71,7 @@ export function MainLayout({ children }: MainLayoutProps) {
         {mobileNavOpen && (
           <div
             className="fixed inset-0 z-30 bg-overlay backdrop-blur-sm lg:hidden transition-opacity duration-300 animate-fade-in"
-            onClick={() => setMobileNavOpen(false)}
+            role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={() => setMobileNavOpen(false)}
             aria-hidden="true"
           />
         )}

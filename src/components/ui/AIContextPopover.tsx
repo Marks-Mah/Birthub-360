@@ -8,7 +8,7 @@
  *
  * Uso:
  *   <AIContextPopover entityType="company" entityId={company.id} entityName={company.tradeName}>
- *     <button>Ver insights</button>
+ *     <button type="button">Ver insights</button>
  *   </AIContextPopover>
  */
 

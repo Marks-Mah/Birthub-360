@@ -147,7 +147,7 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
         onPointerMove={handlePointerMove}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
-        onClick={handleClick}
+        role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={handleClick}
         {...props}
       >
         {spotlight && isHovered && (

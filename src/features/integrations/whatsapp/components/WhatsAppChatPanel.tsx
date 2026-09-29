@@ -83,12 +83,12 @@ export function WhatsAppChatPanel({
     // dele. Não leva aria-hidden (diferente de um backdrop decorativo separado) porque ENVOLVE o
     // conteúdo real do modal, não é irmão dele — escondê-lo do teclado/leitor de tela esconderia
     // o modal inteiro. onClick aqui é conveniência de mouse/touch; o botão "Fechar conversa"
-    // abaixo é um <button> real, já alcançável por Tab, então não falta caminho de teclado.
+    // abaixo é um <button type="button"> real, já alcançável por Tab, então não falta caminho de teclado.
     // biome-ignore lint/a11y/noStaticElementInteractions: dismiss por overlay, ver comentário acima
     // biome-ignore lint/a11y/useKeyWithClickEvents: dismiss por overlay, ver comentário acima
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
-      onClick={onClose}
+      role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={onClose}
     >
       {/* onClick aqui só interrompe a propagação pro backdrop (impede que um clique dentro do
           painel feche o modal) — não é uma interação em si, então não há ação nova pra dar
@@ -101,7 +101,7 @@ export function WhatsAppChatPanel({
         aria-modal="true"
         aria-labelledby="whatsapp-chat-panel-title"
         className="bg-surface border border-line rounded-2xl shadow-2xl w-full max-w-md h-[600px] flex flex-col overflow-hidden relative before:absolute before:inset-x-0 before:top-0 before:h-[2px] before:bg-gradient-to-r before:from-transparent before:via-emerald-400/50 before:to-transparent before:z-20"
-        onClick={(e) => e.stopPropagation()}
+        tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between px-5 py-4 border-b border-line bg-emerald-600/10">
           <div className="flex items-center gap-2 min-w-0">

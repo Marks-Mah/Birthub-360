@@ -241,7 +241,7 @@ export default function BillingPage() {
                   <div className="text-4xl font-bold mb-4">
                     {formatCents(walletState.wallet.balanceCents, walletState.wallet.currency)}
                   </div>
-                  <button
+                  <button type="button"
                     disabled
                     title="Recarga de saldo ainda não implementada"
                     className="w-full py-2 bg-white/10 rounded-lg text-sm font-bold cursor-not-allowed opacity-60"

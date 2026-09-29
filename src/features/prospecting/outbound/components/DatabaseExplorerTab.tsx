@@ -111,7 +111,7 @@ export const DatabaseExplorerTab: React.FC<DatabaseExplorerTabProps> = ({
           </div>
 
           <div className="flex items-center gap-2">
-            <button
+            <button type="button"
               onClick={onRefreshStats}
               className={`px-3 py-1.5 text-xs font-semibold rounded-lg border transition flex items-center gap-1.5 ${
                 isDark
@@ -215,7 +215,7 @@ export const DatabaseExplorerTab: React.FC<DatabaseExplorerTabProps> = ({
         <div className="flex flex-wrap items-center gap-1.5">
           <span className="text-[11px] text-slate-400 font-medium">Queries Prontas:</span>
           {sampleQueries.map((q, i) => (
-            <button
+            <button type="button"
               key={i}
               onClick={() => {
                 setCustomSql(q.sql);
@@ -250,7 +250,7 @@ export const DatabaseExplorerTab: React.FC<DatabaseExplorerTabProps> = ({
             <span className="text-[11px] text-slate-400">
               Pressione Executar para rodar no SQLite nativo.
             </span>
-            <button
+            <button type="button"
               onClick={() => runQuery()}
               disabled={isExecuting}
               className="py-2 px-5 bg-[var(--brand-primary)] hover:bg-[var(--brand-primary-hover)] disabled:opacity-50 text-white font-bold rounded-xl text-xs transition shadow-md flex items-center gap-1.5"

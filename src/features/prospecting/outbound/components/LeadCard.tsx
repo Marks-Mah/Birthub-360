@@ -1065,7 +1065,7 @@ export const LeadCard: React.FC<LeadCardProps> = ({
             empresa (site, LinkedIn, telefone, WhatsApp, e-mail) são "informação
             completa" e só aparecem expandido, junto com o resto (ver abaixo). */}
         <div className="flex flex-wrap items-center gap-2">
-          <button
+          <button type="button"
             onClick={() => setIsExpanded((prev) => !prev)}
             className={`px-2.5 py-1.5 text-xs font-medium rounded-lg border transition flex items-center gap-1 ${
               isDark
@@ -1202,7 +1202,7 @@ export const LeadCard: React.FC<LeadCardProps> = ({
                     {cnpjSuccessMsg}
                   </span>
                 )}
-                <button
+                <button type="button"
                   onClick={handleRefreshCnpj}
                   disabled={isRefreshingCnpj}
                   className={`px-2.5 py-1 text-[11px] font-semibold rounded-lg border flex items-center gap-1.5 transition ${
@@ -1318,7 +1318,7 @@ export const LeadCard: React.FC<LeadCardProps> = ({
                     .map((u) => {
                       const isAssigned = assignedTo === u.id;
                       return (
-                        <button
+                        <button type="button"
                           key={u.id}
                           onClick={() => {
                             const newVal = isAssigned ? '' : u.id;
@@ -1464,7 +1464,7 @@ export const LeadCard: React.FC<LeadCardProps> = ({
 
               {/* Hunter.io Verification */}
               {dmEmail && !hunterResult && (
-                <button
+                <button type="button"
                   onClick={handleVerifyEmail}
                   disabled={isVerifyingEmail}
                   className={`px-2 py-1 text-[10px] font-semibold rounded-lg border flex items-center gap-1 transition ${
@@ -1586,7 +1586,7 @@ export const LeadCard: React.FC<LeadCardProps> = ({
           >
             <div className="flex items-center gap-2">
               {/* Salvar Button */}
-              <button
+              <button type="button"
                 onClick={handleSaveLead}
                 disabled={isSaving}
                 className={`px-3.5 py-1.5 font-bold rounded-lg border flex items-center gap-1.5 transition shadow-sm ${
@@ -1627,7 +1627,7 @@ export const LeadCard: React.FC<LeadCardProps> = ({
               </div>
 
               {/* Enriquecer + Button (Second Stage) */}
-              <button
+              <button type="button"
                 onClick={handleEnrichNews}
                 disabled={isEnrichingNews}
                 className="px-3.5 py-1.5 bg-gradient-to-r from-[var(--brand-primary)] to-[var(--brand-primary)] hover:from-[var(--brand-primary-hover)] hover:to-[var(--brand-primary-hover)] text-white font-bold rounded-lg transition shadow-md shadow-[var(--brand-primary)]/20 flex items-center gap-1.5"
@@ -1648,7 +1648,7 @@ export const LeadCard: React.FC<LeadCardProps> = ({
 
               {/* Parar Button (during enrichment) */}
               {isEnrichingNews && (
-                <button
+                <button type="button"
                   onClick={handleStopEnrich}
                   className="px-3 py-1.5 bg-red-600/20 hover:bg-red-600/30 text-red-400 border border-red-500/40 font-bold rounded-lg transition flex items-center gap-1"
                   title="Cancelar enriquecimento"
@@ -1660,7 +1660,7 @@ export const LeadCard: React.FC<LeadCardProps> = ({
 
               {/* Toggle Dossier Visibility */}
               {newsDossier && (
-                <button
+                <button type="button"
                   onClick={() => setIsDossierOpen(!isDossierOpen)}
                   className={`px-2.5 py-1.5 rounded-lg border text-xs font-semibold flex items-center gap-1.5 transition ${
                     isDark
@@ -1682,7 +1682,7 @@ export const LeadCard: React.FC<LeadCardProps> = ({
             {/* Integration Buttons: Bitrix24 & Bland AI */}
             <div className="flex flex-wrap items-center gap-2">
               {/* Fast Script Gen */}
-              <button
+              <button type="button"
                 onClick={handleFastScript}
                 disabled={isFastGenerating}
                 className={`px-3 py-1.5 rounded-lg border text-xs font-semibold flex items-center gap-1.5 transition ${
@@ -1704,7 +1704,7 @@ export const LeadCard: React.FC<LeadCardProps> = ({
               Nunca fire-and-forget: o resultado da última tentativa fica visível mesmo
               antes de clicar de novo nesta sessão (lead.bitrix_export_status/_error). */}
               <div className="flex items-center gap-1.5">
-                <button
+                <button type="button"
                   onClick={handleExportToBitrix}
                   disabled={isExportingBitrix}
                   className={`px-3 py-1.5 rounded-lg border text-xs font-semibold flex items-center gap-1.5 transition ${
@@ -1741,7 +1741,7 @@ export const LeadCard: React.FC<LeadCardProps> = ({
 
               {/* Wave 6 (CPI) - Evidence & Provenance: "por que confiar neste
               resultado?" por campo (provedor, confiança, status de verificação). */}
-              <button
+              <button type="button"
                 onClick={() => setIsEvidenceOpen(true)}
                 className={`px-3 py-1.5 rounded-lg border text-xs font-semibold flex items-center gap-1.5 transition ${
                   isDark
@@ -1755,7 +1755,7 @@ export const LeadCard: React.FC<LeadCardProps> = ({
               </button>
 
               {/* Bland AI */}
-              <button
+              <button type="button"
                 onClick={handleCallViaBland}
                 disabled={isCallingBland}
                 className={`px-3 py-1.5 rounded-lg border text-xs font-semibold flex items-center gap-1.5 transition ${
@@ -1919,7 +1919,7 @@ export const LeadCard: React.FC<LeadCardProps> = ({
                 </div>
 
                 <div className="flex items-center gap-2 shrink-0">
-                  <button
+                  <button type="button"
                     onClick={handleGenerateCopies}
                     disabled={isGeneratingCopies || isEnrichingNews}
                     className="px-5 py-2.5 bg-gradient-to-r from-[var(--brand-primary)] to-[#FF7010] hover:from-[var(--brand-secondary-hover)] hover:to-[var(--brand-secondary)] text-white font-bold text-xs rounded-xl transition shadow-md shadow-[var(--brand-primary)]/25 flex items-center gap-2"
@@ -1937,7 +1937,7 @@ export const LeadCard: React.FC<LeadCardProps> = ({
                     )}
                   </button>
 
-                  <button
+                  <button type="button"
                     onClick={handleEnrichNews}
                     disabled={isEnrichingNews || isGeneratingCopies}
                     className="px-4 py-2.5 bg-[#008FCE]/20 hover:bg-[#008FCE]/30 text-[#008FCE] border border-[#008FCE]/40 font-bold text-xs rounded-xl transition flex items-center gap-1.5"
@@ -1964,7 +1964,7 @@ export const LeadCard: React.FC<LeadCardProps> = ({
                 }`}
               >
                 <div className="flex gap-1.5 overflow-x-auto">
-                  <button
+                  <button type="button"
                     onClick={() => setActiveChannel('cold_call')}
                     className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition ${
                       activeChannel === 'cold_call'
@@ -1977,7 +1977,7 @@ export const LeadCard: React.FC<LeadCardProps> = ({
                     <PhoneCall className="w-3.5 h-3.5" />
                     <span>Cold Call</span>
                   </button>
-                  <button
+                  <button type="button"
                     onClick={() => setActiveChannel('cold_email')}
                     className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition ${
                       activeChannel === 'cold_email'
@@ -1990,7 +1990,7 @@ export const LeadCard: React.FC<LeadCardProps> = ({
                     <Mail className="w-3.5 h-3.5" />
                     <span>Cold Email</span>
                   </button>
-                  <button
+                  <button type="button"
                     onClick={() => setActiveChannel('whatsapp')}
                     className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition ${
                       activeChannel === 'whatsapp'
@@ -2003,7 +2003,7 @@ export const LeadCard: React.FC<LeadCardProps> = ({
                     <MessageSquare className="w-3.5 h-3.5" />
                     <span>WhatsApp</span>
                   </button>
-                  <button
+                  <button type="button"
                     onClick={() => setActiveChannel('linkedin')}
                     className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition ${
                       activeChannel === 'linkedin'
@@ -2016,7 +2016,7 @@ export const LeadCard: React.FC<LeadCardProps> = ({
                     <Linkedin className="w-3.5 h-3.5" />
                     <span>LinkedIn</span>
                   </button>
-                  <button
+                  <button type="button"
                     onClick={() => setActiveChannel('objection_matrix')}
                     className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition ${
                       activeChannel === 'objection_matrix'
@@ -2029,7 +2029,7 @@ export const LeadCard: React.FC<LeadCardProps> = ({
                     <ShieldAlert className="w-3.5 h-3.5" />
                     <span>Matriz de Objeção</span>
                   </button>
-                  <button
+                  <button type="button"
                     onClick={() => setActiveChannel('qualification_matrix')}
                     className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition ${
                       activeChannel === 'qualification_matrix'
@@ -2042,7 +2042,7 @@ export const LeadCard: React.FC<LeadCardProps> = ({
                     <ListChecks className="w-3.5 h-3.5" />
                     <span>Qualificação</span>
                   </button>
-                  <button
+                  <button type="button"
                     onClick={() => setActiveChannel('ice_breaker')}
                     className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition ${
                       activeChannel === 'ice_breaker'
@@ -2055,7 +2055,7 @@ export const LeadCard: React.FC<LeadCardProps> = ({
                     <Flame className="w-3.5 h-3.5 text-orange-400" />
                     <span>Quebra-Gelo</span>
                   </button>
-                  <button
+                  <button type="button"
                     onClick={() => setActiveChannel('prompt')}
                     className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition ${
                       activeChannel === 'prompt'
@@ -2090,7 +2090,7 @@ export const LeadCard: React.FC<LeadCardProps> = ({
                       <option value="provocador">Provocador</option>
                     </select>
 
-                    <button
+                    <button type="button"
                       onClick={handleGenerateCopies}
                       disabled={isGeneratingCopies}
                       className="px-2.5 py-1 bg-[var(--brand-primary)]/15 hover:bg-[var(--brand-primary)]/25 text-[var(--brand-primary)] border border-[var(--brand-primary)]/30 text-xs font-semibold rounded-lg flex items-center gap-1 transition"
@@ -2122,7 +2122,7 @@ export const LeadCard: React.FC<LeadCardProps> = ({
                   </select>
 
                   {/* Edit / Save Toggle */}
-                  <button
+                  <button type="button"
                     onClick={() => setIsEditing(!isEditing)}
                     className={`px-2.5 py-1 text-xs rounded-lg border flex items-center gap-1 transition ${
                       isDark
@@ -2135,7 +2135,7 @@ export const LeadCard: React.FC<LeadCardProps> = ({
                   </button>
 
                   {/* Copy Button */}
-                  <button
+                  <button type="button"
                     onClick={() => {
                       const textToCopy =
                         activeChannel === 'prompt'
@@ -2394,7 +2394,7 @@ Objetivo: Conduzir abordagem comercial altamente personalizada de alto nível ex
                     >
                       Observação da Atividade (Próximos passos? Objeções?)
                     </label>
-                    <button
+                    <button type="button"
                       onClick={toggleRecording}
                       title={isRecording ? 'Parar gravação' : 'Ditar com LLaMA3'}
                       className={`p-1.5 rounded-full transition-colors flex items-center justify-center ${isRecording ? 'bg-red-500/20 text-red-500 hover:bg-red-500/30 animate-pulse' : 'bg-slate-200 text-slate-600 hover:bg-slate-300 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700'}`}
@@ -2419,7 +2419,7 @@ Objetivo: Conduzir abordagem comercial altamente personalizada de alto nível ex
                   />
                 </div>
                 <div className="flex justify-end pt-1">
-                  <button
+                  <button type="button"
                     onClick={handleSaveLead}
                     disabled={isSaving}
                     className="px-4 py-1.5 bg-[var(--brand-primary)] hover:bg-[var(--brand-primary-hover)] text-white text-xs font-semibold rounded-lg flex items-center gap-1.5 transition disabled:opacity-50"

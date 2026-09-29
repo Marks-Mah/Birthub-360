@@ -231,7 +231,7 @@ export function RobustScriptGenerator() {
                       role="option"
                       aria-selected={language === l.id}
                       tabIndex={0}
-                      onClick={() => {
+                      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={() => {
                         setLanguage(l.id);
                         setActiveDropdown(null);
                       }}
@@ -282,7 +282,7 @@ export function RobustScriptGenerator() {
                       role="option"
                       aria-selected={purpose === p.id}
                       tabIndex={0}
-                      onClick={() => {
+                      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={() => {
                         setPurpose(p.id);
                         setActiveDropdown(null);
                       }}
@@ -336,7 +336,7 @@ export function RobustScriptGenerator() {
                       role="option"
                       aria-selected={framework === f.id}
                       tabIndex={0}
-                      onClick={() => {
+                      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={() => {
                         setFramework(f.id);
                         setActiveDropdown(null);
                       }}
@@ -389,7 +389,7 @@ export function RobustScriptGenerator() {
                       role="option"
                       aria-selected={complexity === c.id}
                       tabIndex={0}
-                      onClick={() => {
+                      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={() => {
                         setComplexity(c.id);
                         setActiveDropdown(null);
                       }}

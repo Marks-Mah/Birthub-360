@@ -426,7 +426,7 @@ export function LiveSupervisor({ sessionId }: LiveSupervisorProps) {
                   <Lock className="w-3 h-3" /> Apenas supervisores podem intervir nesta chamada.
                 </p>
               )}
-              <button
+              <button type="button"
                 onClick={handleIntervene}
                 disabled={!canIntervene || !!intervention?.active}
                 title={

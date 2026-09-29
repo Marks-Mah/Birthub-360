@@ -69,7 +69,7 @@ export const Header: React.FC<HeaderProps> = ({
         {/* Left Side: Mobile Menu & Atlas Logo */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <button
+            <button type="button"
               onClick={onToggleSidebar}
               className={`lg:hidden p-2 rounded-xl transition ${
                 isDark
@@ -89,7 +89,7 @@ export const Header: React.FC<HeaderProps> = ({
 
           <div className="flex items-center gap-2 md:hidden">
             {/* Mobile Theme Toggle */}
-            <button
+            <button type="button"
               onClick={() => setTheme(isDark ? 'light' : 'dark')}
               className={`p-1.5 rounded-lg border transition ${
                 isDark
@@ -101,7 +101,7 @@ export const Header: React.FC<HeaderProps> = ({
               {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
             </button>
 
-            <button
+            <button type="button"
               onClick={onOpenBrandGuide}
               className={`flex items-center gap-1 text-xs px-2.5 py-1.5 rounded-lg border transition ${
                 isDark
@@ -126,7 +126,7 @@ export const Header: React.FC<HeaderProps> = ({
                 const Icon = item.icon;
                 const isActive = activeTab === item.id;
                 return (
-                  <button
+                  <button type="button"
                     key={item.id}
                     onClick={() => setActiveTab(item.id)}
                     className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition whitespace-nowrap ${
@@ -148,7 +148,7 @@ export const Header: React.FC<HeaderProps> = ({
         {/* Right Side: Quick Export Actions, Theme Toggle & Brand Guide */}
         <div className="flex items-center gap-2 self-end md:self-auto">
           {/* Theme Toggle Button (Light / Dark) */}
-          <button
+          <button type="button"
             onClick={() => setTheme(isDark ? 'light' : 'dark')}
             className={`hidden md:flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg border transition font-medium ${
               isDark
@@ -170,7 +170,7 @@ export const Header: React.FC<HeaderProps> = ({
             )}
           </button>
 
-          <button
+          <button type="button"
             onClick={onOpenBrandGuide}
             className={`hidden md:flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg border transition font-medium ${
               isDark
@@ -184,7 +184,7 @@ export const Header: React.FC<HeaderProps> = ({
 
           {hasResults && (
             <>
-              <button
+              <button type="button"
                 onClick={onExportJSON}
                 className={`px-3 py-1.5 text-xs font-semibold rounded-lg border transition flex items-center gap-1.5 ${
                   isDark
@@ -196,7 +196,7 @@ export const Header: React.FC<HeaderProps> = ({
                 <FileCode className="w-3.5 h-3.5 text-[var(--brand-primary)]" />
                 <span className="hidden sm:inline">Exportar</span> JSON
               </button>
-              <button
+              <button type="button"
                 onClick={onExportCSV}
                 className={`px-3 py-1.5 text-xs font-semibold rounded-lg border transition flex items-center gap-1.5 ${
                   isDark
@@ -223,7 +223,7 @@ export const Header: React.FC<HeaderProps> = ({
                 {user.name.split(' ')[0]} ({user.role})
               </span>
             </div>
-            <button
+            <button type="button"
               onClick={onLogout}
               className={`p-1.5 rounded-lg text-xs font-medium border transition flex items-center gap-1 ${
                 isDark

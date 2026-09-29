@@ -121,7 +121,7 @@ export default function AdminPage() {
       <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
         <div className="p-4 border-b border-slate-200 bg-slate-50 flex justify-between items-center">
           <h2 className="font-bold text-slate-800">Sessões Recentes</h2>
-          <button
+          <button type="button"
             onClick={loadSessions}
             className="text-sm text-brand hover:text-brand-700 font-medium flex items-center gap-1.5"
           >
@@ -134,7 +134,7 @@ export default function AdminPage() {
         ) : error ? (
           <div className="p-8 text-center text-slate-500">
             Não foi possível carregar as sessões.{' '}
-            <button onClick={loadSessions} className="text-brand font-semibold hover:underline">
+            <button type="button" onClick={loadSessions} className="text-brand font-semibold hover:underline">
               Tentar novamente
             </button>
           </div>

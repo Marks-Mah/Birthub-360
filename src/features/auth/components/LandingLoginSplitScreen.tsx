@@ -457,7 +457,7 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
             <div className="animate-fade-in bg-white dark:bg-slate-900/60 backdrop-blur-xl rounded-2xl shadow-2xl shadow-slate-200/50 dark:shadow-none border border-slate-200 dark:border-white/10 p-1">
               {/* Tabs */}
               <div className="flex border-b border-slate-100 dark:border-white/5">
-                <button
+                <button type="button"
                   onClick={() => setActiveTab('email')}
                   className={`flex-1 py-4 text-xs font-bold uppercase tracking-wider transition-colors relative ${activeTab === 'email' ? 'text-brand' : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'}`}
                 >
@@ -469,7 +469,7 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
                     />
                   )}
                 </button>
-                <button
+                <button type="button"
                   onClick={() => setActiveTab('sso')}
                   className={`flex-1 py-4 text-xs font-bold uppercase tracking-wider transition-colors relative ${activeTab === 'sso' ? 'text-brand' : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'}`}
                 >
@@ -493,7 +493,7 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
                         para confirmar que este e-mail é seu e ativar sua conta.
                       </p>
                     </div>
-                    <button
+                    <button type="button"
                       onClick={backToSignIn}
                       className="text-sm font-bold text-slate-700 dark:text-slate-300 hover:underline"
                     >
@@ -510,7 +510,7 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
                           redefinição. O link expira em 1 hora.
                         </p>
                       </div>
-                      <button
+                      <button type="button"
                         onClick={backToSignIn}
                         className="text-sm font-bold text-slate-700 dark:text-slate-300 hover:underline"
                       >
@@ -701,7 +701,7 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
                     </div>
 
                     <div className="grid grid-cols-3 gap-3">
-                      <button className="flex items-center justify-center gap-2 rounded-lg border border-slate-200 dark:border-white/10 py-2.5 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
+                      <button type="button" className="flex items-center justify-center gap-2 rounded-lg border border-slate-200 dark:border-white/10 py-2.5 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
                         <svg viewBox="0 0 24 24" className="w-4 h-4">
                           <path
                             fill="#4285F4"
@@ -722,7 +722,7 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
                         </svg>
                         Google
                       </button>
-                      <button className="flex items-center justify-center gap-2 rounded-lg border border-slate-200 dark:border-white/10 py-2.5 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
+                      <button type="button" className="flex items-center justify-center gap-2 rounded-lg border border-slate-200 dark:border-white/10 py-2.5 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
                         <svg viewBox="0 0 21 21" className="w-4 h-4">
                           <path fill="#f25022" d="M0 0h10v10H0z" />
                           <path fill="#7fba00" d="M11 0h10v10H11z" />
@@ -731,7 +731,7 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
                         </svg>
                         Microsoft
                       </button>
-                      <button className="flex items-center justify-center gap-2 rounded-lg border border-slate-200 dark:border-white/10 py-2.5 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
+                      <button type="button" className="flex items-center justify-center gap-2 rounded-lg border border-slate-200 dark:border-white/10 py-2.5 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
                         <Lock className="w-3.5 h-3.5 text-brand" />
                         SSO
                       </button>

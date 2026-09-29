@@ -116,7 +116,7 @@ export function BrandOrb({
       ref={containerRef}
       style={{ width: size, height: size }}
       className={`relative select-none ${className || ''}`}
-      onClick={handleInteract}
+      role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={handleInteract}
       title={interactive ? 'Clique para interagir com o Brand Orb 3D' : undefined}
     >
       <Canvas

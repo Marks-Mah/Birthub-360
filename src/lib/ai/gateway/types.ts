@@ -65,4 +65,4 @@ export interface AiUsageLogInput {
 
 /** Nome lógico de cada adapter de provedor — usado como chave do circuit breaker, rótulo de
  * métrica/telemetria e na mensagem de erro agregada quando todos os provedores falham. */
-export type ProviderName = 'groq' | 'openai' | 'litellm' | 'embedding';
+export type ProviderName = 'groq' | 'openai' | 'litellm' | 'vllm' | 'embedding';

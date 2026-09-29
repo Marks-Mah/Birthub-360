@@ -18,6 +18,9 @@ apt-get install -y postgresql-client
 # Install Redis client
 apt-get install -y redis-tools
 
+# Install nginx e certbot para SSL
+apt-get install -y nginx certbot python3-certbot-nginx
+
 # Clone repository
 cd /home/ubuntu
 git clone https://github.com/birthhub360/birthhub-360.git
@@ -32,5 +35,61 @@ npx prisma generate
 # Build application
 npm run build
 
-# Start application
-npm run start
+# Configurar systemd para a aplicação
+cat > /etc/systemd/system/birthhub360.service <<'EOF'
+[Unit]
+Description=Birth Hub 360 Application
+After=network.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/birthhub-360
+Environment=NODE_ENV=production
+Environment=PORT=3000
+Environment=HOST=0.0.0.0
+Environment=TRUST_PROXY=true
+ExecStart=/usr/bin/node /home/ubuntu/birthhub-360/dist/server.cjs
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+# Habilitar e iniciar serviço
+systemctl daemon-reload
+systemctl enable birthhub360.service
+systemctl start birthhub360.service
+
+# Configurar nginx básico (HTTP)
+cat > /etc/nginx/sites-available/birthhub360 <<'EOF'
+server {
+    listen 80;
+    server_name _;
+
+    location / {
+        proxy_pass http://localhost:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_cache_bypass $http_upgrade;
+        proxy_read_timeout 300s;
+        proxy_connect_timeout 75s;
+    }
+}
+EOF
+
+# Habilitar configuração nginx
+rm -f /etc/nginx/sites-enabled/default
+ln -sf /etc/nginx/sites-available/birthhub360 /etc/nginx/sites-enabled/
+nginx -t
+systemctl restart nginx
+
+echo "=== EC2 setup concluído ==="
+echo "Aplicação rodando em HTTP: http://$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4)"
+echo "Para configurar HTTPS, execute: sudo ./setup-nginx-ssl.sh seu-dominio.com"
