@@ -50,7 +50,7 @@ importers:
         specifier: ^8.5.0
         version: 8.5.2
       '@capacitor/ios':
-        specifier: ^8.5.0
+        specifier: ^8.5.2
         version: 8.5.2(@capacitor/core@8.5.2)
       '@dnd-kit/core':
         specifier: ^6.3.1
