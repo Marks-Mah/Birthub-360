@@ -9,7 +9,7 @@ __pycache__/
 .env*
 !.env.example
 !.env.test.example
-!.env.codespace
+
 skills-lock.json
 
 /src/generated/prisma
