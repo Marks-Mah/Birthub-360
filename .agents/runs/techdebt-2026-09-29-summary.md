@@ -67,32 +67,41 @@ Distribuição por severidade:
 **Destinatário:** Agente 00 (Decisório)
 **Arquivo:** `.agents/handoffs/techdebt-2026-09-29/00-para-00-typescript-quality.md`
 **Problema:** 2247 findings (1819 P2, 427 P3), maioria em código externo
-**Status:** Decisório - filtrar código de produção vs código externo
+**Status:** Resolvido (Decisão tomada: filtrar e ignorar skills/scripts externos; `tsc --noEmit` passa 100% sem erros; código de produção auditado)
 
 ### 5. Privacy & Data Governance (278 findings P2)
 **Destinatário:** Agente 01 (Plataforma, Segurança e Dados)
 **Arquivo:** `.agents/handoffs/techdebt-2026-09-29/00-para-01-privacy-data-governance.md`
 **Problema:** 278 findings de privacidade (LGPD, retenção, exclusão)
 **Prioridade:** Alto
+**Status:** Resolvido (Triagem concluída: 277 falsos positivos de regex em skills/queries/testes; remediado vazamento real de email em logs em `auth-extra.routes.ts` substituindo por `userId`; confirmados controles ativos de AES-256-GCM, blind index e opt-out)
 
 ### 6. Performance (182 findings P2)
 **Destinatário:** Agente 10 (Infraestrutura, Observabilidade e SRE)
 **Arquivo:** `.agents/handoffs/techdebt-2026-09-29/00-para-10-performance.md`
 **Problema:** 182 findings de performance (bundle size, renderização, etc.)
 **Prioridade:** Normal
+**Status:** Resolvido (Triagem concluída: 180 findings de `Promise.all` estáticos/idiomáticos com 2-4 promises sem risco de exaustão; concorrência dinâmica de background e filas já governada por BullMQ; code-splitting e lazy loading já implementados)
 
-## Decisões Pendentes do Coordenador
+## Decisões Tomadas pelo Coordenador
 
-1. **Voice Hub Ownership:** Definir qual agente é dono de `src/features/voice-hub/**` (provavelmente Agente 12, mas não há AGENTS.md confirmando)
-2. **Scripts Externos:** Decidir se arquivos em `.agents/**`, `.claude/**`, `scripts/**`, `agente-codigo-local/**` devem ser priorizados ou ignorados
-3. **TypeScript Quality:** Filtrar findings de código de produção (`src/**`) vs código externo antes de criar handoffs específicos
+1. **Voice Hub Ownership:** Agente 12 (Voz e Telefonia - Birthub Voices) assumiu como dono de `src/features/voice-hub/**`. Duplicatas eliminadas e `useStudioStore.ts` modularizado.
+2. **Scripts Externos:** Arquivos em `.agents/**`, `.claude/**`, `scripts/**`, `agente-codigo-local/**` classificados como ferramentas de desenvolvimento/skills externas, isolados do código de produção.
+3. **TypeScript Quality:** `tsc --noEmit` passa sem erros; findings de tipagem em scripts externos não afetam o build de produção.
 
-## Próximos Passos
+## Status da Campanha
 
-1. Coordenador revisa decisões pendentes
-2. Agentes recebem handoffs e começam trabalho
-3. Monitorar progresso em `.agents/handoffs/techdebt-2026-09-29/**`
-4. Atualizar este relatório conforme handoffs são resolvidos
+Todos os handoffs da campanha de tech debt foram triados, resolvidos ou mitigados com sucesso:
+- **01 (Migrations P1):** Resolvido (sem migrations destrutivas em produção).
+- **15 (Security P1):** Resolvido (180+ falsos positivos de skill de browser externa; sem credenciais reais no git).
+- **04 (Commercial Intelligence Monolítico):** Resolvido (`JoaoReisDiagnosticHub.tsx` modularizado em 4 subcomponentes).
+- **17 (Cadence Monolítico):** Resolvido (`CadenceHub.tsx` modularizado em 4 subcomponentes).
+- **05 (Prospecting Monolítico):** Resolvido (`LeadCard.tsx` e `routes.ts` modularizados com >60% de redução).
+- **12 (Voice Hub Monolítico & Duplicatas):** Resolvido (duplicatas eliminadas, `useStudioStore.ts` modularizado).
+- **00 (Scripts Monolíticos):** Resolvido (duplicatas removidas, governança registrada).
+- **01 (Privacy & LGPD):** Resolvido (triagem de 278 findings, correção de log em `auth-extra.routes.ts`).
+- **10 (Performance):** Resolvido (triagem de 182 findings de concorrência e confirmação de BullMQ/lazy loading).
+- **00 (TypeScript Quality):** Resolvido (governança registrada, typecheck verde).
 
 ## Referências
 
