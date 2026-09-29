@@ -21,7 +21,7 @@ const { prismaMock, bitrixServiceMock } = vi.hoisted(() => ({
     getLeadStatuses: vi.fn(),
     getBitrixUsers: vi.fn(),
     resolveOwnBitrixUserId: vi.fn(),
-    resolveAtlasUserIdByEmail: vi.fn(),
+    resolveBirthubUserIdByEmail: vi.fn(),
     postCommentToBitrix: vi.fn(),
     exportLeadToBitrixNow: vi.fn(),
   },
@@ -198,7 +198,7 @@ describe('POST /api/mesa-tratamento/lead/:id/reassign — painel de gestão', ()
     bitrixServiceMock.getBitrixUsers.mockResolvedValue([
       { id: 'bx-2', name: 'Marcelo Gestor', email: 'marcelo@birthhub360.com.br' },
     ]);
-    bitrixServiceMock.resolveAtlasUserIdByEmail.mockResolvedValue('user-marcelo-1');
+    bitrixServiceMock.resolveBirthubUserIdByEmail.mockResolvedValue('user-marcelo-1');
 
     const response = await request(buildApp('GESTOR', 'user-gestor-1'))
       .post('/api/mesa-tratamento/lead/lead-1/reassign')

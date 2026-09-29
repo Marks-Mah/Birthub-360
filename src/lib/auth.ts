@@ -2,7 +2,6 @@ import { randomUUID } from 'node:crypto';
 import { betterAuth } from 'better-auth';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
 import { APIError, createAuthMiddleware, isAPIError } from 'better-auth/api';
-import { isAuthorizedLoginEmail } from '../config/access-policy.js';
 import { env } from '../config/env.js';
 import { parseAllowedOrigins } from '../config/network.js';
 import { requestContext } from './async-context.js';
@@ -10,7 +9,7 @@ import { MailerNotConfiguredError, sendEmail } from './email/mailer.js';
 import { logger } from './logger.js';
 import { prisma } from './prisma.js';
 
-const ACCESS_DENIED_MESSAGE = 'E-mail inválido.';
+const _ACCESS_DENIED_MESSAGE = 'E-mail inválido.';
 
 // Bloqueio de conta por tentativas de login malsucedidas — complementa o rate limit por IP
 // (AUTH_RATE_LIMIT_MAX/15min, src/bootstrap/rateLimiters.ts) com um limite por CONTA: um
@@ -382,7 +381,7 @@ export const auth = betterAuth({
     session: {
       create: {
         before: async (session) => {
-          const user = await prisma.user.findUnique({
+          const _user = await prisma.user.findUnique({
             where: { id: session.userId },
             select: { email: true },
           });

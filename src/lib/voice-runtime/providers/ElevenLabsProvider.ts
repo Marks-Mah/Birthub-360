@@ -1,4 +1,4 @@
-import { BaseProvider, ProviderResponse } from './BaseProvider.js';
+import { BaseProvider, type ProviderResponse } from './BaseProvider.js';
 import { ElevenLabsClient } from 'elevenlabs';
 import { logger } from '../../logger.js';
 

@@ -2,9 +2,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "prospector-atlas.fullname" . }}-worker
+  name: {{ include "birthhub-360.fullname" . }}-worker
   labels:
-    {{- include "prospector-atlas.labels" . | nindent 4 }}
+    {{- include "birthhub-360.labels" . | nindent 4 }}
     app.kubernetes.io/component: worker
 spec:
   {{- if not .Values.worker.autoscaling.enabled }}
@@ -15,12 +15,12 @@ spec:
   {{- end }}
   selector:
     matchLabels:
-      {{- include "prospector-atlas.selectorLabels" . | nindent 6 }}
+      {{- include "birthhub-360.selectorLabels" . | nindent 6 }}
       app.kubernetes.io/component: worker
   template:
     metadata:
       labels:
-        {{- include "prospector-atlas.selectorLabels" . | nindent 8 }}
+        {{- include "birthhub-360.selectorLabels" . | nindent 8 }}
         app.kubernetes.io/component: worker
     spec:
       terminationGracePeriodSeconds: 35
@@ -43,9 +43,9 @@ spec:
               protocol: TCP
           envFrom:
             - configMapRef:
-                name: {{ include "prospector-atlas.fullname" . }}-config
+                name: {{ include "birthhub-360.fullname" . }}-config
             - secretRef:
-                name: {{ include "prospector-atlas.fullname" . }}-secret
+                name: {{ include "birthhub-360.fullname" . }}-secret
           # Só fica pronto após provar Redis + Postgres e registrar os processadores.
           startupProbe:
             httpGet:

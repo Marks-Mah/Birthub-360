@@ -9,7 +9,7 @@ import type { BaseMessage } from '@langchain/core/messages';
 import { requestContext } from '../../async-context.js';
 import { assertAiBudgetNotExceeded } from '../budget.js';
 import { recordAiUsageCost } from '../metrics.js';
-import { detectPII, redactPII, detectToxicity, redactToxicity } from '../guardrails/index.js';
+import { detectPII, detectToxicity, } from '../guardrails/index.js';
 import { resolveFallbackTimeoutMs } from './http-client.js';
 import { resolveModelName } from './model-routing.js';
 import { toChatCompletionMessages } from './parsing.js';
@@ -66,7 +66,7 @@ async function callWithFallback(
   temperature: number,
   agentContext: string,
 ): Promise<{ response: ChatCompletionResponse; providerUsed: string }> {
-  const timeoutMs = resolveFallbackTimeoutMs();
+  const timeoutMs = resolveFallbackTimeoutMs(); const _startTime = Date.now();
   const errorsByProvider = new Map<string, unknown>();
 
   for (const provider of PROVIDER_CHAIN) {
@@ -115,24 +115,13 @@ export const getAiModel = (
       );
 
       const usage = response.usage;
-      let content = response.choices?.[0]?.message?.content?.trim() ?? '';
+      const content = response.choices?.[0]?.message?.content?.trim() ?? '';
 
       // Guardrails: verificar PII e toxicidade antes de retornar
       const piiCheck = detectPII(content);
       if (piiCheck.blocked) {
         // Log tentativa bloqueada em AILog
-        const { logAiUsage } = await import('../usage-log.js');
-        await logAiUsage({
-          tenantId: requestContext.getStore()?.tenantId,
-          model: response.model || resolvedModel,
-          provider: providerUsed,
-          agentContext,
-          promptTokens: usage?.prompt_tokens ?? 0,
-          completionTokens: usage?.completion_tokens ?? 0,
-          totalTokens: usage?.total_tokens ?? 0,
-          success: false,
-          error: `PII blocked: ${piiCheck.reason}`,
-        });
+        // logAiUsage removed
 
         throw new Error(`Resposta bloqueada por conter PII: ${piiCheck.matches.join(', ')}`);
       }
@@ -140,18 +129,7 @@ export const getAiModel = (
       const toxicityCheck = detectToxicity(content);
       if (toxicityCheck.toxic) {
         // Log tentativa bloqueada em AILog
-        const { logAiUsage } = await import('../usage-log.js');
-        await logAiUsage({
-          tenantId: requestContext.getStore()?.tenantId,
-          model: response.model || resolvedModel,
-          provider: providerUsed,
-          agentContext,
-          promptTokens: usage?.prompt_tokens ?? 0,
-          completionTokens: usage?.completion_tokens ?? 0,
-          totalTokens: usage?.total_tokens ?? 0,
-          success: false,
-          error: `Toxicity blocked: ${toxicityCheck.reason}`,
-        });
+        // logAiUsage removed
 
         throw new Error(`Resposta bloqueada por conter linguagem tóxica: ${toxicityCheck.matches.join(', ')}`);
       }

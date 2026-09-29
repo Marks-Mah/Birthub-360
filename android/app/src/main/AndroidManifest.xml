@@ -55,7 +55,7 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="https" android:host="prospector-atlas.onrender.com" android:pathPrefix="/app" />
+                <data android:scheme="https" android:host="birthhub-360.onrender.com" android:pathPrefix="/app" />
             </intent-filter>
 
         </activity>

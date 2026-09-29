@@ -12,11 +12,11 @@ repositório) foi a última arquitetura de produção real, mas está **congelad
 `docs/deploy/producao.md` para a arquitetura Render + Supabase + Cloudflare como candidata
 congelada.
 
-Estes `Application` do ArgoCD apontam para o chart em `charts/prospector-atlas` (ver
+Estes `Application` do ArgoCD apontam para o chart em `charts/birthhub-360` (ver
 `charts/README.md` para o mesmo aviso) e assumem um cluster Kubernetes com ArgoCD instalado
 sincronizando a partir deste repositório — nenhum cluster real está atualmente registrado contra
 esses manifests em produção. Mantidos como caminho alternativo documentado, não removidos.
 
 Qualquer decisão de ativar de fato o caminho Kubernetes/Helm/ArgoCD (registrar o cluster, apontar
-o ArgoCD para este repositório, provisionar secrets reais em `charts/prospector-atlas/values.yaml`
+o ArgoCD para este repositório, provisionar secrets reais em `charts/birthhub-360/values.yaml`
 via `secrets:`) é decisão de negócio/arquitetura, não uma correção de rotina.

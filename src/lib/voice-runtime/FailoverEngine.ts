@@ -1,7 +1,7 @@
 import { providerManager } from './ProviderManager.js';
 import { observability } from './Observability.js';
 import { otelCollector } from './otel.js';
-import { BaseProvider } from './providers/BaseProvider.js';
+import type { BaseProvider } from './providers/BaseProvider.js';
 
 export interface FailoverResult<T> {
   result: T;

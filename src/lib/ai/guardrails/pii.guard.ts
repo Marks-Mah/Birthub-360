@@ -6,7 +6,7 @@ import { z } from 'zod';
 
 const CPF_PATTERN = /\d{3}\.?\d{3}\.?\d{3}-?\d{2}/g;
 const CNPJ_PATTERN = /\d{2}\.?\d{3}\.?\d{3}\/?\d{4}-?\d{2}/g;
-const PHONE_PATTERN = /\+?\d{1,3}[-.\s]?\(?\d{2,3}\)?[-.\s]?\d{4,5}[-.\s]?\d{4}/g;
+const PHONE_PATTERN = /(?:\+?\d{1,3}[-.\s]?)?\(?\d{2,3}\)?[-.\s]?\d{4,5}[-.\s]?\d{4}/g;
 const EMAIL_PATTERN = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
 const CREDIT_CARD_PATTERN = /\d{4}[-.\s]?\d{4}[-.\s]?\d{4}[-.\s]?\d{4}/g;
 

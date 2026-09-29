@@ -1,4 +1,7 @@
+import canvasConfetti from 'canvas-confetti';
 import { AnimatePresence, motion } from 'framer-motion';
+import type React from 'react';
+import { useCallback, useState } from 'react';
 import {
   Activity,
   AlertCircle,
@@ -22,7 +25,7 @@ import {
   TrendingUp,
   Users,
 } from 'lucide-react';
-import { useState } from 'react';
+import { SoundFX } from '../../../lib/soundEffects.js';
 import { Button } from '../../../components/ui/Button.js';
 import { Card, CardDescription, CardTitle } from '../../../components/ui/Card.js';
 import { useBrandAccent } from '../../../hooks/useBrandAccent.js';
@@ -422,6 +425,15 @@ export function AISuiteHub() {
   const [executionError, setExecutionError] = useState<string | null>(null);
   const [copied, setCopied] = useState<boolean>(false);
   const accent = useBrandAccent();
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+
+  const handleMouseMove = useCallback((e: React.MouseEvent) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    setMousePos({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    });
+  }, []);
 
   const selectedCap = CAPABILITIES.find((c) => c.id === selectedId) || CAPABILITIES[0];
 
@@ -431,6 +443,7 @@ export function AISuiteHub() {
   });
 
   const handleSelectCapability = (cap: AICapability) => {
+    SoundFX.play('click');
     setSelectedId(cap.id);
     setPayloadText(JSON.stringify(cap.samplePayload, null, 2));
     setExecutionResult(null);
@@ -438,6 +451,7 @@ export function AISuiteHub() {
   };
 
   const handleRunCapability = async () => {
+    SoundFX.play('click');
     setIsRunning(true);
     setExecutionError(null);
     setExecutionResult(null);
@@ -452,6 +466,13 @@ export function AISuiteHub() {
       );
       const output = res.data || res.result || res;
       setExecutionResult(typeof output === 'string' ? output : JSON.stringify(output, null, 2));
+      SoundFX.play('success');
+      canvasConfetti({
+        particleCount: 80,
+        spread: 60,
+        origin: { y: 0.6 },
+        colors: ['#D4AF37', '#F3E5AB', '#ffffff'],
+      });
     } catch (err: any) {
       setExecutionError((err as Error).message || 'Falha ao executar serviço de IA');
     } finally {
@@ -525,28 +546,45 @@ export function AISuiteHub() {
                 type="button"
                 key={cap.id}
                 onClick={() => handleSelectCapability(cap)}
+                onPointerMove={handleMouseMove}
+                onMouseEnter={() => SoundFX.play('hover')}
                 aria-pressed={isSelected}
-                className={`w-full text-left group p-3.5 rounded-xl border cursor-pointer transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand ${
+                className={`relative overflow-hidden w-full text-left group p-3.5 rounded-xl border cursor-pointer transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand active:scale-[0.98] ${
                   isSelected
-                    ? `bg-surface shadow-md ${accent.border} ring-2 ring-primary/20`
+                    ? `bg-surface shadow-md ${accent.border} ring-2 ring-brand/20`
                     : `bg-surface/50 hover:bg-surface border-border/50 ${accent.hoverBorder}`
                 }`}
               >
-                <div className="flex items-start gap-3">
+                {/* Bento Spotlight */}
+                <div
+                  className="pointer-events-none absolute -inset-px opacity-0 transition-opacity duration-300 group-hover:opacity-100 z-10 rounded-xl"
+                  style={{
+                    background: `radial-gradient(400px circle at ${mousePos.x}px ${mousePos.y}px, rgba(212,175,55,0.08), transparent 40%)`,
+                  }}
+                  aria-hidden="true"
+                />
+
+                {/* Specular Top Highlight */}
+                <div
+                  className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-brand to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-20"
+                  aria-hidden="true"
+                />
+
+                <div className="flex items-start gap-3 relative z-30">
                   <div
-                    className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 transition-colors ${
-                      isSelected ? `${accent.bgSoft} ${accent.text}` : 'bg-surface-2 text-ink-2'
+                    className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 transition-colors shadow-sm group-hover:shadow-md ${
+                      isSelected ? `${accent.bgSoft} ${accent.text}` : 'bg-surface-2 text-ink-2 group-hover:text-ink'
                     }`}
                   >
                     <Icon className="w-4 h-4" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between gap-2">
-                      <h3 className="text-sm font-semibold text-ink truncate group-hover:text-primary transition-colors">
+                      <h3 className="text-sm font-semibold text-ink truncate group-hover:text-brand transition-colors">
                         <span className="text-xs font-mono text-ink-3 mr-1.5">#{cap.id}</span>
                         {cap.title}
                       </h3>
-                      <span className="text-[10px] font-mono font-medium px-1.5 py-0.5 rounded bg-surface-2 border border-border/50 text-ink-3">
+                      <span className="text-[10px] font-mono font-medium px-1.5 py-0.5 rounded bg-surface-2 border border-border/50 text-ink-3 shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
                         {cap.modelDefault}
                       </span>
                     </div>
@@ -562,26 +600,43 @@ export function AISuiteHub() {
 
         {/* Coluna Direita: Console Interativo de Execução */}
         <div className="lg:col-span-7 space-y-4">
-          <Card className="border border-border/60 shadow-sm bg-surface">
-            <div className="p-5 border-b border-border/40 flex items-center justify-between gap-4">
+          <Card 
+            className="border border-border/60 shadow-sm bg-surface relative overflow-hidden group/console transition-all duration-500 hover:shadow-lg"
+            onPointerMove={handleMouseMove}
+          >
+            {/* Bento Spotlight */}
+            <div
+              className="pointer-events-none absolute -inset-px opacity-0 transition-opacity duration-500 group-hover/console:opacity-100 z-10 rounded-[inherit]"
+              style={{
+                background: `radial-gradient(600px circle at ${mousePos.x}px ${mousePos.y}px, rgba(212,175,55,0.05), transparent 40%)`,
+              }}
+              aria-hidden="true"
+            />
+            {/* Specular Top Border */}
+            <div
+              className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-brand to-transparent opacity-0 group-hover/console:opacity-100 transition-opacity duration-700 pointer-events-none z-20"
+              aria-hidden="true"
+            />
+
+            <div className="p-5 border-b border-border/40 flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-30">
               <div className="flex items-center gap-3">
                 <div
-                  className={`w-10 h-10 rounded-xl flex items-center justify-center ${accent.bgSoft} ${accent.text}`}
+                  className={`w-12 h-12 rounded-xl flex items-center justify-center ${accent.bgSoft} ${accent.text} shadow-inner bg-gradient-to-b from-white/10 to-transparent`}
                 >
-                  <selectedCap.icon className="w-5 h-5" />
+                  <selectedCap.icon className="w-6 h-6" />
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
                     <span className="text-xs font-mono font-bold text-ink-3">
                       Motor #{selectedCap.id}
                     </span>
-                    <CardTitle className="text-base font-bold text-ink">
+                    <CardTitle className="text-base font-bold text-ink group-hover/console:text-brand transition-colors">
                       {selectedCap.title}
                     </CardTitle>
                   </div>
-                  <CardDescription className="text-xs text-ink-2 mt-0.5">
+                  <CardDescription className="text-xs text-ink-2 mt-0.5 max-w-sm leading-relaxed">
                     Endpoint:{' '}
-                    <code className="font-mono text-primary bg-primary/10 px-1 py-0.5 rounded text-[11px]">
+                    <code className="font-mono text-brand bg-brand/10 px-1 py-0.5 rounded text-[11px]">
                       {selectedCap.endpoint}
                     </code>
                   </CardDescription>
@@ -590,9 +645,12 @@ export function AISuiteHub() {
 
               <Button
                 onClick={handleRunCapability}
+                onMouseEnter={() => SoundFX.play('hover')}
                 disabled={isRunning}
-                className="gap-2 shrink-0 font-semibold"
+                className="gap-2 shrink-0 font-semibold active:scale-95 transition-all duration-300 relative overflow-hidden group/btn"
               >
+                {/* Botão com cosmic shine interno */}
+                <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent group-hover/btn:animate-[shimmer_1.5s_infinite] pointer-events-none" />
                 {isRunning ? (
                   <>
                     <RefreshCw className="w-4 h-4 animate-spin" />
@@ -600,14 +658,14 @@ export function AISuiteHub() {
                   </>
                 ) : (
                   <>
-                    <Send className="w-4 h-4" />
+                    <Send className="w-4 h-4 group-hover/btn:-translate-y-0.5 group-hover/btn:translate-x-0.5 transition-transform" />
                     Executar Motor
                   </>
                 )}
               </Button>
             </div>
 
-            <div className="p-5 space-y-4">
+            <div className="p-5 space-y-4 relative z-30">
               {/* Editor de Payload */}
               <div>
                 <div className="flex items-center justify-between mb-1.5">

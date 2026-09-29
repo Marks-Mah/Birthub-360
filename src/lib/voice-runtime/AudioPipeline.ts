@@ -1,4 +1,4 @@
-import { AudioChunk } from './types.js';
+import type { AudioChunk } from './types.js';
 import { streamingEngine } from './StreamingEngine.js';
 import { observability } from './Observability.js';
 

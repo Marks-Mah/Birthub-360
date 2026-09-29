@@ -1,3 +1,4 @@
+import React from 'react';
 import { LineChart, SlidersHorizontal } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
@@ -83,7 +84,7 @@ export function CommercialIntelligenceHub() {
     commercialIntelligenceApi
       .filterOptions()
       .then((data) => !cancelled && setFilterOptions(data))
-      .catch(() => {});
+      .catch(() => { });
     return () => {
       cancelled = true;
     };
@@ -137,14 +138,14 @@ export function CommercialIntelligenceHub() {
   };
 
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  const handleMouseMove = useCallback((e: React.MouseEvent) => {
+  const handleMouseMove = React.useCallback((e: React.MouseEvent) => {
     const rect = e.currentTarget.getBoundingClientRect();
     setMousePos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
   }, []);
 
   return (
     <main className="mx-auto w-full max-w-[92rem] flex-1 space-y-5 overflow-y-auto p-4 md:p-8">
-      <header 
+      <header
         className="relative overflow-hidden rounded-[1.7rem] border border-line bg-surface/94 p-5 shadow-[0_30px_72px_-48px_rgba(0,0,0,0.95),inset_0_1px_0_rgba(255,255,255,0.07)] md:p-6 group/header transition-all duration-500 hover:shadow-brand/10"
         onPointerMove={handleMouseMove}
       >
@@ -156,7 +157,7 @@ export function CommercialIntelligenceHub() {
           }}
           aria-hidden="true"
         />
-        
+
         <div
           className="pointer-events-none absolute -right-24 -top-28 h-72 w-72 rounded-full bg-brand/10 blur-[90px] z-0"
           aria-hidden="true"
@@ -255,11 +256,10 @@ export function CommercialIntelligenceHub() {
               type="button"
               onClick={() => setTab(t.id)}
               aria-current={active ? 'page' : undefined}
-              className={`shrink-0 rounded-xl px-3.5 py-2.5 text-xs font-bold transition-[transform,background-color,color,box-shadow,border-color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand ${
-                active
+              className={`shrink-0 rounded-xl px-3.5 py-2.5 text-xs font-bold transition-[transform,background-color,color,box-shadow,border-color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand ${active
                   ? 'border border-brand/20 bg-brand-active text-on-brand shadow-[0_12px_28px_-18px_rgba(0,0,0,0.75),inset_0_1px_0_rgba(255,255,255,0.16)]'
                   : 'border border-transparent text-ink-2 hover:-translate-y-0.5 hover:border-line hover:bg-surface-2 hover:text-ink'
-              }`}
+                }`}
             >
               {t.label}
             </button>

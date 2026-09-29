@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import type React from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card } from '../../../components/ui/Card.js';
 import { Button } from '../../../components/ui/Button.js';
@@ -20,7 +21,7 @@ export function SetupWizard() {
   const [step, setStep] = useState(1);
   const [selectedModules, setSelectedModules] = useState<Set<string>>(new Set(['crm-comercial']));
   const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
+  const _navigate = useNavigate();
 
   const toggleModule = (key: string) => {
     const next = new Set(selectedModules);

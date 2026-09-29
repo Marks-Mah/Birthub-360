@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "prospector-atlas.fullname" . }}-config
+  name: {{ include "birthhub-360.fullname" . }}-config
   labels:
-    {{- include "prospector-atlas.labels" . | nindent 4 }}
+    {{- include "birthhub-360.labels" . | nindent 4 }}
 data:
   {{- range $key, $value := .Values.env }}
   {{ $key }}: {{ $value | quote }}

@@ -1,4 +1,4 @@
-import React from 'react';
+import type React from 'react';
 import { useOrganizationModules } from '../../hooks/useOrganizationModules.js';
 import type { ProductModuleKey } from '../../config/product-modules.js';
 import { Card } from '../ui/Card.js';

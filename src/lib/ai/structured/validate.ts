@@ -3,7 +3,6 @@
  * Valida respostas de IA contra schemas e implementa retry automático
  */
 import { z } from 'zod';
-import type { LeadSchema, CompanySchema, EnrichmentSchema } from '../schemas/index.js';
 
 export interface ValidationOptions {
   maxRetries?: number;
@@ -51,7 +50,7 @@ export async function validateStructuredOutput<T>(
         };
       }
 
-      lastError = `Zod validation error: ${result.error.errors.map((e) => e.message).join(', ')}`;
+      lastError = `Zod validation error: ${result.error.issues.map((e: any) => e.message).join(', ')}`;
 
       // Se fallbackToPartial, tentar extrair dados parciais
       if (fallbackToPartial && i === maxRetries - 1) {

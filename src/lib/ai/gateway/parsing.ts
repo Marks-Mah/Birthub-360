@@ -117,7 +117,7 @@ export function cleanAndParseJson<T>(content: string): T {
 export async function cleanParseAndValidate<T>(
   content: string,
   schema: z.ZodSchema<T>,
-  maxRetries: number = 3,
+  _maxRetries: number = 3,
 ): Promise<{ success: true; data: T } | { success: false; error: string }> {
   try {
     const parsed = cleanAndParseJson<T>(content);
@@ -129,7 +129,7 @@ export async function cleanParseAndValidate<T>(
 
     return {
       success: false,
-      error: `Zod validation failed: ${result.error.errors.map((e) => e.message).join(', ')}`,
+      error: `Zod validation failed: ${result.error.issues.map((e: any) => e.message).join(', ')}`,
     };
   } catch (error) {
     return {

@@ -114,39 +114,40 @@ export async function searchEmbeddings(
   try {
     const filterQuery = filter
       ? {
-          must: [
-            {
-              key: 'tenantId',
-              match: { value: tenantId },
-            },
-            ...(filter.documentType
-              ? [
-                  {
-                    key: 'documentType',
-                    match: { value: filter.documentType },
-                  },
-                ]
-              : []),
-          ],
-        }
+        must: [
+          {
+            key: 'tenantId',
+            match: { value: tenantId },
+          },
+          ...(filter.documentType
+            ? [
+              {
+                key: 'documentType',
+                match: { value: filter.documentType },
+              },
+            ]
+            : []),
+        ],
+      }
       : {
-          must: [
-            {
-              key: 'tenantId',
-              match: { value: tenantId },
-            },
-          ],
-        };
+        must: [
+          {
+            key: 'tenantId',
+            match: { value: tenantId },
+          },
+        ],
+      };
 
-    const results = await client.search(COLLECTION_NAME, {
-      vector: queryVector,
+    const response = await client.query(COLLECTION_NAME, {
+      query: queryVector,
       limit,
       score_threshold: scoreThreshold,
       filter: filterQuery,
       with_payload: true,
     });
 
-    return results.map((result) => ({
+    const points = 'points' in response ? response.points : response;
+    return (points as any[]).map((result) => ({
       id: result.id as string,
       score: result.score || 0,
       payload: result.payload as EmbeddingMetadata,
