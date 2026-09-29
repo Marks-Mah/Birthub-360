@@ -84,12 +84,25 @@ export async function signUp(
       .waitForURL('**/app*', { timeout: 45_000 })
       .then(() => 'authenticated' as const)
       .catch(() => null),
+    page
+      .waitForURL('**/setup', { timeout: 45_000 })
+      .then(() => 'setup' as const)
+      .catch(() => null),
     verificationPanel
       .waitFor({ state: 'visible', timeout: 45_000 })
       .then(() => 'pending-verification' as const)
       .catch(() => null),
   ]);
 
+  if (outcome === 'setup') {
+    // Nova regra de Onda C (Modularização): primeiro acesso de uma org sem onboardingCompletedAt
+    // redireciona o ADMIN pro wizard em /setup. Preenchemos o wizard automaticamente pra não
+    // quebrar os dezenas de specs existentes que esperam terminar em /app.
+    await page.getByRole('button', { name: /Continuar/ }).click();
+    await page.getByRole('button', { name: /Ir para o Dashboard/ }).click();
+    await page.waitForURL('**/app*', { timeout: 15_000 });
+    return;
+  }
   if (outcome === 'authenticated') {
     // O login faz `window.location.href = '/hub'` e `/hub` só redireciona para `/app` (a tela do Hub
     // foi removida — o Command Center em /app é o destino único), então a URL final já é `/app`.
@@ -97,7 +110,7 @@ export async function signUp(
   }
   if (outcome !== 'pending-verification') {
     throw new Error(
-      'signUp(): nem a navegação para /app nem o aviso de confirmação de e-mail apareceram a tempo.',
+      'signUp(): nem a navegação para /app nem /setup nem o aviso de confirmação de e-mail apareceram a tempo.',
     );
   }
 
@@ -126,7 +139,20 @@ export async function signUp(
     );
   }
   await page.goto('/app');
-  await page.waitForURL('**/app*', { timeout: 30_000 });
+  
+  // Trata o redirecionamento potencial para o /setup se for o primeiro acesso da org
+  const postLoginOutcome = await Promise.race([
+    page.waitForURL('**/app*', { timeout: 15_000 }).then(() => 'app' as const).catch(() => null),
+    page.waitForURL('**/setup', { timeout: 15_000 }).then(() => 'setup' as const).catch(() => null)
+  ]);
+
+  if (postLoginOutcome === 'setup') {
+    await page.getByRole('button', { name: /Continuar/ }).click();
+    await page.getByRole('button', { name: /Ir para o Dashboard/ }).click();
+    await page.waitForURL('**/app*', { timeout: 15_000 });
+  } else if (postLoginOutcome !== 'app') {
+    throw new Error('signUp(): após confirmação de e-mail, falhou ao acessar /app ou /setup.');
+  }
 }
 
 /**

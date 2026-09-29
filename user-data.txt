@@ -1,0 +1,36 @@
+#!/bin/bash
+# User data script for Birth Hub 360 EC2 instance
+
+# Update system
+apt-get update -y
+
+# Install Docker
+curl -fsSL https://get.docker.com -o get-docker.sh
+sh get-docker.sh
+
+# Install Node.js 20
+curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+apt-get install -y nodejs
+
+# Install PostgreSQL client
+apt-get install -y postgresql-client
+
+# Install Redis client
+apt-get install -y redis-tools
+
+# Clone repository
+cd /home/ubuntu
+git clone https://github.com/birthhub360/birthhub-360.git
+cd birthhub-360
+
+# Install dependencies
+npm install
+
+# Generate Prisma client
+npx prisma generate
+
+# Build application
+npm run build
+
+# Start application
+npm run start
