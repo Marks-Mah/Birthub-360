@@ -1,7 +1,7 @@
 - De: 00 (Coordenador)
 - Para: 15 (Segurança Aplicada e Rotação de Segredos)
 - Onda: techdebt-2026-09-29
-- Status: aberto
+- Status: resolvido
 - Prioridade: bloqueador
 
 ## Problema
@@ -46,3 +46,17 @@ Referência: AGENTS.md define Agente 15 como responsável por "Segurança Aplica
 - Ignorar findings em skills/scripts externos por enquanto (não são código de produção crítico)
 
 **Ação executada:** Duplicata de `live-browser.js` removida (manter apenas em `.agents/skills/`)
+
+## Resolução (Agente 15)
+
+1. **Auditoria de Falsos Positivos Concluída:**
+   - 180+ findings em `live-browser.js` eram falsos positivos decorrentes de regex contra script de automação de navegador (skill de assistente), não código da aplicação. A cópia duplicada em `.claude/skills/` foi eliminada.
+2. **Varredura Completa do Relatório JSON:**
+   - Todos os findings de segurança P1 foram cruzados com a árvore de código.
+   - Os findings em `src/**` e `tests/**` correspondem a fixtures de testes unitários testando funções de mascaramento PII/redaction e assertivas de regex (`expect(error.message).not.toContain(...)`, chaves dummy de teste `sk-should-never-leak-...`, `test-places-key`, etc.).
+   - Os 2 apontamentos de `eval/dynamic code` em `src/lib/queue/distributedLock.ts` são chamadas canônicas de `cacheConnection.eval(...)` do Redis executando scripts Lua de lock atômico (padrão seguro da indústria para mutex distribuído, e não avaliação dinâmica de código JavaScript).
+3. **Validação de Código de Produção:**
+   - Nenhum segredo ou credencial real ativa está hardcoded no código de produção.
+   - `npx tsc --noEmit` validado com sucesso (zero erros).
+   - Handoff P1 resolvido e auditado.
+
