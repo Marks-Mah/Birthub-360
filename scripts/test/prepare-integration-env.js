@@ -34,7 +34,7 @@ const POSTGRES_CONTAINER = 'birthhub_postgres';
 const BOOTSTRAP_SUPERUSER = 'prospector';
 const BOOTSTRAP_DB = 'prospectordb';
 const TEST_DB_NAME = 'prospectordb_test';
-const APP_ROLE_PASSWORD = 'prospector_app_pass';
+const APP_ROLE_PASSWORD = process.env.APP_ROLE_PASSWORD || 'prospector_app_pass';
 
 const REQUIRED_CONTAINERS = ['birthhub_postgres', 'birthhub_redis', 'birthhub_meilisearch'];
 // Desde 2026-09-08 o serviço `postgres` não existe mais em docker-compose.yml (a aplicação usa o

@@ -6,7 +6,7 @@ async function main() {
     const res = await auth.api.signUpEmail({
       body: {
         email: 'marcelinmark@gmail.com',
-        password: '00000000',
+        password: process.env.ADMIN_INITIAL_PASSWORD || '00000000',
         name: 'Marcelin Mark',
       },
     });

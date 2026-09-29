@@ -3,7 +3,7 @@ FROM node:22-slim AS builder
 
 WORKDIR /app
 
-ENV DATABASE_URL="postgresql://postgres:postgres@localhost:5432/prospector"
+ENV DATABASE_URL=""
 
 RUN apt-get update && apt-get install -y openssl python3 make g++ ca-certificates && rm -rf /var/lib/apt/lists/*
 
