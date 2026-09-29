@@ -128,13 +128,13 @@ export const getAiModel = (
         await logAiUsage({
           // tenantId resolved internally
           model: response.model || resolvedModel,
-          provider: providerUsed,
-          agentContext,
-          promptTokens: usage?.prompt_tokens ?? 0,
-          completionTokens: usage?.completion_tokens ?? 0,
-          totalTokens: usage?.total_tokens ?? 0,
-          success: false,
-          error: `PII blocked: ${piiCheck.reason}`,
+          usage: {
+            promptTokens: usage?.prompt_tokens ?? 0,
+            completionTokens: usage?.completion_tokens ?? 0,
+            totalTokens: usage?.total_tokens ?? 0,
+          },
+          latencyMs: 0,
+          agentRole: agentContext,
         });
 
         throw new Error(`Resposta bloqueada por conter PII: ${piiCheck.matches.join(', ')}`);
@@ -147,13 +147,13 @@ export const getAiModel = (
         await logAiUsage({
           // tenantId resolved internally
           model: response.model || resolvedModel,
-          provider: providerUsed,
-          agentContext,
-          promptTokens: usage?.prompt_tokens ?? 0,
-          completionTokens: usage?.completion_tokens ?? 0,
-          totalTokens: usage?.total_tokens ?? 0,
-          success: false,
-          error: `Toxicity blocked: ${toxicityCheck.reason}`,
+          usage: {
+            promptTokens: usage?.prompt_tokens ?? 0,
+            completionTokens: usage?.completion_tokens ?? 0,
+            totalTokens: usage?.total_tokens ?? 0,
+          },
+          latencyMs: 0,
+          agentRole: agentContext,
         });
 
         throw new Error(`Resposta bloqueada por conter linguagem tóxica: ${toxicityCheck.matches.join(', ')}`);

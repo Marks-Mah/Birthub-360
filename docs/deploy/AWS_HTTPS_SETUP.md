@@ -260,3 +260,50 @@ Se preferir usar Cloudflare (recomendado para produção):
 4. No nginx, configure apenas HTTP (porta 80) - Cloudflare faz o SSL
 
 Neste caso, mantenha as variáveis de ambiente como HTTPS (`https://seu-dominio.com`) porque o Cloudflare terminará o SSL antes da EC2.
+
+## Status Atual (Deploy Executado)
+
+A configuração foi aplicada com sucesso no servidor AWS EC2 (3.143.251.44):
+
+### ✅ Concluído
+- nginx instalado e configurado como reverse proxy
+- Container Docker recriado para usar apenas porta 3024 (não mais 80/443)
+- nginx configurado para servir na porta 80 → proxy para porta 3024
+- Variáveis de ambiente preparadas para HTTPS (arquivo `.env.https_backup`)
+- Aplicação acessível via HTTP: `http://3.143.251.44`
+
+### ⏳ Pendente (DNS)
+- **O domínio `app.birthhub360.com.br` ainda não está configurado no DNS**
+- Quando o DNS estiver pronto, execute: `/home/ubuntu/enable-ssl-when-dns-ready.sh`
+
+### 📋 Próximos Passos
+
+1. **Configurar DNS**: Aponte `app.birthhub360.com.br` para `3.143.251.44`
+2. **Verificar DNS**: Execute `dig app.birthhub360.com.br` para confirmar
+3. **Habilitar SSL**: Execute `/home/ubuntu/enable-ssl-when-dns-ready.sh` no servidor
+
+### 🔧 Comandos Úteis
+
+```bash
+# Verificar status nginx
+sudo systemctl status nginx
+
+# Verificar status container
+sudo docker ps
+
+# Verificar logs da aplicação
+sudo docker logs birthhub-app -f
+
+# Testar configuração nginx
+sudo nginx -t
+
+# Quando DNS estiver pronto, habilitar SSL
+/home/ubuntu/enable-ssl-when-dns-ready.sh
+```
+
+### 🌐 Acesso Atual
+
+- **HTTP**: http://3.143.251.44 ✅ Funcionando
+- **HTTPS**: Aguardando configuração DNS
+
+O erro original de SSL/HTTPS foi resolvido - a aplicação agora está servida corretamente via nginx reverse proxy, e o certificado SSL será configurado automaticamente quando o DNS estiver pronto.

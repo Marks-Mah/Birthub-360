@@ -72,7 +72,6 @@ export function MainLayout({ children }: MainLayoutProps) {
           <div
             className="fixed inset-0 z-30 bg-overlay backdrop-blur-sm lg:hidden transition-opacity duration-300 animate-fade-in"
             role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={() => setMobileNavOpen(false)}
-            aria-hidden="true"
           />
         )}
         <div className="flex-1 flex flex-col h-full overflow-hidden relative">

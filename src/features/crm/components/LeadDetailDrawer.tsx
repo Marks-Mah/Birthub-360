@@ -411,10 +411,9 @@ export function LeadDetailDrawer({ leadId, onClose, onChanged }: LeadDetailDrawe
       {/* Backdrop de "clicar fora fecha" — não precisa de suporte a teclado próprio: Escape já
           fecha o drawer via listener global (window.addEventListener acima), então isto é
           conveniência de mouse/touch, não um alvo de interação que um usuário de teclado precise
-          alcançar. aria-hidden="true" (nada semântico aqui) já satisfaz o jsx-a11y sozinho, sem
-          precisar de eslint-disable. */}
+          alcançar. Elemento de backdrop com role="button" para fechar via teclado - sem aria-hidden
+          pois é focável. */}
       <div
-        aria-hidden="true"
         className="fixed inset-0 bg-ink/40 backdrop-blur-xs transition-opacity"
         role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={onClose}
       />
@@ -643,13 +642,12 @@ export function LeadDetailDrawer({ leadId, onClose, onChanged }: LeadDetailDrawe
                       <ClipboardList className="w-4 h-4 text-brand" /> Matriz BANT & Lead Score
                     </h3>
                     <span
-                      className={`px-2 py-0.5 rounded-full text-[11px] font-black ${
-                        liveScore.temperature === 'Quente'
+                      className={`px-2 py-0.5 rounded-full text-[11px] font-black ${liveScore.temperature === 'Quente'
                           ? 'bg-rose-500/10 text-rose-600 border border-rose-500/20'
                           : liveScore.temperature === 'Morno'
                             ? 'bg-amber-500/10 text-amber-600 border border-amber-500/20'
                             : 'bg-blue-500/10 text-blue-600 border border-blue-500/20'
-                      }`}
+                        }`}
                     >
                       {TEMPERATURE_EMOJI[liveScore.temperature]} {liveScore.score}/100
                     </span>
@@ -694,13 +692,12 @@ export function LeadDetailDrawer({ leadId, onClose, onChanged }: LeadDetailDrawe
 
                       <div className="w-full bg-surface-2 h-2.5 rounded-full overflow-hidden border border-line/50">
                         <div
-                          className={`h-full rounded-full transition-all duration-500 ${
-                            liveScore.score >= 70
+                          className={`h-full rounded-full transition-all duration-500 ${liveScore.score >= 70
                               ? 'bg-gradient-to-r from-amber-500 to-rose-500'
                               : liveScore.score >= 40
                                 ? 'bg-gradient-to-r from-blue-500 to-amber-500'
                                 : 'bg-blue-500'
-                          }`}
+                            }`}
                           style={{ width: `${liveScore.score}%` }}
                         />
                       </div>

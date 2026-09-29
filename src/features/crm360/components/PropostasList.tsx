@@ -214,9 +214,9 @@ export function PropostasList() {
                 onAction={
                   canWrite
                     ? () => {
-                        setEditingDocument(null);
-                        setIsFormOpen(true);
-                      }
+                      setEditingDocument(null);
+                      setIsFormOpen(true);
+                    }
                     : undefined
                 }
                 icon={<FileText className="w-10 h-10 text-brand" />}
@@ -251,17 +251,17 @@ export function PropostasList() {
                     // biome-ignore lint/a11y/useSemanticElements: ver comentário acima
                     <tr
                       key={doc.id}
-                      role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={() => setSelectedDocumentId(doc.id)}
+                      className="border-t border-line hover:bg-surface-2/60 cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-inset"
+                      tabIndex={0}
+                      role="button"
+                      aria-label={`Ver detalhes de ${doc.title || doc.number}`}
                       onKeyDown={(e) => {
                         if (e.key === 'Enter' || e.key === ' ') {
                           e.preventDefault();
                           setSelectedDocumentId(doc.id);
                         }
                       }}
-                      tabIndex={0}
-                      role="button"
-                      aria-label={`Ver detalhes de ${doc.title || doc.number}`}
-                      className="border-t border-line hover:bg-surface-2/60 cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-inset"
+                      onClick={() => setSelectedDocumentId(doc.id)}
                     >
                       <td className="p-4 font-semibold text-ink">{doc.number}</td>
                       <td className="p-4 text-ink max-w-xs truncate">{doc.title}</td>

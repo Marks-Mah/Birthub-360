@@ -155,15 +155,15 @@ export function VirtualTable<T>({
                   ${onRowClick && row ? 'cursor-pointer hover:bg-surface-2' : ''}
                   ${isLoading ? 'animate-pulse' : ''}
                 `}
-                tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={onRowClick && row ? () => onRowClick(row, virtualRow.index) : undefined}
+                onClick={onRowClick && row ? () => onRowClick(row, virtualRow.index) : undefined}
                 onKeyDown={
                   onRowClick && row
                     ? (e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                          e.preventDefault();
-                          onRowClick(row, virtualRow.index);
-                        }
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        onRowClick(row, virtualRow.index);
                       }
+                    }
                     : undefined
                 }
                 tabIndex={onRowClick && row ? 0 : -1}

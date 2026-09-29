@@ -96,7 +96,6 @@ import { createWhatsAppCommandWorker } from '../lib/queue/whatsappCommand.worker
 // contagem específicos etc.) — a posição contravariante do parâmetro `job` em `Processor` rejeita
 // `unknown` como supertipo comum. `any` é o único jeito de expressar "qualquer Worker, não importa
 // o tipo do job" numa única referência que só é usada para chamar `.close()` no shutdown.
-// biome-ignore lint/suspicious/noExplicitAny: ver comentário acima
 type CloseableWorker = Worker<any, any, string> | null;
 
 /**
@@ -158,7 +157,7 @@ export function startEmbeddedWorkers(): EmbeddedWorkersHandle {
 
   const handle: EmbeddedWorkersHandle = {
     leadsWorker: embeddedWorkersEnabled ? createLeadsWorker() : null,
-      knowledgeIngestionWorker: embeddedWorkersEnabled ? createKnowledgeIngestionWorker() : null,
+    knowledgeIngestionWorker: embeddedWorkersEnabled ? createKnowledgeIngestionWorker() : null,
     agentWorker: embeddedWorkersEnabled ? createAgentWorker() : null,
     enrichmentWorker: embeddedWorkersEnabled ? createEnrichmentWorker() : null,
     enrichmentCascadeWorker: embeddedWorkersEnabled ? createEnrichmentCascadeWorker() : null,

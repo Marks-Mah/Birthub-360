@@ -231,16 +231,16 @@ export function RobustScriptGenerator() {
                       role="option"
                       aria-selected={language === l.id}
                       tabIndex={0}
-                      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={() => {
-                        setLanguage(l.id);
-                        setActiveDropdown(null);
-                      }}
                       onKeyDown={(e) => {
                         if (e.key === 'Enter' || e.key === ' ') {
                           e.preventDefault();
                           setLanguage(l.id);
                           setActiveDropdown(null);
                         }
+                      }}
+                      onClick={() => {
+                        setLanguage(l.id);
+                        setActiveDropdown(null);
                       }}
                       className="px-5 py-3 text-sm font-medium text-ink-2 hover:bg-surface-2 hover:text-ink cursor-pointer flex justify-between items-center"
                     >
@@ -282,16 +282,16 @@ export function RobustScriptGenerator() {
                       role="option"
                       aria-selected={purpose === p.id}
                       tabIndex={0}
-                      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={() => {
-                        setPurpose(p.id);
-                        setActiveDropdown(null);
-                      }}
                       onKeyDown={(e) => {
                         if (e.key === 'Enter' || e.key === ' ') {
                           e.preventDefault();
                           setPurpose(p.id);
                           setActiveDropdown(null);
                         }
+                      }}
+                      onClick={() => {
+                        setPurpose(p.id);
+                        setActiveDropdown(null);
                       }}
                       className="px-5 py-3 text-sm font-medium text-ink-2 hover:bg-surface-2 hover:text-ink cursor-pointer flex flex-col gap-0.5 border-b border-line last:border-none"
                     >
@@ -336,16 +336,16 @@ export function RobustScriptGenerator() {
                       role="option"
                       aria-selected={framework === f.id}
                       tabIndex={0}
-                      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={() => {
-                        setFramework(f.id);
-                        setActiveDropdown(null);
-                      }}
                       onKeyDown={(e) => {
                         if (e.key === 'Enter' || e.key === ' ') {
                           e.preventDefault();
                           setFramework(f.id);
                           setActiveDropdown(null);
                         }
+                      }}
+                      onClick={() => {
+                        setFramework(f.id);
+                        setActiveDropdown(null);
                       }}
                       className="px-5 py-3 text-sm font-medium text-ink-2 hover:bg-surface-2 hover:text-ink cursor-pointer flex justify-between items-center"
                     >
@@ -389,16 +389,16 @@ export function RobustScriptGenerator() {
                       role="option"
                       aria-selected={complexity === c.id}
                       tabIndex={0}
-                      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={() => {
-                        setComplexity(c.id);
-                        setActiveDropdown(null);
-                      }}
                       onKeyDown={(e) => {
                         if (e.key === 'Enter' || e.key === ' ') {
                           e.preventDefault();
                           setComplexity(c.id);
                           setActiveDropdown(null);
                         }
+                      }}
+                      onClick={() => {
+                        setComplexity(c.id);
+                        setActiveDropdown(null);
                       }}
                       className="px-5 py-3 text-sm font-medium text-ink-2 hover:bg-surface-2 hover:text-ink cursor-pointer flex justify-between items-center"
                     >
@@ -489,11 +489,10 @@ export function RobustScriptGenerator() {
                 <button
                   type="button"
                   onClick={handleCopy}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors ${
-                    copied
-                      ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 shadow-[0_0_15px_rgba(16,185,129,0.2)]'
-                      : 'bg-white/5 text-slate-300 hover:bg-white/10 border border-white/10'
-                  }`}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors ${copied
+                    ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 shadow-[0_0_15px_rgba(16,185,129,0.2)]'
+                    : 'bg-white/5 text-slate-300 hover:bg-white/10 border border-white/10'
+                    }`}
                 >
                   {copied ? (
                     <>

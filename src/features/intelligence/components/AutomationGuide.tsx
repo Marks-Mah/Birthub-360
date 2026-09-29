@@ -431,16 +431,16 @@ if __name__ == "__main__":
                       role="option"
                       aria-selected={triggerApp === t.id}
                       tabIndex={0}
-                      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={() => {
-                        setTriggerApp(t.id);
-                        setActiveDropdown(null);
-                      }}
                       onKeyDown={(e) => {
                         if (e.key === 'Enter' || e.key === ' ') {
                           e.preventDefault();
                           setTriggerApp(t.id);
                           setActiveDropdown(null);
                         }
+                      }}
+                      onClick={() => {
+                        setTriggerApp(t.id);
+                        setActiveDropdown(null);
                       }}
                       className="px-5 py-3 text-sm font-medium text-ink-2 hover:bg-surface-2 hover:text-ink cursor-pointer flex flex-col gap-0.5 border-b border-line last:border-none"
                     >
@@ -486,16 +486,16 @@ if __name__ == "__main__":
                       role="option"
                       aria-selected={actionApp === a.id}
                       tabIndex={0}
-                      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={() => {
-                        setActionApp(a.id);
-                        setActiveDropdown(null);
-                      }}
                       onKeyDown={(e) => {
                         if (e.key === 'Enter' || e.key === ' ') {
                           e.preventDefault();
                           setActionApp(a.id);
                           setActiveDropdown(null);
                         }
+                      }}
+                      onClick={() => {
+                        setActionApp(a.id);
+                        setActiveDropdown(null);
                       }}
                       className="px-5 py-3 text-sm font-medium text-ink-2 hover:bg-surface-2 hover:text-ink cursor-pointer flex flex-col gap-0.5 border-b border-line last:border-none"
                     >
@@ -539,16 +539,16 @@ if __name__ == "__main__":
                       role="option"
                       aria-selected={tool === t.id}
                       tabIndex={0}
-                      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={() => {
-                        setTool(t.id);
-                        setActiveDropdown(null);
-                      }}
                       onKeyDown={(e) => {
                         if (e.key === 'Enter' || e.key === ' ') {
                           e.preventDefault();
                           setTool(t.id);
                           setActiveDropdown(null);
                         }
+                      }}
+                      onClick={() => {
+                        setTool(t.id);
+                        setActiveDropdown(null);
                       }}
                       className="px-5 py-3 text-sm font-medium text-ink-2 hover:bg-yellow-900/30 hover:text-white cursor-pointer flex justify-between items-center"
                     >
@@ -588,16 +588,16 @@ if __name__ == "__main__":
                       role="option"
                       aria-selected={aiLayer === a.id}
                       tabIndex={0}
-                      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={() => {
-                        setAiLayer(a.id);
-                        setActiveDropdown(null);
-                      }}
                       onKeyDown={(e) => {
                         if (e.key === 'Enter' || e.key === ' ') {
                           e.preventDefault();
                           setAiLayer(a.id);
                           setActiveDropdown(null);
                         }
+                      }}
+                      onClick={() => {
+                        setAiLayer(a.id);
+                        setActiveDropdown(null);
                       }}
                       className="px-5 py-3 text-sm font-medium text-ink-2 hover:bg-rose-900/30 hover:text-white cursor-pointer flex justify-between items-center"
                     >
@@ -692,11 +692,10 @@ if __name__ == "__main__":
                 <button
                   type="button"
                   onClick={handleCopy}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors ${
-                    copied
-                      ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
-                      : 'bg-surface-2 text-ink-2 hover:bg-line border border-line'
-                  }`}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors ${copied
+                    ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                    : 'bg-surface-2 text-ink-2 hover:bg-line border border-line'
+                    }`}
                 >
                   {copied ? (
                     <>
@@ -723,33 +722,30 @@ if __name__ == "__main__":
               <button
                 type="button"
                 onClick={() => setActiveTabOutput('blueprint')}
-                className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors ${
-                  activeTabOutput === 'blueprint'
-                    ? `${accent.solidBg} text-on-brand shadow-lg`
-                    : 'bg-surface-2 text-ink-2 hover:bg-line'
-                }`}
+                className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors ${activeTabOutput === 'blueprint'
+                  ? `${accent.solidBg} text-on-brand shadow-lg`
+                  : 'bg-surface-2 text-ink-2 hover:bg-line'
+                  }`}
               >
                 Blueprint Passo a Passo
               </button>
               <button
                 type="button"
                 onClick={() => setActiveTabOutput('json')}
-                className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors ${
-                  activeTabOutput === 'json'
-                    ? `${accent.solidBg} text-on-brand shadow-lg`
-                    : 'bg-surface-2 text-ink-2 hover:bg-line'
-                }`}
+                className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors ${activeTabOutput === 'json'
+                  ? `${accent.solidBg} text-on-brand shadow-lg`
+                  : 'bg-surface-2 text-ink-2 hover:bg-line'
+                  }`}
               >
                 Payload Workflow (n8n JSON)
               </button>
               <button
                 type="button"
                 onClick={() => setActiveTabOutput('code')}
-                className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors ${
-                  activeTabOutput === 'code'
-                    ? 'bg-sky-600 text-white shadow-lg'
-                    : 'bg-surface-2 text-ink-2 hover:bg-line'
-                }`}
+                className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors ${activeTabOutput === 'code'
+                  ? 'bg-sky-600 text-white shadow-lg'
+                  : 'bg-surface-2 text-ink-2 hover:bg-line'
+                  }`}
               >
                 Script Python Equivalente
               </button>

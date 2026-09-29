@@ -381,13 +381,13 @@ export function Calendar() {
           />
 
           {error && (
-            <Card padding="lg" className="text-center">
+            <div className="bg-surface-elevated/80 backdrop-blur-md border border-line shadow-card rounded-card p-8 text-center">
               <AlertTriangle className="w-8 h-8 mx-auto mb-3 text-danger-active dark:text-danger" />
               <p className="text-sm text-ink-2 mb-4">{error}</p>
               <Button type="button" variant="outline" onClick={() => void load(reference)}>
                 Tentar novamente
               </Button>
-            </Card>
+            </div>
           )}
 
           {!error && (

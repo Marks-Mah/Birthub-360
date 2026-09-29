@@ -149,13 +149,13 @@ export function ConversationsTab({ leadId }: ConversationsTabProps) {
                   // biome-ignore lint/a11y/useSemanticElements: ver comentário acima
                   <tr
                     key={conversation.id}
-                    role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={() => setSelectedId(conversation.id)}
                     className="cursor-pointer transition-colors hover:bg-surface-2/50 focus-visible:bg-surface-2/50"
                     tabIndex={0}
                     role="button"
                     onKeyDown={(e) => {
                       if (e.key === 'Enter' || e.key === ' ') setSelectedId(conversation.id);
                     }}
+                    onClick={() => setSelectedId(conversation.id)}
                   >
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">

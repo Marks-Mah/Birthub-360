@@ -174,11 +174,11 @@ function AutomationForm({
         actionConfig:
           action === 'Notificar equipe'
             ? {
-                title: title.trim() || name.trim(),
-                body: body.trim() || undefined,
-                kind: 'Info',
-                ...(emailChannel ? { channel: 'email', to: emailTo.trim() } : {}),
-              }
+              title: title.trim() || name.trim(),
+              body: body.trim() || undefined,
+              kind: 'Info',
+              ...(emailChannel ? { channel: 'email', to: emailTo.trim() } : {}),
+            }
             : action === 'Ligar via SDR de Voz'
               ? {}
               : { dueInDays: Number(dueInDays) || 1, type: 'Follow_up' },
@@ -507,8 +507,7 @@ export function Automations() {
     try {
       const result = await automationsApi.runStagnationScan();
       toast.success(
-        `Varredura concluída: ${result.automationsEvaluated} automação(ões) avaliada(s), ${result.leadsScanned} lead(s) examinado(s), ${result.fired} disparo(s)${
-          result.failures > 0 ? `, ${result.failures} falha(s)` : ''
+        `Varredura concluída: ${result.automationsEvaluated} automação(ões) avaliada(s), ${result.leadsScanned} lead(s) examinado(s), ${result.fired} disparo(s)${result.failures > 0 ? `, ${result.failures} falha(s)` : ''
         }.`,
       );
       void load();
@@ -578,7 +577,7 @@ export function Automations() {
           )}
 
           {!loading && !error && items.length === 0 && (
-            <Card padding="lg" className="text-center border-dashed">
+            <div className="bg-surface-elevated/80 backdrop-blur-md border border-line border-dashed shadow-card rounded-card p-8 text-center">
               <Zap className="w-12 h-12 mx-auto mb-4 text-ink-2" />
               <h3 className="text-lg font-semibold text-ink mb-1">Nenhuma automação ainda</h3>
               <p className="text-sm text-ink-2 max-w-md mx-auto mb-5">
@@ -590,7 +589,7 @@ export function Automations() {
                   <Plus className="w-4 h-4 mr-2" /> Criar a primeira
                 </Button>
               )}
-            </Card>
+            </div>
           )}
 
           <div className="space-y-2">
@@ -600,11 +599,10 @@ export function Automations() {
                   <div className="flex items-center gap-2">
                     <p className="text-sm font-semibold text-ink truncate">{item.name}</p>
                     <span
-                      className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded-full ${
-                        item.enabled
+                      className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded-full ${item.enabled
                           ? 'bg-ok/15 text-ok-active dark:text-ok'
                           : 'bg-surface-2 text-ink-2'
-                      }`}
+                        }`}
                     >
                       {item.enabled ? 'ativa' : 'pausada'}
                     </span>
@@ -656,14 +654,12 @@ export function Automations() {
                     role="switch"
                     aria-checked={item.enabled}
                     aria-label={`${item.enabled ? 'Pausar' : 'Ativar'} ${item.name}`}
-                    className={`w-10 h-5 rounded-full transition-colors relative disabled:opacity-40 disabled:cursor-not-allowed ${
-                      item.enabled ? accent.bg : 'bg-surface-2 border border-line'
-                    }`}
+                    className={`w-10 h-5 rounded-full transition-colors relative disabled:opacity-40 disabled:cursor-not-allowed ${item.enabled ? accent.bg : 'bg-surface-2 border border-line'
+                      }`}
                   >
                     <span
-                      className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-colors ${
-                        item.enabled ? 'left-[22px]' : 'left-0.5'
-                      }`}
+                      className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-colors ${item.enabled ? 'left-[22px]' : 'left-0.5'
+                        }`}
                     />
                   </button>
                   {canManage && (
