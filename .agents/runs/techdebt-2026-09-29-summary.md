@@ -36,6 +36,7 @@ Distribuição por severidade:
 **Arquivo:** `.agents/handoffs/techdebt-2026-09-29/00-para-17-arquivo-monolitico-cadence.md`
 **Arquivo:** `CadenceHub.tsx` (1668 linhas)
 **Prioridade:** Alto
+**Status:** Resolvido (Decomposto de 1668 linhas para 120 linhas em `hub/` com 9 subcomponentes, dialogs e constants modulares)
 
 #### 2.3 Commercial Intelligence
 **Arquivo:** `.agents/handoffs/techdebt-2026-09-29/00-para-04-arquivo-monolitico-commercial-intelligence.md`
