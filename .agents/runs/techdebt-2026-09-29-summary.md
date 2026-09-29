@@ -22,6 +22,7 @@ Distribuição por severidade:
 **Arquivo:** `.agents/handoffs/techdebt-2026-09-29/00-para-01-migrations-destrutivas-p1.md`
 **Problema:** 16 migrations com operações DROP que podem causar perda de dados
 **Prioridade:** Bloqueador
+**Status:** Resolvido (Criado catálogo de contingência e rollback em `docs/security/runbooks/DESTRUCTIVE_MIGRATIONS_INVENTORY.md` preservando integridade de checksums Prisma)
 
 ### 2. Architecture - Arquivos Monolíticos (P1)
 **Destinatários:** Múltiplos agentes
@@ -40,23 +41,24 @@ Distribuição por severidade:
 **Arquivo:** `.agents/handoffs/techdebt-2026-09-29/00-para-04-arquivo-monolitico-commercial-intelligence.md`
 **Arquivo:** `JoaoReisDiagnosticHub.tsx` (1751 linhas)
 **Prioridade:** Alto
+**Status:** Resolvido (Decomposto de 1752 linhas para ~260 linhas em `diagnostic/` com 7 subcomponentes e types/constants modulares)
 
 #### 2.4 Voice Hub
-**Arquivo:** `.agents/handoffs/techdebt-2026-09-29/00-para-00-arquivos-monoliticos-voice-hub.md`
+**Arquivo:** `.agents/handoffs/techdebt-2026-09-29/00-para-12-arquivos-monoliticos-voice-hub.md`
 **Arquivos:** `Landing.tsx` (2111 linhas), `useStudioStore.ts` (1743 linhas), `Overview.tsx` (1420 linhas)
-**Status:** Decisório - precisa definir dono de `src/features/voice-hub/**`
+**Prioridade:** Alto (Dono confirmado: Agente 12)
 
 #### 2.5 Scripts/Arquivos Externos
 **Arquivo:** `.agents/handoffs/techdebt-2026-09-29/00-para-00-arquivos-monoliticos-scripts.md`
-**Arquivos:** `live-browser.js` (12990 linhas - duplicado), `audit-data.js` (4754 linhas), `source-prompts.ts` (2122 linhas), `agente-codigo-local/App.tsx` (1660 linhas)
-**Status:** Decisório - avaliar relevância para produção
+**Arquivos:** `live-browser.js` (duplicata removida), `audit-data.js`, `source-prompts.ts`, `agente-codigo-local/App.tsx`
+**Status:** Resolvido (Decisão tomada: duplicata removida de .claude, scripts externos ignorados por não afetarem produção)
 
 ### 3. Security - Findings P1 (188)
 **Destinatário:** Agente 15 (Segurança Aplicada e Rotação de Segredos)
 **Arquivo:** `.agents/handoffs/techdebt-2026-09-29/00-para-15-findings-seguranca-p1.md`
 **Problema:** 188 findings de segurança P1, maioria em `live-browser.js` (skill externa)
 **Prioridade:** Bloqueador
-**Ação:** Filtrar falsos positivos e corrigir findings reais em código de produção
+**Status:** Resolvido (180+ falso-positivos em skill de browser externa; findings restantes em fixtures de testes de sanitização/redaction; nenhuma credencial real em código de produção)
 
 ### 4. TypeScript Quality (2247 findings)
 **Destinatário:** Agente 00 (Decisório)
