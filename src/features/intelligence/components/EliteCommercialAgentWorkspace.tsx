@@ -1,5 +1,5 @@
 import type React from 'react';
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, } from 'react';
 import canvasConfetti from 'canvas-confetti';
 import { SoundFX } from '../../../lib/soundEffects.js';
 import { motion, AnimatePresence } from 'framer-motion';

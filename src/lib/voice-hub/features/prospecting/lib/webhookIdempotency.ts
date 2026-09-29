@@ -64,7 +64,7 @@ const CALLBACK_PROCESSING_TTL_SECONDS = 60;
  * has no lead identifier at all — still gets real protection against duplicate redelivery of the
  * exact same request.
  */
-export function buildBirth Hub 360OutboundIdempotencyKey(payload: {
+export function buildBirthhub360OutboundIdempotencyKey(payload: {
   leadId?: string;
   phoneNumber: string;
   name: string;

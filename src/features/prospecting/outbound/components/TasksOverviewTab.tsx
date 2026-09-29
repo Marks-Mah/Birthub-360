@@ -33,7 +33,7 @@ export function TasksOverviewTab({ isDark }: TasksOverviewTabProps) {
 
   useEffect(() => {
     fetchTasks();
-  }, []);
+  }, [fetchTasks]);
 
   if (loading) {
     return (

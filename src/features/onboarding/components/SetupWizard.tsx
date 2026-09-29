@@ -21,7 +21,7 @@ export function SetupWizard() {
   const [step, setStep] = useState(1);
   const [selectedModules, setSelectedModules] = useState<Set<string>>(new Set(['crm-comercial']));
   const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
+  const _navigate = useNavigate();
 
   const toggleModule = (key: string) => {
     const next = new Set(selectedModules);

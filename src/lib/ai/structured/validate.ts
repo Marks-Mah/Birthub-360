@@ -3,7 +3,6 @@
  * Valida respostas de IA contra schemas e implementa retry automático
  */
 import { z } from 'zod';
-import type { LeadSchema, CompanySchema, EnrichmentSchema } from '../schemas/index.js';
 
 export interface ValidationOptions {
   maxRetries?: number;

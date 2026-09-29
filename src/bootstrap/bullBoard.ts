@@ -30,9 +30,6 @@ const bullBoardLimiter = rateLimit({
  * visualizados por usuários de outra organização (Org A) dentro do BullBoard.
  */
 export class TenantIsolatedBullMQAdapter extends BullMQAdapter {
-  constructor(queue: any, options?: any) {
-    super(queue, options);
-  }
 
   public override async getJobs(jobTypes: any[], start?: number, end?: number): Promise<any[]> {
     const jobs = await super.getJobs(jobTypes, start, end);
@@ -52,7 +49,7 @@ export class TenantIsolatedBullMQAdapter extends BullMQAdapter {
   }
 
   private sanitizeJobForTenant(job: any, currentTenantId: string): any {
-    if (!job || !job.data) return job;
+    if (!job?.data) return job;
     const jobOrgId = job.data.organizationId || job.data.tenantId;
 
     if (!jobOrgId || jobOrgId === currentTenantId) {

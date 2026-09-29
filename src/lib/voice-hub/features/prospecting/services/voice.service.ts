@@ -1,7 +1,7 @@
 import { logger } from '../../../lib/logger.js';
 import type { Birthhub360OutboundPayload } from '../validators/birthhub360.schema.js';
 import {
-  buildBirth Hub 360OutboundIdempotencyKey,
+  buildBirthhub360OutboundIdempotencyKey,
   claimIdempotencyKey,
 } from '../lib/webhookIdempotency.js';
 import { getAiConsent } from '../../../services/settingService.js';
@@ -69,11 +69,10 @@ export class VoiceProspectingService {
       throw new ExternalAiConsentRequiredError('AI provider consent required');
     }
 
-    const idempotencyKey = buildBirth Hub 360OutboundIdempotencyKey(
-      leadId: payload.lead_id,
+    const idempotencyKey = buildBirthhub360OutboundIdempotencyKey({ leadId: payload.lead_id,
       phoneNumber: payload.phone_number,
       name: payload.name,
-      company: payload.company,);
+      company: payload.company });
 
     // If Redis is unavailable this throws and the route returns 503. Failing closed is safer than
     // risking a duplicate billed call to a real person.

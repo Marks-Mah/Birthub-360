@@ -9,7 +9,7 @@ import type { BaseMessage } from '@langchain/core/messages';
 import { requestContext } from '../../async-context.js';
 import { assertAiBudgetNotExceeded } from '../budget.js';
 import { recordAiUsageCost } from '../metrics.js';
-import { detectPII, redactPII, detectToxicity, redactToxicity } from '../guardrails/index.js';
+import { detectPII, detectToxicity, } from '../guardrails/index.js';
 import { resolveFallbackTimeoutMs } from './http-client.js';
 import { resolveModelName } from './model-routing.js';
 import { toChatCompletionMessages } from './parsing.js';
@@ -66,7 +66,7 @@ async function callWithFallback(
   temperature: number,
   agentContext: string,
 ): Promise<{ response: ChatCompletionResponse; providerUsed: string }> {
-  const timeoutMs = resolveFallbackTimeoutMs(); const startTime = Date.now();
+  const timeoutMs = resolveFallbackTimeoutMs(); const _startTime = Date.now();
   const errorsByProvider = new Map<string, unknown>();
 
   for (const provider of PROVIDER_CHAIN) {

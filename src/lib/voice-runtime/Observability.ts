@@ -21,7 +21,7 @@ export class ObservabilityEngine {
       this.events.set(sessionId, []);
     }
 
-    this.events.get(sessionId)!.push(event);
+    this.events.get(sessionId)?.push(event);
 
     // In production, this would stream to DataDog, OpenTelemetry, etc.
     logger.debug(payload, `[Observability] [${sessionId}] ${type}`);
