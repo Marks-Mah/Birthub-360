@@ -187,13 +187,13 @@ export function VisualOrgChart({ contacts, companyName, onSelectContact }: Visua
 
                   return (
                     // Contém <a> reais (e-mail/WhatsApp) como controles interativos próprios —
-                    // <button> aninhando <a> seria HTML inválido (interativo dentro de interativo).
+                    // <button type="button"> aninhando <a> seria HTML inválido (interativo dentro de interativo).
                     // biome-ignore lint/a11y/useSemanticElements: ver comentário acima
                     <div
                       key={contact.id || `${contact.name}-${idx}`}
                       role="button"
                       tabIndex={0}
-                      onClick={() => onSelectContact?.(contact)}
+                      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={() => onSelectContact?.(contact)}
                       onKeyDown={(e) => {
                         if (e.key === 'Enter' || e.key === ' ') {
                           e.preventDefault();

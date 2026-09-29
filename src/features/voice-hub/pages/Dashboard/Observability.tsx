@@ -145,7 +145,7 @@ export default function ObservabilityPage() {
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <button
+          <button type="button"
             onClick={() => setAutoRefresh(!autoRefresh)}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${
               autoRefresh
@@ -156,7 +156,7 @@ export default function ObservabilityPage() {
             <RefreshCw className={`h-3.5 w-3.5 ${autoRefresh ? 'animate-spin' : ''}`} />
             {autoRefresh ? 'Auto-atualização Ativa' : 'Pausado'}
           </button>
-          <button
+          <button type="button"
             onClick={fetchTelemetry}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border bg-white border-slate-200 text-slate-600 hover:bg-slate-50 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-700"
           >

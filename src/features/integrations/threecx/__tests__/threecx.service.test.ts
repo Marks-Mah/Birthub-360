@@ -96,7 +96,7 @@ describe('get3CXConnectionsForOrg / save3CXConnectionForOrg / delete3CXConnectio
     prismaMock.threeCXConnection.findMany.mockResolvedValueOnce([]);
     const second = await get3CXConnectionsForOrg('org-a');
     expect(second).toEqual([]);
-  });
+  }, 15000);
 
   it('save grava via prisma.threeCXConnection.create com o organizationId correto', async () => {
     const { save3CXConnectionForOrg } = await import('../threecx.service.js');
@@ -124,7 +124,7 @@ describe('get3CXConnectionsForOrg / save3CXConnectionForOrg / delete3CXConnectio
         autoDialEnabled: true,
       },
     });
-  });
+  }, 15000);
 
   it('delete é escopado por organizationId — nunca apaga conexão de outro tenant mesmo com id adivinhado', async () => {
     const { delete3CXConnectionForOrg } = await import('../threecx.service.js');

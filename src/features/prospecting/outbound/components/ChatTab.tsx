@@ -183,7 +183,7 @@ export const ChatTab: React.FC<ChatTabProps> = ({ aiConfig, theme = 'dark' }) =>
               <MessageSquare className="w-3.5 h-3.5 text-[var(--brand-primary)]" /> Histórico de
               Sessões
             </h3>
-            <button
+            <button type="button"
               onClick={createNewSession}
               className="p-1.5 bg-[var(--brand-primary)] hover:bg-[#FF6B10] text-white rounded-lg transition"
               title="Nova Conversa"
@@ -194,7 +194,7 @@ export const ChatTab: React.FC<ChatTabProps> = ({ aiConfig, theme = 'dark' }) =>
 
           <div className="space-y-1.5">
             {sessions.map((sess) => (
-              <button
+              <button type="button"
                 key={sess.id}
                 onClick={() => {
                   setCurrentSessionId(sess.id);
@@ -315,7 +315,7 @@ export const ChatTab: React.FC<ChatTabProps> = ({ aiConfig, theme = 'dark' }) =>
                   {!isUser && (
                     <div className="pt-2 flex items-center justify-between text-[10px] text-slate-400">
                       <span>{msg.model || 'LLaMA3'}</span>
-                      <button
+                      <button type="button"
                         onClick={() => handleCopy(msg.id, msg.content)}
                         className="hover:text-[var(--brand-primary)] transition flex items-center gap-1 font-medium"
                       >
@@ -379,7 +379,7 @@ export const ChatTab: React.FC<ChatTabProps> = ({ aiConfig, theme = 'dark' }) =>
         >
           <Lightbulb className="w-3.5 h-3.5 text-[#FFC500] shrink-0 ml-1" />
           {quickPrompts.map((qp, i) => (
-            <button
+            <button type="button"
               key={i}
               onClick={() => handleSendMessage(qp)}
               className={`text-[11px] px-2.5 py-1 rounded-lg border whitespace-nowrap transition ${

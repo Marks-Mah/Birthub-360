@@ -444,7 +444,7 @@ export const LeadStageAndTags: React.FC<LeadStageAndTagsProps> = ({
               {/* Header */}
               <div className="flex items-center justify-between text-[11px] font-bold text-slate-400 uppercase tracking-wider border-b pb-1.5 border-slate-700/40">
                 <span>Adicionar Tag ao Lead</span>
-                <button onClick={() => setIsTagPopoverOpen(false)} className="hover:text-white">
+                <button type="button" onClick={() => setIsTagPopoverOpen(false)} className="hover:text-white">
                   <X className="w-3 h-3" />
                 </button>
               </div>

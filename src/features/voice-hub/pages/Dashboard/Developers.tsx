@@ -96,7 +96,7 @@ export default function DevelopersPage() {
               </p>
             </div>
             {isAdmin && (
-              <button
+              <button type="button"
                 onClick={() => {
                   setCreateError(null);
                   setShowCreateModal(true);
@@ -129,7 +129,7 @@ export default function DevelopersPage() {
                     <code className="flex-1 font-mono text-xs bg-white border border-amber-200 rounded px-3 py-2 overflow-x-auto select-all">
                       {createdKeyReveal.key}
                     </code>
-                    <button
+                    <button type="button"
                       onClick={() => handleCopy(createdKeyReveal.id, createdKeyReveal.key)}
                       className="p-2 bg-white border border-amber-200 rounded text-amber-700 hover:border-amber-400 shrink-0"
                       title="Copiar chave"
@@ -204,7 +204,7 @@ export default function DevelopersPage() {
                       </div>
                     </div>
                     <div className="flex gap-2 self-end md:self-center">
-                      <button
+                      <button type="button"
                         onClick={() => handleRevokeKey(k.id, k.name)}
                         disabled={k.revoked || revokingId === k.id}
                         className="p-2 hover:bg-red-50 rounded text-slate-400 hover:text-red-650 border border-slate-200 hover:border-red-200 bg-white shadow-sm transition-all disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-white"
@@ -237,7 +237,7 @@ export default function DevelopersPage() {
               </p>
             </div>
             {isAdmin && (
-              <button
+              <button type="button"
                 onClick={() => {
                   setCreateWebhookError(null);
                   setShowCreateWebhookModal(true);
@@ -271,7 +271,7 @@ export default function DevelopersPage() {
                     <code className="flex-1 font-mono text-xs bg-white border border-amber-200 rounded px-3 py-2 overflow-x-auto select-all">
                       {createdWebhookSecretReveal.secret}
                     </code>
-                    <button
+                    <button type="button"
                       onClick={() =>
                         handleCopy(createdWebhookSecretReveal.id, createdWebhookSecretReveal.secret)
                       }
@@ -364,7 +364,7 @@ export default function DevelopersPage() {
                       </div>
                     </div>
                     <div className="flex gap-2 self-end md:self-center shrink-0">
-                      <button
+                      <button type="button"
                         onClick={() => handleRegenerateWebhookSecret(w.id, w.url)}
                         disabled={regeneratingWebhookId === w.id || deletingWebhookId === w.id}
                         className="p-2 hover:bg-slate-100 rounded text-slate-400 hover:text-slate-700 border border-slate-200 bg-white shadow-sm transition-all disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-white"
@@ -374,7 +374,7 @@ export default function DevelopersPage() {
                           className={`h-4 w-4 ${regeneratingWebhookId === w.id ? 'animate-spin' : ''}`}
                         />
                       </button>
-                      <button
+                      <button type="button"
                         onClick={() => handleDeleteWebhook(w.id, w.url)}
                         disabled={deletingWebhookId === w.id || regeneratingWebhookId === w.id}
                         className="p-2 hover:bg-red-50 rounded text-slate-400 hover:text-red-650 border border-slate-200 hover:border-red-200 bg-white shadow-sm transition-all disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-white"
@@ -400,7 +400,7 @@ export default function DevelopersPage() {
                 <Key className="h-4 w-4 text-brand" />
                 Criar Nova Chave de API
               </h3>
-              <button
+              <button type="button"
                 onClick={() => setShowCreateModal(false)}
                 className="text-slate-400 hover:text-slate-600 rounded p-1"
               >
@@ -466,7 +466,7 @@ export default function DevelopersPage() {
                 <Webhook className="h-4 w-4 text-brand" />
                 Adicionar Endpoint de Webhook
               </h3>
-              <button
+              <button type="button"
                 onClick={() => setShowCreateWebhookModal(false)}
                 className="text-slate-400 hover:text-slate-600 rounded p-1"
               >
@@ -551,13 +551,13 @@ export default function DevelopersPage() {
             <h3 className="font-bold text-slate-900 text-lg mb-2">{dialogConfirm.title}</h3>
             <p className="text-sm text-slate-600 mb-6">{dialogConfirm.message}</p>
             <div className="flex gap-3">
-              <button
+              <button type="button"
                 onClick={() => setDialogConfirm(null)}
                 className="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-lg text-sm transition-colors"
               >
                 Cancelar
               </button>
-              <button
+              <button type="button"
                 onClick={dialogConfirm.onConfirm}
                 className="flex-1 py-2.5 bg-red-600 text-white font-bold rounded-lg text-sm hover:bg-red-750 transition-colors"
               >

@@ -258,7 +258,7 @@ export function Sidebar() {
       </div>
 
       {/* Enterprise Search Ctrl+K */}
-      <button
+      <button type="button"
         onClick={triggerSearch}
         className="mb-4 flex items-center justify-between gap-2 px-3 py-2 bg-slate-850 hover:bg-slate-800 text-slate-400 hover:text-slate-300 rounded-lg text-xs transition-colors border border-slate-800 text-left cursor-pointer"
       >
@@ -294,7 +294,7 @@ export function Sidebar() {
                     {matched.icon}
                     <span>{matched.label}</span>
                   </div>
-                  <button
+                  <button type="button"
                     onClick={(e) => toggleFavorite(e, favPath)}
                     className="opacity-0 group-hover/item:opacity-100 text-slate-500 hover:text-red-400 transition-opacity p-0.5"
                   >
@@ -324,7 +324,7 @@ export function Sidebar() {
                   {item.icon}
                   <span>{item.label}</span>
                 </div>
-                <button
+                <button type="button"
                   onClick={(e) => toggleFavorite(e, item.path)}
                   className={`opacity-0 group-hover/item:opacity-100 text-slate-500 hover:text-amber-400 transition-opacity p-0.5 ${favorites.includes(item.path) ? 'opacity-100 text-amber-500' : ''}`}
                 >
@@ -354,7 +354,7 @@ export function Sidebar() {
                   {item.icon}
                   <span>{item.label}</span>
                 </div>
-                <button
+                <button type="button"
                   onClick={(e) => toggleFavorite(e, item.path)}
                   className={`opacity-0 group-hover/item:opacity-100 text-slate-500 hover:text-amber-400 transition-opacity p-0.5 ${favorites.includes(item.path) ? 'opacity-100 text-amber-500' : ''}`}
                 >
@@ -399,7 +399,7 @@ export function Sidebar() {
           Aparência
         </span>
         <div className="flex gap-1">
-          <button
+          <button type="button"
             onClick={() => setTheme('light')}
             style={
               theme === 'light'
@@ -413,7 +413,7 @@ export function Sidebar() {
           >
             <Sun aria-hidden="true" className="h-3.5 w-3.5" />
           </button>
-          <button
+          <button type="button"
             onClick={() => setTheme('dark')}
             style={
               theme === 'dark'
@@ -427,7 +427,7 @@ export function Sidebar() {
           >
             <Moon aria-hidden="true" className="h-3.5 w-3.5" />
           </button>
-          <button
+          <button type="button"
             onClick={() => setTheme('system')}
             style={
               theme === 'system'
@@ -472,7 +472,7 @@ export function Sidebar() {
               </div>
             </div>
           )}
-          <button
+          <button type="button"
             onClick={() => auth.logout()}
             className="text-[10px] text-slate-500 hover:text-white mt-2 w-full text-left font-bold block"
           >

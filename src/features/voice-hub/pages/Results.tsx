@@ -115,7 +115,7 @@ export default function ResultsPage() {
             Monitore e analise os diálogos e métricas consolidadas dos agentes.
           </p>
         </div>
-        <button
+        <button type="button"
           onClick={handleExportCSV}
           className="flex items-center justify-center gap-2 px-5 py-2.5 bg-brand text-white rounded-lg hover:opacity-90 font-medium text-sm transition-opacity shadow-sm shrink-0"
         >
@@ -177,7 +177,7 @@ export default function ResultsPage() {
               filteredSessions.map((s) => (
                 <div
                   key={s.id}
-                  onClick={() => setSelectedSession(s)}
+                  role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={() => setSelectedSession(s)}
                   className={`p-4 cursor-pointer hover:bg-slate-50 transition-colors border-l-4 ${
                     selectedSession?.id === s.id ? 'bg-brand-50 border-brand' : 'border-transparent'
                   }`}
@@ -271,7 +271,7 @@ export default function ResultsPage() {
                     </div>
                   </div>
                 </div>
-                <button
+                <button type="button"
                   onClick={() => {
                     const link = document.createElement('a');
                     link.href = selectedSession.audioUrl || '#';

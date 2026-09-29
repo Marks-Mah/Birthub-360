@@ -52,7 +52,7 @@ export function KpiTile({
     );
   }
 
-  // O cabeçalho (rótulo + MetricInfo, que é um <details>/<summary> focável) fica FORA do <button>
+  // O cabeçalho (rótulo + MetricInfo, que é um <details>/<summary> focável) fica FORA do <button type="button">
   // de propósito: controle focável dentro de outro controle é `nested-interactive` (axe, sério) —
   // achado real ao rodar a Visão Executiva com meta cadastrada, em que Commit/Best Case têm
   // metricKey e onClick ao mesmo tempo. O botão continua nomeado pelo rótulo via aria-label.

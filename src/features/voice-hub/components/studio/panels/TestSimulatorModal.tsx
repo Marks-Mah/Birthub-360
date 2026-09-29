@@ -232,7 +232,7 @@ export function TestSimulatorModal({ onClose }: TestSimulatorModalProps) {
               </p>
             </div>
           </div>
-          <button
+          <button type="button"
             onClick={onClose}
             className="p-2 text-slate-400 hover:bg-slate-800 rounded-full transition-colors"
           >
@@ -306,7 +306,7 @@ export function TestSimulatorModal({ onClose }: TestSimulatorModalProps) {
           </div>
 
           <div className="flex items-center gap-6">
-            <button
+            <button type="button"
               onClick={toggleListening}
               className={`w-16 h-16 flex items-center justify-center rounded-full shadow-lg transition-all ${
                 isListening
@@ -317,7 +317,7 @@ export function TestSimulatorModal({ onClose }: TestSimulatorModalProps) {
               {isListening ? <MicOff className="w-6 h-6" /> : <Mic className="w-6 h-6" />}
             </button>
 
-            <button
+            <button type="button"
               onClick={onClose}
               className="w-12 h-12 flex items-center justify-center rounded-full bg-slate-800 text-slate-400 hover:bg-slate-700 transition-all hover:text-white"
             >

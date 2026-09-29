@@ -206,14 +206,14 @@ export const KanbanCard = React.memo(function KanbanCard({
       )}
 
       {/* biome-ignore lint/a11y/useSemanticElements: elemento é alvo de useDraggable (dnd-kit) —
-          listeners/attributes esperam um elemento genérico, não um <button> nativo (mesmo padrão
+          listeners/attributes esperam um elemento genérico, não um <button type="button"> nativo (mesmo padrão
           de Calendar.tsx/DraggableActivity, Piloto 020). */}
       <div
         {...attributes}
         {...listeners}
         role="button"
         tabIndex={0}
-        onClick={() => {
+        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={() => {
           SoundFX.play('click');
           onClick(lead);
         }}

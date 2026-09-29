@@ -345,7 +345,7 @@ export default function KnowledgeManager() {
               const docCount = agent.configuration?.knowledge?.length || 0;
               const isSelected = agent.id === selectedAgentId;
               return (
-                <button
+                <button type="button"
                   key={agent.id}
                   onClick={() => setSelectedAgentId(agent.id)}
                   className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition-all shrink-0 cursor-pointer ${
@@ -455,7 +455,7 @@ export default function KnowledgeManager() {
 
                     <div className="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-800 text-xs text-slate-400">
                       <span>Adicionado: {dateStr}</span>
-                      <button
+                      <button type="button"
                         onClick={() => handleDeleteDoc(doc.id)}
                         disabled={deletingId === doc.id}
                         className="text-slate-400 hover:text-red-600 dark:hover:text-red-400 p-1 rounded-md transition-colors cursor-pointer"
@@ -488,7 +488,7 @@ export default function KnowledgeManager() {
                   Upload de Conhecimento
                 </h2>
               </div>
-              <button
+              <button type="button"
                 onClick={() => setIsUploadModalOpen(false)}
                 className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
                 aria-label="Fechar modal"
@@ -583,7 +583,7 @@ export default function KnowledgeManager() {
                   Inserir Conteúdo Textual
                 </h2>
               </div>
-              <button
+              <button type="button"
                 onClick={() => setIsAddTextModalOpen(false)}
                 className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
                 aria-label="Fechar modal"
@@ -675,7 +675,7 @@ export default function KnowledgeManager() {
                   Simulador de Consulta RAG
                 </h2>
               </div>
-              <button
+              <button type="button"
                 onClick={() => setIsRagModalOpen(false)}
                 className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
                 aria-label="Fechar modal"

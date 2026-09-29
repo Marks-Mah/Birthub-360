@@ -3,7 +3,7 @@ import { cn } from '../../lib/utils.js';
 /* Novo primitivo — heatmap de calendário (ex.: atividades por dia). Implementado como grade
    simples (não o módulo Calendar/Heatmap do ECharts já registrado em src/components/charts):
    aquele módulo desenha em canvas e perde a legibilidade de número por célula + navegação por
-   teclado que uma grade de <button> nativa já dá de graça, pro volume de dados aqui (semanas de
+   teclado que uma grade de <button type="button"> nativa já dá de graça, pro volume de dados aqui (semanas de
    um mês, não anos de série temporal — caso pro qual o módulo ECharts foi pensado). */
 export interface HeatmapDay {
   /** Data no formato YYYY-MM-DD. */

@@ -535,7 +535,7 @@ export default function App() {
                   { id: 'tasks', label: 'Minhas Tarefas' },
                 ] as const
               ).map((tab) => (
-                <button
+                <button type="button"
                   key={tab.id}
                   onClick={() => setSellerView(tab.id)}
                   className={`px-4 py-1.5 text-xs font-semibold rounded-full transition ${

@@ -24,7 +24,7 @@ const FOCUSABLE_SELECTOR =
 export function BirthubLogo({ className = 'h-5 w-5' }: { className?: string }) {
   return (
     <span className={`inline-flex items-center justify-center ${className}`} aria-hidden="true">
-      <img src="/brand/birthhub360-symbol.svg" className="h-full w-full object-contain" alt="" />
+      <img src="/brand/birthhub360-symbol.svg" className="h-full w-full object-contain" alt="" width="24" height="24" />
     </span>
   );
 }
@@ -88,7 +88,7 @@ export function Button({
   };
 
   return (
-    <button
+    <button type="button"
       disabled={disabled || isLoading}
       aria-busy={isLoading || undefined}
       className={`${baseStyle} ${variants[variant]} ${sizes[size]} ${className}`}
@@ -147,9 +147,8 @@ export function Input({ label, error, helperText, className = '', id, ...props }
         id={inputId}
         aria-invalid={!!error || undefined}
         aria-describedby={errorId ?? helperId}
-        className={`w-full px-3.5 py-2.5 border rounded-lg text-sm bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent transition-all shadow-xs dark:bg-slate-800 dark:text-slate-100 dark:border-slate-700 dark:focus:ring-brand ${
-          error ? 'border-red-350 focus:ring-red-500 dark:border-red-550' : 'border-slate-300'
-        } ${className}`}
+        className={`w-full px-3.5 py-2.5 border rounded-lg text-sm bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent transition-all shadow-xs dark:bg-slate-800 dark:text-slate-100 dark:border-slate-700 dark:focus:ring-brand ${error ? 'border-red-350 focus:ring-red-500 dark:border-red-550' : 'border-slate-300'
+          } ${className}`}
         {...props}
       />
       {error && (
@@ -199,9 +198,8 @@ export function Textarea({
         id={textareaId}
         aria-invalid={!!error || undefined}
         aria-describedby={errorId ?? helperId}
-        className={`w-full p-3.5 border rounded-lg text-sm bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent transition-all shadow-xs dark:bg-slate-800 dark:text-slate-100 dark:border-slate-700 dark:focus:ring-brand ${
-          error ? 'border-red-350 focus:ring-red-500 dark:border-red-550' : 'border-slate-300'
-        } ${className}`}
+        className={`w-full p-3.5 border rounded-lg text-sm bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent transition-all shadow-xs dark:bg-slate-800 dark:text-slate-100 dark:border-slate-700 dark:focus:ring-brand ${error ? 'border-red-350 focus:ring-red-500 dark:border-red-550' : 'border-slate-300'
+          } ${className}`}
         {...props}
       />
       {error && (
@@ -253,7 +251,7 @@ interface SwitchProps {
 
 export function Switch({ checked, onChange, label, description }: SwitchProps) {
   // A `<div onClick>` (the previous implementation) is mouse/pointer-only: it never receives
-  // keyboard focus and Tab/Enter/Space cannot toggle it. Using a real `<button role="switch">`
+  // keyboard focus and Tab/Enter/Space cannot toggle it. Using a real `<button type="button" role="switch">`
   // gets Tab focus and Enter/Space activation for free from native button semantics.
   const reactId = useId();
   const labelId = label ? `${reactId}-label` : undefined;
@@ -282,14 +280,12 @@ export function Switch({ checked, onChange, label, description }: SwitchProps) {
         aria-label={labelId ? undefined : 'Alternar'}
         aria-describedby={descId}
         onClick={() => onChange(!checked)}
-        className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2 dark:focus:ring-offset-slate-900 ${
-          checked ? 'bg-brand' : 'bg-slate-200 dark:bg-slate-700'
-        }`}
+        className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2 dark:focus:ring-offset-slate-900 ${checked ? 'bg-brand' : 'bg-slate-200 dark:bg-slate-700'
+          }`}
       >
         <span
-          className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white dark:bg-slate-100 shadow-md ring-0 transition duration-200 ease-in-out ${
-            checked ? 'translate-x-5' : 'translate-x-0'
-          }`}
+          className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white dark:bg-slate-100 shadow-md ring-0 transition duration-200 ease-in-out ${checked ? 'translate-x-5' : 'translate-x-0'
+            }`}
         />
       </button>
     </div>
@@ -328,9 +324,8 @@ export function Select({ label, error, options, className = '', id, ...props }: 
           id={selectId}
           aria-invalid={!!error || undefined}
           aria-describedby={errorId}
-          className={`w-full px-3.5 py-2.5 pr-10 border rounded-lg text-sm bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent transition-all shadow-xs appearance-none dark:bg-slate-800 dark:text-slate-100 dark:border-slate-700 ${
-            error ? 'border-red-300 focus:ring-red-500' : 'border-slate-300'
-          } ${className}`}
+          className={`w-full px-3.5 py-2.5 pr-10 border rounded-lg text-sm bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent transition-all shadow-xs appearance-none dark:bg-slate-800 dark:text-slate-100 dark:border-slate-700 ${error ? 'border-red-300 focus:ring-red-500' : 'border-slate-300'
+            } ${className}`}
           {...props}
         >
           {options.map((opt) => (
@@ -386,15 +381,14 @@ export function Badge({ children, variant = 'primary', className = '' }: BadgePr
 
   return (
     <span
-      className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold border ${styles[variant]} ${
-        variant === 'primary' ? 'text-[var(--badge-fg-light)] dark:text-[var(--badge-fg-dark)]' : ''
-      } ${className}`}
+      className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold border ${styles[variant]} ${variant === 'primary' ? 'text-[var(--badge-fg-light)] dark:text-[var(--badge-fg-dark)]' : ''
+        } ${className}`}
       style={
         variant === 'primary'
           ? ({
-              '--badge-fg-light': brandTextOnLight,
-              '--badge-fg-dark': brandTextOnDark,
-            } as React.CSSProperties)
+            '--badge-fg-light': brandTextOnLight,
+            '--badge-fg-dark': brandTextOnDark,
+          } as React.CSSProperties)
           : undefined
       }
     >
@@ -421,11 +415,11 @@ export function Card({ children, className = '', onClick, hoverable = false }: C
   // is provided (a plain layout card with no `onClick` stays a non-interactive `<div>`).
   const handleKeyDown = onClick
     ? (e: React.KeyboardEvent<HTMLDivElement>) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          onClick();
-        }
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        onClick();
       }
+    }
     : undefined;
 
   return (
@@ -434,15 +428,13 @@ export function Card({ children, className = '', onClick, hoverable = false }: C
       onKeyDown={handleKeyDown}
       role={onClick ? 'button' : undefined}
       tabIndex={onClick ? 0 : undefined}
-      className={`bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6 shadow-sm transition-all duration-200 ${
-        onClick
-          ? 'focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2 dark:focus:ring-offset-slate-900'
-          : ''
-      } ${
-        onClick || hoverable
+      className={`bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6 shadow-sm transition-all duration-200 ${onClick
+        ? 'focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2 dark:focus:ring-offset-slate-900'
+        : ''
+        } ${onClick || hoverable
           ? 'cursor-pointer hover:border-slate-300 dark:hover:border-slate-600 hover:shadow-md'
           : ''
-      } ${className}`}
+        } ${className}`}
     >
       {children}
     </div>
@@ -585,6 +577,11 @@ export function Avatar({
     md: 'h-11 w-11 text-sm',
     lg: 'h-16 w-16 text-lg',
   };
+  const sizeToPixels = {
+    sm: 32,
+    md: 44,
+    lg: 64,
+  };
 
   const getInitials = (n: string) => {
     return n
@@ -602,7 +599,7 @@ export function Avatar({
       style={{ color: accessibleBrandText }}
     >
       {src ? (
-        <img src={src} alt={name} className="h-full w-full object-cover" />
+        <img src={src} alt={name} className="h-full w-full object-cover" width={sizeToPixels[size]} height={sizeToPixels[size]} />
       ) : (
         <span>{getInitials(name || 'User')}</span>
       )}
@@ -658,7 +655,7 @@ export function Tabs({
       {tabs.map((tab, index) => {
         const isSelected = tab.id === activeTab;
         return (
-          <button
+          <button type="button"
             key={tab.id}
             id={`${tablistId}-tab-${tab.id}`}
             role="tab"
@@ -669,16 +666,15 @@ export function Tabs({
             style={
               isSelected
                 ? ({
-                    '--brand-fg-light': brandTextOnLight,
-                    '--brand-fg-dark': brandTextOnDark,
-                  } as React.CSSProperties)
+                  '--brand-fg-light': brandTextOnLight,
+                  '--brand-fg-dark': brandTextOnDark,
+                } as React.CSSProperties)
                 : undefined
             }
-            className={`flex items-center gap-2 px-5 py-3.5 text-sm font-bold transition-all relative whitespace-nowrap outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-900 rounded-t-md ${
-              isSelected
-                ? 'text-[var(--brand-fg-light)] dark:text-[var(--brand-fg-dark)]'
-                : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-250'
-            }`}
+            className={`flex items-center gap-2 px-5 py-3.5 text-sm font-bold transition-all relative whitespace-nowrap outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-900 rounded-t-md ${isSelected
+              ? 'text-[var(--brand-fg-light)] dark:text-[var(--brand-fg-dark)]'
+              : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-250'
+              }`}
           >
             {tab.icon && (
               <span aria-hidden="true" className="shrink-0">
@@ -717,7 +713,7 @@ export function Breadcrumb({ items }: { items: BreadcrumbItem[] }) {
         <React.Fragment key={idx}>
           {idx > 0 && <ChevronRight className="h-3.5 w-3.5 text-slate-350 dark:text-slate-600" />}
           {item.onClick ? (
-            <button
+            <button type="button"
               onClick={item.onClick}
               className="hover:text-slate-900 dark:hover:text-slate-200 transition-colors"
             >
@@ -776,10 +772,9 @@ interface TableRowProps {
 export function TableRow({ children, className = '', onClick }: TableRowProps) {
   return (
     <tr
-      onClick={onClick}
-      className={`border-b last:border-0 border-slate-150 dark:border-slate-750 hover:bg-slate-50/50 dark:hover:bg-slate-800/20 transition-colors ${
-        onClick ? 'cursor-pointer' : ''
-      } ${className}`}
+      role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={onClick}
+      className={`border-b last:border-0 border-slate-150 dark:border-slate-750 hover:bg-slate-50/50 dark:hover:bg-slate-800/20 transition-colors ${onClick ? 'cursor-pointer' : ''
+        } ${className}`}
     >
       {children}
     </tr>
@@ -901,7 +896,7 @@ export function Modal({ isOpen, onClose, title, children, footer }: ModalProps) 
               >
                 {title}
               </h3>
-              <button
+              <button type="button"
                 onClick={onClose}
                 aria-label="Fechar"
                 className="p-1 hover:bg-slate-100 dark:hover:bg-slate-700 rounded text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
@@ -1031,13 +1026,12 @@ export function ToastContainer({ toasts }: { toasts: Toast[] }) {
                 ? { opacity: 0, transition: { duration: 0 } }
                 : { opacity: 0, scale: 0.95, transition: { duration: 0.15 } }
             }
-            className={`p-4 rounded-xl border shadow-lg flex items-start gap-3 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 pointer-events-auto ${
-              toast.type === 'success'
-                ? 'border-green-200 bg-green-50/50 dark:border-green-900/40 dark:bg-green-950/20'
-                : toast.type === 'error'
-                  ? 'border-red-200 bg-red-50/50 dark:border-red-900/40 dark:bg-red-950/20'
-                  : 'border-slate-200 bg-white dark:border-slate-700'
-            }`}
+            className={`p-4 rounded-xl border shadow-lg flex items-start gap-3 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 pointer-events-auto ${toast.type === 'success'
+              ? 'border-green-200 bg-green-50/50 dark:border-green-900/40 dark:bg-green-950/20'
+              : toast.type === 'error'
+                ? 'border-red-200 bg-red-50/50 dark:border-red-900/40 dark:bg-red-950/20'
+                : 'border-slate-200 bg-white dark:border-slate-700'
+              }`}
           >
             {toast.type === 'success' && (
               <CheckCircle

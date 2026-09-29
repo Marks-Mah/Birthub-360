@@ -50,6 +50,9 @@ describe('buildBirthhub360OutboundIdempotencyKey', () => {
       phoneNumber: '+5511999998888',
       name: 'Fulano',
       company: 'Acme' });
+
+    expect(key).toBe('idempotency:birthhub360-outbound-call:lead:lead-123');
+  });
     expect(key).toBe('idempotency:birthhub360-outbound-call:lead:lead-123');
   });
 
@@ -60,6 +63,10 @@ describe('buildBirthhub360OutboundIdempotencyKey', () => {
     const keyB = buildBirthhub360OutboundIdempotencyKey({ phoneNumber: '5511999998888',
       name: 'FULANO',
       company: 'acme' });
+
+    // Different formatting/casing of the same underlying data must still dedup to the same key.
+    expect(keyA).toBe(keyB);
+    expect(keyA.startsWith('idempotency:birthhub360-outbound-call:hash:')).toBe(true);
     // Different formatting/casing of the same underlying data must still dedup to the same key.
     expect(keyA).toBe(keyB);
     expect(keyA.startsWith('idempotency:birthhub360-outbound-call:hash:')).toBe(true);
@@ -72,6 +79,8 @@ describe('buildBirthhub360OutboundIdempotencyKey', () => {
     const keyB = buildBirthhub360OutboundIdempotencyKey({ phoneNumber: '+5511999997777',
       name: 'B',
       company: 'Y' });
+
+    expect(keyA).not.toBe(keyB);
     expect(keyA).not.toBe(keyB);
   });
 });

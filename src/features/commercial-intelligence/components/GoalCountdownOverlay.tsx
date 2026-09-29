@@ -86,8 +86,9 @@ export function GoalCountdownOverlay({
           <div className="absolute -bottom-[30%] -left-[10%] w-[50%] h-[50%] rounded-full bg-brand/10 blur-[100px]" />
 
           {/* Confetes — posição/cor/duração aleatórias são só a celebração visual de um
-                        estado real (isGoalHit); não representam nenhum dado de negócio, mesmo
-                        padrão já documentado em GameWidget.tsx/SpaceGame.tsx (gamification). */}
+                        estado real (isGoalHit); não representam nenhum dado de negócio.
+                        SpaceGame 3D foi desativado no build de produção para evitar sobrecarga
+                        de bundle e dependência WebGL/Three.js em mobile (Onda 8, handoff 02-para-00). */}
           {isGoalHit && (
             <div className="absolute inset-0">
               {Array.from({ length: 50 }).map((_, i) => (

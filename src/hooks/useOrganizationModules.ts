@@ -1,1 +1,7 @@
-export function useOrganizationModules() { return { isPendingOnboarding: false, isLoading: false, isModuleActive: (_key: string) => true }; }
+export function useOrganizationModules() {
+  return {
+    isPendingOnboarding: false,
+    isLoading: false,
+    isModuleActive: (_key: string) => true,
+  };
+}

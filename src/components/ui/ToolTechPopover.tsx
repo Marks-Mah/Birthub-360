@@ -48,7 +48,7 @@ export const ToolTechPopover: React.FC<ToolTechPopoverProps> = ({
     // biome-ignore lint/a11y/useKeyWithClickEvents: dismiss por overlay, ver comentário acima
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200"
-      onClick={(event) => {
+      role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={(event) => {
         // Só fecha se o clique foi no próprio backdrop, não em algo dentro do painel.
         if (event.target === event.currentTarget) onClose();
       }}

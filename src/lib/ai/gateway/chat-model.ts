@@ -17,18 +17,20 @@ import { estimateCostUsd } from './pricing.js';
 import { groqProvider } from './providers/groq.provider.js';
 import { litellmProvider } from './providers/litellm.provider.js';
 import { openaiProvider } from './providers/openai.provider.js';
+import { vllmProvider } from './providers/vllm.provider.js';
 import type { ProviderAdapter } from './providers/types.js';
 import { sanitizeProviderMessage } from './redaction.js';
 import { traceAiGeneration } from './telemetry.js';
 import type { AiChatModel, AiInvokeResult, ChatCompletionResponse } from './types.js';
 
-// Ordem de fallback: Groq primeiro (rápido, sem o gargalo de concorrência do modelo local),
-// OpenAI como segunda opção só se configurado, LiteLLM/Ollama por último (ver comentário em
+// Ordem de fallback: vLLM primeiro (se hospedado no cluster), Groq (rápido, open source),
+// OpenAI como terceira opção, LiteLLM/Ollama por último (ver comentário em
 // providers/litellm.provider.ts sobre por que ele nunca deve ser a primeira tentativa).
-const PROVIDER_CHAIN: readonly ProviderAdapter[] = [groqProvider, openaiProvider, litellmProvider];
+const PROVIDER_CHAIN: readonly ProviderAdapter[] = [vllmProvider, groqProvider, openaiProvider, litellmProvider];
 
 function buildExhaustedProvidersError(errorsByProvider: Map<string, unknown>): Error {
   const configuredNames: Record<string, string> = {
+    vllm: 'vLLM',
     groq: 'Groq',
     openai: 'OpenAI',
     litellm: 'Ollama/LiteLLM',
@@ -43,11 +45,12 @@ function buildExhaustedProvidersError(errorsByProvider: Map<string, unknown>): E
     );
   }
 
+  const vllmMessage = sanitizeProviderMessage(describeError(errorsByProvider.get('vllm')));
   const groqMessage = sanitizeProviderMessage(describeError(errorsByProvider.get('groq')));
   const openaiMessage = sanitizeProviderMessage(describeError(errorsByProvider.get('openai')));
   const litellmMessage = sanitizeProviderMessage(describeError(errorsByProvider.get('litellm')));
   return new Error(
-    `Os motores de IA estão indisponíveis (${configured}). Groq: ${groqMessage}. OpenAI: ${openaiMessage}. LiteLLM: ${litellmMessage}`,
+    `Os motores de IA estão indisponíveis (${configured}). vLLM: ${vllmMessage}. Groq: ${groqMessage}. OpenAI: ${openaiMessage}. LiteLLM: ${litellmMessage}`,
   );
 }
 
@@ -121,7 +124,18 @@ export const getAiModel = (
       const piiCheck = detectPII(content);
       if (piiCheck.blocked) {
         // Log tentativa bloqueada em AILog
-        // logAiUsage removed
+        const { logAiUsage } = await import('../usage-log.js');
+        await logAiUsage({
+          // tenantId resolved internally
+          model: response.model || resolvedModel,
+          provider: providerUsed,
+          agentContext,
+          promptTokens: usage?.prompt_tokens ?? 0,
+          completionTokens: usage?.completion_tokens ?? 0,
+          totalTokens: usage?.total_tokens ?? 0,
+          success: false,
+          error: `PII blocked: ${piiCheck.reason}`,
+        });
 
         throw new Error(`Resposta bloqueada por conter PII: ${piiCheck.matches.join(', ')}`);
       }
@@ -129,7 +143,18 @@ export const getAiModel = (
       const toxicityCheck = detectToxicity(content);
       if (toxicityCheck.toxic) {
         // Log tentativa bloqueada em AILog
-        // logAiUsage removed
+        const { logAiUsage } = await import('../usage-log.js');
+        await logAiUsage({
+          // tenantId resolved internally
+          model: response.model || resolvedModel,
+          provider: providerUsed,
+          agentContext,
+          promptTokens: usage?.prompt_tokens ?? 0,
+          completionTokens: usage?.completion_tokens ?? 0,
+          totalTokens: usage?.total_tokens ?? 0,
+          success: false,
+          error: `Toxicity blocked: ${toxicityCheck.reason}`,
+        });
 
         throw new Error(`Resposta bloqueada por conter linguagem tóxica: ${toxicityCheck.matches.join(', ')}`);
       }

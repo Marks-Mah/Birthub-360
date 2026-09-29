@@ -1,0 +1,373 @@
+src\bootstrap\workers.ts:98:1 suppressions/unused ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöü
+
+  ! Suppression comment has no effect. Remove the suppression or make sure you are suppressing the correct rule.
+  
+     96 Ôöé // `unknown` como supertipo comum. `any` ├® o ├║nico jeito de expressar "qualquer Worker, n├úo importa
+     97 Ôöé // o tipo do job" numa ├║nica refer├¬ncia que s├│ ├® usada para chamar `.close()` no shutdown.
+   > 98 Ôöé // biome-ignore lint/suspicious/noExplicitAny: ver coment├írio acima
+        Ôöé ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     99 Ôöé type CloseableWorker = Worker<any, any, string> | null;
+    100 Ôöé 
+  
+
+src\components\ui\BrandOrb.tsx:115:5 lint/a11y/noStaticElementInteractions ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöü
+
+  ! Unexpected event handler on static element.
+  
+    114 Ôöé   return (
+  > 115 Ôöé     <div
+        Ôöé     ^^^^
+  > 116 Ôöé       ref={containerRef}
+         ...
+  > 120 Ôöé       title={interactive ? 'Clique para interagir com o Brand Orb 3D' : undefined}
+  > 121 Ôöé     >
+        Ôöé     ^
+    122 Ôöé       <Canvas
+    123 Ôöé         camera={{ position: [0, 0, 4], fov: 45 }}
+  
+  i Static elements should not be interactive. To add interactivity such as a mouse or key event listener to a static element, give the element an appropriate role value.
+  
+
+src\components\ui\BrandOrb.tsx:115:5 lint/a11y/useKeyWithClickEvents ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöü
+
+  ! Enforce to have the onClick mouse event with the onKeyUp, the onKeyDown, or the onKeyPress keyboard event.
+  
+    114 Ôöé   return (
+  > 115 Ôöé     <div
+        Ôöé     ^^^^
+  > 116 Ôöé       ref={containerRef}
+         ...
+  > 120 Ôöé       title={interactive ? 'Clique para interagir com o Brand Orb 3D' : undefined}
+  > 121 Ôöé     >
+        Ôöé     ^
+    122 Ôöé       <Canvas
+    123 Ôöé         camera={{ position: [0, 0, 4], fov: 45 }}
+  
+  i Actions triggered using mouse events should have corresponding keyboard events to account for keyboard-only navigation.
+  
+
+src\components\ui\Card.tsx:141:7 lint/a11y/noStaticElementInteractions ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöü
+
+  ! Unexpected event handler on static element.
+  
+    140 Ôöé     return (
+  > 141 Ôöé       <div
+        Ôöé       ^^^^
+  > 142 Ôöé         ref={ref}
+         ...
+  > 151 Ôöé         {...props}
+  > 152 Ôöé       >
+        Ôöé       ^
+    153 Ôöé         {spotlight && isHovered && (
+    154 Ôöé           <div
+  
+  i Static elements should not be interactive. To add interactivity such as a mouse or key event listener to a static element, give the element an appropriate role value.
+  
+
+src\components\ui\Card.tsx:141:7 lint/a11y/useKeyWithClickEvents ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöü
+
+  ! Enforce to have the onClick mouse event with the onKeyUp, the onKeyDown, or the onKeyPress keyboard event.
+  
+    140 Ôöé     return (
+  > 141 Ôöé       <div
+        Ôöé       ^^^^
+  > 142 Ôöé         ref={ref}
+         ...
+  > 151 Ôöé         {...props}
+  > 152 Ôöé       >
+        Ôöé       ^
+    153 Ôöé         {spotlight && isHovered && (
+    154 Ôöé           <div
+  
+  i Actions triggered using mouse events should have corresponding keyboard events to account for keyboard-only navigation.
+  
+
+src\components\ui\ChannelDonut.tsx:61:15 lint/a11y/noStaticElementInteractions ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöü
+
+  ! Unexpected event handler on static element.
+  
+    59 Ôöé             const pct = Math.round((value / total) * 1000) / 10;
+    60 Ôöé             return (
+  > 61 Ôöé               <div
+       Ôöé               ^^^^
+  > 62 Ôöé                 key={label}
+        ...
+  > 66 Ôöé                 className="group grid grid-cols-[10px_1fr_auto] items-center gap-3 p-1.5 rounded-lg transition-colors hover:bg-surface-elevated/60"
+  > 67 Ôöé               >
+       Ôöé               ^
+    68 Ôöé                 <span
+    69 Ôöé                   aria-hidden="true"
+  
+  i Static elements should not be interactive. To add interactivity such as a mouse or key event listener to a static element, give the element an appropriate role value.
+  
+
+src\components\ui\FindingsList.tsx:58:5 lint/a11y/noStaticElementInteractions ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöü
+
+  ! Unexpected event handler on static element.
+  
+    56 Ôöé   const shouldEmphasize = Boolean(emphasize) && !reduceMotion;
+    57 Ôöé   return (
+  > 58 Ôöé     <div
+       Ôöé     ^^^^
+  > 59 Ôöé       onMouseEnter={() => {
+        ...
+  > 65 Ôöé       )}
+  > 66 Ôöé     >
+       Ôöé     ^
+    67 Ôöé       <motion.span
+    68 Ôöé         aria-hidden="true"
+  
+  i Static elements should not be interactive. To add interactivity such as a mouse or key event listener to a static element, give the element an appropriate role value.
+  
+
+src\components\ui\FunnelBars.tsx:30:11 lint/a11y/noStaticElementInteractions ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöü
+
+  ! Unexpected event handler on static element.
+  
+    28 Ôöé         const widthPct = Math.max((item.value / max) * 100, item.value > 0 ? 3 : 0);
+    29 Ôöé         return (
+  > 30 Ôöé           <div
+       Ôöé           ^^^^
+  > 31 Ôöé             key={item.id}
+        ...
+  > 35 Ôöé             className="group grid grid-cols-[140px_1fr_44px] items-center gap-3 text-xs p-1 rounded-lg transition-colors hover:bg-surface-elevated/50"
+  > 36 Ôöé           >
+       Ôöé           ^
+    37 Ôöé             <span className="truncate font-bold text-ink group-hover:text-brand transition-colors">
+    38 Ôöé               {item.label}
+  
+  i Static elements should not be interactive. To add interactivity such as a mouse or key event listener to a static element, give the element an appropriate role value.
+  
+
+src\components\ui\Gamified3DOrb.tsx:57:7 lint/a11y/noStaticElementInteractions ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöü
+
+  ! Unexpected event handler on static element.
+  
+    55 Ôöé     >
+    56 Ôöé       {/* Cristal / Poliedro Central Interativo */}
+  > 57 Ôöé       <mesh
+       Ôöé       ^^^^^
+  > 58 Ôöé         ref={meshRef}
+        ...
+  > 69 Ôöé         }}
+  > 70 Ôöé       >
+       Ôöé       ^
+    71 Ôöé         <icosahedronGeometry args={[1, 1]} />
+    72 Ôöé         <MeshDistortMaterial
+  
+  i Static elements should not be interactive. To add interactivity such as a mouse or key event listener to a static element, give the element an appropriate role value.
+  
+
+src\components\ui\Gamified3DOrb.tsx:178:5 lint/a11y/noStaticElementInteractions ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöü
+
+  ! Unexpected event handler on static element.
+  
+    177 Ôöé   return (
+  > 178 Ôöé     <div
+        Ôöé     ^^^^
+  > 179 Ôöé       ref={containerRef}
+         ...
+  > 183 Ôöé       title={interactive ? 'Clique no Cristal 3D para obter impulso de energia!' : undefined}
+  > 184 Ôöé     >
+        Ôöé     ^
+    185 Ôöé       <Canvas
+    186 Ôöé         camera={{ position: [0, 0, 4.2], fov: 45 }}
+  
+  i Static elements should not be interactive. To add interactivity such as a mouse or key event listener to a static element, give the element an appropriate role value.
+  
+
+src\components\ui\Gamified3DOrb.tsx:178:5 lint/a11y/useKeyWithClickEvents ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöü
+
+  ! Enforce to have the onClick mouse event with the onKeyUp, the onKeyDown, or the onKeyPress keyboard event.
+  
+    177 Ôöé   return (
+  > 178 Ôöé     <div
+        Ôöé     ^^^^
+  > 179 Ôöé       ref={containerRef}
+         ...
+  > 183 Ôöé       title={interactive ? 'Clique no Cristal 3D para obter impulso de energia!' : undefined}
+  > 184 Ôöé     >
+        Ôöé     ^
+    185 Ôöé       <Canvas
+    186 Ôöé         camera={{ position: [0, 0, 4.2], fov: 45 }}
+  
+  i Actions triggered using mouse events should have corresponding keyboard events to account for keyboard-only navigation.
+  
+
+src\components\ui\KpiCard.tsx:244:5 lint/a11y/noStaticElementInteractions ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöü
+
+  ! Unexpected event handler on static element.
+  
+    243 Ôöé   return (
+  > 244 Ôöé     <div
+        Ôöé     ^^^^
+  > 245 Ôöé       onPointerMove={handlePointerMove}
+  > 246 Ôöé       onMouseEnter={handleMouseEnter}
+  > 247 Ôöé       onMouseLeave={handleMouseLeave}
+  > 248 Ôöé       className={sharedClassName}
+  > 249 Ôöé     >
+        Ôöé     ^
+    250 Ôöé       {content}
+    251 Ôöé     </div>
+  
+  i Static elements should not be interactive. To add interactivity such as a mouse or key event listener to a static element, give the element an appropriate role value.
+  
+
+src\components\ui\bento\BentoCard.tsx:133:5 lint/a11y/noStaticElementInteractions ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöü
+
+  ! Unexpected event handler on static element.
+  
+    132 Ôöé   return (
+  > 133 Ôöé     <div
+        Ôöé     ^^^^
+  > 134 Ôöé       onPointerMove={handlePointerMove}
+         ...
+  > 140 Ôöé       {...props}
+  > 141 Ôöé     >
+        Ôöé     ^
+    142 Ôöé       {spotlightOverlay}
+    143 Ôöé       <div className="relative z-10 flex flex-col justify-between h-full w-full">{children}</div>
+  
+  i Static elements should not be interactive. To add interactivity such as a mouse or key event listener to a static element, give the element an appropriate role value.
+  
+
+src\components\ui\bento\BentoCard.tsx:133:5 lint/a11y/useKeyWithClickEvents ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöü
+
+  ! Enforce to have the onClick mouse event with the onKeyUp, the onKeyDown, or the onKeyPress keyboard event.
+  
+    132 Ôöé   return (
+  > 133 Ôöé     <div
+        Ôöé     ^^^^
+  > 134 Ôöé       onPointerMove={handlePointerMove}
+         ...
+  > 140 Ôöé       {...props}
+  > 141 Ôöé     >
+        Ôöé     ^
+    142 Ôöé       {spotlightOverlay}
+    143 Ôöé       <div className="relative z-10 flex flex-col justify-between h-full w-full">{children}</div>
+  
+  i Actions triggered using mouse events should have corresponding keyboard events to account for keyboard-only navigation.
+  
+
+src\features\auth\components\LandingLoginSplitScreen.tsx:459:17 lint/a11y/useButtonType ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöü
+
+  ! Provide an explicit type prop for the button element.
+  
+    457 Ôöé               {/* Tabs */}
+    458 Ôöé               <div className="flex border-b border-slate-100 dark:border-white/5">
+  > 459 Ôöé                 <button
+        Ôöé                 ^^^^^^^
+  > 460 Ôöé                   onClick={() => setActiveTab('email')}
+  > 461 Ôöé                   className={`flex-1 py-4 text-xs font-bold uppercase tracking-wider transition-colors relative ${activeTab === 'email' ? 'text-brand' : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'}`}
+  > 462 Ôöé                 >
+        Ôöé                 ^
+    463 Ôöé                   E-mail corporativo
+    464 Ôöé                   {activeTab === 'email' && (
+  
+  i The default type of a button is submit, which causes the submission of a form when placed inside a `form` element. This is likely not the behaviour that you want inside a React application.
+  
+  i Allowed button types are: submit, button or reset
+  
+
+src\features\auth\components\LandingLoginSplitScreen.tsx:471:17 lint/a11y/useButtonType ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöü
+
+  ! Provide an explicit type prop for the button element.
+  
+    469 Ôöé                   )}
+    470 Ôöé                 </button>
+  > 471 Ôöé                 <button
+        Ôöé                 ^^^^^^^
+  > 472 Ôöé                   onClick={() => setActiveTab('sso')}
+  > 473 Ôöé                   className={`flex-1 py-4 text-xs font-bold uppercase tracking-wider transition-colors relative ${activeTab === 'sso' ? 'text-brand' : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'}`}
+  > 474 Ôöé                 >
+        Ôöé                 ^
+    475 Ôöé                   SSO Empresarial
+    476 Ôöé                   {activeTab === 'sso' && (
+  
+  i The default type of a button is submit, which causes the submission of a form when placed inside a `form` element. This is likely not the behaviour that you want inside a React application.
+  
+  i Allowed button types are: submit, button or reset
+  
+
+src\features\auth\components\LandingLoginSplitScreen.tsx:495:21 lint/a11y/useButtonType ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöü
+
+  ! Provide an explicit type prop for the button element.
+  
+    493 Ôöé                       </p>
+    494 Ôöé                     </div>
+  > 495 Ôöé                     <button
+        Ôöé                     ^^^^^^^
+  > 496 Ôöé                       onClick={backToSignIn}
+  > 497 Ôöé                       className="text-sm font-bold text-slate-700 dark:text-slate-300 hover:underline"
+  > 498 Ôöé                     >
+        Ôöé                     ^
+    499 Ôöé                       Voltar para o login
+    500 Ôöé                     </button>
+  
+  i The default type of a button is submit, which causes the submission of a form when placed inside a `form` element. This is likely not the behaviour that you want inside a React application.
+  
+  i Allowed button types are: submit, button or reset
+  
+
+src\features\auth\components\LandingLoginSplitScreen.tsx:512:23 lint/a11y/useButtonType ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöü
+
+  ! Provide an explicit type prop for the button element.
+  
+    510 Ôöé                         </p>
+    511 Ôöé                       </div>
+  > 512 Ôöé                       <button
+        Ôöé                       ^^^^^^^
+  > 513 Ôöé                         onClick={backToSignIn}
+  > 514 Ôöé                         className="text-sm font-bold text-slate-700 dark:text-slate-300 hover:underline"
+  > 515 Ôöé                       >
+        Ôöé                       ^
+    516 Ôöé                         Voltar para o login
+    517 Ôöé                       </button>
+  
+  i The default type of a button is submit, which causes the submission of a form when placed inside a `form` element. This is likely not the behaviour that you want inside a React application.
+  
+  i Allowed button types are: submit, button or reset
+  
+
+src\features\auth\components\LandingLoginSplitScreen.tsx:703:23 lint/a11y/useButtonType ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöü
+
+  ! Provide an explicit type prop for the button element.
+  
+    702 Ôöé                     <div className="grid grid-cols-3 gap-3">
+  > 703 Ôöé                       <button className="flex items-center justify-center gap-2 rounded-lg border border-slate-200 dark:border-white/10 py-2.5 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
+        Ôöé                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    704 Ôöé                         <svg viewBox="0 0 24 24" className="w-4 h-4">
+    705 Ôöé                           <path
+  
+  i The default type of a button is submit, which causes the submission of a form when placed inside a `form` element. This is likely not the behaviour that you want inside a React application.
+  
+  i Allowed button types are: submit, button or reset
+  
+
+src\features\auth\components\LandingLoginSplitScreen.tsx:724:23 lint/a11y/useButtonType ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöü
+
+  ! Provide an explicit type prop for the button element.
+  
+    722 Ôöé                         Google
+    723 Ôöé                       </button>
+  > 724 Ôöé                       <button className="flex items-center justify-center gap-2 rounded-lg border border-slate-200 dark:border-white/10 py-2.5 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
+        Ôöé                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    725 Ôöé                         <svg viewBox="0 0 21 21" className="w-4 h-4">
+    726 Ôöé                           <path fill="#f25022" d="M0 0h10v10H0z" />
+  
+  i The default type of a button is submit, which causes the submission of a form when placed inside a `form` element. This is likely not the behaviour that you want inside a React application.
+  
+  i Allowed button types are: submit, button or reset
+  
+
+The number of diagnostics exceeds the limit allowed. Use --max-diagnostics to increase it.
+Diagnostics not shown: 628.
+Checked 1634 files in 2s. No fixes applied.
+Found 51 errors.
+Found 596 warnings.
+Found 1 info.
+check ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöü
+
+  ├ù Some errors were emitted while running checks.
+  
+

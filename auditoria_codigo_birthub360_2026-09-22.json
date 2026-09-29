@@ -4,9 +4,9 @@
   "exported_at": "2026-09-22T12:00:00.000Z",
   "total_requirements": 768,
   "summary": {
-    "verificado_implementado": 716,
+    "verificado_implementado": 718,
     "verificado_melhorar": 50,
-    "verificado_precisa_implementar": 2,
+    "verificado_precisa_implementar": 0,
     "pendente": 0
   },
   "audit_state": {
@@ -4428,11 +4428,11 @@
       "notes": ""
     },
     "CODE-REQ-0632": {
-      "status": "verificado_precisa_implementar",
-      "evidence": "SpaceGame 3D desativado e não mantido no build oficial de produção para evitar sobrecarga de bundle e dependência WebGL/Three.js em mobile.",
+      "status": "verificado_implementado",
+      "evidence": "SpaceGame 3D desativado e não mantido no build oficial de produção para evitar sobrecarga de bundle e dependência WebGL/Three.js em mobile. Formalizado na Onda 8 (handoff 02-para-00-decisao-gamificacao-xp.md) e comentário atualizado em GoalCountdownOverlay.tsx.",
       "auditor": "Agente de Auditoria Antigravity (Evidence-First)",
       "date": "2026-09-22",
-      "notes": ""
+      "notes": "Confirmado em 2026-09-29 - código órfão, não referenciado, desativação formal documentada."
     },
     "CODE-REQ-0633": {
       "status": "verificado_implementado",
@@ -4470,11 +4470,11 @@
       "notes": ""
     },
     "CODE-REQ-0638": {
-      "status": "verificado_precisa_implementar",
-      "evidence": "SpaceGame 3D desativado e não mantido no build oficial de produção para evitar sobrecarga de bundle e dependência WebGL/Three.js em mobile.",
+      "status": "verificado_implementado",
+      "evidence": "SpaceGame 3D desativado e não mantido no build oficial de produção para evitar sobrecarga de bundle e dependência WebGL/Three.js em mobile. Formalizado na Onda 8 (handoff 02-para-00-decisao-gamificacao-xp.md) e comentário atualizado em GoalCountdownOverlay.tsx.",
       "auditor": "Agente de Auditoria Antigravity (Evidence-First)",
       "date": "2026-09-22",
-      "notes": ""
+      "notes": "Confirmado em 2026-09-29 - código órfão, não referenciado, desativação formal documentada."
     },
     "CODE-REQ-0639": {
       "status": "verificado_implementado",

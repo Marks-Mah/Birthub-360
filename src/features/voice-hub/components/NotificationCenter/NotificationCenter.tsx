@@ -118,7 +118,7 @@ export function NotificationCenter({ className = '' }: { className?: string }) {
 
   return (
     <div className={`relative ${className}`}>
-      <button
+      <button type="button"
         onClick={() => setOpen((v) => !v)}
         aria-label="Notificações"
         aria-expanded={open}
@@ -143,7 +143,7 @@ export function NotificationCenter({ className = '' }: { className?: string }) {
               <Bell className="h-4.5 w-4.5 text-brand" />
               <h3 className="font-bold text-sm text-white">Notificações</h3>
             </div>
-            <button
+            <button type="button"
               onClick={() => setOpen(false)}
               className="text-xs text-slate-400 hover:text-white font-bold"
             >
@@ -163,7 +163,7 @@ export function NotificationCenter({ className = '' }: { className?: string }) {
             {state.status === 'error' && (
               <div className="py-10 text-center text-slate-400">
                 <p className="text-xs font-bold mb-2">Não foi possível carregar as notificações.</p>
-                <button
+                <button type="button"
                   onClick={fetchNotifications}
                   className="inline-flex items-center gap-1.5 text-[10px] font-bold text-brand hover:underline"
                 >
@@ -201,7 +201,7 @@ export function NotificationCenter({ className = '' }: { className?: string }) {
 
                   {!n.isRead && (
                     <div className="flex justify-end items-center mt-2.5 pt-2 border-t border-slate-800/40">
-                      <button
+                      <button type="button"
                         onClick={() => markAsRead(n.id)}
                         disabled={pendingIds.has(n.id)}
                         className="inline-flex items-center gap-1 text-[9px] font-bold text-brand hover:underline disabled:opacity-50"
@@ -216,7 +216,7 @@ export function NotificationCenter({ className = '' }: { className?: string }) {
 
           {state.status === 'ready' && (
             <div className="pt-3 border-t border-slate-800 flex justify-between items-center text-[10px]">
-              <button
+              <button type="button"
                 onClick={markAllAsRead}
                 disabled={markingAll || state.unreadCount === 0}
                 className="inline-flex items-center gap-1 text-brand hover:underline font-bold disabled:opacity-40 disabled:no-underline"

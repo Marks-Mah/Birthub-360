@@ -99,7 +99,7 @@ export const OllamaTerminalTab: React.FC<OllamaTerminalTabProps> = ({
             </p>
           </div>
 
-          <button
+          <button type="button"
             onClick={onCheckOllama}
             disabled={isChecking}
             className="px-4 py-2 bg-[var(--brand-primary)] hover:bg-[#FF6B10] disabled:opacity-50 text-white font-bold text-xs rounded-xl transition flex items-center gap-2 shadow-lg shadow-[var(--brand-primary)]/20 self-start md:self-auto"
@@ -181,7 +181,7 @@ export const OllamaTerminalTab: React.FC<OllamaTerminalTabProps> = ({
               <code className="text-[var(--brand-primary)]">/api/chat</code> usando o motor
               configurado.
             </span>
-            <button
+            <button type="button"
               onClick={handleRunOllamaTest}
               disabled={isRunningTest}
               className="py-2 px-5 bg-[var(--brand-primary)] hover:bg-[#FF6B10] disabled:opacity-50 text-white font-bold rounded-xl text-xs transition flex items-center gap-2 shadow-md shadow-[var(--brand-primary)]/20"
@@ -228,7 +228,7 @@ export const OllamaTerminalTab: React.FC<OllamaTerminalTabProps> = ({
           <div className="space-y-2">
             <div className="bg-slate-950 p-3 rounded-xl border border-slate-800 flex items-center justify-between font-mono">
               <span className="text-emerald-400">1. Instalar o Ollama:</span>
-              <button
+              <button type="button"
                 onClick={() => handleCopy('curl -fsSL https://ollama.com/install.sh | sh', 'c1')}
                 className="text-slate-400 hover:text-white flex items-center gap-1 text-[11px]"
               >
@@ -248,7 +248,7 @@ export const OllamaTerminalTab: React.FC<OllamaTerminalTabProps> = ({
           <div className="space-y-2">
             <div className="bg-slate-950 p-3 rounded-xl border border-slate-800 flex items-center justify-between font-mono">
               <span className="text-emerald-400">2. Baixar e Executar o Modelo LLaMA 3:</span>
-              <button
+              <button type="button"
                 onClick={() => handleCopy('ollama run llama3', 'c2')}
                 className="text-slate-400 hover:text-white flex items-center gap-1 text-[11px]"
               >

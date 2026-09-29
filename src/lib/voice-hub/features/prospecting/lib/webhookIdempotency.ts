@@ -69,6 +69,10 @@ export function buildBirthhub360OutboundIdempotencyKey(payload: {
   phoneNumber: string;
   name: string;
   company: string;
+  leadId?: string;
+  phoneNumber: string;
+  name: string;
+  company: string;
 }): string {
   if (payload.leadId) {
     return `${ATLASGR_OUTBOUND_IDEMPOTENCY_PREFIX}lead:${payload.leadId}`;

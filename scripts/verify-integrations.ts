@@ -13,6 +13,9 @@ type CheckResult = {
 const SKIPPED = (detail: string): CheckResult => ({ ok: true, skipped: true, detail });
 
 async function verifyGooglePlaces(): Promise<CheckResult> {
+  if (!getPaidProspectingKey('GOOGLE_MAPS_API_KEY')) {
+    return SKIPPED('GOOGLE_MAPS_API_KEY ausente ou PROSPECTING_PROVIDER_MODE != hybrid');
+  }
   const candidates = await searchGooglePlacesCandidates('transportadora em Ribeirão Preto, SP', 1);
   return {
     ok: candidates.length > 0,
@@ -184,4 +187,4 @@ if (failures.length) {
     `\n${failures.length} integração(ões) com falha: ${failures.map(([name]) => name).join(', ')}`,
   );
 }
-process.exitCode = failures.length === 0 ? 0 : 1;
+process.exit(failures.length === 0 ? 0 : 1);

@@ -124,13 +124,13 @@ export const LeadEvidenceModal: React.FC<LeadEvidenceModalProps> = ({
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md overflow-y-auto"
-      onClick={onClose}
+      role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={onClose}
     >
       <div
         className={`relative w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden my-8 max-h-[85vh] flex flex-col border ${
           isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'
         }`}
-        onClick={(e) => e.stopPropagation()}
+        role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={(e) => e.stopPropagation()}
       >
         <div
           className={`p-5 border-b flex items-center justify-between sticky top-0 z-10 ${
@@ -150,7 +150,7 @@ export const LeadEvidenceModal: React.FC<LeadEvidenceModalProps> = ({
               </p>
             </div>
           </div>
-          <button
+          <button type="button"
             onClick={onClose}
             className={`p-2 rounded-xl shrink-0 transition ${
               isDark

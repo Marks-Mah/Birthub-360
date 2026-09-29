@@ -144,12 +144,12 @@ export function ConversationsTab({ leadId }: ConversationsTabProps) {
               {conversations.map((conversation) => {
                 const Icon = SOURCE_ICON[conversation.source] ?? HelpCircle;
                 return (
-                  // Linha de <table> real — não pode virar <button> (elemento de bloco inválido
+                  // Linha de <table> real — não pode virar <button type="button"> (elemento de bloco inválido
                   // como filho de <tbody>, quebraria a semântica/estrutura da tabela).
                   // biome-ignore lint/a11y/useSemanticElements: ver comentário acima
                   <tr
                     key={conversation.id}
-                    onClick={() => setSelectedId(conversation.id)}
+                    role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={() => setSelectedId(conversation.id)}
                     className="cursor-pointer transition-colors hover:bg-surface-2/50 focus-visible:bg-surface-2/50"
                     tabIndex={0}
                     role="button"
