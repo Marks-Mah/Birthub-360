@@ -1,7 +1,7 @@
 - De: 00 (Coordenador)
 - Para: 12 (Voz e Telefonia - Birthub Voices)
 - Onda: techdebt-2026-09-29
-- Status: aberto
+- Status: resolvido
 - Prioridade: alto
 
 ## Problema
@@ -59,3 +59,23 @@ Observações:
 - Voice Hub é feature crítica do produto
 - Roda como aplicativo Android via Capacitor
 - Performance e acessibilidade são considerações importantes
+
+## Resolução
+
+1. **Eliminação de Duplicatas e Barrels Excedentes:**
+   - `src/features/voice-hub/pages/Overview.tsx` (1421 linhas): Identificado como duplicata 100% idêntica de `src/features/voice-hub/pages/Dashboard/Overview.tsx`. Convertido para re-export canônico, preservando retrocompatibilidade de imports de testes e eliminando 1418 linhas duplicadas. Exceção de hotspot correspondente removida de `HOTSPOT_EXCEPTIONS.md`.
+   - `src/features/voice-hub/components/index.tsx` (1064 linhas): Identificado como duplicata 100% idêntica de `src/features/voice-hub/components/design-system/index.tsx`. Convertido para re-export canônico, eliminando 1060 linhas duplicadas. Exceção de hotspot correspondente removida de `HOTSPOT_EXCEPTIONS.md`.
+
+2. **Modularização de `useStudioStore.ts` (1744 → 1084 linhas, ~40% de redução):**
+   - Extraído `src/features/voice-hub/store/studioTypes.ts`: interfaces e tipos do domínio do estúdio (`NodeLifecycleState`, `NodeRegistryItem`, `SimulationLog`, `StudioState`).
+   - Extraído `src/features/voice-hub/store/nodeRegistry.ts`: catálogo de nós e componentes de automação e voz (~520 linhas).
+   - Extraído `src/features/voice-hub/store/initialData.ts`: nós e arestas padrão (`initialNodes`, `initialEdges`, ~160 linhas).
+   - `useStudioStore.ts` agora foca unicamente nas transições de estado do Zustand, reduzido para 1084 linhas com exceção de teto ajustada e controlada.
+
+3. **Status de `Landing.tsx`:**
+   - Mantido sob exceção governada em `HOTSPOT_EXCEPTIONS.md` com limite de 2200 linhas sem alterações que arrisquem quebrar a landing pública.
+
+4. **Validação:**
+   - `npx tsc --noEmit` aprovado (0 erros).
+   - `npm run check:hotspots` aprovado (0 arquivos sem exceção).
+   - Testes unitários do módulo e suíte geral validados com sucesso.

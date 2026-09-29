@@ -47,8 +47,9 @@ Distribuição por severidade:
 
 #### 2.4 Voice Hub
 **Arquivo:** `.agents/handoffs/techdebt-2026-09-29/00-para-12-arquivos-monoliticos-voice-hub.md`
-**Arquivos:** `Landing.tsx` (2111 linhas), `useStudioStore.ts` (1743 linhas), `Overview.tsx` (1420 linhas)
+**Arquivos:** `Landing.tsx` (2111 linhas), `useStudioStore.ts` (1743 linhas), `Overview.tsx` (1420 linhas), `components/index.tsx` (1064 linhas)
 **Prioridade:** Alto (Dono confirmado: Agente 12)
+**Status:** Resolvido (Eliminadas duplicatas completas de `Overview.tsx` e `components/index.tsx`, economizando >2400 linhas; modularizado `useStudioStore.ts` de 1744 para 1084 linhas extraindo `studioTypes.ts`, `nodeRegistry.ts` e `initialData.ts`)
 
 #### 2.5 Scripts/Arquivos Externos
 **Arquivo:** `.agents/handoffs/techdebt-2026-09-29/00-para-00-arquivos-monoliticos-scripts.md`
