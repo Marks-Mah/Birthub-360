@@ -47,7 +47,7 @@ importers:
         specifier: ^8.5.0
         version: 8.5.2(supports-color@7.2.0)
       '@capacitor/core':
-        specifier: ^8.5.0
+        specifier: ^8.5.2
         version: 8.5.2
       '@capacitor/ios':
         specifier: ^8.5.0
@@ -258,7 +258,7 @@ importers:
         version: 2.4.0
       nodemailer:
         specifier: ^10.0.2
-        version: 10.0.12
+        version: 10.0.10
       ollama:
         specifier: ^0.6.3
         version: 0.6.3
@@ -8416,8 +8416,8 @@ packages:
     resolution: {integrity: sha512-x0InOIyzgdk+eyaWaRJFH5snEtiImgBgblZ2CyPrLmqqcuMQkEvcDPHbzqbD8eDsSeJbVOjn+crzyzHaM4D+/A==}
     engines: {node: '>=18'}
 
-  nodemailer@10.0.12:
-    resolution: {integrity: sha512-PQ46oNbNMuH/Sno7B5IWIU9etytwrO0xdTFvWXpIQFRXhBAXtzD48243AS+BCbQQTPD8y3fqUrgLn0tSo77gvg==}
+  nodemailer@10.0.10:
+    resolution: {integrity: sha512-He9XskOFms62SyAKkLu8CcGcYHAo+BSHSsORI8s4PJH8qZgZY4L4lDfvyN0twvmbpyG+eGrxpyBlskj9d9rJ8A==}
     engines: {node: '>=20.0.0'}
 
   nopt@8.1.0:
@@ -19216,7 +19216,7 @@ snapshots:
 
   node-releases@2.0.56: {}
 
-  nodemailer@10.0.12: {}
+  nodemailer@10.0.10: {}
 
   nopt@8.1.0:
     dependencies:
