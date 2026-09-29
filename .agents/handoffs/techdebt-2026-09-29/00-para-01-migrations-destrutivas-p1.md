@@ -1,7 +1,7 @@
 - De: 00 (Coordenador)
 - Para: 01 (Plataforma, Segurança e Dados)
 - Onda: techdebt-2026-09-29
-- Status: aberto
+- Status: resolvido
 - Prioridade: bloqueador
 
 ## Problema
@@ -48,3 +48,15 @@ Audit completo em: `c:\Users\marce\OneDrive\Desktop\BirthHub360-Debt-Audit\Birth
 Estas 16 migrations são classificadas como P1 no audit de tech debt (Database). O risco é perda de dados em produção se rollback for necessário sem procedimento documentado.
 
 Referência: AGENTS.md em `prisma/AGENTS.md` define que apenas Agente 01 pode editar migrations.
+
+## Resolução (Agente 01)
+
+1. **Governança de Integridade de Checksums Prisma Respeitada:**
+   - Conforme `docs/security/runbooks/MIGRATION_ROLLBACK.md` e `prisma/AGENTS.md`, arquivos históricos de `migration.sql` já aplicados em produção não podem ser alterados retroativamente sem invalidar o SHA-256 verificado pelo Prisma em `_prisma_migrations` nos ambientes de homologação e CI/CD.
+2. **Inventário Completo de Migrações Destrutivas Criado:**
+   - Criado `docs/security/runbooks/DESTRUCTIVE_MIGRATIONS_INVENTORY.md` catalogando todas as 16 migrações identificadas com comandos `DROP`, detalhando a classificação de cada uma (aditivas vs destrutivas irreversíveis sem backup), seu impacto concreto e instruções de rollback manual e restore cirúrgico.
+3. **Validação do Schema e Prisma CLI:**
+   - `npx prisma validate` executado com sucesso.
+   - `npx prisma generate` executado com sucesso.
+   - Padrão **Expand/Contract** e inclusão prospectiva obrigatória de `-- ROLLBACK:` para migrações futuras formalizados.
+
