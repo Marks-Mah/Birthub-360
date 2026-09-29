@@ -1,5 +1,11 @@
 process.setMaxListeners(50);
 process.env.DATABASE_URL = 'postgresql://dummy:dummy@localhost:5432/dummy';
+if (!process.env.CREDENTIALS_ENCRYPTION_KEY || process.env.CREDENTIALS_ENCRYPTION_KEY.includes('replace-with')) {
+  process.env.CREDENTIALS_ENCRYPTION_KEY = Buffer.alloc(32, 1).toString('base64');
+}
+if (!process.env.PII_BLIND_INDEX_KEY || process.env.PII_BLIND_INDEX_KEY.includes('replace-with')) {
+  process.env.PII_BLIND_INDEX_KEY = Buffer.alloc(32, 1).toString('base64');
+}
 // Setup global do MSW para os testes unitários (TEST-004). Registrado via `setupFiles` em
 // `vitest.unit.config.ts`. Antes disto, o mock de HTTP era ad hoc por arquivo
 // (`global.fetch = vi.fn()` / `vi.spyOn(globalThis, 'fetch')` / `vi.mock` da camada de API),
