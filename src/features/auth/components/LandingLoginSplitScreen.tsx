@@ -23,7 +23,6 @@ import {
 import { type ReactNode, useEffect, useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { BirthHubLogo, BirthHubWordmark } from '../../../components/brand/BirthHubLogo.js';
-import { isAuthorizedLoginEmail } from '../../../config/access-policy.js';
 import { BRAND } from '../../../config/brand.js';
 import { useAuth } from '../../../contexts/AuthContext.js';
 import { authClient } from '../../../lib/auth-client.js';

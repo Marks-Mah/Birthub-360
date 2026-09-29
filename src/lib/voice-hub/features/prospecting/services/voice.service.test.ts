@@ -2,7 +2,10 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import type { Birthhub360OutboundPayload } from '../validators/birthhub360.schema.js';
 
 vi.mock('../lib/webhookIdempotency.js', () => ({
-  buildBirthubOutboundIdempotencyKey: vi
+  buildBirthhub360OutboundIdempotencyKey: vi
+    .fn()
+    .mockReturnValue('idempotency:birthhub360-outbound-call:hash:test'),
+  claimIdempotencyKey: vi.fn(),
     .fn()
     .mockReturnValue('idempotency:birthhub360-outbound-call:hash:test'),
   claimIdempotencyKey: vi.fn(),

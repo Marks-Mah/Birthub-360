@@ -19,10 +19,8 @@ import {
   Bot,
   BrainCircuit,
 } from 'lucide-react';
-import { useTheme } from '../components/design-system/ThemeContext.js';
+import { useTheme, ThemeProvider } from '../components/design-system/ThemeContext.js';
 import {
-  Button,
-  Badge,
   useToast,
   ToastContainer,
   AtlasLogo,
@@ -138,7 +136,7 @@ const DataStream: React.FC = () => {
 };
 
 // Main landing page component
-export default function LandingInnovative() {
+function LandingInnovativeContent() {
   const { theme, setTheme } = useTheme();
   const { toasts, showToast } = useToast();
 
@@ -622,3 +620,12 @@ const Play: React.FC<{ className?: string }> = ({ className }) => (
     <path d="M8 5v14l11-7z" />
   </svg>
 );
+
+export default function LandingInnovative() {
+  return (
+    <ThemeProvider>
+      <LandingInnovativeContent />
+    </ThemeProvider>
+  );
+}
+

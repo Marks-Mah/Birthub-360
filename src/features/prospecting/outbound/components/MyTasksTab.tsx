@@ -46,7 +46,7 @@ export function MyTasksTab({ user, isDark }: MyTasksTabProps) {
 
   useEffect(() => {
     fetchTasks();
-  }, []);
+  }, [fetchTasks]);
 
   const handleToggle = async (task: LeadTask) => {
     const nextStatus: LeadTask['status'] = task.status === 'done' ? 'pending' : 'done';

@@ -28,7 +28,7 @@ export function UserKanbanBoard({ user, isDark }: UserKanbanBoardProps) {
 
   useEffect(() => {
     fetchLeads();
-  }, []);
+  }, [fetchLeads]);
 
   const handleLeadSaved = (updatedLead: Lead) => {
     setLeads((prev) => prev.map((l) => (l.id === updatedLead.id ? updatedLead : l)));

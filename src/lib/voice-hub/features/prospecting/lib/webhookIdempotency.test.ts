@@ -35,7 +35,7 @@ vi.mock('../../../lib/env.js', () => ({
 
 import {
   __setIdempotencyClientForTests,
-  buildBirthubOutboundIdempotencyKey,
+  buildBirthhub360OutboundIdempotencyKey,
   claimIdempotencyKey,
   IdempotencyCheckFailedError,
 } from './webhookIdempotency.js';
@@ -44,25 +44,43 @@ beforeEach(() => {
   __setIdempotencyClientForTests(null);
 });
 
-describe('buildBirthubOutboundIdempotencyKey', () => {
+describe('buildBirthhub360OutboundIdempotencyKey', () => {
   it('uses the lead id when provided', () => {
-    const key = buildBirthubOutboundIdempotencyKey({ leadId: });
+    const key = buildBirthhub360OutboundIdempotencyKey({ leadId: 'lead-123',
+      phoneNumber: '+5511999998888',
+      name: 'Fulano',
+      company: 'Acme' });
+
+    expect(key).toBe('idempotency:birthhub360-outbound-call:lead:lead-123');
+  });
     expect(key).toBe('idempotency:birthhub360-outbound-call:lead:lead-123');
   });
 
   it('falls back to a stable hash of phone/name/company when there is no lead id', () => {
-    const keyA = buildBirthubOutboundIdempotencyKey({ phoneNumber: }) 99999-8888',
+    const keyA = buildBirthhub360OutboundIdempotencyKey({ phoneNumber: '+55 (11) 99999-8888',
       name: 'Fulano',
-      company: 'Acme',);
-    const keyB = buildBirthubOutboundIdempotencyKey({ phoneNumber: });
+      company: 'Acme' });
+    const keyB = buildBirthhub360OutboundIdempotencyKey({ phoneNumber: '5511999998888',
+      name: 'FULANO',
+      company: 'acme' });
+
+    // Different formatting/casing of the same underlying data must still dedup to the same key.
+    expect(keyA).toBe(keyB);
+    expect(keyA.startsWith('idempotency:birthhub360-outbound-call:hash:')).toBe(true);
     // Different formatting/casing of the same underlying data must still dedup to the same key.
     expect(keyA).toBe(keyB);
     expect(keyA.startsWith('idempotency:birthhub360-outbound-call:hash:')).toBe(true);
   });
 
   it('produces different hash keys for genuinely different leads', () => {
-    const keyA = buildBirthubOutboundIdempotencyKey({ phoneNumber: });
-    const keyB = buildBirthubOutboundIdempotencyKey({ phoneNumber: });
+    const keyA = buildBirthhub360OutboundIdempotencyKey({ phoneNumber: '+5511999998888',
+      name: 'A',
+      company: 'X' });
+    const keyB = buildBirthhub360OutboundIdempotencyKey({ phoneNumber: '+5511999997777',
+      name: 'B',
+      company: 'Y' });
+
+    expect(keyA).not.toBe(keyB);
     expect(keyA).not.toBe(keyB);
   });
 });

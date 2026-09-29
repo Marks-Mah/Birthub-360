@@ -15,6 +15,7 @@ import type { AuthRequest } from '../../shared/middlewares/authenticateToken.js'
 import { requireRole } from '../../shared/middlewares/requireRole.js';
 import { validateRequest } from '../../shared/middlewares/validateRequest.js';
 import { ingestionService } from './ingestion.service.js';
+import { knowledgeIngestionQueue, knowledgeIngestionQueueEvents } from '../../lib/queue/knowledgeIngestion.queue.js';
 import { searchService } from './search.service.js';
 
 const router = Router();
@@ -257,13 +258,25 @@ router.post(
       const { organizationId, id: userId } = (req as AuthRequest).user;
       const { title, content } = req.body as z.infer<typeof ingestTextSchema>;
 
-      const result = await ingestionService.ingestText({
-        organizationId,
-        title,
-        content,
-        sourceType: 'text',
-        createdBy: userId,
-      });
+      let result;
+      if (knowledgeIngestionQueue && knowledgeIngestionQueueEvents) {
+        const job = await knowledgeIngestionQueue.add('ingest-text', {
+          organizationId,
+          title,
+          content,
+          sourceType: 'text',
+          createdBy: userId,
+        });
+        result = await job.waitUntilFinished(knowledgeIngestionQueueEvents);
+      } else {
+        result = await ingestionService.ingestText({
+          organizationId,
+          title,
+          content,
+          sourceType: 'text',
+          createdBy: userId,
+        });
+      }
 
       res.status(201).json({ success: true, data: result });
     } catch (error: any) {
@@ -305,14 +318,27 @@ router.post(
         return;
       }
 
-      const result = await ingestionService.ingestText({
-        organizationId,
-        title: title?.trim() || fileName.replace(/\.[^.]+$/, ''),
-        content,
-        sourceType: 'file',
-        sourceName: fileName,
-        createdBy: userId,
-      });
+      let result;
+      if (knowledgeIngestionQueue && knowledgeIngestionQueueEvents) {
+        const job = await knowledgeIngestionQueue.add('ingest-file', {
+          organizationId,
+          title: title?.trim() || fileName.replace(/\.[^.]+$/, ''),
+          content,
+          sourceType: 'file',
+          sourceName: fileName,
+          createdBy: userId,
+        });
+        result = await job.waitUntilFinished(knowledgeIngestionQueueEvents);
+      } else {
+        result = await ingestionService.ingestText({
+          organizationId,
+          title: title?.trim() || fileName.replace(/\.[^.]+$/, ''),
+          content,
+          sourceType: 'file',
+          sourceName: fileName,
+          createdBy: userId,
+        });
+      }
 
       res.status(201).json({ success: true, data: result });
     } catch (error: any) {

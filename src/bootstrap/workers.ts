@@ -5,6 +5,7 @@ import { logger } from '../lib/logger.js';
 import { queuesEnabled } from '../lib/queue/redis.js';
 import { createLeadsWorker } from '../lib/queue/index.js';
 import { createAgentWorker } from '../lib/queue/agent.worker.js';
+import { createKnowledgeIngestionWorker } from '../lib/queue/knowledgeIngestion.worker.js';
 import { createEnrichmentWorker } from '../lib/queue/enrichment.queue.js';
 import { createEnrichmentCascadeWorker } from '../lib/queue/enrichmentCascade.worker.js';
 import { createSearchWorker } from '../lib/queue/search.queue.js';
@@ -107,6 +108,7 @@ type CloseableWorker = Worker<any, any, string> | null;
  */
 export interface EmbeddedWorkersHandle {
   leadsWorker: CloseableWorker;
+  knowledgeIngestionWorker: CloseableWorker;
   agentWorker: CloseableWorker;
   enrichmentWorker: CloseableWorker;
   enrichmentCascadeWorker: CloseableWorker;
@@ -156,6 +158,7 @@ export function startEmbeddedWorkers(): EmbeddedWorkersHandle {
 
   const handle: EmbeddedWorkersHandle = {
     leadsWorker: embeddedWorkersEnabled ? createLeadsWorker() : null,
+      knowledgeIngestionWorker: embeddedWorkersEnabled ? createKnowledgeIngestionWorker() : null,
     agentWorker: embeddedWorkersEnabled ? createAgentWorker() : null,
     enrichmentWorker: embeddedWorkersEnabled ? createEnrichmentWorker() : null,
     enrichmentCascadeWorker: embeddedWorkersEnabled ? createEnrichmentCascadeWorker() : null,

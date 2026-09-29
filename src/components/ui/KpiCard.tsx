@@ -118,7 +118,7 @@ export function KpiCard({
     setIsHovered(false);
   };
 
-  const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
+  const handleClick = (_e: MouseEvent<HTMLButtonElement>) => {
     if (sound) {
       SoundFX.play('click');
     }

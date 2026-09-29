@@ -99,7 +99,7 @@ export function LeadDistributionTab({ isDark }: LeadDistributionTabProps) {
 
   useEffect(() => {
     fetchDistribution();
-  }, []);
+  }, [fetchDistribution]);
 
   if (loading) {
     return (

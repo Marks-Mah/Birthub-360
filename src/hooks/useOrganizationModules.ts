@@ -1,4 +1,4 @@
-﻿export function useOrganizationModules() {
+export function useOrganizationModules() {
   return {
     isPendingOnboarding: false,
     isLoading: false,

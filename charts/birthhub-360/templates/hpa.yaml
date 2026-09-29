@@ -2,9 +2,9 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ include "prospector-atlas.fullname" . }}
+  name: {{ include "birthhub-360.fullname" . }}
   labels:
-    {{- include "prospector-atlas.labels" . | nindent 4 }}
+    {{- include "birthhub-360.labels" . | nindent 4 }}
 spec:
   scaleTargetRef:
     {{- if .Values.blueGreen.enabled }}
@@ -21,7 +21,7 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     {{- end }}
-    name: {{ include "prospector-atlas.fullname" . }}
+    name: {{ include "birthhub-360.fullname" . }}
   minReplicas: {{ .Values.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.autoscaling.maxReplicas }}
   metrics:
