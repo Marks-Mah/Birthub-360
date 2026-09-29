@@ -57,6 +57,6 @@ export const logger = pino({
   transport: getTransport(),
   base: {
     env: process.env.NODE_ENV,
-    service: 'prospector-atlas-api',
+    service: 'birthhub360-api',
   },
 });
