@@ -276,9 +276,9 @@ export function OcrCapturePanel() {
         website: formData.website || null,
         contact: formData.contactName
           ? {
-              name: formData.contactName,
-              role: formData.contactRole || 'Decisor',
-            }
+            name: formData.contactName,
+            role: formData.contactRole || 'Decisor',
+          }
           : null,
       });
       setPromoted(result);
@@ -453,9 +453,9 @@ export function OcrCapturePanel() {
             <div className="rounded-2xl border border-line bg-surface p-3 shadow-sm">
               <div className="flex items-center justify-between pb-2 border-b border-line mb-2">
                 <span className="text-xs font-bold text-ink">Foto Original</span>
-                <button type="button"
-                  onClick={() => fileInputRef.current?.click()}
+                <button
                   type="button"
+                  onClick={() => fileInputRef.current?.click()}
                   className="text-[11px] font-bold text-brand-ink dark:text-brand hover:underline"
                 >
                   Trocar Foto
