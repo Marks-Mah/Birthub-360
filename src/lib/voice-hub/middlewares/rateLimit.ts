@@ -34,7 +34,7 @@ export const createRateLimiter =
         return res
           .status(429)
           .json({ error: 'Limite de requisições excedido. Tente novamente em um minuto.' });
-        return;
+
       }
       return next();
     } catch {

@@ -1,7 +1,7 @@
 import { chromium, devices } from '@playwright/test';
 
 const BASE_URL = 'http://localhost:3000';
-const PASSWORD = 'E2eTestPassword123!';
+const PASSWORD = process.env.QA_TEST_PASSWORD || 'E2eTestPassword123!';
 const email = `qa-fase4-mobile-${Date.now()}@birthhub360.com.br`;
 
 const MODULES = [
