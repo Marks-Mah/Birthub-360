@@ -360,7 +360,7 @@ importers:
         specifier: ^4.12.0
         version: 4.13.0(playwright-core@1.63.0)
       '@biomejs/biome':
-        specifier: ^2.5.11
+        specifier: ^2.5.14
         version: 2.5.14
       '@cyclonedx/cyclonedx-npm':
         specifier: ^6.0.1
