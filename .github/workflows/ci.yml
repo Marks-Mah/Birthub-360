@@ -33,10 +33,9 @@ jobs:
 
       - name: Gitleaks (varredura de segredo versionado)
         uses: gitleaks/gitleaks-action@ff98106e4c7b2bc287b24eaf42907196329070c7 # v2
-        with:
-          config_path: .gitleaks.toml
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_CONFIG: .gitleaks.toml
 
   build-and-test:
     name: Central Birth Hub 360 / application gate
