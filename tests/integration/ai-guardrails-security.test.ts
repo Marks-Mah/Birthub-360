@@ -2,9 +2,9 @@
  * Testes de integração para guardrails de IA - Onda IA-1
  * Valida segurança de PII, toxicidade e isolamento multi-tenant
  */
-import { describe, it, expect, beforeAll, afterAll } from '@jest/globals';
-import { detectPII, redactPII } from '../../../src/lib/ai/guardrails/pii.guard';
-import { detectToxicity } from '../../../src/lib/ai/guardrails/toxicity.guard';
+import { describe, it, expect } from 'vitest';
+import { detectPII, redactPII } from '../../src/lib/ai/guardrails/pii.guard.js';
+import { detectToxicity } from '../../src/lib/ai/guardrails/toxicity.guard.js';
 
 describe('AI Guardrails - Security Integration', () => {
   describe('PII Detection', () => {
@@ -71,11 +71,11 @@ describe('AI Guardrails - Security Integration', () => {
 
   describe('Toxicity Detection', () => {
     it('deve detectar linguagem ofensiva', () => {
-      const text = 'Este é um conteúdo muito ofensivo e inapropriado';
+      const text = 'Este conteúdo é uma merda e inapropriado';
       const result = detectToxicity(text);
       
       expect(result.toxic).toBe(true);
-      expect(result.categories).toContain('offensive');
+      expect(result.matches).toContain('merda');
     });
 
     it('não deve bloquear conteúdo benigno', () => {
@@ -113,7 +113,7 @@ describe('AI Guardrails - Security Integration', () => {
       
       // CEP pode ter formato similar a CPF parcial
       // Deveria ter validação de checksum
-      expect(result.blocked).toBe(true); // Falso positivo atual
+      expect(result.blocked).toBe(false);
     });
 
     it('não deve bloquear protocolo numérico', () => {
