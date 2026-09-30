@@ -168,7 +168,7 @@
     "million": "^3.1.11",
     "motion": "^13.4.3",
     "multer": "^2.4.0",
-    "nodemailer": "^10.0.2",
+    "nodemailer": "^10.0.9",
     "ollama": "^0.6.3",
     "pdf-parse": "^1.1.4",
     "pg": "^8.22.0",
@@ -207,7 +207,7 @@
     "deepmerge-ts": "^8.0.2",
     "brace-expansion": "^2.0.1",
     "uuid": "^14.0.2",
-    "fast-uri": "^3.1.7",
+    "fast-uri": "^3.1.8",
     "@xenova/transformers": {
       "sharp": "^0.35.3"
     },
