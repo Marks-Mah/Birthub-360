@@ -23,6 +23,7 @@
     "motion": "^12.23.24",
     "react": "^19.0.1",
     "react-dom": "^19.0.1",
+    "react-example": "file:..",
     "vite": "^8.3.0",
     "ws": "^8.21.3"
   },
@@ -38,5 +39,11 @@
     "tailwindcss": "^4.3.3",
     "tsx": "^4.21.0",
     "typescript": "^7.0.2"
+  },
+  "overrides": {
+    "undici@7.29.0": "7.29.1",
+    "@firebase/firestore": {
+      "@grpc/grpc-js": "^1.14.5"
+    }
   }
 }

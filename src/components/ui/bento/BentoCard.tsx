@@ -130,8 +130,19 @@ export function BentoCard({
   }
 
   return (
-    <button
-      type="button"
+    <div
+      role={onClick ? 'button' : undefined}
+      tabIndex={onClick ? 0 : undefined}
+      onKeyDown={(event) => {
+        if (
+          onClick &&
+          event.target === event.currentTarget &&
+          (event.key === 'Enter' || event.key === ' ')
+        ) {
+          event.preventDefault();
+          event.currentTarget.click();
+        }
+      }}
       onPointerMove={handlePointerMove}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
@@ -142,6 +153,6 @@ export function BentoCard({
     >
       {spotlightOverlay}
       <div className="relative z-10 flex flex-col justify-between h-full w-full">{children}</div>
-    </button>
+    </div>
   );
 }
