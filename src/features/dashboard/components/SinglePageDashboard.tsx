@@ -86,7 +86,7 @@ export function SinglePageDashboard() {
 
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
             <div>
-              <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight text-ink">
+              <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight text-ink">
                 {greeting()}, {firstName}.
               </h1>
               <p className="text-sm sm:text-base text-ink-2 mt-1.5 max-w-2xl leading-relaxed">
@@ -397,7 +397,7 @@ export function SinglePageDashboard() {
                   </span>
                 </div>
 
-                <h3 className="font-serif text-xl sm:text-2xl font-medium text-ink tracking-tight">
+                <h3 className="font-display text-xl sm:text-2xl font-semibold text-ink tracking-tight">
                   {totalLeads > 0
                     ? `Operação ativa com ${totalLeads} oportunidades sob monitoramento.`
                     : 'Command Center preparado para operar.'}

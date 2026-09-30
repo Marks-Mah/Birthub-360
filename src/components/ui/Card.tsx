@@ -35,7 +35,14 @@ const cardVariants = cva('relative overflow-hidden rounded-card text-ink', {
       // Nova variante para metálico
       metallic:
         'bg-gradient-to-br from-surface to-surface-2 border border-line/60 shadow-card transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-brand/30 hover:shadow-card-hover hover:-translate-y-0.5 hover:scale-[1.005]',
-      // --- Tendências 2026: Spatial UI, Bento & Specular Lighting ---
+      // Variantes estruturais recomendadas pelo Design System v2.0
+      surface: 'bg-surface border border-line shadow-none',
+      panel: 'bg-surface-elevated/90 border border-line shadow-subtle backdrop-blur-md',
+      metric: 'bg-surface-elevated border border-line/80 shadow-card hover:border-brand/30 transition-all duration-200',
+      data: 'bg-surface border border-line/70 shadow-none',
+      feature: 'bg-surface-elevated/95 border border-brand/30 shadow-card hover:border-brand/60 hover:shadow-glow-brand transition-all duration-200',
+      floating: 'bg-surface-elevated/95 border border-line shadow-floating backdrop-blur-xl',
+      // Variantes legadas e estéticas preservadas para compatibilidade
       bento:
         'bg-surface-elevated/85 backdrop-blur-xl border border-line/80 shadow-card hover:border-brand/40 hover:shadow-card-hover hover:-translate-y-1 hover:scale-[1.006] transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]',
       cosmic:

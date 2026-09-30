@@ -38,7 +38,7 @@ const TableRow = React.forwardRef<HTMLTableRowElement, React.HTMLAttributes<HTML
     <tr
       ref={ref}
       className={cn(
-        'transition-all duration-200 hover:bg-surface-interactive/70 hover:backdrop-blur-sm group',
+        'transition-colors duration-150 hover:bg-surface-interactive/70 data-[state=selected]:bg-brand/10 group',
         className,
       )}
       {...props}

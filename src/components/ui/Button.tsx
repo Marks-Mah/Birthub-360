@@ -30,6 +30,12 @@ const buttonVariants = cva(
         // acende só no hover/focus, nunca em repouso (regra do brief "Neon Tokyo × Cosmic Gold").
         default:
           'bg-brand-active text-on-brand shadow-brand-sm hover:bg-brand hover:shadow-glow-brand hover:scale-[1.02] hover:-translate-y-0.5 active:scale-95',
+        primary:
+          'bg-brand-active text-on-brand shadow-brand-sm hover:bg-brand hover:shadow-glow-brand hover:scale-[1.02] hover:-translate-y-0.5 active:scale-95',
+        tertiary:
+          'bg-surface-subtle border-transparent text-ink hover:bg-surface-interactive hover:text-ink hover:scale-[1.02] active:scale-95',
+        success:
+          'bg-ok-solid text-white shadow-sm hover:opacity-90 hover:shadow-card hover:scale-[1.02] hover:-translate-y-0.5 active:scale-95',
         // bg-btn-danger (color-mix com --danger, globals.css) — bg-red-500 cru com texto branco
         // media ~3.76:1, abaixo do mínimo AA 4.5:1 (mesma classe de achado do DQA-19 que motivou
         // bg-brand-active acima). btn-danger-hover escurece mais, mesma lógica de bg-brand-2.
@@ -79,7 +85,9 @@ const buttonVariants = cva(
         default: 'h-9 px-4 py-2',
         sm: 'h-8 px-3 text-xs',
         lg: 'h-10 px-8',
-        icon: 'h-9 w-9',
+        icon: 'h-9 w-9 p-0',
+        'icon-sm': 'h-8 w-8 p-0',
+        'icon-lg': 'h-10 w-10 p-0',
       },
     },
     defaultVariants: {
