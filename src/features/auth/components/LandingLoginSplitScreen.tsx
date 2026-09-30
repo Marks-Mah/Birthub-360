@@ -81,7 +81,7 @@ const HERO_STATS = [
  * Orbital SVG decorativo — 3 anéis concêntricos + 4 nós cardinais + núcleo "B".
  * Puramente SVG inline, sem imagens externas. Animação via CSS @keyframes injetado.
  */
-function CommandOrb({ size = 240 }: { size?: number }) {
+export function CommandOrb({ size = 240 }: { size?: number }) {
   const reduceMotion = useReducedMotion();
   const r1 = size * 0.48; // outer ring radius
   const r2 = size * 0.32; // inner ring radius
@@ -714,10 +714,11 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
 
                     {isSignUp && (
                       <div>
-                        <label className="block font-mono text-xs font-semibold text-[var(--ink-2)] mb-1.5 uppercase tracking-wide">
+                        <label htmlFor="login-name" className="block font-mono text-xs font-semibold text-[var(--ink-2)] mb-1.5 uppercase tracking-wide">
                           Nome completo
                         </label>
                         <input
+                          id="login-name"
                           type="text"
                           value={name}
                           onChange={(e) => setName(e.target.value)}
@@ -732,12 +733,13 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
                     <div className="space-y-4">
                       {/* Email field */}
                       <div>
-                        <label className="block font-mono text-xs font-semibold text-[var(--ink-2)] mb-1.5 uppercase tracking-wide">
+                        <label htmlFor="login-email" className="block font-mono text-xs font-semibold text-[var(--ink-2)] mb-1.5 uppercase tracking-wide">
                           E-mail
                         </label>
                         <div className="relative">
                           <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--ink-2)]" />
                           <input
+                            id="login-email"
                             type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
@@ -755,12 +757,13 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
 
                       {/* Password field */}
                       <div>
-                        <label className="block font-mono text-xs font-semibold text-[var(--ink-2)] mb-1.5 uppercase tracking-wide">
+                        <label htmlFor="login-password" className="block font-mono text-xs font-semibold text-[var(--ink-2)] mb-1.5 uppercase tracking-wide">
                           Senha
                         </label>
                         <div className="relative">
                           <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--ink-2)]" />
                           <input
+                            id="login-password"
                             type={showPassword ? 'text' : 'password'}
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
