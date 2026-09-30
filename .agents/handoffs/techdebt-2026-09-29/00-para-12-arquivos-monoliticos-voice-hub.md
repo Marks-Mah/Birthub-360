@@ -79,3 +79,7 @@ Observações:
    - `npx tsc --noEmit` aprovado (0 erros).
    - `npm run check:hotspots` aprovado (0 arquivos sem exceção).
    - Testes unitários do módulo e suíte geral validados com sucesso.
+
+5. **Integração:**
+   - Commit integrado na branch `integracao/techdebt-2026-09-29` (2026-09-30)
+   - Merge fast-forward de main para branch de integração realizado com sucesso
