@@ -13,11 +13,7 @@ import {
   domainSearch as hunterDomainSearch,
   verifyEmail as hunterVerifyEmail,
 } from '../search/providers/hunter.provider.js';
-import {
-  isUrlSafeForOutboundWebhook,
-  isWithinMaxLength,
-  maskWebhookUrl,
-} from '../validators.js';
+import { isUrlSafeForOutboundWebhook, isWithinMaxLength, maskWebhookUrl } from '../validators.js';
 
 export const integrationsRouter = Router();
 
@@ -411,68 +407,72 @@ integrationsRouter.post(
 );
 
 // 11. Integration: Bland AI Conversational Voice Call
-integrationsRouter.post('/integrations/bland/call', requireAuth, async (req: Request, res: Response) => {
-  try {
-    const { phoneNumber, script, companyName, decisionMakerName, apiKey } = req.body;
-    const effectiveKey = (apiKey || process.env.BLAND_AI_API_KEY || '').trim();
+integrationsRouter.post(
+  '/integrations/bland/call',
+  requireAuth,
+  async (req: Request, res: Response) => {
+    try {
+      const { phoneNumber, script, companyName, decisionMakerName, apiKey } = req.body;
+      const effectiveKey = (apiKey || process.env.BLAND_AI_API_KEY || '').trim();
 
-    if (!phoneNumber) {
-      return res
-        .status(400)
-        .json({ error: 'Número de telefone é obrigatório para disparo da chamada.' });
-    }
+      if (!phoneNumber) {
+        return res
+          .status(400)
+          .json({ error: 'Número de telefone é obrigatório para disparo da chamada.' });
+      }
 
-    if (script !== undefined && !isWithinMaxLength(String(script))) {
-      return res
-        .status(400)
-        .json({ error: 'Roteiro de chamada excede o tamanho máximo permitido.' });
-    }
+      if (script !== undefined && !isWithinMaxLength(String(script))) {
+        return res
+          .status(400)
+          .json({ error: 'Roteiro de chamada excede o tamanho máximo permitido.' });
+      }
 
-    const promptTask = `Você é a assistente de voz IA da Atlas Inteligência e Segurança Logística.
+      const promptTask = `Você é a assistente de voz IA da Atlas Inteligência e Segurança Logística.
 Você está ligando para ${decisionMakerName || 'o decisor'} na empresa ${companyName || 'alvo'}.
 Objetivo da chamada: Apresentar de forma cordial e objetiva a solução Atlas para gestão de risco de transporte e solicitar 10 minutos de reunião com nosso consultor sênior.
 Roteiro base: "${script || 'Olá, estou entrando em contato em nome da Atlas para compartilhar nossos avanços em segurança e inteligência de frotas rodoviárias.'}"
 Fale com voz natural, cordial, em Português Brasileiro (PT-BR), aguarde a resposta do interlocutor e trate objeções com profissionalismo.`;
 
-    const response = await fetch('https://api.bland.ai/v1/calls', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        authorization: effectiveKey,
-      },
-      body: JSON.stringify({
-        phone_number: phoneNumber,
-        task: promptTask,
-        voice: 'maya',
-        reduce_latency: true,
-        record: true,
-        wait_for_greeting: true,
-        language: 'pt',
-      }),
-    });
-
-    const data = (await response.json()) as any;
-
-    if (response.ok && data.status === 'success') {
-      res.json({
-        success: true,
-        call_id: data.call_id,
-        status: 'queued',
-        message: `Chamada de voz IA agendada para ${phoneNumber} com sucesso via Bland AI! (Call ID: ${data.call_id})`,
-        phone_number: phoneNumber,
+      const response = await fetch('https://api.bland.ai/v1/calls', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          authorization: effectiveKey,
+        },
+        body: JSON.stringify({
+          phone_number: phoneNumber,
+          task: promptTask,
+          voice: 'maya',
+          reduce_latency: true,
+          record: true,
+          wait_for_greeting: true,
+          language: 'pt',
+        }),
       });
-    } else {
-      res.status(502).json({
-        success: false,
-        status: 'error',
-        error:
-          data.message ||
-          data.error ||
-          'Falha ao disparar a chamada via Bland AI (chave não configurada ou serviço indisponível).',
-        phone_number: phoneNumber,
-      });
+
+      const data = (await response.json()) as any;
+
+      if (response.ok && data.status === 'success') {
+        res.json({
+          success: true,
+          call_id: data.call_id,
+          status: 'queued',
+          message: `Chamada de voz IA agendada para ${phoneNumber} com sucesso via Bland AI! (Call ID: ${data.call_id})`,
+          phone_number: phoneNumber,
+        });
+      } else {
+        res.status(502).json({
+          success: false,
+          status: 'error',
+          error:
+            data.message ||
+            data.error ||
+            'Falha ao disparar a chamada via Bland AI (chave não configurada ou serviço indisponível).',
+          phone_number: phoneNumber,
+        });
+      }
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
     }
-  } catch (err: any) {
-    res.status(500).json({ error: err.message });
-  }
-});
+  },
+);

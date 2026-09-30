@@ -20,11 +20,7 @@ import {
   BrainCircuit,
 } from 'lucide-react';
 import { useTheme, ThemeProvider } from '../components/design-system/ThemeContext.js';
-import {
-  useToast,
-  ToastContainer,
-  AtlasLogo,
-} from '../components/design-system/index.js';
+import { useToast, ToastContainer, AtlasLogo } from '../components/design-system/index.js';
 
 // Simplified background effect
 const ParticleBackground: React.FC = () => {
@@ -227,7 +223,8 @@ function LandingInnovativeContent() {
 
           <nav className="hidden lg:flex items-center gap-8">
             {['Plataforma', 'Inteligência', 'Segurança', 'Integrações'].map((item, i) => (
-              <button type="button"
+              <button
+                type="button"
                 key={item}
                 onClick={() => scrollToSection(item.toLowerCase().replace(' ', '-'))}
                 className={`text-sm font-semibold transition-all relative ${
@@ -250,13 +247,15 @@ function LandingInnovativeContent() {
 
           <div className="flex items-center gap-4">
             <div className="flex items-center bg-slate-100 dark:bg-slate-900 p-1 rounded-lg">
-              <button type="button"
+              <button
+                type="button"
                 onClick={() => setTheme('light')}
                 className={`p-2 rounded-md transition-all ${theme === 'light' ? 'bg-white shadow-sm text-brand' : 'text-slate-500'}`}
               >
                 <Zap className="h-4 w-4" />
               </button>
-              <button type="button"
+              <button
+                type="button"
                 onClick={() => setTheme('dark')}
                 className={`p-2 rounded-md transition-all ${theme === 'dark' ? 'bg-slate-800 text-white shadow-sm' : 'text-slate-500'}`}
               >
@@ -628,4 +627,3 @@ export default function LandingInnovative() {
     </ThemeProvider>
   );
 }
-

@@ -70,8 +70,9 @@ function timeLabel(activity: CalendarActivity): string {
 function ActivityCard({ activity, dragging }: { activity: CalendarActivity; dragging?: boolean }) {
   return (
     <div
-      className={`w-full text-left px-1.5 py-1 rounded-md border text-[10px] leading-tight ${STATUS_STYLE[activity.status]} ${dragging ? 'shadow-lg' : ''
-        }`}
+      className={`w-full text-left px-1.5 py-1 rounded-md border text-[10px] leading-tight ${STATUS_STYLE[activity.status]} ${
+        dragging ? 'shadow-lg' : ''
+      }`}
     >
       <span className="font-semibold">{timeLabel(activity)}</span>{' '}
       <span className="opacity-90">{activity.type}</span>
@@ -159,13 +160,15 @@ function DayCell({
   return (
     <div
       ref={setNodeRef}
-      className={`min-h-[104px] p-1.5 border border-line flex flex-col gap-1 transition-colors ${inMonth ? 'bg-surface-2' : 'bg-surface-2/40'
-        } ${isOver ? `${accent.bgSoft} ring-1 ${accent.border}` : ''}`}
+      className={`min-h-[104px] p-1.5 border border-line flex flex-col gap-1 transition-colors ${
+        inMonth ? 'bg-surface-2' : 'bg-surface-2/40'
+      } ${isOver ? `${accent.bgSoft} ring-1 ${accent.border}` : ''}`}
     >
       <div className="flex items-center justify-between">
         <span
-          className={`text-[11px] font-semibold w-5 h-5 flex items-center justify-center rounded-full ${isToday ? `${accent.bg} text-on-brand` : 'text-ink-2'
-            }`}
+          className={`text-[11px] font-semibold w-5 h-5 flex items-center justify-center rounded-full ${
+            isToday ? `${accent.bg} text-on-brand` : 'text-ink-2'
+          }`}
         >
           {date.getDate()}
         </span>

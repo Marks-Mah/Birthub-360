@@ -13,10 +13,7 @@ import {
   FileSearch,
   PhoneCall,
 } from 'lucide-react';
-import {
-  BitrixExportStatusBadge,
-  type BitrixExportStatus,
-} from '../BitrixExportStatusBadge.js';
+import { BitrixExportStatusBadge, type BitrixExportStatus } from '../BitrixExportStatusBadge.js';
 import type { ThemeMode } from '../../types.js';
 
 export interface LeadActionsBarProps {
@@ -284,9 +281,7 @@ export const LeadActionsBar: React.FC<LeadActionsBarProps> = ({
           ) : (
             <PhoneCall className="w-3.5 h-3.5" />
           )}
-          <span>
-            {blandResult?.success ? 'Ligação Bland AI Ativa' : 'Ligar via Bland AI'}
-          </span>
+          <span>{blandResult?.success ? 'Ligação Bland AI Ativa' : 'Ligar via Bland AI'}</span>
         </button>
       </div>
     </div>

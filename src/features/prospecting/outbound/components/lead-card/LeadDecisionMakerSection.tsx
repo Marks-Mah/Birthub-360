@@ -105,9 +105,7 @@ export const LeadDecisionMakerSection: React.FC<LeadDecisionMakerSectionProps> =
               />
             </div>
           ) : (
-            <p
-              className={`text-sm font-bold truncate ${isDark ? 'text-white' : 'text-slate-900'}`}
-            >
+            <p className={`text-sm font-bold truncate ${isDark ? 'text-white' : 'text-slate-900'}`}>
               {dmName}{' '}
               <span
                 className={`text-xs font-normal ${isDark ? 'text-slate-400' : 'text-slate-600'}`}

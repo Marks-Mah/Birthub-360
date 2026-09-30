@@ -619,7 +619,8 @@ export const ProspectorTab: React.FC<ProspectorTabProps> = ({
             )}
 
             {/* Main Prospect Button */}
-            <button type="button"
+            <button
+              type="button"
               onClick={onStartSearch}
               disabled={isSearching || !query.trim()}
               className="py-2.5 px-6 bg-gradient-to-r from-[var(--brand-primary)] to-[#FF7010] hover:from-[var(--brand-secondary-hover)] hover:to-[var(--brand-secondary)] disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold rounded-xl transition shadow-lg shadow-[var(--brand-primary)]/25 flex items-center justify-center gap-2 text-sm"
@@ -725,7 +726,8 @@ export const ProspectorTab: React.FC<ProspectorTabProps> = ({
 
           <div className="flex flex-wrap items-center gap-2">
             {/* Bulk Export to Bitrix24 */}
-            <button type="button"
+            <button
+              type="button"
               onClick={handleBulkExportBitrix}
               disabled={isBulkExporting}
               className={`px-3 py-1.5 text-xs font-semibold rounded-lg border transition flex items-center gap-1.5 ${
@@ -747,7 +749,8 @@ export const ProspectorTab: React.FC<ProspectorTabProps> = ({
               <span>{bulkExportSuccess ? 'Todos Exportados!' : 'Exportar Todos Bitrix24'}</span>
             </button>
 
-            <button type="button"
+            <button
+              type="button"
               onClick={onExportJSON}
               className={`px-3 py-1.5 text-xs font-semibold rounded-lg border transition flex items-center gap-1.5 ${
                 isDark
@@ -758,7 +761,8 @@ export const ProspectorTab: React.FC<ProspectorTabProps> = ({
               <FileCode className="w-3.5 h-3.5 text-[var(--brand-primary)]" />
               <span>Exportar JSON</span>
             </button>
-            <button type="button"
+            <button
+              type="button"
               onClick={onExportCSV}
               className={`px-3 py-1.5 text-xs font-semibold rounded-lg border transition flex items-center gap-1.5 ${
                 isDark

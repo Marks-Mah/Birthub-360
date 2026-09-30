@@ -113,8 +113,8 @@ export const LeadOutreachSection: React.FC<LeadOutreachSectionProps> = ({
               </h4>
             </div>
             <p className="text-xs text-slate-400 mt-1">
-              A geração de scripts de abordagem é acionada apenas quando você desejar
-              prospectar este lead.
+              A geração de scripts de abordagem é acionada apenas quando você desejar prospectar
+              este lead.
             </p>
           </div>
 
@@ -141,10 +141,9 @@ export const LeadOutreachSection: React.FC<LeadOutreachSectionProps> = ({
 
         <div className="flex flex-col items-start justify-between gap-3 pt-1">
           <div className="text-xs text-slate-400">
-            Gera roteiros, matriz de objeções, perguntas de qualificação e ator quebra-gelo
-            para: <strong>Cold Call</strong>, <strong>Cold Email</strong>,{' '}
-            <strong>WhatsApp</strong> e <strong>LinkedIn</strong> adaptadas para{' '}
-            <strong>{dmName}</strong> ({dmTitle}).
+            Gera roteiros, matriz de objeções, perguntas de qualificação e ator quebra-gelo para:{' '}
+            <strong>Cold Call</strong>, <strong>Cold Email</strong>, <strong>WhatsApp</strong> e{' '}
+            <strong>LinkedIn</strong> adaptadas para <strong>{dmName}</strong> ({dmTitle}).
           </div>
 
           <div className="flex items-center gap-2 shrink-0">
@@ -453,15 +452,11 @@ Objetivo: Conduzir abordagem comercial altamente personalizada de alto nível ex
         {copies.followup_strategy && (
           <div
             className={`mt-3 pt-3 border-t flex items-center gap-2 text-[11px] ${
-              isDark
-                ? 'border-slate-800/60 text-slate-400'
-                : 'border-slate-200 text-slate-600'
+              isDark ? 'border-slate-800/60 text-slate-400' : 'border-slate-200 text-slate-600'
             }`}
           >
             <Sparkles className="w-3.5 h-3.5 text-[#FFC500] shrink-0" />
-            <span
-              className={`font-semibold ${isDark ? 'text-slate-300' : 'text-slate-700'}`}
-            >
+            <span className={`font-semibold ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
               Estratégia de Follow-up:
             </span>
             <span>{copies.followup_strategy}</span>

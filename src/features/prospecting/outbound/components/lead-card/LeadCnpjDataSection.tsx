@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  Shield,
-  CheckCircle2,
-  Check,
-  Loader2,
-  RefreshCw,
-  Briefcase,
-} from 'lucide-react';
+import { Shield, CheckCircle2, Check, Loader2, RefreshCw, Briefcase } from 'lucide-react';
 
 export interface LeadCnpjDataSectionProps {
   isDark: boolean;
@@ -46,9 +39,7 @@ export const LeadCnpjDataSection: React.FC<LeadCnpjDataSectionProps> = ({
       <div className="flex flex-wrap items-center justify-between gap-2 border-b pb-2">
         <div className="flex items-center gap-2">
           <Shield className="w-4 h-4 text-[var(--brand-primary)]" />
-          <span
-            className="text-xs font-bold uppercase tracking-wider text-[var(--brand-primary)]"
-          >
+          <span className="text-xs font-bold uppercase tracking-wider text-[var(--brand-primary)]">
             Dados Oficiais do CNPJ (Receita Federal)
           </span>
           <span className="bg-emerald-500/15 text-emerald-500 border border-emerald-500/30 text-[10px] px-2 py-0.5 rounded-md font-bold flex items-center gap-1">
@@ -101,9 +92,7 @@ export const LeadCnpjDataSection: React.FC<LeadCnpjDataSectionProps> = ({
           <span className="text-[10px] text-slate-400 uppercase font-semibold block">
             CNPJ / Situação:
           </span>
-          <span
-            className={`font-mono font-bold block text-[var(--brand-primary)]`}
-          >
+          <span className={`font-mono font-bold block text-[var(--brand-primary)]`}>
             {leadCnpj}
           </span>
         </div>
@@ -148,8 +137,7 @@ export const LeadCnpjDataSection: React.FC<LeadCnpjDataSectionProps> = ({
                   : 'bg-white border-slate-200 text-slate-700'
               }`}
             >
-              {socio.nome_socio}{' '}
-              {socio.qualificacao_socio ? `(${socio.qualificacao_socio})` : ''}
+              {socio.nome_socio} {socio.qualificacao_socio ? `(${socio.qualificacao_socio})` : ''}
             </span>
           ))}
         </div>

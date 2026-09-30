@@ -47,7 +47,15 @@ export function TopBar({
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-3 border-r border-white/10 pr-4">
           <div
-            role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={onSimulate}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                e.currentTarget.click();
+              }
+            }}
+            onClick={onSimulate}
             title="Simular Ligação (Test Call)"
             className="w-8 h-8 bg-iris/90 rounded-lg flex items-center justify-center text-white cursor-pointer hover:bg-iris shadow-[0_0_15px_rgba(99,102,241,0.4)] transition-all hover:scale-105 active:scale-95 border border-indigo-500/50"
           >
@@ -61,40 +69,46 @@ export function TopBar({
 
         {/* Toolbar Left */}
         <div className="flex items-center gap-1">
-          <button type="button"
+          <button
+            type="button"
             className="p-2 rounded-lg text-gray-400 hover:text-gray-200 hover:bg-white/5 transition-colors tooltip-trigger"
             title="Command Palette (Cmd+K)"
           >
             <Search className="w-4 h-4" />
           </button>
-          <button type="button"
+          <button
+            type="button"
             className="p-2 rounded-lg text-gray-400 hover:text-gray-200 hover:bg-white/5 transition-colors tooltip-trigger"
             title="Comments"
           >
             <MessageSquare className="w-4 h-4" />
           </button>
-          <button type="button"
+          <button
+            type="button"
             className="p-2 rounded-lg text-gray-400 hover:text-gray-200 hover:bg-white/5 transition-colors tooltip-trigger"
             title="Auto Layout"
           >
             <LayoutGrid className="w-4 h-4" />
           </button>
           <div className="w-px h-4 bg-white/10 mx-1"></div>
-          <button type="button"
+          <button
+            type="button"
             onClick={onZoomOut}
             className="p-2 rounded-lg text-gray-400 hover:text-gray-200 hover:bg-white/5 transition-colors tooltip-trigger"
             title="Zoom Out"
           >
             <Minus className="w-4 h-4" />
           </button>
-          <button type="button"
+          <button
+            type="button"
             onClick={onZoomIn}
             className="p-2 rounded-lg text-gray-400 hover:text-gray-200 hover:bg-white/5 transition-colors tooltip-trigger"
             title="Zoom In"
           >
             <Plus className="w-4 h-4" />
           </button>
-          <button type="button"
+          <button
+            type="button"
             onClick={onFitView}
             className="p-2 rounded-lg text-gray-400 hover:text-gray-200 hover:bg-white/5 transition-colors tooltip-trigger"
             title="Fit to Screen"
@@ -132,20 +146,28 @@ export function TopBar({
 
         {/* Action Buttons */}
         <div className="flex items-center gap-2">
-          <button type="button" className="px-3 py-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 text-xs font-semibold flex items-center gap-2 border border-transparent hover:border-white/10 transition-all">
+          <button
+            type="button"
+            className="px-3 py-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 text-xs font-semibold flex items-center gap-2 border border-transparent hover:border-white/10 transition-all"
+          >
             <Settings className="w-3.5 h-3.5" /> Config
           </button>
-          <button type="button" className="px-3 py-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 text-xs font-semibold flex items-center gap-2 border border-transparent hover:border-white/10 transition-all">
+          <button
+            type="button"
+            className="px-3 py-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 text-xs font-semibold flex items-center gap-2 border border-transparent hover:border-white/10 transition-all"
+          >
             <Download className="w-3.5 h-3.5" /> Export
           </button>
-          <button type="button"
+          <button
+            type="button"
             onClick={onOpenVersionHistory}
             title="Histórico de Publicações"
             className="px-3 py-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 text-xs font-semibold flex items-center gap-2 border border-transparent hover:border-white/10 transition-all"
           >
             <History className="w-3.5 h-3.5" /> Histórico
           </button>
-          <button type="button"
+          <button
+            type="button"
             onClick={onPublish}
             disabled={hasErrors || publishState === 'publishing'}
             title={

@@ -114,7 +114,9 @@ describe('CommandPalette', () => {
       const [open, setOpen] = useState(false);
       return (
         <MemoryRouter>
-          <button type="button" onClick={() => setOpen(true)}>Abrir paleta</button>
+          <button type="button" onClick={() => setOpen(true)}>
+            Abrir paleta
+          </button>
           <CommandPalette isOpen={open} onClose={() => setOpen(false)} />
         </MemoryRouter>
       );

@@ -141,7 +141,8 @@ export function GlobalHelpCenter() {
   return (
     <div className="fixed bottom-6 right-6 z-40 select-none">
       {/* Floating Sparkly Button */}
-      <button type="button"
+      <button
+        type="button"
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-2 p-3 rounded-full shadow-2xl hover:scale-105 active:scale-95 transition-all border border-slate-850 dark:border-slate-100 cursor-pointer"
         style={{ backgroundColor: 'var(--brand-color)', color: accessibleBrandText }}
@@ -173,7 +174,8 @@ export function GlobalHelpCenter() {
                 </span>
               </div>
             </div>
-            <button type="button"
+            <button
+              type="button"
               onClick={() => setIsOpen(false)}
               className="p-1 hover:bg-slate-100 dark:hover:bg-slate-750 rounded text-slate-400 hover:text-slate-600"
             >
@@ -183,19 +185,22 @@ export function GlobalHelpCenter() {
 
           {/* Navigation Tabs */}
           <div className="flex border-b border-slate-100 dark:border-slate-750 text-center">
-            <button type="button"
+            <button
+              type="button"
               onClick={() => setActiveTab('chat')}
               className={`flex-1 py-2 text-xs font-bold border-b-2 transition-all ${activeTab === 'chat' ? 'border-brand text-brand' : 'border-transparent text-slate-400'}`}
             >
               Conversar
             </button>
-            <button type="button"
+            <button
+              type="button"
               onClick={() => setActiveTab('docs')}
               className={`flex-1 py-2 text-xs font-bold border-b-2 transition-all ${activeTab === 'docs' ? 'border-brand text-brand' : 'border-transparent text-slate-400'}`}
             >
               Tutoriais & FAQs
             </button>
-            <button type="button"
+            <button
+              type="button"
               onClick={() => setActiveTab('shortcuts')}
               className={`flex-1 py-2 text-xs font-bold border-b-2 transition-all ${activeTab === 'shortcuts' ? 'border-brand text-brand' : 'border-transparent text-slate-400'}`}
             >

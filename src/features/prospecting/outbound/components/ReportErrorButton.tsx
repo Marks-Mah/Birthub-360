@@ -72,13 +72,29 @@ export function ReportErrorButton({ user, page, isDark = true }: ReportErrorButt
       {isOpen && (
         <div
           className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-black/40 animate-in fade-in duration-150"
-          role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={close}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              e.currentTarget.click();
+            }
+          }}
+          onClick={close}
         >
           <div
             className={`w-full max-w-sm rounded-2xl shadow-2xl p-5 animate-in fade-in slide-in-from-bottom-2 duration-200 ${
               isDark ? 'bg-slate-900 border border-slate-800' : 'bg-white border border-slate-200'
             }`}
-            role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={(e) => e.stopPropagation()}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                e.currentTarget.click();
+              }
+            }}
+            onClick={(e) => e.stopPropagation()}
           >
             {sent ? (
               <div className="flex flex-col items-center gap-2 py-6 text-center">

@@ -114,29 +114,29 @@ export async function searchEmbeddings(
   try {
     const filterQuery = filter
       ? {
-        must: [
-          {
-            key: 'tenantId',
-            match: { value: tenantId },
-          },
-          ...(filter.documentType
-            ? [
-              {
-                key: 'documentType',
-                match: { value: filter.documentType },
-              },
-            ]
-            : []),
-        ],
-      }
+          must: [
+            {
+              key: 'tenantId',
+              match: { value: tenantId },
+            },
+            ...(filter.documentType
+              ? [
+                  {
+                    key: 'documentType',
+                    match: { value: filter.documentType },
+                  },
+                ]
+              : []),
+          ],
+        }
       : {
-        must: [
-          {
-            key: 'tenantId',
-            match: { value: tenantId },
-          },
-        ],
-      };
+          must: [
+            {
+              key: 'tenantId',
+              match: { value: tenantId },
+            },
+          ],
+        };
 
     const response = await client.query(COLLECTION_NAME, {
       query: queryVector,
@@ -161,7 +161,10 @@ export async function searchEmbeddings(
 /**
  * Deleta embeddings de um documento específico
  */
-export async function deleteDocumentEmbeddings(tenantId: string, documentId: string): Promise<void> {
+export async function deleteDocumentEmbeddings(
+  tenantId: string,
+  documentId: string,
+): Promise<void> {
   const client = getClient();
 
   try {

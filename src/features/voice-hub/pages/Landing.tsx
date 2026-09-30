@@ -345,14 +345,16 @@ export default function LandingPage() {
           <div className="flex items-center gap-4">
             {/* Quick theme toggler */}
             <div className="flex items-center bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-1 rounded-lg">
-              <button type="button"
+              <button
+                type="button"
                 onClick={() => setTheme('light')}
                 className={`p-1 rounded transition-colors ${theme === 'light' ? 'bg-white shadow-xs text-brand' : 'text-slate-500 hover:text-slate-300'}`}
                 title="Tema Claro"
               >
                 <Sun className="h-3.5 w-3.5" />
               </button>
-              <button type="button"
+              <button
+                type="button"
                 onClick={() => setTheme('dark')}
                 className={`p-1 rounded transition-colors ${theme === 'dark' ? 'bg-slate-950 text-white shadow-xs' : 'text-slate-500 hover:text-slate-300'}`}
                 title="Tema Escuro"
@@ -461,25 +463,29 @@ export default function LandingPage() {
 
                   {/* Selector tabs */}
                   <div className="flex bg-slate-200/60 dark:bg-slate-900 p-1 rounded-lg border border-slate-250 dark:border-slate-800">
-                    <button type="button"
+                    <button
+                      type="button"
                       onClick={() => setHeroTab('builder')}
                       className={`px-3 py-1 text-[11px] font-bold rounded-md transition-all ${heroTab === 'builder' ? 'bg-white dark:bg-slate-850 text-slate-900 dark:text-white shadow-xs' : 'text-slate-500'}`}
                     >
                       Agent Builder
                     </button>
-                    <button type="button"
+                    <button
+                      type="button"
                       onClick={() => setHeroTab('voice')}
                       className={`px-3 py-1 text-[11px] font-bold rounded-md transition-all ${heroTab === 'voice' ? 'bg-white dark:bg-slate-850 text-slate-900 dark:text-white shadow-xs' : 'text-slate-500'}`}
                     >
                       Pipeline de Voz
                     </button>
-                    <button type="button"
+                    <button
+                      type="button"
                       onClick={() => setHeroTab('rag')}
                       className={`px-3 py-1 text-[11px] font-bold rounded-md transition-all ${heroTab === 'rag' ? 'bg-white dark:bg-slate-850 text-slate-900 dark:text-white shadow-xs' : 'text-slate-500'}`}
                     >
                       Knowledge Base
                     </button>
-                    <button type="button"
+                    <button
+                      type="button"
                       onClick={() => setHeroTab('analytics')}
                       className={`px-3 py-1 text-[11px] font-bold rounded-md transition-all ${heroTab === 'analytics' ? 'bg-white dark:bg-slate-850 text-slate-900 dark:text-white shadow-xs' : 'text-slate-500'}`}
                     >
@@ -1198,7 +1204,8 @@ export default function LandingPage() {
                   icon: <BarChart3 className="h-4.5 w-4.5" />,
                 },
               ].map((useCase, i) => (
-                <button type="button"
+                <button
+                  type="button"
                   key={i}
                   onClick={() => setActiveUseCase(i)}
                   className={`w-full p-4 rounded-xl border text-left transition-all flex items-start gap-3.5 cursor-pointer ${
@@ -1849,7 +1856,8 @@ export default function LandingPage() {
                 key={index}
                 className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-850 rounded-xl overflow-hidden transition-all shadow-xs"
               >
-                <button type="button"
+                <button
+                  type="button"
                   onClick={() => setActiveFAQ(activeFAQ === index ? null : index)}
                   className="w-full p-4.5 text-left font-bold text-sm text-slate-900 dark:text-white flex items-center justify-between gap-4 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-850/60"
                 >

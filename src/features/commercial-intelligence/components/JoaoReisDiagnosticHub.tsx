@@ -191,12 +191,27 @@ Pilar: Commercial Intelligence & Prospecção Ativa
       subtitle: `${completedCount}/${dailyTasks.length} (${progressPercent}%)`,
     },
     { id: 'iacoach' as const, icon: Bot, title: 'IA Coach SDR', subtitle: 'Pitches & Meet' },
-    { id: 'pauta1to1' as const, icon: FileText, title: 'Pauta de 1:1', subtitle: 'Exportar p/ Gestor' },
+    {
+      id: 'pauta1to1' as const,
+      icon: FileText,
+      title: 'Pauta de 1:1',
+      subtitle: 'Exportar p/ Gestor',
+    },
     { id: 'julho' as const, icon: Calendar, title: 'Julho 2026', subtitle: '213 Atividades' },
-    { id: 'agosto' as const, icon: CalendarCheck, title: 'Agosto 2026', subtitle: '530 Atividades' },
+    {
+      id: 'agosto' as const,
+      icon: CalendarCheck,
+      title: 'Agosto 2026',
+      subtitle: '530 Atividades',
+    },
     { id: 'comparativo' as const, icon: BarChart3, title: 'Comparativo', subtitle: 'Jul x Ago Δ' },
     { id: 'emcadencia' as const, icon: Inbox, title: 'Em Cadência', subtitle: '130 Leads Fila' },
-    { id: 'diagnostico' as const, icon: BookOpen, title: 'Diagnóstico', subtitle: 'Gargalos & Ação' },
+    {
+      id: 'diagnostico' as const,
+      icon: BookOpen,
+      title: 'Diagnóstico',
+      subtitle: 'Gargalos & Ação',
+    },
   ];
 
   return (
@@ -207,8 +222,8 @@ Pilar: Commercial Intelligence & Prospecção Ativa
             Central de Diagnóstico &amp; Treinamento SDR — João Reis
           </h2>
           <p className="text-xs text-ink-2">
-            Base oficial de inteligência operacional, histórico Bitrix24 e rotina guiada de
-            alta performance.
+            Base oficial de inteligência operacional, histórico Bitrix24 e rotina guiada de alta
+            performance.
           </p>
         </div>
 

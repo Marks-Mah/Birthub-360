@@ -29,8 +29,7 @@ export const PRODUCT_MODULES: ProductModule[] = [
     description: 'Análise de dados e insights com IA.',
     iconName: 'Cpu',
     colorTheme: 'bg-purple-100 text-purple-600',
-  }
+  },
 ];
 
 export type ProductModuleKey = string;
-

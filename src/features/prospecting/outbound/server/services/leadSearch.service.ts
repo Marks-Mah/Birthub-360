@@ -162,21 +162,22 @@ export async function findLeads(opts: {
     return [];
   }
 
-  const mapped = result.data?.map((p, idx) => {
-    const domain = cleanDomain(p.website || '') || `${slugify(p.name || 'empresa')}.com.br`;
+  const mapped =
+    result.data?.map((p, idx) => {
+      const domain = cleanDomain(p.website || '') || `${slugify(p.name || 'empresa')}.com.br`;
 
-    return {
-      id: `place-${idx}`,
-      name: p.name || 'Empresa não identificada',
-      address: p.address,
-      phone: p.phone,
-      website: p.website,
-      domain: domain,
-      rating: p.rating,
-      total_ratings: p.totalRatings,
-      decision_makers: [] as DecisionMaker[],
-    } as unknown as Lead;
-  }) || [];
+      return {
+        id: `place-${idx}`,
+        name: p.name || 'Empresa não identificada',
+        address: p.address,
+        phone: p.phone,
+        website: p.website,
+        domain: domain,
+        rating: p.rating,
+        total_ratings: p.totalRatings,
+        decision_makers: [] as DecisionMaker[],
+      } as unknown as Lead;
+    }) || [];
 
   const fresh = mapped.filter((lead: any) => {
     const domain = canonicalizeDomain(lead.domain);

@@ -75,7 +75,8 @@ export class ErrorBoundary extends React.Component<Props, State> {
             )}
 
             <div className="flex gap-3">
-              <button type="button"
+              <button
+                type="button"
                 onClick={this.handleGoHome}
                 className="flex-1 py-3 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold rounded-xl text-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition-all flex items-center justify-center gap-2"
               >
@@ -83,7 +84,8 @@ export class ErrorBoundary extends React.Component<Props, State> {
                 Painel
               </button>
 
-              <button type="button"
+              <button
+                type="button"
                 onClick={this.handleReload}
                 // Class component: read the tenant brand color directly from the store (no hooks)
                 // and pick a WCAG-safe text color the same way the design-system's Button does.

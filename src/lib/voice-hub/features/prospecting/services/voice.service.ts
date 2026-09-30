@@ -36,7 +36,9 @@ export class VoiceProspectingService {
    * `BIRTHHUB360_TENANT_ID`. That tenant must have an explicit AI-provider consent record before any
    * lead data is sent to Bland. This avoids treating a server-to-server shared secret as consent.
    */
-  async triggerOutboundCall(payload: Birthhub360OutboundPayload): Promise<TriggerOutboundCallResult> {
+  async triggerOutboundCall(
+    payload: Birthhub360OutboundPayload,
+  ): Promise<TriggerOutboundCallResult> {
     const apiKey = process.env.BLAND_API_KEY?.trim();
     if (!apiKey) {
       logger.warn('BLAND_API_KEY is not set in the environment');
@@ -69,10 +71,12 @@ export class VoiceProspectingService {
       throw new ExternalAiConsentRequiredError('AI provider consent required');
     }
 
-    const idempotencyKey = buildBirthhub360OutboundIdempotencyKey({ leadId: payload.lead_id,
+    const idempotencyKey = buildBirthhub360OutboundIdempotencyKey({
+      leadId: payload.lead_id,
       phoneNumber: payload.phone_number,
       name: payload.name,
-      company: payload.company });
+      company: payload.company,
+    });
 
     // If Redis is unavailable this throws and the route returns 503. Failing closed is safer than
     // risking a duplicate billed call to a real person.

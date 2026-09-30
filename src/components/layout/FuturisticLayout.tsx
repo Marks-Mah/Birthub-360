@@ -74,7 +74,15 @@ export function FuturisticLayout({ children }: FuturisticLayoutProps) {
         {mobileNavOpen && (
           <div
             className="fixed inset-0 z-30 bg-overlay/80 backdrop-blur-md lg:hidden animate-fade-in"
-            role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={() => setMobileNavOpen(false)}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                e.currentTarget.click();
+              }
+            }}
+            onClick={() => setMobileNavOpen(false)}
           />
         )}
 

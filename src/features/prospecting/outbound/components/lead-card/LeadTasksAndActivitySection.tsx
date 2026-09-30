@@ -97,9 +97,7 @@ export const LeadTasksAndActivitySection: React.FC<LeadTasksAndActivitySectionPr
                     <li
                       key={task.id}
                       className={`flex items-start gap-2 text-xs p-2 rounded-lg border ${
-                        isDark
-                          ? 'border-slate-800 bg-slate-950/40'
-                          : 'border-slate-200 bg-white'
+                        isDark ? 'border-slate-800 bg-slate-950/40' : 'border-slate-200 bg-white'
                       }`}
                     >
                       <button

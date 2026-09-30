@@ -276,9 +276,9 @@ export function OcrCapturePanel() {
         website: formData.website || null,
         contact: formData.contactName
           ? {
-            name: formData.contactName,
-            role: formData.contactRole || 'Decisor',
-          }
+              name: formData.contactName,
+              role: formData.contactRole || 'Decisor',
+            }
           : null,
       });
       setPromoted(result);

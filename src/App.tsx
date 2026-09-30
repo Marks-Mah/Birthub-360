@@ -278,10 +278,11 @@ function AppLayout() {
     <OnboardingGate>
       <MainLayout>
         {/* Rotas relativas a /app — a wildcard "/app/*" na Route pai (mais abaixo) faz o React
-            Router casar estes paths aninhados contra o restante da URL automaticamente. */}      <Suspense fallback={<PageFallback />}>
-        <Routes>
-          <Route index element={<AdaptiveDashboard />} />
-          {/* Alias explícito para /app/dashboard: TabType inclui 'dashboard' e Sidebar/
+            Router casar estes paths aninhados contra o restante da URL automaticamente. */}{' '}
+        <Suspense fallback={<PageFallback />}>
+          <Routes>
+            <Route index element={<AdaptiveDashboard />} />
+            {/* Alias explícito para /app/dashboard: TabType inclui 'dashboard' e Sidebar/
               CommandPalette navegam para `/app/${tab}` para TODO TabType (useNavigationBusBridge é
               a única exceção, com mapeamento especial só ali — ver comentário nesse hook). Sem esta
               rota, "/app/dashboard" batia no catch-all "*" abaixo e re-navegava silenciosamente
@@ -289,113 +290,112 @@ function AppLayout() {
               "Painel Central" na Sidebar ou no Command Palette (achado real desta auditoria, não
               coberto pelo teste de useNavigationBusBridge porque aquele hook já tinha o
               contorno certo só para o comando de voz). */}
-          <Route path="dashboard" element={<AdaptiveDashboard />} />
-          {/* PROMPT 6 — Workspace do cargo (JobRole) do usuário autenticado. Sem RequireRole:
+            <Route path="dashboard" element={<AdaptiveDashboard />} />
+            {/* PROMPT 6 — Workspace do cargo (JobRole) do usuário autenticado. Sem RequireRole:
               qualquer UserRole autenticado pode abrir; o próprio workspace resolve seu estado
               real (READY/NO_JOB_ROLE/NO_WORKSPACE_DEFINITION) a partir da sessão — nunca de
               query/body (ver GET /api/workspace/me). Deep link direto nunca revela mais do que a
               sessão do próprio usuário autoriza: cada módulo/quick action já vem marcado
               `locked` quando o UserRole real não atinge o gate daquela rota. */}
-          <Route path="workspace" element={<WorkspaceHome />} />
-          <Route path="prospect" element={<ProspectingHub />} />
-          <Route path="crm" element={<CrmBoard />} />
-          <Route path="crm360" element={<CrmOverview onNavigate={handleCrmOverviewNavigate} />} />
-          {/* /api/mesa-tratamento já exige ADMIN/GESTOR/CLOSER/SDR no backend
+            <Route path="workspace" element={<WorkspaceHome />} />
+            <Route path="prospect" element={<ProspectingHub />} />
+            <Route path="crm" element={<CrmBoard />} />
+            <Route path="crm360" element={<CrmOverview onNavigate={handleCrmOverviewNavigate} />} />
+            {/* /api/mesa-tratamento já exige ADMIN/GESTOR/CLOSER/SDR no backend
               (mesaTratamento.routes.ts), mas a rota de frontend não tinha o mesmo gate — VISUALIZADOR
               via o item na Sidebar, navegava direto e só recebia um 403 cru dentro da tela real
               (achado do Piloto 026, mesmo bug de padrão já corrigido em usage/team/
               commercial_intelligence). */}
-          <Route
-            path="mesa-tratamento"
-            element={
-              <RequireRole allowedRoles={[...MESA_TRATAMENTO_ROLES]}>
-                <MesaTratamento />
-              </RequireRole>
-            }
-          />
-          <Route path="intelligence" element={<IntelligenceHub />} />
-          <Route path="intelligence/elite-agent" element={<EliteCommercialAgentWorkspace />} />
-          <Route path="companies" element={<CompanyList />} />
-          <Route path="contacts" element={<ContactList />} />
-          <Route path="activities" element={<ActivityList />} />
+            <Route
+              path="mesa-tratamento"
+              element={
+                <RequireRole allowedRoles={[...MESA_TRATAMENTO_ROLES]}>
+                  <MesaTratamento />
+                </RequireRole>
+              }
+            />
+            <Route path="intelligence" element={<IntelligenceHub />} />
+            <Route path="intelligence/elite-agent" element={<EliteCommercialAgentWorkspace />} />
+            <Route path="companies" element={<CompanyList />} />
+            <Route path="contacts" element={<ContactList />} />
+            <Route path="activities" element={<ActivityList />} />
 
-          <Route path="voice-hub" element={<VoiceStudioPage />} />
-          <Route path="outbound/*" element={<OutboundApp />} />
-          <Route path="dialer" element={<DialerFrontend />} />
+            <Route path="voice-hub" element={<VoiceStudioPage />} />
+            <Route path="outbound/*" element={<OutboundApp />} />
+            <Route path="dialer" element={<DialerFrontend />} />
 
-          <Route path="cadence" element={<CadenceHub />} />
-          <Route path="chatbook" element={<ChatbookHub />} />
-          <Route path="roleplay" element={<RoleplayHub />} />
-          <Route path="qualification_matrix" element={<QualificationMatrixPage />} />
-          <Route path="objections_matrix" element={<ObjectionsMatrixPage />} />
-          <Route path="topic_training" element={<TopicTrainingAcademy />} />
-          <Route path="bitrix" element={<BitrixGuideHub />} />
-          <Route path="reports" element={<ReportsHub />} />
-          <Route path="integrations" element={<Integrations />} />
-          <Route path="knowledge" element={<KnowledgeBase />} />
-          <Route path="analytics" element={<Analytics />} />
-          <Route path="winloss" element={<WinLossAnalysis />} />
-          <Route path="market-intelligence" element={<Ldr />} />
-          <Route path="market-intelligence/accounts/:id" element={<Account360 />} />
-          <Route path="market-intelligence/deck" element={<LeadApprovalDeck />} />
-          <Route path="propostas" element={<PropostasList />} />
-          {/* Comercial Inteligente — módulo executivo restrito. RequireRole bloqueia acesso
+            <Route path="cadence" element={<CadenceHub />} />
+            <Route path="chatbook" element={<ChatbookHub />} />
+            <Route path="roleplay" element={<RoleplayHub />} />
+            <Route path="qualification_matrix" element={<QualificationMatrixPage />} />
+            <Route path="objections_matrix" element={<ObjectionsMatrixPage />} />
+            <Route path="topic_training" element={<TopicTrainingAcademy />} />
+            <Route path="bitrix" element={<BitrixGuideHub />} />
+            <Route path="reports" element={<ReportsHub />} />
+            <Route path="integrations" element={<Integrations />} />
+            <Route path="knowledge" element={<KnowledgeBase />} />
+            <Route path="analytics" element={<Analytics />} />
+            <Route path="winloss" element={<WinLossAnalysis />} />
+            <Route path="market-intelligence" element={<Ldr />} />
+            <Route path="market-intelligence/accounts/:id" element={<Account360 />} />
+            <Route path="market-intelligence/deck" element={<LeadApprovalDeck />} />
+            <Route path="propostas" element={<PropostasList />} />
+            {/* Comercial Inteligente — módulo executivo restrito. RequireRole bloqueia acesso
               direto por URL (não só o item de menu); a autorização real (que nunca confia no
               frontend) está em requireRole no backend — ver commercialIntelligence.routes.ts. */}
-          <Route
-            path="commercial_intelligence"
-            element={
-              <RequireRole allowedRoles={[...COMMERCIAL_INTELLIGENCE_ROLES]}>
-                <CommercialIntelligenceHub />
-              </RequireRole>
-            }
-          />
+            <Route
+              path="commercial_intelligence"
+              element={
+                <RequireRole allowedRoles={[...COMMERCIAL_INTELLIGENCE_ROLES]}>
+                  <CommercialIntelligenceHub />
+                </RequireRole>
+              }
+            />
 
-          <Route path="daily-plan" element={<DailyPlanHub />} />
-          <Route path="sdr-diagnostic" element={<JoaoReisDiagnosticHub />} />
-          <Route path="calendar" element={<Calendar />} />
-          <Route path="notifications" element={<Notifications />} />
-          <Route path="automations" element={<Automations />} />
-          {/* /api/usage já exige ADMIN no backend (bootstrap/routes.ts), mas a rota de frontend
+            <Route path="daily-plan" element={<DailyPlanHub />} />
+            <Route path="sdr-diagnostic" element={<JoaoReisDiagnosticHub />} />
+            <Route path="calendar" element={<Calendar />} />
+            <Route path="notifications" element={<Notifications />} />
+            <Route path="automations" element={<Automations />} />
+            {/* /api/usage já exige ADMIN no backend (bootstrap/routes.ts), mas a rota de frontend
               nunca tinha o mesmo gate — digitar a URL direto renderizava a casca da tela real, que
               só falhava com um 403 em inglês cru dentro do card de erro (achado do Piloto 022,
               mesmo bug que RequireRole já existe pra prevenir, documentado no próprio componente). */}
-          <Route
-            path="usage"
-            element={
-              <RequireRole allowedRoles={['ADMIN']}>
-                <Usage />
-              </RequireRole>
-            }
-          />
-          <Route path="editor" element={<DocumentEditor />} />
-          <Route
-            path="team"
-            element={
-              <RequireRole allowedRoles={['ADMIN']}>
-                <Team />
-              </RequireRole>
-            }
-          />
-          <Route
-            path="module-access"
-            element={
-              <RequireRole allowedRoles={['ADMIN']}>
-                <ModuleAccessAdmin />
-              </RequireRole>
-            }
-          />
-          <Route path="settings" element={<Settings />} />
-          <Route path="*" element={<Navigate to="/app" replace />} />
-        </Routes>
-      </Suspense>
-
-      {/* Gamification and Navigation Global Layers */}
-      {showOnboardingTour && (
-        <Suspense fallback={null}>
-          <OnboardingTour />
+            <Route
+              path="usage"
+              element={
+                <RequireRole allowedRoles={['ADMIN']}>
+                  <Usage />
+                </RequireRole>
+              }
+            />
+            <Route path="editor" element={<DocumentEditor />} />
+            <Route
+              path="team"
+              element={
+                <RequireRole allowedRoles={['ADMIN']}>
+                  <Team />
+                </RequireRole>
+              }
+            />
+            <Route
+              path="module-access"
+              element={
+                <RequireRole allowedRoles={['ADMIN']}>
+                  <ModuleAccessAdmin />
+                </RequireRole>
+              }
+            />
+            <Route path="settings" element={<Settings />} />
+            <Route path="*" element={<Navigate to="/app" replace />} />
+          </Routes>
         </Suspense>
-      )}
+        {/* Gamification and Navigation Global Layers */}
+        {showOnboardingTour && (
+          <Suspense fallback={null}>
+            <OnboardingTour />
+          </Suspense>
+        )}
       </MainLayout>
     </OnboardingGate>
   );

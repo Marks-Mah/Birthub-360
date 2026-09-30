@@ -1,19 +1,12 @@
 import { Router, type Request, type Response } from 'express';
 import { getDatabase, saveDatabase, logActivity } from './db.js';
-import {
-  generateCopiesWithEngine,
-  enrichLeadWithPublicNewsAndScripts,
-} from './ai.js';
+import { generateCopiesWithEngine, enrichLeadWithPublicNewsAndScripts } from './ai.js';
 import { resolveAndEnrichCnpjForLead, type CnpjData } from './cnpj.js';
 import { parseSearchIntent, validateSearchIntent } from './searchIntent.js';
 import { buildRequirementsFromSearchIntent, evaluateRequirements } from './requirementEngine.js';
 import { planSearch } from './queryPlanner.js';
 import { buildFunnelSummary } from './progressiveSearch.js';
-import {
-  buildCompanyKey,
-  findDuplicate,
-  type CompanyKey,
-} from './entityResolution.js';
+import { buildCompanyKey, findDuplicate, type CompanyKey } from './entityResolution.js';
 import {
   buildCnpjEvidence,
   buildDecisionMakerEvidence,
@@ -49,7 +42,13 @@ import { attachUser, requireAuth } from './auth.js';
 import type { Lead, DecisionMaker } from '../types.js';
 
 // Modular child routers
-import { authRouter, hashPassword, verifyHashedPassword, normalizeCompany, SCRYPT_PREFIX } from './routes/auth.routes.js';
+import {
+  authRouter,
+  hashPassword,
+  verifyHashedPassword,
+  normalizeCompany,
+  SCRYPT_PREFIX,
+} from './routes/auth.routes.js';
 import { systemRouter } from './routes/system.routes.js';
 import { campaignsRouter } from './routes/campaigns.routes.js';
 import { tasksRouter } from './routes/tasks.routes.js';
@@ -57,7 +56,11 @@ import { chatRouter } from './routes/chat.routes.js';
 import { integrationsRouter } from './routes/integrations.routes.js';
 
 // Utilities & Services
-import { formatLeadRow, validateChangedLeadFields, upsertMessageWithVersioning } from './utils/formatLead.js';
+import {
+  formatLeadRow,
+  validateChangedLeadFields,
+  upsertMessageWithVersioning,
+} from './utils/formatLead.js';
 import {
   findLeads,
   enrichLeadWithApollo,
@@ -871,11 +874,7 @@ apiRouter.post('/prospect', heavyAiLimiter, requireAuth, async (req: Request, re
     }
     finishIntentStep({ status: 'ok' });
 
-    const {
-      segment,
-      decisionMakerRole,
-      decisionMakerTitles,
-    } = searchIntent;
+    const { segment, decisionMakerRole, decisionMakerTitles } = searchIntent;
 
     const effectiveCompany: 'atlas' | 'totaltrac' = company === 'atlas' ? 'atlas' : 'totaltrac';
     const effectiveGoogleKey = (googleApiKey || process.env.GOOGLE_PLACES_API_KEY || '').trim();

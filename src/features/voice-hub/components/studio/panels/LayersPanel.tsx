@@ -114,7 +114,8 @@ export function LayersPanel({ nodes }: LayersPanelProps) {
 
       {/* Navigation Sub-Tabs */}
       <div className="flex border-b border-white/5 bg-transparent shrink-0 text-center">
-        <button type="button"
+        <button
+          type="button"
           onClick={() => setActiveTab('assets')}
           className={`flex-1 py-2 text-[10px] font-bold uppercase tracking-wider border-b-2 transition-colors ${
             activeTab === 'assets'
@@ -124,7 +125,8 @@ export function LayersPanel({ nodes }: LayersPanelProps) {
         >
           Node Specs
         </button>
-        <button type="button"
+        <button
+          type="button"
           onClick={() => setActiveTab('favorites')}
           className={`flex-1 py-2 text-[10px] font-bold uppercase tracking-wider border-b-2 transition-colors ${
             activeTab === 'favorites'
@@ -134,7 +136,8 @@ export function LayersPanel({ nodes }: LayersPanelProps) {
         >
           Favs
         </button>
-        <button type="button"
+        <button
+          type="button"
           onClick={() => setActiveTab('templates')}
           className={`flex-1 py-2 text-[10px] font-bold uppercase tracking-wider border-b-2 transition-colors ${
             activeTab === 'templates'
@@ -144,7 +147,8 @@ export function LayersPanel({ nodes }: LayersPanelProps) {
         >
           Templates
         </button>
-        <button type="button"
+        <button
+          type="button"
           onClick={() => setActiveTab('layers')}
           className={`flex-1 py-2 text-[10px] font-bold uppercase tracking-wider border-b-2 transition-colors ${
             activeTab === 'layers'
@@ -162,7 +166,8 @@ export function LayersPanel({ nodes }: LayersPanelProps) {
           <div className="space-y-3">
             {/* Category Filter Pills */}
             <div className="flex items-center gap-1 overflow-x-auto pb-1.5 scrollbar-none shrink-0 border-b border-white/5 mb-2">
-              <button type="button"
+              <button
+                type="button"
                 onClick={() => setCategoryFilter('all')}
                 className={`px-2 py-0.5 rounded text-[9px] font-semibold transition-all shrink-0 uppercase tracking-wide border ${
                   categoryFilter === 'all'
@@ -173,7 +178,8 @@ export function LayersPanel({ nodes }: LayersPanelProps) {
                 All
               </button>
               {categories.map((cat) => (
-                <button type="button"
+                <button
+                  type="button"
                   key={cat}
                   onClick={() => setCategoryFilter(cat)}
                   className={`px-2 py-0.5 rounded text-[9px] font-semibold transition-all shrink-0 uppercase tracking-wide border ${
@@ -215,7 +221,8 @@ export function LayersPanel({ nodes }: LayersPanelProps) {
                         <span className="text-xs font-bold text-gray-200 group-hover:text-iris truncate pr-1 transition-colors">
                           {item.label}
                         </span>
-                        <button type="button"
+                        <button
+                          type="button"
                           onClick={(e) => {
                             e.stopPropagation();
                             toggleFavorite(item.type);
@@ -275,7 +282,8 @@ export function LayersPanel({ nodes }: LayersPanelProps) {
                         {item.label}
                       </span>
                     </div>
-                    <button type="button"
+                    <button
+                      type="button"
                       onClick={(e) => {
                         e.stopPropagation();
                         toggleFavorite(favType);
@@ -329,7 +337,15 @@ export function LayersPanel({ nodes }: LayersPanelProps) {
           <div className="space-y-1">
             <div
               className="flex items-center gap-1 px-1 py-1.5 cursor-pointer hover:bg-white/5 rounded text-gray-300 transition-colors"
-              role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={() => setExpandedLayers(!expandedLayers)}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  e.currentTarget.click();
+                }
+              }}
+              onClick={() => setExpandedLayers(!expandedLayers)}
             >
               {expandedLayers ? (
                 <ChevronDown className="w-3.5 h-3.5" />

@@ -234,25 +234,29 @@ export default function OrganizationPage() {
 
       <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
         <div className="flex border-b border-slate-200 overflow-x-auto">
-          <button type="button"
+          <button
+            type="button"
             onClick={() => setActiveTab('branding')}
             className={`px-6 py-4 text-sm font-medium transition-colors whitespace-nowrap ${activeTab === 'branding' ? 'border-b-2 border-brand text-brand' : 'text-slate-500 hover:bg-slate-50'}`}
           >
             Marca & White-label
           </button>
-          <button type="button"
+          <button
+            type="button"
             onClick={() => setActiveTab('video')}
             className={`px-6 py-4 text-sm font-medium transition-colors whitespace-nowrap ${activeTab === 'video' ? 'border-b-2 border-brand text-brand' : 'text-slate-500 hover:bg-slate-50'}`}
           >
             Vídeo de Boas Vindas
           </button>
-          <button type="button"
+          <button
+            type="button"
             onClick={() => setActiveTab('team')}
             className={`px-6 py-4 text-sm font-medium transition-colors whitespace-nowrap ${activeTab === 'team' ? 'border-b-2 border-brand text-brand' : 'text-slate-500 hover:bg-slate-50'}`}
           >
             Equipe & Permissões
           </button>
-          <button type="button"
+          <button
+            type="button"
             onClick={() => setActiveTab('audit')}
             className={`px-6 py-4 text-sm font-medium transition-colors whitespace-nowrap ${activeTab === 'audit' ? 'border-b-2 border-brand text-brand' : 'text-slate-500 hover:bg-slate-50'}`}
           >
@@ -322,7 +326,8 @@ export default function OrganizationPage() {
                   <p className="text-sm text-slate-500">Clique para fazer upload (PNG, SVG)</p>
                 </div>
               </div>
-              <button type="button"
+              <button
+                type="button"
                 onClick={handleSave}
                 className="flex items-center gap-2 px-4 py-2 bg-brand text-white rounded-lg hover:opacity-90 font-medium transition-opacity"
               >
@@ -354,7 +359,15 @@ export default function OrganizationPage() {
                     onChange={handleImageUpload}
                   />
                   <div
-                    role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={() => fileInputRef.current?.click()}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        e.currentTarget.click();
+                      }
+                    }}
+                    onClick={() => fileInputRef.current?.click()}
                     className="border-2 border-dashed border-slate-300 rounded-lg p-8 text-center hover:bg-slate-50 transition-colors cursor-pointer"
                   >
                     {selectedImage ? (
@@ -398,7 +411,8 @@ export default function OrganizationPage() {
                   </div>
                 )}
 
-                <button type="button"
+                <button
+                  type="button"
                   onClick={handleGenerateVideo}
                   disabled={isGeneratingVideo || !selectedImage || !videoPrompt.trim()}
                   className="flex items-center justify-center gap-2 px-4 py-2 w-full bg-brand text-white rounded-lg hover:opacity-90 font-medium transition-opacity disabled:opacity-50"

@@ -134,7 +134,15 @@ export function BentoCard({
       onPointerMove={handlePointerMove}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={handleClick}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          e.currentTarget.click();
+        }
+      }}
+      onClick={handleClick}
       className={sharedClasses}
       style={style}
       {...props}

@@ -106,9 +106,7 @@ export function IaCoachTab({
           <div className="p-5 rounded-2xl border border-ok/30 bg-ok/5 space-y-4 animate-fadeIn">
             <div className="flex items-center justify-between">
               <span className="text-xs font-black text-ok uppercase">Pontuação da Reunião</span>
-              <span className="text-2xl font-black text-ok">
-                {callAnalysisResult.score} / 100
-              </span>
+              <span className="text-2xl font-black text-ok">{callAnalysisResult.score} / 100</span>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
@@ -121,9 +119,7 @@ export function IaCoachTab({
                 <p className="font-bold text-ink">{callAnalysisResult.qualificationTime}</p>
               </div>
               <div className="p-3 rounded-xl bg-surface border border-line">
-                <p className="text-[10px] font-bold text-ink-2 uppercase">
-                  Próximo Passo Travado?
-                </p>
+                <p className="text-[10px] font-bold text-ink-2 uppercase">Próximo Passo Travado?</p>
                 <p className="font-bold text-ok">
                   {callAnalysisResult.lockedNextStep ? '✓ Sim (Data/Hora alinhadas)' : '✗ Não'}
                 </p>

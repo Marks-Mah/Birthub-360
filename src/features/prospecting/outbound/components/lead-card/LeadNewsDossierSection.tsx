@@ -29,16 +29,12 @@ export const LeadNewsDossierSection: React.FC<LeadNewsDossierSectionProps> = ({
             Dossiê de Fontes Públicas & Notícias na Internet
           </h4>
         </div>
-        <span className="text-[10px] text-slate-400">
-          Enriquecido via IA + Fontes Corporativas
-        </span>
+        <span className="text-[10px] text-slate-400">Enriquecido via IA + Fontes Corporativas</span>
       </div>
 
       {/* Company Summary & Risk Context */}
       {newsDossier.company_summary && (
-        <p
-          className={`text-xs leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-700'}`}
-        >
+        <p className={`text-xs leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
           <strong>Resumo Corporativo:</strong> {newsDossier.company_summary}
         </p>
       )}

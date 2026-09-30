@@ -692,10 +692,11 @@ if __name__ == "__main__":
                 <button
                   type="button"
                   onClick={handleCopy}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors ${copied
-                    ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
-                    : 'bg-surface-2 text-ink-2 hover:bg-line border border-line'
-                    }`}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors ${
+                    copied
+                      ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                      : 'bg-surface-2 text-ink-2 hover:bg-line border border-line'
+                  }`}
                 >
                   {copied ? (
                     <>
@@ -722,30 +723,33 @@ if __name__ == "__main__":
               <button
                 type="button"
                 onClick={() => setActiveTabOutput('blueprint')}
-                className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors ${activeTabOutput === 'blueprint'
-                  ? `${accent.solidBg} text-on-brand shadow-lg`
-                  : 'bg-surface-2 text-ink-2 hover:bg-line'
-                  }`}
+                className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors ${
+                  activeTabOutput === 'blueprint'
+                    ? `${accent.solidBg} text-on-brand shadow-lg`
+                    : 'bg-surface-2 text-ink-2 hover:bg-line'
+                }`}
               >
                 Blueprint Passo a Passo
               </button>
               <button
                 type="button"
                 onClick={() => setActiveTabOutput('json')}
-                className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors ${activeTabOutput === 'json'
-                  ? `${accent.solidBg} text-on-brand shadow-lg`
-                  : 'bg-surface-2 text-ink-2 hover:bg-line'
-                  }`}
+                className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors ${
+                  activeTabOutput === 'json'
+                    ? `${accent.solidBg} text-on-brand shadow-lg`
+                    : 'bg-surface-2 text-ink-2 hover:bg-line'
+                }`}
               >
                 Payload Workflow (n8n JSON)
               </button>
               <button
                 type="button"
                 onClick={() => setActiveTabOutput('code')}
-                className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors ${activeTabOutput === 'code'
-                  ? 'bg-sky-600 text-white shadow-lg'
-                  : 'bg-surface-2 text-ink-2 hover:bg-line'
-                  }`}
+                className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors ${
+                  activeTabOutput === 'code'
+                    ? 'bg-sky-600 text-white shadow-lg'
+                    : 'bg-surface-2 text-ink-2 hover:bg-line'
+                }`}
               >
                 Script Python Equivalente
               </button>

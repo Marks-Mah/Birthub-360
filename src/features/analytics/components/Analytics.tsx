@@ -70,8 +70,17 @@ function DecisionInstrument({
   );
 
   return (
-    <Card variant="stat" padding="sm" spotlight soundHover className="relative overflow-hidden group/decision transition-all duration-300">
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-brand/40 to-transparent opacity-0 group-hover/decision:opacity-100 transition-opacity duration-700 z-20" aria-hidden="true" />
+    <Card
+      variant="stat"
+      padding="sm"
+      spotlight
+      soundHover
+      className="relative overflow-hidden group/decision transition-all duration-300"
+    >
+      <div
+        className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-brand/40 to-transparent opacity-0 group-hover/decision:opacity-100 transition-opacity duration-700 z-20"
+        aria-hidden="true"
+      />
       <div className="absolute top-0 right-0 w-16 h-16 bg-brand/5 rounded-bl-full pointer-events-none" />
       <div className="relative z-10">
         <p className="text-[10px] font-bold uppercase tracking-widest text-ink-2/70">{label}</p>
@@ -143,7 +152,10 @@ function DecisionInstrumentCard({
   const [showTable, setShowTable] = useState(false);
   return (
     <Card padding="sm" spotlight className={`relative group/dicard ${className ?? ''}`}>
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-brand/40 to-transparent opacity-0 group-hover/dicard:opacity-100 transition-opacity duration-700 z-20" aria-hidden="true" />
+      <div
+        className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-brand/40 to-transparent opacity-0 group-hover/dicard:opacity-100 transition-opacity duration-700 z-20"
+        aria-hidden="true"
+      />
       <div className="flex items-start justify-between gap-3 mb-3 relative z-30">
         <div className="flex-1">
           <h3 className="text-sm font-bold text-ink">{title}</h3>
@@ -522,7 +534,10 @@ export function Analytics() {
 
               {/* TMQ - Decision Instrument */}
               <Card padding="sm" spotlight className="relative overflow-hidden group/tmq">
-                <div className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-brand/40 to-transparent opacity-0 group-hover/tmq:opacity-100 transition-opacity duration-700 z-20" aria-hidden="true" />
+                <div
+                  className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-brand/40 to-transparent opacity-0 group-hover/tmq:opacity-100 transition-opacity duration-700 z-20"
+                  aria-hidden="true"
+                />
                 <div className="absolute top-0 right-0 w-12 h-12 bg-brand/5 rounded-bl-full pointer-events-none" />
                 <h3 className="text-sm font-bold text-ink mb-1">⏱ Tempo Médio de Qualificação</h3>
                 <p className="text-[10px] text-ink-2/70 mb-3">
@@ -535,7 +550,10 @@ export function Analytics() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Performance IA vs Humanos - Decision Instrument */}
               <Card padding="sm" spotlight className="relative overflow-hidden group/perf">
-                <div className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-red-violet/40 to-transparent opacity-0 group-hover/perf:opacity-100 transition-opacity duration-700 z-20" aria-hidden="true" />
+                <div
+                  className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-red-violet/40 to-transparent opacity-0 group-hover/perf:opacity-100 transition-opacity duration-700 z-20"
+                  aria-hidden="true"
+                />
                 <div className="absolute top-0 right-0 w-12 h-12 bg-red-violet/5 rounded-bl-full pointer-events-none" />
                 <h3 className="text-sm font-bold text-ink mb-1">🤖 Performance: IA vs Humanos</h3>
                 <p className="text-[10px] text-ink-2/70 mb-3">
@@ -546,7 +564,10 @@ export function Analytics() {
 
               {/* Motivos de Perda - Decision Instrument */}
               <Card padding="sm" spotlight className="relative overflow-hidden group/lost">
-                <div className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-critical/40 to-transparent opacity-0 group-hover/lost:opacity-100 transition-opacity duration-700 z-20" aria-hidden="true" />
+                <div
+                  className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-critical/40 to-transparent opacity-0 group-hover/lost:opacity-100 transition-opacity duration-700 z-20"
+                  aria-hidden="true"
+                />
                 <div className="absolute top-0 right-0 w-12 h-12 bg-critical/5 rounded-bl-full pointer-events-none" />
                 <h3 className="text-sm font-bold text-ink mb-1">📉 Principais Motivos de Perda</h3>
                 <p className="text-[10px] text-ink-2/70 mb-3">

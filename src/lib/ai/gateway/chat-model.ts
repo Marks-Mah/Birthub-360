@@ -9,7 +9,7 @@ import type { BaseMessage } from '@langchain/core/messages';
 import { requestContext } from '../../async-context.js';
 import { assertAiBudgetNotExceeded } from '../budget.js';
 import { recordAiUsageCost } from '../metrics.js';
-import { detectPII, detectToxicity, } from '../guardrails/index.js';
+import { detectPII, detectToxicity } from '../guardrails/index.js';
 import { resolveFallbackTimeoutMs } from './http-client.js';
 import { resolveModelName } from './model-routing.js';
 import { toChatCompletionMessages } from './parsing.js';
@@ -26,7 +26,12 @@ import type { AiChatModel, AiInvokeResult, ChatCompletionResponse } from './type
 // Ordem de fallback: vLLM primeiro (se hospedado no cluster), Groq (rápido, open source),
 // OpenAI como terceira opção, LiteLLM/Ollama por último (ver comentário em
 // providers/litellm.provider.ts sobre por que ele nunca deve ser a primeira tentativa).
-const PROVIDER_CHAIN: readonly ProviderAdapter[] = [vllmProvider, groqProvider, openaiProvider, litellmProvider];
+const PROVIDER_CHAIN: readonly ProviderAdapter[] = [
+  vllmProvider,
+  groqProvider,
+  openaiProvider,
+  litellmProvider,
+];
 
 function buildExhaustedProvidersError(errorsByProvider: Map<string, unknown>): Error {
   const configuredNames: Record<string, string> = {
@@ -69,7 +74,8 @@ async function callWithFallback(
   temperature: number,
   agentContext: string,
 ): Promise<{ response: ChatCompletionResponse; providerUsed: string }> {
-  const timeoutMs = resolveFallbackTimeoutMs(); const _startTime = Date.now();
+  const timeoutMs = resolveFallbackTimeoutMs();
+  const _startTime = Date.now();
   const errorsByProvider = new Map<string, unknown>();
 
   for (const provider of PROVIDER_CHAIN) {
@@ -156,7 +162,9 @@ export const getAiModel = (
           agentRole: agentContext,
         });
 
-        throw new Error(`Resposta bloqueada por conter linguagem tóxica: ${toxicityCheck.matches.join(', ')}`);
+        throw new Error(
+          `Resposta bloqueada por conter linguagem tóxica: ${toxicityCheck.matches.join(', ')}`,
+        );
       }
 
       // Métrica de custo (ai_usage_cost_usd_total): registrada aqui, não em logAiUsage(), porque

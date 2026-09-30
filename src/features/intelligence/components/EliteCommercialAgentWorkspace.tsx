@@ -1,5 +1,5 @@
 import type React from 'react';
-import { useState, useEffect, useCallback, } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import canvasConfetti from 'canvas-confetti';
 import { SoundFX } from '../../../lib/soundEffects.js';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -208,7 +208,7 @@ export const EliteCommercialAgentWorkspace: React.FC = () => {
             iconColor: 'text-neutral-500',
             value: `R$ ${(metrics.monthTarget / 1000).toFixed(0)}K`,
             desc: 'Objetivo comercial do ciclo',
-            specularColor: 'via-neutral-400'
+            specularColor: 'via-neutral-400',
           },
           {
             label: 'Fechado (Won)',
@@ -225,7 +225,7 @@ export const EliteCommercialAgentWorkspace: React.FC = () => {
               </div>
             ),
             percent: metrics.targetCompletionPercent,
-            specularColor: 'via-emerald-500'
+            specularColor: 'via-emerald-500',
           },
           {
             label: 'Gap para Meta',
@@ -233,7 +233,7 @@ export const EliteCommercialAgentWorkspace: React.FC = () => {
             iconColor: 'text-amber-400',
             value: `R$ ${(metrics.gap / 1000).toFixed(0)}K`,
             desc: 'Necessário para atingir 100%',
-            specularColor: 'via-amber-400'
+            specularColor: 'via-amber-400',
           },
           {
             label: 'Pipeline Influenciável',
@@ -243,13 +243,15 @@ export const EliteCommercialAgentWorkspace: React.FC = () => {
             desc: (
               <div className="flex items-center justify-between w-full">
                 <span>Commit: R$ ${(metrics.commitForecast / 1000).toFixed(0)}K</span>
-                <span className="text-neutral-500">AI: R$ ${(metrics.aiForecast / 1000).toFixed(0)}K</span>
+                <span className="text-neutral-500">
+                  AI: R$ ${(metrics.aiForecast / 1000).toFixed(0)}K
+                </span>
               </div>
             ),
-            specularColor: 'via-sky-400'
-          }
+            specularColor: 'via-sky-400',
+          },
         ].map((metric, i) => (
-          <div 
+          <div
             key={i}
             className="bg-neutral-900/80 border border-neutral-800/80 rounded-2xl p-4 flex flex-col justify-between relative overflow-hidden group/metric transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg"
             onPointerMove={handleMouseMove}
@@ -273,7 +275,9 @@ export const EliteCommercialAgentWorkspace: React.FC = () => {
                 <metric.icon className={`w-4 h-4 ${metric.iconColor}`} />
               </div>
               <div className="mt-2 flex items-baseline gap-2">
-                <span className={`text-xl sm:text-2xl font-bold ${metric.iconColor === 'text-neutral-500' ? 'text-neutral-100' : metric.iconColor}`}>
+                <span
+                  className={`text-xl sm:text-2xl font-bold ${metric.iconColor === 'text-neutral-500' ? 'text-neutral-100' : metric.iconColor}`}
+                >
                   {metric.value}
                 </span>
                 {metric.percent && (
@@ -282,9 +286,7 @@ export const EliteCommercialAgentWorkspace: React.FC = () => {
                   </span>
                 )}
               </div>
-              <div className="mt-2 text-xs text-neutral-400">
-                {metric.desc}
-              </div>
+              <div className="mt-2 text-xs text-neutral-400">{metric.desc}</div>
               {metric.extra}
             </div>
           </div>
@@ -310,7 +312,7 @@ export const EliteCommercialAgentWorkspace: React.FC = () => {
       {activeTab === 'workspace' && (
         <div className="space-y-6">
           {/* CARD CENTRAL "O QUE FAZER AGORA" */}
-          <div 
+          <div
             className="relative overflow-hidden rounded-3xl bg-gradient-to-b from-neutral-900 via-neutral-900/90 to-neutral-950 border border-neutral-800 p-6 sm:p-8 shadow-2xl group/main transition-all duration-500 hover:shadow-emerald-500/10"
             onPointerMove={handleMouseMove}
           >

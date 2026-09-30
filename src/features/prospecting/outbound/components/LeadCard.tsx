@@ -1045,7 +1045,8 @@ export const LeadCard: React.FC<LeadCardProps> = ({
             empresa (site, LinkedIn, telefone, WhatsApp, e-mail) são "informação
             completa" e só aparecem expandido, junto com o resto (ver abaixo). */}
         <div className="flex flex-wrap items-center gap-2">
-          <button type="button"
+          <button
+            type="button"
             onClick={() => setIsExpanded((prev) => !prev)}
             className={`px-2.5 py-1.5 text-xs font-medium rounded-lg border transition flex items-center gap-1 ${
               isDark
@@ -1193,7 +1194,8 @@ export const LeadCard: React.FC<LeadCardProps> = ({
                     .map((u) => {
                       const isAssigned = assignedTo === u.id;
                       return (
-                        <button type="button"
+                        <button
+                          type="button"
                           key={u.id}
                           onClick={() => {
                             const newVal = isAssigned ? '' : u.id;

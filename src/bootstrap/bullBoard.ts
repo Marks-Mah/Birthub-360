@@ -30,7 +30,6 @@ const bullBoardLimiter = rateLimit({
  * visualizados por usuários de outra organização (Org A) dentro do BullBoard.
  */
 export class TenantIsolatedBullMQAdapter extends BullMQAdapter {
-
   public override async getJobs(jobTypes: any[], start?: number, end?: number): Promise<any[]> {
     const jobs = await super.getJobs(jobTypes, start, end);
     const tenantId = getTenantId();

@@ -214,9 +214,9 @@ export function PropostasList() {
                 onAction={
                   canWrite
                     ? () => {
-                      setEditingDocument(null);
-                      setIsFormOpen(true);
-                    }
+                        setEditingDocument(null);
+                        setIsFormOpen(true);
+                      }
                     : undefined
                 }
                 icon={<FileText className="w-10 h-10 text-brand" />}
