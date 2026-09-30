@@ -38,7 +38,17 @@ export const Birthub360Logo: React.FC<Birthub360LogoProps> = ({
         className="shrink-0 transition-transform duration-300 hover:scale-105"
       >
         <circle cx="60" cy="60" r="50" fill={theme === 'dark' ? '#C69B52' : primaryGold} />
-        <text x="60" y="75" textAnchor="middle" fill="#FFFFFF" fontSize="40" fontWeight="bold" fontFamily="Arial, sans-serif">B</text>
+        <text
+          x="60"
+          y="75"
+          textAnchor="middle"
+          fill="#FFFFFF"
+          fontSize="40"
+          fontWeight="bold"
+          fontFamily="Arial, sans-serif"
+        >
+          B
+        </text>
       </svg>
 
       {variant !== 'symbol' && (

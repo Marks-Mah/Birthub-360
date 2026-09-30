@@ -43,7 +43,17 @@ export const BirthubLogo: React.FC<BirthubLogoProps> = ({
         {/* Circle */}
         <circle cx="60" cy="60" r="50" fill={orangeFill} />
         {/* Letter B */}
-        <text x="60" y="70" textAnchor="middle" fill="#FFFFFF" fontSize="36" fontWeight="bold" fontFamily="Arial, sans-serif">B</text>
+        <text
+          x="60"
+          y="70"
+          textAnchor="middle"
+          fill="#FFFFFF"
+          fontSize="36"
+          fontWeight="bold"
+          fontFamily="Arial, sans-serif"
+        >
+          B
+        </text>
       </svg>
 
       {variant !== 'symbol' && (

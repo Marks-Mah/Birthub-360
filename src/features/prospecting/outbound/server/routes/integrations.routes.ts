@@ -230,7 +230,7 @@ integrationsRouter.post(
         exportResult.status === 'rate_limited'
           ? 429
           : exportResult.status === 'timeout' ||
-            (exportResult.httpStatus !== undefined && exportResult.httpStatus >= 500)
+              (exportResult.httpStatus !== undefined && exportResult.httpStatus >= 500)
             ? 502
             : 400;
       return res.status(httpStatus).json({

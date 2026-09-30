@@ -467,7 +467,7 @@ apiRouter.post('/leads/:id/save', requireAuth, async (req: Request, res: Respons
               leadData.copies[ch],
               msgId,
             ]);
-          } catch (_e: any) { }
+          } catch (_e: any) {}
         }
       }
     }
@@ -529,16 +529,16 @@ apiRouter.post(
         ...rawLead,
         decision_makers: rawLead.decision_maker_name
           ? [
-            {
-              name: rawLead.decision_maker_name,
-              title: rawLead.decision_maker_title || '',
-              email: rawLead.decision_maker_email || dmEmails[0] || '',
-              emails: dmEmails,
-              phone: rawLead.decision_maker_phone || dmPhones[0] || '',
-              phones: dmPhones,
-              linkedin: rawLead.decision_maker_linkedin || '',
-            },
-          ]
+              {
+                name: rawLead.decision_maker_name,
+                title: rawLead.decision_maker_title || '',
+                email: rawLead.decision_maker_email || dmEmails[0] || '',
+                emails: dmEmails,
+                phone: rawLead.decision_maker_phone || dmPhones[0] || '',
+                phones: dmPhones,
+                linkedin: rawLead.decision_maker_linkedin || '',
+              },
+            ]
           : [],
       };
 

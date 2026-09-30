@@ -154,37 +154,42 @@ export const Sidebar: React.FC<SidebarProps> = ({
       )}
 
       <aside
-        className={`fixed lg:static top-0 bottom-0 left-0 z-50 w-80 sm:w-88 border-r flex flex-col transition-all duration-300 ease-in-out ${isOpenMobile ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
-          } overflow-y-auto ${isDark
+        className={`fixed lg:static top-0 bottom-0 left-0 z-50 w-80 sm:w-88 border-r flex flex-col transition-all duration-300 ease-in-out ${
+          isOpenMobile ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+        } overflow-y-auto ${
+          isDark
             ? 'bg-slate-900 border-slate-800 text-slate-200'
             : 'bg-slate-50 border-slate-200 text-slate-800 shadow-sm'
-          }`}
+        }`}
       >
         {/* Sidebar Header with Atlas Identity */}
         <div
-          className={`p-4 border-b sticky top-0 z-10 backdrop-blur ${isDark
-            ? 'border-slate-800/80 bg-slate-950/80'
-            : 'border-slate-200 bg-white/90 shadow-sm'
-            }`}
+          className={`p-4 border-b sticky top-0 z-10 backdrop-blur ${
+            isDark
+              ? 'border-slate-800/80 bg-slate-950/80'
+              : 'border-slate-200 bg-white/90 shadow-sm'
+          }`}
         >
           <div className="flex items-center justify-between">
             <BirthubLogo variant="with-subtitle" size="sm" theme={theme} />
             <button
               type="button"
               onClick={() => setIsOpenMobile(false)}
-              className={`lg:hidden p-1.5 rounded-lg transition ${isDark
-                ? 'text-slate-400 hover:text-white hover:bg-slate-800'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200'
-                }`}
+              className={`lg:hidden p-1.5 rounded-lg transition ${
+                isDark
+                  ? 'text-slate-400 hover:text-white hover:bg-slate-800'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200'
+              }`}
             >
               ✕
             </button>
           </div>
           <div
-            className={`mt-2.5 flex items-center justify-between text-[11px] px-2 py-1 rounded border ${isDark
-              ? 'text-slate-400 bg-slate-800/50 border-slate-800'
-              : 'text-slate-600 bg-slate-100 border-slate-200'
-              }`}
+            className={`mt-2.5 flex items-center justify-between text-[11px] px-2 py-1 rounded border ${
+              isDark
+                ? 'text-slate-400 bg-slate-800/50 border-slate-800'
+                : 'text-slate-600 bg-slate-100 border-slate-200'
+            }`}
           >
             <span className="flex items-center gap-1 font-medium">
               <Terminal className="w-3.5 h-3.5 text-[var(--brand-primary)]" /> Streamlit & LLaMA3
@@ -198,8 +203,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <div className="p-4 space-y-4 flex-1">
           {/* SEÇÃO 0: BUSCAS RECENTES (HISTÓRICO DE PROSPECÇÃO) */}
           <div
-            className={`space-y-2.5 p-3.5 rounded-xl border transition ${isDark ? 'bg-slate-950/50 border-slate-800/80' : 'bg-white border-slate-200 shadow-sm'
-              }`}
+            className={`space-y-2.5 p-3.5 rounded-xl border transition ${
+              isDark ? 'bg-slate-950/50 border-slate-800/80' : 'bg-white border-slate-200 shadow-sm'
+            }`}
           >
             <div className="flex items-center justify-between">
               <button
@@ -210,8 +216,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 <History className="w-3.5 h-3.5" />
                 <span>Buscas Recentes</span>
                 <span
-                  className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono font-normal ${isDark ? 'bg-slate-800 text-slate-300' : 'bg-slate-100 text-slate-700'
-                    }`}
+                  className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono font-normal ${
+                    isDark ? 'bg-slate-800 text-slate-300' : 'bg-slate-100 text-slate-700'
+                  }`}
                 >
                   {recentSearches.length}
                 </span>
@@ -262,10 +269,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
                         }
                       }}
                       onClick={() => onSelectRecentSearch(search)}
-                      className={`w-full text-left p-2 rounded-lg text-xs transition border flex flex-col gap-1 group cursor-pointer ${isDark
-                        ? 'bg-slate-900/90 hover:bg-slate-850 hover:border-[var(--brand-primary)]/50 border-slate-800 text-slate-300'
-                        : 'bg-slate-50 hover:bg-slate-100 hover:border-[var(--brand-primary)]/50 border-slate-200 text-slate-700'
-                        }`}
+                      className={`w-full text-left p-2 rounded-lg text-xs transition border flex flex-col gap-1 group cursor-pointer ${
+                        isDark
+                          ? 'bg-slate-900/90 hover:bg-slate-850 hover:border-[var(--brand-primary)]/50 border-slate-800 text-slate-300'
+                          : 'bg-slate-50 hover:bg-slate-100 hover:border-[var(--brand-primary)]/50 border-slate-200 text-slate-700'
+                      }`}
                     >
                       <div className="flex items-center justify-between font-medium text-xs leading-snug">
                         <span className="truncate pr-1 group-hover:text-[var(--brand-primary)] transition-colors font-semibold">
@@ -284,10 +292,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
                             type="button"
                             onClick={(e) => handleOpenSearchModal(e, search)}
                             title="Ver detalhes da busca"
-                            className={`p-1 rounded transition flex items-center gap-1 ${isDark
-                              ? 'hover:bg-slate-800 text-slate-400 hover:text-[var(--brand-primary)]'
-                              : 'hover:bg-slate-200 text-slate-500 hover:text-[var(--brand-primary)]'
-                              }`}
+                            className={`p-1 rounded transition flex items-center gap-1 ${
+                              isDark
+                                ? 'hover:bg-slate-800 text-slate-400 hover:text-[var(--brand-primary)]'
+                                : 'hover:bg-slate-200 text-slate-500 hover:text-[var(--brand-primary)]'
+                            }`}
                           >
                             <Eye className="w-3 h-3" />
                             <span>Detalhes</span>
@@ -306,8 +315,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
           {/* SEÇÃO 1: MOTOR DE IA & CONFIGURAÇÃO DO LLaMA3 / OLLAMA */}
           <div
-            className={`space-y-3 p-3.5 rounded-xl border transition ${isDark ? 'bg-slate-950/50 border-slate-800/80' : 'bg-white border-slate-200 shadow-sm'
-              }`}
+            className={`space-y-3 p-3.5 rounded-xl border transition ${
+              isDark ? 'bg-slate-950/50 border-slate-800/80' : 'bg-white border-slate-200 shadow-sm'
+            }`}
           >
             <div className="flex items-center justify-between">
               <label className="text-xs font-bold uppercase tracking-wider flex items-center gap-1.5">
@@ -327,42 +337,46 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
             {/* Provider Selector */}
             <div
-              className={`grid grid-cols-3 gap-1 p-1 rounded-lg border text-xs ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-slate-100 border-slate-200'
-                }`}
+              className={`grid grid-cols-3 gap-1 p-1 rounded-lg border text-xs ${
+                isDark ? 'bg-slate-900 border-slate-800' : 'bg-slate-100 border-slate-200'
+              }`}
             >
               <button
                 type="button"
                 onClick={() => handleProviderChange('ollama')}
-                className={`py-1.5 px-2 rounded-md font-semibold transition ${aiConfig.provider === 'ollama'
-                  ? 'bg-[var(--brand-primary)] text-white shadow-sm'
-                  : isDark
-                    ? 'text-slate-400 hover:text-slate-200'
-                    : 'text-slate-600 hover:text-slate-900'
-                  }`}
+                className={`py-1.5 px-2 rounded-md font-semibold transition ${
+                  aiConfig.provider === 'ollama'
+                    ? 'bg-[var(--brand-primary)] text-white shadow-sm'
+                    : isDark
+                      ? 'text-slate-400 hover:text-slate-200'
+                      : 'text-slate-600 hover:text-slate-900'
+                }`}
               >
                 Ollama
               </button>
               <button
                 type="button"
                 onClick={() => handleProviderChange('groq')}
-                className={`py-1.5 px-2 rounded-md font-semibold transition ${aiConfig.provider === 'groq'
-                  ? 'bg-[var(--brand-primary)] text-white shadow-sm'
-                  : isDark
-                    ? 'text-slate-400 hover:text-slate-200'
-                    : 'text-slate-600 hover:text-slate-900'
-                  }`}
+                className={`py-1.5 px-2 rounded-md font-semibold transition ${
+                  aiConfig.provider === 'groq'
+                    ? 'bg-[var(--brand-primary)] text-white shadow-sm'
+                    : isDark
+                      ? 'text-slate-400 hover:text-slate-200'
+                      : 'text-slate-600 hover:text-slate-900'
+                }`}
               >
                 Groq
               </button>
               <button
                 type="button"
                 onClick={() => handleProviderChange('gemini')}
-                className={`py-1.5 px-2 rounded-md font-semibold transition ${aiConfig.provider === 'gemini'
-                  ? 'bg-[var(--brand-primary)] text-white shadow-sm'
-                  : isDark
-                    ? 'text-slate-400 hover:text-slate-200'
-                    : 'text-slate-600 hover:text-slate-900'
-                  }`}
+                className={`py-1.5 px-2 rounded-md font-semibold transition ${
+                  aiConfig.provider === 'gemini'
+                    ? 'bg-[var(--brand-primary)] text-white shadow-sm'
+                    : isDark
+                      ? 'text-slate-400 hover:text-slate-200'
+                      : 'text-slate-600 hover:text-slate-900'
+                }`}
               >
                 Gemini
               </button>
@@ -384,10 +398,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     onChange={(e) =>
                       setAiConfig((prev) => ({ ...prev, ollamaUrl: e.target.value }))
                     }
-                    className={`w-full rounded-lg px-2.5 py-1.5 text-xs outline-none border focus:border-[var(--brand-primary)] ${isDark
-                      ? 'bg-slate-900 border-slate-700 text-slate-200'
-                      : 'bg-slate-100 border-slate-300 text-slate-800'
-                      }`}
+                    className={`w-full rounded-lg px-2.5 py-1.5 text-xs outline-none border focus:border-[var(--brand-primary)] ${
+                      isDark
+                        ? 'bg-slate-900 border-slate-700 text-slate-200'
+                        : 'bg-slate-100 border-slate-300 text-slate-800'
+                    }`}
                     placeholder="http://localhost:11434"
                   />
                 </div>
@@ -407,18 +422,20 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     onChange={(e) =>
                       setAiConfig((prev) => ({ ...prev, ollamaModel: e.target.value }))
                     }
-                    className={`w-full rounded-lg px-2.5 py-1.5 text-xs font-mono outline-none border focus:border-[var(--brand-primary)] ${isDark
-                      ? 'bg-slate-900 border-slate-700 text-slate-200'
-                      : 'bg-slate-100 border-slate-300 text-slate-800'
-                      }`}
+                    className={`w-full rounded-lg px-2.5 py-1.5 text-xs font-mono outline-none border focus:border-[var(--brand-primary)] ${
+                      isDark
+                        ? 'bg-slate-900 border-slate-700 text-slate-200'
+                        : 'bg-slate-100 border-slate-300 text-slate-800'
+                    }`}
                     placeholder="llama3"
                   />
                 </div>
 
                 {/* Ollama Status pill */}
                 <div
-                  className={`p-2 rounded-lg border text-[11px] flex items-center justify-between ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-slate-100 border-slate-200'
-                    }`}
+                  className={`p-2 rounded-lg border text-[11px] flex items-center justify-between ${
+                    isDark ? 'bg-slate-900 border-slate-800' : 'bg-slate-100 border-slate-200'
+                  }`}
                 >
                   <div className="flex items-center gap-1.5 overflow-hidden">
                     {ollamaStatus?.online ? (
@@ -457,10 +474,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
                       setAiConfig((prev) => ({ ...prev, groqApiKey: e.target.value }));
                       setIntegrationsConfig((prev) => ({ ...prev, groqApiKey: e.target.value }));
                     }}
-                    className={`w-full rounded-lg px-2.5 py-1.5 text-xs font-mono outline-none border focus:border-[var(--brand-primary)] ${isDark
-                      ? 'bg-slate-900 border-slate-700 text-slate-200'
-                      : 'bg-slate-100 border-slate-300 text-slate-800'
-                      }`}
+                    className={`w-full rounded-lg px-2.5 py-1.5 text-xs font-mono outline-none border focus:border-[var(--brand-primary)] ${
+                      isDark
+                        ? 'bg-slate-900 border-slate-700 text-slate-200'
+                        : 'bg-slate-100 border-slate-300 text-slate-800'
+                    }`}
                     placeholder="gsk_..."
                   />
                 </div>
@@ -473,10 +491,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     onChange={(e) =>
                       setAiConfig((prev) => ({ ...prev, groqModel: e.target.value }))
                     }
-                    className={`w-full rounded-lg px-2.5 py-1.5 text-xs outline-none border focus:border-[var(--brand-primary)] ${isDark
-                      ? 'bg-slate-900 border-slate-700 text-slate-200'
-                      : 'bg-slate-100 border-slate-300 text-slate-800'
-                      }`}
+                    className={`w-full rounded-lg px-2.5 py-1.5 text-xs outline-none border focus:border-[var(--brand-primary)] ${
+                      isDark
+                        ? 'bg-slate-900 border-slate-700 text-slate-200'
+                        : 'bg-slate-100 border-slate-300 text-slate-800'
+                    }`}
                   >
                     <option value="llama-3.3-70b-versatile">LLaMA 3.3 70B Versatile</option>
                     <option value="llama-3.1-8b-instant">LLaMA 3.1 8B Instant</option>
@@ -501,10 +520,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <button
                 type="button"
                 onClick={() => setShowAdvanced(!showAdvanced)}
-                className={`w-full flex items-center justify-between text-[11px] py-1 ${isDark
-                  ? 'text-slate-400 hover:text-slate-200'
-                  : 'text-slate-600 hover:text-slate-900'
-                  }`}
+                className={`w-full flex items-center justify-between text-[11px] py-1 ${
+                  isDark
+                    ? 'text-slate-400 hover:text-slate-200'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
               >
                 <span>Hiperparâmetros (Temperatura)</span>
                 {showAdvanced ? (
@@ -516,8 +536,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
               {showAdvanced && (
                 <div
-                  className={`space-y-2 pt-2 text-xs border-t ${isDark ? 'border-slate-800' : 'border-slate-200'
-                    }`}
+                  className={`space-y-2 pt-2 text-xs border-t ${
+                    isDark ? 'border-slate-800' : 'border-slate-200'
+                  }`}
                 >
                   <div>
                     <div className="flex justify-between text-[11px] mb-1">
@@ -550,8 +571,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
           {/* SEÇÃO 2: PROPOSTA DE VALOR & PITCH DA ATLAS */}
           <div
-            className={`space-y-2.5 p-3.5 rounded-xl border transition ${isDark ? 'bg-slate-950/50 border-slate-800/80' : 'bg-white border-slate-200 shadow-sm'
-              }`}
+            className={`space-y-2.5 p-3.5 rounded-xl border transition ${
+              isDark ? 'bg-slate-950/50 border-slate-800/80' : 'bg-white border-slate-200 shadow-sm'
+            }`}
           >
             <div className="flex items-center justify-between">
               <label className="text-xs font-bold uppercase tracking-wider flex items-center gap-1.5">
@@ -568,10 +590,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
             {showPitchHelp && (
               <p
-                className={`text-[11px] p-2 rounded border leading-relaxed ${isDark
-                  ? 'bg-slate-900 border-slate-800 text-slate-400'
-                  : 'bg-slate-100 border-slate-200 text-slate-600'
-                  }`}
+                className={`text-[11px] p-2 rounded border leading-relaxed ${
+                  isDark
+                    ? 'bg-slate-900 border-slate-800 text-slate-400'
+                    : 'bg-slate-100 border-slate-200 text-slate-600'
+                }`}
               >
                 A proposta de valor é injetada nos prompts do LLaMA3 para gerar roteiros específicos
                 de segurança logística e inteligência operacional.
@@ -582,18 +605,20 @@ export const Sidebar: React.FC<SidebarProps> = ({
               rows={3}
               value={pitch}
               onChange={(e) => setPitch(e.target.value)}
-              className={`w-full rounded-lg px-2.5 py-2 text-xs outline-none resize-none leading-relaxed border focus:border-[var(--brand-primary)] ${isDark
-                ? 'bg-slate-900 border-slate-700 text-slate-200'
-                : 'bg-slate-100 border-slate-300 text-slate-800'
-                }`}
+              className={`w-full rounded-lg px-2.5 py-2 text-xs outline-none resize-none leading-relaxed border focus:border-[var(--brand-primary)] ${
+                isDark
+                  ? 'bg-slate-900 border-slate-700 text-slate-200'
+                  : 'bg-slate-100 border-slate-300 text-slate-800'
+              }`}
               placeholder="Descreva o que sua empresa oferece..."
             />
           </div>
 
           {/* SEÇÃO 3: CHAVES DE API & CONEXÕES DE INTEGRAÇÃO */}
           <div
-            className={`space-y-2.5 p-3.5 rounded-xl border transition ${isDark ? 'bg-slate-950/50 border-slate-800/80' : 'bg-white border-slate-200 shadow-sm'
-              }`}
+            className={`space-y-2.5 p-3.5 rounded-xl border transition ${
+              isDark ? 'bg-slate-950/50 border-slate-800/80' : 'bg-white border-slate-200 shadow-sm'
+            }`}
           >
             <div className="flex items-center justify-between">
               <button
@@ -620,55 +645,61 @@ export const Sidebar: React.FC<SidebarProps> = ({
             {/* Badges of connected services */}
             <div className="grid grid-cols-2 gap-1.5 text-[10px]">
               <div
-                className={`p-1.5 rounded-lg border flex items-center justify-between ${integrationsConfig.apolloApiKey
-                  ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-500'
-                  : 'border-slate-800 bg-slate-900 text-slate-400'
-                  }`}
+                className={`p-1.5 rounded-lg border flex items-center justify-between ${
+                  integrationsConfig.apolloApiKey
+                    ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-500'
+                    : 'border-slate-800 bg-slate-900 text-slate-400'
+                }`}
               >
                 <span>Apollo.io</span>
                 <Check className="w-3 h-3" />
               </div>
               <div
-                className={`p-1.5 rounded-lg border flex items-center justify-between ${integrationsConfig.googlePlacesApiKey
-                  ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-500'
-                  : 'border-slate-800 bg-slate-900 text-slate-400'
-                  }`}
+                className={`p-1.5 rounded-lg border flex items-center justify-between ${
+                  integrationsConfig.googlePlacesApiKey
+                    ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-500'
+                    : 'border-slate-800 bg-slate-900 text-slate-400'
+                }`}
               >
                 <span>Google Places</span>
                 <Check className="w-3 h-3" />
               </div>
               <div
-                className={`p-1.5 rounded-lg border flex items-center justify-between ${integrationsConfig.bitrixBirthhub360Webhook
-                  ? 'border-[var(--brand-primary)]/30 bg-[var(--brand-primary)]/10 text-[var(--brand-primary)]'
-                  : 'border-slate-800 bg-slate-900 text-slate-400'
-                  }`}
+                className={`p-1.5 rounded-lg border flex items-center justify-between ${
+                  integrationsConfig.bitrixBirthhub360Webhook
+                    ? 'border-[var(--brand-primary)]/30 bg-[var(--brand-primary)]/10 text-[var(--brand-primary)]'
+                    : 'border-slate-800 bg-slate-900 text-slate-400'
+                }`}
               >
                 <span>Bitrix24 CRM</span>
                 <Check className="w-3 h-3" />
               </div>
               <div
-                className={`p-1.5 rounded-lg border flex items-center justify-between ${integrationsConfig.hunterApiKey
-                  ? 'border-amber-500/30 bg-amber-500/10 text-amber-500'
-                  : 'border-slate-800 bg-slate-900 text-slate-400'
-                  }`}
+                className={`p-1.5 rounded-lg border flex items-center justify-between ${
+                  integrationsConfig.hunterApiKey
+                    ? 'border-amber-500/30 bg-amber-500/10 text-amber-500'
+                    : 'border-slate-800 bg-slate-900 text-slate-400'
+                }`}
               >
                 <span>Hunter.io</span>
                 <Check className="w-3 h-3" />
               </div>
               <div
-                className={`p-1.5 rounded-lg border flex items-center justify-between ${integrationsConfig.blandAiApiKey
-                  ? 'border-purple-500/30 bg-purple-500/10 text-purple-500'
-                  : 'border-slate-800 bg-slate-900 text-slate-400'
-                  }`}
+                className={`p-1.5 rounded-lg border flex items-center justify-between ${
+                  integrationsConfig.blandAiApiKey
+                    ? 'border-purple-500/30 bg-purple-500/10 text-purple-500'
+                    : 'border-slate-800 bg-slate-900 text-slate-400'
+                }`}
               >
                 <span>Bland AI (Voz)</span>
                 <Check className="w-3 h-3" />
               </div>
               <div
-                className={`p-1.5 rounded-lg border flex items-center justify-between ${integrationsConfig.groqApiKey
-                  ? 'border-orange-500/30 bg-orange-500/10 text-orange-500'
-                  : 'border-slate-800 bg-slate-900 text-slate-400'
-                  }`}
+                className={`p-1.5 rounded-lg border flex items-center justify-between ${
+                  integrationsConfig.groqApiKey
+                    ? 'border-orange-500/30 bg-orange-500/10 text-orange-500'
+                    : 'border-slate-800 bg-slate-900 text-slate-400'
+                }`}
               >
                 <span>Groq LLaMA3</span>
                 <Check className="w-3 h-3" />
@@ -695,10 +726,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
                         activeBitrixTarget: e.target.value as any,
                       }))
                     }
-                    className={`w-full rounded-lg px-2.5 py-1.5 text-xs outline-none border focus:border-[var(--brand-primary)] ${isDark
-                      ? 'bg-slate-900 border-slate-700 text-slate-200'
-                      : 'bg-slate-100 border-slate-300 text-slate-800'
-                      }`}
+                    className={`w-full rounded-lg px-2.5 py-1.5 text-xs outline-none border focus:border-[var(--brand-primary)] ${
+                      isDark
+                        ? 'bg-slate-900 border-slate-700 text-slate-200'
+                        : 'bg-slate-100 border-slate-300 text-slate-800'
+                    }`}
                   >
                     <option value="auto">Automático (conforme sua marca)</option>
                     <option value="birthhub360">Birth Hub 360</option>
@@ -725,10 +757,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
                         googlePlacesApiKey: e.target.value,
                       }));
                     }}
-                    className={`w-full rounded-lg px-2.5 py-1.5 text-xs font-mono outline-none border focus:border-[var(--brand-primary)] ${isDark
-                      ? 'bg-slate-900 border-slate-700 text-slate-200'
-                      : 'bg-slate-100 border-slate-300 text-slate-800'
-                      }`}
+                    className={`w-full rounded-lg px-2.5 py-1.5 text-xs font-mono outline-none border focus:border-[var(--brand-primary)] ${
+                      isDark
+                        ? 'bg-slate-900 border-slate-700 text-slate-200'
+                        : 'bg-slate-100 border-slate-300 text-slate-800'
+                    }`}
                     placeholder="AIzaSyC_B35BY..."
                   />
                 </div>
@@ -746,10 +779,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
                       setApolloApiKey(e.target.value);
                       setIntegrationsConfig((prev) => ({ ...prev, apolloApiKey: e.target.value }));
                     }}
-                    className={`w-full rounded-lg px-2.5 py-1.5 text-xs font-mono outline-none border focus:border-[var(--brand-primary)] ${isDark
-                      ? 'bg-slate-900 border-slate-700 text-slate-200'
-                      : 'bg-slate-100 border-slate-300 text-slate-800'
-                      }`}
+                    className={`w-full rounded-lg px-2.5 py-1.5 text-xs font-mono outline-none border focus:border-[var(--brand-primary)] ${
+                      isDark
+                        ? 'bg-slate-900 border-slate-700 text-slate-200'
+                        : 'bg-slate-100 border-slate-300 text-slate-800'
+                    }`}
                     placeholder="wZExKqNibGQ..."
                   />
                 </div>
@@ -759,8 +793,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
           {/* SEÇÃO 4: BANCO RELACIONAL & PERSISTÊNCIA */}
           <div
-            className={`space-y-2 p-3.5 rounded-xl border transition ${isDark ? 'bg-slate-950/50 border-slate-800/80' : 'bg-white border-slate-200 shadow-sm'
-              }`}
+            className={`space-y-2 p-3.5 rounded-xl border transition ${
+              isDark ? 'bg-slate-950/50 border-slate-800/80' : 'bg-white border-slate-200 shadow-sm'
+            }`}
           >
             <div className="flex items-center justify-between">
               <label className="text-xs font-bold uppercase tracking-wider flex items-center gap-1.5">
@@ -777,28 +812,31 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
             <div className="grid grid-cols-3 gap-1.5 text-center text-xs">
               <div
-                className={`p-2 rounded-lg border ${isDark
-                  ? 'bg-slate-900 border-slate-800 text-white'
-                  : 'bg-slate-100 border-slate-200 text-slate-800'
-                  }`}
+                className={`p-2 rounded-lg border ${
+                  isDark
+                    ? 'bg-slate-900 border-slate-800 text-white'
+                    : 'bg-slate-100 border-slate-200 text-slate-800'
+                }`}
               >
                 <div className="font-bold">{dbStats?.campaignsCount ?? 0}</div>
                 <div className="text-[9px] text-slate-400 uppercase">Campanhas</div>
               </div>
               <div
-                className={`p-2 rounded-lg border ${isDark
-                  ? 'bg-slate-900 border-slate-800 text-white'
-                  : 'bg-slate-100 border-slate-200 text-slate-800'
-                  }`}
+                className={`p-2 rounded-lg border ${
+                  isDark
+                    ? 'bg-slate-900 border-slate-800 text-white'
+                    : 'bg-slate-100 border-slate-200 text-slate-800'
+                }`}
               >
                 <div className="font-bold">{dbStats?.leadsCount ?? 0}</div>
                 <div className="text-[9px] text-slate-400 uppercase">Leads</div>
               </div>
               <div
-                className={`p-2 rounded-lg border ${isDark
-                  ? 'bg-slate-900 border-slate-800 text-emerald-400'
-                  : 'bg-slate-100 border-slate-200 text-emerald-600'
-                  }`}
+                className={`p-2 rounded-lg border ${
+                  isDark
+                    ? 'bg-slate-900 border-slate-800 text-emerald-400'
+                    : 'bg-slate-100 border-slate-200 text-emerald-600'
+                }`}
               >
                 <div className="font-bold">{dbStats?.messagesCount ?? 0}</div>
                 <div className="text-[9px] text-slate-400 uppercase">Mensagens</div>
@@ -813,16 +851,18 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
         {/* Sidebar Footer with Brand Link */}
         <div
-          className={`p-3 border-t flex items-center justify-between ${isDark ? 'border-slate-800/80 bg-slate-950/80' : 'border-slate-200 bg-white'
-            }`}
+          className={`p-3 border-t flex items-center justify-between ${
+            isDark ? 'border-slate-800/80 bg-slate-950/80' : 'border-slate-200 bg-white'
+          }`}
         >
           <button
             type="button"
             onClick={onOpenBrandGuide}
-            className={`flex items-center gap-1.5 text-xs transition font-medium ${isDark
-              ? 'text-slate-300 hover:text-[var(--brand-primary)]'
-              : 'text-slate-700 hover:text-[var(--brand-primary)]'
-              }`}
+            className={`flex items-center gap-1.5 text-xs transition font-medium ${
+              isDark
+                ? 'text-slate-300 hover:text-[var(--brand-primary)]'
+                : 'text-slate-700 hover:text-[var(--brand-primary)]'
+            }`}
           >
             <ShieldCheck className="w-4 h-4 text-[var(--brand-primary)]" />
             <span>Manual da Marca Atlas</span>

@@ -118,8 +118,9 @@ export function MyTasksTab({ user, isDark }: MyTasksTabProps) {
                     return (
                       <div
                         key={task.id}
-                        className={`flex items-start gap-3 p-3 rounded-xl border ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'
-                          }`}
+                        className={`flex items-start gap-3 p-3 rounded-xl border ${
+                          isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'
+                        }`}
                       >
                         <button
                           type="button"
@@ -145,7 +146,7 @@ export function MyTasksTab({ user, isDark }: MyTasksTabProps) {
                             <span className="flex items-center gap-1">
                               <Building2 className="w-3 h-3" />
                               {task.lead_name}
-                              {task.lead_company && ` · ${BRAND_LABEL[task.lead_company]}`}
+                              {task.lead_company && ` · ${task.lead_company}`}
                             </span>
                             {task.due_date && (
                               <span

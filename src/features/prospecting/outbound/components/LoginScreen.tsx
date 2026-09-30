@@ -91,10 +91,11 @@ export function LoginScreen({ onLogin, isDark, setTheme }: LoginScreenProps) {
         <button
           type="button"
           onClick={() => setTheme(isDark ? 'light' : 'dark')}
-          className={`fixed top-5 right-5 z-20 p-2 rounded-xl border shadow-sm transition ${isDark
-            ? 'bg-slate-900/80 backdrop-blur text-amber-400 border-slate-800 hover:bg-slate-800'
-            : 'bg-white/80 backdrop-blur text-slate-700 border-slate-200 hover:bg-slate-100'
-            }`}
+          className={`fixed top-5 right-5 z-20 p-2 rounded-xl border shadow-sm transition ${
+            isDark
+              ? 'bg-slate-900/80 backdrop-blur text-amber-400 border-slate-800 hover:bg-slate-800'
+              : 'bg-white/80 backdrop-blur text-slate-700 border-slate-200 hover:bg-slate-100'
+          }`}
           title={isDark ? 'Mudar para Modo Claro' : 'Mudar para Modo Escuro'}
         >
           {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
@@ -186,10 +187,11 @@ export function LoginScreen({ onLogin, isDark, setTheme }: LoginScreenProps) {
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className={`w-full pl-10 pr-4 py-2.5 rounded-xl text-sm transition-colors border outline-none focus:ring-2 ${isDark
-                      ? 'bg-slate-950 border-slate-800 text-white'
-                      : 'bg-slate-50 border-slate-200 text-slate-900'
-                      }`}
+                    className={`w-full pl-10 pr-4 py-2.5 rounded-xl text-sm transition-colors border outline-none focus:ring-2 ${
+                      isDark
+                        ? 'bg-slate-950 border-slate-800 text-white'
+                        : 'bg-slate-50 border-slate-200 text-slate-900'
+                    }`}
                     style={{ '--tw-ring-color': `${brand.accent}33` } as React.CSSProperties}
                     onFocus={(e) => (e.currentTarget.style.borderColor = brand.accent)}
                     onBlur={(e) => (e.currentTarget.style.borderColor = '')}
@@ -213,10 +215,11 @@ export function LoginScreen({ onLogin, isDark, setTheme }: LoginScreenProps) {
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className={`w-full pl-10 pr-4 py-2.5 rounded-xl text-sm transition-colors border outline-none focus:ring-2 ${isDark
-                      ? 'bg-slate-950 border-slate-800 text-white'
-                      : 'bg-slate-50 border-slate-200 text-slate-900'
-                      }`}
+                    className={`w-full pl-10 pr-4 py-2.5 rounded-xl text-sm transition-colors border outline-none focus:ring-2 ${
+                      isDark
+                        ? 'bg-slate-950 border-slate-800 text-white'
+                        : 'bg-slate-50 border-slate-200 text-slate-900'
+                    }`}
                     style={{ '--tw-ring-color': `${brand.accent}33` } as React.CSSProperties}
                     onFocus={(e) => (e.currentTarget.style.borderColor = brand.accent)}
                     onBlur={(e) => (e.currentTarget.style.borderColor = '')}
