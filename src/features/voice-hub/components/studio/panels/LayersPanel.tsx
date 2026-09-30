@@ -197,7 +197,7 @@ export function LayersPanel({ nodes }: LayersPanelProps) {
                     role="button"
                     tabIndex={0}
                     aria-label={`Adicionar nó ${item.label} ao canvas`}
-                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={() => addNodeFromRegistry(item.type)}
+                    onClick={() => addNodeFromRegistry(item.type)}
                     onKeyDown={(e) => {
                       if (e.target !== e.currentTarget) return;
                       if (e.key === 'Enter' || e.key === ' ') {
@@ -259,7 +259,7 @@ export function LayersPanel({ nodes }: LayersPanelProps) {
                     role="button"
                     tabIndex={0}
                     aria-label={`Adicionar nó favorito ${item.label} ao canvas`}
-                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={() => addNodeFromRegistry(favType)}
+                    onClick={() => addNodeFromRegistry(favType)}
                     onKeyDown={(e) => {
                       if (e.target !== e.currentTarget) return;
                       if (e.key === 'Enter' || e.key === ' ') {
