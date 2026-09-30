@@ -1,7 +1,7 @@
 # Relatório de Progresso - Tech Debt 2026-09-29
 
 **Data:** 2026-09-30
-**Status:** Em andamento - 1 agente completo, 6 interrompidos por limite
+**Status:** Em andamento - 1 integrado, 6 interrompidos por limite
 **Coordenador:** Agente 00
 
 ## Resumo de Progresso
@@ -59,10 +59,10 @@ Iniciei 7 agentes em background para trabalhar nas dívidas de tech debt. O Agen
 
 ### Alta Prioridade
 
-✅ **00-para-12-arquivos-monoliticos-voice-hub.md** (ALTO) - CONCLUÍDO
+✅ **00-para-12-arquivos-monoliticos-voice-hub.md** (ALTO) - CONCLUÍDO E INTEGRADO
 - Destino: Agente 12 (Voz e Telefonia)
 - Arquivos: `Landing.tsx` (2111 linhas), `useStudioStore.ts` (1743 linhas), `Overview.tsx` (1420 linhas)
-- Status: ✅ Concluído com sucesso (commit e27e5964)
+- Status: ✅ Concluído e integrado (commit e27e5964, branch integracao/techdebt-2026-09-29)
 - Resultados:
   - Eliminada duplicata de `Overview.tsx` (1421 linhas) → convertido para re-export canônico
   - Eliminada duplicata de `components/index.tsx` (1064 linhas) → convertido para re-export canônico
@@ -70,6 +70,7 @@ Iniciei 7 agentes em background para trabalhar nas dívidas de tech debt. O Agen
   - Extraídos: `studioTypes.ts`, `nodeRegistry.ts`, `initialData.ts`
   - `Landing.tsx` mantido sob exceção governada (2200 linhas)
 - Validação: `npx tsc --noEmit` aprovado, `npm run check:hotspots` aprovado
+- Integração: Merge fast-forward realizado em 2026-09-30
 
 ## Handoffs Pendentes (Agentes Interrompidos por Limite)
 
@@ -132,6 +133,13 @@ Iniciei 7 agentes em background para trabalhar nas dívidas de tech debt. O Agen
 7. ✅ Commit inicial com decisões do Coordenador
 8. ✅ Iniciados 7 agentes em background
 9. ✅ Concedida permissão de escrita para `src/features/cadence` (Agente 17)
+
+## Integração
+
+✅ **Merge do Agente 12 realizado**
+- Commit e27e5964 (refactor(12): modularizar useStudioStore e eliminar duplicatas) integrado
+- Branch `integracao/techdebt-2026-09-29` atualizada com fast-forward
+- Handoff atualizado com status de integração
 
 ## Bloqueios
 
