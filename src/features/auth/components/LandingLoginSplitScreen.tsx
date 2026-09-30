@@ -519,8 +519,8 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
 
           {/* ── Interactive Orbital Centerpiece with Logo Animation & Call to Action ── */}
           <div
-            className="absolute right-0 top-[60%] hidden h-[800px] w-[800px] -translate-y-1/2 lg:block z-20 pointer-events-auto"
-            style={{ transform: 'translateY(-50%) translateX(-4%)' }}
+            className="absolute right-0 top-[65%] hidden h-[900px] w-[900px] -translate-y-1/2 lg:block z-20 pointer-events-auto"
+            style={{ transform: 'translateY(-50%) translateX(-5%)' }}
           >
             <div className="relative w-full h-full flex items-center justify-center">
               {/* Outer decorative dashed ring */}
@@ -553,7 +553,7 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
                   transition={{ duration: 0.8, delay: 0.3 }}
                 >
                   <AnimatedBirthHubEmblem
-                    size={320}
+                    size={360}
                     showCta={false}
                     onAction={() => {
                       SoundFX.play('confirm');
