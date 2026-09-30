@@ -339,18 +339,25 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
               <BirthHubLogo variant="horizontal" className="h-8 text-[#0B132B]" />
             </div>
             <nav className="hidden xl:flex items-center gap-3">
-              {['Soluções', 'Recursos', 'Segmentos', 'Preços', 'Conteúdo'].map((item, i) => (
+              {[
+                { label: 'Soluções', color: '#D4AF37', bg: 'rgba(212,175,55,0.1)' },
+                { label: 'Recursos', color: '#C69B52', bg: 'rgba(198,155,82,0.1)' },
+                { label: 'Segmentos', color: '#0B132B', bg: 'rgba(11,19,43,0.1)' },
+                { label: 'Preços', color: '#D4AF37', bg: 'rgba(212,175,55,0.1)' },
+                { label: 'Conteúdo', color: '#C69B52', bg: 'rgba(198,155,82,0.1)' },
+              ].map((item, i) => (
                 <motion.button
-                  key={item}
+                  key={item.label}
                   type="button"
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1 + i * 0.05, duration: 0.5 }}
-                  whileHover={{ scale: 1.08, backgroundColor: 'rgba(212,175,55,0.15)' }}
+                  whileHover={{ scale: 1.08, backgroundColor: item.bg }}
                   whileTap={{ scale: 0.95 }}
-                  className="relative px-5 py-2.5 rounded-full border-2 border-[#D4AF37]/50 text-sm font-bold tracking-wide text-[#0B132B] hover:border-[#D4AF37] transition-all duration-300 cursor-pointer shadow-sm hover:shadow-md"
+                  className="relative px-5 py-2.5 rounded-full border-2 text-sm font-bold tracking-wide text-[#0B132B] transition-all duration-300 cursor-pointer shadow-sm hover:shadow-md"
+                  style={{ borderColor: item.color }}
                 >
-                  {item}
+                  {item.label}
                 </motion.button>
               ))}
             </nav>
@@ -401,7 +408,7 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
                 variants={staggerItem}
                 className="font-display text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-[#0B132B] leading-[1.08]"
               >
-                Birth Hub <span className="text-[#C69B52] dark:text-[#D4AF37] font-semibold">360º</span>
+                Birth Hub <span className="text-[#D4AF37] font-semibold">360º</span>
               </motion.h1>
 
               {/* Tagline */}
@@ -410,13 +417,13 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
                 className="font-display text-2xl sm:text-3xl font-medium leading-snug"
               >
                 <RevealLine delay={0.35}>
-                  <span className="text-[#1677FF]">Dados que Conectam,</span>
+                  <span className="text-[#0B132B]">Dados que Conectam,</span>
                 </RevealLine>
                 <RevealLine delay={0.5}>
                   <span className="text-[#D4AF37]">Inteligência que decide,</span>
                 </RevealLine>
                 <RevealLine delay={0.65}>
-                  <span className="text-[#0f9d64]">Resultados que acontecem.</span>
+                  <span className="text-[#C69B52]">Resultados que acontecem.</span>
                 </RevealLine>
               </motion.div>
 
@@ -512,8 +519,8 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
 
           {/* ── Interactive Orbital Centerpiece with Logo Animation & Call to Action ── */}
           <div
-            className="absolute right-0 top-[55%] hidden h-[640px] w-[640px] -translate-y-1/2 lg:block z-20 pointer-events-auto"
-            style={{ transform: 'translateY(-50%) translateX(-2%)' }}
+            className="absolute right-0 top-1/2 hidden h-[700px] w-[700px] -translate-y-1/2 lg:block z-20 pointer-events-auto"
+            style={{ transform: 'translateY(-50%) translateX(-3%)' }}
           >
             <div className="relative w-full h-full flex items-center justify-center">
               {/* Outer decorative dashed ring */}
@@ -546,7 +553,7 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
                   transition={{ duration: 0.8, delay: 0.3 }}
                 >
                   <AnimatedBirthHubEmblem
-                    size={280}
+                    size={320}
                     showCta={false}
                     onAction={() => {
                       SoundFX.play('confirm');
@@ -565,7 +572,7 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
                   }}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="mt-6 flex items-center gap-2.5 px-6 py-3 rounded-full bg-[#D4AF37] text-[#0B132B] text-sm font-bold font-mono tracking-wide shadow-[0_8px_24px_rgba(212,175,55,0.45)] border-2 border-[#D4AF37] hover:bg-[#dfba41] hover:shadow-[0_8px_30px_rgba(212,175,55,0.6)] transition-all duration-300 cursor-pointer"
+                  className="mt-8 flex items-center gap-2.5 px-6 py-3 rounded-full bg-[#D4AF37] text-[#0B132B] text-sm font-bold font-mono tracking-wide shadow-[0_8px_24px_rgba(212,175,55,0.45)] border-2 border-[#D4AF37] hover:bg-[#dfba41] hover:shadow-[0_8px_30px_rgba(212,175,55,0.6)] transition-all duration-300 cursor-pointer"
                 >
                   <span className="relative flex h-2.5 w-2.5 shrink-0">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#0B132B] opacity-80" />
@@ -580,15 +587,15 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
                 initial={{ opacity: 0, scale: 0 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.5, duration: 0.6 }}
-                className="absolute top-12 flex flex-col items-center"
+                className="absolute top-16 flex flex-col items-center"
               >
                 <motion.div
                   whileHover={{ scale: 1.15 }}
-                  className="w-14 h-14 rounded-full bg-white shadow-xl border-2 border-[#1677ff]/40 flex items-center justify-center mb-2"
+                  className="w-16 h-16 rounded-full bg-[#0B132B] shadow-xl border-2 border-[#D4AF37] flex items-center justify-center mb-2"
                 >
-                  <DatabaseZap className="h-6 w-6 text-[#1677ff]" />
+                  <DatabaseZap className="h-7 w-7 text-[#D4AF37]" />
                 </motion.div>
-                <span className="font-mono text-[11px] font-bold uppercase tracking-widest text-[#0B132B]">Dados</span>
+                <span className="font-mono text-[12px] font-bold uppercase tracking-widest text-[#0B132B]">Dados</span>
                 <span className="font-mono text-[10px] text-[#475569]">Integração 360°</span>
               </motion.div>
 
@@ -596,15 +603,15 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
                 initial={{ opacity: 0, scale: 0 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.6, duration: 0.6 }}
-                className="absolute bottom-12 flex flex-col items-center"
+                className="absolute bottom-16 flex flex-col items-center"
               >
                 <motion.div
                   whileHover={{ scale: 1.15 }}
-                  className="w-14 h-14 rounded-full bg-white shadow-xl border-2 border-[#D4AF37]/40 flex items-center justify-center mb-2"
+                  className="w-16 h-16 rounded-full bg-[#0B132B] shadow-xl border-2 border-[#C69B52] flex items-center justify-center mb-2"
                 >
-                  <Target className="h-6 w-6 text-[#D4AF37]" />
+                  <Target className="h-7 w-7 text-[#C69B52]" />
                 </motion.div>
-                <span className="font-mono text-[11px] font-bold uppercase tracking-widest text-[#0B132B]">Decisão</span>
+                <span className="font-mono text-[12px] font-bold uppercase tracking-widest text-[#0B132B]">Decisão</span>
                 <span className="font-mono text-[10px] text-[#475569]">Inteligência ativa</span>
               </motion.div>
 
@@ -612,15 +619,15 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
                 initial={{ opacity: 0, scale: 0 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.7, duration: 0.6 }}
-                className="absolute left-12 flex flex-col items-center"
+                className="absolute left-16 flex flex-col items-center"
               >
                 <motion.div
                   whileHover={{ scale: 1.15 }}
-                  className="w-14 h-14 rounded-full bg-white shadow-xl border-2 border-[#0f9d64]/40 flex items-center justify-center mb-2"
+                  className="w-16 h-16 rounded-full bg-[#0B132B] shadow-xl border-2 border-[#D4AF37] flex items-center justify-center mb-2"
                 >
-                  <Rocket className="h-6 w-6 text-[#0f9d64]" />
+                  <Rocket className="h-7 w-7 text-[#D4AF37]" />
                 </motion.div>
-                <span className="font-mono text-[11px] font-bold uppercase tracking-widest text-[#0B132B]">Execução</span>
+                <span className="font-mono text-[12px] font-bold uppercase tracking-widest text-[#0B132B]">Execução</span>
                 <span className="font-mono text-[10px] text-[#475569]">Resultados reais</span>
               </motion.div>
 
@@ -628,15 +635,15 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
                 initial={{ opacity: 0, scale: 0 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.8, duration: 0.6 }}
-                className="absolute right-12 flex flex-col items-center"
+                className="absolute right-16 flex flex-col items-center"
               >
                 <motion.div
                   whileHover={{ scale: 1.15 }}
-                  className="w-14 h-14 rounded-full bg-white shadow-xl border-2 border-[#c53678]/40 flex items-center justify-center mb-2"
+                  className="w-16 h-16 rounded-full bg-[#0B132B] shadow-xl border-2 border-[#C69B52] flex items-center justify-center mb-2"
                 >
-                  <BrainCircuit className="h-6 w-6 text-[#c53678]" />
+                  <BrainCircuit className="h-7 w-7 text-[#C69B52]" />
                 </motion.div>
-                <span className="font-mono text-[11px] font-bold uppercase tracking-widest text-[#0B132B]">Inteligência</span>
+                <span className="font-mono text-[12px] font-bold uppercase tracking-widest text-[#0B132B]">Inteligência</span>
                 <span className="font-mono text-[10px] text-[#475569]">Operação 24/7</span>
               </motion.div>
             </div>
