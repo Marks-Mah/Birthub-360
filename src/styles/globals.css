@@ -296,7 +296,7 @@
   --shadow-nav-active-value: 0 10px 26px -14px color-mix(in srgb, var(--brand) 52%, black);
   --radius-nav-item-value: 12px;
   --font-brand-sans: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
-  --font-brand-display: "Sora", ui-sans-serif, system-ui, sans-serif;
+  --font-brand-display: "Cabin", ui-sans-serif, system-ui, sans-serif;
   --font-brand-serif: "Playfair Display", "Bodoni Moda", Georgia, serif;
 
   /* Motion system tokens — durations e easings canônicos (Design Language v2.0, seção 8).

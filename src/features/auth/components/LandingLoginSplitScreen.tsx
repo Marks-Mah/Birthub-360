@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import { type ReactNode, useEffect, useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
+import { AnimatedBirthHubEmblem } from '../../../components/brand/AnimatedBirthHubEmblem.js';
 import { BirthHubLogo } from '../../../components/brand/BirthHubLogo.js';
 import { useAuth } from '../../../contexts/AuthContext.js';
 import { authClient } from '../../../lib/auth-client.js';
@@ -387,9 +388,9 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
               {/* Brand name — Natural, Prestigious, Authentic */}
               <motion.h1
                 variants={staggerItem}
-                className="font-display text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-[#0B132B] leading-[1.06]"
+                className="font-display text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-[#0B132B] leading-[1.08]"
               >
-                Birth Hub <span className="text-[#D4AF37] font-black">360&deg;</span>
+                Birth Hub <span className="text-[#C69B52] dark:text-[#D4AF37] font-semibold">360&deg;</span>
               </motion.h1>
 
               {/* Tagline */}
@@ -442,29 +443,14 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
 
           {/* ── Mobile Animated Logo Centerpiece ──────────────────────── */}
           <div className="lg:hidden flex flex-col items-center justify-center my-8 z-20">
-            <button
-              type="button"
-              onClick={() => {
+            <AnimatedBirthHubEmblem
+              size={170}
+              ctaText="Acessar Command Center →"
+              onAction={() => {
                 SoundFX.play('confirm');
                 navigate('/login');
               }}
-              className="group relative flex flex-col items-center cursor-pointer"
-              aria-label="Acessar Birth Hub 360"
-            >
-              <div className="relative w-36 h-36 flex items-center justify-center">
-                <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 60, repeat: Infinity, ease: 'linear' }}
-                  className="w-full h-full"
-                >
-                  <BirthHubLogo variant="symbol" className="w-full h-full drop-shadow-[0_0_20px_rgba(212,175,55,0.45)]" />
-                </motion.div>
-              </div>
-              <div className="mt-4 flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#0B132B] text-white text-xs font-bold shadow-lg border border-[#D4AF37]/50 group-hover:border-[#D4AF37] transition-all">
-                <span className="h-2 w-2 rounded-full bg-[#D4AF37] animate-ping" />
-                <span>Acessar Command Center &rarr;</span>
-              </div>
-            </button>
+            />
           </div>
 
           {/* ── Stats Row ───────────────────────────────────────────────── */}
@@ -476,7 +462,8 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
           >
             {HERO_STATS.map((stat, i) => (
               <motion.div key={stat.lines.join(' ')} variants={staggerItem}>
-                {/* Number — Sora/display font, gold */}
+                <stat.Icon className="h-4 w-4 text-[#D4AF37] mb-2 opacity-90" />
+                {/* Number — display font, gold */}
                 <div className="font-display text-[28px] font-bold text-[#D4AF37] leading-none mb-1">
                   <CountUp to={stat.to} suffix={stat.suffix} delay={0.5 + i * 0.09} />
                 </div>
@@ -517,49 +504,17 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
                 style={{ willChange: 'transform' }}
               />
 
-              {/* Core interactive emblem with action CTA */}
-              <button
-                type="button"
-                onClick={() => {
-                  SoundFX.play('confirm');
-                  navigate('/login');
-                }}
-                className="group relative z-30 flex flex-col items-center justify-center cursor-pointer transition-all duration-300 hover:scale-105 border-0 bg-transparent p-0"
-                title="Acessar o Birth Hub 360°"
-                aria-label="Acessar o Birth Hub 360°"
-              >
-                {/* Luminous Pulsing Aura behind Emblem */}
-                <div className="absolute -inset-6 rounded-full bg-gradient-to-r from-[#D4AF37]/25 via-[#FF4FA3]/15 to-[#1677FF]/20 blur-xl opacity-75 group-hover:opacity-100 group-hover:blur-2xl transition-all animate-pulse" />
-
-                {/* The Authentic BirthHub Emblem with Rotating Crown */}
-                <div className="relative w-48 h-48 rounded-full flex items-center justify-center shadow-2xl transition-transform duration-300">
-                  <motion.div
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 55, repeat: Infinity, ease: 'linear' }}
-                    className="absolute inset-0 rounded-full"
-                    style={{ willChange: 'transform' }}
-                  >
-                    <BirthHubLogo
-                      variant="symbol"
-                      className="w-full h-full drop-shadow-[0_0_24px_rgba(212,175,55,0.5)]"
-                    />
-                  </motion.div>
-                </div>
-
-                {/* Chamada para Ação Interativa no Emblema */}
-                <motion.div
-                  initial={{ y: 5, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.8 }}
-                  className="relative mt-4 flex items-center gap-2 px-5 py-2 rounded-full bg-[#0B132B] text-white text-xs font-bold shadow-2xl border border-[#D4AF37]/50 group-hover:border-[#D4AF37] group-hover:bg-[#121B38] group-hover:shadow-[0_0_24px_rgba(212,175,55,0.6)] transition-all whitespace-nowrap"
-                >
-                  <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#D4AF37] opacity-75" />
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-[#D4AF37]" />
-                  </span>
-                  <span>Acessar Command Center &rarr;</span>
-                </motion.div>
-              </button>
+              {/* Core interactive emblem with independent sunburst rotation & action CTA */}
+              <div className="relative z-30 flex flex-col items-center justify-center">
+                <AnimatedBirthHubEmblem
+                  size={220}
+                  ctaText="Acessar Command Center →"
+                  onAction={() => {
+                    SoundFX.play('confirm');
+                    navigate('/login');
+                  }}
+                />
+              </div>
 
               {/* Cardinal satellites */}
               <div className="absolute top-10 flex flex-col items-center">
