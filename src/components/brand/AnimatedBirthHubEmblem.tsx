@@ -1,6 +1,5 @@
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { useId } from 'react';
-import { useReducedMotion } from '../../lib/motion.js';
 
 interface AnimatedBirthHubEmblemProps {
   /** Diameter size in pixels (default: 210) */
