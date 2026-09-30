@@ -278,7 +278,7 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
                 <button
                   type="button"
                   onClick={() => navigate('/login')}
-                  className="flex items-center gap-2 rounded-full transition-transform hover:-translate-y-0.5 active:translate-y-0 motion-reduce:transform-none bg-gradient-to-r from-[#D4AF37] to-[#E6C65A] px-6 py-3 text-sm font-bold text-slate-900 shadow-[0_4px_14px_rgba(212,175,55,0.4)] transition-transform hover:-translate-y-0.5"
+                  className="flex items-center gap-2 rounded-full transition-transform hover:-translate-y-0.5 active:translate-y-0 motion-reduce:transform-none bg-gradient-to-r from-gold to-gold/80 px-6 py-3 text-sm font-bold text-slate-900 shadow-[0_4px_14px_rgba(212,175,55,0.4)] transition-transform hover:-translate-y-0.5"
                 >
                   Explorar o Birth Hub &rarr;
                 </button>
@@ -543,7 +543,7 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
                       <button
                         type="submit"
                         disabled={isSubmitting || !email}
-                        className="w-full rounded-full bg-gradient-to-r from-[#D4AF37] to-[#E6C65A] py-3.5 text-sm font-extrabold uppercase tracking-wide text-slate-900 shadow-lg hover:shadow-brand/25 transition-all disabled:opacity-50"
+                        className="w-full rounded-full bg-gradient-to-r from-gold to-gold/80 py-3.5 text-sm font-extrabold uppercase tracking-wide text-slate-900 shadow-lg hover:shadow-md transition-all disabled:opacity-50"
                       >
                         {isSubmitting ? (
                           <Loader2 className="animate-spin mx-auto h-5 w-5" />
@@ -657,7 +657,7 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
                     <button
                       type="submit"
                       disabled={isSubmitting || !email || !password}
-                      className="w-full rounded-full bg-gradient-to-r from-[#D4AF37] to-[#E6C65A] py-4 text-sm font-extrabold uppercase tracking-wide text-slate-900 shadow-lg hover:shadow-brand/25 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                      className="w-full rounded-full bg-gradient-to-r from-gold to-gold/80 py-4 text-sm font-extrabold uppercase tracking-wide text-slate-900 shadow-lg hover:shadow-md transition-all disabled:opacity-50 flex items-center justify-center gap-2"
                     >
                       {isSubmitting ? (
                         <Loader2 className="animate-spin h-5 w-5" />

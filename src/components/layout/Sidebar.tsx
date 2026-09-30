@@ -296,7 +296,7 @@ export function Sidebar({
 
   return (
     <aside
-      className={`fixed inset-y-0 left-0 z-40 flex h-full flex-col bg-surface-elevated/70 backdrop-blur-xl border-r border-line shadow-[4px_0_24px_rgba(0,0,0,0.02)] transition-[width,transform] duration-300 lg:static lg:translate-x-0 ${
+      className={`fixed inset-y-0 left-0 z-40 flex h-full flex-col bg-surface-elevated/70 backdrop-blur-xl border-r border-line shadow-none transition-[width,transform] duration-300 lg:static lg:translate-x-0 ${
         isCollapsed ? 'lg:w-[5rem]' : 'lg:w-[16rem]'
       } ${mobileOpen ? 'translate-x-0' : '-translate-x-full'}`}
       aria-label="Navegação principal - Intelligent Business Command Center"
@@ -315,7 +315,7 @@ export function Sidebar({
                   <h1 className="flex items-center gap-1 text-sm font-bold tracking-tight text-ink">
                     Birth Hub 360°
                   </h1>
-                  <span className="text-[10px] font-medium tracking-wide text-ink-2">
+                  <span className="text-xs font-medium tracking-wide text-ink-2">
                     Intelligent Business Command Center
                   </span>
                 </div>
@@ -357,7 +357,7 @@ export function Sidebar({
             aria-label={group.title}
           >
             <div className={`mb-1.5 flex items-center px-2 ${isCollapsed ? 'lg:hidden' : ''}`}>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-ink-2">
+              <p className="text-xs font-bold uppercase tracking-widest text-ink-2">
                 {group.title}
               </p>
             </div>
@@ -379,7 +379,7 @@ export function Sidebar({
             }
           >
             <div className="flex min-w-0 items-center gap-3 relative z-10">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-brand/80 to-brand-2/90 text-sm font-bold text-on-brand shadow-sm ring-2 ring-surface transition-transform duration-300">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-gold to-gold/80 text-sm font-bold text-on-brand shadow-sm ring-2 ring-surface transition-transform duration-300">
                 {currentUser.name?.charAt(0).toUpperCase() || 'U'}
               </div>
               <div className={`min-w-0 flex-1 ${isCollapsed ? 'lg:hidden' : ''}`}>

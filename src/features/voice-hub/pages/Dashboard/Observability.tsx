@@ -375,7 +375,7 @@ export default function ObservabilityPage() {
                           onClick={() => setSelectedSpan(span)}
                           className={`cursor-pointer transition-all ${
                             isSelected
-                              ? 'bg-brand/5 dark:bg-brand/10 border-l-4 border-l-brand'
+                              ? 'bg-brand/5 dark:bg-brand/10 border border-line'
                               : ''
                           }`}
                         >

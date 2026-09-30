@@ -674,7 +674,7 @@ export default function LandingPage() {
                           {isTyping && (
                             <div className="flex justify-start">
                               <div className="p-2.5 rounded-xl bg-white dark:bg-slate-900 text-slate-400 text-[10px] flex items-center gap-1.5 border border-slate-200 dark:border-slate-800 font-bold">
-                                <span className="h-1.5 w-1.5 rounded-full bg-slate-400 animate-bounce" />
+                                <span className="h-1.5 w-1.5 rounded-full bg-slate-400 animate-pulse" />
                                 Pesquisando em 42 diretrizes comerciais...
                               </div>
                             </div>
@@ -805,7 +805,7 @@ export default function LandingPage() {
                     <span>Real-time Audio Streams</span>
                   </div>
                   <div className="flex items-center gap-1 font-mono text-emerald-500 font-bold">
-                    <Activity className="h-3.5 w-3.5 animate-bounce" />
+                    <Activity className="h-3.5 w-3.5 animate-pulse" />
                     <span>99.98% uptime SLA</span>
                   </div>
                 </div>

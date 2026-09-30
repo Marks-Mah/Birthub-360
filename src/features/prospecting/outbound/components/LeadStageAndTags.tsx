@@ -65,7 +65,7 @@ export const STAGE_CONFIG: {
     description: 'Abordagem disparada por Cold Call, E-mail ou WhatsApp.',
     color: 'orange',
     bgDark: 'bg-[var(--brand-primary)]/15',
-    bgLight: 'bg-orange-50',
+    bgLight: 'bg-orange-100',
     borderDark: 'border-[var(--brand-primary)]/40',
     borderLight: 'border-orange-300',
     textColor: 'text-[var(--brand-primary)]',
@@ -320,7 +320,7 @@ export const LeadStageAndTags: React.FC<LeadStageAndTagsProps> = ({
                     className={`w-full text-left px-2.5 py-1.5 rounded-lg text-xs transition ${
                       isDark
                         ? 'hover:bg-slate-800 text-slate-300'
-                        : 'hover:bg-slate-100 text-slate-700'
+                        : 'hover:bg-slate-100 text-orange-900'
                     }`}
                   >
                     {reason}
@@ -347,7 +347,7 @@ export const LeadStageAndTags: React.FC<LeadStageAndTagsProps> = ({
                     className={`w-full text-left px-2.5 py-1.5 rounded-lg text-xs transition ${
                       isDark
                         ? 'hover:bg-slate-800 text-slate-300'
-                        : 'hover:bg-slate-100 text-slate-700'
+                        : 'hover:bg-slate-100 text-orange-900'
                     }`}
                   >
                     {reason}
@@ -372,7 +372,7 @@ export const LeadStageAndTags: React.FC<LeadStageAndTagsProps> = ({
                           ? `${isDark ? cfg.bgDark : cfg.bgLight} font-bold ${cfg.textColor} border ${isDark ? cfg.borderDark : cfg.borderLight}`
                           : isDark
                             ? 'hover:bg-slate-800 text-slate-300'
-                            : 'hover:bg-slate-100 text-slate-700'
+                            : 'hover:bg-slate-100 text-orange-900'
                       }`}
                     >
                       <div className="flex items-center gap-2">
@@ -497,7 +497,7 @@ export const LeadStageAndTags: React.FC<LeadStageAndTagsProps> = ({
                             ? 'opacity-40 border-slate-700 line-through cursor-not-allowed'
                             : isDark
                               ? 'bg-slate-800 hover:bg-[var(--brand-primary)]/20 hover:border-[var(--brand-primary)]/50 hover:text-[var(--brand-primary)] border-slate-700 text-slate-300'
-                              : 'bg-slate-100 hover:bg-orange-50 hover:border-orange-300 hover:text-orange-700 border-slate-200 text-slate-700'
+                              : 'bg-slate-100 hover:bg-orange-100 hover:border-orange-300 hover:text-orange-700 border-slate-200 text-orange-900'
                         }`}
                       >
                         + {tagSuggest}

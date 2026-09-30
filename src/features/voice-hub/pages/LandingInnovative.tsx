@@ -82,7 +82,7 @@ const HolographicCard: React.FC<{
         transition={{ type: 'spring', stiffness: 300, damping: 20 }}
         className="relative bg-white dark:bg-slate-900 rounded-2xl p-8 border border-slate-200 dark:border-slate-800 shadow-xl hover:shadow-2xl transition-all duration-500"
       >
-        <div className="absolute inset-0 bg-gradient-to-br from-brand/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        <div className="absolute inset-0 bg-gradient-to-br /5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
         <div className="relative z-10">
           <div className="w-14 h-14 rounded-xl bg-brand/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
             {icon}
@@ -302,7 +302,7 @@ function LandingInnovativeContent() {
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-extrabold tracking-tight text-slate-950 dark:text-white">
               <span className="block">BIRTH HUB</span>
               <motion.span
-                className="block text-transparent bg-clip-text bg-gradient-to-r from-brand via-iris to-brand bg-300% animate-gradient"
+                className="block     via-iris to-brand bg-300% animate-gradient"
                 animate={{ backgroundPosition: ['0%', '100%', '0%'] }}
                 transition={{ duration: 5, repeat: Infinity, ease: 'linear' }}
               >
@@ -527,7 +527,7 @@ function LandingInnovativeContent() {
               transition={{ duration: 0.8 }}
               className="relative"
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-brand/20 to-iris/20 rounded-3xl blur-3xl" />
+              <div className="absolute inset-0 bg-gradient-to-br /20 to-iris/20 rounded-3xl blur-3xl" />
               <div className="relative bg-white dark:bg-slate-800 rounded-3xl p-8 border border-slate-200 dark:border-slate-700 shadow-2xl">
                 <div className="grid grid-cols-2 gap-6">
                   {[

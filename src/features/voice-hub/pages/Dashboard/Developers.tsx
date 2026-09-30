@@ -150,7 +150,7 @@ export default function DevelopersPage() {
               )}
 
               {revokeError && (
-                <div className="p-3 bg-red-50 border border-red-200 text-red-800 rounded-lg text-sm font-medium flex items-start gap-2">
+                <div className="p-3 bg-red-100 border border-red-200 text-red-800 rounded-lg text-sm font-medium flex items-start gap-2">
                   <AlertTriangle className="h-4 w-4 shrink-0 mt-0.5" />
                   <span>{revokeError}</span>
                 </div>
@@ -173,7 +173,7 @@ export default function DevelopersPage() {
                   }
                 />
               ) : keysState.data.length === 0 ? (
-                <div className="text-center p-8 bg-slate-50 border border-dashed border-slate-200 rounded-lg text-slate-400">
+                <div className="text-center p-8 bg-slate-50 border border-dashed border-slate-200 rounded-lg text-red-900">
                   Nenhuma chave de API configurada. Clique em "Criar Chave" para gerar uma.
                 </div>
               ) : (
@@ -189,7 +189,7 @@ export default function DevelopersPage() {
                           {k.revoked ? 'Revogada' : 'Ativa'}
                         </Badge>
                       </div>
-                      <div className="text-slate-400 text-xs mt-1.5 font-sans">
+                      <div className="text-red-900 text-xs mt-1.5 font-sans">
                         Criada em {new Date(k.createdAt).toLocaleString('pt-BR')}
                         {' · '}
                         Último uso:{' '}
@@ -207,7 +207,7 @@ export default function DevelopersPage() {
                       <button type="button"
                         onClick={() => handleRevokeKey(k.id, k.name)}
                         disabled={k.revoked || revokingId === k.id}
-                        className="p-2 hover:bg-red-50 rounded text-slate-400 hover:text-red-650 border border-slate-200 hover:border-red-200 bg-white shadow-sm transition-all disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-white"
+                        className="p-2 hover:bg-red-100 rounded text-red-900 hover:text-red-650 border border-slate-200 hover:border-red-200 bg-white shadow-sm transition-all disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-white"
                         title={k.revoked ? 'Chave já revogada' : 'Revogar chave de API'}
                       >
                         {k.revoked ? (
@@ -294,7 +294,7 @@ export default function DevelopersPage() {
               )}
 
               {webhookActionError && (
-                <div className="p-3 bg-red-50 border border-red-200 text-red-800 rounded-lg text-sm font-medium flex items-start gap-2">
+                <div className="p-3 bg-red-100 border border-red-200 text-red-800 rounded-lg text-sm font-medium flex items-start gap-2">
                   <AlertTriangle className="h-4 w-4 shrink-0 mt-0.5" />
                   <span>{webhookActionError}</span>
                 </div>
@@ -328,7 +328,7 @@ export default function DevelopersPage() {
                   }
                 />
               ) : webhooksState.data.length === 0 ? (
-                <div className="text-center p-8 bg-slate-50 border border-dashed border-slate-200 rounded-lg text-slate-400">
+                <div className="text-center p-8 bg-slate-50 border border-dashed border-slate-200 rounded-lg text-red-900">
                   Nenhum endpoint de webhook cadastrado ainda. Clique em "Adicionar Endpoint" para
                   configurar um.
                 </div>
@@ -354,7 +354,7 @@ export default function DevelopersPage() {
                           </Badge>
                         ))}
                       </div>
-                      <div className="text-slate-400 text-xs mt-1.5 font-sans">
+                      <div className="text-red-900 text-xs mt-1.5 font-sans">
                         Criado em {new Date(w.createdAt).toLocaleString('pt-BR')}
                         {' · '}
                         Última entrega:{' '}
@@ -367,7 +367,7 @@ export default function DevelopersPage() {
                       <button type="button"
                         onClick={() => handleRegenerateWebhookSecret(w.id, w.url)}
                         disabled={regeneratingWebhookId === w.id || deletingWebhookId === w.id}
-                        className="p-2 hover:bg-slate-100 rounded text-slate-400 hover:text-slate-700 border border-slate-200 bg-white shadow-sm transition-all disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-white"
+                        className="p-2 hover:bg-slate-100 rounded text-red-900 hover:text-slate-700 border border-slate-200 bg-white shadow-sm transition-all disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-white"
                         title="Regenerar segredo do webhook"
                       >
                         <RefreshCw
@@ -377,7 +377,7 @@ export default function DevelopersPage() {
                       <button type="button"
                         onClick={() => handleDeleteWebhook(w.id, w.url)}
                         disabled={deletingWebhookId === w.id || regeneratingWebhookId === w.id}
-                        className="p-2 hover:bg-red-50 rounded text-slate-400 hover:text-red-650 border border-slate-200 hover:border-red-200 bg-white shadow-sm transition-all disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-white"
+                        className="p-2 hover:bg-red-100 rounded text-red-900 hover:text-red-650 border border-slate-200 hover:border-red-200 bg-white shadow-sm transition-all disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-white"
                         title="Remover endpoint de webhook"
                       >
                         <Trash2 className="h-4 w-4" />
@@ -402,7 +402,7 @@ export default function DevelopersPage() {
               </h3>
               <button type="button"
                 onClick={() => setShowCreateModal(false)}
-                className="text-slate-400 hover:text-slate-600 rounded p-1"
+                className="text-red-900 hover:text-slate-600 rounded p-1"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -429,7 +429,7 @@ export default function DevelopersPage() {
                   poderá ser recuperada depois.
                 </div>
                 {createError && (
-                  <div className="p-3 bg-red-50 border border-red-200 text-red-800 rounded-lg text-sm font-medium flex items-start gap-2">
+                  <div className="p-3 bg-red-100 border border-red-200 text-red-800 rounded-lg text-sm font-medium flex items-start gap-2">
                     <AlertTriangle className="h-4 w-4 shrink-0 mt-0.5" />
                     <span>{createError}</span>
                   </div>
@@ -468,7 +468,7 @@ export default function DevelopersPage() {
               </h3>
               <button type="button"
                 onClick={() => setShowCreateWebhookModal(false)}
-                className="text-slate-400 hover:text-slate-600 rounded p-1"
+                className="text-red-900 hover:text-slate-600 rounded p-1"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -488,7 +488,7 @@ export default function DevelopersPage() {
                     required
                     disabled={isCreatingWebhook}
                   />
-                  <p className="text-xs text-slate-400 mt-1.5">
+                  <p className="text-xs text-red-900 mt-1.5">
                     Deve ser uma URL pública em HTTPS — não pode apontar para rede interna/privada.
                   </p>
                 </div>
@@ -505,7 +505,7 @@ export default function DevelopersPage() {
                     required
                     disabled={isCreatingWebhook}
                   />
-                  <p className="text-xs text-slate-400 mt-1.5">
+                  <p className="text-xs text-red-900 mt-1.5">
                     Separe múltiplos tipos de evento por vírgula ou espaço (até 20). Use "*" para
                     assinar todos os eventos.
                   </p>
@@ -516,7 +516,7 @@ export default function DevelopersPage() {
                   seguro — ele não poderá ser recuperado depois, apenas regenerado.
                 </div>
                 {createWebhookError && (
-                  <div className="p-3 bg-red-50 border border-red-200 text-red-800 rounded-lg text-sm font-medium flex items-start gap-2">
+                  <div className="p-3 bg-red-100 border border-red-200 text-red-800 rounded-lg text-sm font-medium flex items-start gap-2">
                     <AlertTriangle className="h-4 w-4 shrink-0 mt-0.5" />
                     <span>{createWebhookError}</span>
                   </div>

@@ -113,7 +113,7 @@ export function Sidebar() {
 
   const navItemClass = (path: string) =>
     `flex items-center justify-between group/item p-2.5 rounded-lg transition-all text-xs font-semibold ${
-      isActive(path) ? 'shadow-xs' : 'text-slate-400 hover:bg-slate-800/60 hover:text-white'
+      isActive(path) ? 'shadow-none' : 'text-slate-400 hover:bg-surface-interactive hover:text-white'
     }`;
 
   // `--brand-color` is tenant-controlled, so the active nav item's text color must be computed
@@ -248,7 +248,7 @@ export function Sidebar() {
           </div>
           <div className="text-left">
             <h1 className="text-base font-bold leading-none tracking-tight">Birth Hub 360</h1>
-            <span className="text-[10px] text-slate-400 uppercase font-semibold">
+            <span className="text-xs text-slate-400 uppercase font-semibold">
               Voice Enterprise
             </span>
           </div>
@@ -276,7 +276,7 @@ export function Sidebar() {
         {/* SECTION 1: FAVORITES (IF EXIST) */}
         {favorites.length > 0 && (
           <div className="space-y-1">
-            <div className="flex items-center gap-1.5 px-2 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+            <div className="flex items-center gap-1.5 px-2 text-xs font-bold text-slate-500 uppercase tracking-wider">
               <Star className="h-3 w-3 text-amber-500 fill-amber-500" />
               <span>Favoritos</span>
             </div>
@@ -308,7 +308,7 @@ export function Sidebar() {
 
         {/* SECTION 2: WORKSPACE */}
         <div className="space-y-1">
-          <p className="px-2 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+          <p className="px-2 text-xs font-bold text-slate-500 uppercase tracking-wider">
             Workspace
           </p>
           {allNavItems
@@ -338,7 +338,7 @@ export function Sidebar() {
 
         {/* SECTION 3: ADMINISTRATIVO */}
         <div className="space-y-1">
-          <p className="px-2 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+          <p className="px-2 text-xs font-bold text-slate-500 uppercase tracking-wider">
             Administrativo
           </p>
           {allNavItems
@@ -369,7 +369,7 @@ export function Sidebar() {
         {/* SECTION 4: HISTÓRICO / RECENTES */}
         {recents.length > 0 && (
           <div className="space-y-1.5 pt-2 border-t border-slate-800/40">
-            <div className="flex items-center gap-1.5 px-2 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+            <div className="flex items-center gap-1.5 px-2 text-xs font-bold text-slate-500 uppercase tracking-wider">
               <Clock className="h-3 w-3" />
               <span>Navegação Recente</span>
             </div>
@@ -395,7 +395,7 @@ export function Sidebar() {
 
       {/* Theme selector widget */}
       <div className="py-2.5 px-2 mb-2 mt-4 bg-slate-850/40 rounded-lg border border-slate-800/65 flex items-center justify-between">
-        <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+        <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
           Aparência
         </span>
         <div className="flex gap-1">
@@ -474,7 +474,7 @@ export function Sidebar() {
           )}
           <button type="button"
             onClick={() => auth.logout()}
-            className="text-[10px] text-slate-500 hover:text-white mt-2 w-full text-left font-bold block"
+            className="text-xs text-slate-500 hover:text-white mt-2 w-full text-left font-bold block"
           >
             Sair do Workspace
           </button>

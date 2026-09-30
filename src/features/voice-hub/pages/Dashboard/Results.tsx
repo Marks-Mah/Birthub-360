@@ -178,7 +178,7 @@ export default function ResultsPage() {
                 <div
                   key={s.id}
                   role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={() => setSelectedSession(s)}
-                  className={`p-4 cursor-pointer hover:bg-slate-50 transition-colors border-l-4 ${
+                  className={`p-4 cursor-pointer hover:bg-slate-50 transition-colors border border-line ${
                     selectedSession?.id === s.id ? 'bg-brand-50 border-brand' : 'border-transparent'
                   }`}
                 >

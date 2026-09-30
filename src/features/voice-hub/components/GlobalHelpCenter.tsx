@@ -146,7 +146,7 @@ export function GlobalHelpCenter() {
         className="flex items-center gap-2 p-3 rounded-full shadow-2xl hover:scale-105 active:scale-95 transition-all border border-slate-850 dark:border-slate-100 cursor-pointer"
         style={{ backgroundColor: 'var(--brand-color)', color: accessibleBrandText }}
       >
-        <Sparkles className="h-5 w-5 animate-bounce" />
+        <Sparkles className="h-5 w-5 animate-pulse" />
         {isOpen ? (
           <span className="text-xs font-bold pr-2">Fechar Catarina</span>
         ) : (

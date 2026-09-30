@@ -27,7 +27,7 @@ export function HolographicCard({
 
   const variantColors = {
     cyan: 'from-cyan-400/20 to-blue-500/20 border-cyan-400/50',
-    purple: 'from-purple-400/20 to-pink-500/20 border-purple-400/50',
+    purple: 'from-brand/20 to-pink-500/20 border-purple-400/50',
     gold: 'from-yellow-400/20 to-orange-500/20 border-yellow-400/50',
     mixed: 'from-brand/20 via-iris/20 to-orbit-blue/20 border-brand/50',
   };
