@@ -296,8 +296,22 @@
   --shadow-nav-active-value: 0 10px 26px -14px color-mix(in srgb, var(--brand) 52%, black);
   --radius-nav-item-value: 12px;
   --font-brand-sans: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
-  --font-brand-display: "Cabin", ui-sans-serif, system-ui, sans-serif;
+  --font-brand-display: "Sora", ui-sans-serif, system-ui, sans-serif;
   --font-brand-serif: "Playfair Display", "Bodoni Moda", Georgia, serif;
+
+  /* Motion system tokens — durations e easings canônicos (Design Language v2.0, seção 8).
+     Referenciados por .bh-interactive, Framer Motion variants e qualquer transition CSS
+     que precise ser consistente com o sistema de movimento da marca. */
+  --duration-instant: 100ms;
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --duration-slow: 350ms;
+  --duration-slowest: 500ms;
+
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-enter: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-exit: cubic-bezier(0.4, 0, 1, 1);
+  --ease-emphasized: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .dark {
@@ -1213,5 +1227,72 @@
     transition-duration: 0.01ms !important;
     /* biome-ignore lint/complexity/noImportantStyles: ver comentário acima */
     scroll-behavior: auto !important;
+  }
+}
+
+/* ============================================================
+   BH Design System — Additional Utility Classes (v2.0)
+   Typography primitives, surface helpers, orbit marker
+   (bh-interactive, bh-label, bh-skeleton-shimmer already
+   defined in @layer blocks above — not repeated here)
+   ============================================================ */
+
+/* Typography utilities */
+.bh-display {
+  font-family: var(--font-brand-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.bh-headline {
+  font-family: var(--font-brand-display);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  line-height: 1.2;
+}
+
+.bh-data {
+  font-family: var(--font-brand-sans);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Surface utilities */
+.bh-surface {
+  background-color: var(--surface);
+  border: 1px solid var(--line);
+}
+
+.bh-glass {
+  background-color: color-mix(in srgb, var(--surface) 70%, transparent);
+  backdrop-filter: blur(12px);
+  border: 1px solid color-mix(in srgb, var(--line) 60%, transparent);
+}
+
+.bh-card {
+  background-color: color-mix(in srgb, var(--surface-elevated) 80%, transparent);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+}
+
+/* Focus utility */
+.bh-focus {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+
+/* Orbital concept visual marker */
+.bh-orbit-ring {
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--brand) 20%, transparent);
+  animation: var(--animate-spin-slow);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bh-orbit-ring {
+    animation: none;
   }
 }
