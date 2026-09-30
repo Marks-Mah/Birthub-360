@@ -587,7 +587,7 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
                 initial={{ opacity: 0, scale: 0 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.5, duration: 0.6 }}
-                className="absolute top-16 flex flex-col items-center"
+                className="absolute top-20 flex flex-col items-center"
               >
                 <motion.div
                   whileHover={{ scale: 1.15 }}
@@ -603,7 +603,7 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
                 initial={{ opacity: 0, scale: 0 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.6, duration: 0.6 }}
-                className="absolute bottom-16 flex flex-col items-center"
+                className="absolute bottom-24 flex flex-col items-center"
               >
                 <motion.div
                   whileHover={{ scale: 1.15 }}
@@ -619,7 +619,7 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
                 initial={{ opacity: 0, scale: 0 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.7, duration: 0.6 }}
-                className="absolute left-16 flex flex-col items-center"
+                className="absolute left-20 flex flex-col items-center"
               >
                 <motion.div
                   whileHover={{ scale: 1.15 }}
@@ -635,7 +635,7 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
                 initial={{ opacity: 0, scale: 0 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.8, duration: 0.6 }}
-                className="absolute right-16 flex flex-col items-center"
+                className="absolute right-20 flex flex-col items-center"
               >
                 <motion.div
                   whileHover={{ scale: 1.15 }}
