@@ -49,12 +49,12 @@ export function PerformanceTab({ leads, isDark }: PerformanceTabProps) {
   // 3. Brand Activity Data
   const brandData = useMemo(() => {
     return [
-      { month: 'Jan', atlasGR: 45, totalTrac: 30 },
-      { month: 'Fev', atlasGR: 52, totalTrac: 35 },
-      { month: 'Mar', atlasGR: 48, totalTrac: 42 },
-      { month: 'Abr', atlasGR: 70, totalTrac: 55 },
-      { month: 'Mai', atlasGR: 65, totalTrac: 60 },
-      { month: 'Jun', atlasGR: 85, totalTrac: 68 },
+      { month: 'Jan', birthhub360: 75 },
+      { month: 'Fev', birthhub360: 87 },
+      { month: 'Mar', birthhub360: 90 },
+      { month: 'Abr', birthhub360: 125 },
+      { month: 'Mai', birthhub360: 125 },
+      { month: 'Jun', birthhub360: 153 },
     ];
   }, []);
 
@@ -189,9 +189,9 @@ export function PerformanceTab({ leads, isDark }: PerformanceTabProps) {
                 />
                 <Line
                   type="monotone"
-                  name="TotalTrac"
-                  dataKey="totalTrac"
-                  stroke="#008FCE"
+                  name="Birth Hub 360"
+                  dataKey="birthhub360"
+                  stroke="#D4AF37"
                   strokeWidth={3}
                   dot={{ r: 4, strokeWidth: 2 }}
                   activeDot={{ r: 6 }}

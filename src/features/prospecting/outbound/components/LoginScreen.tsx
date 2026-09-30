@@ -13,7 +13,6 @@ import {
 } from 'lucide-react';
 import type { User, ThemeMode } from '../types.js';
 import { BirthubLogo } from './BirthubLogo.js';
-import { Birthub360Logo } from './Birthub360Logo.js';
 
 interface LoginScreenProps {
   onLogin: (user: User) => void;
@@ -21,32 +20,18 @@ interface LoginScreenProps {
   setTheme?: (theme: ThemeMode) => void;
 }
 
-type Company = 'atlas' | 'totaltrac';
-
 const BRAND = {
-  atlas: {
+  birthhub360: {
     label: 'Birth Hub 360',
     title: 'Birth Hub 360 CRM',
-    tagline: 'Segurança e Inteligência Logística',
-    subtitle: 'Login exclusivo Equipe Atlas',
+    tagline: 'Intelligent Business Command Center',
+    subtitle: 'Login exclusivo Equipe Birth Hub 360',
     placeholder: 'nome@birthhub360.com.br',
-    gradientFrom: '#FF5618',
-    gradientTo: '#FF8020',
-    hoverFrom: '#FF4500',
-    hoverTo: '#FF6510',
-    accent: '#FF5618',
-  },
-  totaltrac: {
-    label: 'Total Trac',
-    title: 'Total Trac CRM',
-    tagline: 'Conectar para Cuidar',
-    subtitle: 'Login exclusivo Equipe Total Trac',
-    placeholder: 'nome@totaltrac.com.br',
-    gradientFrom: '#374898',
-    gradientTo: '#008FCE',
-    hoverFrom: '#2D3B78',
-    hoverTo: '#007AB0',
-    accent: '#374898',
+    gradientFrom: '#D4AF37',
+    gradientTo: '#C69B52',
+    hoverFrom: '#C69B52',
+    hoverTo: '#D4AF37',
+    accent: '#D4AF37',
   },
 } as const;
 
@@ -60,21 +45,14 @@ const FEATURES = [
 ] as const;
 
 export function LoginScreen({ onLogin, isDark, setTheme }: LoginScreenProps) {
-  const [company, setCompany] = useState<Company>('atlas');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const brand = BRAND[company];
-  const Logo = company === 'atlas' ? BirthubLogo : Birthub360Logo;
-
-  const handleCompanyChange = (next: Company) => {
-    if (next === company) return;
-    setCompany(next);
-    setError('');
-  };
+  const brand = BRAND.birthhub360;
+  const Logo = BirthubLogo;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -91,15 +69,12 @@ export function LoginScreen({ onLogin, isDark, setTheme }: LoginScreenProps) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ email, password, company }),
+        body: JSON.stringify({ email, password, company: 'birthhub360' }),
       });
       const data = await res.json();
 
       if (data.success) {
-        // Para contas 'user', a marca é travada pelo servidor (a conta é exclusiva de uma empresa).
-        // Admin gerencia as duas marcas, então nele o tema segue o toggle escolhido aqui no login.
-        const effectiveCompany = data.user.role === 'admin' ? company : data.user.company;
-        onLogin({ ...data.user, company: effectiveCompany });
+        onLogin({ ...data.user, company: data.user.company || 'birthhub360' });
       } else {
         setError(data.error || 'Falha ao autenticar.');
       }
@@ -116,11 +91,10 @@ export function LoginScreen({ onLogin, isDark, setTheme }: LoginScreenProps) {
         <button
           type="button"
           onClick={() => setTheme(isDark ? 'light' : 'dark')}
-          className={`fixed top-5 right-5 z-20 p-2 rounded-xl border shadow-sm transition ${
-            isDark
-              ? 'bg-slate-900/80 backdrop-blur text-amber-400 border-slate-800 hover:bg-slate-800'
-              : 'bg-white/80 backdrop-blur text-slate-700 border-slate-200 hover:bg-slate-100'
-          }`}
+          className={`fixed top-5 right-5 z-20 p-2 rounded-xl border shadow-sm transition ${isDark
+            ? 'bg-slate-900/80 backdrop-blur text-amber-400 border-slate-800 hover:bg-slate-800'
+            : 'bg-white/80 backdrop-blur text-slate-700 border-slate-200 hover:bg-slate-100'
+            }`}
           title={isDark ? 'Mudar para Modo Claro' : 'Mudar para Modo Escuro'}
         >
           {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
@@ -176,38 +150,6 @@ export function LoginScreen({ onLogin, isDark, setTheme }: LoginScreenProps) {
       {/* Painel do formulário */}
       <div className="flex-1 min-w-0 flex items-center justify-center p-4 sm:p-8">
         <div className="w-full min-w-0 max-w-sm animate-in fade-in slide-in-from-bottom-2 duration-500">
-          {/* Chave de seleção Atlas / TotalTrac */}
-          <div className="flex justify-center mb-8">
-            <div
-              className={`relative flex p-1 rounded-full ${isDark ? 'bg-slate-900 border border-slate-800' : 'bg-slate-100 border border-slate-200'}`}
-            >
-              <div
-                className="absolute top-1 bottom-1 w-[calc(50%-4px)] rounded-full transition-transform duration-300 ease-out"
-                style={{
-                  background: `linear-gradient(to right, ${brand.gradientFrom}, ${brand.gradientTo})`,
-                  transform:
-                    company === 'atlas' ? 'translateX(0%)' : 'translateX(calc(100% + 8px))',
-                }}
-              ></div>
-              {(Object.keys(BRAND) as Company[]).map((key) => (
-                <button
-                  key={key}
-                  type="button"
-                  onClick={() => handleCompanyChange(key)}
-                  className={`relative z-10 w-28 py-2 text-sm font-medium rounded-full transition-colors ${
-                    company === key
-                      ? 'text-white'
-                      : isDark
-                        ? 'text-slate-400 hover:text-slate-200'
-                        : 'text-slate-500 hover:text-slate-700'
-                  }`}
-                >
-                  {BRAND[key].label}
-                </button>
-              ))}
-            </div>
-          </div>
-
           {/* Cabeçalho compacto — no desktop o painel visual já mostra o logo grande */}
           <div className="flex flex-col items-center lg:items-start mb-8">
             <div className="mb-5 lg:hidden">
@@ -244,11 +186,10 @@ export function LoginScreen({ onLogin, isDark, setTheme }: LoginScreenProps) {
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className={`w-full pl-10 pr-4 py-2.5 rounded-xl text-sm transition-colors border outline-none focus:ring-2 ${
-                      isDark
-                        ? 'bg-slate-950 border-slate-800 text-white'
-                        : 'bg-slate-50 border-slate-200 text-slate-900'
-                    }`}
+                    className={`w-full pl-10 pr-4 py-2.5 rounded-xl text-sm transition-colors border outline-none focus:ring-2 ${isDark
+                      ? 'bg-slate-950 border-slate-800 text-white'
+                      : 'bg-slate-50 border-slate-200 text-slate-900'
+                      }`}
                     style={{ '--tw-ring-color': `${brand.accent}33` } as React.CSSProperties}
                     onFocus={(e) => (e.currentTarget.style.borderColor = brand.accent)}
                     onBlur={(e) => (e.currentTarget.style.borderColor = '')}
@@ -272,11 +213,10 @@ export function LoginScreen({ onLogin, isDark, setTheme }: LoginScreenProps) {
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className={`w-full pl-10 pr-4 py-2.5 rounded-xl text-sm transition-colors border outline-none focus:ring-2 ${
-                      isDark
-                        ? 'bg-slate-950 border-slate-800 text-white'
-                        : 'bg-slate-50 border-slate-200 text-slate-900'
-                    }`}
+                    className={`w-full pl-10 pr-4 py-2.5 rounded-xl text-sm transition-colors border outline-none focus:ring-2 ${isDark
+                      ? 'bg-slate-950 border-slate-800 text-white'
+                      : 'bg-slate-50 border-slate-200 text-slate-900'
+                      }`}
                     style={{ '--tw-ring-color': `${brand.accent}33` } as React.CSSProperties}
                     onFocus={(e) => (e.currentTarget.style.borderColor = brand.accent)}
                     onBlur={(e) => (e.currentTarget.style.borderColor = '')}

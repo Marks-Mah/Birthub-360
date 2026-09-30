@@ -90,9 +90,6 @@ campaignsRouter.get('/users/:userId/leads', async (req: Request, res: Response) 
 });
 
 // Distribuição: leads atribuídos, agrupados por vendedor (para o painel do admin)
-// Distribuição agrupada por marca: Kauê e Jonathan (company='totaltrac') só aparecem
-// no grupo Total Trac, João (company='atlas') só no grupo Atlas — a separação vem do
-// cadastro do vendedor, não de nome hardcoded em lugar nenhum do código.
 campaignsRouter.get('/leads/distribution', async (_req: Request, res: Response) => {
   try {
     const db = await getDatabase();
@@ -107,12 +104,11 @@ campaignsRouter.get('/leads/distribution', async (_req: Request, res: Response) 
       email: row[1],
       name: row[2],
       role: row[3],
-      company: row[4] || 'totaltrac',
+      company: row[4] || 'birthhub360',
     }));
 
-    const groups: Record<'atlas' | 'totaltrac', { sellers: any[]; totalLeads: number }> = {
-      atlas: { sellers: [], totalLeads: 0 },
-      totaltrac: { sellers: [], totalLeads: 0 },
+    const groups: Record<string, { sellers: any[]; totalLeads: number }> = {
+      birthhub360: { sellers: [], totalLeads: 0 },
     };
 
     // Lista limitada a 200 por vendedor (renderização), mas totalLeads vem de um
@@ -139,7 +135,10 @@ campaignsRouter.get('/leads/distribution', async (_req: Request, res: Response) 
           leads.push(obj);
         });
       }
-      const groupKey: 'atlas' | 'totaltrac' = seller.company === 'atlas' ? 'atlas' : 'totaltrac';
+      const groupKey = seller.company || 'birthhub360';
+      if (!groups[groupKey]) {
+        groups[groupKey] = { sellers: [], totalLeads: 0 };
+      }
       groups[groupKey].sellers.push({ user: seller, leads, totalLeads: totalLeadsForSeller });
       groups[groupKey].totalLeads += totalLeadsForSeller;
     }

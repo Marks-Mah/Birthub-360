@@ -7,11 +7,6 @@ interface MyTasksTabProps {
   isDark: boolean;
 }
 
-const BRAND_LABEL: Record<'atlas' | 'totaltrac', string> = {
-  atlas: 'Birth Hub 360',
-  totaltrac: 'Total Trac',
-};
-
 function isOverdue(task: LeadTask): boolean {
   return (
     task.status === 'pending' &&
@@ -123,9 +118,8 @@ export function MyTasksTab({ user, isDark }: MyTasksTabProps) {
                     return (
                       <div
                         key={task.id}
-                        className={`flex items-start gap-3 p-3 rounded-xl border ${
-                          isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'
-                        }`}
+                        className={`flex items-start gap-3 p-3 rounded-xl border ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'
+                          }`}
                       >
                         <button
                           type="button"

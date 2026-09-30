@@ -230,7 +230,7 @@ integrationsRouter.post(
         exportResult.status === 'rate_limited'
           ? 429
           : exportResult.status === 'timeout' ||
-              (exportResult.httpStatus !== undefined && exportResult.httpStatus >= 500)
+            (exportResult.httpStatus !== undefined && exportResult.httpStatus >= 500)
             ? 502
             : 400;
       return res.status(httpStatus).json({
@@ -427,10 +427,10 @@ integrationsRouter.post(
           .json({ error: 'Roteiro de chamada excede o tamanho máximo permitido.' });
       }
 
-      const promptTask = `Você é a assistente de voz IA da Atlas Inteligência e Segurança Logística.
+      const promptTask = `Você é a assistente de voz IA da Birth Hub 360.
 Você está ligando para ${decisionMakerName || 'o decisor'} na empresa ${companyName || 'alvo'}.
-Objetivo da chamada: Apresentar de forma cordial e objetiva a solução Atlas para gestão de risco de transporte e solicitar 10 minutos de reunião com nosso consultor sênior.
-Roteiro base: "${script || 'Olá, estou entrando em contato em nome da Atlas para compartilhar nossos avanços em segurança e inteligência de frotas rodoviárias.'}"
+Objetivo da chamada: Apresentar de forma cordial e objetiva a solução Birth Hub 360 para inteligência comercial e solicitar 10 minutos de reunião com nosso consultor sênior.
+Roteiro base: "${script || 'Olá, estou entrando em contato em nome da Birth Hub 360 para compartilhar nossos avanços em inteligência comercial.'}"
 Fale com voz natural, cordial, em Português Brasileiro (PT-BR), aguarde a resposta do interlocutor e trate objeções com profissionalismo.`;
 
       const response = await fetch('https://api.bland.ai/v1/calls', {

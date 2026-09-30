@@ -23,16 +23,16 @@ export const BirthubLogo: React.FC<BirthubLogoProps> = ({
 
   const currentSize = sizeMap[size];
 
-  // Colors based on Atlas Brand Manual
-  // Pantone 172 C: #FF5618
-  // Pantone 447 C: #333333
-  const orangeFill = '#FF5618';
-  const textFill = theme === 'light' ? '#333333' : '#FFFFFF';
-  const subtitleColor = theme === 'light' ? '#666666' : '#94A3B8';
+  // Colors based on Birth Hub 360 Brand Manual
+  // Gold: #D4AF37
+  // Navy: #0B132B
+  const orangeFill = '#D4AF37';
+  const textFill = theme === 'light' ? '#0B132B' : '#FFFFFF';
+  const subtitleColor = theme === 'light' ? '#475569' : '#94A3B8';
 
   return (
     <div className={`flex items-center gap-2.5 select-none ${className}`}>
-      {/* Official 60-degree geometric Atlas Symbol (Parallelogram + Triangle) */}
+      {/* Birth Hub 360 Symbol */}
       <svg
         height={currentSize.symbolH}
         viewBox="0 0 160 120"
@@ -40,10 +40,10 @@ export const BirthubLogo: React.FC<BirthubLogoProps> = ({
         xmlns="http://www.w3.org/2000/svg"
         className="shrink-0 transition-transform duration-300 hover:scale-105"
       >
-        {/* Slanted Parallelogram 60 degrees */}
-        <polygon points="40,0 85,0 45,120 0,120" fill={orangeFill} />
-        {/* Adjacent Triangle */}
-        <polygon points="105,48 160,120 70,120" fill={orangeFill} />
+        {/* Circle */}
+        <circle cx="60" cy="60" r="50" fill={orangeFill} />
+        {/* Letter B */}
+        <text x="60" y="70" textAnchor="middle" fill="#FFFFFF" fontSize="36" fontWeight="bold" fontFamily="Arial, sans-serif">B</text>
       </svg>
 
       {variant !== 'symbol' && (
@@ -53,7 +53,7 @@ export const BirthubLogo: React.FC<BirthubLogoProps> = ({
               className={`font-black tracking-tight ${currentSize.textH}`}
               style={{ color: textFill, fontFamily: 'Montserrat, sans-serif' }}
             >
-              AtlasGR
+              Birth Hub 360
             </span>
             <span className="text-[10px] uppercase font-bold tracking-widest px-1.5 py-0.5 rounded bg-[#FF5618]/20 text-[#FF5618] border border-[#FF5618]/30">
               AI
@@ -65,7 +65,7 @@ export const BirthubLogo: React.FC<BirthubLogoProps> = ({
               className={`font-medium tracking-wide mt-0.5 ${currentSize.subH}`}
               style={{ color: subtitleColor }}
             >
-              Segurança e Inteligência Logística
+              Intelligent Business Command Center
             </span>
           )}
         </div>

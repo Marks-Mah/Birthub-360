@@ -49,7 +49,7 @@ export default function App() {
   const handleLogout = () => {
     setUser(null);
     localStorage.removeItem('atlas_user');
-    fetch('/api/auth/logout', { method: 'POST', credentials: 'include' }).catch(() => {});
+    fetch('/api/auth/logout', { method: 'POST', credentials: 'include' }).catch(() => { });
   };
 
   // Auth & RBAC (CPI follow-up): a sessão restaurada de localStorage no mount (acima)
@@ -163,21 +163,21 @@ export default function App() {
       return saved
         ? JSON.parse(saved)
         : [
-            {
-              id: 's-1',
-              query: 'Transportadoras e Operadores Logísticos em São Paulo',
-              limit: 3,
-              timestamp: new Date().toISOString(),
-              leadsCount: 3,
-            },
-            {
-              id: 's-2',
-              query: 'Frotas de Cargas Refrigeradas no Triângulo Mineiro',
-              limit: 3,
-              timestamp: new Date(Date.now() - 3600000).toISOString(),
-              leadsCount: 3,
-            },
-          ];
+          {
+            id: 's-1',
+            query: 'Transportadoras e Operadores Logísticos em São Paulo',
+            limit: 3,
+            timestamp: new Date().toISOString(),
+            leadsCount: 3,
+          },
+          {
+            id: 's-2',
+            query: 'Frotas de Cargas Refrigeradas no Triângulo Mineiro',
+            limit: 3,
+            timestamp: new Date(Date.now() - 3600000).toISOString(),
+            leadsCount: 3,
+          },
+        ];
     } catch {
       return [];
     }
@@ -303,7 +303,7 @@ export default function App() {
           },
           googleApiKey: effectiveGoogleKey,
           apolloApiKey: effectiveApolloKey,
-          company: user?.company === 'atlas' ? 'atlas' : 'totaltrac',
+          company: user?.company || 'birthhub360',
           bitrixWebhook: resolveBitrixWebhook(user, integrationsConfig),
           // Wave 1 (CPI) - Search Intent: filtros estruturados enviados individualmente
           // (o backend monta e valida o SearchIntent a partir destes campos).
@@ -491,7 +491,7 @@ export default function App() {
   };
 
   const isDark = theme === 'dark';
-  const brand = user?.company === 'totaltrac' ? 'totaltrac' : 'atlas';
+  const brand = user?.company || 'birthhub360';
 
   if (!user) {
     return (
@@ -506,19 +506,18 @@ export default function App() {
     return (
       <div
         data-brand={brand}
-        className={`min-h-screen flex flex-col antialiased transition-colors duration-200 ${
-          isDark ? 'bg-[#090d16] text-slate-100' : 'bg-slate-50 text-slate-900'
-        }`}
+        className={`min-h-screen flex flex-col antialiased transition-colors duration-200 ${isDark ? 'bg-[#090d16] text-slate-100' : 'bg-slate-50 text-slate-900'
+          }`}
       >
         {/* Header */}
         <Header
           activeTab="kanban"
-          setActiveTab={() => {}}
+          setActiveTab={() => { }}
           onExportJSON={handleExportJSON}
           onExportCSV={handleExportCSV}
           hasResults={false}
-          onToggleSidebar={() => {}}
-          onOpenBrandGuide={() => {}}
+          onToggleSidebar={() => { }}
+          onOpenBrandGuide={() => { }}
           theme={theme}
           setTheme={setTheme}
           user={user}
@@ -539,13 +538,12 @@ export default function App() {
                   type="button"
                   key={tab.id}
                   onClick={() => setSellerView(tab.id)}
-                  className={`px-4 py-1.5 text-xs font-semibold rounded-full transition ${
-                    sellerView === tab.id
-                      ? 'bg-[var(--brand-primary)] text-white shadow-sm'
-                      : isDark
-                        ? 'text-slate-400 hover:text-slate-200'
-                        : 'text-slate-600 hover:text-slate-900'
-                  }`}
+                  className={`px-4 py-1.5 text-xs font-semibold rounded-full transition ${sellerView === tab.id
+                    ? 'bg-[var(--brand-primary)] text-white shadow-sm'
+                    : isDark
+                      ? 'text-slate-400 hover:text-slate-200'
+                      : 'text-slate-600 hover:text-slate-900'
+                    }`}
                 >
                   {tab.label}
                 </button>
@@ -570,9 +568,8 @@ export default function App() {
   return (
     <div
       data-brand={brand}
-      className={`min-h-screen flex flex-col antialiased transition-colors duration-200 ${
-        isDark ? 'bg-[#090d16] text-slate-100' : 'bg-slate-50 text-slate-900'
-      }`}
+      className={`min-h-screen flex flex-col antialiased transition-colors duration-200 ${isDark ? 'bg-[#090d16] text-slate-100' : 'bg-slate-50 text-slate-900'
+        }`}
     >
       {/* Header */}
       <Header

@@ -467,7 +467,7 @@ apiRouter.post('/leads/:id/save', requireAuth, async (req: Request, res: Respons
               leadData.copies[ch],
               msgId,
             ]);
-          } catch (_e: any) {}
+          } catch (_e: any) { }
         }
       }
     }
@@ -529,16 +529,16 @@ apiRouter.post(
         ...rawLead,
         decision_makers: rawLead.decision_maker_name
           ? [
-              {
-                name: rawLead.decision_maker_name,
-                title: rawLead.decision_maker_title || '',
-                email: rawLead.decision_maker_email || dmEmails[0] || '',
-                emails: dmEmails,
-                phone: rawLead.decision_maker_phone || dmPhones[0] || '',
-                phones: dmPhones,
-                linkedin: rawLead.decision_maker_linkedin || '',
-              },
-            ]
+            {
+              name: rawLead.decision_maker_name,
+              title: rawLead.decision_maker_title || '',
+              email: rawLead.decision_maker_email || dmEmails[0] || '',
+              emails: dmEmails,
+              phone: rawLead.decision_maker_phone || dmPhones[0] || '',
+              phones: dmPhones,
+              linkedin: rawLead.decision_maker_linkedin || '',
+            },
+          ]
           : [],
       };
 
@@ -854,7 +854,7 @@ apiRouter.post('/prospect', heavyAiLimiter, requireAuth, async (req: Request, re
         employeeCount: searchIntent.employeeCount,
         annualRevenue: searchIntent.annualRevenue,
         decisionMakerRole: searchIntent.decisionMakerRole,
-        company: company === 'atlas' ? 'atlas' : 'totaltrac',
+        company: company || 'birthhub360',
         limit: searchIntent.targetCount,
       },
       searchIntent,
@@ -876,7 +876,7 @@ apiRouter.post('/prospect', heavyAiLimiter, requireAuth, async (req: Request, re
 
     const { segment, decisionMakerRole, decisionMakerTitles } = searchIntent;
 
-    const effectiveCompany: 'atlas' | 'totaltrac' = company === 'atlas' ? 'atlas' : 'totaltrac';
+    const effectiveCompany = company || 'birthhub360';
     const effectiveGoogleKey = (googleApiKey || process.env.GOOGLE_PLACES_API_KEY || '').trim();
     const effectiveApolloKey = (apolloApiKey || process.env.APOLLO_API_KEY || '').trim();
     const effectiveHunterKey = (hunterApiKey || process.env.HUNTER_API_KEY || '').trim();

@@ -90,7 +90,7 @@ export interface User {
   email: string;
   name: string;
   role: 'admin' | 'user' | 'gestor';
-  company?: 'atlas' | 'totaltrac';
+  company?: string;
   created_at?: string;
 }
 
@@ -103,7 +103,7 @@ export interface Lead {
   // encontrou - "por que esta empresa apareceu?" via GET /api/search-runs/:searchId.
   // Aditivo: leads gravados antes desta wave simplesmente não têm o campo.
   search_id?: string;
-  company?: 'atlas' | 'totaltrac';
+  company?: string;
   name: string;
   cnpj?: string;
   razao_social?: string;
@@ -225,7 +225,7 @@ export interface LeadTask {
 export interface Campaign {
   id: string;
   title: string;
-  company?: 'atlas' | 'totaltrac';
+  company?: string;
   segment: string;
   pitch: string;
   provider: string;

@@ -20,14 +20,14 @@ export function verifyHashedPassword(password: string, stored: string): boolean 
   return candidate.length === hashBuffer.length && crypto.timingSafeEqual(candidate, hashBuffer);
 }
 
-export function normalizeCompany(value: unknown): 'atlas' | 'totaltrac' | null {
+export function normalizeCompany(value: unknown): string | null {
   const v = String(value ?? '')
     .trim()
     .toLowerCase();
   if (!v) return null;
-  if (v.includes('total')) return 'totaltrac';
-  if (v.includes('atlas')) return 'atlas';
-  return null;
+  // Normaliza para birthhub360
+  if (v.includes('birthhub') || v.includes('birth hub') || v.includes('360')) return 'birthhub360';
+  return v;
 }
 
 export const authRouter = Router();

@@ -24,18 +24,12 @@ interface DistributionGroup {
 }
 
 interface DistributionResponse {
-  atlas: DistributionGroup;
-  totaltrac: DistributionGroup;
+  birthhub360: DistributionGroup;
 }
 
 interface LeadDistributionTabProps {
   isDark: boolean;
 }
-
-const BRAND_LABEL: Record<'atlas' | 'totaltrac', string> = {
-  atlas: 'Birth Hub 360',
-  totaltrac: 'Total Trac',
-};
 
 const STAGE_LABELS: Record<string, { label: string; className: string }> = {
   prospecto: {
@@ -73,8 +67,7 @@ function StageBadge({ stage }: { stage: string }) {
 }
 
 const EMPTY_DISTRIBUTION: DistributionResponse = {
-  atlas: { sellers: [], totalLeads: 0 },
-  totaltrac: { sellers: [], totalLeads: 0 },
+  birthhub360: { sellers: [], totalLeads: 0 },
 };
 
 export function LeadDistributionTab({ isDark }: LeadDistributionTabProps) {
@@ -87,8 +80,7 @@ export function LeadDistributionTab({ isDark }: LeadDistributionTabProps) {
       const res = await fetch('/api/leads/distribution');
       const data = await res.json();
       setDistribution({
-        atlas: data?.atlas || { sellers: [], totalLeads: 0 },
-        totaltrac: data?.totaltrac || { sellers: [], totalLeads: 0 },
+        birthhub360: data?.birthhub360 || { sellers: [], totalLeads: 0 },
       });
     } catch (err: any) {
       console.error(err);
@@ -109,8 +101,8 @@ export function LeadDistributionTab({ isDark }: LeadDistributionTabProps) {
     );
   }
 
-  const totalDistributed = distribution.atlas.totalLeads + distribution.totaltrac.totalLeads;
-  const brands: Array<'totaltrac' | 'atlas'> = ['totaltrac', 'atlas'];
+  const totalDistributed = distribution.birthhub360.totalLeads;
+  const brands: Array<'birthhub360'> = ['birthhub360'];
 
   return (
     <div className="space-y-8">
@@ -134,13 +126,9 @@ export function LeadDistributionTab({ isDark }: LeadDistributionTabProps) {
           <div key={brand} className="space-y-3">
             <div className="flex items-center gap-2">
               <span
-                className={`text-xs font-bold uppercase tracking-wide px-2.5 py-1 rounded-md ${
-                  brand === 'atlas'
-                    ? 'bg-[var(--brand-primary)]/10 text-[var(--brand-primary)]'
-                    : 'bg-[#008FCE]/10 text-[#008FCE]'
-                }`}
+                className={`text-xs font-bold uppercase tracking-wide px-2.5 py-1 rounded-md bg-[var(--brand-primary)]/10 text-[var(--brand-primary)]`}
               >
-                {BRAND_LABEL[brand]}
+                Birth Hub 360
               </span>
               <span className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>
                 {group.sellers.length} {group.sellers.length === 1 ? 'vendedor' : 'vendedores'} ·{' '}
