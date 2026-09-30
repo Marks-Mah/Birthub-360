@@ -519,7 +519,7 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
 
           {/* ── Interactive Orbital Centerpiece with Logo Animation & Call to Action ── */}
           <div
-            className="absolute right-0 top-[85%] hidden h-[900px] w-[900px] -translate-y-1/2 lg:block z-20 pointer-events-auto"
+            className="absolute right-0 top-[90%] hidden h-[900px] w-[900px] -translate-y-1/2 lg:block z-20 pointer-events-auto"
             style={{ transform: 'translateY(-50%) translateX(-5%)' }}
           >
             <div className="relative w-full h-full flex items-center justify-center">
