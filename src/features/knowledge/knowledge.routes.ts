@@ -15,7 +15,10 @@ import type { AuthRequest } from '../../shared/middlewares/authenticateToken.js'
 import { requireRole } from '../../shared/middlewares/requireRole.js';
 import { validateRequest } from '../../shared/middlewares/validateRequest.js';
 import { ingestionService } from './ingestion.service.js';
-import { knowledgeIngestionQueue, knowledgeIngestionQueueEvents } from '../../lib/queue/knowledgeIngestion.queue.js';
+import {
+  knowledgeIngestionQueue,
+  knowledgeIngestionQueueEvents,
+} from '../../lib/queue/knowledgeIngestion.queue.js';
 import { searchService } from './search.service.js';
 
 const router = Router();

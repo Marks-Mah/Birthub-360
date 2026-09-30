@@ -412,16 +412,18 @@ export function CommandPalette() {
                     }
                   }}
                   onClick={item.onSelect}
-                  className={`group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm transition-all duration-200 ${isActive
+                  className={`group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm transition-all duration-200 ${
+                    isActive
                       ? 'bg-brand/15 text-ink shadow-[0_0_15px_rgba(212,175,55,0.08)] ring-1 ring-brand/35 translate-x-0.5'
                       : 'text-ink-2 hover:bg-surface-2/70 hover:text-ink'
-                    }`}
+                  }`}
                 >
                   <span
-                    className={`flex h-7 w-7 items-center justify-center rounded-lg border shrink-0 transition-colors ${isActive
+                    className={`flex h-7 w-7 items-center justify-center rounded-lg border shrink-0 transition-colors ${
+                      isActive
                         ? 'border-brand/40 bg-brand/20 text-brand shadow-xs'
                         : 'border-line bg-surface text-ink-2 group-hover:border-brand/30 group-hover:text-brand'
-                      }`}
+                    }`}
                   >
                     <Icon className="h-3.5 w-3.5" />
                   </span>

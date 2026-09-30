@@ -39,7 +39,11 @@ export function ContextualCopilot({ context, onClose }: ContextualCopilotProps) 
           <h3 className="font-semibold text-sm">Copilot ({context})</h3>
         </div>
         {onClose && (
-          <button type="button" onClick={onClose} className="text-white hover:text-indigo-200 transition-colors">
+          <button
+            type="button"
+            onClick={onClose}
+            className="text-white hover:text-indigo-200 transition-colors"
+          >
             <X size={18} />
           </button>
         )}
@@ -56,7 +60,8 @@ export function ContextualCopilot({ context, onClose }: ContextualCopilotProps) 
           </p>
           <div className="flex flex-col gap-2">
             {currentSuggestions.map((suggestion, idx) => (
-              <button type="button"
+              <button
+                type="button"
                 key={idx}
                 className="text-left text-xs bg-indigo-50 text-indigo-700 p-2 rounded-md hover:bg-indigo-100 transition-colors flex items-center gap-2 border border-indigo-100"
                 onClick={() => setInput(suggestion)}
@@ -78,7 +83,10 @@ export function ContextualCopilot({ context, onClose }: ContextualCopilotProps) 
             value={input}
             onChange={(e) => setInput(e.target.value)}
           />
-          <button type="button" className="absolute right-2 p-1.5 text-indigo-600 hover:bg-indigo-50 rounded-md transition-colors">
+          <button
+            type="button"
+            className="absolute right-2 p-1.5 text-indigo-600 hover:bg-indigo-50 rounded-md transition-colors"
+          >
             <Send size={16} />
           </button>
         </div>

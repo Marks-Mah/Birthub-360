@@ -36,11 +36,11 @@ router.post(
       } catch (error: any) {
         if (error instanceof MailerNotConfiguredError) {
           logger.warn(
-            { email: user.email },
+            { userId: user.id },
             'E-mail de boas-vindas não enviado — SMTP_HOST não configurado.',
           );
         } else {
-          logger.error({ err: error, email: user.email }, 'Falha ao enviar e-mail de boas-vindas.');
+          logger.error({ err: error, userId: user.id }, 'Falha ao enviar e-mail de boas-vindas.');
         }
       }
       res.json({ success: true });

@@ -1,4 +1,9 @@
-import { BaseProvider, type ProviderResponse, type ProviderInput, type ProviderContext } from './BaseProvider.js';
+import {
+  BaseProvider,
+  type ProviderResponse,
+  type ProviderInput,
+  type ProviderContext,
+} from './BaseProvider.js';
 import type { WebSocket } from 'ws';
 import { logger } from '../../logger.js';
 

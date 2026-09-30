@@ -96,7 +96,8 @@ export function InspectorPanel({ selectedNode }: InspectorPanelProps) {
             {regItem?.category || data.category || 'Node'}
           </span>
           <div className="flex items-center gap-1.5">
-            <button type="button"
+            <button
+              type="button"
               onClick={() => toggleFavorite(type)}
               className={`p-1 rounded hover:bg-white/10 ${isFav ? 'text-amber-400 drop-shadow-[0_0_5px_rgba(251,191,36,0.5)]' : 'text-gray-500 hover:text-gray-400'}`}
               title={isFav ? 'Remover dos Favoritos' : 'Favoritar Nó'}
@@ -122,7 +123,8 @@ export function InspectorPanel({ selectedNode }: InspectorPanelProps) {
         {(
           ['general', 'config', 'variables', 'connections', 'analytics', 'documentation'] as const
         ).map((tab) => (
-          <button type="button"
+          <button
+            type="button"
             key={tab}
             onClick={() => setActiveTab(tab)}
             className={`pb-2 pt-2.5 px-3 border-b-2 text-[11px] font-bold uppercase tracking-wide transition-colors whitespace-nowrap shrink-0 ${
@@ -219,7 +221,8 @@ export function InspectorPanel({ selectedNode }: InspectorPanelProps) {
               <hr className="border-white/10" />
 
               {/* Delete Action button */}
-              <button type="button"
+              <button
+                type="button"
                 onClick={() => deleteNode(id)}
                 className="w-full py-2 px-3 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors border border-red-500/20 shadow-[0_0_10px_rgba(239,68,68,0.1)]"
               >
@@ -292,7 +295,8 @@ export function InspectorPanel({ selectedNode }: InspectorPanelProps) {
                 <h3 className="text-xs font-bold text-gray-300 flex items-center gap-1.5 uppercase tracking-wider">
                   <Variable className="w-3.5 h-3.5 text-iris" /> Bound State Variables
                 </h3>
-                <button type="button"
+                <button
+                  type="button"
                   onClick={() => setShowAddVar(!showAddVar)}
                   className="text-[10px] font-bold text-iris hover:bg-iris/20 px-1.5 py-0.5 rounded flex items-center gap-0.5 border border-transparent hover:border-indigo-500/30 transition-colors"
                 >

@@ -689,22 +689,22 @@ export function SwarmDashboard() {
                     />
                     <div className="relative z-30">
                       <div className="flex items-center justify-between mb-2">
-                      <span className="font-bold text-sm tracking-wide text-ink">
-                        {getAgentName(msg.agent)}
-                      </span>
-                      <span className="text-ink-2 text-[10px] uppercase font-black tracking-widest">
-                        {msg.timestamp.toLocaleTimeString()}
-                      </span>
-                    </div>
-                    {msg.status === 'thinking' ? (
-                      <div className="flex items-center gap-2 text-ink-2 text-sm font-medium">
-                        <Loader2 size={14} className="animate-spin" /> Processando...
+                        <span className="font-bold text-sm tracking-wide text-ink">
+                          {getAgentName(msg.agent)}
+                        </span>
+                        <span className="text-ink-2 text-[10px] uppercase font-black tracking-widest">
+                          {msg.timestamp.toLocaleTimeString()}
+                        </span>
                       </div>
-                    ) : (
-                      <p className="text-ink text-[15px] leading-relaxed font-medium whitespace-pre-wrap">
-                        {msg.text}
-                      </p>
-                    )}
+                      {msg.status === 'thinking' ? (
+                        <div className="flex items-center gap-2 text-ink-2 text-sm font-medium">
+                          <Loader2 size={14} className="animate-spin" /> Processando...
+                        </div>
+                      ) : (
+                        <p className="text-ink text-[15px] leading-relaxed font-medium whitespace-pre-wrap">
+                          {msg.text}
+                        </p>
+                      )}
                     </div>
                   </div>
                 </motion.div>
@@ -758,7 +758,10 @@ export function SwarmDashboard() {
                 className={`absolute right-3 top-1/2 -translate-y-1/2 w-12 h-12 bg-gradient-to-r ${accent.gradient} active:scale-95 hover:-translate-y-1 hover:shadow-lg hover:shadow-brand/20 disabled:opacity-50 disabled:hover:scale-100 disabled:hover:-translate-y-1/2 disabled:cursor-not-allowed rounded-xl flex items-center justify-center text-on-brand transition-all shadow-md z-50 pointer-events-auto cursor-pointer relative overflow-hidden group/btn`}
               >
                 <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent group-hover/btn:animate-[shimmer_1.5s_infinite] pointer-events-none" />
-                <Send size={20} className="ml-1 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform" />
+                <Send
+                  size={20}
+                  className="ml-1 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform"
+                />
               </button>
             )}
           </div>

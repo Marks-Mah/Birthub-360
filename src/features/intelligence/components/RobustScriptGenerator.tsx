@@ -489,10 +489,11 @@ export function RobustScriptGenerator() {
                 <button
                   type="button"
                   onClick={handleCopy}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors ${copied
-                    ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 shadow-[0_0_15px_rgba(16,185,129,0.2)]'
-                    : 'bg-white/5 text-slate-300 hover:bg-white/10 border border-white/10'
-                    }`}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors ${
+                    copied
+                      ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 shadow-[0_0_15px_rgba(16,185,129,0.2)]'
+                      : 'bg-white/5 text-slate-300 hover:bg-white/10 border border-white/10'
+                  }`}
                 >
                   {copied ? (
                     <>

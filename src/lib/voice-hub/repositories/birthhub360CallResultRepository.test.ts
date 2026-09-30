@@ -90,7 +90,10 @@ describe('birthhub360CallResultRepository.listBirthub360CallResultsForTenant', (
     vi.mocked(prisma.birthhub360CallResult.findMany).mockResolvedValue([{ id: 'row-1' }] as any);
     vi.mocked(prisma.birthhub360CallResult.count).mockResolvedValue(1);
 
-    const result = await listBirthub360CallResultsForTenant('tenant-abc', { page: 1, pageSize: 20 });
+    const result = await listBirthub360CallResultsForTenant('tenant-abc', {
+      page: 1,
+      pageSize: 20,
+    });
 
     expect(prisma.birthhub360CallResult.findMany).toHaveBeenCalledWith({
       where: { organizationId: 'tenant-abc' },

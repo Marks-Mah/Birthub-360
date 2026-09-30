@@ -182,7 +182,10 @@ export function UserKanbanBoard({ user, isDark }: UserKanbanBoardProps) {
               "Atue como SDR da Atlas. Gere um script de 30 segundos focando em redução de risco e
               segurança logística para o decisor X."
             </p>
-            <button type="button" className="w-full py-1.5 text-xs bg-[var(--brand-primary)]/10 text-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/20 rounded font-medium transition-colors">
+            <button
+              type="button"
+              className="w-full py-1.5 text-xs bg-[var(--brand-primary)]/10 text-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/20 rounded font-medium transition-colors"
+            >
               Usar Template
             </button>
           </div>
@@ -199,7 +202,10 @@ export function UserKanbanBoard({ user, isDark }: UserKanbanBoardProps) {
               "Liste 3 objeções comuns sobre preço em rastreamento e como contorná-las usando os
               diferenciais da TotalTrac."
             </p>
-            <button type="button" className="w-full py-1.5 text-xs bg-[#008FCE]/10 text-[#008FCE] hover:bg-[#008FCE]/20 rounded font-medium transition-colors">
+            <button
+              type="button"
+              className="w-full py-1.5 text-xs bg-[#008FCE]/10 text-[#008FCE] hover:bg-[#008FCE]/20 rounded font-medium transition-colors"
+            >
               Usar Template
             </button>
           </div>
@@ -216,7 +222,10 @@ export function UserKanbanBoard({ user, isDark }: UserKanbanBoardProps) {
               "Escreva um email curto (max 4 linhas) para um Diretor de Logística focado em
               otimização de frota."
             </p>
-            <button type="button" className="w-full py-1.5 text-xs bg-purple-500/10 text-purple-500 hover:bg-purple-500/20 rounded font-medium transition-colors">
+            <button
+              type="button"
+              className="w-full py-1.5 text-xs bg-purple-500/10 text-purple-500 hover:bg-purple-500/20 rounded font-medium transition-colors"
+            >
               Usar Template
             </button>
           </div>

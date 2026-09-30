@@ -75,7 +75,11 @@ export const generateEmbedding = async (
 
       const data = (await response.json()) as { data?: Array<{ embedding?: unknown }> };
       const embeddingResult = data.data?.[0]?.embedding;
-      if (!Array.isArray(embeddingResult) || embeddingResult.length === 0 || !embeddingResult.every(Number.isFinite)) {
+      if (
+        !Array.isArray(embeddingResult) ||
+        embeddingResult.length === 0 ||
+        !embeddingResult.every(Number.isFinite)
+      ) {
         throw new Error('O provedor retornou um embedding inválido.');
       }
       // Mesma guarda de local-embeddings.ts: a coluna é vector(768) — um provedor gateway que
@@ -94,16 +98,11 @@ export const generateEmbedding = async (
   if (shouldUseQdrant() && options?.tenantId && options?.documentId) {
     try {
       await initializeQdrantCollection();
-      await upsertEmbedding(
-        options.tenantId,
-        options.documentId,
-        embedding,
-        {
-          ...options.metadata,
-          tenantId: options.tenantId,
-          documentId: options.documentId,
-        },
-      );
+      await upsertEmbedding(options.tenantId, options.documentId, embedding, {
+        ...options.metadata,
+        tenantId: options.tenantId,
+        documentId: options.documentId,
+      });
     } catch (error) {
       console.error('Erro ao armazenar embedding no Qdrant (continuando sem Qdrant):', error);
       // Não falhar a geração de embedding se Qdrant falhar
@@ -134,7 +133,9 @@ export const searchSemanticEmbeddings = async (
     return await searchEmbeddings(tenantId, queryVector, {
       limit: options?.limit,
       scoreThreshold: options?.scoreThreshold,
-      filter: options?.documentType ? { tenantId, documentType: options.documentType } : { tenantId },
+      filter: options?.documentType
+        ? { tenantId, documentType: options.documentType }
+        : { tenantId },
     });
   } catch (error) {
     console.error('Erro ao buscar embeddings no Qdrant:', error);

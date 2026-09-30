@@ -58,7 +58,7 @@ const cardVariants = cva('relative overflow-hidden rounded-card text-ink', {
 
 export interface CardProps
   extends React.HTMLAttributes<HTMLDivElement>,
-  VariantProps<typeof cardVariants> {
+    VariantProps<typeof cardVariants> {
   /** Faixa de destaque no topo do card — usa os tokens de marca (`--brand`/`--brand-2`). */
   accentBar?: boolean;
   /** Ativa o efeito de borda em órbita contínua durante carregamento. */
@@ -147,7 +147,19 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
         onPointerMove={handlePointerMove}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
-        {...(onClick ? { role: 'button', tabIndex: 0, onKeyDown: (e: React.KeyboardEvent<HTMLDivElement>) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick?.(e as unknown as React.MouseEvent<HTMLDivElement>); } }, onClick: handleClick } : {})}
+        {...(onClick
+          ? {
+              role: 'button',
+              tabIndex: 0,
+              onKeyDown: (e: React.KeyboardEvent<HTMLDivElement>) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  onClick?.(e as unknown as React.MouseEvent<HTMLDivElement>);
+                }
+              },
+              onClick: handleClick,
+            }
+          : {})}
         {...props}
       >
         {spotlight && isHovered && (

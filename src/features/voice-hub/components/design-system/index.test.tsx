@@ -257,7 +257,9 @@ describe('design-system primitives', () => {
         const [open, setOpen] = useState(false);
         return (
           <>
-            <button type="button" onClick={() => setOpen(true)}>Abrir</button>
+            <button type="button" onClick={() => setOpen(true)}>
+              Abrir
+            </button>
             <Modal isOpen={open} onClose={() => setOpen(false)} title="Detalhes">
               <p>Conteúdo do modal</p>
             </Modal>
@@ -280,7 +282,12 @@ describe('design-system primitives', () => {
     it('traps Tab within the dialog instead of leaking focus to the page behind it', async () => {
       const user = userEvent.setup();
       render(
-        <Modal isOpen onClose={() => {}} title="Detalhes" footer={<button type="button">Confirmar</button>}>
+        <Modal
+          isOpen
+          onClose={() => {}}
+          title="Detalhes"
+          footer={<button type="button">Confirmar</button>}
+        >
           <p>Conteúdo do modal</p>
         </Modal>,
       );

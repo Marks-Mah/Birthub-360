@@ -573,7 +573,9 @@ export function AISuiteHub() {
                 <div className="flex items-start gap-3 relative z-30">
                   <div
                     className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 transition-colors shadow-sm group-hover:shadow-md ${
-                      isSelected ? `${accent.bgSoft} ${accent.text}` : 'bg-surface-2 text-ink-2 group-hover:text-ink'
+                      isSelected
+                        ? `${accent.bgSoft} ${accent.text}`
+                        : 'bg-surface-2 text-ink-2 group-hover:text-ink'
                     }`}
                   >
                     <Icon className="w-4 h-4" />
@@ -600,7 +602,7 @@ export function AISuiteHub() {
 
         {/* Coluna Direita: Console Interativo de Execução */}
         <div className="lg:col-span-7 space-y-4">
-          <Card 
+          <Card
             className="border border-border/60 shadow-sm bg-surface relative overflow-hidden group/console transition-all duration-500 hover:shadow-lg"
             onPointerMove={handleMouseMove}
           >

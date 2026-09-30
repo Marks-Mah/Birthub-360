@@ -88,7 +88,8 @@ export const BrandGuideModal: React.FC<BrandGuideModalProps> = ({ isOpen, onClos
             </span>
           </div>
 
-          <button type="button"
+          <button
+            type="button"
             onClick={onClose}
             className="p-2 rounded-xl bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 transition"
           >
@@ -149,7 +150,15 @@ export const BrandGuideModal: React.FC<BrandGuideModalProps> = ({ isOpen, onClos
               {primaryColors.map((col, idx) => (
                 <div
                   key={idx}
-                  role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={() => copyColor(col.hex)}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      e.currentTarget.click();
+                    }
+                  }}
+                  onClick={() => copyColor(col.hex)}
                   className="group cursor-pointer bg-slate-950 rounded-2xl p-3.5 border border-slate-800 hover:border-slate-600 transition space-y-3"
                 >
                   <div
@@ -184,7 +193,15 @@ export const BrandGuideModal: React.FC<BrandGuideModalProps> = ({ isOpen, onClos
               {secondaryColors.map((col, idx) => (
                 <div
                   key={idx}
-                  role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={() => copyColor(col.hex)}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      e.currentTarget.click();
+                    }
+                  }}
+                  onClick={() => copyColor(col.hex)}
                   className="group cursor-pointer bg-slate-950 rounded-2xl p-3.5 border border-slate-800 hover:border-slate-600 transition space-y-3"
                 >
                   <div
@@ -231,7 +248,8 @@ export const BrandGuideModal: React.FC<BrandGuideModalProps> = ({ isOpen, onClos
 
         {/* Footer */}
         <div className="p-4 border-t border-slate-800 bg-slate-950 flex justify-end">
-          <button type="button"
+          <button
+            type="button"
             onClick={onClose}
             className="px-5 py-2 bg-[#FF5618] hover:bg-[#FF6B10] text-white text-xs font-bold rounded-xl transition"
           >

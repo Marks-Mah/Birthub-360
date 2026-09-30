@@ -81,7 +81,8 @@ export function VersionHistoryPanel() {
               </p>
             </div>
           </div>
-          <button type="button"
+          <button
+            type="button"
             onClick={closeVersionHistory}
             aria-label="Fechar histórico de publicações"
             className="p-2 text-slate-400 hover:bg-slate-800 rounded-full transition-colors"
@@ -124,7 +125,8 @@ export function VersionHistoryPanel() {
             <div className="flex flex-col items-center justify-center py-10 text-center gap-2">
               <ShieldAlert className="w-8 h-8 text-red-400" />
               <p className="text-sm text-red-300 font-semibold">{versionHistoryError}</p>
-              <button type="button"
+              <button
+                type="button"
                 onClick={() => fetchWorkflowVersions()}
                 className="mt-2 text-xs font-semibold text-iris hover:text-iris"
               >
@@ -164,14 +166,16 @@ export function VersionHistoryPanel() {
                 {confirmingVersion === v.version ? (
                   <div className="flex items-center gap-1.5 shrink-0">
                     <span className="text-[10px] text-amber-300 font-semibold mr-1">Confirma?</span>
-                    <button type="button"
+                    <button
+                      type="button"
                       onClick={() => handleConfirmRollback(v.version)}
                       disabled={isRollingBack}
                       className="px-2 py-1 rounded-md bg-red-600/90 hover:bg-red-500 text-white text-[11px] font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                     >
                       Sim, restaurar
                     </button>
-                    <button type="button"
+                    <button
+                      type="button"
                       onClick={() => setConfirmingVersion(null)}
                       disabled={isRollingBack}
                       className="px-2 py-1 rounded-md bg-white/10 hover:bg-white/20 text-gray-300 text-[11px] font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
@@ -180,7 +184,8 @@ export function VersionHistoryPanel() {
                     </button>
                   </div>
                 ) : (
-                  <button type="button"
+                  <button
+                    type="button"
                     onClick={() => setConfirmingVersion(v.version)}
                     disabled={isRollingBack}
                     aria-label={`Restaurar versão ${v.version}`}

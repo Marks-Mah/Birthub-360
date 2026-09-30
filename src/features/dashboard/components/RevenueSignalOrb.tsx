@@ -184,7 +184,19 @@ export function RevenueSignalOrb({
         </Badge>
       </div>
 
-      <div className="h-[15rem] pt-16 cursor-pointer focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-bg" aria-hidden="true" role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={handleOrbClick}>
+      <div
+        className="h-[15rem] pt-16 cursor-pointer focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
+        aria-hidden="true"
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            e.currentTarget.click();
+          }
+        }}
+        onClick={handleOrbClick}
+      >
         <Canvas
           dpr={[1, 1.5]}
           frameloop={shouldAnimate ? 'always' : 'demand'}

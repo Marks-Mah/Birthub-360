@@ -159,11 +159,11 @@ export function VirtualTable<T>({
                 onKeyDown={
                   onRowClick && row
                     ? (e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        onRowClick(row, virtualRow.index);
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          onRowClick(row, virtualRow.index);
+                        }
                       }
-                    }
                     : undefined
                 }
                 tabIndex={onRowClick && row ? 0 : -1}

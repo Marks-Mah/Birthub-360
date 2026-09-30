@@ -5,7 +5,9 @@ import { logger } from '../logger.js';
 
 export const KNOWLEDGE_INGESTION_QUEUE_NAME = 'knowledge-ingestion-queue';
 
-export const knowledgeIngestionQueueEvents = queuesEnabled ? new QueueEvents(KNOWLEDGE_INGESTION_QUEUE_NAME, { connection }) : null;
+export const knowledgeIngestionQueueEvents = queuesEnabled
+  ? new QueueEvents(KNOWLEDGE_INGESTION_QUEUE_NAME, { connection })
+  : null;
 
 export const knowledgeIngestionQueue = queuesEnabled
   ? new Queue(KNOWLEDGE_INGESTION_QUEUE_NAME, {
@@ -23,4 +25,3 @@ registerQueueForMetrics(KNOWLEDGE_INGESTION_QUEUE_NAME, knowledgeIngestionQueue)
 knowledgeIngestionQueue?.on('error', (err) =>
   logger.warn({ message: err.message }, 'knowledgeIngestionQueue offline'),
 );
-

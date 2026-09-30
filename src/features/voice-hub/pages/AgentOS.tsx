@@ -59,7 +59,8 @@ export default function AgentOS() {
       {/* OS Header */}
       <div className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-6 py-4 shrink-0 flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <button type="button"
+          <button
+            type="button"
             onClick={() => navigate('/dashboard/agents')}
             className="text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
           >
@@ -99,7 +100,8 @@ export default function AgentOS() {
             { id: 'playground', label: 'Playground', icon: <PlaySquare className="h-4 w-4" /> },
             { id: 'health', label: 'Health & Analytics', icon: <Activity className="h-4 w-4" /> },
           ].map((tab) => (
-            <button type="button"
+            <button
+              type="button"
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={`flex items-center gap-2 py-3 border-b-2 transition-colors ${activeTab === tab.id ? 'border-brand text-brand' : 'border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}`}
@@ -146,7 +148,8 @@ export default function AgentOS() {
                     icon: <Shield className="h-4 w-4" />,
                   },
                 ].map((item) => (
-                  <button type="button"
+                  <button
+                    type="button"
                     key={item.id}
                     onClick={() => setBuilderTab(item.id)}
                     className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-semibold transition-colors text-left ${builderTab === item.id ? 'bg-brand/10 text-brand' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'}`}
@@ -424,7 +427,10 @@ Consultivo, profissional, calmo e seguro.`}
                       placeholder="Digite uma mensagem para testar o agente..."
                       className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg pl-4 pr-12 py-3 text-sm focus:outline-none focus:border-brand"
                     />
-                    <button type="button" className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-brand text-white rounded-md hover:bg-brand-600 transition-colors">
+                    <button
+                      type="button"
+                      className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-brand text-white rounded-md hover:bg-brand-600 transition-colors"
+                    >
                       <ArrowLeft className="h-4 w-4 rotate-180" />
                     </button>
                   </div>

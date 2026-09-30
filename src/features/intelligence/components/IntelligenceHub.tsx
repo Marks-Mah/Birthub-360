@@ -265,7 +265,11 @@ export function IntelligenceHub({ initialTab }: IntelligenceHubProps) {
                       >
                         <Icon size={16} />
                       </div>
-                      <CardTitle className={`${accent.text} text-sm group-hover:text-brand transition-colors`}>{tab.label}</CardTitle>
+                      <CardTitle
+                        className={`${accent.text} text-sm group-hover:text-brand transition-colors`}
+                      >
+                        {tab.label}
+                      </CardTitle>
                       <CardDescription className="mt-1 text-xs leading-snug line-clamp-2">
                         {tab.description}
                       </CardDescription>
