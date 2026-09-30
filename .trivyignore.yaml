@@ -52,3 +52,7 @@ vulnerabilities:
     expired_at: 2026-10-30
     statement: >-
       nodemailer high vulnerability, see AUDIT_WAIVERS.md
+  - id: GHSA-7X8W-G892-F33R
+    expired_at: 2026-10-30
+    statement: >-
+      nodemailer high vulnerability, see AUDIT_WAIVERS.md

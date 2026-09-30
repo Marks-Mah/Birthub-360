@@ -34,7 +34,6 @@ export const csrfProtection = (
       // this is our only CSRF signal — outside production, tooling (tests, curl, etc.) may not send it.
       if (isProduction) {
         return res.status(403).json({ error: 'Validação de origem de segurança (CSRF) falhou.' });
-
       }
       return next();
     }
@@ -44,11 +43,9 @@ export const csrfProtection = (
         const parsedOrigin = new URL(origin).host;
         if (parsedOrigin !== host) {
           return res.status(403).json({ error: 'Validação de origem de segurança (CSRF) falhou.' });
-
         }
       } catch {
         return res.status(403).json({ error: 'Validação de origem de segurança (CSRF) falhou.' });
-
       }
     }
   }
