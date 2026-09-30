@@ -445,7 +445,7 @@ export default function App() {
                           </ProtectedRoute>
                         }
                       />
-                      <Route path="/" element={<LandingInnovative />} />
+                      <Route path="/" element={<WelcomeScreen />} />
                       <Route path="/welcome" element={<WelcomeScreen />} />
                       <Route path="/landing-new" element={<LandingInnovative />} />
                       <Route path="/privacy" element={<PrivacyPolicy />} />

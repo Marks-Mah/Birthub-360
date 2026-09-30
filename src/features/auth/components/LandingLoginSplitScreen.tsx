@@ -89,10 +89,10 @@ export function CommandOrb({ size = 240 }: { size?: number }) {
   const center = size / 2;
   const nodeSize = 8;
   const nodes = [
-    { x: center,      y: center - r1, label: 'DADOS',        color: '#1677ff' },
-    { x: center + r1, y: center,      label: 'INTELIGÊNCIA', color: '#c53678' },
-    { x: center,      y: center + r1, label: 'DECISÃO',      color: '#d4af37' },
-    { x: center - r1, y: center,      label: 'EXECUÇÃO',     color: '#0f9d64' },
+    { x: center, y: center - r1, label: 'DADOS', color: '#1677ff' },
+    { x: center + r1, y: center, label: 'INTELIGÊNCIA', color: '#c53678' },
+    { x: center, y: center + r1, label: 'DECISÃO', color: '#d4af37' },
+    { x: center - r1, y: center, label: 'EXECUÇÃO', color: '#0f9d64' },
   ];
   return (
     <>
@@ -125,9 +125,9 @@ export function CommandOrb({ size = 240 }: { size?: number }) {
             reduceMotion
               ? {}
               : {
-                  transformOrigin: `${center}px ${center}px`,
-                  animation: 'bh-orb-spin 60s linear infinite',
-                }
+                transformOrigin: `${center}px ${center}px`,
+                animation: 'bh-orb-spin 60s linear infinite',
+              }
           }
         />
         {/* Inner ring — counter-clockwise */}
@@ -142,9 +142,9 @@ export function CommandOrb({ size = 240 }: { size?: number }) {
             reduceMotion
               ? {}
               : {
-                  transformOrigin: `${center}px ${center}px`,
-                  animation: 'bh-orb-spin 40s linear infinite reverse',
-                }
+                transformOrigin: `${center}px ${center}px`,
+                animation: 'bh-orb-spin 40s linear infinite reverse',
+              }
           }
         />
         {/* Center nucleus */}
@@ -232,11 +232,11 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
 
     const result = isSignUp
       ? await authClient.signUp.email({
-          email,
-          password,
-          name: name || email.split('@')[0],
-          callbackURL: '/app',
-        })
+        email,
+        password,
+        name: name || email.split('@')[0],
+        callbackURL: '/app',
+      })
       : await authClient.signIn.email({ email, password, rememberMe, callbackURL: '/app' });
 
     if (result.error) {
@@ -338,12 +338,21 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
             <div className="flex shrink-0 items-center gap-3">
               <BirthHubLogo variant="horizontal" className="h-8 text-[#0B132B]" />
             </div>
-            <nav className="hidden xl:flex items-center gap-6 text-xs font-semibold tracking-wide text-[#0B132B]/70">
-              <span className="cursor-pointer hover:text-brand transition-colors">Soluções</span>
-              <span className="cursor-pointer hover:text-brand transition-colors">Recursos</span>
-              <span className="cursor-pointer hover:text-brand transition-colors">Segmentos</span>
-              <span className="cursor-pointer hover:text-brand transition-colors">Preços</span>
-              <span className="cursor-pointer hover:text-brand transition-colors">Conteúdo</span>
+            <nav className="hidden xl:flex items-center gap-3">
+              {['Soluções', 'Recursos', 'Segmentos', 'Preços', 'Conteúdo'].map((item, i) => (
+                <motion.button
+                  key={item}
+                  type="button"
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 + i * 0.05, duration: 0.5 }}
+                  whileHover={{ scale: 1.08, backgroundColor: 'rgba(212,175,55,0.15)' }}
+                  whileTap={{ scale: 0.95 }}
+                  className="relative px-5 py-2.5 rounded-full border-2 border-[#D4AF37]/50 text-sm font-bold tracking-wide text-[#0B132B] hover:border-[#D4AF37] transition-all duration-300 cursor-pointer shadow-sm hover:shadow-md"
+                >
+                  {item}
+                </motion.button>
+              ))}
             </nav>
             <div className="flex shrink-0 items-center gap-4 whitespace-nowrap">
               <button
@@ -356,16 +365,18 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
                 PT-BR
                 <ChevronDown className="w-3 h-3 ml-1" />
               </button>
-              <button
+              <motion.button
                 type="button"
                 onClick={() => {
                   SoundFX.play('click');
                   navigate('/login');
                 }}
-                className="rounded-full border border-[#0B132B]/20 bg-white/80 px-5 py-2 text-xs font-bold tracking-wide text-[#0B132B] shadow-xs hover:border-brand hover:text-brand hover:bg-white transition-all cursor-pointer"
+                whileHover={{ scale: 1.08, boxShadow: '0 8px 30px rgba(212,175,55,0.5)' }}
+                whileTap={{ scale: 0.95 }}
+                className="rounded-full border-2 border-[#D4AF37] bg-[#D4AF37] px-6 py-2.5 text-sm font-bold tracking-wide text-[#0B132B] shadow-lg hover:bg-[#dfba41] hover:shadow-xl transition-all duration-300 cursor-pointer"
               >
                 Acessar Hub &rarr;
-              </button>
+              </motion.button>
             </div>
           </header>
 
@@ -396,11 +407,17 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
               {/* Tagline */}
               <motion.div
                 variants={staggerItem}
-                className="font-display text-2xl sm:text-3xl font-medium leading-snug text-[#0B132B]"
+                className="font-display text-2xl sm:text-3xl font-medium leading-snug"
               >
-                <RevealLine delay={0.35}>Dados que Conectam,</RevealLine>
-                <RevealLine delay={0.5}>Inteligência que decide,</RevealLine>
-                <RevealLine delay={0.65}>Resultados que acontecem.</RevealLine>
+                <RevealLine delay={0.35}>
+                  <span className="text-[#1677FF]">Dados que Conectam,</span>
+                </RevealLine>
+                <RevealLine delay={0.5}>
+                  <span className="text-[#D4AF37]">Inteligência que decide,</span>
+                </RevealLine>
+                <RevealLine delay={0.65}>
+                  <span className="text-[#0f9d64]">Resultados que acontecem.</span>
+                </RevealLine>
               </motion.div>
 
               {/* Subtitle */}
@@ -458,17 +475,27 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
             initial="hidden"
             animate="show"
             variants={staggerContainer(0.09)}
-            className="relative z-20 mt-12 grid max-w-xl grid-cols-2 gap-x-4 gap-y-6 border-t border-[#0B132B]/10 pt-8 sm:grid-cols-4"
+            className="relative z-20 mt-12 grid max-w-xl grid-cols-2 gap-x-4 gap-y-6 border-t-2 border-[#D4AF37]/20 pt-8 sm:grid-cols-4"
           >
             {HERO_STATS.map((stat, i) => (
-              <motion.div key={stat.lines.join(' ')} variants={staggerItem}>
-                <stat.Icon className="h-4 w-4 text-[#D4AF37] mb-2 opacity-90" />
+              <motion.div
+                key={stat.lines.join(' ')}
+                variants={staggerItem}
+                whileHover={{ scale: 1.05 }}
+                className="transition-transform duration-300"
+              >
+                <motion.div
+                  whileHover={{ rotate: 5 }}
+                  className="w-10 h-10 rounded-full bg-[#D4AF37]/10 border border-[#D4AF37]/30 flex items-center justify-center mb-2"
+                >
+                  <stat.Icon className="h-5 w-5 text-[#D4AF37]" />
+                </motion.div>
                 {/* Number — display font, gold */}
-                <div className="font-display text-[28px] font-bold text-[#D4AF37] leading-none mb-1">
+                <div className="font-display text-[32px] font-bold text-[#D4AF37] leading-none mb-1">
                   <CountUp to={stat.to} suffix={stat.suffix} delay={0.5 + i * 0.09} />
                 </div>
                 {/* Label — IBM Plex Mono, navy/60 */}
-                <div className="font-mono text-[11px] text-[#475569] uppercase tracking-wider leading-tight">
+                <div className="font-mono text-[11px] font-bold text-[#0B132B] uppercase tracking-wider leading-tight">
                   {stat.lines[0]}
                   <br />
                   {stat.lines[1]}
@@ -485,69 +512,133 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
 
           {/* ── Interactive Orbital Centerpiece with Logo Animation & Call to Action ── */}
           <div
-            className="absolute right-0 top-1/2 hidden h-[540px] w-[540px] -translate-y-1/2 lg:block z-20 pointer-events-auto"
-            style={{ transform: 'translateY(-50%) translateX(-4%)' }}
+            className="absolute right-0 top-[55%] hidden h-[640px] w-[640px] -translate-y-1/2 lg:block z-20 pointer-events-auto"
+            style={{ transform: 'translateY(-50%) translateX(-2%)' }}
           >
             <div className="relative w-full h-full flex items-center justify-center">
               {/* Outer decorative dashed ring */}
               <motion.div
                 animate={{ rotate: 360 }}
-                transition={{ duration: 70, repeat: Infinity, ease: 'linear' }}
-                className="absolute inset-4 rounded-full border border-[#D4AF37]/25 border-dashed"
+                transition={{ duration: 60, repeat: Infinity, ease: 'linear' }}
+                className="absolute inset-4 rounded-full border-2 border-[#D4AF37]/30 border-dashed"
                 style={{ willChange: 'transform' }}
               />
               {/* Inner ring */}
               <motion.div
                 animate={{ rotate: -360 }}
-                transition={{ duration: 45, repeat: Infinity, ease: 'linear' }}
-                className="absolute inset-[130px] rounded-full border border-[#D4AF37]/35"
+                transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
+                className="absolute inset-[150px] rounded-full border-2 border-[#D4AF37]/40"
+                style={{ willChange: 'transform' }}
+              />
+              {/* Middle ring */}
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 50, repeat: Infinity, ease: 'linear' }}
+                className="absolute inset-[80px] rounded-full border border-[#D4AF37]/20"
                 style={{ willChange: 'transform' }}
               />
 
               {/* Core interactive emblem with independent sunburst rotation & action CTA */}
               <div className="relative z-30 flex flex-col items-center justify-center">
-                <AnimatedBirthHubEmblem
-                  size={220}
-                  ctaText="Acessar Command Center →"
-                  onAction={() => {
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.8, delay: 0.3 }}
+                >
+                  <AnimatedBirthHubEmblem
+                    size={280}
+                    showCta={false}
+                    onAction={() => {
+                      SoundFX.play('confirm');
+                      navigate('/login');
+                    }}
+                  />
+                </motion.div>
+                {/* CTA separado abaixo do logo */}
+                <motion.button
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 1, duration: 0.6 }}
+                  onClick={() => {
                     SoundFX.play('confirm');
                     navigate('/login');
                   }}
-                />
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="mt-6 flex items-center gap-2.5 px-6 py-3 rounded-full bg-[#D4AF37] text-[#0B132B] text-sm font-bold font-mono tracking-wide shadow-[0_8px_24px_rgba(212,175,55,0.45)] border-2 border-[#D4AF37] hover:bg-[#dfba41] hover:shadow-[0_8px_30px_rgba(212,175,55,0.6)] transition-all duration-300 cursor-pointer"
+                >
+                  <span className="relative flex h-2.5 w-2.5 shrink-0">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#0B132B] opacity-80" />
+                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#0B132B]" />
+                  </span>
+                  Acessar Command Center →
+                </motion.button>
               </div>
 
               {/* Cardinal satellites */}
-              <div className="absolute top-10 flex flex-col items-center">
-                <div className="w-10 h-10 rounded-full bg-white shadow-md border border-[#1677ff]/30 flex items-center justify-center mb-1.5">
-                  <DatabaseZap className="h-4 w-4 text-[#1677ff]" />
-                </div>
-                <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-[#0B132B]">Dados</span>
-                <span className="font-mono text-[9px] text-[#475569]">Integração 360°</span>
-              </div>
+              <motion.div
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.5, duration: 0.6 }}
+                className="absolute top-12 flex flex-col items-center"
+              >
+                <motion.div
+                  whileHover={{ scale: 1.15 }}
+                  className="w-14 h-14 rounded-full bg-white shadow-xl border-2 border-[#1677ff]/40 flex items-center justify-center mb-2"
+                >
+                  <DatabaseZap className="h-6 w-6 text-[#1677ff]" />
+                </motion.div>
+                <span className="font-mono text-[11px] font-bold uppercase tracking-widest text-[#0B132B]">Dados</span>
+                <span className="font-mono text-[10px] text-[#475569]">Integração 360°</span>
+              </motion.div>
 
-              <div className="absolute bottom-10 flex flex-col items-center">
-                <div className="w-10 h-10 rounded-full bg-white shadow-md border border-[#D4AF37]/30 flex items-center justify-center mb-1.5">
-                  <Target className="h-4 w-4 text-[#D4AF37]" />
-                </div>
-                <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-[#0B132B]">Decisão</span>
-                <span className="font-mono text-[9px] text-[#475569]">Inteligência ativa</span>
-              </div>
+              <motion.div
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.6, duration: 0.6 }}
+                className="absolute bottom-12 flex flex-col items-center"
+              >
+                <motion.div
+                  whileHover={{ scale: 1.15 }}
+                  className="w-14 h-14 rounded-full bg-white shadow-xl border-2 border-[#D4AF37]/40 flex items-center justify-center mb-2"
+                >
+                  <Target className="h-6 w-6 text-[#D4AF37]" />
+                </motion.div>
+                <span className="font-mono text-[11px] font-bold uppercase tracking-widest text-[#0B132B]">Decisão</span>
+                <span className="font-mono text-[10px] text-[#475569]">Inteligência ativa</span>
+              </motion.div>
 
-              <div className="absolute left-1 flex flex-col items-center">
-                <div className="w-10 h-10 rounded-full bg-white shadow-md border border-[#0f9d64]/30 flex items-center justify-center mb-1.5">
-                  <Rocket className="h-4 w-4 text-[#0f9d64]" />
-                </div>
-                <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-[#0B132B]">Execução</span>
-                <span className="font-mono text-[9px] text-[#475569]">Resultados reais</span>
-              </div>
+              <motion.div
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.7, duration: 0.6 }}
+                className="absolute left-12 flex flex-col items-center"
+              >
+                <motion.div
+                  whileHover={{ scale: 1.15 }}
+                  className="w-14 h-14 rounded-full bg-white shadow-xl border-2 border-[#0f9d64]/40 flex items-center justify-center mb-2"
+                >
+                  <Rocket className="h-6 w-6 text-[#0f9d64]" />
+                </motion.div>
+                <span className="font-mono text-[11px] font-bold uppercase tracking-widest text-[#0B132B]">Execução</span>
+                <span className="font-mono text-[10px] text-[#475569]">Resultados reais</span>
+              </motion.div>
 
-              <div className="absolute right-1 flex flex-col items-center">
-                <div className="w-10 h-10 rounded-full bg-white shadow-md border border-[#c53678]/30 flex items-center justify-center mb-1.5">
-                  <BrainCircuit className="h-4 w-4 text-[#c53678]" />
-                </div>
-                <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-[#0B132B]">Inteligência</span>
-                <span className="font-mono text-[9px] text-[#475569]">Operação 24/7</span>
-              </div>
+              <motion.div
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.8, duration: 0.6 }}
+                className="absolute right-12 flex flex-col items-center"
+              >
+                <motion.div
+                  whileHover={{ scale: 1.15 }}
+                  className="w-14 h-14 rounded-full bg-white shadow-xl border-2 border-[#c53678]/40 flex items-center justify-center mb-2"
+                >
+                  <BrainCircuit className="h-6 w-6 text-[#c53678]" />
+                </motion.div>
+                <span className="font-mono text-[11px] font-bold uppercase tracking-widest text-[#0B132B]">Inteligência</span>
+                <span className="font-mono text-[10px] text-[#475569]">Operação 24/7</span>
+              </motion.div>
             </div>
           </div>
         </div>
@@ -612,11 +703,10 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
                 <button
                   type="button"
                   onClick={() => setActiveTab('email')}
-                  className={`flex-1 py-4 text-xs font-bold uppercase tracking-wider transition-colors relative font-mono ${
-                    activeTab === 'email'
-                      ? 'text-brand'
-                      : 'text-[var(--ink-2)] hover:text-[var(--ink)]'
-                  }`}
+                  className={`flex-1 py-4 text-xs font-bold uppercase tracking-wider transition-colors relative font-mono ${activeTab === 'email'
+                    ? 'text-brand'
+                    : 'text-[var(--ink-2)] hover:text-[var(--ink)]'
+                    }`}
                 >
                   E-mail corporativo
                   {activeTab === 'email' && (
@@ -629,11 +719,10 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
                 <button
                   type="button"
                   onClick={() => setActiveTab('sso')}
-                  className={`flex-1 py-4 text-xs font-bold uppercase tracking-wider transition-colors relative font-mono ${
-                    activeTab === 'sso'
-                      ? 'text-brand'
-                      : 'text-[var(--ink-2)] hover:text-[var(--ink)]'
-                  }`}
+                  className={`flex-1 py-4 text-xs font-bold uppercase tracking-wider transition-colors relative font-mono ${activeTab === 'sso'
+                    ? 'text-brand'
+                    : 'text-[var(--ink-2)] hover:text-[var(--ink)]'
+                    }`}
                 >
                   SSO Empresarial
                   {activeTab === 'sso' && (
