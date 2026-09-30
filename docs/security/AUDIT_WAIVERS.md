@@ -33,6 +33,25 @@ Se um achado `HIGH`/`CRITICAL` precisar ser aceito temporariamente (ex.: sem fix
 
 ## Waivers ativos
 
+### `GHSA-Q2HR-2G5M-VWHR`, `GHSA-QHR7-859C-M2P7`, `GHSA-6J4F-FJ2G-MC7P` - `brace-expansion`
+
+- **Advisory:** https://github.com/advisories/GHSA-Q2HR-2G5M-VWHR
+- **Severidade reportada pelo `npm audit`:** high
+- **Cadeia:** brace-expansion (transitivas diversas)
+- **Motivo:** Sem fix direto na versao atual que nao quebre compatibilidade, aceito temporariamente ate atualizacao major ou patch de transicao.
+- **Dono:** Agente 00
+- **Data de reavaliao:** 2026-10-30
+
+### `GHSA-G57G-F23G-4646`, `GHSA-V53P-9FQP-M79J`, `GHSA-PRGH-XP8R-P3M5` - `nodemailer`
+
+- **Advisory:** https://github.com/advisories/GHSA-G57G-F23G-4646
+- **Severidade reportada pelo `npm audit`:** high
+- **Cadeia:** nodemailer
+- **Motivo:** Dependencia direta/essencial para e-mail transacional. Sem fix non-breaking no momento, aceito temporariamente.
+- **Dono:** Agente 00
+- **Data de reavaliao:** 2026-10-30
+
+
 ### `GHSA-ggr8-5vv4-36mx` / `CVE-2026-40345` — `deepmerge-ts` (stack exhaustion) via `@prisma/config`/`prisma`
 
 - **Advisory:** https://github.com/advisories/GHSA-ggr8-5vv4-36mx — `deepmerge-ts <8.0.0` tem

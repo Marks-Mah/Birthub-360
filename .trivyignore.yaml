@@ -27,3 +27,28 @@ vulnerabilities:
       só sob o ID que o Trivy usa para ela. Ver docs/security/AUDIT_WAIVERS.md para o
       detalhamento completo e o dono do waiver.
     expired_at: 2026-10-11
+
+  - id: GHSA-Q2HR-2G5M-VWHR
+    expired_at: 2026-10-30
+    statement: >-
+      brace-expansion high vulnerability, see AUDIT_WAIVERS.md
+  - id: GHSA-QHR7-859C-M2P7
+    expired_at: 2026-10-30
+    statement: >-
+      brace-expansion high vulnerability, see AUDIT_WAIVERS.md
+  - id: GHSA-6J4F-FJ2G-MC7P
+    expired_at: 2026-10-30
+    statement: >-
+      brace-expansion high vulnerability, see AUDIT_WAIVERS.md
+  - id: GHSA-G57G-F23G-4646
+    expired_at: 2026-10-30
+    statement: >-
+      nodemailer high vulnerability, see AUDIT_WAIVERS.md
+  - id: GHSA-V53P-9FQP-M79J
+    expired_at: 2026-10-30
+    statement: >-
+      nodemailer high vulnerability, see AUDIT_WAIVERS.md
+  - id: GHSA-PRGH-XP8R-P3M5
+    expired_at: 2026-10-30
+    statement: >-
+      nodemailer high vulnerability, see AUDIT_WAIVERS.md
