@@ -38,9 +38,11 @@ const cardVariants = cva('relative overflow-hidden rounded-card text-ink', {
       // Variantes estruturais recomendadas pelo Design System v2.0
       surface: 'bg-surface border border-line shadow-none',
       panel: 'bg-surface-elevated/90 border border-line shadow-subtle backdrop-blur-md',
-      metric: 'bg-surface-elevated border border-line/80 shadow-card hover:border-brand/30 transition-all duration-200',
+      metric:
+        'bg-surface-elevated border border-line/80 shadow-card hover:border-brand/30 transition-all duration-200',
       data: 'bg-surface border border-line/70 shadow-none',
-      feature: 'bg-surface-elevated/95 border border-brand/30 shadow-card hover:border-brand/60 hover:shadow-glow-brand transition-all duration-200',
+      feature:
+        'bg-surface-elevated/95 border border-brand/30 shadow-card hover:border-brand/60 hover:shadow-glow-brand transition-all duration-200',
       floating: 'bg-surface-elevated/95 border border-line shadow-floating backdrop-blur-xl',
       // Variantes legadas e estéticas preservadas para compatibilidade
       bento:

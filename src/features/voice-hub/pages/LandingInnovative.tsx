@@ -277,10 +277,7 @@ function LandingInnovativeContent() {
               transition={{ duration: 0.7 }}
               className="flex justify-center"
             >
-              <AnimatedBirthHubEmblem
-                size={220}
-                showCta={false}
-              />
+              <AnimatedBirthHubEmblem size={220} showCta={false} />
             </motion.div>
 
             <motion.div
@@ -307,7 +304,9 @@ function LandingInnovativeContent() {
             >
               <div className="text-slate-950 dark:text-white font-bold">Dados que Conectam,</div>
               <div className="text-brand font-bold">Inteligência que decide,</div>
-              <div className="text-slate-600 dark:text-slate-400 font-semibold">Resultados que acontecem.</div>
+              <div className="text-slate-600 dark:text-slate-400 font-semibold">
+                Resultados que acontecem.
+              </div>
             </motion.div>
 
             <motion.div

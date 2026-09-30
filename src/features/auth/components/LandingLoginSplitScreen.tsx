@@ -125,9 +125,9 @@ export function CommandOrb({ size = 240 }: { size?: number }) {
             reduceMotion
               ? {}
               : {
-                transformOrigin: `${center}px ${center}px`,
-                animation: 'bh-orb-spin 60s linear infinite',
-              }
+                  transformOrigin: `${center}px ${center}px`,
+                  animation: 'bh-orb-spin 60s linear infinite',
+                }
           }
         />
         {/* Inner ring — counter-clockwise */}
@@ -142,9 +142,9 @@ export function CommandOrb({ size = 240 }: { size?: number }) {
             reduceMotion
               ? {}
               : {
-                transformOrigin: `${center}px ${center}px`,
-                animation: 'bh-orb-spin 40s linear infinite reverse',
-              }
+                  transformOrigin: `${center}px ${center}px`,
+                  animation: 'bh-orb-spin 40s linear infinite reverse',
+                }
           }
         />
         {/* Center nucleus */}
@@ -232,11 +232,11 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
 
     const result = isSignUp
       ? await authClient.signUp.email({
-        email,
-        password,
-        name: name || email.split('@')[0],
-        callbackURL: '/app',
-      })
+          email,
+          password,
+          name: name || email.split('@')[0],
+          callbackURL: '/app',
+        })
       : await authClient.signIn.email({ email, password, rememberMe, callbackURL: '/app' });
 
     if (result.error) {
@@ -303,7 +303,6 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
   // ─── Split-screen Layout ───────────────────────────────────────────────────
   return (
     <div className="flex min-h-screen w-full overflow-x-hidden">
-
       {/* ══════════════════════════════════════════════════════════════════════
           TELA 1 — Boas-vindas: hero institucional (view="welcome")
           Full-width on welcome view; hidden on access view
@@ -328,7 +327,10 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
           />
 
           {/* ── Luminous Ambient Glows ──────────────────────────────────── */}
-          <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden" aria-hidden="true">
+          <div
+            className="pointer-events-none absolute inset-0 z-0 overflow-hidden"
+            aria-hidden="true"
+          >
             <div className="absolute top-[-8%] left-[-8%] w-[50%] h-[50%] rounded-full bg-[#D4AF37]/8 blur-[130px]" />
             <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-[#1677FF]/6 blur-[130px]" />
           </div>
@@ -446,7 +448,9 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
                   className="group relative flex items-center gap-2.5 rounded-full bg-[#D4AF37] px-7 py-3.5 text-sm font-bold text-[#0B132B] shadow-[0_4px_22px_rgba(212,175,55,0.45)] transition-all duration-300 hover:bg-[#dfba41] hover:shadow-[0_8px_30px_rgba(212,175,55,0.6)] hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
                 >
                   <span>Explorar o Birth Hub</span>
-                  <span className="transition-transform duration-200 group-hover:translate-x-1">&rarr;</span>
+                  <span className="transition-transform duration-200 group-hover:translate-x-1">
+                    &rarr;
+                  </span>
                 </button>
                 <button
                   type="button"
@@ -595,7 +599,9 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
                 >
                   <DatabaseZap className="h-7 w-7 text-[#D4AF37]" />
                 </motion.div>
-                <span className="font-mono text-[12px] font-bold uppercase tracking-widest text-[#0B132B]">Dados</span>
+                <span className="font-mono text-[12px] font-bold uppercase tracking-widest text-[#0B132B]">
+                  Dados
+                </span>
                 <span className="font-mono text-[10px] text-[#475569]">Integração 360°</span>
               </motion.div>
 
@@ -611,7 +617,9 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
                 >
                   <Target className="h-7 w-7 text-[#C69B52]" />
                 </motion.div>
-                <span className="font-mono text-[12px] font-bold uppercase tracking-widest text-[#0B132B]">Decisão</span>
+                <span className="font-mono text-[12px] font-bold uppercase tracking-widest text-[#0B132B]">
+                  Decisão
+                </span>
                 <span className="font-mono text-[10px] text-[#475569]">Inteligência ativa</span>
               </motion.div>
 
@@ -627,7 +635,9 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
                 >
                   <Rocket className="h-7 w-7 text-[#D4AF37]" />
                 </motion.div>
-                <span className="font-mono text-[12px] font-bold uppercase tracking-widest text-[#0B132B]">Execução</span>
+                <span className="font-mono text-[12px] font-bold uppercase tracking-widest text-[#0B132B]">
+                  Execução
+                </span>
                 <span className="font-mono text-[10px] text-[#475569]">Resultados reais</span>
               </motion.div>
 
@@ -643,7 +653,9 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
                 >
                   <BrainCircuit className="h-7 w-7 text-[#C69B52]" />
                 </motion.div>
-                <span className="font-mono text-[12px] font-bold uppercase tracking-widest text-[#0B132B]">Inteligência</span>
+                <span className="font-mono text-[12px] font-bold uppercase tracking-widest text-[#0B132B]">
+                  Inteligência
+                </span>
                 <span className="font-mono text-[10px] text-[#475569]">Operação 24/7</span>
               </motion.div>
             </div>
@@ -710,10 +722,11 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
                 <button
                   type="button"
                   onClick={() => setActiveTab('email')}
-                  className={`flex-1 py-4 text-xs font-bold uppercase tracking-wider transition-colors relative font-mono ${activeTab === 'email'
-                    ? 'text-brand'
-                    : 'text-[var(--ink-2)] hover:text-[var(--ink)]'
-                    }`}
+                  className={`flex-1 py-4 text-xs font-bold uppercase tracking-wider transition-colors relative font-mono ${
+                    activeTab === 'email'
+                      ? 'text-brand'
+                      : 'text-[var(--ink-2)] hover:text-[var(--ink)]'
+                  }`}
                 >
                   E-mail corporativo
                   {activeTab === 'email' && (
@@ -726,10 +739,11 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
                 <button
                   type="button"
                   onClick={() => setActiveTab('sso')}
-                  className={`flex-1 py-4 text-xs font-bold uppercase tracking-wider transition-colors relative font-mono ${activeTab === 'sso'
-                    ? 'text-brand'
-                    : 'text-[var(--ink-2)] hover:text-[var(--ink)]'
-                    }`}
+                  className={`flex-1 py-4 text-xs font-bold uppercase tracking-wider transition-colors relative font-mono ${
+                    activeTab === 'sso'
+                      ? 'text-brand'
+                      : 'text-[var(--ink-2)] hover:text-[var(--ink)]'
+                  }`}
                 >
                   SSO Empresarial
                   {activeTab === 'sso' && (
@@ -834,7 +848,10 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
 
                     {isSignUp && (
                       <div>
-                        <label htmlFor="login-name" className="block font-mono text-xs font-semibold text-[var(--ink-2)] mb-1.5 uppercase tracking-wide">
+                        <label
+                          htmlFor="login-name"
+                          className="block font-mono text-xs font-semibold text-[var(--ink-2)] mb-1.5 uppercase tracking-wide"
+                        >
                           Nome completo
                         </label>
                         <input
@@ -853,7 +870,10 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
                     <div className="space-y-4">
                       {/* Email field */}
                       <div>
-                        <label htmlFor="login-email" className="block font-mono text-xs font-semibold text-[var(--ink-2)] mb-1.5 uppercase tracking-wide">
+                        <label
+                          htmlFor="login-email"
+                          className="block font-mono text-xs font-semibold text-[var(--ink-2)] mb-1.5 uppercase tracking-wide"
+                        >
                           E-mail
                         </label>
                         <div className="relative">
@@ -877,7 +897,10 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
 
                       {/* Password field */}
                       <div>
-                        <label htmlFor="login-password" className="block font-mono text-xs font-semibold text-[var(--ink-2)] mb-1.5 uppercase tracking-wide">
+                        <label
+                          htmlFor="login-password"
+                          className="block font-mono text-xs font-semibold text-[var(--ink-2)] mb-1.5 uppercase tracking-wide"
+                        >
                           Senha
                         </label>
                         <div className="relative">
