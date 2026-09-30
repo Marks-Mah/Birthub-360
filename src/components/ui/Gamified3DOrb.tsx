@@ -56,6 +56,7 @@ function GemScene({
       {/* Cristal / Poliedro Central Interativo */}
       <mesh
         ref={meshRef}
+        aria-hidden="true"
         scale={isBoosting ? 1.35 : 1.2}
         onClick={(e) => {
           e.stopPropagation();

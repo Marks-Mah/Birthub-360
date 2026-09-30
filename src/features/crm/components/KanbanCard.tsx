@@ -97,9 +97,9 @@ export const KanbanCard = React.memo(function KanbanCard({
   const lastActivityDate = lead.lastInteraction || lead.updatedAt || lead.createdAt;
   const daysStale = lastActivityDate
     ? Math.max(
-        0,
-        Math.floor((Date.now() - new Date(lastActivityDate).getTime()) / (1000 * 60 * 60 * 24)),
-      )
+      0,
+      Math.floor((Date.now() - new Date(lastActivityDate).getTime()) / (1000 * 60 * 60 * 24)),
+    )
     : 0;
   const stagnation = getStagnationBadge(daysStale);
 
@@ -157,19 +157,25 @@ export const KanbanCard = React.memo(function KanbanCard({
     <div
       ref={setNodeRef}
       style={style}
+      role="button"
+      tabIndex={0}
       onPointerMove={handlePointerMove}
       onMouseEnter={() => {
         setIsHovered(true);
         SoundFX.play('hover');
       }}
       onMouseLeave={() => setIsHovered(false)}
-      className={`bg-surface-elevated/90 backdrop-blur-md rounded-2xl border transition-all duration-200 group relative overflow-hidden ${
-        isSelected
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+        }
+      }}
+      className={`bg-surface-elevated/90 backdrop-blur-md rounded-2xl border transition-all duration-200 group relative overflow-hidden ${isSelected
           ? 'border-brand ring-2 ring-brand shadow-[0_0_20px_rgba(212,175,55,0.25)] bg-surface-2/80'
           : isHighPriority
             ? 'border-brand/40 shadow-card hover:border-brand hover:shadow-card-hover hover:-translate-y-0.5'
             : 'border-line/80 shadow-sm hover:border-brand/40 hover:shadow-card hover:-translate-y-0.5'
-      } ${isDragging ? 'shadow-2xl ring-2 ring-brand dark:ring-brand-2 z-50 scale-105 rotate-1 bg-surface-2' : ''}`}
+        } ${isDragging ? 'shadow-2xl ring-2 ring-brand dark:ring-brand-2 z-50 scale-105 rotate-1 bg-surface-2' : ''}`}
     >
       {/* 2026 Bento Spotlight */}
       {isHovered && !isDragging && (
@@ -184,9 +190,8 @@ export const KanbanCard = React.memo(function KanbanCard({
 
       {/* Luz especular de topo: visível em hover e destacada para leads de alta relevância */}
       <div
-        className={`absolute top-0 inset-x-0 h-[1.5px] bg-gradient-to-r from-transparent via-brand/70 to-transparent pointer-events-none rounded-t-2xl z-20 transition-opacity duration-300 ${
-          isHighPriority ? 'opacity-90' : 'opacity-0 group-hover:opacity-100'
-        }`}
+        className={`absolute top-0 inset-x-0 h-[1.5px] bg-gradient-to-r from-transparent via-brand/70 to-transparent pointer-events-none rounded-t-2xl z-20 transition-opacity duration-300 ${isHighPriority ? 'opacity-90' : 'opacity-0 group-hover:opacity-100'
+          }`}
       />
 
       {/* Checkbox de seleção múltipla (visível no hover ou quando selectionMode está ativo) */}
@@ -242,13 +247,12 @@ export const KanbanCard = React.memo(function KanbanCard({
           )}
           {lead.score !== undefined && lead.score !== null ? (
             <span
-              className={`shrink-0 text-xs font-black border px-2 py-0.5 rounded-lg flex items-center gap-1 transition-all ${
-                lead.score >= 70
+              className={`shrink-0 text-xs font-black border px-2 py-0.5 rounded-lg flex items-center gap-1 transition-all ${lead.score >= 70
                   ? 'bg-rose-500/10 border-rose-500/30 text-rose-600 dark:text-rose-400 shadow-[0_0_10px_rgba(244,63,94,0.25)]'
                   : lead.score >= 40
                     ? 'bg-amber-500/10 border-amber-500/30 text-warning-active dark:text-warning'
                     : 'bg-blue-500/10 border-blue-500/30 text-blue-600 dark:text-blue-400'
-              }`}
+                }`}
             >
               {lead.temperature ? `${TEMPERATURE_EMOJI[lead.temperature] || ''} ` : '🎯 '}
               {lead.score}

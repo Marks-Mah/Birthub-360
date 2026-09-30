@@ -390,7 +390,7 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
                 variants={staggerItem}
                 className="font-display text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-[#0B132B] leading-[1.08]"
               >
-                Birth Hub <span className="text-[#C69B52] dark:text-[#D4AF37] font-semibold">360&deg;</span>
+                Birth Hub <span className="text-[#C69B52] dark:text-[#D4AF37] font-semibold">360º</span>
               </motion.h1>
 
               {/* Tagline */}
@@ -398,8 +398,8 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
                 variants={staggerItem}
                 className="font-display text-2xl sm:text-3xl font-medium leading-snug text-[#0B132B]"
               >
-                <RevealLine delay={0.35}>Dados que conectam.</RevealLine>
-                <RevealLine delay={0.5}>Inteligência que decide.</RevealLine>
+                <RevealLine delay={0.35}>Dados que Conectam,</RevealLine>
+                <RevealLine delay={0.5}>Inteligência que decide,</RevealLine>
                 <RevealLine delay={0.65}>Resultados que acontecem.</RevealLine>
               </motion.div>
 

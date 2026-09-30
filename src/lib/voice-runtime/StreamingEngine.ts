@@ -67,7 +67,9 @@ export class StreamingEngine {
     }
 
     const callbacks = this.outputCallbacks.get(sessionId) || [];
-    callbacks.forEach((cb) => cb(chunk));
+    for (const cb of callbacks) {
+      void cb(chunk);
+    }
 
     // Also send over WebSocket if connected
     const ws = this.webSockets.get(sessionId);

@@ -44,16 +44,9 @@ export const ToolTechPopover: React.FC<ToolTechPopoverProps> = ({
     // equivalente de teclado é o Escape (tratado no useEffect acima) — o padrão de dismiss
     // por overlay não-focável é o mesmo endossado pelas ARIA Authoring Practices para diálogos,
     // por isso o disable pontual abaixo (mesmo raciocínio já documentado em CrmBoard.tsx).
-    <div
+    <button
+      type="button"
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200"
-      role="button"
-      tabIndex={0}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          e.currentTarget.click();
-        }
-      }}
       onClick={(event) => {
         // Só fecha se o clique foi no próprio backdrop, não em algo dentro do painel.
         if (event.target === event.currentTarget) onClose();
@@ -150,6 +143,6 @@ export const ToolTechPopover: React.FC<ToolTechPopoverProps> = ({
           </button>
         </div>
       </div>
-    </div>
+    </button>
   );
 };

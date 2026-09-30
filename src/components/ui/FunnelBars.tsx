@@ -27,7 +27,8 @@ export function FunnelBars({
       {items.map((item) => {
         const widthPct = Math.max((item.value / max) * 100, item.value > 0 ? 3 : 0);
         return (
-          <div
+          <button
+            type="button"
             key={item.id}
             onMouseEnter={() => {
               if (soundHover) SoundFX.play('hover');
@@ -56,7 +57,7 @@ export function FunnelBars({
             <span className="text-right font-mono font-black tabular-nums text-ink">
               {item.value}
             </span>
-          </div>
+          </button>
         );
       })}
     </div>

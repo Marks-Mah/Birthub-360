@@ -116,9 +116,10 @@ propósito por estar fora de "## Exceções ativas"):
 ### `src/features/voice-hub/components/design-system/index.tsx`
 
 - **Limite excepcional:** 1200 linhas
-- **Dono:** Agente 06 — Integrações e Telefonia
-- **Motivo:** Catálogo de componentes de design system do Voice Hub.
+- **Dono:** Agente 12 — Voz e Telefonia
+- **Motivo:** Catálogo de componentes de design system do Voice Hub. Convertido para re-export canônico na campanha techdebt-2026-09-29 (eliminando 1060 linhas duplicadas).
 - **Registrado em:** 2026-09-28
+- **Atualizado em:** 2026-09-29 (correção de proprietário)
 - **Reavaliar até:** 2026-11-30
 
 ### `src/features/voice-hub/pages/Dashboard/Overview.tsx`

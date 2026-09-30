@@ -55,7 +55,8 @@ function FindingRow({
   const t = TONE[tone];
   const shouldEmphasize = Boolean(emphasize) && !reduceMotion;
   return (
-    <div
+    <button
+      type="button"
       onMouseEnter={() => {
         if (soundHover) SoundFX.play('hover');
       }}
@@ -73,12 +74,12 @@ function FindingRow({
         animate={
           shouldEmphasize
             ? {
-                boxShadow: [
-                  `0 0 0 0 ${t.ring}`,
-                  '0 0 0 12px rgba(0,0,0,0)',
-                  '0 0 0 0 rgba(0,0,0,0)',
-                ],
-              }
+              boxShadow: [
+                `0 0 0 0 ${t.ring}`,
+                '0 0 0 12px rgba(0,0,0,0)',
+                '0 0 0 0 rgba(0,0,0,0)',
+              ],
+            }
             : undefined
         }
         transition={shouldEmphasize ? { duration: 1.4, ease: 'easeOut', repeat: 1 } : undefined}
@@ -89,6 +90,6 @@ function FindingRow({
         {text}
         {meta && <span className="mt-0.5 block text-[11px] text-ink-2 font-normal">{meta}</span>}
       </div>
-    </div>
+    </button>
   );
 }

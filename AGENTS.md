@@ -1,198 +1,499 @@
 # AGENTS.md — Governança Global de Agentes
+Revisão: 2026-09-30
+Projeto: BIRTH HUB 360
+Este arquivo é a autoridade global para qualquer agente que trabalhe neste repositório.
+Regras locais em AGENTS.md dentro de subpastas podem refinar o escopo, mas nunca anulam as regras globais de segurança, qualidade, coordenação, tenancy, LGPD ou propriedade definidas aqui.
+Em caso de conflito, este arquivo prevalece.
 
-## Projeto
+## 1. Princípio fundamental
+Os agentes deste projeto formam um único sistema de engenharia colaborativa.
+Cada agente possui uma especialidade e uma propriedade de domínio, mas nenhum agente deve operar como uma ilha.
+Todos os agentes devem:
+- conhecer as regras globais;
+- consultar o conhecimento existente antes de implementar;
+- aprender com o trabalho dos demais;
+- compartilhar descobertas relevantes;
+- conversar com outros agentes quando houver dependência real;
+- respeitar a propriedade dos arquivos;
+- registrar decisões e aprendizados reutilizáveis;
+- evitar retrabalho;
+- comunicar riscos que possam afetar outros domínios;
+- produzir evidências verificáveis;
+- deixar o repositório mais compreensível para o próximo agente.
 
-CENTRAL-DE-INTELIGENCIA-COMECIAL-BIRTH HUB 360
+Objetivo: resolver a missão atual corretamente sem quebrar o trabalho dos demais e sem perder conhecimento entre sessões.
 
-Este arquivo é a regra global para qualquer agente que trabalhe neste repositório. Regras locais em `AGENTS.md` dentro de subpastas refinam o escopo, mas nunca anulam as regras de segurança, qualidade e coordenação deste arquivo. Em caso de conflito entre um `AGENTS.md` local e este arquivo, este arquivo vence.
+## 2. Princípios de comportamento
+Estas regras valem para todos os agentes.
 
-## Estrutura oficial de agentes
+### P1 — Pensar antes de programar
+Antes de alterar código:
+1. Entenda o problema.
+2. Identifique a implementação existente.
+3. Identifique os arquivos envolvidos.
+4. Verifique quem é o proprietário de cada arquivo.
+5. Procure implementações, testes, decisões e handoffs existentes.
+6. Declare as suposições relevantes.
+7. Defina critérios de sucesso verificáveis.
 
-Este é o roster real e completo — qualquer relatório, handoff ou onda que cite um agente fora desta
-lista está referenciando algo que não existe na estrutura atual (ver "Agentes 19/20", abaixo).
+Não faça suposições silenciosas.
+Se houver múltiplas interpretações materialmente diferentes, registre a ambiguidade.
+Se existir uma abordagem mais simples, considere-a primeiro.
+Dúvida rotineira deve virar uma suposição explícita no plano.
+Dúvida envolvendo contrato, tenancy, LGPD, segurança crítica ou ação irreversível deve ser escalada ao Coordenador.
 
-- 00 — Coordenador
-- 01 — Plataforma, Segurança e Dados
-- 01A — Confiabilidade de Dados, RLS e Retenção (especialista interno do 01, **mesmo slot**: 01 e
-  01A nunca rodam ao mesmo tempo, porque `prisma/schema.prisma` e `prisma/migrations/**` têm dono
-  exclusivo e dois agentes editando schema em paralelo corrompe a onda)
-- 02 — Produto e UX
-- 03 — Design e Acessibilidade
-- 04 — CRM e BI
-- 05 — Prospecção
-- 06 — Integrações e Bitrix
-- 06A — Extrações Bitrix (especialista interno do 06, **mesmo slot**: 06 e 06A nunca rodam ao mesmo
-  tempo, pelo mesmo motivo que 01/01A)
-- 07 — IA e Automações
-- 08 — QA e Release
-- 09 — Mobile (Capacitor/Android)
-- 10 — Infraestrutura, Observabilidade e SRE
-- 11 — Marca e Ativos Institucionais
-- 12 — Voz e Telefonia (Birthub Voices)
-- 13 — Enxame Autônomo e Governança de Agentes de Runtime (agentes de IA que o cliente usa —
-  Supervisor/SDR/BDR/Closer/CRM/Ops/Learning, scheduler 24/7, `AIPendingAction`, guardrails de PII;
-  não confundir com os agentes de desenvolvimento 00-18 deste arquivo)
-- 14 — Ambiente de Execução e Test Harness (mantém o gate obrigatório executável de verdade e
-  estável entre execuções)
-- 15 — Segurança Aplicada e Rotação de Segredos
-- 16 — Runtime, Workers e Escala (filas BullMQ, cron, agendadores, ciclo de vida do processo)
-- 17 — Cadência Multicanal e Ciclo de Receita
-- 18 — Contratos, API e Documentação Viva (OpenAPI, paridade de tipos backend/frontend)
+### P2 — Simplicidade primeiro
+Use o mínimo de código necessário para resolver o problema.
+Não criar:
+- funcionalidades especulativas;
+- abstrações de uso único;
+- configurabilidade não solicitada;
+- dependências desnecessárias;
+- camadas arquiteturais sem necessidade;
+- tratamento para cenários impossíveis.
 
-Prompts: `.agents/prompts/`. Nenhum agente edita o próprio prompt ou o prompt de outro agente durante a execução — mudança de prompt é decisão humana, fora do ciclo de ondas.
+Erros possíveis e relevantes continuam obrigatoriamente observáveis.
+Se uma solução de 50 linhas resolve o problema, não escreva 200.
 
-Os agentes 09, 10 e 11 foram adicionados depois da primeira instalação do pacote, ao identificar pastas reais do repositório (`android/`, `k8s/`+`argocd/`+`charts/`+`infrastructure/`, `identidade-visual/`+`documentacao-aplicacao/`) sem dono explícito. Ver `Onda 4` abaixo. Os agentes 13-18 foram adicionados depois disso, quando o programa passou a cobrir o Enxame autônomo, o harness de teste, segurança aplicada, runtime/workers, cadência de receita e contratos de API como domínios com dono próprio.
+### P3 — Alterações cirúrgicas
+Altere somente o necessário.
+Não:
+- refatore código adjacente sem necessidade;
+- altere formatação sem necessidade;
+- renomeie elementos não relacionados;
+- "melhore" código que não faz parte da missão;
+- remova código morto pré-existente fora do escopo.
 
-### Agentes 19/20 — não existem, não usar
+Remova somente imports, variáveis e funções que ficaram órfãos devido às próprias alterações.
+Toda linha alterada deve possuir relação direta com a missão.
 
-Relatórios de "Fase Final" anteriores a esta onda (`.agents/runs/final-fase-0.md` a `final-fase-4.md`)
-citam repetidamente "Agente 19 — Verificação Contínua" e "Agente 20 — Experiência Real/smoke". Esses
-dois números **nunca foram formalizados neste roster** e não devem ser referenciados como agentes
-ativos daqui em diante — qualquer prompt, handoff ou relatório novo que precise desses papéis usa a
-atribuição abaixo:
+Problema dentro do escopo e pertencente ao agente → corrigir.
+Problema dentro do escopo, mas pertencente a outro agente → abrir handoff.
+Problema fora do escopo → não editar oportunisticamente.
 
-- **Verificação contínua** (o gate técnico completo — typecheck/lint/unit/integration/E2E/build/
-  secret-scan/npm audit/`verify:integrations`/`verify:ai`, sempre com evidência real e nunca herdado
-  por suposição) é responsabilidade conjunta de **14** (dono do harness que faz o gate ser executável)
-  **+ 08** (dono do critério de release e do veredito PASS/BLOCKED).
-- **Experiência real** (jornada de usuário ponta a ponta — login real, navegação real, formulários
-  reais, estados vazio/erro/loading, captura de tela, mobile) é responsabilidade conjunta de **02**
-  (produto/UX dono do fluxo) **+ 03** (acessibilidade/design) **+ 08** (critério de release) **+ 14**
-  (harness que sobe o ambiente real para o smoke rodar).
+### P4 — Execução orientada a objetivos
+Toda missão deve possuir critérios de sucesso verificáveis.
+Exemplos:
+- Bug → reproduzir → corrigir → teste de regressão.
+- Validação → testar entradas válidas e inválidas.
+- Refatoração → verificar comportamento antes e depois.
+- UI → implementar → executar → verificar visualmente.
+- TypeScript → implementar → executar npx tsc --noEmit.
+- Integração → testar caminho de sucesso e falha.
 
-Ressalva registrada, não resolvida por esta onda: o antigo Agente 20 também cobria dois pontos que
-não estão claramente em nenhum dos quatro perfis acima — (a) confirmar a persistência de uma ação de
-UI **diretamente no banco**, não só na tela, e (b) confirmar que dado sensível/PII foi sanitizado
-ponta a ponta em produção real. Até isso ganhar dono explícito, tratar como responsabilidade
-compartilhada de **01/01A** (dados) na dimensão (a) e **15** (segurança aplicada) na dimensão (b),
-acionados por 08 quando o release em questão tocar dado sensível.
+"Fazer funcionar" não é critério de sucesso.
 
-## Regra de concorrência
+## 3. Roster oficial de agentes
+Todos os agentes abaixo estão ativos e disponíveis para execução.
+"Ativo" significa que o Coordenador pode acionar o agente quando a missão exigir sua especialidade.
+Ativo não significa que todos devam executar simultaneamente.
 
-O Coordenador ocupa 1 slot. Podem executar simultaneamente até **8 especialistas**.
+### Coordenação
+**00 — Coordenador**
+Responsável pela orquestração global, planejamento de ondas, dependências, propriedade, integração, gates, conflitos e decisão de encaminhamento.
 
-O limite anterior era de 3 simultâneos. Ele foi revisado porque o histórico executado deste
-repositório (`.agents/runs/onda-1.md` a `onda-5.md`) mostra que **nenhuma falha real de execução foi
-causada pela quantidade de agentes**:
+### Produto, engenharia e operação
+**01 — Plataforma, Segurança e Dados**
 
-- o único conflito de merge de toda a história (`src/lib/queue/bitrixSync.worker.ts`, Onda 5) foi
-  **sobreposição de propriedade** entre 06 (sync Bitrix) e 07 (métricas de fila), não concorrência —
-  teria acontecido com 2 agentes;
-- o incidente mais caro (Onda 1, 16 commits cherry-picked um a um em vez de merge de branch) foi
-  corrida do Coordenador com outra sessão sobre um checkout compartilhado — falha de isolamento, não
-  de contagem;
-- a primeira tentativa da Onda 1 falhou nos 3 agentes por **limite de sessão da conta**, e não por
-  disputa entre eles.
+**01A — Confiabilidade de Dados, RLS e Retenção**
+Especialista do mesmo slot do Agente 01. Não executa simultaneamente com o 01 quando houver sobreposição de propriedade.
 
-O que de fato escala mal não é o número de agentes trabalhando em paralelo: é o número de **merges
-acumulados sem gate**. Quando o gate da branch de integração fica vermelho, este arquivo exige
-isolar qual merge introduziu a falha e revertê-lo — e esse custo de bisect cresce mais que
-linearmente. Por isso o teto passa a ser aplicado ao ponto certo do processo.
+**02 — Produto e UX**
 
-Rodar mais de 3 especialistas simultâneos exige **todas** as condições abaixo. Falhou uma, reduza N:
+**03 — Design e Acessibilidade**
 
-1. **Isolamento.** Cada especialista em `git worktree` + branch própria (ver "Isolamento de execução"
-   abaixo). Compartilhar working tree continua proibido em qualquer N.
-2. **Propriedade disjunta, verificada antes de disparar.** O Coordenador cruza os arquivos sob
-   propriedade dos agentes ativos e publica a matriz de propriedade da onda em
-   `.agents/runs/onda-<n>.md` **antes** do primeiro agente começar. Sobreposição encontrada é
-   resolvida no papel — um dos agentes cede aquele arquivo e recebe o resultado por handoff. Não
-   descobrir a sobreposição no merge.
-3. **Gate por leva.** O Coordenador integra e roda o gate completo a cada **2–3 merges**, nunca
-   acumulando todos os merges da onda para um único gate no fim. Um gate verde em cada branch isolada
-   não prova ausência de conflito semântico entre elas — a Onda 5 provou isso na prática (falha de
-   RLS do `AILog` só apareceu no gate da integração).
-4. **Sem bloqueador mútuo.** Nenhum par de agentes ativos depende de um handoff `Prioridade:
-bloqueador` em aberto direcionado ao outro.
-5. **Dono único para arquivo compartilhado.** `server.ts`, `package.json`/lockfile e
-   `prisma/schema.prisma` mantêm dono único por onda, conforme "Propriedade exclusiva de arquivos".
-   Quem precisar deles abre handoff — não edita.
-6. **Capacidade real da ferramenta.** Se o ambiente de execução não sustentar N worktrees
-   simultâneos, ou se a conta tiver limite de sessão/token que derrube agentes no meio da missão,
-   reduza N até caber. Agente derrubado no meio da missão custa mais que agente que esperou a vez.
+**04 — CRM e BI**
 
-Ao subir de 3 para um número maior pela primeira vez num repositório ou ferramenta nova, prefira
-validar o salto com um passo de cada vez (3 → 4 → 6) em vez de ir direto ao teto.
+**05 — Prospecção**
 
-### Onda 1 — Fundação
+**06 — Integrações e Bitrix**
 
-Executar em paralelo:
+**06A — Extrações Bitrix**
+Especialista do mesmo slot do Agente 06. Não executa simultaneamente com o 06 quando houver sobreposição de propriedade.
 
-1. Agente 01 — Plataforma, Segurança e Dados
-2. Agente 02 — Produto e UX
-3. Agente 06 — Integrações e Bitrix
+**07 — IA e Automações**
 
-### Onda 2 — Operação Comercial
+**08 — QA e Release**
 
-Executar em paralelo:
+**09 — Mobile**
 
-1. Agente 04 — CRM e BI
-2. Agente 05 — Prospecção
-3. Agente 07 — IA e Automações
+**10 — Infraestrutura, Observabilidade e SRE**
 
-### Onda 3 — Acabamento
+**11 — Marca e Ativos Institucionais**
 
-Executar em paralelo:
+**12 — Voz e Telefonia**
 
-1. Agente 03 — Design e Acessibilidade
-2. Agente 08 — QA e Release
-3. Um agente anterior por vez para remediações apontadas por QA
+**13 — Enxame Autônomo e Governança de Agentes de Runtime**
 
-### Onda 4 — Extensões (Mobile, Infraestrutura, Marca)
+**14 — Ambiente de Execução e Test Harness**
 
-Executar em paralelo, depois de `RELEASE APPROVED` na Onda 3 (ou antes, se o Coordenador decidir que uma dessas frentes é prioridade de negócio — nenhuma delas depende de bloqueador das Ondas 1–3):
+**15 — Segurança Aplicada e Rotação de Segredos**
 
-1. Agente 09 — Mobile (Capacitor/Android)
-2. Agente 10 — Infraestrutura, Observabilidade e SRE
-3. Agente 11 — Marca e Ativos Institucionais
+**16 — Runtime, Workers e Escala**
 
-Escopo isolado entre si (pastas diferentes), mas ainda assim respeitando a regra de concorrência acima e o isolamento por worktree/branch (`agente/09-mobile`, `agente/10-infraestrutura-sre`, `agente/11-marca-institucional`, a partir de `integracao/onda-4`).
+**17 — Cadência Multicanal e Ciclo de Receita**
 
-## Isolamento de execução (git worktree)
+**18 — Contratos, API e Documentação Viva**
 
-Agentes rodando "em paralelo" nunca podem compartilhar o mesmo working tree. Edição simultânea no mesmo checkout corrompe o trabalho uns dos outros mesmo sem conflito de merge (arquivos meio escritos, index inconsistente, testes lendo estado de outro agente).
+### Especialistas de governança
+**21 — Privacidade e LGPD**
+Responsável pelo fluxo de direitos do titular, consentimento, retenção e inventário de tratamento.
 
-Antes de iniciar uma onda, o Coordenador:
+**22 — Verificação de Realidade**
+Responsável por produzir evidências de que ações de UI realmente persistiram e que PII foi tratada corretamente ponta a ponta. Não é dono de código de produto.
 
-1. cria/atualiza a branch de integração da onda: `integracao/onda-<n>`, a partir da última onda aprovada (ou de `main`/`develop` na Onda 1);
-2. cria uma branch por especialista ativo a partir dessa branch de integração: `agente/<numero>-<slug>`, por exemplo `agente/01-plataforma-dados`;
-3. cria um `git worktree` dedicado por especialista ativo, apontando para a branch dele, por exemplo `git worktree add ../wt-agente-01 agente/01-plataforma-dados`;
-4. entrega a cada especialista apenas o caminho do seu próprio worktree — nunca o worktree de outro agente.
+**23 — Custo, Performance e Limites de IA**
+Responsável por custos, latência, limites, N+1, orçamento de tokens e eficiência do Enxame e das automações.
+
+**24 — Revisão Independente**
+Especialista somente leitura que revisa diffs, escopo, propriedade, P1–P4, tenancy e LGPD antes da integração.
+
+## 4. Agentes 19 e 20
+Os agentes 19 e 20 não existem e continuam reservados.
+Qualquer documentação nova que os mencione deve utilizar os responsáveis atuais:
+- Verificação contínua → 14 + 08.
+- Experiência real → 02 + 03 + 08 + 14.
+- Persistência real → 01/01A + 22, quando aplicável.
+- Sanitização de PII → 15 + 22, quando aplicável.
+
+## 5. Prompts dos agentes
+Os prompts ficam em:
+`.agents/prompts/`
+
+Nenhum agente pode editar:
+- seu próprio prompt;
+- o prompt de outro agente;
+- regras globais deste arquivo.
+
+Mudanças de prompt são decisões humanas e ficam fora do ciclo normal de execução.
+
+O prompt da missão deve começar com:
+`Você é o Agente NN. Leia AGENTS.md e .agents/prompts/NN-<slug>.md antes de planejar.`
+
+## 6. Comunicação entre agentes
+
+### 6.1 Regra geral
+Todos os agentes devem conversar entre si quando necessário para executar corretamente uma missão.
+A comunicação é obrigatória quando houver:
+- dependência técnica;
+- dependência de contrato;
+- dependência de schema;
+- dependência de fila;
+- impacto cross-domain;
+- impacto de segurança;
+- impacto de tenancy;
+- impacto de LGPD;
+- risco de duplicação;
+- alteração que afete outro domínio;
+- causa raiz localizada fora do domínio do agente.
+
+### 6.2 Como conversar
+A comunicação deve ser rastreável.
+Utilizar:
+`.agents/handoffs/`
+`.agents/runs/`
+`.agents/reviews/`
+`docs/`
+conforme o tipo de informação.
+
+Não depender de informações que existam somente na memória de uma sessão do Jules.
+Não presumir que outro agente "vai descobrir".
+
+### 6.3 Quando consultar outro agente
+Exemplos:
+- 02 precisa de contrato de API → consultar 18.
+- 06 precisa alterar schema → handoff para 01.
+- 07 precisa alterar infraestrutura de fila → consultar 16.
+- 12 trata gravação/transcrição → consultar 15 e, quando aplicável, 13.
+- 04 precisa de origem/proveniência de dados → consultar 01 e 21 quando aplicável.
+- 08 identifica problema de performance → acionar 23.
+- 08 identifica problema de persistência real → acionar 22.
+- 24 identifica violação de escopo → comunicar 00 e o agente responsável.
+- 15 identifica risco de PII em integração → comunicar o proprietário do domínio e 21 quando aplicável.
+
+Consultar outro agente não transfere automaticamente a responsabilidade pela missão.
+
+## 7. Aprendizado coletivo
+
+### 7.1 Regra
+Todo agente deve aprender com o trabalho realizado pelos demais agentes.
+Antes de implementar, procure:
+- handoffs;
+- relatórios de ondas;
+- decisões anteriores;
+- testes existentes;
+- documentação;
+- problemas conhecidos;
+- contratos;
+- riscos;
+- padrões já estabelecidos.
+
+O objetivo é evitar:
+- decisões contraditórias;
+- implementação duplicada;
+- regressões;
+- repetição de investigações;
+- repetição de erros.
+
+### 7.2 O que deve ser registrado
+Registrar somente conhecimento reutilizável, como:
+- causa raiz de falha difícil;
+- comportamento inesperado de integração;
+- decisão arquitetural;
+- limitação de ferramenta;
+- regra de negócio descoberta;
+- padrão de teste;
+- risco de segurança;
+- risco de tenancy;
+- comportamento específico do Bitrix;
+- limitação de API;
+- limitação do ambiente Jules;
+- solução que evitou uma regressão.
+
+Informação trivial não precisa ser transformada em documentação.
+
+## 8. Memória operacional
+A memória do sistema deve permanecer no repositório.
+Nenhum conhecimento importante deve depender da memória interna de um agente.
+
+Utilizar:
+`.agents/handoffs/`
+`.agents/runs/`
+`.agents/reviews/`
+`docs/`
+ou o local oficial do respectivo domínio.
+
+Antes de criar uma nova documentação, verificar se existe um local apropriado.
+Evitar documentos redundantes.
+
+## 9. Protocolo de descoberta antes da implementação
+Antes de alterar código, o agente deve responder:
+1. O que já existe?
+2. Quem é o proprietário?
+3. Existe implementação equivalente?
+4. Existe handoff relacionado?
+5. Existe decisão anterior?
+6. Algum agente depende desta alteração?
+7. Há impacto em segurança?
+8. Há impacto em tenancy?
+9. Há impacto em LGPD?
+10. Há impacto em contrato ou API?
+11. Existe teste que descreve o comportamento esperado?
+
+Se a informação estiver disponível no repositório, pesquisar antes de perguntar ao usuário.
+
+## 10. Protocolo de falha
+Quando uma tentativa falhar:
+1. Registrar o erro.
+2. Registrar a hipótese utilizada.
+3. Registrar os testes executados.
+4. Registrar a evidência observada.
+5. Identificar a causa raiz, quando possível.
+6. Aplicar a correção.
+7. Validar.
+8. Registrar o aprendizado relevante.
+
+Após duas tentativas sem progresso, não repetir a mesma estratégia.
+Parar, registrar a evidência e:
+- mudar a hipótese quando houver fundamento; ou
+- abrir handoff para o responsável adequado.
+
+## 11. Modelo de missão
+Toda missão entregue a um agente deve conter:
+- Agente.
+- Onda.
+- Base.
+- Branch.
+- Objetivo.
+- Fora de escopo.
+- Arquivos sob sua propriedade.
+- Arquivos de outros donos que serão necessários.
+- Suposições decididas.
+- Plano.
+- Critérios de verificação.
+- Critério de sucesso final.
+- Entrega esperada.
+
+Modelo:
+```
+Agente: NN — Nome
+Onda: N
+Base: integracao/onda-N
+Branch: agente/NN-slug
+
+Objetivo:
+<uma frase>
+
+Fora de escopo:
+<lista>
+
+Arquivos sob propriedade:
+<lista>
+
+Arquivos de outros donos:
+<lista>
+
+Suposições:
+<lista>
+
+Plano:
+1. <etapa> → verificar: <critério>
+2. <etapa> → verificar: <critério>
+
+Critério de sucesso final:
+<comando/teste/evidência>
+
+Entrega:
+<relatório de conclusão>
+```
+
+Missão sem critério de sucesso executável deve retornar ao 00 para correção antes da execução.
+
+## 12. Execução no Jules
+O Jules lê o AGENTS.md da raiz do repositório na branch clonada.
+Cada missão Jules representa uma tarefa de um agente.
+Cada agente deve trabalhar em:
+- branch própria;
+- ambiente próprio;
+- worktree próprio, quando aplicável.
+
+Branches devem seguir:
+`agente/<numero>-<slug>`
+
+A branch de integração segue:
+`integracao/onda-<n>`
+
+O isolamento é obrigatório.
+
+## 13. Concorrência
+O Coordenador ocupa 1 slot.
+Podem executar simultaneamente até 8 especialistas, desde que todas as condições de concorrência sejam atendidas.
+
+Executar mais de 3 especialistas simultaneamente exige:
+1. isolamento;
+2. propriedade disjunta;
+3. matriz de propriedade publicada;
+4. gate a cada 2–3 merges;
+5. ausência de bloqueadores mútuos;
+6. dono único para arquivos compartilhados;
+7. capacidade real da ferramenta;
+8. slots exclusivos respeitados;
+9. orçamento de sessões declarado.
+
+Se qualquer condição falhar, reduzir o número de agentes simultâneos.
+
+## 14. Slots exclusivos
+Nunca executar simultaneamente, quando houver sobreposição:
+- 01 ↔ 01A;
+- 06 ↔ 06A;
+- 01/01A ↔ agente com handoff bloqueador de schema;
+- 16 ↔ 06 quando ambos tocarem src/lib/queue/**;
+- 16 ↔ 07 quando ambos tocarem src/lib/queue/**.
+
+A ativação de todos os agentes não elimina as regras de propriedade e exclusão mútua.
+
+## 15. Propriedade exclusiva de arquivos
+Os seguintes arquivos e diretórios possuem proprietário:
+
+```
+prisma/schema.prisma
+→ Agente 01
+
+prisma/migrations/**
+→ Agente 01
+
+src/App.tsx
+navegação principal
+Sidebar
+→ Agente 02
+
+.github/workflows/**
+Dockerfile
+docker-compose.yml
+→ Agente 08
+
+k8s/**
+argocd/**
+charts/**
+infrastructure/**
+→ Agente 10
+
+android/**
+capacitor.config.ts
+→ Agente 09
+
+identidade-visual/**
+documentacao-aplicacao/**
+→ Agente 11
+
+.agents/prompts/**
+→ decisão humana
+
+.agents/runs/**
+→ Agente 00
+
+.agents/reviews/**
+→ Agente 24 ou 00
+
+.agents/handoffs/**
+→ cada agente cria seus próprios handoffs
+```
+
+`server.ts` exige aprovação explícita do 00.
+`package.json` e lockfile exigem aprovação explícita do 00.
+
+Integrações não criam migrações. Devem abrir handoff para 01.
+
+## 16. Regra de conflito
+Quando um agente encontrar arquivo pertencente a outro agente:
+1. Não editar.
+2. Registrar o problema.
+3. Informar o proprietário.
+4. Abrir handoff quando necessário.
+5. Continuar somente com os arquivos sob sua propriedade.
+
+Nunca resolver conflito apagando a alteração de outro agente.
+
+## 17. Isolamento de execução
+Agentes paralelos nunca podem compartilhar o mesmo working tree.
+
+Antes de iniciar uma onda, o Coordenador deve:
+1. criar ou atualizar a branch de integração;
+2. criar branch própria para cada especialista;
+3. criar worktree dedicado quando aplicável;
+4. entregar a cada agente somente seu próprio ambiente.
 
 Cada especialista:
+- trabalha exclusivamente em seu ambiente;
+- faz commits pequenos e coerentes;
+- não utiliza git push --force;
+- não reescreve histórico compartilhado;
+- executa o gate local antes de sinalizar pronto.
 
-- trabalha exclusivamente dentro do seu worktree;
-- commita em commits pequenos e coerentes, prefixados com o próprio id: `feat(01): ...`, `fix(06): ...`, `test(05): ...`;
-- nunca faz `git push --force` nem reescreve histórico compartilhado;
-- ao concluir sua missão da onda (ou ao atingir um ponto seguro de handoff), roda o próprio gate local no seu worktree antes de sinalizar pronto para integração.
+## 18. Handoffs
+Handoff é um artefato rastreável.
 
-O Coordenador, ao final (ou durante) da onda:
+Local:
+`.agents/handoffs/onda-<n>/`
 
-1. revisa o `git diff` de cada branch de especialista;
-2. confirma que nenhum arquivo fora do escopo/propriedade do especialista foi tocado;
-3. faz merge de cada branch aprovada em `integracao/onda-<n>`, **em levas de 2–3 merges** (ver "Regra de concorrência" → condição 3), nunca acumulando a onda inteira para uma única integração;
-4. roda o gate da onda **na branch de integração** ao fim de cada leva, não apenas nas branches individuais — um gate verde em cada branch isolada não garante ausência de conflito semântico entre elas;
-5. se o gate da integração falhar após um merge específico, isola qual merge introduziu a falha, reverte esse merge e devolve ao agente dono com reprodução — é justamente para manter esse bisect barato que a leva é limitada a 2–3 merges;
-6. remove os worktrees temporários (`git worktree remove`) após a onda ser aprovada, preservando as branches até o merge final na branch principal do projeto.
+Formato:
+`<de>-para-<para>-<slug>.md`
 
-Se a ferramenta/ambiente de execução não suportar múltiplos worktrees simultâneos, os especialistas da onda devem rodar em série (um de cada vez, cada um fazendo commit e integrando antes do próximo começar) em vez de dividir um único working tree ao vivo. Concorrência sem isolamento nunca é aceitável.
-
-## Protocolo de handoff
-
-Handoff nunca é apenas texto solto na saída do agente — é um artefato rastreável.
-
-Formato: um arquivo por handoff em `.agents/handoffs/onda-<n>/<de>-para-<para>-<slug>.md`, por exemplo `.agents/handoffs/onda-1/06-para-01-schema-extracoes-bitrix.md`, contendo:
-
-```markdown
-- De: <agente origem>
-- Para: <agente destino>
-- Onda: <n>
-- Status: aberto | em-andamento | resolvido
-- Prioridade: bloqueador | alto | normal
+Conteúdo mínimo:
+```
+De:
+Para:
+Onda:
+Status:
+Prioridade:
+Bloqueador-ref:
+Sprint destino:
 
 ## Problema
 
 ## Arquivo(s) envolvido(s)
+
+## Evidência
 
 ## Alteração necessária
 
@@ -201,167 +502,186 @@ Formato: um arquivo por handoff em `.agents/handoffs/onda-<n>/<de>-para-<para>-<
 ## Contexto adicional
 ```
 
-Regras:
+Status:
+- aberto;
+- em-andamento;
+- resolvido.
 
-- qualquer agente pode criar seu próprio arquivo de handoff dentro de `.agents/handoffs/**`;
-- um agente não edita o handoff criado por outro agente, exceto para atualizar o campo `Status` quando ele é o destinatário que resolveu o item (adicionar uma seção `## Resolução` abaixo, nunca apagar o pedido original);
-- o Coordenador não aprova uma onda com handoff `Status: aberto` marcado como `Prioridade: bloqueador` direcionado a um bloqueador da lista abaixo;
-- handoffs não bloqueadores podem transitar para a onda seguinte, desde que registrados no relatório da onda.
+Prioridade:
+- bloqueador;
+- alto;
+- normal.
 
-## Scripts ausentes
+O agente destinatário pode atualizar o status e adicionar uma seção de resolução sem apagar o pedido original.
 
-Antes de rodar qualquer `npm run <script>` de um gate, o agente verifica se o script existe em `package.json` → `scripts`. Se não existir:
+## 19. Ordem de integração
+Quando houver dependências:
+1. schema e migrações;
+2. contratos e tipos compartilhados;
+3. infraestrutura de runtime e filas;
+4. segurança aplicada;
+5. produtores e consumidores de domínio;
+6. UX e design;
+7. mobile;
+8. infraestrutura;
+9. marca;
+10. QA e release.
 
-- não trate como sucesso silencioso e não pule a linha sem registro;
-- registre explicitamente na evidência: "script `<nome>` inexistente em package.json — gate não aplicável nesta execução";
-- se o script deveria existir para o domínio do agente (ex.: `verify:integrations` ausente enquanto 06 mexe em integrações), abra handoff para 08 propondo a criação do script, com prioridade alto.
+A ordem pode ser alterada pelo 00 quando houver justificativa registrada.
 
-## Bloqueadores prioritários
+## 20. Ciclo de vida da onda
+Toda onda segue:
+```
+PLANEJADA
+↓
+MATRIZ_PUBLICADA
+↓
+EM_EXECUCAO
+↓
+EM_REVISAO
+↓
+EM_INTEGRACAO
+↓
+GATE_VERDE
+↓
+RELEASE_APPROVED
+ou:
+RELEASE_BLOCKED
+```
 
-Antes de adicionar novas funcionalidades, eliminar ou validar como resolvidos:
+Nenhuma onda pode pular estados.
+Cada transição exige evidência.
 
-1. RBAC duplicado ou divergente.
-2. Rotas administrativas autenticadas sem autorização por cargo/permissão.
-3. Risco conhecido ou dependência insegura no sistema de autenticação.
-4. Credenciais armazenadas sem proteção adequada.
-5. Deploy capaz de iniciar sem aplicar migrações.
-6. Dados fictícios misturados a dados reais no dashboard.
-7. Comando de voz que afirma navegar sem realizar navegação.
-8. Ferramentas do Hub de IA inacessíveis.
-9. Erros de frontend em Integrações, incluindo estado/importações ausentes.
-10. Separação visual Birth Hub 360 sem isolamento de dados comprovado.
-11. Sincronizações Bitrix que podem falhar silenciosamente.
-12. Extrações Bitrix incompletas tratadas como recurso final.
-13. Tratamento de dados pessoais sem base legal, retenção definida ou meio de exclusão (ver seção LGPD).
-14. Dump/backup de banco versionado no git (ex.: arquivos em `backups/**`). Isso já foi encontrado neste repositório — ver `/AGENTS.md` → "Segurança e higiene" e tratar como bloqueador imediato, não como item de backlog.
+## 21. Protocolo de merge
+O Coordenador deve:
+1. revisar o diff;
+2. verificar propriedade;
+3. consumir revisão do 24 quando ativo;
+4. integrar em levas de 2–3 merges;
+5. executar gate após cada leva;
+6. identificar o merge causador de falha;
+7. reverter o merge culpado quando necessário;
+8. devolver a correção ao agente responsável.
 
-## Freeze de escopo (Sprint 00 → Sprint 13)
+Não acumular todos os merges da onda para executar um único gate.
 
-Decisão de governança da Sprint 00/Onda 12 (GOV-003), vigente até a Sprint 13:
+## 22. Bloqueadores prioritários
+Antes de novas funcionalidades, eliminar ou validar os seguintes riscos:
 
-- **Bloqueado**: qualquer feature nova fora do que já está listado como necessário para cumprir uma
-  promessa já feita ao usuário/produto (ver `docs/`, `AUTONOMIA_COMERCIAL_24X7.md`,
-  `PRODUCT_EXPERIENCE.md` e handoffs abertos com sprint destino "onda-13" no
-  inventário de `.agents/handoffs/**`, consolidado em `.agents/runs/onda-12.md`).
-- **Permitido**:
-  - remediação de bug, débito técnico, achado de segurança/RBAC/tenancy/LGPD (ver "Bloqueadores
-    prioritários" acima);
-  - trabalho já em andamento que fecha uma promessa existente (ex.: as seis "Fases Finais" citadas
-    em `.agents/runs/final-fase-0.md` a `final-fase-4.md`, e a Fase Final 5/Go-Live ainda pendente);
-  - correção de drift entre o que o produto diz que faz e o que o código realmente faz.
-- Qualquer agente que identificar uma ideia de feature nova fora desse critério durante o freeze
-  registra em handoff com sprint destino "pós-Sprint 13" em vez de implementar — não é decisão do
-  agente decidir que uma feature é urgente o suficiente para furar o freeze.
-- O Coordenador (00) é quem decide se algo é "remediação"/"promessa já existente" ou "feature nova"
-  em caso de dúvida, e registra a decisão no relatório da onda em questão.
+**B-01** — RBAC duplicado ou divergente.
+**B-02** — Rotas administrativas sem autorização adequada.
+**B-03** — Risco ou dependência insegura na autenticação.
+**B-04** — Credenciais armazenadas sem proteção.
+**B-05** — Deploy capaz de iniciar sem migrações.
+**B-06** — Dados fictícios misturados com dados reais.
+**B-07** — Comando de voz que afirma executar ação sem executá-la.
+**B-08** — Ferramentas do Hub de IA inacessíveis.
+**B-09** — Erros de frontend em Integrações.
+**B-10** — Separação visual sem isolamento real de dados.
+**B-11** — Sincronizações Bitrix que falham silenciosamente.
+**B-12** — Extrações Bitrix incompletas tratadas como definitivas.
+**B-13** — Tratamento de dados pessoais sem base legal, retenção ou exclusão.
+**B-14** — Dumps/backups de banco versionados no Git.
 
-## Regra de autonomia
+## 23. Freeze de escopo
+Durante o período definido de freeze:
 
-Não interromper o usuário para decisões técnicas rotineiras.
+É proibido adicionar funcionalidades novas fora das promessas existentes do produto.
 
-Quando houver um problema solucionável no repositório:
+É permitido:
+- corrigir bugs;
+- corrigir débito técnico;
+- corrigir segurança;
+- corrigir RBAC;
+- corrigir tenancy;
+- corrigir LGPD;
+- corrigir drift entre documentação e comportamento real;
+- concluir promessas já existentes;
+- evoluir a governança e a orquestração dos agentes.
 
-1. Reproduzir.
-2. Identificar causa raiz.
-3. Corrigir no escopo do agente responsável.
-4. Adicionar ou atualizar testes.
-5. Executar validações.
-6. Registrar evidências.
-7. Solicitar ao coordenador somente alterações que pertençam a outro dono.
+Feature nova fora desse escopo deve virar handoff com destino apropriado.
+O Coordenador decide casos ambíguos e registra a decisão.
 
-Perguntas ao usuário são último recurso e apenas para fatos externos realmente indisponíveis, como credenciais, decisões comerciais irreversíveis ou permissões de produção.
-
-## Propriedade exclusiva de arquivos
-
-- `prisma/schema.prisma`: somente Agente 01.
-- Migrações Prisma: somente Agente 01 cria/edita.
-- `src/App.tsx`, navegação principal e Sidebar: somente Agente 02.
-- Pipelines de CI (`.github/workflows/**`), `Dockerfile` e `docker-compose.yml` da raiz: somente Agente 08.
-- `k8s/**`, `argocd/**`, `charts/**`, `infrastructure/**`: somente Agente 10.
-- `android/**` e `capacitor.config.ts`: somente Agente 09.
-- `identidade-visual/**` e `documentacao-aplicacao/**`: somente Agente 11.
-- `server.ts`: alteração exige aprovação explícita do Agente 00.
-- `package.json` e lockfile: alteração exige aprovação explícita do Agente 00.
-- `.agents/prompts/**`: nenhum especialista edita; mudança de prompt é decisão humana fora do ciclo de execução.
-- `.agents/runs/**`: escrito pelo Coordenador; especialistas apenas leem.
-- `.agents/handoffs/**`: qualquer agente cria seus próprios arquivos; não edita handoff alheio (ver Protocolo de handoff).
-- Integrações não criam migrações. Devem abrir solicitação técnica para o Agente 01.
-- Agentes não devem reformatar ou editar arquivos fora do próprio escopo sem necessidade comprovada.
-
-## Regras de conflito
-
-1. O agente que não é dono do arquivo não faz a alteração.
-2. Produza um handoff curto com: problema, arquivo, alteração necessária, teste esperado (ver Protocolo de handoff).
-3. O coordenador encaminha ao dono.
-4. Mudanças cross-domain devem ter contrato de interface antes da edição.
-5. Nunca resolver conflito apagando a mudança de outro agente.
-
-## Segurança e higiene
-
-Nunca commitar ou copiar para pacote:
-
-- `.env` real;
-- tokens, chaves, senhas, cookies ou webhooks secretos;
-- `.git/`;
-- `node_modules/`;
-- `dist/`;
+## 24. Segurança e higiene
+Nunca commitar:
+- .env real;
+- tokens;
+- chaves;
+- senhas;
+- cookies;
+- webhooks secretos;
+- .git/;
+- node_modules/;
+- dist/;
 - ambientes virtuais;
-- dumps e backups de banco;
-- logs contendo dados sensíveis.
+- dumps;
+- backups de banco;
+- logs com dados sensíveis.
 
-Manter apenas exemplos sanitizados, como `.env.example`.
+Utilizar somente exemplos sanitizados.
 
-Nunca colocar segredos em fixtures, screenshots, relatórios, prompts ou mensagens de erro.
+Segredos nunca devem aparecer em:
+- fixtures;
+- screenshots;
+- relatórios;
+- prompts;
+- mensagens de erro;
+- tarefas enviadas ao Jules.
 
-Antes de finalizar qualquer onda, rodar varredura de segredo versionado (ferramenta disponível no projeto, por exemplo `gitleaks`/`trufflehog`, ou busca manual por padrões de chave/token) sobre o diff acumulado da onda. Achado positivo é bloqueador — ver protocolo em 08 e regra de credenciais em 01.
+Antes de finalizar uma onda, executar varredura de segredos sobre o diff acumulado.
+Achado positivo é bloqueador de release.
 
-**Achado conhecido, parcialmente remediado:** `backups/prospector-*.dump` chegou a ser versionado no git deste repositório, violando a regra acima, com dado pessoal real de prospecção. Estado atual (verificado nesta onda, Sprint 00/Onda 12 — GOV-002): o arquivo **já foi removido do working tree atual** (`git ls-files` não retorna nenhum `.dump`; `backups/` só contém `AGENTS.md`) e `.gitignore` cobre `backups/*.dump`, `*.sql`, `*.backup`, `*.tar`, `*.tar.gz` e `*.gz`, então não há reincidência silenciosa. Isso **não** significa que o dado desapareceu: **o histórico do git continua recuperável** — o arquivo ainda existe nos commits antigos para quem tiver acesso ao repositório e souber navegar o histórico, então o risco de exposição de dado pessoal não está eliminado, só contido no HEAD. Pendências reais, nesta ordem: (1) confirmar com o Agente 01 se algum segredo/credencial estava embutido no dump e rotacionar se ainda não foi feito; (2) decidir com o dono do repositório se vale reescrever o histórico (`git filter-repo`/BFG) para remover definitivamente — isso reescreve hashes de commit e exige coordenação com PRs abertos, portanto continua sendo **decisão humana separada, não automática de agente**, e não é aprovada nem rejeitada por esta onda.
+## 25. Dados reais e demonstração
+Dados de demonstração devem ser explicitamente identificados e isolados.
+Produção e homologação não podem misturar valores inventados com indicadores reais.
 
-## Dados reais x demonstração
+Dashboards devem possuir estados explícitos de:
+- loading;
+- empty;
+- error;
+- stale.
 
-- Dados de demonstração devem ser explicitamente rotulados e isolados.
-- Produção e homologação não podem misturar valores inventados com indicadores reais.
-- Dashboards devem apresentar loading, empty, error e stale state de forma explícita.
-- Nenhuma métrica comercial pode ser fabricada para "preencher" a interface.
+Nenhuma métrica comercial pode ser fabricada para preencher a interface.
 
-## Tenancy Birth Hub 360
-
+## 26. Tenancy
 Separação visual não é prova de isolamento.
 
-Toda leitura e escrita de dados sensíveis a empresa/tenant deve comprovar:
-
+Toda leitura ou escrita de dados sensíveis à organização/tenant deve comprovar:
 - origem do tenant;
-- filtro aplicado no backend/data layer;
+- filtro no backend/data layer;
 - autorização;
 - testes de acesso cruzado;
-- comportamento de fallback seguro.
+- fallback seguro.
 
-## LGPD e dados pessoais
+## 27. LGPD
+A plataforma processa dados pessoais reais.
+Todos os agentes devem respeitar:
+- minimização;
+- finalidade;
+- rastreabilidade;
+- controle de acesso;
+- retenção;
+- exclusão/anonimização;
+- segurança;
+- isolamento entre tenants.
 
-A plataforma processa dados pessoais reais de leads, contatos e clientes (nome, telefone, e-mail, cargo, empresa, e em alguns casos dados enriquecidos por terceiros). A Lei Geral de Proteção de Dados (Lei 13.709/2018) se aplica integralmente, mesmo em ambiente de homologação com dados reais.
+Nenhum agente pode considerar LGPD como tema "fora do escopo".
+Cada agente trata a parcela correspondente ao seu domínio.
+O Agente 21 consolida o inventário de tratamento, retenção e fluxo de solicitações do titular.
 
-Regra geral, válida para todos os agentes:
+## 28. Gate obrigatório
 
-- nunca armazenar mais dado pessoal do que o necessário para a finalidade comercial declarada (minimização);
-- nunca criar novo destino de armazenamento/replicação de dado pessoal (planilha paralela, cache não governado, log persistente) sem que ele herde as mesmas proteções de tenant, retenção e auditoria dos dados de origem;
-- todo dado pessoal deve ser rastreável a uma origem e, quando obtido por enriquecimento/terceiro, à base legal e ao fornecedor.
+### Gate local
+Antes de sinalizar pronto:
+```
+npx tsc --noEmit
+npm run lint
+```
+e os testes da área alterada.
 
-Responsabilidade por domínio:
-
-- **01** garante controle de acesso, criptografia/mascaramento de credenciais e mecanismo técnico de exclusão/anonimização de dado pessoal mediante solicitação;
-- **04** garante que campos comerciais com dado pessoal tenham dono, proveniência e não sejam expostos além do necessário em relatórios agregados;
-- **05** garante proveniência, rotulagem de dado inferido vs. confirmado e não enriquece além do estritamente necessário para qualificação comercial;
-- **06/06A** garante que extrações e sincronizações não dupliquem dado pessoal fora do tenant de origem e que exportações (CSV/XLSX/JSON) não vazem entre organizações;
-- **07** garante que dado pessoal enviado a provedores de IA externos só ocorre com consentimento explícito registrado e nunca mistura tenants no contexto enviado ao modelo;
-- **08** garante, na checklist de release, que existe caminho operacional para atender solicitação de titular (acesso, correção, exclusão) e que isso está documentado.
-
-Nenhum agente deve tratar este tema como "fora de escopo" — cada um trata a fatia que lhe cabe dentro da própria missão de onda.
-
-## Gate obrigatório por onda
-
-A onda não termina sem:
-
-```bash
+### Gate de integração
+A cada 2–3 merges:
+```
 npx tsc --noEmit
 npm run lint
 npm run test:architecture
@@ -371,41 +691,207 @@ npm run test:e2e
 npm run build
 ```
 
-`npm run test:architecture` (ITEM-13, dívida técnica) roda `dependency-cruiser` (fronteiras entre
-`src/bootstrap/`, `src/lib/ai/gateway/`, `src/features/*`, `src/shared/`, e detecção de ciclo — ver
-`docs/architecture/DEPENDENCY_RULES.md`) + o gate de arquivo excessivamente grande
-(`docs/architecture/HOTSPOT_EXCEPTIONS.md`). Dívida de import cross-feature/ciclo já existente
-antes deste gate está grandfathered em `.dependency-cruiser-known-violations.json`
-(`docs/architecture/KNOWN_VIOLATIONS.md`, com dono e checkpoint de reavaliação por grupo) — só uma
-violação **nova**, fora dessa baseline, quebra o gate.
-
 Quando aplicável:
-
-```bash
+```
 npm run verify:integrations
 npm run verify:ai
 ```
 
-Ver seção "Scripts ausentes" para o caso de script não existir.
+### Gate de release
+Além dos anteriores:
+```
+npm audit
+```
+e varredura de segredo do diff acumulado.
 
-Não marcar teste como "aprovado" se não foi executado. Corrigir ambiente/teste até conseguir evidência, salvo dependência externa impossível de provisionar localmente. Nesse caso, o coordenador deve registrar o bloqueio como impeditivo de release, nunca como sucesso.
+## 29. Scripts inexistentes
+Antes de executar qualquer:
+`npm run <script>`
 
-## Definição global de pronto
+verificar se o script existe em package.json.
+Se não existir:
+- não tratar como sucesso;
+- registrar que o script não existe;
+- registrar que o gate não foi aplicável;
+- abrir handoff se o script deveria existir.
 
+Nunca mascarar um gate inexistente como gate aprovado.
+
+## 30. Verdade operacional
+Nunca declarar um teste como aprovado se ele não foi executado.
+Nunca declarar uma correção como validada sem evidência.
+
+Utilizar explicitamente:
+- IMPLEMENTADO;
+- TESTADO;
+- VALIDADO;
+- VERIFICADO VISUALMENTE;
+- NÃO EXECUTADO;
+- BLOQUEADO;
+- PRÉ-EXISTENTE;
+- REQUER OUTRO AGENTE.
+
+Não transformar expectativa em evidência.
+
+## 31. Relatório de conclusão
+Todo agente deve produzir relatório ao concluir uma missão.
+
+Formato mínimo:
+```
+Agente / Onda / Branch:
+
+Suposições feitas:
+
+Plano executado:
+etapa → critério → resultado
+
+Arquivos alterados:
+
+Comandos executados:
+comando → resultado
+
+Testes:
+
+Evidências:
+
+Problemas fora do escopo:
+
+Handoffs abertos:
+
+Aprendizados reutilizáveis:
+
+Pendências:
+
+Riscos:
+```
+
+Campo em branco significa "não realizado".
+Nunca significa "não se aplica" sem explicação.
+
+## 32. Definição global de pronto
 Uma tarefa só está concluída quando:
-
-- causa raiz foi tratada;
+- a causa raiz foi tratada;
 - não existe fallback enganoso;
-- erros relevantes ficam visíveis/observáveis;
+- erros relevantes ficam visíveis e observáveis;
 - testes cobrem caminho feliz e falha;
 - typecheck, lint e build permanecem verdes;
 - documentação afetada foi atualizada;
-- nenhuma regressão de segurança/tenancy foi introduzida;
-- nenhuma obrigação de LGPD conhecida foi ignorada dentro do escopo do agente;
-- o agente fornece arquivos alterados, comandos executados e resultados.
+- nenhuma regressão de segurança ou tenancy foi introduzida;
+- nenhuma obrigação de LGPD conhecida foi ignorada dentro do escopo;
+- os critérios de sucesso definidos no plano foram verificados;
+- o diff contém apenas linhas relacionadas à missão;
+- imports, variáveis e funções órfãos das próprias alterações foram removidos;
+- arquivos alterados foram informados;
+- comandos executados foram informados;
+- resultados reais foram informados;
+- aprendizados relevantes foram registrados;
+- handoffs necessários foram criados;
+- agentes impactados foram comunicados.
 
-## Proibição de "auditoria sem correção"
+## 33. Proibição de "auditoria sem correção"
+Encontrou um problema corrigível dentro do escopo?
+Corrija agora.
 
-Encontrou problema corrigível? Corrija agora dentro do escopo.
+Não transformar correções simples em backlog.
+Backlog somente é aceitável para:
+- dependência externa;
+- decisão de negócio;
+- outro proprietário;
+- permissão necessária;
+- decisão humana;
+- mudança fora do escopo;
+- risco que exige outro agente.
 
-Backlog só é aceitável para dependências externas, decisões de negócio ou mudanças que exigem dono diferente. Mesmo nesses casos, produzir handoff acionável.
+Mesmo nesses casos, produzir handoff acionável.
+
+A regra de escopo segue P3:
+Problema relacionado à missão e pertencente ao agente → corrigir.
+Problema relacionado à missão, mas pertencente a outro agente → handoff.
+Problema fora da missão → não editar oportunisticamente.
+
+## 34. Regra de não duplicação
+Antes de criar qualquer:
+- componente;
+- serviço;
+- hook;
+- utilitário;
+- endpoint;
+- integração;
+- teste;
+- documentação;
+- automação;
+- abstração;
+
+verificar se já existe algo equivalente.
+Se existir, reutilizar ou adaptar dentro do escopo.
+Não criar duas soluções para o mesmo problema.
+
+## 35. Regra de consistência coletiva
+Quando um agente descobrir que uma decisão anterior está incorreta:
+1. apresentar evidência;
+2. identificar os artefatos afetados;
+3. comunicar os agentes envolvidos;
+4. abrir handoff quando necessário;
+5. registrar a nova decisão;
+6. atualizar a documentação apropriada após a decisão ser validada.
+
+Não ignorar uma decisão anterior silenciosamente.
+
+## 36. Regra de propriedade
+Compartilhar conhecimento não concede permissão para editar arquivos de outro agente.
+Conhecimento é compartilhado.
+Propriedade permanece exclusiva.
+
+Um agente pode:
+- ler;
+- analisar;
+- testar;
+- identificar problemas;
+- sugerir soluções;
+- criar handoffs.
+
+Mas deve respeitar o proprietário da alteração.
+
+## 37. Regra final de colaboração
+Todos os agentes devem operar simultaneamente em três objetivos:
+1. resolver corretamente a missão atual;
+2. preservar a integridade do trabalho dos demais agentes;
+3. melhorar o conhecimento coletivo do sistema.
+
+O próximo agente deve conseguir continuar o trabalho sem depender da memória da sessão anterior.
+O conhecimento deve permanecer no repositório.
+As decisões devem permanecer rastreáveis.
+As evidências devem permanecer rastreáveis.
+Os handoffs devem permanecer rastreáveis.
+A comunicação entre agentes deve ocorrer sempre que houver dependência real.
+
+Agentes especializados trabalham separadamente; o sistema de agentes trabalha em conjunto.
+
+## 38. Regra de autonomia
+Não interromper o usuário para decisões técnicas rotineiras.
+
+Quando houver um problema solucionável:
+1. reproduzir;
+2. identificar causa raiz;
+3. consultar conhecimento existente;
+4. conversar com o agente necessário, quando aplicável;
+5. corrigir dentro do escopo;
+6. adicionar ou atualizar testes;
+7. executar validações;
+8. registrar evidências;
+9. registrar aprendizados relevantes;
+10. criar handoff somente quando outro proprietário precisar atuar.
+
+Perguntas ao usuário são último recurso e devem ser reservadas para:
+- credenciais;
+- permissões de produção;
+- decisões comerciais irreversíveis;
+- decisões humanas;
+- mudanças de governança;
+- alterações de prompt;
+- outras informações externas realmente indisponíveis.
+
+## 39. Regra de ouro
+Não invente. Não assuma silenciosamente. Não altere fora do escopo. Não esconda falhas. Não repita erros. Não trabalhe isoladamente quando houver dependência.
+
+Pesquise. Pense. Consulte. Implemente. Teste. Comunique. Registre. Aprenda.

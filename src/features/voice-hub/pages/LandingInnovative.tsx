@@ -20,7 +20,9 @@ import {
   BrainCircuit,
 } from 'lucide-react';
 import { useTheme, ThemeProvider } from '../components/design-system/ThemeContext.js';
-import { useToast, ToastContainer, AtlasLogo } from '../components/design-system/index.js';
+import { useToast, ToastContainer } from '../components/design-system/index.js';
+import { BirthHubLogo } from '../../../components/brand/BirthHubLogo.js';
+import { AnimatedBirthHubEmblem } from '../../../components/brand/AnimatedBirthHubEmblem.js';
 
 // Simplified background effect
 const ParticleBackground: React.FC = () => {
@@ -142,24 +144,6 @@ function LandingInnovativeContent() {
   const heroY = useTransform(scrollY, [0, 500], [0, 100]);
 
   const [activeSection, setActiveSection] = useState(0);
-  const [typedText, setTypedText] = useState('');
-
-  // Typing effect for hero text
-  useEffect(() => {
-    const fullText = 'INTELIGÊNCIA ARTIFICIAL AUTÔNOMA';
-    let index = 0;
-
-    const typeInterval = setInterval(() => {
-      if (index < fullText.length) {
-        setTypedText(fullText.slice(0, index + 1));
-        index++;
-      } else {
-        clearInterval(typeInterval);
-      }
-    }, 100);
-
-    return () => clearInterval(typeInterval);
-  }, []);
 
   // Scroll spy for navigation
   useEffect(() => {
@@ -205,18 +189,18 @@ function LandingInnovativeContent() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3 group">
             <motion.div
-              className="p-2 bg-white dark:bg-slate-900 rounded-xl shadow-lg border border-slate-200 dark:border-slate-800"
-              whileHover={{ scale: 1.05, rotate: 5 }}
+              className="p-1.5 bg-white dark:bg-slate-900 rounded-xl shadow-md border border-slate-200 dark:border-slate-800"
+              whileHover={{ scale: 1.05 }}
               transition={{ type: 'spring', stiffness: 400 }}
             >
-              <AtlasLogo className="h-7 w-7" />
+              <BirthHubLogo variant="symbol" className="h-8 w-8" />
             </motion.div>
             <div className="text-left">
-              <h1 className="text-lg font-extrabold tracking-tight text-slate-950 dark:text-white">
-                Birth Hub 360
+              <h1 className="text-lg font-bold tracking-tight text-slate-950 dark:text-white font-display">
+                Birth Hub <span className="text-brand font-semibold">360º</span>
               </h1>
-              <span className="text-[10px] text-brand font-bold uppercase tracking-widest">
-                Enterprise AI
+              <span className="text-[10px] text-brand font-bold uppercase tracking-widest font-mono">
+                Command Center
               </span>
             </div>
           </Link>
@@ -286,38 +270,45 @@ function LandingInnovativeContent() {
             transition={{ duration: 0.8 }}
             className="space-y-8"
           >
+            {/* Platform Animated Logo Centerpiece */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.85 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.7 }}
+              className="flex justify-center"
+            >
+              <AnimatedBirthHubEmblem
+                size={220}
+                showCta={false}
+              />
+            </motion.div>
+
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2, duration: 0.6 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand/10 border border-brand/20"
+              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand/10 border border-brand/20"
             >
               <Sparkles className="h-4 w-4 text-brand" />
-              <span className="text-xs font-bold text-brand uppercase tracking-widest">
-                Próxima Geração de IA
+              <span className="text-xs font-bold text-brand uppercase tracking-widest font-mono">
+                Intelligent Business Command Center
               </span>
             </motion.div>
 
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-extrabold tracking-tight text-slate-950 dark:text-white">
-              <span className="block">BIRTH HUB</span>
-              <motion.span
-                className="block text-transparent bg-clip-text bg-gradient-to-r from-brand via-iris to-brand bg-300% animate-gradient"
-                animate={{ backgroundPosition: ['0%', '100%', '0%'] }}
-                transition={{ duration: 5, repeat: Infinity, ease: 'linear' }}
-              >
-                {typedText}
-              </motion.span>
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight text-slate-950 dark:text-white font-display">
+              Birth Hub <span className="text-brand font-semibold">360º</span>
             </h1>
 
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
+            <motion.div
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4, duration: 0.8 }}
-              className="text-xl md:text-2xl text-slate-600 dark:text-slate-400 max-w-3xl mx-auto leading-relaxed"
+              className="text-2xl md:text-3xl lg:text-4xl text-slate-800 dark:text-slate-200 max-w-3xl mx-auto leading-snug font-display space-y-1"
             >
-              Transforme operações complexas em decisões inteligentes com nossa plataforma
-              enterprise de agentes autônomos de última geração.
-            </motion.p>
+              <div className="text-slate-950 dark:text-white font-bold">Dados que Conectam,</div>
+              <div className="text-brand font-bold">Inteligência que decide,</div>
+              <div className="text-slate-600 dark:text-slate-400 font-semibold">Resultados que acontecem.</div>
+            </motion.div>
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -587,8 +578,10 @@ function LandingInnovativeContent() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <AtlasLogo className="h-6 w-6" />
-              <span className="font-bold text-slate-900 dark:text-white">Birth Hub 360</span>
+              <BirthHubLogo variant="symbol" className="h-6 w-6" />
+              <span className="font-bold text-slate-900 dark:text-white font-display">
+                Birth Hub <span className="text-brand font-semibold">360º</span>
+              </span>
             </div>
             <div className="text-sm text-slate-500">
               © 2026 Birth Hub 360. Todos os direitos reservados.
