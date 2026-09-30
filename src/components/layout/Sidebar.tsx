@@ -253,7 +253,8 @@ export function Sidebar({
     if (!meta) return null;
     const Icon = meta.icon;
     const isActive = activeTab === tab;
-    // O matiz do módulo vira a variável --nav-accent; ícone, ladrilho e barra ativa leem dela.
+    // NAV_ACCENT_VAR is still threaded through for NavLaunchTransition; icon colors are
+    // simplified to brand-gold (active) / white-45% (inactive) per the new design spec.
     const accentStyle = { '--nav-accent': NAV_ACCENT_VAR[meta.accent] } as CSSProperties;
 
     return (
@@ -265,28 +266,34 @@ export function Sidebar({
         aria-label={meta.label}
         aria-current={isActive ? 'page' : undefined}
         style={accentStyle}
-        className={`group relative flex w-full items-center gap-3 rounded-lg px-2 py-1.5 text-left text-[13px] font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-1 focus-visible:ring-offset-surface-elevated cursor-pointer ${
+        className={`group relative flex w-full items-center gap-[10px] rounded-lg px-3 py-2.5 text-left text-[13px] transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-1 focus-visible:ring-offset-midnight cursor-pointer ${
           isActive
-            ? 'bg-[color-mix(in_srgb,var(--nav-accent)_12%,transparent)] text-ink'
-            : 'text-ink-2 hover:bg-surface-interactive hover:text-ink'
+            ? 'bg-brand/10 font-semibold text-brand'
+            : 'font-medium text-white/45 hover:bg-white/6 hover:text-white/70'
         } ${isCollapsed ? 'lg:px-0 lg:justify-center' : ''}`}
       >
+        {/* Gold left-accent bar for active state — absolute, flush left edge of the item */}
         {isActive && (
           <span
             aria-hidden="true"
-            className="absolute inset-y-1.5 left-0 w-[3px] rounded-r-full bg-[var(--nav-accent)]"
+            className="absolute inset-y-1.5 left-0 w-0.5 rounded-r-sm bg-brand"
           />
         )}
-        {/* Ladrilho colorido com o ícone SVG do módulo — cada módulo tem ícone e matiz próprios */}
+        {/* Icon — 16px, simplified colors: gold when active, white/45 when inactive */}
         <span
           data-nav-icon
           aria-hidden="true"
-          className="grid h-7 w-7 shrink-0 place-items-center rounded-md bg-[color-mix(in_srgb,var(--nav-accent)_14%,transparent)] text-[var(--nav-accent)]"
+          className={`grid h-4 w-4 shrink-0 place-items-center ${
+            isActive ? 'text-brand' : 'text-white/45 group-hover:text-white/70'
+          }`}
         >
-          <Icon size={16} strokeWidth={2} />
+          <Icon size={16} strokeWidth={1.75} />
         </span>
+        {/* Label — hidden in collapsed mode on desktop */}
         <span
-          className={`truncate ${isCollapsed ? 'lg:hidden' : ''} ${isActive ? 'font-semibold text-ink' : ''}`}
+          className={`truncate font-[family-name:var(--font-brand-sans)] ${
+            isCollapsed ? 'lg:hidden' : ''
+          }`}
         >
           {meta.label}
         </span>
@@ -296,81 +303,104 @@ export function Sidebar({
 
   return (
     <aside
-      className={`fixed inset-y-0 left-0 z-40 flex h-full flex-col bg-surface-elevated/70 backdrop-blur-xl border-r border-line shadow-[4px_0_24px_rgba(0,0,0,0.02)] transition-[width,transform] duration-300 lg:static lg:translate-x-0 ${
-        isCollapsed ? 'lg:w-[5rem]' : 'lg:w-[16rem]'
+      className={`fixed inset-y-0 left-0 z-40 flex h-full flex-col bg-midnight border-r border-white/8 transition-[width,transform] duration-300 lg:static lg:translate-x-0 ${
+        isCollapsed ? 'lg:w-16' : 'lg:w-[220px]'
       } ${mobileOpen ? 'translate-x-0' : '-translate-x-full'}`}
       aria-label="Navegação principal - Intelligent Business Command Center"
     >
-      <div className="flex flex-col shrink-0">
-        <div
-          className={`flex items-center justify-between border-b border-line px-5 py-4 ${isCollapsed ? 'lg:justify-center lg:px-2' : ''}`}
-        >
-          {isCollapsed ? (
-            <BrandEmblemBadge className="h-9 w-9" title="Birth Hub 360°" />
-          ) : (
-            <>
-              <div className="flex items-center gap-2.5">
-                <BrandEmblemBadge className="h-10 w-10 shrink-0" title="Birth Hub 360°" />
-                <div className="leading-tight">
-                  <h1 className="flex items-center gap-1 text-sm font-bold tracking-tight text-ink">
-                    Birth Hub 360°
-                  </h1>
-                  <span className="text-[10px] font-medium tracking-wide text-ink-2">
-                    Intelligent Business Command Center
-                  </span>
-                </div>
+      {/* ── Logo / wordmark area ────────────────────────────────────────────── */}
+      <div
+        className={`flex h-14 shrink-0 items-center border-b border-white/8 px-4 ${
+          isCollapsed ? 'lg:justify-center lg:px-0' : 'justify-between'
+        }`}
+      >
+        {isCollapsed ? (
+          /* Collapsed: emblem only, click to expand */
+          <button
+            type="button"
+            onClick={toggleCollapse}
+            className="flex items-center justify-center rounded-md p-1 text-white/35 transition-colors hover:text-white/65"
+            title="Expandir menu lateral"
+          >
+            <BrandEmblemBadge className="h-8 w-8" title="Birth Hub 360°" />
+          </button>
+        ) : (
+          <>
+            <div className="flex items-center gap-2.5 min-w-0">
+              <BrandEmblemBadge className="h-8 w-8 shrink-0" title="Birth Hub 360°" />
+              <div className="leading-tight min-w-0">
+                <h1 className="text-[13px] font-semibold tracking-tight text-white truncate font-[family-name:var(--font-brand-sans)]">
+                  Birth Hub 360°
+                </h1>
+                <span className="text-[10px] font-normal tracking-wide text-white/40 truncate font-[family-name:var(--font-brand-sans)]">
+                  Command Center
+                </span>
               </div>
-              <button
-                type="button"
-                onClick={toggleCollapse}
-                className="hidden rounded-md p-1.5 text-ink-2 transition-colors hover:bg-surface-interactive hover:text-ink lg:block"
-                title="Recolher menu"
-              >
-                <PanelLeftClose size={16} />
-              </button>
-            </>
-          )}
-        </div>
-
-        {isCollapsed && (
-          <div className="mt-2 hidden justify-center lg:flex">
+            </div>
+            {/* Collapse toggle — top right when expanded */}
             <button
               type="button"
               onClick={toggleCollapse}
-              className="rounded-md p-1.5 text-ink-2 transition-colors hover:bg-surface-interactive hover:text-ink"
-              title="Expandir menu lateral"
+              className="hidden shrink-0 rounded-md p-1.5 text-white/35 transition-colors hover:text-white/65 lg:block"
+              title="Recolher menu"
             >
-              <PanelLeftOpen size={16} />
+              <PanelLeftClose size={16} strokeWidth={1.75} />
             </button>
-          </div>
+          </>
         )}
       </div>
 
+      {/* ── Navigation ──────────────────────────────────────────────────────── */}
       <nav
         aria-label="Navegação principal"
-        className="custom-scrollbar flex-1 space-y-3 overflow-y-auto px-2.5 py-3"
+        className="custom-scrollbar flex-1 overflow-y-auto px-2 py-3 space-y-0"
       >
         {navGroups.map((group, groupIndex) => (
           <section
             key={group.title}
-            className={`space-y-0.5 ${groupIndex > 0 ? 'border-t border-line pt-3' : ''}`}
+            className="space-y-0.5"
             aria-label={group.title}
           >
-            <div className={`mb-1.5 flex items-center px-2 ${isCollapsed ? 'lg:hidden' : ''}`}>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-ink-2">
+            {/* Group label — hidden when collapsed */}
+            <div
+              className={`px-3 pb-1 ${
+                groupIndex > 0 ? 'mt-5' : 'mt-1'
+              } ${isCollapsed ? 'lg:hidden' : ''}`}
+            >
+              <p className="text-[10px] font-normal uppercase tracking-[0.08em] text-white/30 font-[family-name:var(--font-brand-sans)]">
                 {group.title}
               </p>
             </div>
+            {/* Divider visible only in collapsed mode (replaces the group label) */}
+            {groupIndex > 0 && (
+              <div className={`my-2 mx-2 h-px bg-white/8 ${isCollapsed ? '' : 'lg:hidden'}`} />
+            )}
             {group.items.map(renderNavItem)}
           </section>
         ))}
       </nav>
 
-      <div className="p-4 pt-2">
+      {/* ── Bottom section: collapse toggle (expanded) + user area + logout ── */}
+      <div className="shrink-0 border-t border-white/8 px-2 py-3 space-y-1">
+        {/* Expand toggle — only shown when collapsed, centered */}
+        {isCollapsed && (
+          <div className="hidden justify-center lg:flex mb-2">
+            <button
+              type="button"
+              onClick={toggleCollapse}
+              className="rounded-md p-1.5 text-white/35 transition-colors hover:text-white/65"
+              title="Expandir menu lateral"
+            >
+              <PanelLeftOpen size={16} strokeWidth={1.75} />
+            </button>
+          </div>
+        )}
+
+        {/* User identity pill */}
         {currentUser && (
           <div
-            className={`relative overflow-hidden rounded-2xl bg-surface-subtle/40 backdrop-blur-md px-3 py-3 transition-all ${
-              isCollapsed ? 'lg:px-1.5 lg:py-2 lg:flex lg:justify-center' : ''
+            className={`flex items-center gap-2.5 px-2 py-2 ${
+              isCollapsed ? 'lg:justify-center lg:px-0' : ''
             }`}
             title={
               isCollapsed
@@ -378,38 +408,45 @@ export function Sidebar({
                 : undefined
             }
           >
-            <div className="flex min-w-0 items-center gap-3 relative z-10">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-brand/80 to-brand-2/90 text-sm font-bold text-on-brand shadow-sm ring-2 ring-surface transition-transform duration-300">
-                {currentUser.name?.charAt(0).toUpperCase() || 'U'}
-              </div>
-              <div className={`min-w-0 flex-1 ${isCollapsed ? 'lg:hidden' : ''}`}>
-                <p className="truncate text-[13px] font-bold leading-tight text-ink transition-colors">
-                  {currentUser.name}
-                </p>
-                <p className="mt-0.5 truncate text-[11px] font-medium leading-tight text-ink-2">
-                  {currentUser.roleTitle || currentUser.role}
-                </p>
-              </div>
+            {/* Avatar — initials, 28px, brand gold tint */}
+            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand/30 text-[11px] font-semibold text-brand font-[family-name:var(--font-brand-sans)] ring-1 ring-brand/20">
+              {currentUser.name?.charAt(0).toUpperCase() || 'U'}
+            </div>
+            {/* Name + role — hidden when collapsed */}
+            <div className={`min-w-0 flex-1 ${isCollapsed ? 'lg:hidden' : ''}`}>
+              <p className="truncate text-[12px] font-semibold leading-tight text-white/80 font-[family-name:var(--font-brand-sans)]">
+                {currentUser.name}
+              </p>
+              <p className="truncate text-[10px] font-normal leading-tight text-white/40 font-[family-name:var(--font-brand-sans)]">
+                {currentUser.roleTitle || currentUser.role}
+              </p>
             </div>
           </div>
         )}
 
+        {/* Logout */}
         <button
           type="button"
           onClick={logout}
-          className={`group flex w-full cursor-pointer items-center gap-3 rounded-xl border border-transparent px-3 py-2.5 text-left text-sm font-bold text-critical transition-all duration-200 hover:scale-[1.02] hover:border-critical/15 hover:bg-critical/10 hover:shadow-sm active:scale-95 ${
+          className={`group flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2 py-2 text-left text-[13px] font-medium text-red-400/60 transition-colors duration-150 hover:text-red-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-1 focus-visible:ring-offset-midnight ${
             isCollapsed ? 'lg:justify-center lg:px-0' : ''
           }`}
           title="Encerrar sessão e sair da conta"
           aria-label="Encerrar sessão e sair da conta"
         >
           <LogOut
-            size={20}
-            className="shrink-0 opacity-80 transition-transform group-hover:-translate-x-1"
+            size={16}
+            strokeWidth={1.75}
+            className="shrink-0 transition-transform group-hover:-translate-x-0.5"
           />
-          <span className={isCollapsed ? 'lg:hidden' : ''}>Sair da Conta</span>
+          <span
+            className={`font-[family-name:var(--font-brand-sans)] ${isCollapsed ? 'lg:hidden' : ''}`}
+          >
+            Sair da Conta
+          </span>
         </button>
       </div>
+
       <AnimatePresence>
         {launch && <NavLaunchTransition key={launch.tab} launch={launch} onFinish={finishLaunch} />}
       </AnimatePresence>
