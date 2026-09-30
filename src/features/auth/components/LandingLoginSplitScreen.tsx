@@ -22,11 +22,11 @@ import {
 } from 'lucide-react';
 import { type ReactNode, useEffect, useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
-import { BirthHubLogo, BirthHubWordmark } from '../../../components/brand/BirthHubLogo.js';
-import { BRAND } from '../../../config/brand.js';
+import { BirthHubLogo } from '../../../components/brand/BirthHubLogo.js';
 import { useAuth } from '../../../contexts/AuthContext.js';
 import { authClient } from '../../../lib/auth-client.js';
 import { EASE_OUT_EXPO, staggerContainer, staggerItem } from '../../../lib/motion.js';
+import { SoundFX } from '../../../lib/soundEffects.js';
 
 /** Linha do slogan: sobe de dentro de uma máscara (overflow-hidden) — entrada em cascata linha a linha. */
 function RevealLine({ children, delay }: { children: ReactNode; delay: number }) {
@@ -308,9 +308,10 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
           Full-width on welcome view; hidden on access view
       ══════════════════════════════════════════════════════════════════════ */}
       {view === 'welcome' && (
-        <div className="relative flex w-full flex-col overflow-hidden px-6 pb-10 pt-6 sm:px-10"
+        <div
+          className="relative flex w-full flex-col overflow-hidden px-6 pb-10 pt-6 sm:px-10 text-[#0B132B]"
           style={{
-            background: 'linear-gradient(135deg, #0b132b 0%, #0f1d3d 50%, #0b132b 100%)',
+            background: 'linear-gradient(145deg, #FAF9F6 0%, #FFFFFF 50%, #F5F3EF 100%)',
           }}
         >
           {/* ── Subtle grid texture overlay ─────────────────────────────── */}
@@ -319,25 +320,24 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
             aria-hidden="true"
             style={{
               backgroundImage:
-                'linear-gradient(rgba(212,175,55,0.04) 1px, transparent 1px), ' +
-                'linear-gradient(90deg, rgba(212,175,55,0.04) 1px, transparent 1px)',
-              backgroundSize: '40px 40px',
+                'linear-gradient(rgba(11,19,43,0.035) 1px, transparent 1px), ' +
+                'linear-gradient(90deg, rgba(11,19,43,0.035) 1px, transparent 1px)',
+              backgroundSize: '44px 44px',
             }}
           />
 
-          {/* ── Glow blobs ─────────────────────────────────────────────── */}
+          {/* ── Luminous Ambient Glows ──────────────────────────────────── */}
           <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden" aria-hidden="true">
-            <div className="absolute top-[-10%] left-[-10%] w-[45%] h-[45%] rounded-full bg-brand/10 blur-[120px]" />
-            <div className="absolute bottom-[-10%] right-[-10%] w-[45%] h-[45%] rounded-full bg-[#1677ff]/10 blur-[120px]" />
+            <div className="absolute top-[-8%] left-[-8%] w-[50%] h-[50%] rounded-full bg-[#D4AF37]/8 blur-[130px]" />
+            <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-[#1677FF]/6 blur-[130px]" />
           </div>
 
           {/* ── Navbar ─────────────────────────────────────────────────── */}
-          <header className="relative z-20 flex items-center justify-between mb-16">
+          <header className="relative z-20 flex items-center justify-between mb-12 sm:mb-16">
             <div className="flex shrink-0 items-center gap-3">
-              <BirthHubLogo variant="icon" className="w-8 h-8 text-brand" />
-              <BirthHubWordmark className="h-4 text-white" />
+              <BirthHubLogo variant="horizontal" className="h-8 text-[#0B132B]" />
             </div>
-            <nav className="hidden xl:flex items-center gap-6 text-xs font-semibold tracking-wide text-white/60">
+            <nav className="hidden xl:flex items-center gap-6 text-xs font-semibold tracking-wide text-[#0B132B]/70">
               <span className="cursor-pointer hover:text-brand transition-colors">Soluções</span>
               <span className="cursor-pointer hover:text-brand transition-colors">Recursos</span>
               <span className="cursor-pointer hover:text-brand transition-colors">Segmentos</span>
@@ -347,7 +347,7 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
             <div className="flex shrink-0 items-center gap-4 whitespace-nowrap">
               <button
                 type="button"
-                className="flex items-center gap-1 text-xs font-semibold text-white/60"
+                className="flex items-center gap-1 text-xs font-semibold text-[#0B132B]/70"
               >
                 <span className="w-4 h-4 rounded-full overflow-hidden inline-flex items-center justify-center bg-green-700 text-[8px] text-white">
                   BR
@@ -357,8 +357,11 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
               </button>
               <button
                 type="button"
-                onClick={() => navigate('/login')}
-                className="rounded-full border border-white/20 px-5 py-2 text-xs font-bold tracking-wide text-white hover:bg-white/5 transition-colors"
+                onClick={() => {
+                  SoundFX.play('click');
+                  navigate('/login');
+                }}
+                className="rounded-full border border-[#0B132B]/20 bg-white/80 px-5 py-2 text-xs font-bold tracking-wide text-[#0B132B] shadow-xs hover:border-brand hover:text-brand hover:bg-white transition-all cursor-pointer"
               >
                 Acessar Hub &rarr;
               </button>
@@ -376,52 +379,60 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
               {/* Eyebrow */}
               <motion.p
                 variants={staggerItem}
-                className="font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-brand"
+                className="font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-[#D4AF37]"
               >
                 Intelligent Business Command Center
               </motion.p>
 
-              {/* Brand name */}
+              {/* Brand name — Natural, Prestigious, Authentic */}
               <motion.h1
                 variants={staggerItem}
-                className="font-display text-5xl md:text-6xl font-bold tracking-tight text-white"
+                className="font-display text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-[#0B132B] leading-[1.06]"
               >
-                Birth Hub <span className="text-brand">360&deg;</span>
+                Birth Hub <span className="text-[#D4AF37] font-black">360&deg;</span>
               </motion.h1>
 
               {/* Tagline */}
-              <motion.p
+              <motion.div
                 variants={staggerItem}
-                className="font-display text-2xl md:text-3xl font-normal leading-snug text-white/80"
+                className="font-display text-2xl sm:text-3xl font-medium leading-snug text-[#0B132B]"
               >
                 <RevealLine delay={0.35}>Dados que conectam.</RevealLine>
                 <RevealLine delay={0.5}>Inteligência que decide.</RevealLine>
                 <RevealLine delay={0.65}>Resultados que acontecem.</RevealLine>
-              </motion.p>
+              </motion.div>
 
               {/* Subtitle */}
               <motion.p
                 variants={staggerItem}
-                className="font-mono text-sm text-white/50 max-w-md leading-relaxed"
+                className="font-mono text-sm text-[#475569] max-w-md leading-relaxed"
               >
                 O sistema operacional inteligente para operações de receita.
               </motion.p>
 
               {/* CTAs */}
-              <motion.div variants={staggerItem} className="flex items-center gap-4 pt-4">
+              <motion.div variants={staggerItem} className="flex flex-wrap items-center gap-4 pt-4">
                 <button
                   type="button"
-                  onClick={() => navigate('/login')}
-                  className="flex items-center gap-2 rounded-full bg-brand-active px-6 py-3 text-sm font-bold text-on-brand shadow-[0_4px_14px_rgba(212,175,55,0.35)] transition-transform hover:-translate-y-0.5 active:translate-y-0 motion-reduce:transform-none"
+                  onClick={() => {
+                    SoundFX.play('confirm');
+                    navigate('/login');
+                  }}
+                  className="group relative flex items-center gap-2.5 rounded-full bg-[#D4AF37] px-7 py-3.5 text-sm font-bold text-[#0B132B] shadow-[0_4px_22px_rgba(212,175,55,0.45)] transition-all duration-300 hover:bg-[#dfba41] hover:shadow-[0_8px_30px_rgba(212,175,55,0.6)] hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
                 >
-                  Explorar o Birth Hub &rarr;
+                  <span>Explorar o Birth Hub</span>
+                  <span className="transition-transform duration-200 group-hover:translate-x-1">&rarr;</span>
                 </button>
                 <button
                   type="button"
-                  className="flex items-center gap-3 text-sm font-semibold text-white/70 hover:text-brand transition-colors"
+                  onClick={() => {
+                    SoundFX.play('click');
+                    navigate('/login');
+                  }}
+                  className="flex items-center gap-3 text-sm font-semibold text-[#0B132B]/80 hover:text-brand transition-colors cursor-pointer"
                 >
-                  <span className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20">
-                    <Play className="h-4 w-4 ml-0.5" />
+                  <span className="flex h-10 w-10 items-center justify-center rounded-full border border-[#0B132B]/15 bg-white shadow-xs">
+                    <Play className="h-4 w-4 ml-0.5 text-[#0B132B]" />
                   </span>
                   Ver em 2 minutos
                 </button>
@@ -429,21 +440,48 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
             </motion.div>
           </div>
 
+          {/* ── Mobile Animated Logo Centerpiece ──────────────────────── */}
+          <div className="lg:hidden flex flex-col items-center justify-center my-8 z-20">
+            <button
+              type="button"
+              onClick={() => {
+                SoundFX.play('confirm');
+                navigate('/login');
+              }}
+              className="group relative flex flex-col items-center cursor-pointer"
+              aria-label="Acessar Birth Hub 360"
+            >
+              <div className="relative w-36 h-36 flex items-center justify-center">
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 60, repeat: Infinity, ease: 'linear' }}
+                  className="w-full h-full"
+                >
+                  <BirthHubLogo variant="symbol" className="w-full h-full drop-shadow-[0_0_20px_rgba(212,175,55,0.45)]" />
+                </motion.div>
+              </div>
+              <div className="mt-4 flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#0B132B] text-white text-xs font-bold shadow-lg border border-[#D4AF37]/50 group-hover:border-[#D4AF37] transition-all">
+                <span className="h-2 w-2 rounded-full bg-[#D4AF37] animate-ping" />
+                <span>Acessar Command Center &rarr;</span>
+              </div>
+            </button>
+          </div>
+
           {/* ── Stats Row ───────────────────────────────────────────────── */}
           <motion.div
             initial="hidden"
             animate="show"
             variants={staggerContainer(0.09)}
-            className="relative z-20 mt-12 grid max-w-xl grid-cols-2 gap-x-4 gap-y-6 border-t border-white/10 pt-8 sm:grid-cols-4"
+            className="relative z-20 mt-12 grid max-w-xl grid-cols-2 gap-x-4 gap-y-6 border-t border-[#0B132B]/10 pt-8 sm:grid-cols-4"
           >
             {HERO_STATS.map((stat, i) => (
               <motion.div key={stat.lines.join(' ')} variants={staggerItem}>
                 {/* Number — Sora/display font, gold */}
-                <div className="font-display text-[28px] font-bold text-brand leading-none mb-1">
+                <div className="font-display text-[28px] font-bold text-[#D4AF37] leading-none mb-1">
                   <CountUp to={stat.to} suffix={stat.suffix} delay={0.5 + i * 0.09} />
                 </div>
-                {/* Label — IBM Plex Mono, white/50 */}
-                <div className="font-mono text-[11px] text-white/50 uppercase tracking-wider leading-tight">
+                {/* Label — IBM Plex Mono, navy/60 */}
+                <div className="font-mono text-[11px] text-[#475569] uppercase tracking-wider leading-tight">
                   {stat.lines[0]}
                   <br />
                   {stat.lines[1]}
@@ -453,76 +491,107 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
           </motion.div>
 
           {/* ── Scroll indicator ────────────────────────────────────────── */}
-          <div className="relative z-20 mt-8 flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-white/40">
+          <div className="relative z-20 mt-8 flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-[#0B132B]/40">
             <ArrowDown className="h-4 w-4 rounded-full border border-current p-0.5" />
-            Escrole para explorar
+            Role para explorar
           </div>
 
-          {/* ── Orbital Graphic ─────────────────────────────────────────── */}
-          <div className="pointer-events-none absolute right-0 top-1/2 hidden h-[520px] w-[520px] -translate-y-1/2 lg:block"
-            style={{ transform: 'translateY(-50%) translateX(-8%)' }}
-            aria-hidden="true"
+          {/* ── Interactive Orbital Centerpiece with Logo Animation & Call to Action ── */}
+          <div
+            className="absolute right-0 top-1/2 hidden h-[540px] w-[540px] -translate-y-1/2 lg:block z-20 pointer-events-auto"
+            style={{ transform: 'translateY(-50%) translateX(-4%)' }}
           >
             <div className="relative w-full h-full flex items-center justify-center">
-              {/* Large outer decorative rings (Framer Motion — respects reduce-motion via Framer) */}
+              {/* Outer decorative dashed ring */}
               <motion.div
                 animate={{ rotate: 360 }}
-                transition={{ duration: 60, repeat: Infinity, ease: 'linear' }}
-                className="absolute inset-4 rounded-full border border-white/5 border-dashed"
+                transition={{ duration: 70, repeat: Infinity, ease: 'linear' }}
+                className="absolute inset-4 rounded-full border border-[#D4AF37]/25 border-dashed"
                 style={{ willChange: 'transform' }}
               />
+              {/* Inner ring */}
               <motion.div
                 animate={{ rotate: -360 }}
-                transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
-                className="absolute inset-[136px] rounded-full border border-white/20"
+                transition={{ duration: 45, repeat: Infinity, ease: 'linear' }}
+                className="absolute inset-[130px] rounded-full border border-[#D4AF37]/35"
                 style={{ willChange: 'transform' }}
               />
 
-              {/* Core gradient ring */}
-              <div
-                className="absolute w-[216px] h-[216px] rounded-full border-[14px] border-transparent"
-                style={{
-                  background: `linear-gradient(currentColor, currentColor) padding-box, conic-gradient(from 0deg, ${BRAND.colors.orbitBlue} 0%, ${BRAND.colors.brand} 33%, ${BRAND.colors.pink} 66%, ${BRAND.colors.orbitBlue} 100%) border-box`,
+              {/* Core interactive emblem with action CTA */}
+              <button
+                type="button"
+                onClick={() => {
+                  SoundFX.play('confirm');
+                  navigate('/login');
                 }}
-              />
-              <div className="absolute w-[188px] h-[188px] rounded-full bg-[#0b132b] flex items-center justify-center border border-white/10 shadow-2xl">
-                <BirthHubLogo
-                  variant="symbol"
-                  className="w-24 h-24 drop-shadow-[0_0_15px_rgba(212,175,55,0.5)]"
-                />
-              </div>
+                className="group relative z-30 flex flex-col items-center justify-center cursor-pointer transition-all duration-300 hover:scale-105 border-0 bg-transparent p-0"
+                title="Acessar o Birth Hub 360°"
+                aria-label="Acessar o Birth Hub 360°"
+              >
+                {/* Luminous Pulsing Aura behind Emblem */}
+                <div className="absolute -inset-6 rounded-full bg-gradient-to-r from-[#D4AF37]/25 via-[#FF4FA3]/15 to-[#1677FF]/20 blur-xl opacity-75 group-hover:opacity-100 group-hover:blur-2xl transition-all animate-pulse" />
+
+                {/* The Authentic BirthHub Emblem with Rotating Crown */}
+                <div className="relative w-48 h-48 rounded-full flex items-center justify-center shadow-2xl transition-transform duration-300">
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 55, repeat: Infinity, ease: 'linear' }}
+                    className="absolute inset-0 rounded-full"
+                    style={{ willChange: 'transform' }}
+                  >
+                    <BirthHubLogo
+                      variant="symbol"
+                      className="w-full h-full drop-shadow-[0_0_24px_rgba(212,175,55,0.5)]"
+                    />
+                  </motion.div>
+                </div>
+
+                {/* Chamada para Ação Interativa no Emblema */}
+                <motion.div
+                  initial={{ y: 5, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.8 }}
+                  className="relative mt-4 flex items-center gap-2 px-5 py-2 rounded-full bg-[#0B132B] text-white text-xs font-bold shadow-2xl border border-[#D4AF37]/50 group-hover:border-[#D4AF37] group-hover:bg-[#121B38] group-hover:shadow-[0_0_24px_rgba(212,175,55,0.6)] transition-all whitespace-nowrap"
+                >
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#D4AF37] opacity-75" />
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-[#D4AF37]" />
+                  </span>
+                  <span>Acessar Command Center &rarr;</span>
+                </motion.div>
+              </button>
 
               {/* Cardinal satellites */}
-              <div className="absolute top-12 flex flex-col items-center">
-                <div className="w-10 h-10 rounded-full bg-[#0f1d3d] shadow-lg border border-white/10 flex items-center justify-center mb-2">
+              <div className="absolute top-10 flex flex-col items-center">
+                <div className="w-10 h-10 rounded-full bg-white shadow-md border border-[#1677ff]/30 flex items-center justify-center mb-1.5">
                   <DatabaseZap className="h-4 w-4 text-[#1677ff]" />
                 </div>
-                <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-white/80">Dados</span>
-                <span className="font-mono text-[9px] text-white/40">Integração sem limites</span>
+                <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-[#0B132B]">Dados</span>
+                <span className="font-mono text-[9px] text-[#475569]">Integração 360°</span>
               </div>
 
-              <div className="absolute bottom-12 flex flex-col items-center">
-                <div className="w-10 h-10 rounded-full bg-[#0f1d3d] shadow-lg border border-white/10 flex items-center justify-center mb-2">
-                  <Target className="h-4 w-4 text-brand" />
+              <div className="absolute bottom-10 flex flex-col items-center">
+                <div className="w-10 h-10 rounded-full bg-white shadow-md border border-[#D4AF37]/30 flex items-center justify-center mb-1.5">
+                  <Target className="h-4 w-4 text-[#D4AF37]" />
                 </div>
-                <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-white/80">Decisão</span>
-                <span className="font-mono text-[9px] text-white/40">Estratégia baseada em dados</span>
+                <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-[#0B132B]">Decisão</span>
+                <span className="font-mono text-[9px] text-[#475569]">Inteligência ativa</span>
               </div>
 
-              <div className="absolute left-3 flex flex-col items-center">
-                <div className="w-10 h-10 rounded-full bg-[#0f1d3d] shadow-lg border border-white/10 flex items-center justify-center mb-2">
+              <div className="absolute left-1 flex flex-col items-center">
+                <div className="w-10 h-10 rounded-full bg-white shadow-md border border-[#0f9d64]/30 flex items-center justify-center mb-1.5">
                   <Rocket className="h-4 w-4 text-[#0f9d64]" />
                 </div>
-                <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-white/80">Execução</span>
-                <span className="font-mono text-[9px] text-white/40">Resultados consistentes</span>
+                <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-[#0B132B]">Execução</span>
+                <span className="font-mono text-[9px] text-[#475569]">Resultados reais</span>
               </div>
 
-              <div className="absolute right-3 flex flex-col items-center">
-                <div className="w-10 h-10 rounded-full bg-[#0f1d3d] shadow-lg border border-white/10 flex items-center justify-center mb-2">
+              <div className="absolute right-1 flex flex-col items-center">
+                <div className="w-10 h-10 rounded-full bg-white shadow-md border border-[#c53678]/30 flex items-center justify-center mb-1.5">
                   <BrainCircuit className="h-4 w-4 text-[#c53678]" />
                 </div>
-                <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-white/80">Inteligência</span>
-                <span className="font-mono text-[9px] text-white/40">Insights em tempo real</span>
+                <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-[#0B132B]">Inteligência</span>
+                <span className="font-mono text-[9px] text-[#475569]">Operação 24/7</span>
               </div>
             </div>
           </div>
