@@ -78,6 +78,108 @@ const HERO_STATS = [
 ];
 
 /**
+ * Orbital SVG decorativo — 3 anéis concêntricos + 4 nós cardinais + núcleo "B".
+ * Puramente SVG inline, sem imagens externas. Animação via CSS @keyframes injetado.
+ */
+function CommandOrb({ size = 240 }: { size?: number }) {
+  const reduceMotion = useReducedMotion();
+  const r1 = size * 0.48; // outer ring radius
+  const r2 = size * 0.32; // inner ring radius
+  const center = size / 2;
+  const nodeSize = 8;
+  const nodes = [
+    { x: center,      y: center - r1, label: 'DADOS',        color: '#1677ff' },
+    { x: center + r1, y: center,      label: 'INTELIGÊNCIA', color: '#c53678' },
+    { x: center,      y: center + r1, label: 'DECISÃO',      color: '#d4af37' },
+    { x: center - r1, y: center,      label: 'EXECUÇÃO',     color: '#0f9d64' },
+  ];
+  return (
+    <>
+      {/* Inject spin keyframe once per page — safe to repeat, browser deduplicates */}
+      {!reduceMotion && (
+        <style>{`
+          @keyframes bh-orb-spin {
+            from { transform: rotate(0deg); }
+            to   { transform: rotate(360deg); }
+          }
+        `}</style>
+      )}
+      <svg
+        width={size}
+        height={size}
+        viewBox={`0 0 ${size} ${size}`}
+        aria-hidden="true"
+        className="opacity-70"
+      >
+        {/* Outer ring — clockwise slow */}
+        <circle
+          cx={center}
+          cy={center}
+          r={r1}
+          fill="none"
+          stroke="rgba(212,175,55,0.18)"
+          strokeWidth="1"
+          strokeDasharray="4 8"
+          style={
+            reduceMotion
+              ? {}
+              : {
+                  transformOrigin: `${center}px ${center}px`,
+                  animation: 'bh-orb-spin 60s linear infinite',
+                }
+          }
+        />
+        {/* Inner ring — counter-clockwise */}
+        <circle
+          cx={center}
+          cy={center}
+          r={r2}
+          fill="none"
+          stroke="rgba(212,175,55,0.25)"
+          strokeWidth="1"
+          style={
+            reduceMotion
+              ? {}
+              : {
+                  transformOrigin: `${center}px ${center}px`,
+                  animation: 'bh-orb-spin 40s linear infinite reverse',
+                }
+          }
+        />
+        {/* Center nucleus */}
+        <circle cx={center} cy={center} r={28} fill="#0b132b" stroke="#d4af37" strokeWidth="1.5" />
+        <text
+          x={center}
+          y={center + 7}
+          textAnchor="middle"
+          fill="#d4af37"
+          fontSize="20"
+          fontFamily="Sora, Cabin, sans-serif"
+          fontWeight="700"
+        >
+          B
+        </text>
+        {/* Cardinal nodes */}
+        {nodes.map((node) => (
+          <g key={node.label}>
+            <circle cx={node.x} cy={node.y} r={nodeSize} fill={node.color} opacity="0.9" />
+            <circle
+              cx={node.x}
+              cy={node.y}
+              r={nodeSize + 4}
+              fill="none"
+              stroke={node.color}
+              strokeWidth="1"
+              opacity="0.35"
+            />
+          </g>
+        ))}
+      </svg>
+    </>
+  );
+}
+
+/**
  * Duas telas em sequência (pedido do usuário): `view="welcome"` é a PRIMEIRA — apresentação da marca em
  * tela cheia, com o CTA para a segunda; `view="access"` é a SEGUNDA — só a tela de acesso (login /
  * cadastro). Antes as duas dividiam a tela ao meio e se atropelavam em larguras médias.
@@ -191,27 +293,51 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
     return <Navigate to="/app" replace />;
   }
 
-  // Split-screen Layout
+  // ─── Shared input class ────────────────────────────────────────────────────
+  const inputCls =
+    'w-full h-[44px] rounded-[10px] border border-[var(--line)] bg-[var(--surface)] ' +
+    'px-4 font-mono text-sm text-[var(--ink)] placeholder-[var(--ink-2)]/50 ' +
+    'focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20 transition-colors';
+
+  // ─── Split-screen Layout ───────────────────────────────────────────────────
   return (
-    <div className="flex min-h-screen w-full bg-white dark:bg-[#0B132B] text-slate-900 dark:text-white overflow-x-hidden font-sans transition-colors duration-300">
-      {/* TELA 1 — Boas-vindas: hero institucional em tela cheia */}
+    <div className="flex min-h-screen w-full overflow-x-hidden">
+
+      {/* ══════════════════════════════════════════════════════════════════════
+          TELA 1 — Boas-vindas: hero institucional (view="welcome")
+          Full-width on welcome view; hidden on access view
+      ══════════════════════════════════════════════════════════════════════ */}
       {view === 'welcome' && (
-        <div className="flex w-full flex-col relative z-10 px-6 pb-10 pt-6 sm:px-10">
-          {/* Background glow effects */}
-          <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
-            <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-brand/10 dark:bg-brand/20 blur-[120px]" />
-            <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-blue-500/10 dark:bg-orbitBlue/20 blur-[120px]" />
-            {/* Earth/Globe glow at bottom right of the left panel */}
-            <div className="absolute -bottom-40 -right-40 w-[600px] h-[600px] rounded-full border border-brand/20 bg-gradient-to-br from-brand/5 to-transparent blur-3xl opacity-50 dark:opacity-100" />
+        <div className="relative flex w-full flex-col overflow-hidden px-6 pb-10 pt-6 sm:px-10"
+          style={{
+            background: 'linear-gradient(135deg, #0b132b 0%, #0f1d3d 50%, #0b132b 100%)',
+          }}
+        >
+          {/* ── Subtle grid texture overlay ─────────────────────────────── */}
+          <div
+            className="pointer-events-none absolute inset-0 z-0"
+            aria-hidden="true"
+            style={{
+              backgroundImage:
+                'linear-gradient(rgba(212,175,55,0.04) 1px, transparent 1px), ' +
+                'linear-gradient(90deg, rgba(212,175,55,0.04) 1px, transparent 1px)',
+              backgroundSize: '40px 40px',
+            }}
+          />
+
+          {/* ── Glow blobs ─────────────────────────────────────────────── */}
+          <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden" aria-hidden="true">
+            <div className="absolute top-[-10%] left-[-10%] w-[45%] h-[45%] rounded-full bg-brand/10 blur-[120px]" />
+            <div className="absolute bottom-[-10%] right-[-10%] w-[45%] h-[45%] rounded-full bg-[#1677ff]/10 blur-[120px]" />
           </div>
 
-          {/* Navbar */}
+          {/* ── Navbar ─────────────────────────────────────────────────── */}
           <header className="relative z-20 flex items-center justify-between mb-16">
             <div className="flex shrink-0 items-center gap-3">
               <BirthHubLogo variant="icon" className="w-8 h-8 text-brand" />
-              <BirthHubWordmark className="h-4 text-slate-900 dark:text-white" />
+              <BirthHubWordmark className="h-4 text-white" />
             </div>
-            <nav className="hidden xl:flex items-center gap-6 text-xs font-semibold tracking-wide text-slate-600 dark:text-slate-300">
+            <nav className="hidden xl:flex items-center gap-6 text-xs font-semibold tracking-wide text-white/60">
               <span className="cursor-pointer hover:text-brand transition-colors">Soluções</span>
               <span className="cursor-pointer hover:text-brand transition-colors">Recursos</span>
               <span className="cursor-pointer hover:text-brand transition-colors">Segmentos</span>
@@ -221,7 +347,7 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
             <div className="flex shrink-0 items-center gap-4 whitespace-nowrap">
               <button
                 type="button"
-                className="flex items-center gap-1 text-xs font-semibold text-slate-600 dark:text-slate-300"
+                className="flex items-center gap-1 text-xs font-semibold text-white/60"
               >
                 <span className="w-4 h-4 rounded-full overflow-hidden inline-flex items-center justify-center bg-green-700 text-[8px] text-white">
                   BR
@@ -232,14 +358,14 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
               <button
                 type="button"
                 onClick={() => navigate('/login')}
-                className="rounded-full border border-slate-300 dark:border-white/20 px-5 py-2 text-xs font-bold tracking-wide hover:bg-slate-50 dark:hover:bg-white/5 transition-colors"
+                className="rounded-full border border-white/20 px-5 py-2 text-xs font-bold tracking-wide text-white hover:bg-white/5 transition-colors"
               >
                 Acessar Hub &rarr;
               </button>
             </div>
           </header>
 
-          {/* Hero Content */}
+          {/* ── Hero Content ────────────────────────────────────────────── */}
           <div className="relative z-20 flex-1 flex flex-col justify-center max-w-xl">
             <motion.div
               initial="hidden"
@@ -247,46 +373,54 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
               variants={staggerContainer(0.1)}
               className="space-y-6"
             >
+              {/* Eyebrow */}
               <motion.p
                 variants={staggerItem}
-                className="text-[10px] font-bold uppercase tracking-[0.2em] text-brand"
+                className="font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-brand"
               >
                 Intelligent Business Command Center
               </motion.p>
+
+              {/* Brand name */}
               <motion.h1
                 variants={staggerItem}
-                className="font-display text-5xl md:text-6xl font-bold tracking-tight"
+                className="font-display text-5xl md:text-6xl font-bold tracking-tight text-white"
               >
                 Birth Hub <span className="text-brand">360&deg;</span>
               </motion.h1>
+
+              {/* Tagline */}
               <motion.p
                 variants={staggerItem}
-                className="font-display text-2xl md:text-3xl font-normal leading-snug text-slate-700 dark:text-slate-200"
+                className="font-display text-2xl md:text-3xl font-normal leading-snug text-white/80"
               >
                 <RevealLine delay={0.35}>Dados que conectam.</RevealLine>
                 <RevealLine delay={0.5}>Inteligência que decide.</RevealLine>
                 <RevealLine delay={0.65}>Resultados que acontecem.</RevealLine>
               </motion.p>
+
+              {/* Subtitle */}
               <motion.p
                 variants={staggerItem}
-                className="text-sm text-slate-500 dark:text-slate-400 max-w-md leading-relaxed"
+                className="font-mono text-sm text-white/50 max-w-md leading-relaxed"
               >
                 O sistema operacional inteligente para operações de receita.
               </motion.p>
 
+              {/* CTAs */}
               <motion.div variants={staggerItem} className="flex items-center gap-4 pt-4">
                 <button
                   type="button"
                   onClick={() => navigate('/login')}
-                  className="flex items-center gap-2 rounded-full transition-transform hover:-translate-y-0.5 active:translate-y-0 motion-reduce:transform-none bg-gradient-to-r from-[#D4AF37] to-[#E6C65A] px-6 py-3 text-sm font-bold text-slate-900 shadow-[0_4px_14px_rgba(212,175,55,0.4)] transition-transform hover:-translate-y-0.5"
+                  className="flex items-center gap-2 rounded-full bg-brand-active px-6 py-3 text-sm font-bold text-on-brand shadow-[0_4px_14px_rgba(212,175,55,0.35)] transition-transform hover:-translate-y-0.5 active:translate-y-0 motion-reduce:transform-none"
                 >
                   Explorar o Birth Hub &rarr;
                 </button>
                 <button
                   type="button"
-                  className="flex items-center gap-3 text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-brand dark:hover:text-brand transition-colors"
+                  className="flex items-center gap-3 text-sm font-semibold text-white/70 hover:text-brand transition-colors"
                 >
-                  <span className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-300 dark:border-white/20">
+                  <span className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20">
                     <Play className="h-4 w-4 ml-0.5" />
                   </span>
                   Ver em 2 minutos
@@ -295,20 +429,21 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
             </motion.div>
           </div>
 
-          {/* Stats Row */}
+          {/* ── Stats Row ───────────────────────────────────────────────── */}
           <motion.div
             initial="hidden"
             animate="show"
             variants={staggerContainer(0.09)}
-            className="relative z-20 mt-12 grid max-w-xl grid-cols-2 gap-x-4 gap-y-6 border-t border-slate-200 dark:border-white/10 pt-8 sm:grid-cols-4"
+            className="relative z-20 mt-12 grid max-w-xl grid-cols-2 gap-x-4 gap-y-6 border-t border-white/10 pt-8 sm:grid-cols-4"
           >
             {HERO_STATS.map((stat, i) => (
               <motion.div key={stat.lines.join(' ')} variants={staggerItem}>
-                <stat.Icon className="h-5 w-5 text-slate-400 dark:text-slate-500 mb-2" />
-                <div className="font-display text-3xl font-bold">
+                {/* Number — Sora/display font, gold */}
+                <div className="font-display text-[28px] font-bold text-brand leading-none mb-1">
                   <CountUp to={stat.to} suffix={stat.suffix} delay={0.5 + i * 0.09} />
                 </div>
-                <div className="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider mt-1">
+                {/* Label — IBM Plex Mono, white/50 */}
+                <div className="font-mono text-[11px] text-white/50 uppercase tracking-wider leading-tight">
                   {stat.lines[0]}
                   <br />
                   {stat.lines[1]}
@@ -317,149 +452,147 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
             ))}
           </motion.div>
 
-          {/* Scroll indicator */}
-          <div className="relative z-20 mt-8 flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-slate-600 dark:text-slate-400">
+          {/* ── Scroll indicator ────────────────────────────────────────── */}
+          <div className="relative z-20 mt-8 flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-white/40">
             <ArrowDown className="h-4 w-4 rounded-full border border-current p-0.5" />
             Escrole para explorar
           </div>
 
-          {/* Orbital Graphic (Absolute Positioned on the right side of the left panel) */}
-          <div className="pointer-events-none absolute right-0 top-1/2 hidden h-[600px] w-[600px] -translate-y-1/2 -translate-x-[10%] lg:block">
+          {/* ── Orbital Graphic ─────────────────────────────────────────── */}
+          <div className="pointer-events-none absolute right-0 top-1/2 hidden h-[520px] w-[520px] -translate-y-1/2 lg:block"
+            style={{ transform: 'translateY(-50%) translateX(-8%)' }}
+            aria-hidden="true"
+          >
             <div className="relative w-full h-full flex items-center justify-center">
-              {/* Outer Rings */}
+              {/* Large outer decorative rings (Framer Motion — respects reduce-motion via Framer) */}
               <motion.div
                 animate={{ rotate: 360 }}
                 transition={{ duration: 60, repeat: Infinity, ease: 'linear' }}
-                className="absolute inset-4 rounded-full border border-slate-200/50 dark:border-white/5 border-dashed"
+                className="absolute inset-4 rounded-full border border-white/5 border-dashed"
+                style={{ willChange: 'transform' }}
               />
               <motion.div
                 animate={{ rotate: -360 }}
                 transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
-                className="absolute inset-[136px] rounded-full border-[3px] border-slate-300 dark:border-white/25"
+                className="absolute inset-[136px] rounded-full border border-white/20"
+                style={{ willChange: 'transform' }}
               />
 
-              {/* Core Gradient Ring */}
+              {/* Core gradient ring */}
               <div
                 className="absolute w-[216px] h-[216px] rounded-full border-[14px] border-transparent"
                 style={{
                   background: `linear-gradient(currentColor, currentColor) padding-box, conic-gradient(from 0deg, ${BRAND.colors.orbitBlue} 0%, ${BRAND.colors.brand} 33%, ${BRAND.colors.pink} 66%, ${BRAND.colors.orbitBlue} 100%) border-box`,
                 }}
               />
-              <div className="absolute w-[188px] h-[188px] rounded-full bg-white dark:bg-[#0B132B] flex items-center justify-center shadow-2xl border border-slate-100 dark:border-none">
+              <div className="absolute w-[188px] h-[188px] rounded-full bg-[#0b132b] flex items-center justify-center border border-white/10 shadow-2xl">
                 <BirthHubLogo
                   variant="symbol"
                   className="w-24 h-24 drop-shadow-[0_0_15px_rgba(212,175,55,0.5)]"
                 />
               </div>
 
-              {/* Satellites */}
+              {/* Cardinal satellites */}
               <div className="absolute top-12 flex flex-col items-center">
-                <div className="w-10 h-10 rounded-full bg-white dark:bg-slate-800 shadow-lg border border-slate-100 dark:border-white/10 flex items-center justify-center mb-2">
-                  <DatabaseZap className="h-4 w-4 text-orbit-blue" />
+                <div className="w-10 h-10 rounded-full bg-[#0f1d3d] shadow-lg border border-white/10 flex items-center justify-center mb-2">
+                  <DatabaseZap className="h-4 w-4 text-[#1677ff]" />
                 </div>
-                <span className="text-[10px] font-bold uppercase tracking-widest text-slate-700 dark:text-slate-300">
-                  Dados
-                </span>
-                <span className="text-[9px] text-slate-500 dark:text-slate-300">
-                  Integração sem limites
-                </span>
+                <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-white/80">Dados</span>
+                <span className="font-mono text-[9px] text-white/40">Integração sem limites</span>
               </div>
 
               <div className="absolute bottom-12 flex flex-col items-center">
-                <div className="w-10 h-10 rounded-full bg-white dark:bg-slate-800 shadow-lg border border-slate-100 dark:border-white/10 flex items-center justify-center mb-2">
-                  <Target className="h-4 w-4 text-pink" />
+                <div className="w-10 h-10 rounded-full bg-[#0f1d3d] shadow-lg border border-white/10 flex items-center justify-center mb-2">
+                  <Target className="h-4 w-4 text-brand" />
                 </div>
-                <span className="text-[10px] font-bold uppercase tracking-widest text-slate-700 dark:text-slate-300">
-                  Decisão
-                </span>
-                <span className="text-[9px] text-slate-500 dark:text-slate-300">
-                  Estratégia baseada em dados
-                </span>
+                <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-white/80">Decisão</span>
+                <span className="font-mono text-[9px] text-white/40">Estratégia baseada em dados</span>
               </div>
 
               <div className="absolute left-3 flex flex-col items-center">
-                <div className="w-10 h-10 rounded-full bg-white dark:bg-slate-800 shadow-lg border border-slate-100 dark:border-white/10 flex items-center justify-center mb-2">
-                  <Rocket className="h-4 w-4 text-red" />
+                <div className="w-10 h-10 rounded-full bg-[#0f1d3d] shadow-lg border border-white/10 flex items-center justify-center mb-2">
+                  <Rocket className="h-4 w-4 text-[#0f9d64]" />
                 </div>
-                <span className="text-[10px] font-bold uppercase tracking-widest text-slate-700 dark:text-slate-300">
-                  Execução
-                </span>
-                <span className="text-[9px] text-slate-500 dark:text-slate-300">
-                  Resultados consistentes
-                </span>
+                <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-white/80">Execução</span>
+                <span className="font-mono text-[9px] text-white/40">Resultados consistentes</span>
               </div>
 
               <div className="absolute right-3 flex flex-col items-center">
-                <div className="w-10 h-10 rounded-full bg-white dark:bg-slate-800 shadow-lg border border-slate-100 dark:border-white/10 flex items-center justify-center mb-2">
-                  <BrainCircuit className="h-4 w-4 text-iris" />
+                <div className="w-10 h-10 rounded-full bg-[#0f1d3d] shadow-lg border border-white/10 flex items-center justify-center mb-2">
+                  <BrainCircuit className="h-4 w-4 text-[#c53678]" />
                 </div>
-                <span className="text-[10px] font-bold uppercase tracking-widest text-slate-700 dark:text-slate-300">
-                  Inteligência
-                </span>
-                <span className="text-[9px] text-slate-500 dark:text-slate-300">
-                  Insights em tempo real
-                </span>
+                <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-white/80">Inteligência</span>
+                <span className="font-mono text-[9px] text-white/40">Insights em tempo real</span>
               </div>
             </div>
           </div>
         </div>
       )}
 
-      {/* TELA 2 — Acesso: só o formulário de login/cadastro */}
+      {/* ══════════════════════════════════════════════════════════════════════
+          TELA 2 — Acesso: formulário de login/cadastro (view="access")
+      ══════════════════════════════════════════════════════════════════════ */}
       {view === 'access' && (
-        <div className="flex-1 flex flex-col items-center justify-center relative bg-slate-50/50 dark:bg-[#080d20] px-6 py-10 w-full">
+        <div className="flex-1 flex flex-col items-center justify-center relative bg-[var(--bg)] px-6 py-10 w-full">
+          {/* Back button */}
           <button
             type="button"
             onClick={() => navigate('/welcome')}
-            className="absolute left-6 top-8 z-20 flex items-center gap-2 text-xs font-semibold tracking-wide text-slate-600 transition-colors hover:text-brand dark:text-slate-300 sm:left-10"
+            className="absolute left-6 top-8 z-20 flex items-center gap-2 text-xs font-semibold tracking-wide text-[var(--ink-2)] transition-colors hover:text-brand sm:left-10"
           >
             &larr; Voltar
           </button>
-          {/* Top right header (Date/Status) */}
-          <div className="absolute top-8 right-10 flex items-center gap-4 whitespace-nowrap text-xs font-semibold text-slate-500 dark:text-slate-400">
-            <div className="hidden items-center gap-2 md:flex">
+
+          {/* Top-right date/status badge */}
+          <div className="absolute top-8 right-10 flex items-center gap-4 whitespace-nowrap text-xs font-semibold text-[var(--ink-2)]">
+            <div className="hidden items-center gap-2 md:flex font-mono">
               <CalendarDays className="h-3.5 w-3.5" />
               {dateLabel} | {timeLabel}
             </div>
-            <div className="flex items-center gap-1.5 uppercase tracking-wider text-[10px]">
+            <div className="flex items-center gap-1.5 uppercase tracking-wider text-[10px] font-mono">
               <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
               Sistema Operacional Online
             </div>
           </div>
 
           <div className="w-full max-w-md z-10">
-            {/* Header */}
+            {/* ── Header ─────────────────────────────────────────────── */}
             <motion.div
               className="text-center mb-8"
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, ease: EASE_OUT_EXPO }}
             >
-              <div className="inline-block relative mb-4">
-                <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-brand via-pink to-orbitBlue blur-xl opacity-30 dark:opacity-50" />
-                <div className="relative w-20 h-20 rounded-full bg-white dark:bg-slate-900 shadow-xl border border-slate-100 dark:border-white/10 flex items-center justify-center">
-                  <BirthHubLogo variant="symbol" className="w-12 h-12" />
-                </div>
+              {/* Logo mark */}
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl border border-[var(--line)] bg-[var(--surface)] shadow-md mb-5">
+                <BirthHubLogo variant="symbol" className="w-9 h-9" />
               </div>
-              <h2 className="font-display text-3xl font-bold tracking-tight text-slate-900 dark:text-white mb-2">
-                Birth Hub 360&deg;
+
+              <h2 className="font-display text-2xl font-semibold tracking-tight text-[var(--ink)] mb-1">
+                Acesse sua conta
               </h2>
-              <p className="font-display text-lg font-medium text-slate-700 dark:text-slate-300 mb-1">
-                Acessar plataforma
-              </p>
-              <p className="text-xs text-slate-500 dark:text-slate-400 font-medium tracking-wide">
-                Dados &rarr; Inteligência &rarr; Decisão &rarr; Execução
+              <p className="font-mono text-[13px] text-[var(--ink-2)]">
+                Central de Inteligência Comercial
               </p>
             </motion.div>
 
-            {/* Form Card */}
-            <div className="animate-fade-in bg-white dark:bg-slate-900/60 backdrop-blur-xl rounded-2xl shadow-2xl shadow-slate-200/50 dark:shadow-none border border-slate-200 dark:border-white/10 p-1">
+            {/* ── Form Card ───────────────────────────────────────────── */}
+            <motion.div
+              className="bg-[var(--surface)] rounded-2xl border border-[var(--line)] shadow-lg shadow-black/5 p-1"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.08, ease: EASE_OUT_EXPO }}
+            >
               {/* Tabs */}
-              <div className="flex border-b border-slate-100 dark:border-white/5">
+              <div className="flex border-b border-[var(--line)]">
                 <button
                   type="button"
                   onClick={() => setActiveTab('email')}
-                  className={`flex-1 py-4 text-xs font-bold uppercase tracking-wider transition-colors relative ${activeTab === 'email' ? 'text-brand' : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'}`}
+                  className={`flex-1 py-4 text-xs font-bold uppercase tracking-wider transition-colors relative font-mono ${
+                    activeTab === 'email'
+                      ? 'text-brand'
+                      : 'text-[var(--ink-2)] hover:text-[var(--ink)]'
+                  }`}
                 >
                   E-mail corporativo
                   {activeTab === 'email' && (
@@ -472,7 +605,11 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
                 <button
                   type="button"
                   onClick={() => setActiveTab('sso')}
-                  className={`flex-1 py-4 text-xs font-bold uppercase tracking-wider transition-colors relative ${activeTab === 'sso' ? 'text-brand' : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'}`}
+                  className={`flex-1 py-4 text-xs font-bold uppercase tracking-wider transition-colors relative font-mono ${
+                    activeTab === 'sso'
+                      ? 'text-brand'
+                      : 'text-[var(--ink-2)] hover:text-[var(--ink)]'
+                  }`}
                 >
                   SSO Empresarial
                   {activeTab === 'sso' && (
@@ -487,7 +624,7 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
               <div className="p-6 md:p-8">
                 {verificationPending ? (
                   <div className="space-y-5 text-center">
-                    <div className="flex items-start gap-2.5 rounded-2xl border border-brand/30 bg-brand/5 p-3.5 text-left text-sm text-slate-700 dark:text-slate-300">
+                    <div className="flex items-start gap-2.5 rounded-xl border border-brand/30 bg-brand/5 p-3.5 text-left text-sm text-[var(--ink)]">
                       <Mail size={16} className="mt-0.5 shrink-0 text-brand" />
                       <p>
                         Enviamos um link de confirmação para <strong>{email}</strong>. Clique nele
@@ -497,7 +634,7 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
                     <button
                       type="button"
                       onClick={backToSignIn}
-                      className="text-sm font-bold text-slate-700 dark:text-slate-300 hover:underline"
+                      className="text-sm font-bold text-[var(--ink-2)] hover:text-brand transition-colors hover:underline"
                     >
                       Voltar para o login
                     </button>
@@ -505,7 +642,7 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
                 ) : isForgotPassword ? (
                   forgotPasswordSent ? (
                     <div className="space-y-5 text-center">
-                      <div className="flex items-start gap-2.5 rounded-2xl border border-brand/30 bg-brand/5 p-3.5 text-left text-sm text-slate-700 dark:text-slate-300">
+                      <div className="flex items-start gap-2.5 rounded-xl border border-brand/30 bg-brand/5 p-3.5 text-left text-sm text-[var(--ink)]">
                         <Mail size={16} className="mt-0.5 shrink-0 text-brand" />
                         <p>
                           Se <strong>{email}</strong> tiver uma conta, enviamos um link de
@@ -515,7 +652,7 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
                       <button
                         type="button"
                         onClick={backToSignIn}
-                        className="text-sm font-bold text-slate-700 dark:text-slate-300 hover:underline"
+                        className="text-sm font-bold text-[var(--ink-2)] hover:text-brand transition-colors hover:underline"
                       >
                         Voltar para o login
                       </button>
@@ -528,17 +665,17 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
                           <p>{error}</p>
                         </div>
                       )}
-                      <p className="text-sm text-slate-600 dark:text-slate-400">
+                      <p className="font-mono text-sm text-[var(--ink-2)]">
                         Informe o e-mail corporativo da sua conta. Se ele existir, enviaremos um
                         link para redefinição de senha.
                       </p>
                       <div className="relative">
-                        <Mail className="absolute left-4 top-3.5 h-4 w-4 text-slate-400" />
+                        <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--ink-2)]" />
                         <input
                           type="email"
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
-                          className="w-full rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-slate-900/50 py-3.5 pl-11 pr-4 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand transition-colors"
+                          className={`${inputCls} pl-11`}
                           aria-label="E-mail"
                           placeholder="executivo@birthhub360.com.br"
                           required
@@ -547,7 +684,7 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
                       <button
                         type="submit"
                         disabled={isSubmitting || !email}
-                        className="w-full rounded-full bg-gradient-to-r from-[#D4AF37] to-[#E6C65A] py-3.5 text-sm font-extrabold uppercase tracking-wide text-slate-900 shadow-lg hover:shadow-brand/25 transition-all disabled:opacity-50"
+                        className="w-full h-[44px] rounded-[10px] bg-brand-active text-on-brand text-sm font-extrabold uppercase tracking-wide shadow-lg transition-all hover:opacity-90 disabled:opacity-50 flex items-center justify-center"
                       >
                         {isSubmitting ? (
                           <Loader2 className="animate-spin mx-auto h-5 w-5" />
@@ -559,7 +696,7 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
                         <button
                           type="button"
                           onClick={backToSignIn}
-                          className="text-sm font-bold text-slate-700 dark:text-slate-300 hover:underline"
+                          className="text-sm font-bold text-[var(--ink-2)] hover:text-brand transition-colors hover:underline"
                         >
                           Voltar para o login
                         </button>
@@ -576,12 +713,15 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
                     )}
 
                     {isSignUp && (
-                      <div className="relative">
+                      <div>
+                        <label className="block font-mono text-xs font-semibold text-[var(--ink-2)] mb-1.5 uppercase tracking-wide">
+                          Nome completo
+                        </label>
                         <input
                           type="text"
                           value={name}
                           onChange={(e) => setName(e.target.value)}
-                          className="w-full rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-slate-900/50 py-3.5 px-4 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand transition-colors"
+                          className={inputCls}
                           aria-label="Nome completo"
                           placeholder="Seu Nome Completo"
                           required={isSignUp}
@@ -590,58 +730,70 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
                     )}
 
                     <div className="space-y-4">
-                      <div className="relative">
-                        <Mail className="absolute left-4 top-3.5 h-4 w-4 text-slate-400" />
-                        <input
-                          type="email"
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                          className="w-full rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-slate-900/50 py-3.5 pl-11 pr-4 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand transition-colors"
-                          aria-label="Credencial Institucional"
-                          placeholder={
-                            activeTab === 'sso'
-                              ? 'seuemail@seudominio.com.br'
-                              : 'executivo@birthhub360.com.br'
-                          }
-                          required
-                        />
+                      {/* Email field */}
+                      <div>
+                        <label className="block font-mono text-xs font-semibold text-[var(--ink-2)] mb-1.5 uppercase tracking-wide">
+                          E-mail
+                        </label>
+                        <div className="relative">
+                          <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--ink-2)]" />
+                          <input
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            className={`${inputCls} pl-11`}
+                            aria-label="Credencial Institucional"
+                            placeholder={
+                              activeTab === 'sso'
+                                ? 'seuemail@seudominio.com.br'
+                                : 'executivo@birthhub360.com.br'
+                            }
+                            required
+                          />
+                        </div>
                       </div>
 
-                      <div className="relative">
-                        <Lock className="absolute left-4 top-3.5 h-4 w-4 text-slate-400" />
-                        <input
-                          type={showPassword ? 'text' : 'password'}
-                          value={password}
-                          onChange={(e) => setPassword(e.target.value)}
-                          className="w-full rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-slate-900/50 py-3.5 pl-11 pr-11 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand transition-colors"
-                          aria-label="Senha"
-                          placeholder="••••••••••••"
-                          required
-                        />
-                        <button
-                          type="button"
-                          onClick={() => setShowPassword(!showPassword)}
-                          aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
-                          aria-pressed={showPassword}
-                          className="absolute right-4 top-3.5 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"
-                        >
-                          {showPassword ? (
-                            <EyeOff className="h-4 w-4" />
-                          ) : (
-                            <Eye className="h-4 w-4" />
-                          )}
-                        </button>
+                      {/* Password field */}
+                      <div>
+                        <label className="block font-mono text-xs font-semibold text-[var(--ink-2)] mb-1.5 uppercase tracking-wide">
+                          Senha
+                        </label>
+                        <div className="relative">
+                          <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--ink-2)]" />
+                          <input
+                            type={showPassword ? 'text' : 'password'}
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            className={`${inputCls} pl-11 pr-11`}
+                            aria-label="Senha"
+                            placeholder="••••••••••••"
+                            required
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
+                            aria-pressed={showPassword}
+                            className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--ink-2)] hover:text-[var(--ink)] transition-colors"
+                          >
+                            {showPassword ? (
+                              <EyeOff className="h-4 w-4" />
+                            ) : (
+                              <Eye className="h-4 w-4" />
+                            )}
+                          </button>
+                        </div>
                       </div>
                     </div>
 
                     {!isSignUp && (
                       <div className="flex items-center justify-between">
-                        <label className="flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-700 dark:text-slate-300">
+                        <label className="flex items-center gap-2 cursor-pointer font-mono text-xs font-semibold text-[var(--ink-2)]">
                           <input
                             type="checkbox"
                             checked={rememberMe}
                             onChange={(e) => setRememberMe(e.target.checked)}
-                            className="rounded border-slate-300 text-brand focus:ring-brand w-4 h-4 bg-slate-50 dark:bg-slate-900"
+                            className="rounded border-[var(--line)] text-brand focus:ring-brand w-4 h-4 bg-[var(--surface)]"
                           />
                           Manter sessão ativa
                         </label>
@@ -651,17 +803,18 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
                             setIsForgotPassword(true);
                             setError('');
                           }}
-                          className="text-xs font-bold text-slate-600 dark:text-slate-400 hover:text-brand dark:hover:text-brand transition-colors"
+                          className="font-mono text-xs font-bold text-[var(--ink-2)] hover:text-brand transition-colors"
                         >
                           Esqueci minha senha?
                         </button>
                       </div>
                     )}
 
+                    {/* Primary CTA */}
                     <button
                       type="submit"
                       disabled={isSubmitting || !email || !password}
-                      className="w-full rounded-full bg-gradient-to-r from-[#D4AF37] to-[#E6C65A] py-4 text-sm font-extrabold uppercase tracking-wide text-slate-900 shadow-lg hover:shadow-brand/25 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                      className="w-full h-[44px] rounded-[10px] bg-brand-active text-on-brand text-sm font-extrabold uppercase tracking-wide shadow-lg hover:opacity-90 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
                     >
                       {isSubmitting ? (
                         <Loader2 className="animate-spin h-5 w-5" />
@@ -684,21 +837,21 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
                         setError('');
                         setName('');
                       }}
-                      className="text-xs font-bold text-slate-600 dark:text-slate-400 hover:text-brand dark:hover:text-brand transition-colors"
+                      className="font-mono text-xs font-bold text-[var(--ink-2)] hover:text-brand transition-colors"
                     >
                       {isSignUp ? 'Já tem conta? Fazer login' : 'Não tem conta? Criar conta'}
                     </button>
                   </div>
                 )}
 
-                {/* SSO/Social Integrations */}
+                {/* SSO / Social integrations */}
                 {!isSignUp && !isForgotPassword && !verificationPending && (
                   <div className="mt-8">
                     <div className="relative flex items-center justify-center mb-6">
                       <div className="absolute inset-0 flex items-center">
-                        <div className="w-full border-t border-slate-200 dark:border-white/10"></div>
+                        <div className="w-full border-t border-[var(--line)]" />
                       </div>
-                      <span className="relative bg-white dark:bg-slate-900 px-3 text-[10px] uppercase tracking-widest font-bold text-slate-400">
+                      <span className="relative bg-[var(--surface)] px-3 font-mono text-[10px] uppercase tracking-widest font-bold text-[var(--ink-2)]">
                         ou continue com
                       </span>
                     </div>
@@ -706,7 +859,7 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
                     <div className="grid grid-cols-3 gap-3">
                       <button
                         type="button"
-                        className="flex items-center justify-center gap-2 rounded-lg border border-slate-200 dark:border-white/10 py-2.5 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors"
+                        className="flex items-center justify-center gap-2 rounded-[10px] border border-[var(--line)] py-2.5 text-xs font-semibold text-[var(--ink)] hover:bg-[var(--surface-2)] transition-colors"
                       >
                         <svg viewBox="0 0 24 24" className="w-4 h-4">
                           <path
@@ -730,7 +883,7 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
                       </button>
                       <button
                         type="button"
-                        className="flex items-center justify-center gap-2 rounded-lg border border-slate-200 dark:border-white/10 py-2.5 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors"
+                        className="flex items-center justify-center gap-2 rounded-[10px] border border-[var(--line)] py-2.5 text-xs font-semibold text-[var(--ink)] hover:bg-[var(--surface-2)] transition-colors"
                       >
                         <svg viewBox="0 0 21 21" className="w-4 h-4">
                           <path fill="#f25022" d="M0 0h10v10H0z" />
@@ -742,7 +895,7 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
                       </button>
                       <button
                         type="button"
-                        className="flex items-center justify-center gap-2 rounded-lg border border-slate-200 dark:border-white/10 py-2.5 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors"
+                        className="flex items-center justify-center gap-2 rounded-[10px] border border-[var(--line)] py-2.5 text-xs font-semibold text-[var(--ink)] hover:bg-[var(--surface-2)] transition-colors"
                       >
                         <Lock className="w-3.5 h-3.5 text-brand" />
                         SSO
@@ -751,11 +904,11 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
                   </div>
                 )}
               </div>
-            </div>
+            </motion.div>
 
-            {/* Trust Badges */}
+            {/* ── Trust Badges ─────────────────────────────────────────── */}
             <div className="mt-8">
-              <div className="flex flex-wrap justify-center gap-4 text-[10px] font-bold text-slate-500 dark:text-slate-400">
+              <div className="flex flex-wrap justify-center gap-4 font-mono text-[10px] font-bold text-[var(--ink-2)]">
                 <span className="flex items-center gap-1.5">
                   <ShieldCheck className="w-3.5 h-3.5 text-brand" /> Acesso protegido
                 </span>
@@ -769,7 +922,7 @@ export function LandingLoginSplitScreen({ view = 'access' }: { view?: 'welcome' 
                   <CheckCircle2 className="w-3.5 h-3.5 text-brand" /> Conformidade LGPD
                 </span>
               </div>
-              <div className="mt-6 text-center text-[9px] uppercase tracking-widest font-bold text-slate-600 dark:text-slate-400">
+              <div className="mt-6 text-center font-mono text-[9px] uppercase tracking-widest font-bold text-[var(--ink-2)]">
                 BIRTH HUB 360&deg; | CENTRO DE COMANDO PARA OPERAÇÕES DE RECEITA
                 <div className="mt-1">v1.0.0</div>
               </div>
