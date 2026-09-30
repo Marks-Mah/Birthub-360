@@ -1,3 +1,6 @@
+#!/bin/bash
+git checkout src/lib/voice-hub/features/prospecting/services/voice.service.test.ts
+cat << 'INNER_EOF' > src/lib/voice-hub/features/prospecting/services/voice.service.test.ts
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import type { Birthhub360OutboundPayload } from '../validators/birthhub360.schema.js';
 
@@ -119,3 +122,4 @@ describe('VoiceProspectingService.dispatchBirthhub360Outbound', () => {
     fetchSpy.mockRestore();
   });
 });
+INNER_EOF

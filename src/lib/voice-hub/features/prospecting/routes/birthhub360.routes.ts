@@ -88,14 +88,12 @@ function validateBlandCallbackToken(
       'Bland AI callback rejected: BLAND_WEBHOOK_TOKEN is not configured (failing closed)',
     );
     return res.status(503).json({ error: 'Callback da Bland AI não está configurado.' });
-    return;
   }
 
   const provided = req.params.token;
   if (typeof provided !== 'string' || !safeEqual(provided, expectedToken)) {
     logger.warn('Bland AI callback rejected: invalid token');
     return res.status(403).json({ error: 'Token inválido.' });
-    return;
   }
 
   return next();
@@ -108,7 +106,6 @@ router.post('/webhook/birthhub360/outbound', validateBirthhub360Secret, async (r
     return res
       .status(400)
       .json({ error: 'Payload inválido.', issues: parsed.error.issues.map((i) => i.message) });
-    return;
   }
 
   try {
@@ -123,7 +120,6 @@ router.post('/webhook/birthhub360/outbound', validateBirthhub360Secret, async (r
         error: 'Consentimento para processamento por provedor externo de IA é obrigatório.',
         code: 'AI_PROVIDER_CONSENT_REQUIRED',
       });
-      return;
     }
     if (error instanceof IdempotencyCheckFailedError) {
       logger.error(
@@ -135,14 +131,12 @@ router.post('/webhook/birthhub360/outbound', validateBirthhub360Secret, async (r
       return res
         .status(503)
         .json({ error: 'Não foi possível processar o webhook no momento. Tente novamente.' });
-      return;
     }
     if (error instanceof BlandConfigurationError) {
       logger.error('Birth Hub 360 webhook: Bland AI integration is misconfigured', {
         error: error.message,
       });
       return res.status(503).json({ error: 'Integração com Bland AI não está configurada.' });
-      return;
     }
     logger.error('Birth Hub 360 webhook: failed to process outbound call request', {
       error: error instanceof Error ? error.message : String(error),
@@ -156,7 +150,6 @@ router.post('/webhooks/bland/:token', validateBlandCallbackToken, async (req, re
   if (!parsed.success) {
     logger.warn('Bland AI callback rejected: invalid payload', { issues: parsed.error.issues });
     return res.status(400).json({ error: 'Payload inválido.' });
-    return;
   }
 
   const data = parsed.data as typeof parsed.data & Record<string, unknown>;
@@ -182,7 +175,6 @@ router.post('/webhooks/bland/:token', validateBlandCallbackToken, async (req, re
     return res
       .status(503)
       .json({ error: 'Integração de retorno com Birth Hub 360 não está configurada.' });
-    return;
   }
 
   let processingState: Awaited<ReturnType<typeof beginBlandCallbackProcessing>>;
@@ -194,18 +186,15 @@ router.post('/webhooks/bland/:token', validateBlandCallbackToken, async (req, re
       error: error instanceof Error ? error.message : String(error),
     });
     return res.status(503).json({ error: 'Não foi possível verificar idempotência do callback.' });
-    return;
   }
 
   if (processingState === 'duplicate') {
     return res.status(200).json({ received: true, duplicate: true });
-    return;
   }
 
   if (processingState === 'in_progress') {
     // Ask the provider to retry later instead of executing the same CRM side effect concurrently.
     return res.status(503).json({ error: 'Callback já está sendo processado. Tente novamente.' });
-    return;
   }
 
   const variables = asRecord(data.variables);
