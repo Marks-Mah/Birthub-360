@@ -5,10 +5,6 @@ vi.mock('../lib/webhookIdempotency.js', () => ({
   buildBirthhub360OutboundIdempotencyKey: vi
     .fn()
     .mockReturnValue('idempotency:birthhub360-outbound-call:hash:test'),
-  claimIdempotencyKey: vi.fn(),
-    .fn()
-    .mockReturnValue('idempotency:birthhub360-outbound-call:hash:test'),
-  claimIdempotencyKey: vi.fn(),
 }));
 
 vi.mock('../../../services/settingService.js', () => ({

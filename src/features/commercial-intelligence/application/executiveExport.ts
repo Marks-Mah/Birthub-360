@@ -202,7 +202,7 @@ export function buildExecutiveExportHtml(
 
   return `<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Relatório Executivo — Comercial Inteligente (${escapeHtml(period)})</title>
 <style>
-body{font-family:Arial,Helvetica,sans-serif;margin:32px;color:#1a1a1a;background:#fff}
+body{font-family:system-ui,sans-serif;margin:32px;color:#1a1a1a;background:#fff}
 h1{font-size:22px;margin-bottom:4px}
 h2{font-size:15px;margin-top:28px;border-bottom:2px solid ${BRAND.colors.brand};padding-bottom:4px;color:#1a1a1a}
 p.meta{color:#666;font-size:13px;margin-top:0}

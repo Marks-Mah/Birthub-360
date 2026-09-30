@@ -59,7 +59,6 @@ function validateBirthhub360Secret(
       'Birth Hub 360 webhook rejected: BIRTHHUB360_WEBHOOK_SECRET is not configured (failing closed)',
     );
     return res.status(503).json({ error: 'Integração Birth Hub 360 não está configurada.' });
-    return;
   }
 
   const provided = req.headers['x-birthhub360-webhook-secret'];
@@ -68,7 +67,6 @@ function validateBirthhub360Secret(
       hasHeader: typeof provided === 'string',
     });
     return res.status(401).json({ error: 'Não autorizado.' });
-    return;
   }
 
   return next();

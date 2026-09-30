@@ -107,7 +107,7 @@
 
 /* latin */
 @font-face {
-  font-family: "Inter";
+  font-family: "system-ui";
   font-style: normal;
   font-weight: 100 900;
   font-display: swap;
@@ -118,7 +118,7 @@
 }
 /* latin-ext */
 @font-face {
-  font-family: "Inter";
+  font-family: "system-ui";
   font-style: normal;
   font-weight: 100 900;
   font-display: swap;
@@ -1086,9 +1086,8 @@
   }
   .text-gradient-brand {
     background-image: linear-gradient(135deg, var(--brand), var(--brand-2));
-    background-clip: text;
-    -webkit-background-clip: text;
-    color: transparent;
+    color: var(--brand-active);
+    -webkit-color: var(--brand-active);
   }
 
   .shimmer-bg {

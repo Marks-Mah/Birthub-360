@@ -6,7 +6,6 @@ import { enrichCompany } from '../../prospecting/services/enrichment.service.js'
 import type { Contact, ContactRepository } from '../domain/Contact.js';
 
 export class ContactUseCases extends BaseUseCases<Contact, ContactRepository> {
-  // biome-ignore lint/complexity/noUselessConstructor: expõe publicamente o construtor protected da base para a DI
   constructor(contactRepository: ContactRepository) {
     super(contactRepository);
   }
