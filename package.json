@@ -195,7 +195,7 @@
     "tailwind-merge": "^3.7.0",
     "tesseract.js": "^7.0.0",
     "three": "^0.185.1",
-    "undici": "^8.11.0",
+    "undici": "^6.20.0",
     "uuid": "^14.0.2",
     "vaul": "^1.1.2",
     "wavesurfer.js": "^8.0.1",
@@ -203,7 +203,7 @@
     "zod": "^4.4.3"
   },
   "overrides": {
-    "undici": "^8.11.0",
+    "undici": "^6.20.0",
     "deepmerge-ts": "^8.0.2",
     "brace-expansion": "^2.0.1",
     "uuid": "^14.0.2",
@@ -281,7 +281,7 @@
     "eslint-plugin-react-refresh": "^0.4.24",
     "eslint-plugin-storybook": "^10.6.0",
     "glob": "^13.0.6",
-    "jsdom": "^29.1.1",
+    "jsdom": "^23.0.0",
     "knip": "^6.35.1",
     "msw": "^2.15.0",
     "playwright": "^1.63.0",
