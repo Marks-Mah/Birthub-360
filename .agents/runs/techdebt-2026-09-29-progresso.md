@@ -1,7 +1,7 @@
 # Relatório de Progresso - Tech Debt 2026-09-29
 
 **Data:** 2026-09-30
-**Status:** Parado - Limite de uso diário esgotado
+**Status:** Em andamento - Agentes relançados
 **Coordenador:** Agente 00
 
 ## Resumo
@@ -36,54 +36,54 @@ Iniciei 7 agentes em background para trabalhar nas dívidas de tech debt, mas to
 - Arquivos: `Landing.tsx` (2111 linhas), `useStudioStore.ts` (1743 linhas), `Overview.tsx` (1420 linhas)
 - Status: Pendente
 
-## Handoffs Pendentes (Agentes Interrompidos)
+## Handoffs Pendentes (Agentes Relançados)
 
 ### Bloqueadores
 
 🔴 **00-para-01-migrations-destrutivas-p1.md** (BLOQUEADOR)
 - Destino: Agente 01 (Plataforma, Segurança e Dados)
 - Arquivos: 16 migrations com DROP em `prisma/migrations/**`
-- Status: Agente iniciado (fd336ec1), interrompido por limite de uso
+- Status: 🔄 Agente relançado (f5d12b46) - Em andamento
 
 🔴 **00-para-15-findings-seguranca-p1.md** (BLOQUEADOR)
 - Destino: Agente 15 (Segurança Aplicada)
 - Arquivos: 188 findings de segurança P1 (180+ falsos positivos em live-browser.js)
-- Status: Agente iniciado (d7aaed4f), interrompido por limite de uso
+- Status: 🔄 Agente relançado (f3924b55) - Em andamento
 
 ### Alta Prioridade
 
 🟠 **00-para-01-privacy-data-governance.md** (ALTO)
 - Destino: Agente 01 (Plataforma, Segurança e Dados)
 - Arquivos: 278 findings de Privacy & Data Governance
-- Status: Agente iniciado (fd336ec1), interrompido por limite de uso
+- Status: 🔄 Agente relançado (f5d12b46) - Em andamento (mesmo agente do migrations)
 
 🟠 **00-para-04-arquivo-monolitico-commercial-intelligence.md** (ALTO)
 - Destino: Agente 04 (CRM e BI)
 - Arquivos: `JoaoReisDiagnosticHub.tsx` (1751 linhas)
-- Status: Agente iniciado (e8711138), interrompido por limite de uso
+- Status: 🔄 Agente relançado (7c2ee95a) - Em andamento
 
 🟠 **00-para-05-arquivos-monoliticos-prospecting.md** (ALTO)
 - Destino: Agente 05 (Prospecção)
 - Arquivos: `routes.ts` (3614 linhas), `LeadCard.tsx` (2451 linhas)
-- Status: Agente iniciado (1ff22ec7), interrompido por limite de uso
+- Status: 🔄 Agente relançado (9eb38774) - Em andamento
 
 🟠 **00-para-12-arquivos-monoliticos-voice-hub.md** (ALTO)
 - Destino: Agente 12 (Voz e Telefonia)
 - Arquivos: `Landing.tsx` (2111 linhas), `useStudioStore.ts` (1743 linhas), `Overview.tsx` (1420 linhas)
-- Status: Agente iniciado (772c6311), interrompido por limite de uso
+- Status: 🔄 Agente relançado (5ab76f9f) - Em andamento
 
 🟠 **00-para-17-arquivo-monolitico-cadence.md** (ALTO)
 - Destino: Agente 17 (Cadência Multicanal)
 - Arquivos: `CadenceHub.tsx` (1668 linhas)
-- Status: Agente iniciado (881e9413), análise concluída, bloqueado por permissão de escrita, permissão concedida, relançamento interrompido por limite de uso
-- Progresso parcial: Estrutura analisada, plano de decomposição identificado (10 arquivos a criar)
+- Status: 🔄 Agente relançado (9fd4e293) - Em andamento
+- Progresso parcial: Estrutura analisada anteriormente, plano de decomposição identificado (10 arquivos a criar)
 
 ### Normal Prioridade
 
 🟡 **00-para-10-performance.md** (NORMAL)
 - Destino: Agente 10 (Infraestrutura e SRE)
 - Arquivos: 182 findings de Performance
-- Status: Agente iniciado (1b52d502), interrompido por limite de uso
+- Status: 🔄 Agente relançado (f5102fed) - Em andamento
 
 ## Branches Criadas
 
@@ -105,29 +105,26 @@ Iniciei 7 agentes em background para trabalhar nas dívidas de tech debt, mas to
 
 ## Bloqueios
 
-1. ❌ **Limite de uso diário esgotado** - Todos os agentes foram interrompidos
-2. ❌ **Problemas com git worktree** - Não foi possível criar worktrees isolados para cada agente, teve que rodar em série
+1. ❌ **Problemas com git worktree** - Não foi possível criar worktrees isolados para cada agente, teve que rodar em background
 
-## Próximos Passos (Quando o limite for renovado)
+## Próximos Passos (Agentes Em Andamento)
 
-1. **Prioridade 1 - Bloqueadores:**
-   - Relançar Agente 01 para migrations destrutivas
-   - Relançar Agente 15 para findings de segurança P1
+1. **Monitorar progresso:** Aguardar notificações de conclusão dos 7 agentes em background
+2. **Integração por leva:** Após cada 2-3 agentes concluírem, fazer merge na branch `integracao/techdebt-2026-09-29`
+3. **Gate da onda:** Rodar gate completo a cada leva de merges (typecheck, lint, build, testes)
+4. **Relatório final:** Após todos os handoffs resolvidos, criar relatório final da onda
 
-2. **Prioridade 2 - Alta:**
-   - Relançar Agente 01 para privacy data governance
-   - Relançar Agente 04 para commercial intelligence
-   - Relançar Agente 05 para prospecting
-   - Relançar Agente 12 para voice hub
-   - Relançar Agente 17 para cadence (já tem análise parcial concluída)
+## Agentes Ativos (2026-09-30)
 
-3. **Prioridade 3 - Normal:**
-   - Relançar Agente 10 para performance
-
-4. **Integração:**
-   - Após cada agente concluir, fazer merge na branch `integracao/techdebt-2026-09-29`
-   - Rodar gate da onda a cada 2-3 merges
-   - Criar relatório final da onda
+| Agente | ID | Handoff | Prioridade | Status |
+|--------|-----|---------|------------|--------|
+| 01 | f5d12b46 | Migrations destrutivas + Privacy | 🔴 Bloqueador + 🟠 Alto | 🔄 Em andamento |
+| 15 | f3924b55 | Security P1 | 🔴 Bloqueador | 🔄 Em andamento |
+| 17 | 9fd4e293 | Cadence | 🟠 Alto | 🔄 Em andamento (análise parcial) |
+| 04 | 7c2ee95a | Commercial Intelligence | 🟠 Alto | 🔄 Em andamento |
+| 05 | 9eb38774 | Prospecting | 🟠 Alto | 🔄 Em andamento |
+| 12 | 5ab76f9f | Voice Hub | 🟠 Alto | 🔄 Em andamento |
+| 10 | f5102fed | Performance | 🟡 Normal | 🔄 Em andamento |
 
 ## Recursos
 
