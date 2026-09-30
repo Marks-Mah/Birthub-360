@@ -64,7 +64,6 @@ export const automationSchema = z.object({
 export type AutomationInput = z.infer<typeof automationSchema>;
 
 export class AutomationUseCases extends BaseUseCases<Automation, AutomationRepository> {
-  // biome-ignore lint/complexity/noUselessConstructor: expõe publicamente o construtor protected da base para a DI
   constructor(automationRepository: AutomationRepository) {
     super(automationRepository);
   }
