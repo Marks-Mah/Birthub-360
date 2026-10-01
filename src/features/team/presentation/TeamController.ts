@@ -4,6 +4,8 @@
  */
 
 import type { Request, Response, NextFunction } from 'express';
+import type { AuthRequest } from '../../../shared/middlewares/authenticateToken.js';
+import { ASSIGNABLE_ROLES } from '../services/team.service.js';
 import { TeamUseCases } from '../application/TeamUseCases.js';
 import { TeamRole } from '../domain/TeamDomain.js';
 
@@ -12,13 +14,13 @@ export class TeamController {
 
   async getMembers(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const organizationId = (req as any).user?.organizationId || (req.query.organizationId as string);
+      const organizationId = (req as AuthRequest).user?.organizationId || (req.query.organizationId as string);
       if (!organizationId) {
-        res.status(400).json({ error: 'Contexto de organização obrigatório' });
+        res.status(400).json({ success: false, error: 'Contexto de organizacao obrigatorio' });
         return;
       }
       const members = await this.teamUseCases.listMembers(organizationId);
-      res.json(members);
+      res.json({ success: true, data: { members, assignableRoles: ASSIGNABLE_ROLES } });
     } catch (error) {
       next(error);
     }
@@ -26,12 +28,12 @@ export class TeamController {
 
   async inviteMember(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const organizationId = (req as any).user?.organizationId || req.body.organizationId;
-      const invitedBy = (req as any).user?.id || 'system';
+      const organizationId = (req as AuthRequest).user?.organizationId || req.body.organizationId;
+      const invitedBy = (req as AuthRequest).user?.id || 'system';
       const { email, role } = req.body;
 
       if (!email || !role) {
-        res.status(400).json({ error: 'Email e papel (role) são obrigatórios' });
+        res.status(400).json({ success: false, error: 'Email e papel (role) sao obrigatorios' });
         return;
       }
 
@@ -41,7 +43,7 @@ export class TeamController {
         email,
         role as TeamRole
       );
-      res.status(201).json(invite);
+      res.status(201).json({ success: true, data: invite });
     } catch (error) {
       next(error);
     }
@@ -49,12 +51,12 @@ export class TeamController {
 
   async updateRole(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const organizationId = (req as any).user?.organizationId || req.body.organizationId;
+      const organizationId = (req as AuthRequest).user?.organizationId || req.body.organizationId;
       const { memberId } = req.params;
       const { role } = req.body;
 
       if (!memberId || !role) {
-        res.status(400).json({ error: 'ID do membro e novo papel são obrigatórios' });
+        res.status(400).json({ success: false, error: 'ID do membro e novo papel sao obrigatorios' });
         return;
       }
 
@@ -63,7 +65,7 @@ export class TeamController {
         memberId,
         role as TeamRole
       );
-      res.json(updated);
+      res.json({ success: true, data: updated });
     } catch (error) {
       next(error);
     }
@@ -71,16 +73,16 @@ export class TeamController {
 
   async removeMember(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const organizationId = (req as any).user?.organizationId || (req.query.organizationId as string);
+      const organizationId = (req as AuthRequest).user?.organizationId || (req.query.organizationId as string);
       const { memberId } = req.params;
 
       if (!memberId) {
-        res.status(400).json({ error: 'ID do membro obrigatório' });
+        res.status(400).json({ success: false, error: 'ID do membro obrigatorio' });
         return;
       }
 
       await this.teamUseCases.removeMember(organizationId, memberId);
-      res.status(204).send();
+      res.status(200).json({ success: true, message: 'Membro removido com sucesso' });
     } catch (error) {
       next(error);
     }
