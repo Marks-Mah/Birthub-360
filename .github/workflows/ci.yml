@@ -41,11 +41,11 @@ jobs:
     name: Central Birth Hub 360 / application gate
     runs-on: ubuntu-latest
     needs: secret-scan
-    # O run 36785425846 (2026-09-30) completou lint, typecheck, unitários (425 arquivos) e integração
-    # (597 testes), mas o job expirou em 60 min enquanto os 100 E2E rodavam serialmente com 1 worker.
-    # O step E2E recebeu ~44 min e não produziu resumo antes do timeout; 90 min dá até ~74 min ao E2E
-    # sem deixar o job sem limite operacional.
-    timeout-minutes: 90
+    # Os runs 36785425846 e 36791581889 completaram os gates anteriores, mas expiraram em 60/90 min
+    # enquanto os 100 E2E rodavam serialmente com 1 worker. O último step E2E durou 73m28s sem resumo;
+    # 120 min reserva ~103 min após os ~17 min medidos antes dos E2E. Margem operacional, não prova
+    # de que a suíte completa passe; o reporter line também expõe progresso no próximo run.
+    timeout-minutes: 120
 
     services:
       postgres:
