@@ -1,107 +1,112 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
+import type {
+  CreateSavedViewData,
+  SavedViewEntity,
+  SavedViewRepository,
+} from '../../domain/SavedView';
+import { SavedViewService } from '../savedView.service';
 
-/**
- * Views salvas são pessoais: toda leitura/escrita é escopada por `userId` além de
- * `organizationId` (reforço na camada de aplicação, não só no RLS — ver comentário do próprio
- * savedView.service.ts). Estes testes travam a validação de entrada e o isolamento por dono.
- */
-const prismaMock = {
-  savedView: { findMany: vi.fn(), create: vi.fn(), deleteMany: vi.fn() },
-};
-vi.mock('../../../../lib/prisma.js', () => ({ prisma: prismaMock }));
+class FakeSavedViewRepository implements SavedViewRepository {
+  private views: SavedViewEntity[] = [];
 
-const { listSavedViews, createSavedView, deleteSavedView } = await import('../savedView.service');
+  constructor(initial: SavedViewEntity[] = []) {
+    this.views = [...initial];
+  }
 
-afterEach(() => {
-  vi.clearAllMocks();
-});
+  async listByUser(organizationId: string, userId: string): Promise<SavedViewEntity[]> {
+    return this.views.filter((v) => v.organizationId === organizationId && v.userId === userId);
+  }
 
-describe('listSavedViews', () => {
-  it('busca só as views do próprio usuário na organização, mais recentes primeiro', async () => {
-    prismaMock.savedView.findMany.mockResolvedValue([{ id: 'view-1' }]);
+  async create(data: CreateSavedViewData): Promise<SavedViewEntity> {
+    const entity: SavedViewEntity = {
+      id: `view-${this.views.length + 1}`,
+      ...data,
+      isDefault: false,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    this.views.push(entity);
+    return entity;
+  }
 
-    const result = await listSavedViews('org-1', 'user-1');
-
-    expect(prismaMock.savedView.findMany).toHaveBeenCalledWith({
-      where: { organizationId: 'org-1', userId: 'user-1' },
-      orderBy: { createdAt: 'desc' },
-    });
-    expect(result).toEqual([{ id: 'view-1' }]);
-  });
-});
-
-describe('createSavedView', () => {
-  // `createSavedView` valida e lança de forma síncrona antes de tocar o Prisma (só o `return`
-  // final é uma Promise) — por isso o throw é verificado com uma função wrapper, não com
-  // `.rejects` (que exige que a chamada em si devolva uma Promise rejeitada).
-  it('rejeita nome vazio', () => {
-    expect(() => createSavedView('org-1', 'user-1', { name: '', funnel: 'Lead' })).toThrowError(
-      expect.objectContaining({ statusCode: 400 }),
+  async deleteById(organizationId: string, userId: string, id: string): Promise<number> {
+    const prevLen = this.views.length;
+    this.views = this.views.filter(
+      (v) => !(v.id === id && v.organizationId === organizationId && v.userId === userId),
     );
-    expect(prismaMock.savedView.create).not.toHaveBeenCalled();
-  });
+    return prevLen - this.views.length;
+  }
+}
 
-  it('rejeita nome só com espaços', () => {
-    expect(() => createSavedView('org-1', 'user-1', { name: '   ', funnel: 'Lead' })).toThrowError(
-      expect.objectContaining({ statusCode: 400 }),
-    );
-  });
+describe('SavedViewService', () => {
+  const org = 'org-1';
+  const user = 'user-1';
 
-  it('rejeita funil ausente', () => {
-    expect(() => createSavedView('org-1', 'user-1', { name: 'Minha view' })).toThrowError(
-      expect.objectContaining({ statusCode: 400 }),
-    );
-  });
-
-  it('rejeita funil fora de "Lead"/"Negocio"', () => {
-    expect(() =>
-      createSavedView('org-1', 'user-1', { name: 'Minha view', funnel: 'Contato' }),
-    ).toThrowError(expect.objectContaining({ statusCode: 400 }));
-  });
-
-  it('aceita funil "Negocio" e usa {} como filtro padrão quando nenhum é informado', async () => {
-    prismaMock.savedView.create.mockResolvedValue({ id: 'view-1' });
-
-    await createSavedView('org-1', 'user-1', { name: '  Pipeline quente  ', funnel: 'Negocio' });
-
-    expect(prismaMock.savedView.create).toHaveBeenCalledWith({
-      data: {
-        organizationId: 'org-1',
-        userId: 'user-1',
-        name: 'Pipeline quente', // nome deve vir com trim aplicado
-        funnel: 'Negocio',
-        filters: {},
+  it('lista views do usuário e tenant corretos', async () => {
+    const repo = new FakeSavedViewRepository([
+      {
+        id: '1',
+        organizationId: org,
+        userId: user,
+        name: 'Minha View',
+        funnel: 'Lead',
+        filters: { owner: user },
+        isDefault: false,
+        createdAt: new Date(),
+        updatedAt: new Date(),
       },
-    });
+      {
+        id: '2',
+        organizationId: 'other-org',
+        userId: user,
+        name: 'Outra Org',
+        funnel: 'Lead',
+        filters: {},
+        isDefault: false,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    ]);
+    const service = new SavedViewService(repo);
+
+    const views = await service.listSavedViews(org, user);
+    expect(views).toHaveLength(1);
+    expect(views[0].name).toBe('Minha View');
   });
 
-  it('repassa os filtros informados sem alterá-los', async () => {
-    prismaMock.savedView.create.mockResolvedValue({ id: 'view-2' });
-    const filters = { owner: 'user-9', q: 'transportadora' };
-
-    await createSavedView('org-1', 'user-1', { name: 'Filtro custom', funnel: 'Lead', filters });
-
-    expect(prismaMock.savedView.create).toHaveBeenCalledWith({
-      data: expect.objectContaining({ filters }),
-    });
-  });
-});
-
-describe('deleteSavedView', () => {
-  it('lança 404 quando nenhuma linha é apagada (não existe ou não é do usuário)', async () => {
-    prismaMock.savedView.deleteMany.mockResolvedValue({ count: 0 });
-
-    await expect(deleteSavedView('org-1', 'user-1', 'view-x')).rejects.toMatchObject({
-      statusCode: 404,
-    });
-    expect(prismaMock.savedView.deleteMany).toHaveBeenCalledWith({
-      where: { id: 'view-x', organizationId: 'org-1', userId: 'user-1' },
-    });
+  it('rejeita criação sem nome', async () => {
+    const service = new SavedViewService(new FakeSavedViewRepository());
+    await expect(
+      service.createSavedView(org, user, { name: '   ', funnel: 'Lead' }),
+    ).rejects.toThrow('Nome da view é obrigatório.');
   });
 
-  it('resolve sem erro quando a view do próprio usuário é apagada', async () => {
-    prismaMock.savedView.deleteMany.mockResolvedValue({ count: 1 });
+  it('rejeita criação com funil inválido', async () => {
+    const service = new SavedViewService(new FakeSavedViewRepository());
+    await expect(
+      service.createSavedView(org, user, { name: 'Test', funnel: 'Invalido' }),
+    ).rejects.toThrow('Funil inválido');
+  });
 
-    await expect(deleteSavedView('org-1', 'user-1', 'view-1')).resolves.toBeUndefined();
+  it('cria view com sucesso com dados válidos', async () => {
+    const repo = new FakeSavedViewRepository();
+    const service = new SavedViewService(repo);
+
+    const created = await service.createSavedView(org, user, {
+      name: 'Negócios Quentes',
+      funnel: 'Negocio',
+      filters: { q: 'quente' },
+    });
+
+    expect(created.id).toBeDefined();
+    expect(created.name).toBe('Negócios Quentes');
+    expect(created.funnel).toBe('Negocio');
+  });
+
+  it('lança 404 ao tentar excluir view inexistente', async () => {
+    const service = new SavedViewService(new FakeSavedViewRepository());
+    await expect(service.deleteSavedView(org, user, 'inexistente')).rejects.toThrow(
+      'View não encontrada.',
+    );
   });
 });

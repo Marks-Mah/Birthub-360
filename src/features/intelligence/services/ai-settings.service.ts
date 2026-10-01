@@ -1,24 +1,32 @@
-import { prisma } from '../../../lib/prisma.js';
+import type {
+  AiSettingInput,
+  AiSettingItem,
+  AiSettingsRepository,
+} from '../domain/AiSettings.js';
+import { prismaAiSettingsRepository } from '../infrastructure/PrismaAiSettingsRepository.js';
 
-interface AiSettingInput {
-  toolKey: string;
-  provider: string;
-  model: string;
-  temperature: number;
+export type { AiSettingInput, AiSettingItem, AiSettingsRepository };
+
+export class AiSettingsService {
+  constructor(
+    private readonly repository: AiSettingsRepository = prismaAiSettingsRepository,
+  ) {}
+
+  async listSettings(): Promise<AiSettingItem[]> {
+    return this.repository.listAll();
+  }
+
+  async saveSettings(settings: AiSettingInput[]): Promise<AiSettingItem[]> {
+    return this.repository.saveMany(settings);
+  }
 }
 
-export async function listAiSettings() {
-  return prisma.aiEngineSetting.findMany({ orderBy: { toolKey: 'asc' } });
+export const aiSettingsService = new AiSettingsService();
+
+export async function listAiSettings(): Promise<AiSettingItem[]> {
+  return aiSettingsService.listSettings();
 }
 
-export async function saveAiSettings(settings: AiSettingInput[]) {
-  return prisma.$transaction(
-    settings.map((s) =>
-      prisma.aiEngineSetting.upsert({
-        where: { toolKey: s.toolKey },
-        update: { provider: s.provider, model: s.model, temperature: s.temperature },
-        create: s,
-      }),
-    ),
-  );
+export async function saveAiSettings(settings: AiSettingInput[]): Promise<AiSettingItem[]> {
+  return aiSettingsService.saveSettings(settings);
 }
