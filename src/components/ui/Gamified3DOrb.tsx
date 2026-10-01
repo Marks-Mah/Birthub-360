@@ -126,7 +126,7 @@ export function Gamified3DOrb({
   onOrbClick,
   className,
 }: Gamified3DOrbProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLButtonElement>(null);
   const reduceMotion = Boolean(useReducedMotion());
   const [isIntersecting, setIsIntersecting] = useState(true);
   const [isTabVisible, setIsTabVisible] = useState(
@@ -176,19 +176,13 @@ export function Gamified3DOrb({
   };
 
   return (
-    <div
+    <button
+      type="button"
       ref={containerRef}
       style={{ width: size, height: size }}
-      className={`relative select-none ${className || ''}`}
-      role="button"
-      tabIndex={0}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          e.currentTarget.click();
-        }
-      }}
+      className={`relative select-none appearance-none border-0 bg-transparent p-0 ${className || ''}`}
       onClick={handleInteract}
+      disabled={!interactive}
       title={interactive ? 'Clique no Cristal 3D para obter impulso de energia!' : undefined}
     >
       <Canvas
@@ -202,6 +196,6 @@ export function Gamified3DOrb({
         <directionalLight position={[0, 5, 2]} intensity={1.2} />
         <GemScene animate={shouldAnimate} onClick={handleInteract} isBoosting={isBoosting} />
       </Canvas>
-    </div>
+    </button>
   );
 }

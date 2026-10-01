@@ -78,11 +78,10 @@ export function SellerBenchmarkCard({ filter }: { filter: CommercialFilter }) {
         </div>
       </div>
 
-      <div
+      <section
         className="mt-4 overflow-x-auto"
         // biome-ignore lint/a11y/noNoninteractiveTabindex: região rolável horizontal precisa ser focável por teclado (axe scrollable-region-focusable, WCAG 2.1.1)
         tabIndex={0}
-        role="region"
         aria-label="Tabela de benchmark de vendedores (rolável)"
       >
         <table className="w-full min-w-[720px] text-xs">
@@ -135,7 +134,7 @@ export function SellerBenchmarkCard({ filter }: { filter: CommercialFilter }) {
             ))}
           </tbody>
         </table>
-      </div>
+      </section>
     </Card>
   );
 }
