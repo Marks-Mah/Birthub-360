@@ -3,7 +3,7 @@
  * UseCases implementing business rules for membership, roles and permissions
  */
 
-import { ITeamRepository, TeamMember, TeamRole, Permission, MemberInvite } from '../domain/TeamDomain';
+import { ITeamRepository, TeamMember, TeamRole, Permission, MemberInvite } from '../domain/TeamDomain.js';
 
 export class TeamUseCases {
   constructor(private readonly teamRepository: ITeamRepository) {}
