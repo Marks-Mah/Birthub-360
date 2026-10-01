@@ -412,6 +412,152 @@ export function LandingLoginSplitScreen() {
           <DataFlowLines />
         </div>
 
+        {/* Hero Content */}
+        <div className="relative z-20 flex-1 flex flex-col justify-center max-w-xl">
+          <motion.div
+            initial="hidden"
+            animate="show"
+            variants={staggerContainer(0.1)}
+            className="space-y-6"
+          >
+            <motion.p
+              variants={staggerItem}
+              className="text-[10px] font-bold uppercase tracking-[0.2em] text-brand"
+            >
+              Intelligent Business Command Center
+            </motion.p>
+            <motion.h1
+              variants={staggerItem}
+              className="font-display text-5xl md:text-6xl font-bold tracking-tight"
+            >
+              Birth Hub <span className="text-brand">360&deg;</span>
+            </motion.h1>
+            <motion.p
+              variants={staggerItem}
+              className="font-display text-2xl md:text-3xl font-normal leading-snug text-slate-700 dark:text-slate-200"
+            >
+              <RevealLine delay={0.35}>Dados que conectam.</RevealLine>
+              <RevealLine delay={0.5}>Inteligência que decide.</RevealLine>
+              <RevealLine delay={0.65}>Resultados que acontecem.</RevealLine>
+            </motion.p>
+            <motion.p
+              variants={staggerItem}
+              className="text-sm text-slate-500 dark:text-slate-400 max-w-md leading-relaxed"
+            >
+              O sistema operacional inteligente para operações de receita.
+            </motion.p>
+
+            <motion.div variants={staggerItem} className="flex items-center gap-4 pt-4">
+              <button
+                type="button"
+                onClick={() => navigate('/login')}
+                className="flex items-center gap-2 rounded-full transition-transform hover:-translate-y-0.5 active:translate-y-0 motion-reduce:transform-none bg-gradient-to-r from-gold to-gold/80 px-6 py-3 text-sm font-bold text-slate-900 shadow-[0_4px_14px_rgba(212,175,55,0.4)] transition-transform hover:-translate-y-0.5"
+              >
+                Explorar o Birth Hub &rarr;
+              </button>
+              <button
+                type="button"
+                className="flex items-center gap-3 text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-brand dark:hover:text-brand transition-colors"
+              >
+                <span className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-300 dark:border-white/20">
+                  <Play className="h-4 w-4 ml-0.5" />
+                </span>
+                Ver em 2 minutos
+              </button>
+            </motion.div>
+          </motion.div>
+        </div>
+
+        {/* Stats Row */}
+        <motion.div
+          initial="hidden"
+          animate="show"
+          variants={staggerContainer(0.09)}
+          className="relative z-20 mt-12 grid max-w-xl grid-cols-2 gap-x-4 gap-y-6 border-t border-slate-200 dark:border-white/10 pt-8 sm:grid-cols-4"
+        >
+          {HERO_STATS.map((stat, i) => (
+            <motion.div key={stat.lines.join(' ')} variants={staggerItem}>
+              <stat.Icon className="h-5 w-5 text-slate-400 dark:text-slate-500 mb-2" />
+              <div className="font-display text-3xl font-bold">
+                <CountUp to={stat.to} suffix={stat.suffix} delay={0.5 + i * 0.09} />
+              </div>
+              <div className="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider mt-1">
+                {stat.lines[0]}
+                <br />
+                {stat.lines[1]}
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
+
+        {/* Scroll indicator */}
+        <div className="relative z-20 mt-8 flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-slate-600 dark:text-slate-400">
+          <ArrowDown className="h-4 w-4 rounded-full border border-current p-0.5" />
+          Escrole para explorar
+        </div>
+
+        {/* Orbital Graphic */}
+        <div className="pointer-events-none absolute right-0 top-1/2 hidden h-[600px] w-[600px] -translate-y-1/2 -translate-x-[10%] lg:block">
+          <div className="relative w-full h-full flex items-center justify-center">
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 60, repeat: Infinity, ease: 'linear' }}
+              className="absolute inset-4 rounded-full border border-slate-200/50 dark:border-white/5 border-dashed"
+            />
+            <motion.div
+              animate={{ rotate: -360 }}
+              transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
+              className="absolute inset-[136px] rounded-full border-[3px] border-slate-300 dark:border-white/25"
+            />
+            <div
+              className="absolute w-[216px] h-[216px] rounded-full border-[14px] border-transparent"
+              style={{
+                background: `linear-gradient(currentColor, currentColor) padding-box, conic-gradient(from 0deg, ${BRAND.colors.orbitBlue} 0%, ${BRAND.colors.brand} 33%, ${BRAND.colors.pink} 66%, ${BRAND.colors.orbitBlue} 100%) border-box`,
+              }}
+            />
+            <div className="absolute w-[188px] h-[188px] rounded-full bg-white dark:bg-[#0B132B] flex items-center justify-center shadow-2xl border border-slate-100 dark:border-none">
+              <BirthHubLogo
+                variant="symbol"
+                className="w-24 h-24 drop-shadow-[0_0_15px_rgba(212,175,55,0.5)]"
+              />
+            </div>
+
+            <div className="absolute top-12 flex flex-col items-center">
+              <div className="w-10 h-10 rounded-full bg-white dark:bg-slate-800 shadow-lg border border-slate-100 dark:border-white/10 flex items-center justify-center mb-2">
+                <DatabaseZap className="h-4 w-4 text-orbit-blue" />
+              </div>
+              <span className="text-[10px] font-bold uppercase tracking-widest text-slate-700 dark:text-slate-300">Dados</span>
+              <span className="text-[9px] text-slate-500 dark:text-slate-300">Integração sem limites</span>
+            </div>
+
+            <div className="absolute bottom-12 flex flex-col items-center">
+              <div className="w-10 h-10 rounded-full bg-white dark:bg-slate-800 shadow-lg border border-slate-100 dark:border-white/10 flex items-center justify-center mb-2">
+                <Target className="h-4 w-4 text-pink" />
+              </div>
+              <span className="text-[10px] font-bold uppercase tracking-widest text-slate-700 dark:text-slate-300">Decisão</span>
+              <span className="text-[9px] text-slate-500 dark:text-slate-300">Estratégia baseada em dados</span>
+            </div>
+
+            <div className="absolute left-3 flex flex-col items-center">
+              <div className="w-10 h-10 rounded-full bg-white dark:bg-slate-800 shadow-lg border border-slate-100 dark:border-white/10 flex items-center justify-center mb-2">
+                <Rocket className="h-4 w-4 text-red" />
+              </div>
+              <span className="text-[10px] font-bold uppercase tracking-widest text-slate-700 dark:text-slate-300">Execução</span>
+              <span className="text-[9px] text-slate-500 dark:text-slate-300">Resultados consistentes</span>
+            </div>
+
+            <div className="absolute right-3 flex flex-col items-center">
+              <div className="w-10 h-10 rounded-full bg-white dark:bg-slate-800 shadow-lg border border-slate-100 dark:border-white/10 flex items-center justify-center mb-2">
+                <BrainCircuit className="h-4 w-4 text-iris" />
+              </div>
+              <span className="text-[10px] font-bold uppercase tracking-widest text-slate-700 dark:text-slate-300">Inteligência</span>
+              <span className="text-[9px] text-slate-500 dark:text-slate-300">Insights em tempo real</span>
+            </div>
+          </div>
+        </div>
+
+        </div>
+
 
         {/* ── Header: BH360 Mark + Sistema ──────────────────────────────── */}
         <header className="relative z-20 flex items-center justify-between mb-10">
@@ -741,6 +887,7 @@ export function LandingLoginSplitScreen() {
                       <label
                         htmlFor="login-name"
                         className="block font-mono text-[11px] font-semibold text-[var(--ink-2)] mb-1.5 uppercase tracking-wide"
+
                       >
                         Nome completo
                       </label>
@@ -890,6 +1037,7 @@ export function LandingLoginSplitScreen() {
                   </button>
                 </div>
               )}
+
 
               {/* Opções SSO / Social */}
               {!isSignUp && !isForgotPassword && !verificationPending && (

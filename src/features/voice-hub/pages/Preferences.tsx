@@ -388,7 +388,7 @@ export default function PreferencesPage() {
             </Card>
 
             <Card className="border-dashed border-slate-300 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900/30 p-6 space-y-4 text-center">
-              <SlidersHorizontal className="h-8 w-8 mx-auto text-brand animate-bounce" />
+              <SlidersHorizontal className="h-8 w-8 mx-auto text-brand animate-pulse" />
               <h4 className="font-bold text-slate-900 dark:text-slate-50 text-sm">
                 Design System integrado
               </h4>

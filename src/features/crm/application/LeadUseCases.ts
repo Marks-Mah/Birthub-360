@@ -42,7 +42,6 @@ interface LeadContactRelation {
 }
 
 export class LeadUseCases extends BaseUseCases<Lead, LeadRepository> {
-  // biome-ignore lint/complexity/noUselessConstructor: expõe publicamente o construtor protected da base para a DI
   constructor(leadRepository: LeadRepository) {
     super(leadRepository);
   }

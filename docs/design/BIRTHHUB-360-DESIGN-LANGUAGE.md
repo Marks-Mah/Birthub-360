@@ -184,10 +184,10 @@ duration-slowest  500ms — Complex entry animations
 
 ### Easing Tokens  
 ```
-ease-standard    cubic-bezier(0.4, 0, 0.2, 1)  — General UI
-ease-enter       cubic-bezier(0.22, 1, 0.36, 1) — Elements entering (decelerate)
-ease-exit        cubic-bezier(0.4, 0, 1, 1)     — Elements leaving (accelerate)
-ease-emphasized  cubic-bezier(0.16, 1, 0.3, 1)  — Premium entrance, max deceleration
+eas e-standard    cubic-bezier(0.4, 0, 0.2, 1)  — General UI
+eas e-enter       cubic-bezier(0.22, 1, 0.36, 1) — Elements entering (decelerate)
+eas e-exit        cubic-bezier(0.4, 0, 1, 1)     — Elements leaving (accelerate)
+eas e-emphasized  cubic-bezier(0.16, 1, 0.3, 1)  — Premium entrance, max deceleration
 ```
 
 ### Animation Usage
@@ -303,3 +303,4 @@ Loading patterns:
 
 ---
 *This document is the single source of design truth for BirthHub 360.*
+

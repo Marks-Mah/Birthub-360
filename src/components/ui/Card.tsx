@@ -1,10 +1,6 @@
-/* eslint-disable react-refresh/only-export-components */
-
-import { cva, type VariantProps } from 'class-variance-authority';
 import * as React from 'react';
-import { SoundFX } from '../../lib/soundEffects.js';
+
 import { cn } from '../../lib/utils.js';
-import { BorderBeam, type BorderBeamProps } from './BorderBeam.js';
 
 const cardVariants = cva('relative overflow-hidden rounded-card text-ink', {
   variants: {
@@ -222,17 +218,16 @@ Card.displayName = 'Card';
 
 const CardHeader = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
-    <div ref={ref} className={cn('flex flex-col gap-1 mb-4', className)} {...props} />
+    <div ref={ref} className={cn('flex flex-col space-y-1.5 p-6', className)} {...props} />
   ),
 );
 CardHeader.displayName = 'CardHeader';
 
-const CardTitle = React.forwardRef<HTMLHeadingElement, React.HTMLAttributes<HTMLHeadingElement>>(
+const CardTitle = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<HTMLHeadingElement>>(
   ({ className, ...props }, ref) => (
-    // eslint-disable-next-line jsx-a11y/heading-has-content -- children chega via {...props} (wrapper genérico), o lint não enxerga isso estaticamente
     <h3
       ref={ref}
-      className={cn('font-display text-lg font-bold text-ink tracking-tight', className)}
+      className={cn('font-display font-semibold leading-none tracking-tight', className)}
       {...props}
     />
   ),
@@ -249,20 +244,16 @@ CardDescription.displayName = 'CardDescription';
 
 const CardContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
-    <div ref={ref} className={cn('text-sm text-ink-2', className)} {...props} />
+    <div ref={ref} className={cn('p-6 pt-0', className)} {...props} />
   ),
 );
 CardContent.displayName = 'CardContent';
 
 const CardFooter = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
-    <div
-      ref={ref}
-      className={cn('flex items-center gap-3 mt-4 pt-4 border-t border-line', className)}
-      {...props}
-    />
+    <div ref={ref} className={cn('flex items-center p-6 pt-0', className)} {...props} />
   ),
 );
 CardFooter.displayName = 'CardFooter';
 
-export { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, cardVariants };
+export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent };

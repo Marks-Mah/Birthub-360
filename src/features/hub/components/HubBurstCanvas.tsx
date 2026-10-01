@@ -1,134 +1,41 @@
-/**
- * HubBurstCanvas — canvas 2D fixo sobre toda a tela que exibe o efeito de
- * explosão de partículas ao clicar em qualquer card do Hub.
- *
- * Portado do protótipo original do portal (função `burstAt`). Expõe uma ref de
- * função `trigger(x, y, colorRgb)` que o HubScreen chama ao clicar num card.
- */
 
-import { useReducedMotion } from 'framer-motion';
-import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
+import { motion } from 'framer-motion';
 
-export interface BurstHandle {
-  trigger: (x: number, y: number, colorRgb: string) => void;
-}
-
-interface Particle {
-  x: number;
-  y: number;
-  vx: number;
-  vy: number;
-  r: number;
-  life: number;
-  color: string;
-}
-
-export const HubBurstCanvas = forwardRef<BurstHandle>((_, ref) => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const particlesRef = useRef<Particle[]>([]);
-  const rafRef = useRef<number | null>(null);
-  // Guarda a função draw do efeito abaixo pra trigger() poder reagendar o loop quando ele já
-  // parou (array vazio) sem precisar duplicar a lógica de desenho aqui.
-  const drawRef = useRef<(() => void) | null>(null);
-  const prefersReduced = useReducedMotion();
-
-  // Expõe trigger para o pai sem causar re-render
-  useImperativeHandle(
-    ref,
-    () => ({
-      trigger(x: number, y: number, colorRgb: string) {
-        if (prefersReduced) return;
-        const canvas = canvasRef.current;
-        if (!canvas) return;
-        const dpr = devicePixelRatio || 1;
-        const count = 26;
-        const wasEmpty = particlesRef.current.length === 0;
-        for (let i = 0; i < count; i++) {
-          const angle = (Math.PI * 2 * i) / count + Math.random() * 0.3;
-          const speed = 2.5 + Math.random() * 3.5;
-          particlesRef.current.push({
-            x: x * dpr,
-            y: y * dpr,
-            vx: Math.cos(angle) * speed * dpr,
-            vy: Math.sin(angle) * speed * dpr,
-            r: (2 + Math.random() * 3) * dpr,
-            life: 1,
-            color: colorRgb,
-          });
-        }
-        // O loop de desenho para sozinho quando o array esvazia (ver draw() abaixo) — se ele já
-        // tinha parado, este clique precisa reacordá-lo.
-        if (wasEmpty && rafRef.current === null && drawRef.current) {
-          rafRef.current = requestAnimationFrame(drawRef.current);
-        }
-      },
-    }),
-    [prefersReduced],
-  );
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    function resize() {
-      if (!canvas) return;
-      const dpr = devicePixelRatio || 1;
-      canvas.width = window.innerWidth * dpr;
-      canvas.height = window.innerHeight * dpr;
-      canvas.style.width = `${window.innerWidth}px`;
-      canvas.style.height = `${window.innerHeight}px`;
-    }
-    resize();
-    window.addEventListener('resize', resize);
-
-    // O loop só roda enquanto houver partícula viva (achado do audit: antes rodava pra sempre,
-    // mesmo com o array vazio — clearRect + filter a cada frame indefinidamente pela vida inteira
-    // da tela, violando a regra de performance da constituição de não animar/renderizar
-    // continuamente sem necessidade). `trigger()` (via useImperativeHandle acima) reagenda o loop
-    // quando chega a primeira partícula de um novo clique.
-    function draw() {
-      if (!ctx || !canvas) return;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      particlesRef.current.forEach((p) => {
-        p.x += p.vx;
-        p.y += p.vy;
-        p.vy += 0.05 * (devicePixelRatio || 1);
-        p.life -= 0.02;
-        ctx.globalAlpha = Math.max(p.life, 0);
-        ctx.fillStyle = `rgb(${p.color})`;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fill();
-      });
-      particlesRef.current = particlesRef.current.filter((p) => p.life > 0);
-      ctx.globalAlpha = 1;
-      if (particlesRef.current.length > 0) {
-        rafRef.current = requestAnimationFrame(draw);
-      } else {
-        rafRef.current = null;
-      }
-    }
-    drawRef.current = draw;
-
-    return () => {
-      window.removeEventListener('resize', resize);
-      if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
-    };
-  }, []);
-
+export function HubBurstCanvas() {
   return (
-    <canvas
-      ref={canvasRef}
-      style={{
-        position: 'fixed',
-        inset: 0,
-        zIndex: 30,
-        pointerEvents: 'none',
-      }}
-    />
-  );
-});
+    <div className="relative w-full h-full flex items-center justify-center">
+      {/* Central Node */}
+      <div className="absolute z-10 w-24 h-24 rounded-full bg-obsidian shadow-2xl flex items-center justify-center border border-line">
+         <div className="w-16 h-16 rounded-full border border-gold/30 animate-spin-slow flex items-center justify-center">
+            <div className="w-8 h-8 rounded-full bg-gold/20 backdrop-blur-sm" />
+         </div>
+      </div>
 
-HubBurstCanvas.displayName = 'HubBurstCanvas';
+      {/* Burst Rings */}
+      <motion.div
+        className="absolute w-[300px] h-[300px] rounded-full border border-gold/10"
+        initial={{ scale: 0.8, opacity: 0 }}
+        animate={{ scale: [0.8, 1.2, 1.5], opacity: [0, 1, 0] }}
+        transition={{ duration: 4, repeat: Infinity, ease: 'easeOut' }}
+      />
+      <motion.div
+        className="absolute w-[450px] h-[450px] rounded-full border border-info/10"
+        initial={{ scale: 0.8, opacity: 0 }}
+        animate={{ scale: [0.8, 1.2, 1.5], opacity: [0, 1, 0] }}
+        transition={{ duration: 4, repeat: Infinity, ease: 'easeOut', delay: 1.3 }}
+      />
+
+      {/* Connecting Nodes */}
+      <div className="absolute top-[30%] left-[25%] w-3 h-3 bg-info rounded-full shadow-[0_0_10px_rgba(59,130,246,0.5)]" />
+      <div className="absolute bottom-[20%] right-[30%] w-3 h-3 bg-success rounded-full shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
+      <div className="absolute top-[40%] right-[20%] w-3 h-3 bg-warning rounded-full shadow-[0_0_10px_rgba(245,158,11,0.5)]" />
+
+      {/* SVG Connections (Static abstraction) */}
+      <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-20">
+         <line x1="50%" y1="50%" x2="25%" y2="30%" stroke="currentColor" strokeWidth="1" strokeDasharray="4 4" />
+         <line x1="50%" y1="50%" x2="70%" y2="80%" stroke="currentColor" strokeWidth="1" strokeDasharray="4 4" />
+         <line x1="50%" y1="50%" x2="80%" y2="40%" stroke="currentColor" strokeWidth="1" strokeDasharray="4 4" />
+      </svg>
+    </div>
+  );
+}

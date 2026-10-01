@@ -11,7 +11,6 @@ import {
   ChevronRight,
 } from 'lucide-react';
 import { useSessionStore } from '../../store/useSessionStore.js';
-import { getAccessibleTextOnBrand, getAccessibleBrandForeground, colors } from './tokens.js';
 import { usePrefersReducedMotion } from './useReducedMotion.js';
 
 const FOCUSABLE_SELECTOR =
@@ -78,7 +77,7 @@ export function Button({
     secondary:
       'bg-slate-100 text-slate-800 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-200 dark:hover:bg-slate-600',
     outline:
-      'border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 hover:border-slate-300 shadow-xs dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700/60',
+      'border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 hover:border-slate-300 shadow-none dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700/60',
     danger:
       'bg-red-600 text-white hover:bg-red-700 shadow-sm dark:bg-red-700 dark:hover:bg-red-800',
     ghost: 'text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800/80',
@@ -157,6 +156,7 @@ export function Input({ label, error, helperText, className = '', id, ...props }
         className={`w-full px-3.5 py-2.5 border rounded-lg text-sm bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent transition-all shadow-xs dark:bg-slate-800 dark:text-slate-100 dark:border-slate-700 dark:focus:ring-brand ${
           error ? 'border-red-350 focus:ring-red-500 dark:border-red-550' : 'border-slate-300'
         } ${className}`}
+
         {...props}
       />
       {error && (
@@ -209,6 +209,7 @@ export function Textarea({
         className={`w-full p-3.5 border rounded-lg text-sm bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent transition-all shadow-xs dark:bg-slate-800 dark:text-slate-100 dark:border-slate-700 dark:focus:ring-brand ${
           error ? 'border-red-350 focus:ring-red-500 dark:border-red-550' : 'border-slate-300'
         } ${className}`}
+
         {...props}
       />
       {error && (
@@ -338,6 +339,7 @@ export function Select({ label, error, options, className = '', id, ...props }: 
           className={`w-full px-3.5 py-2.5 pr-10 border rounded-lg text-sm bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent transition-all shadow-xs appearance-none dark:bg-slate-800 dark:text-slate-100 dark:border-slate-700 ${
             error ? 'border-red-300 focus:ring-red-500' : 'border-slate-300'
           } ${className}`}
+
           {...props}
         >
           {options.map((opt) => (
@@ -521,7 +523,7 @@ export function Alert({ title, description, variant = 'info' }: AlertProps) {
 
   return (
     <div
-      className={`flex items-start gap-3 p-4 border rounded-xl shadow-xs leading-relaxed ${styles[variant]}`}
+      className={`flex items-start gap-3 p-4 border rounded-xl shadow-none leading-relaxed ${styles[variant]}`}
     >
       <div className="shrink-0 mt-0.5">{icons[variant]}</div>
       <div className="flex-1 space-y-1">
@@ -610,7 +612,7 @@ export function Avatar({
 
   return (
     <div
-      className={`relative flex items-center justify-center shrink-0 rounded-full overflow-hidden bg-brand font-bold select-none shadow-xs ${sizes[size]} ${className}`}
+      className={`relative flex items-center justify-center shrink-0 rounded-full overflow-hidden bg-brand font-bold select-none shadow-none ${sizes[size]} ${className}`}
       style={{ color: accessibleBrandText }}
     >
       {src ? (
@@ -968,7 +970,7 @@ export function Timeline({ items }: { items: TimelineItem[] }) {
     <div className="space-y-6 text-left relative before:absolute before:left-3.5 before:top-2 before:bottom-2 before:w-[2px] before:bg-slate-200 dark:before:bg-slate-700">
       {items.map((item, idx) => (
         <div key={idx} className="flex gap-4 relative">
-          <div className="h-7 w-7 rounded-full bg-white dark:bg-slate-800 border-2 border-brand text-brand flex items-center justify-center shrink-0 z-10 shadow-xs">
+          <div className="h-7 w-7 rounded-full bg-white dark:bg-slate-800 border-2 border-brand text-brand flex items-center justify-center shrink-0 z-10 shadow-none">
             {item.icon || <Info className="h-3.5 w-3.5" />}
           </div>
           <div className="flex-1 space-y-1">

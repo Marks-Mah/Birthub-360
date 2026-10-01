@@ -5,7 +5,7 @@ WORKDIR /app
 
 ENV DATABASE_URL=""
 
-RUN apt-get update && apt-get install -y openssl python3 make g++ ca-certificates && rm -rf /var/lib/apt/lists/*
+#RUN apt-get update && apt-get install -y openssl python3 make g++ ca-certificates && rm -rf /var/lib/apt/lists/*
 
 # .npmrc carrega `legacy-peer-deps=true` (mem0ai fixa peer @types/pg@8.11.0, incompatível com o
 # @types/pg@^8.16 exigido por @prisma/adapter-pg — só tipos de dev, sem efeito em runtime). Sem
@@ -43,7 +43,7 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=3000
 
-RUN apt-get update && apt-get install -y openssl ca-certificates && rm -rf /var/lib/apt/lists/*
+#RUN apt-get update && apt-get install -y openssl ca-certificates && rm -rf /var/lib/apt/lists/*
 
 # Copy necessary files from builder
 COPY --from=builder /app/package*.json ./

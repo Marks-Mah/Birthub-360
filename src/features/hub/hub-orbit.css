@@ -517,7 +517,7 @@
   stroke-width: 3;
 }
 .hc-icon-wrap svg .avatar-head {
-  transition: transform 0.35s cubic-bezier(0.22, 0.9, 0.3, 1.2);
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
   transform-box: fill-box;
   transform-origin: bottom center;
 }
@@ -525,7 +525,7 @@
   transform: rotate(-6deg) translateY(-1px);
 }
 .hc-icon-wrap svg .badge {
-  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
   transform-box: fill-box;
   transform-origin: center;
 }

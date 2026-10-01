@@ -147,13 +147,13 @@ export const EliteCommercialAgentWorkspace: React.FC = () => {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-neutral-800 pb-4">
         <div>
           <div className="flex items-center gap-2">
-            <span className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+            <span className="p-1.5 rounded-lg bg-emerald-100/10 text-emerald-400 border border-emerald-500/20">
               <Sparkles className="w-5 h-5" />
             </span>
             <h1 className="text-xl sm:text-2xl font-bold tracking-tight">
               Copiloto Comercial de Elite
             </h1>
-            <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+            <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-emerald-100/20 text-emerald-400 border border-emerald-500/30">
               Malha Ativa (392 Copilotos)
             </span>
           </div>
@@ -219,7 +219,7 @@ export const EliteCommercialAgentWorkspace: React.FC = () => {
             extra: (
               <div className="w-full bg-neutral-800 h-1.5 rounded-full mt-2 overflow-hidden">
                 <div
-                  className="bg-emerald-500 h-full rounded-full transition-all duration-500"
+                  className="bg-emerald-100 h-full rounded-full transition-all duration-500"
                   style={{ width: `${Math.min(100, metrics.targetCompletionPercent)}%` }}
                 />
               </div>
@@ -300,7 +300,7 @@ export const EliteCommercialAgentWorkspace: React.FC = () => {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-sm flex items-center gap-3 shadow-lg"
+            className="p-4 rounded-xl bg-emerald-100/10 border border-emerald-500/30 text-emerald-300 text-sm flex items-center gap-3 shadow-lg"
           >
             <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
             <span>{actionSuccessMessage}</span>
@@ -330,7 +330,7 @@ export const EliteCommercialAgentWorkspace: React.FC = () => {
               aria-hidden="true"
             />
 
-            <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-500/5 rounded-full blur-3xl pointer-events-none z-0" />
+            <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-100/5 rounded-full blur-3xl pointer-events-none z-0" />
 
             <div className="relative z-30 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-neutral-800/80 pb-6">
               <div>
@@ -363,7 +363,7 @@ export const EliteCommercialAgentWorkspace: React.FC = () => {
                     <HelpCircle className="w-3 h-3" />
                   </div>
                 </div>
-                <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center">
+                <div className="w-12 h-12 rounded-xl bg-emerald-100/10 border border-emerald-500/30 flex items-center justify-center">
                   <span className="text-xl font-bold text-emerald-400">
                     {nextBestAction.opportunityScore.score}
                   </span>
@@ -445,7 +445,7 @@ export const EliteCommercialAgentWorkspace: React.FC = () => {
                     type="button"
                     disabled={executingAction}
                     onClick={handleExecuteAction}
-                    className="w-full py-3.5 px-4 rounded-xl font-bold text-sm bg-emerald-500 hover:bg-emerald-400 text-neutral-950 flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 transition-all"
+                    className="w-full py-3.5 px-4 rounded-xl font-bold text-sm bg-emerald-100 hover:bg-emerald-400 text-emerald-950 flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 transition-all"
                   >
                     <Zap className="w-4 h-4 fill-current" />
                     <span>{executingAction ? 'Executando...' : '[ EXECUTAR AÇÃO ]'}</span>
@@ -544,7 +544,7 @@ export const EliteCommercialAgentWorkspace: React.FC = () => {
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    <span className="px-2.5 py-1 text-xs rounded-full font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                    <span className="px-2.5 py-1 text-xs rounded-full font-medium bg-emerald-100/10 text-emerald-400 border border-emerald-500/20">
                       {mission.status === 'COMPLETED' ? 'Pronto para Ação' : 'Aguardando Aprovação'}
                     </span>
                     <ChevronRight className="w-4 h-4 text-neutral-500" />
@@ -567,7 +567,7 @@ export const EliteCommercialAgentWorkspace: React.FC = () => {
                 </span>
                 <h2 className="text-xl sm:text-2xl font-bold text-white mt-1">{trace.title}</h2>
               </div>
-              <span className="px-3 py-1 text-xs font-semibold rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+              <span className="px-3 py-1 text-xs font-semibold rounded-full bg-emerald-100/20 text-emerald-400 border border-emerald-500/30">
                 {trace.status}
               </span>
             </div>
@@ -576,7 +576,7 @@ export const EliteCommercialAgentWorkspace: React.FC = () => {
           {/* Ramo Tagarela (Root) */}
           <div className="space-y-4">
             <div className="p-4 rounded-2xl bg-neutral-800/80 border border-neutral-700 flex items-center gap-3">
-              <div className="p-2 rounded-xl bg-emerald-500/20 text-emerald-400">
+              <div className="p-2 rounded-xl bg-emerald-100/20 text-emerald-400">
                 <Brain className="w-5 h-5" />
               </div>
               <div>
@@ -752,7 +752,7 @@ export const EliteCommercialAgentWorkspace: React.FC = () => {
                         <span
                           className={`px-2 py-0.5 rounded-full font-semibold text-[10px] ${
                             agent.layer === 'CORE'
-                              ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                              ? 'bg-emerald-100/20 text-emerald-400 border border-emerald-500/30'
                               : 'bg-sky-500/20 text-sky-400 border border-sky-500/30'
                           }`}
                         >

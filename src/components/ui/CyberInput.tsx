@@ -133,7 +133,7 @@ export function CyberInput({
       {(variant === 'neon' || variant === 'cosmic') && (
         <>
           <motion.div
-            className="absolute top-0 left-0 w-2.5 h-2.5 border-t-2 border-l-2 border-brand/60 rounded-tl-lg pointer-events-none"
+            className="absolute top-0 left-0 w-2.5 h-2.5 border border-line border-brand/60 rounded-tl-lg pointer-events-none"
             animate={{
               opacity: isFocused ? 1 : 0.3,
               scale: isFocused ? 1 : 0.8,
@@ -141,7 +141,7 @@ export function CyberInput({
             transition={{ duration: 0.2 }}
           />
           <motion.div
-            className="absolute top-0 right-0 w-2.5 h-2.5 border-t-2 border-r-2 border-brand/60 rounded-tr-lg pointer-events-none"
+            className="absolute top-0 right-0 w-2.5 h-2.5 border border-line border-brand/60 rounded-tr-lg pointer-events-none"
             animate={{
               opacity: isFocused ? 1 : 0.3,
               scale: isFocused ? 1 : 0.8,
@@ -149,7 +149,7 @@ export function CyberInput({
             transition={{ duration: 0.2 }}
           />
           <motion.div
-            className="absolute bottom-0 left-0 w-2.5 h-2.5 border-b-2 border-l-2 border-brand/60 rounded-bl-lg pointer-events-none"
+            className="absolute bottom-0 left-0 w-2.5 h-2.5 border border-line border-brand/60 rounded-bl-lg pointer-events-none"
             animate={{
               opacity: isFocused ? 1 : 0.3,
               scale: isFocused ? 1 : 0.8,
@@ -157,7 +157,7 @@ export function CyberInput({
             transition={{ duration: 0.2 }}
           />
           <motion.div
-            className="absolute bottom-0 right-0 w-2.5 h-2.5 border-b-2 border-r-2 border-brand/60 rounded-br-lg pointer-events-none"
+            className="absolute bottom-0 right-0 w-2.5 h-2.5 border border-line border-brand/60 rounded-br-lg pointer-events-none"
             animate={{
               opacity: isFocused ? 1 : 0.3,
               scale: isFocused ? 1 : 0.8,
