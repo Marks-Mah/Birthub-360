@@ -49,3 +49,8 @@ db20c1f3e5cd53f3c0be462502548bfafa850587:test-gemini-quota.ts:generic-api-key:2
 # qualquer PR desde então.
 31bffaf30dd8c838c482fcc2497b24eb8be7f638:tests/unit/config/env.test.ts:generic-api-key:141
 9ab9ee28ebe4855f8c1d3e4bd151c2e12fe987e9:tests/unit/config/env.test.ts:generic-api-key:141
+# Valores de PII_BLIND_INDEX_KEY/CREDENTIALS_ENCRYPTION_KEY do template .env.test.example,
+# consumido pelo harness de testes locais (distintos dos valores do .env.example). Ignore apenas
+# as fingerprints históricas exatas; qualquer novo commit/linha continua sendo escaneado.
+7eaf7d191fce8e2d1d3de403a1fab3bfe2bb33f2:.env.test.example:generic-api-key:36
+7eaf7d191fce8e2d1d3de403a1fab3bfe2bb33f2:.env.test.example:generic-api-key:37
