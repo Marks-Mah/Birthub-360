@@ -52,35 +52,57 @@ function normalize(value: string): string {
 // tabMeta.ts), então `navigateAndClose` — que só sabe montar `/app/${tab}` — não pode navegar até
 // eles. O Hub Executivo standalone (rotas top-level em App.tsx) é o único ponto de entrada agora.
 const MODULE_ORDER: TabType[] = [
-  'dashboard',
+  // PILAR 01 — HUB COMERCIAL
   'workspace',
-  'prospect',
   'crm',
+  'crm360',
+  'propostas',
   'companies',
   'contacts',
+
+  // PILAR 02 — INTELIGÊNCIA DE MERCADO
+  'prospect',
+  'market-intelligence',
+
+  // PILAR 03 — ORQUESTRAÇÃO DE VENDAS
+  'daily-plan',
   'activities',
-  'cadence',
   'calendar',
-  'intelligence',
-  'chatbook',
+  'cadence',
   'roleplay',
   'qualification_matrix',
   'objections_matrix',
   'topic_training',
-  'bitrix',
-  'reports',
-  'integrations',
-  'knowledge',
+  'chatbook',
+  'editor',
+
+  // PILAR 04 — PERFORMANCE COMERCIAL
+  'dashboard',
   'analytics',
   'winloss',
-  'daily-plan',
-  'sdr-diagnostic',
+  'reports',
+
+  // PILAR 06 — INTELIGÊNCIA ARTIFICIAL
   'commercial_intelligence',
   'copiloto_ia',
-  'notifications',
+  'intelligence',
+  'knowledge',
+  'sdr-diagnostic',
+
+  // PILAR 07 — AUTOMAÇÃO & CONECTIVIDADE
   'automations',
+  'integrations',
+  'bitrix',
+
+  // PILAR 08 — ENGAJAMENTO COMERCIAL
+  'voice-hub',
+  'outbound',
+  'dialer',
+  'mesa-tratamento',
+
+  // ADMINISTRAÇÃO & CONFIGURAÇÕES
+  'notifications',
   'usage',
-  'editor',
   'team',
   'module-access',
   'settings',

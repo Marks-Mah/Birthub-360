@@ -172,11 +172,11 @@ export const KanbanCard = React.memo(function KanbanCard({
       }}
       className={`bg-surface-elevated/90 backdrop-blur-md rounded-2xl border transition-all duration-200 group relative overflow-hidden ${
         isSelected
-          ? 'border-brand ring-2 ring-brand shadow-[0_0_20px_rgba(212,175,55,0.25)] bg-surface-2/80'
+          ? 'border-[#1677FF] ring-2 ring-[#1677FF] shadow-[0_0_20px_rgba(22,119,255,0.25)] bg-[#1677FF]/5'
           : isHighPriority
             ? 'border-brand/40 shadow-card hover:border-brand hover:shadow-card-hover hover:-translate-y-0.5'
             : 'border-line/80 shadow-sm hover:border-brand/40 hover:shadow-card hover:-translate-y-0.5'
-      } ${isDragging ? 'shadow-2xl ring-2 ring-brand dark:ring-brand-2 z-50 scale-105 rotate-1 bg-surface-2' : ''}`}
+      } ${isDragging ? 'shadow-2xl ring-2 ring-[#1677FF] dark:ring-[#1677FF] z-50 scale-105 rotate-1 bg-surface-2' : ''}`}
     >
       {/* 2026 Bento Spotlight */}
       {isHovered && !isDragging && (
@@ -191,7 +191,7 @@ export const KanbanCard = React.memo(function KanbanCard({
 
       {/* Luz especular de topo: visível em hover e destacada para leads de alta relevância */}
       <div
-        className={`absolute top-0 inset-x-0 h-[1.5px] bg-gradient-to-r from-transparent via-brand/70 to-transparent pointer-events-none rounded-t-2xl z-20 transition-opacity duration-300 ${
+        className={`absolute top-0 inset-x-0 h-[1.5px] bg-gradient-to-r from-transparent via-[#1677FF]/70 to-transparent pointer-events-none rounded-t-2xl z-20 transition-opacity duration-300 ${
           isHighPriority ? 'opacity-90' : 'opacity-0 group-hover:opacity-100'
         }`}
       />
@@ -202,10 +202,10 @@ export const KanbanCard = React.memo(function KanbanCard({
           type="button"
           onClick={handleCheckboxClick}
           aria-label={isSelected ? `Desmarcar ${companyName}` : `Selecionar ${companyName}`}
-          className="absolute top-3 left-3 z-20 p-1 rounded-lg bg-surface border border-line text-brand hover:scale-110 active:scale-95 transition-all shadow-sm"
+          className="absolute top-3 left-3 z-20 p-1 rounded-lg bg-surface border border-line text-[#1677FF] hover:scale-110 active:scale-95 transition-all shadow-sm"
         >
           {isSelected ? (
-            <CheckSquare className="w-4 h-4 text-brand fill-brand/20" />
+            <CheckSquare className="w-4 h-4 text-[#1677FF] fill-[#1677FF]/20" />
           ) : (
             <Square className="w-4 h-4 text-ink-2" />
           )}
@@ -238,7 +238,7 @@ export const KanbanCard = React.memo(function KanbanCard({
           {hasCompanyName ? (
             <h4
               title={companyName}
-              className="font-bold text-ink group-hover:text-brand-ink dark:group-hover:text-brand-2 transition-colors text-sm line-clamp-2 leading-snug"
+              className="font-bold text-ink group-hover:text-[#1677FF] dark:group-hover:text-[#1677FF] transition-colors text-sm line-clamp-2 leading-snug"
             >
               {companyName}
             </h4>

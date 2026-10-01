@@ -8,6 +8,7 @@ import { Toaster } from '../ui/Toaster.js';
 import { VoiceCommandWidget } from '../ui/VoiceCommandWidget.js';
 import { AppTopbar } from './AppTopbar.js';
 import { FloatingDock } from './FloatingDock.js';
+import { DataFlowLines } from '../ui/DataFlowLines.js';
 import { OfflineBanner } from './OfflineBanner.js';
 import { PageTransition } from './PageTransition.js';
 import { Sidebar } from './Sidebar.js';
@@ -47,7 +48,11 @@ export function MainLayout({ children }: MainLayoutProps) {
     <div className="relative flex h-screen w-full flex-col overflow-hidden bg-bg font-sans text-ink transition-colors duration-300">
       {/* Ambientação de marca contida: clara no light, profunda sem neon no dark. */}
       <div className="absolute inset-0 flex z-0 overflow-hidden pointer-events-none bg-bg mix-blend-screen dark:mix-blend-color-dodge">
-        <div className="absolute -right-48 -top-56 h-[36rem] w-[36rem] rounded-full bg-brand/15 blur-[160px] dark:bg-brand/10 transition-colors duration-1000 animate-pulse-slow" />
+        <div className="absolute -right-48 -top-56 h-[36rem] w-[36rem] rounded-full bg-[#1677FF]/15 blur-[160px] dark:bg-[#1677FF]/10 transition-colors duration-1000 animate-pulse-slow" />
+        <div className="absolute -left-48 bottom-0 h-[36rem] w-[36rem] rounded-full bg-[#7C3AED]/10 blur-[160px] pointer-events-none" />
+        <div className="absolute inset-0 z-0 pointer-events-none opacity-50">
+          <DataFlowLines />
+        </div>
         <div
           className="absolute -bottom-64 -left-48 h-[34rem] w-[34rem] rounded-full bg-iris/10 blur-[180px] dark:bg-orbit-blue/10 transition-colors duration-1000 animate-pulse-slow"
           style={{ animationDelay: '2s' }}

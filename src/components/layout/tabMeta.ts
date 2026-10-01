@@ -127,60 +127,58 @@ export const NAV_ACCENT_VAR: Record<NavAccent, string> = {
  * topbar e pelo Command Palette. Cada módulo tem um ícone SVG próprio (nenhum repetido).
  * Atualizado para paradigma Command Center: seções estratégicas agrupadas por função de comando. */
 export const TAB_META: Record<TabType, { label: string; icon: typeof Home; accent: NavAccent }> = {
-  // COMMAND CENTER - Visão estratégica geral
-  dashboard: { label: 'Command Center', icon: Home, accent: 'gold' },
+  // PILAR 01 — HUB COMERCIAL
   workspace: { label: 'Meu Espaço', icon: Briefcase, accent: 'blue' },
-  'daily-plan': { label: 'Plano Diário', icon: CalendarCheck, accent: 'green' },
-
-  // INTELLIGENCE - Camada de inteligência e sinais
-  commercial_intelligence: { label: 'Inteligência de Vendas', icon: LineChart, accent: 'violet' },
-  copiloto_ia: { label: 'Copiloto IA', icon: Mic, accent: 'iris' },
-  intelligence: { label: 'Assistente de Vendas', icon: Zap, accent: 'gold' },
-  'market-intelligence': { label: 'Pesquisa de Mercado', icon: Radar, accent: 'teal' },
-  analytics: { label: 'Analytics', icon: BarChart3, accent: 'blue' },
-  winloss: { label: 'Win/Loss', icon: Target, accent: 'red' },
-  reports: { label: 'Relatórios Avançados', icon: FileBarChart, accent: 'slate' },
-
-  // BUSINESS - Operações comerciais
-  prospect: { label: 'Prospecção', icon: Search, accent: 'teal' },
   crm: { label: 'Pipeline CRM', icon: LayoutTemplate, accent: 'blue' },
   crm360: { label: 'Gestão de Negócios', icon: Gauge, accent: 'violet' },
   propostas: { label: 'Propostas', icon: FileSignature, accent: 'gold' },
   companies: { label: 'Empresas', icon: Building2, accent: 'green' },
   contacts: { label: 'Decisores', icon: Users, accent: 'iris' },
-  'mesa-tratamento': { label: 'Mesa de Tratamento', icon: Headset, accent: 'red' },
 
-  // EXECUTION - Execução e automação
+  // PILAR 02 — INTELIGÊNCIA DE MERCADO
+  prospect: { label: 'Prospecção', icon: Search, accent: 'teal' },
+  'market-intelligence': { label: 'Pesquisa de Mercado', icon: Radar, accent: 'teal' },
+
+  // PILAR 03 — ORQUESTRAÇÃO DE VENDAS
+  'daily-plan': { label: 'Plano Diário', icon: CalendarCheck, accent: 'green' },
   activities: { label: 'Agenda', icon: Activity, accent: 'iris' },
   calendar: { label: 'Calendário', icon: CalendarDays, accent: 'blue' },
   cadence: { label: 'Cadência', icon: Repeat, accent: 'green' },
-  automations: { label: 'Automações', icon: Cpu, accent: 'gold' },
-
-  // CAPACITATION - Treinamento e capacitação
   roleplay: { label: 'Roleplay', icon: PhoneCall, accent: 'red' },
   qualification_matrix: { label: 'Matriz de Qualificação', icon: ClipboardCheck, accent: 'teal' },
   objections_matrix: { label: 'Matriz de Objeções', icon: Shield, accent: 'violet' },
   topic_training: { label: 'Academy', icon: BookOpen, accent: 'gold' },
   chatbook: { label: 'Chatbook', icon: MessageSquare, accent: 'blue' },
-  knowledge: { label: 'Base de Conhecimento', icon: Database, accent: 'green' },
   editor: { label: 'Editor de Documentos', icon: FileText, accent: 'slate' },
 
-  // TELEPHONY & OUTBOUND - Comunicação de Voz e Prospecção
-  'voice-hub': { label: 'Voice Hub', icon: Mic, accent: 'iris' },
-  outbound: { label: 'Outbound AI', icon: PhoneCall, accent: 'red' },
-  dialer: { label: 'Discador 3CX', icon: PhoneCall, accent: 'teal' },
+  // PILAR 04 — PERFORMANCE COMERCIAL
+  dashboard: { label: 'Command Center', icon: Home, accent: 'gold' },
+  analytics: { label: 'Analytics', icon: BarChart3, accent: 'blue' },
+  winloss: { label: 'Win/Loss', icon: Target, accent: 'red' },
+  reports: { label: 'Relatórios Avançados', icon: FileBarChart, accent: 'slate' },
 
-  // DATA - Integrações e dados
+  // PILAR 06 — INTELIGÊNCIA ARTIFICIAL
+  commercial_intelligence: { label: 'Inteligência de Vendas', icon: LineChart, accent: 'violet' },
+  copiloto_ia: { label: 'Copiloto IA', icon: Mic, accent: 'iris' },
+  intelligence: { label: 'Assistente de Vendas', icon: Zap, accent: 'gold' },
+  knowledge: { label: 'Base de Conhecimento', icon: Database, accent: 'green' },
+  'sdr-diagnostic': { label: 'Diagnóstico SDR', icon: Stethoscope, accent: 'green' },
+
+  // PILAR 07 — AUTOMAÇÃO & CONECTIVIDADE
+  automations: { label: 'Automações', icon: Cpu, accent: 'gold' },
   integrations: { label: 'Integrações', icon: Globe, accent: 'blue' },
   bitrix: { label: 'Guia Prático Bitrix24', icon: Layers, accent: 'teal' },
 
-  // ADMINISTRATION - Administração e configurações
+  // PILAR 08 — ENGAJAMENTO COMERCIAL
+  'voice-hub': { label: 'Voice Hub', icon: Mic, accent: 'iris' },
+  outbound: { label: 'Outbound AI', icon: PhoneCall, accent: 'red' },
+  dialer: { label: 'Discador 3CX', icon: PhoneCall, accent: 'teal' },
+  'mesa-tratamento': { label: 'Mesa de Tratamento', icon: Headset, accent: 'red' },
+
+  // ADMINISTRAÇÃO & CONFIGURAÇÕES
   notifications: { label: 'Notificações', icon: Bell, accent: 'gold' },
   usage: { label: 'Consumo de IA', icon: Wallet, accent: 'violet' },
   team: { label: 'Equipe', icon: UserCog, accent: 'blue' },
   'module-access': { label: 'Acesso a Módulos', icon: ShieldCheck, accent: 'green' },
   settings: { label: 'Configurações', icon: SettingsIcon, accent: 'slate' },
-
-  // DIAGNOSTICS - Ferramentas de diagnóstico
-  'sdr-diagnostic': { label: 'Diagnóstico SDR', icon: Stethoscope, accent: 'green' },
 };

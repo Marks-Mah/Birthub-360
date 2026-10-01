@@ -3,20 +3,12 @@ import {
   Activity,
   ArrowRight,
   BrainCircuit,
-  CheckCircle2,
-  ChevronRight,
-  Flame,
-  LayoutTemplate,
-  LineChart,
   Radar,
   Search,
-  Sparkles,
   Target,
   TrendingUp,
-  Zap,
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { BorderBeam } from '../../../components/ui/BorderBeam.js';
 import { GamificationWidget } from '../../../components/ui/GamificationWidget.js';
 import { Skeleton } from '../../../components/ui/Skeleton.js';
 import { useAuth } from '../../../contexts/AuthContext.js';
@@ -47,20 +39,15 @@ export function SinglePageDashboard() {
 
   if (loading) {
     return (
-      <div className="flex-1 overflow-y-auto bg-bg">
-        <div className="max-w-[92rem] mx-auto p-6 sm:p-8 lg:p-12 space-y-6">
-          <div className="space-y-3">
-            <Skeleton className="h-6 w-48 rounded-full" />
-            <Skeleton className="h-10 w-96 rounded-xl" />
-            <Skeleton className="h-4 w-72 rounded-md" />
-          </div>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-            <Skeleton className="lg:col-span-2 h-[320px] rounded-3xl" />
-            <div className="flex flex-col gap-4">
-              <Skeleton className="h-[152px] rounded-3xl" />
-              <Skeleton className="h-[152px] rounded-3xl" />
-            </div>
-            <Skeleton className="lg:col-span-3 h-48 rounded-3xl" />
+      <div className="flex-1 overflow-y-auto bg-bg p-8 lg:p-12">
+        <div className="max-w-[92rem] mx-auto space-y-8 animate-pulse">
+          <Skeleton className="h-6 w-32 rounded-full bg-surface-subtle" />
+          <Skeleton className="h-12 w-96 rounded-xl bg-surface-subtle" />
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 pt-8">
+            <Skeleton className="h-48 rounded-xl bg-surface-subtle" />
+            <Skeleton className="h-48 rounded-xl bg-surface-subtle" />
+            <Skeleton className="h-48 rounded-xl bg-surface-subtle" />
+            <Skeleton className="h-48 rounded-xl bg-surface-subtle" />
           </div>
         </div>
       </div>
@@ -68,385 +55,167 @@ export function SinglePageDashboard() {
   }
 
   return (
-    <div className="flex-1 overflow-y-auto bg-bg">
-      {/* Container principal com respiro generoso (padding 48px / gap 16px) */}
-      <div className="max-w-[92rem] mx-auto p-6 sm:p-8 lg:p-12 space-y-6">
-        {/* HEADER ÂNCORA EXECUTIVO — Tipografia Serifada, Sem Gradiente em Texto */}
-        <header className="space-y-2">
-          <div className="flex flex-wrap items-center gap-2.5 mb-1">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-brand/10 text-brand-ink dark:text-brand border border-brand/20">
-              <span className="h-1.5 w-1.5 rounded-full bg-brand motion-safe:animate-pulse" />
-              Strategic Command Center
-            </span>
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-surface-2 text-ink-2 border border-line">
-              <Activity className="w-3 h-3 text-ok" />
-              Operação em Tempo Real
-            </span>
+    <div className="flex-1 overflow-y-auto bg-bg text-ink relative">
+      {/* Subtle Data Flow Background */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden flex justify-center">
+        <div className="w-[120%] h-[1px] bg-gradient-to-r from-transparent via-line to-transparent absolute top-32 opacity-50" />
+        <div className="w-[1px] h-[100%] bg-gradient-to-b from-transparent via-line to-transparent absolute left-1/4 opacity-50" />
+      </div>
+
+      <div className="max-w-[92rem] mx-auto p-6 sm:p-8 lg:p-12 relative z-10">
+        {/* COMMAND CENTER HEADER */}
+        <header className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12 border-b border-line/50 pb-8">
+          <div className="space-y-4">
+            <div className="flex items-center gap-3">
+              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-[0.2em] bg-surface-interactive text-ink-2">
+                <Radar className="w-3.5 h-3.5 text-brand" />
+                Revenue Command Center
+              </span>
+              <span className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-ok">
+                <span className="h-2 w-2 rounded-full bg-ok motion-safe:animate-pulse" />
+                LIVE
+              </span>
+            </div>
+            <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-medium tracking-tight">
+              {greeting()}, {firstName}.
+            </h1>
+            <p className="text-sm text-ink-2 max-w-xl leading-relaxed">
+              Sistema de inteligência operando. Os fluxos de dados estão sincronizados e o pipeline
+              está pronto para orquestração.
+            </p>
           </div>
 
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
-            <div>
-              <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight text-ink">
-                {greeting()}, {firstName}.
-              </h1>
-              <p className="text-sm sm:text-base text-ink-2 mt-1.5 max-w-2xl leading-relaxed">
-                Visão executiva consolidada da sua operação comercial. Pipeline em alta e
-                inteligência ativa para fechamento.
-              </p>
-            </div>
-
-            {/* Ações Rápidas de Topo */}
-            <div className="flex items-center gap-3 shrink-0">
-              <button
-                type="button"
-                onMouseEnter={() => SoundFX.play('hover')}
-                onClick={() => {
-                  SoundFX.play('click');
-                  navigate('/app/prospect');
-                }}
-                className="group inline-flex items-center gap-2.5 px-4.5 py-2.5 rounded-xl bg-surface-elevated/90 hover:bg-surface-interactive text-ink border border-line/80 shadow-card hover:shadow-card-hover text-xs font-semibold transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
-              >
-                <Search className="w-4 h-4 text-ink-2 group-hover:text-brand transition-colors" />
-                <span>Prospecção</span>
-              </button>
-              <button
-                type="button"
-                onMouseEnter={() => SoundFX.play('hover')}
-                onClick={() => {
-                  SoundFX.play('confirm');
-                  navigate('/app/crm');
-                }}
-                className="group relative inline-flex items-center gap-2.5 px-5 py-2.5 rounded-xl bg-gradient-to-r from-brand via-brand-2 to-brand text-on-brand text-xs font-bold transition-all duration-300 shadow-[0_4px_20px_rgba(212,175,55,0.4)] hover:brightness-105 hover:-translate-y-0.5 active:translate-y-0 cursor-pointer overflow-hidden"
-              >
-                {/* Luz especular interna */}
-                <div className="absolute top-0 inset-x-0 h-1/2 bg-white/20 rounded-t-xl pointer-events-none" />
-                <Sparkles className="w-4 h-4 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-300 relative z-10" />
-                <span className="relative z-10">Novo Negócio</span>
-              </button>
-            </div>
+          <div className="flex items-center gap-4">
+            <button
+              type="button"
+              onMouseEnter={() => SoundFX.play('hover')}
+              onClick={() => {
+                SoundFX.play('click');
+                navigate('/app/prospect');
+              }}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-none text-xs font-semibold hover:text-brand transition-colors cursor-pointer"
+            >
+              <Search className="w-4 h-4" />
+              <span>Prospecção</span>
+            </button>
+            <button
+              type="button"
+              onMouseEnter={() => SoundFX.play('hover')}
+              onClick={() => {
+                SoundFX.play('confirm');
+                navigate('/app/crm');
+              }}
+              className="inline-flex items-center gap-2 px-6 py-2.5 bg-ink text-bg text-xs font-bold transition-all hover:bg-brand hover:text-on-brand cursor-pointer shadow-lg hover:-translate-y-0.5"
+            >
+              <Activity className="w-4 h-4" />
+              <span>Orquestrar Pipeline</span>
+            </button>
           </div>
         </header>
 
-        {/* BENTO GRID (GAP 16px / 1rem) */}
-        <motion.div
-          className="grid grid-cols-1 lg:grid-cols-3 gap-4"
-          initial="hidden"
-          animate="show"
-          variants={{
-            hidden: { opacity: 0, y: 20 },
-            show: {
-              opacity: 1,
-              y: 0,
-              transition: {
-                staggerChildren: 0.1,
-                delayChildren: 0.1,
-                type: 'spring',
-                stiffness: 260,
-                damping: 20,
-              },
-            },
-          }}
-        >
-          {/* TILE 1: HERO DO PIPELINE (DESTAQUE / 2 COLUNAS) — Gradiente Diagonal Ink→Íris no Fundo */}
-          <motion.section
-            variants={{
-              hidden: { opacity: 0, y: 20 },
-              show: {
-                opacity: 1,
-                y: 0,
-                transition: { type: 'spring', stiffness: 300, damping: 24 },
-              },
-            }}
-            aria-label="Pipeline de Vendas em Destaque"
-            className="lg:col-span-2 relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#0B132B] via-[#121B38] to-[#2E1065] text-white p-7 sm:p-9 border border-white/10 flex flex-col justify-between shadow-xl min-h-[320px]"
-          >
-            {/* Halos e profundidade de marca em marca d'água */}
-            <div className="absolute -right-16 -bottom-16 w-80 h-80 bg-red-violet/20 rounded-full blur-3xl pointer-events-none" />
-            <div className="absolute right-1/3 -top-12 w-64 h-64 bg-brand/15 rounded-full blur-3xl pointer-events-none" />
-            <div className="absolute -left-12 -bottom-12 w-48 h-48 bg-sunset/15 rounded-full blur-3xl pointer-events-none" />
-
-            {/* Feixe Laser Periférico (BorderBeam contínuo no perímetro do Card Hero) */}
-            <BorderBeam
-              variant="cyan"
-              size={280}
-              duration={14}
-              borderWidth={1.5}
-              radius={24}
-              glow
-            />
-
-            <div className="relative z-10 space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="text-[11px] font-bold uppercase tracking-widest text-slate-300 flex items-center gap-2">
-                  <LayoutTemplate className="w-3.5 h-3.5 text-gold" />
-                  Pipeline de Vendas · Total Consolidado
-                </span>
-                {totalLeads > 0 && (
-                  <span className="inline-flex items-center gap-1 text-xs font-bold text-emerald-400 bg-emerald-500/15 border border-emerald-500/30 px-2.5 py-1 rounded-full">
-                    <Flame className="w-3.5 h-3.5" />
-                    Operação Ativa
-                  </span>
-                )}
-              </div>
-
-              <div>
-                <p className="text-4xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight [font-variant-numeric:tabular-nums]">
-                  {pipelineValue > 0
-                    ? new Intl.NumberFormat('pt-BR', {
-                        style: 'currency',
-                        currency: 'BRL',
-                        maximumFractionDigits: 0,
-                      }).format(pipelineValue)
-                    : 'R$ 0'}
-                </p>
-                <p className="text-xs sm:text-sm text-slate-300 mt-2 font-medium">
-                  {totalLeads > 0
-                    ? `${totalLeads} oportunidades ativas no funil comercial.`
-                    : 'Nenhum negócio ativo registrado no momento.'}
-                </p>
-              </div>
-            </div>
-
-            <div className="relative z-10 pt-6 mt-6 border-t border-white/10 space-y-3">
-              <div className="flex items-center justify-between text-xs text-slate-300">
-                <span className="font-semibold">Status Operacional</span>
-                <span className="font-bold text-gold">
-                  {totalLeads > 0
-                    ? `${totalLeads} oportunidades sob gestão`
-                    : 'Aguardando novos leads'}
-                </span>
-              </div>
-
-              <div className="pt-2 flex items-center justify-between">
-                <span className="text-xs text-slate-400">
-                  {pendingActivities > 0
-                    ? `${pendingActivities} atividades com follow-up programado.`
-                    : 'Mantenha o funil aquecido para maximizar conversões.'}
-                </span>
-                <button
-                  type="button"
-                  onMouseEnter={() => SoundFX.play('hover')}
-                  onClick={() => {
-                    SoundFX.play('click');
-                    navigate(totalLeads > 0 ? '/app/crm' : '/app/prospect');
-                  }}
-                  className="inline-flex items-center gap-1.5 text-xs font-bold text-white hover:text-gold transition-colors cursor-pointer group"
-                >
-                  <span>{totalLeads > 0 ? 'Ver Pipeline Completo' : 'Iniciar Prospecção'}</span>
-                  <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
-                </button>
-              </div>
-            </div>
-          </motion.section>
-
-          {/* COLUNA LATERAL COM 2 TILES EMPILHADOS (GAP 16px) */}
-          <div className="flex flex-col gap-4">
-            {/* TILE EMPILHADO 1: LEADS QUALIFICADOS */}
-            <motion.section
-              variants={{
-                hidden: { opacity: 0, y: 20 },
-                show: {
-                  opacity: 1,
-                  y: 0,
-                  transition: { type: 'spring', stiffness: 300, damping: 24 },
-                },
-              }}
-              aria-label="Volume de Leads"
-              className="group flex-1 rounded-3xl bg-surface-elevated/90 backdrop-blur-md border border-line p-6 sm:p-7 shadow-card hover:shadow-card-hover hover:border-brand/35 hover:-translate-y-0.5 transition-all duration-300 relative overflow-hidden flex flex-col justify-between"
-            >
-              <div className="absolute top-0 right-0 w-28 h-28 bg-gradient-to-bl from-brand/15 to-transparent rounded-bl-full pointer-events-none transition-transform duration-500 group-hover:scale-110" />
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-ink-2">
-                    Leads Ativos no Funil
-                  </span>
-                  <span className="p-2.5 rounded-xl bg-brand/10 text-brand-ink dark:text-brand border border-brand/20 shadow-sm transition-transform duration-300 group-hover:scale-105">
-                    <TrendingUp className="w-4 h-4" />
-                  </span>
-                </div>
-                <p className="text-3xl sm:text-4xl font-black text-ink tracking-tight [font-variant-numeric:tabular-nums]">
-                  {totalLeads}
-                </p>
-                <p className="text-xs font-semibold text-ok mt-2 flex items-center gap-1.5">
-                  <CheckCircle2 className="w-3.5 h-3.5" />
-                  <span>{totalLeads > 0 ? 'Leads monitorados no funil' : 'Sem leads ativos'}</span>
-                </p>
-              </div>
-
-              <div className="pt-4 mt-4 border-t border-line flex items-center justify-between">
-                <span className="text-[11px] text-ink-2 font-medium">
-                  {pendingActivities > 0
-                    ? `${pendingActivities} atividades pendentes`
-                    : 'Sem pendências'}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => navigate('/app/prospect')}
-                  className="text-xs font-bold text-brand-ink dark:text-brand hover:underline inline-flex items-center gap-1 cursor-pointer transition-colors"
-                >
-                  <span>Prospecção</span>
-                  <ChevronRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
-                </button>
-              </div>
-            </motion.section>
-
-            {/* TILE EMPILHADO 2: TAXA DE CONVERSÃO / WIN RATE */}
-            <motion.section
-              variants={{
-                hidden: { opacity: 0, y: 20 },
-                show: {
-                  opacity: 1,
-                  y: 0,
-                  transition: { type: 'spring', stiffness: 300, damping: 24 },
-                },
-              }}
-              aria-label="Taxa de Conversão"
-              className="group flex-1 rounded-3xl bg-surface-elevated/90 backdrop-blur-md border border-line p-6 sm:p-7 shadow-card hover:shadow-card-hover hover:border-red-violet/35 hover:-translate-y-0.5 transition-all duration-300 relative overflow-hidden flex flex-col justify-between"
-            >
-              <div className="absolute top-0 right-0 w-28 h-28 bg-gradient-to-bl from-red-violet/15 to-transparent rounded-bl-full pointer-events-none transition-transform duration-500 group-hover:scale-110" />
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-ink-2">
-                    Taxa de Conversão (Win Rate)
-                  </span>
-                  <span className="p-2.5 rounded-xl bg-red-violet/10 text-red-violet border border-red-violet/20 shadow-sm transition-transform duration-300 group-hover:scale-105">
-                    <Radar className="w-4 h-4" />
-                  </span>
-                </div>
-                <p className="text-3xl sm:text-4xl font-black text-ink tracking-tight [font-variant-numeric:tabular-nums]">
-                  {winRate}%
-                </p>
-                <p className="text-xs font-semibold text-ink-2 mt-2 flex items-center gap-1.5">
-                  <Target className="w-3.5 h-3.5 text-brand" />
-                  <span>
-                    {closedThisMonth > 0
-                      ? `${closedThisMonth} fechamento(s) no período`
-                      : 'Métrica calculada'}
-                  </span>
-                </p>
-              </div>
-
-              <div className="pt-4 mt-4 border-t border-line flex items-center justify-between">
-                <span className="text-[11px] text-ink-2 font-medium">
-                  {totalCompanies > 0 ? `${totalCompanies} empresas na base` : 'Base inicial'}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => navigate('/app/analytics')}
-                  className="text-xs font-bold text-red-violet-active hover:underline inline-flex items-center gap-1 cursor-pointer transition-colors"
-                >
-                  <span>Analytics</span>
-                  <ChevronRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
-                </button>
-              </div>
-            </motion.section>
+        {/* METRICS FLOW (Replacing Cards with clean typography and space) */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+          <div className="space-y-3">
+            <h3 className="text-[10px] font-bold uppercase tracking-[0.15em] text-ink-2 flex items-center gap-2">
+              <Target className="w-3.5 h-3.5" /> Forecast (Pipeline)
+            </h3>
+            <p className="text-4xl lg:text-5xl font-mono text-ink tracking-tight font-medium">
+              {pipelineValue > 0
+                ? new Intl.NumberFormat('pt-BR', {
+                    style: 'currency',
+                    currency: 'BRL',
+                    maximumFractionDigits: 0,
+                  }).format(pipelineValue)
+                : 'R$ 0'}
+            </p>
+            <p className="text-xs text-ink-2 font-mono">{totalLeads} oportunidades sob gestão</p>
           </div>
 
-          {/* TILE 4: GAMIFICAÇÃO & DESEMPENHO COMERCIAL 2026 COM 3D ORB */}
-          <motion.div
-            variants={{
-              hidden: { opacity: 0, y: 20 },
-              show: {
-                opacity: 1,
-                y: 0,
-                transition: { type: 'spring', stiffness: 300, damping: 24 },
-              },
-            }}
-            className="lg:col-span-3"
-          >
+          <div className="space-y-3">
+            <h3 className="text-[10px] font-bold uppercase tracking-[0.15em] text-ink-2 flex items-center gap-2">
+              <TrendingUp className="w-3.5 h-3.5" /> Win Rate
+            </h3>
+            <p className="text-4xl lg:text-5xl font-mono text-ink tracking-tight font-medium">
+              {winRate}%
+            </p>
+            <p className="text-xs text-ink-2 font-mono">{closedThisMonth} negócios fechados</p>
+          </div>
+
+          <div className="space-y-3">
+            <h3 className="text-[10px] font-bold uppercase tracking-[0.15em] text-ink-2 flex items-center gap-2">
+              <Activity className="w-3.5 h-3.5" /> Velocity (Atividades)
+            </h3>
+            <p className="text-4xl lg:text-5xl font-mono text-ink tracking-tight font-medium">
+              {pendingActivities}
+            </p>
+            <p className="text-xs text-ink-2 font-mono">ações pendentes no fluxo</p>
+          </div>
+
+          <div className="space-y-3">
+            <h3 className="text-[10px] font-bold uppercase tracking-[0.15em] text-ink-2 flex items-center gap-2">
+              <Search className="w-3.5 h-3.5" /> Market (Empresas)
+            </h3>
+            <p className="text-4xl lg:text-5xl font-mono text-ink tracking-tight font-medium">
+              {totalCompanies}
+            </p>
+            <p className="text-xs text-ink-2 font-mono">contas ativas na base</p>
+          </div>
+        </div>
+
+        {/* AI LAYER & GAMIFICATION */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 pt-8 border-t border-line/30">
+          {/* AI Orchestration Language */}
+          <div className="space-y-6">
+            <div className="flex items-center gap-3 mb-6">
+              <span className="p-2 bg-iris/10 text-iris">
+                <BrainCircuit className="w-5 h-5" />
+              </span>
+              <span className="text-xs font-bold uppercase tracking-widest text-iris">
+                AI Orchestration
+              </span>
+            </div>
+
+            <div className="flex flex-col gap-4">
+              <div className="flex items-center gap-4 text-sm font-mono border-l-2 border-line pl-4 text-ink-2">
+                <span className="w-24 text-[10px] uppercase tracking-widest font-bold text-ink-3">
+                  Context
+                </span>
+                <span>Analisando {totalLeads} leads em andamento...</span>
+              </div>
+              <div className="flex items-center gap-4 text-sm font-mono border-l-2 border-line pl-4 text-ink-2">
+                <span className="w-24 text-[10px] uppercase tracking-widest font-bold text-ink-3">
+                  Analysis
+                </span>
+                <span>Detectadas {pendingActivities} oportunidades de aceleração.</span>
+              </div>
+              <div className="flex items-center gap-4 text-sm font-mono border-l-2 border-brand pl-4 text-ink">
+                <span className="w-24 text-[10px] uppercase tracking-widest font-bold text-brand">
+                  Action Req.
+                </span>
+                <span>Validar abordagem para fechamento iminente.</span>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => navigate('/app/intelligence')}
+              className="mt-4 inline-flex items-center gap-2 text-xs font-bold text-iris hover:text-ink transition-colors cursor-pointer group"
+            >
+              <span>Acessar Copiloto IA</span>
+              <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
+            </button>
+          </div>
+
+          {/* Gamification clean integration */}
+          <div className="bg-surface-interactive/30 p-8 rounded-none border border-line/50">
             <GamificationWidget
               initialXp={Math.max(350, totalLeads * 50 + closedThisMonth * 200)}
               level={Math.max(1, Math.floor((totalLeads * 50 + closedThisMonth * 200) / 1000) + 1)}
               streakDays={closedThisMonth > 0 ? 5 : 2}
-              show3DCore
+              show3DCore={false}
             />
-          </motion.div>
-
-          {/* TILE 5: COPILOTO IA — Gradiente Suave Dourado→Violeta na Superfície */}
-          <motion.section
-            variants={{
-              hidden: { opacity: 0, y: 20 },
-              show: {
-                opacity: 1,
-                y: 0,
-                transition: { type: 'spring', stiffness: 300, damping: 24 },
-              },
-            }}
-            aria-label="Copiloto de IA e Inteligência Ativa"
-            className="lg:col-span-3 rounded-3xl bg-gradient-to-br from-brand/8 via-surface-elevated/90 to-red-violet/8 backdrop-blur-md border border-brand/20 dark:border-brand/30 p-7 sm:p-8 shadow-card relative overflow-hidden"
-          >
-            {/* Feixe Laser Periférico Copiloto IA (Violeta / Íris de inteligência) */}
-            <BorderBeam
-              variant="violet"
-              size={360}
-              duration={16}
-              borderWidth={1.5}
-              radius={24}
-              glow
-            />
-            <div className="absolute right-0 top-0 w-72 h-72 bg-brand/10 rounded-full blur-3xl pointer-events-none" />
-
-            <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-              <div className="space-y-3 max-w-3xl">
-                <div className="flex items-center gap-2">
-                  <span className="p-2 rounded-xl bg-brand/15 text-brand-ink dark:text-brand border border-brand/25">
-                    <BrainCircuit className="w-4 h-4" />
-                  </span>
-                  <span className="text-xs font-bold uppercase tracking-widest text-brand-ink dark:text-brand">
-                    Copiloto IA · Inteligência Estratégica
-                  </span>
-                </div>
-
-                <h3 className="font-display text-xl sm:text-2xl font-semibold text-ink tracking-tight">
-                  {totalLeads > 0
-                    ? `Operação ativa com ${totalLeads} oportunidades sob monitoramento.`
-                    : 'Command Center preparado para operar.'}
-                </h3>
-
-                <p className="text-xs sm:text-sm text-ink-2 leading-relaxed">
-                  {totalLeads > 0
-                    ? `Inteligência estratégica conectada ao CRM. ${
-                        pendingActivities > 0
-                          ? `Há ${pendingActivities} atividades operacionais que requerem follow-up.`
-                          : 'Mantenha cadências ativas para acelerar o fechamento de propostas.'
-                      }`
-                    : 'Inicie a prospecção de novos clientes ou cadastre negócios no CRM para receber diagnósticos, objeções mapeadas e sugestões de abordagem automáticas.'}
-                </p>
-              </div>
-
-              <div className="flex items-center gap-3 shrink-0">
-                <button
-                  type="button"
-                  onMouseEnter={() => SoundFX.play('hover')}
-                  onClick={() => {
-                    SoundFX.play('click');
-                    navigate('/app/intelligence');
-                  }}
-                  className="group inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-surface hover:bg-surface-interactive text-ink border border-line text-xs font-semibold transition-all hover:shadow-card hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
-                >
-                  <LineChart className="w-4 h-4 text-brand" />
-                  <span>Ver Dossiê Completo</span>
-                </button>
-                <button
-                  type="button"
-                  onMouseEnter={() => SoundFX.play('hover')}
-                  onClick={() => {
-                    SoundFX.play('confirm');
-                    navigate(totalLeads > 0 ? '/app/crm' : '/app/prospect');
-                  }}
-                  className="group relative inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-brand via-brand-2 to-brand text-on-brand text-xs font-bold transition-all duration-300 shadow-[0_4px_20px_rgba(212,175,55,0.4)] hover:brightness-105 hover:-translate-y-0.5 active:translate-y-0 cursor-pointer overflow-hidden"
-                >
-                  {/* Luz especular interna */}
-                  <div className="absolute top-0 inset-x-0 h-1/2 bg-white/20 rounded-t-xl pointer-events-none" />
-                  <Zap className="w-4 h-4 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-300 relative z-10" />
-                  <span className="relative z-10">
-                    {totalLeads > 0 ? 'Agir nos Deals' : 'Prospectar Agora'}
-                  </span>
-                </button>
-              </div>
-            </div>
-          </motion.section>
-        </motion.div>
+          </div>
+        </div>
       </div>
     </div>
   );

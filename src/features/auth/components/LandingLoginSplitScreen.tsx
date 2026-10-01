@@ -1,9 +1,8 @@
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import {
   AlertCircle,
-  CalendarDays,
   CheckCircle2,
   Database,
   Eye,
@@ -13,19 +12,247 @@ import {
   Mail,
   ShieldCheck,
 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useId, useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
-import { AnimatedBirthHubEmblem } from '../../../components/brand/AnimatedBirthHubEmblem.js';
-import { BirthHubLogo } from '../../../components/brand/BirthHubLogo.js';
 import { useAuth } from '../../../contexts/AuthContext.js';
 import { authClient } from '../../../lib/auth-client.js';
 import { EASE_OUT_EXPO, staggerContainer, staggerItem } from '../../../lib/motion.js';
 import { SoundFX } from '../../../lib/soundEffects.js';
 
+// ─── 8 Pilares — identidade visual própria ───────────────────────────────────
+const PILLARS = [
+  { id: '01', slug: 'HUB', label: 'Hub Comercial', symbol: '◉', color: '#1677FF' },
+  { id: '02', slug: 'INTEL', label: 'Inteligência', symbol: '◎', color: '#7C3AED' },
+  { id: '03', slug: 'ORCH', label: 'Orquestração', symbol: '⟶', color: '#0891B2' },
+  { id: '04', slug: 'PERF', label: 'Performance', symbol: '▥', color: '#059669' },
+  { id: '05', slug: 'FORE', label: 'Previsibilidade', symbol: '⌁', color: '#D4AF37' },
+  { id: '06', slug: 'AI', label: 'IA', symbol: '✦', color: '#C53678' },
+  { id: '07', slug: 'AUTO', label: 'Automação', symbol: '◇', color: '#0B132B' },
+  { id: '08', slug: 'ENG', label: 'Engajamento', symbol: '◌', color: '#64748B' },
+] as const;
+
+// ─── Sistema visual BH360 Mark (símbolo reduzido) ────────────────────────────
+function BH360Mark({ size = 40, animated = false }: { size?: number; animated?: boolean }) {
+  const uid = useId().replace(/:/g, '');
+  const reduceMotion = useReducedMotion();
+  const shouldAnimate = animated && !reduceMotion;
+
+  return (
+    <svg
+      viewBox="0 0 256 256"
+      width={size}
+      height={size}
+      xmlns="http://www.w3.org/2000/svg"
+      role="img"
+      aria-label="Birth Hub 360 — símbolo"
+    >
+      <defs>
+        <linearGradient id={`mark-arc-${uid}`} x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#1677FF" />
+          <stop offset="40%" stopColor="#7C3AED" />
+          <stop offset="100%" stopColor="#D4AF37" />
+        </linearGradient>
+        <radialGradient id={`mark-core-${uid}`} cx="50%" cy="45%" r="55%">
+          <stop offset="0%" stopColor="#1B2B64" />
+          <stop offset="100%" stopColor="#0B132B" />
+        </radialGradient>
+      </defs>
+
+      {/* Anel orbital externo */}
+      <motion.circle
+        cx="128"
+        cy="128"
+        r="118"
+        fill="none"
+        stroke={`url(#mark-arc-${uid})`}
+        strokeWidth="10"
+        strokeDasharray="6 14"
+        animate={shouldAnimate ? { rotate: 360 } : undefined}
+        transition={{ duration: 60, repeat: Infinity, ease: 'linear' }}
+        style={{ transformOrigin: '128px 128px' }}
+      />
+
+      {/* Núcleo */}
+      <circle cx="128" cy="128" r="78" fill={`url(#mark-core-${uid})`} />
+
+      {/* Anel interno dourado — accent, não dominant */}
+      <circle cx="128" cy="128" r="64" fill="none" stroke="#D4AF37" strokeWidth="3" opacity="0.6" />
+
+      {/* Barra horizontal equatorial */}
+      <line x1="64" y1="128" x2="192" y2="128" stroke="#D4AF37" strokeWidth="2" opacity="0.35" />
+
+      {/* B serifado */}
+      <path
+        fill="#FAFAFA"
+        transform="matrix(0.0740 0 0 -0.0740 104.45 154.20)"
+        d="M450.4 707Q574.2 707 627.9 670.8Q681.6 634.6 681.6 573.4Q681.6 520.8 646.8 476.7Q612 432.6 547 404.5Q482 376.4 391 370.8Q511 369.4 573.8 326.1Q636.6 282.8 636.6 218.2Q636.6 165.8 612.2 125.1Q587.8 84.4 543.2 56.4Q498.6 28.4 436 14.2Q373.4 0 297 0Q267.8 0 227.6 1.5Q187.4 3 121 3Q94.8 3 63.8 2.5Q32.8 2 3.7 1.5Q-25.4 1 -45 0L-41 20Q-7 22 12 28Q31 34 42 52Q53 70 62 106L194 602Q201.8 632.8 202.4 651.3Q203 669.8 188.5 678.5Q174 687.2 135 688L140 708Q159.6 707 188.2 706.5Q216.8 706 247.7 705.5Q278.6 705 303 705Q353.2 705 385.7 706Q418.2 707 450.4 707ZM266 359 270 376H339.2Q393.8 376 430.6 407.9Q467.4 439.8 486.2 490.8Q505 541.8 505 596.8Q505 636.6 491.5 662.3Q478 688 438.6 688Q413 688 401 674.1Q389 660.2 378 617L243 106Q238.2 86.4 235.7 67.1Q233.2 47.8 242.2 35.4Q251.2 23 278.8 23Q331.6 23 368.9 53.4Q406.2 83.8 426.6 132.9Q447 182 447 237.2Q447 270.4 437.2 297.9Q427.4 325.4 404.3 342.2Q381.2 359 341.6 359Z"
+      />
+    </svg>
+  );
+}
+
+// ─── Visualização de fluxo de dados (Data Flow DNA) ──────────────────────────
+function DataFlowLines() {
+  const lines = [
+    { x1: 0, y1: 25, x2: 100, y2: 25, delay: 0 },
+    { x1: 0, y1: 50, x2: 100, y2: 50, delay: 0.4 },
+    { x1: 0, y1: 75, x2: 100, y2: 75, delay: 0.8 },
+  ];
+
+  return (
+    <svg
+      viewBox="0 0 100 100"
+      preserveAspectRatio="none"
+      className="w-full h-full"
+      aria-hidden="true"
+    >
+      {lines.map((l, i) => (
+        <motion.line
+          key={i}
+          x1={l.x1}
+          y1={l.y1}
+          x2={l.x2}
+          y2={l.y2}
+          stroke="rgba(22,119,255,0.08)"
+          strokeWidth="0.5"
+          initial={{ pathLength: 0, opacity: 0 }}
+          animate={{ pathLength: 1, opacity: 1 }}
+          transition={{
+            pathLength: { duration: 1.6, delay: l.delay, ease: 'easeOut' },
+            opacity: { duration: 0.4, delay: l.delay },
+          }}
+        />
+      ))}
+    </svg>
+  );
+}
+
+// ─── Pillar strip — 8 pilares como linguagem de produto ──────────────────────
+function PillarStrip() {
+  const [active, setActive] = useState<number | null>(null);
+  const reduceMotion = useReducedMotion();
+
+  return (
+    <div className="flex flex-col gap-1 w-full" role="list" aria-label="8 pilares Birth Hub 360">
+      {PILLARS.map((p, i) => (
+        <motion.div
+          key={p.id}
+          role="listitem"
+          initial={{ opacity: 0, x: -16 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.08 * i, duration: 0.35, ease: EASE_OUT_EXPO }}
+          onHoverStart={() => setActive(i)}
+          onHoverEnd={() => setActive(null)}
+          className="group relative flex items-center gap-3 px-3 py-2 rounded-lg cursor-default overflow-hidden"
+          style={{
+            background:
+              active === i && !reduceMotion
+                ? `linear-gradient(90deg, ${p.color}12 0%, transparent 80%)`
+                : 'transparent',
+            transition: 'background 200ms ease',
+          }}
+        >
+          {/* Borda lateral colorida — estado ativo */}
+          <span
+            className="absolute left-0 top-2 bottom-2 w-0.5 rounded-full transition-all duration-200"
+            style={{
+              background: p.color,
+              opacity: active === i ? 1 : 0.25,
+              transform: active === i ? 'scaleY(1)' : 'scaleY(0.5)',
+            }}
+            aria-hidden="true"
+          />
+
+          {/* ID + símbolo */}
+          <span
+            className="font-mono text-[9px] font-bold tracking-widest opacity-40 w-5 shrink-0 text-right"
+            style={{ color: p.color }}
+          >
+            {p.id}
+          </span>
+          <span
+            className="text-sm w-4 shrink-0 text-center transition-transform duration-200"
+            style={{
+              color: p.color,
+              transform: active === i && !reduceMotion ? 'scale(1.25)' : 'scale(1)',
+            }}
+            aria-hidden="true"
+          >
+            {p.symbol}
+          </span>
+
+          {/* Label + slug */}
+          <span className="flex items-baseline gap-2 min-w-0">
+            <span className="font-sans text-xs font-medium text-[var(--ink-2)] truncate">
+              {p.label}
+            </span>
+            <span
+              className="font-mono text-[8px] tracking-widest opacity-0 group-hover:opacity-60 transition-opacity"
+              style={{ color: p.color }}
+            >
+              {p.slug}
+            </span>
+          </span>
+
+          {/* Micro-pulse indicator — IA pillar específico */}
+          {p.id === '06' && (
+            <span className="ml-auto shrink-0 relative flex h-1.5 w-1.5">
+              <span
+                className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75"
+                style={{ backgroundColor: p.color }}
+              />
+              <span
+                className="relative inline-flex rounded-full h-1.5 w-1.5"
+                style={{ backgroundColor: p.color }}
+              />
+            </span>
+          )}
+        </motion.div>
+      ))}
+    </div>
+  );
+}
+
+// ─── Ticker de estado do sistema ──────────────────────────────────────────────
+function SystemStatusBar({ dateLabel, timeLabel }: { dateLabel: string; timeLabel: string }) {
+  return (
+    <div className="flex items-center justify-between w-full px-0 py-2">
+      <div className="flex items-center gap-2">
+        <span className="relative flex h-1.5 w-1.5 shrink-0">
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--ok)] opacity-75" />
+          <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[var(--ok)]" />
+        </span>
+        <span className="font-mono text-[9px] font-bold uppercase tracking-[0.18em] text-[var(--ok)]">
+          LIVE
+        </span>
+        <span className="w-px h-3 bg-[var(--line)] mx-1" aria-hidden="true" />
+        <span className="font-mono text-[9px] uppercase tracking-widest text-[var(--ink-2)]">
+          Sistema Online
+        </span>
+      </div>
+      <div className="hidden md:flex items-center gap-1.5 font-mono text-[9px] text-[var(--ink-2)] tabular-nums">
+        <span>{dateLabel}</span>
+        <span className="opacity-40">|</span>
+        <span className="font-bold text-[var(--ink)]">{timeLabel}</span>
+      </div>
+    </div>
+  );
+}
+
+// ─── Componente principal ────────────────────────────────────────────────────
+
 /**
- * Tela unificada de acesso (gate funcional): mescla apresentação da marca com formulário de login.
- * Layout: split-screen em desktop (esquerda: hero compacto, direita: formulário), empilhado em mobile.
- * Objetivo: acesso direto ao sistema sem etapas decorativas extras.
+ * LandingLoginSplitScreen — Tela unificada de acesso ao Birth Hub 360.
+ *
+ * Layout: split-screen em desktop (esquerda: Command Center hero + 8 pilares,
+ * direita: formulário de acesso), empilhado em mobile.
+ *
+ * Hierarquia cromática implementada:
+ *  - Obsidian (#0B132B) → base estrutural do lado esquerdo
+ *  - Blue (#1677FF) → informação / ação
+ *  - Iris (#7C3AED) → inteligência / IA
+ *  - Gold (#D4AF37) → accent de status / destaque (não cor dominante)
+ *  - Snow (#FAFAFA) → conteúdo
  */
 export function LandingLoginSplitScreen() {
   const navigate = useNavigate();
@@ -45,7 +272,6 @@ export function LandingLoginSplitScreen() {
   const [forgotPasswordSent, setForgotPasswordSent] = useState(false);
   const [verificationPending, setVerificationPending] = useState(false);
 
-  // Tabs for login panel
   const [activeTab, setActiveTab] = useState<'email' | 'sso'>('email');
 
   const [now, setNow] = useState(() => new Date());
@@ -56,29 +282,20 @@ export function LandingLoginSplitScreen() {
 
   const weekday = format(now, 'EEEE', { locale: ptBR });
   const dateLabel = `${weekday.charAt(0).toUpperCase()}${weekday.slice(1)}, ${format(now, "dd 'de' MMMM 'de' yyyy", { locale: ptBR })}`;
-  const timeLabel = format(now, 'HH:mm');
+  const timeLabel = format(now, 'HH:mm:ss');
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     setError('');
 
-    // Temporariamente desabilitado para permitir cadastro administrativo
-    // if (!isAuthorizedLoginEmail(email)) {
-    //   setError(
-    //     'Acesso restrito. Utilize um e-mail corporativo autorizado do ecossistema Birth Hub 360°.',
-    //   );
-    //   setIsSubmitting(false);
-    //   return;
-    // }
-
     const result = isSignUp
       ? await authClient.signUp.email({
-        email,
-        password,
-        name: name || email.split('@')[0],
-        callbackURL: '/app',
-      })
+          email,
+          password,
+          name: name || email.split('@')[0],
+          callbackURL: '/app',
+        })
       : await authClient.signIn.email({ email, password, rememberMe, callbackURL: '/app' });
 
     if (result.error) {
@@ -100,13 +317,6 @@ export function LandingLoginSplitScreen() {
     setIsSubmitting(true);
     setError('');
 
-    // Temporariamente desabilitado para permitir cadastro administrativo
-    // if (!isAuthorizedLoginEmail(email)) {
-    //   setError('Acesso restrito. Utilize um e-mail corporativo autorizado.');
-    //   setIsSubmitting(false);
-    //   return;
-    // }
-
     const result = await authClient.requestPasswordReset({ email, redirectTo: '/reset-password' });
     setIsSubmitting(false);
 
@@ -126,8 +336,8 @@ export function LandingLoginSplitScreen() {
 
   if (isPending) {
     return (
-      <div className="min-h-screen bg-bg flex items-center justify-center">
-        <Loader2 className="animate-spin text-brand w-8 h-8" aria-hidden="true" />
+      <div className="min-h-screen bg-[#0B132B] flex items-center justify-center" aria-busy="true">
+        <Loader2 className="animate-spin text-[#1677FF] w-8 h-8" aria-hidden="true" />
       </div>
     );
   }
@@ -136,187 +346,240 @@ export function LandingLoginSplitScreen() {
     return <Navigate to="/app" replace />;
   }
 
-  // ─── Shared input class ────────────────────────────────────────────────────
+  // ─── Input classes ────────────────────────────────────────────────────────
   const inputCls =
     'w-full h-[44px] rounded-[var(--radius-control)] border border-[var(--line)] bg-[var(--surface)] ' +
     'px-4 font-mono text-sm text-[var(--ink)] placeholder-[var(--ink-2)]/50 ' +
-    'focus:border-[var(--brand)] focus:outline-none focus:ring-2 focus:ring-[var(--brand)]/20 transition-colors';
+    'focus:border-[#1677FF] focus:outline-none focus:ring-2 focus:ring-[#1677FF]/20 transition-colors';
 
-  // ─── Unified Layout: Split-screen on desktop, stacked on mobile ───────────────────────────────────────────────────
+  // ══════════════════════════════════════════════════════════════════════════
   return (
     <div className="flex min-h-screen w-full overflow-x-hidden lg:flex-row flex-col">
-      {/* ══════════════════════════════════════════════════════════════════════
-          LADO ESQUERDO (Desktop) / TOPO (Mobile): Hero compacto com marca
-      ══════════════════════════════════════════════════════════════════════ */}
+      {/* ════════════════════════════════════════════════════════════════════
+          LADO ESQUERDO — Command Center Hero + 8 Pilares
+          Base: Obsidian / Midnight. Blue e Iris como informação. Gold = accent.
+      ════════════════════════════════════════════════════════════════════ */}
       <div
-        className="relative flex flex-col lg:w-1/2 w-full overflow-hidden px-6 py-8 lg:py-12 text-[var(--ink)] bg-[var(--bg)]"
+        className="relative flex flex-col lg:w-[480px] lg:min-w-[400px] xl:w-[520px] w-full overflow-hidden px-6 py-8 lg:py-10"
+        style={{ background: '#0B132B' }}
       >
-        {/* ── Subtle grid texture overlay ─────────────────────────────── */}
+        {/* ── Grid estrutural (Obsidian + azul mínimo) ──────────────────── */}
         <div
           className="pointer-events-none absolute inset-0 z-0"
           aria-hidden="true"
           style={{
             backgroundImage:
-              'linear-gradient(var(--line) 1px, transparent 1px), ' +
-              'linear-gradient(90deg, var(--line) 1px, transparent 1px)',
-            backgroundSize: '44px 44px',
+              'linear-gradient(rgba(22,119,255,0.04) 1px, transparent 1px), ' +
+              'linear-gradient(90deg, rgba(22,119,255,0.04) 1px, transparent 1px)',
+            backgroundSize: '48px 48px',
           }}
         />
 
-        {/* ── Logo Header ─────────────────────────────────────────────── */}
-        <header className="relative z-20 flex items-center justify-between mb-8 lg:mb-12">
-          <div className="flex shrink-0 items-center gap-3">
-            <BirthHubLogo variant="horizontal" className="h-8 text-[var(--ink)]" />
-          </div>
-          {/* Status indicator */}
-          <div className="flex items-center gap-1.5 uppercase tracking-wider text-[10px] font-mono text-[var(--ink-2)]">
-            <div className="w-2 h-2 rounded-full bg-[var(--ok)] animate-pulse" />
-            Sistema Online
-          </div>
-        </header>
+        {/* ── Halo de dados — canto inferior direito, sutil ─────────────── */}
+        <div
+          className="pointer-events-none absolute bottom-0 right-0 w-64 h-64 z-0"
+          aria-hidden="true"
+          style={{
+            background:
+              'radial-gradient(ellipse at 80% 90%, rgba(22,119,255,0.12) 0%, transparent 65%)',
+          }}
+        />
+        {/* ── Halo IA — canto superior esquerdo ─────────────────────────── */}
+        <div
+          className="pointer-events-none absolute top-0 left-0 w-48 h-48 z-0"
+          aria-hidden="true"
+          style={{
+            background:
+              'radial-gradient(ellipse at 20% 10%, rgba(124,58,237,0.10) 0%, transparent 65%)',
+          }}
+        />
 
-        {/* ── Compact Hero Content ─────────────────────────────────────── */}
-        <div className="relative z-20 flex-1 flex flex-col justify-center max-w-xl lg:max-w-none">
-          <motion.div
-            initial="hidden"
-            animate="show"
-            variants={staggerContainer(0.1)}
-            className="space-y-4 lg:space-y-6"
-          >
-            {/* Eyebrow */}
-            <motion.p
-              variants={staggerItem}
-              className="font-mono text-[10px] lg:text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--brand-ink)]"
-            >
-              Intelligent Business Command Center
-            </motion.p>
-
-            {/* Brand name */}
-            <motion.h1
-              variants={staggerItem}
-              className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-[var(--ink)] leading-[1.08]"
-            >
-              Birth Hub <span className="text-[var(--brand-ink)] font-semibold">360º</span>
-            </motion.h1>
-
-            {/* Tagline */}
-            <motion.p
-              variants={staggerItem}
-              className="font-display text-lg sm:text-xl lg:text-2xl font-medium leading-snug text-[var(--ink)]"
-            >
-              Dados que Conectam,
-              <br />
-              Inteligência que decide,
-              <br />
-              <span className="text-[var(--brand-ink)]">Resultados que acontecem.</span>
-            </motion.p>
-
-            {/* Subtitle */}
-            <motion.p
-              variants={staggerItem}
-              className="font-mono text-xs sm:text-sm text-[var(--ink-2)] max-w-md leading-relaxed"
-            >
-              Conecte CRM, dados, processos e IA em um único Command Center.
-            </motion.p>
-          </motion.div>
+        {/* ── Data flow lines — background animado ──────────────────────── */}
+        <div className="pointer-events-none absolute inset-0 z-0 opacity-100" aria-hidden="true">
+          <DataFlowLines />
         </div>
 
-        {/* ── Small Emblem (desktop only, compact) ─────────────────────── */}
-        <div className="hidden lg:flex items-center justify-center mt-8 z-20">
-          <AnimatedBirthHubEmblem
-            size={140}
-            showCta={false}
-            onAction={() => {
+        {/* ── Header: BH360 Mark + Sistema ──────────────────────────────── */}
+        <header className="relative z-20 flex items-center justify-between mb-8">
+          <button
+            type="button"
+            onClick={() => {
               SoundFX.play('confirm');
-              navigate('/login');
+              navigate('/');
             }}
-          />
+            className="flex items-center gap-3 group focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1677FF]/60 rounded-lg"
+            aria-label="Ir para página inicial Birth Hub 360"
+          >
+            <BH360Mark size={36} animated />
+            <div className="flex flex-col gap-0.5">
+              <span className="font-display text-sm font-bold text-white leading-none tracking-tight">
+                Birth Hub
+                <span className="text-[#D4AF37] ml-1">360°</span>
+              </span>
+              <span className="font-mono text-[8px] uppercase tracking-[0.2em] text-white/40">
+                Command Center
+              </span>
+            </div>
+          </button>
+        </header>
+
+        {/* ── Status Bar ─────────────────────────────────────────────────── */}
+        <div className="relative z-20 mb-6">
+          <SystemStatusBar dateLabel={dateLabel} timeLabel={timeLabel} />
+          <div className="h-px w-full bg-gradient-to-r from-[#1677FF]/30 via-[#7C3AED]/20 to-transparent mt-2" />
+        </div>
+
+        {/* ── Hero Typeset ───────────────────────────────────────────────── */}
+        <motion.div
+          initial="hidden"
+          animate="show"
+          variants={staggerContainer(0.08)}
+          className="relative z-20 flex-1 flex flex-col justify-center gap-5 mb-6"
+        >
+          {/* Eyebrow — categoria sem dourado */}
+          <motion.p
+            variants={staggerItem}
+            className="font-mono text-[9px] font-bold uppercase tracking-[0.25em] text-[#1677FF]"
+          >
+            Revenue Intelligence Platform
+          </motion.p>
+
+          {/* Headline — Snow, sem dourado em cima */}
+          <motion.h1
+            variants={staggerItem}
+            className="font-display text-3xl sm:text-4xl lg:text-[2.25rem] font-bold tracking-tight text-white leading-[1.1]"
+          >
+            Inteligência que
+            <br />
+            <span className="text-[#1677FF]">decide.</span> Dados que
+            <br />
+            <span
+              className="bg-clip-text text-transparent"
+              style={{
+                backgroundImage: 'linear-gradient(90deg, #7C3AED 0%, #D4AF37 100%)',
+              }}
+            >
+              acontecem.
+            </span>
+          </motion.h1>
+
+          {/* Tagline operacional */}
+          <motion.p
+            variants={staggerItem}
+            className="font-mono text-xs text-white/50 max-w-xs leading-relaxed"
+          >
+            CRM · Pipeline · IA · Forecast · Automação
+            <br />
+            em um único Command Center.
+          </motion.p>
+
+          {/* Separador com metáfora de fluxo */}
+          <motion.div variants={staggerItem} className="flex items-center gap-3 my-1">
+            <div className="h-px flex-1 bg-gradient-to-r from-[#1677FF]/40 to-transparent" />
+            <span className="font-mono text-[8px] text-white/30 uppercase tracking-widest">
+              8 pilares
+            </span>
+            <div className="h-px flex-1 bg-gradient-to-l from-[#7C3AED]/40 to-transparent" />
+          </motion.div>
+
+          {/* 8 Pilares — linguagem visual proprietária */}
+          <motion.div variants={staggerItem}>
+            <PillarStrip />
+          </motion.div>
+        </motion.div>
+
+        {/* ── Footer institucional ────────────────────────────────────────── */}
+        <div className="relative z-20 pt-4 border-t border-white/8">
+          <p className="font-mono text-[8px] uppercase tracking-[0.2em] text-white/25">
+            Birth Hub 360° · Centro de Comando para Operações de Receita
+          </p>
         </div>
       </div>
 
-      {/* ══════════════════════════════════════════════════════════════════════
-          LADO DIREITO (Desktop) / FUNDO (Mobile): Formulário de acesso
-      ══════════════════════════════════════════════════════════════════════ */}
-      <div className="flex-1 flex flex-col items-center justify-center relative bg-[var(--bg)] px-6 py-8 lg:py-12 w-full lg:w-1/2">
-        {/* Top-right date/status badge (desktop only) */}
-        <div className="absolute top-8 right-6 lg:right-10 flex items-center gap-4 whitespace-nowrap text-xs font-semibold text-[var(--ink-2)]">
-          <div className="hidden items-center gap-2 md:flex font-mono">
-            <CalendarDays className="h-3.5 w-3.5" />
-            {dateLabel} | {timeLabel}
-          </div>
+      {/* ════════════════════════════════════════════════════════════════════
+          LADO DIREITO — Formulário de acesso
+          Base: var(--bg) / var(--surface). Neutro, limpo, informação.
+      ════════════════════════════════════════════════════════════════════ */}
+      <div className="flex-1 flex flex-col items-center justify-center relative bg-[var(--bg)] px-6 py-10 w-full">
+        {/* Indicador de versão / session — canto superior direito */}
+        <div className="absolute top-6 right-6 hidden sm:flex items-center gap-2 font-mono text-[9px] text-[var(--ink-2)] uppercase tracking-widest">
+          <span
+            className="inline-block w-1.5 h-1.5 rounded-full bg-[var(--ok)]"
+            aria-hidden="true"
+          />
+          BH360 · v4
         </div>
 
-        <div className="w-full max-w-md z-10">
-          {/* ── Header (simplified) ─────────────────────────────────────── */}
+        <div className="w-full max-w-[400px] z-10">
+          {/* ── Header do formulário ──────────────────────────────────────── */}
           <motion.div
-            className="text-center mb-6 lg:mb-8"
-            initial={{ opacity: 0, y: 16 }}
+            className="mb-7"
+            initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: EASE_OUT_EXPO }}
+            transition={{ duration: 0.5, ease: EASE_OUT_EXPO }}
           >
-            <h2 className="font-display text-2xl font-semibold tracking-tight text-[var(--ink)] mb-1">
-              Acesse sua conta
+            <h2 className="font-display text-2xl font-bold tracking-tight text-[var(--ink)] mb-1">
+              {isSignUp ? 'Criar conta' : 'Acessar conta'}
             </h2>
-            <p className="font-mono text-[13px] text-[var(--ink-2)]">
-              Central de Inteligência Comercial
+            <p className="font-mono text-[11px] text-[var(--ink-2)] uppercase tracking-wider">
+              {isSignUp ? 'Preencha seus dados para começar' : 'Central de Inteligência Comercial'}
             </p>
           </motion.div>
 
-          {/* ── Form Card ───────────────────────────────────────────── */}
+          {/* ── Card do formulário ────────────────────────────────────────── */}
           <motion.div
-            className="bg-[var(--surface)] rounded-2xl border border-[var(--line)] shadow-lg shadow-black/5 p-1"
-            initial={{ opacity: 0, y: 20 }}
+            className="bg-[var(--surface)] rounded-2xl border border-[var(--line)] shadow-[var(--shadow-card)] overflow-hidden"
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.08, ease: EASE_OUT_EXPO }}
+            transition={{ duration: 0.5, delay: 0.06, ease: EASE_OUT_EXPO }}
           >
             {/* Tabs */}
-            <div className="flex border-b border-[var(--line)]">
-              <button
-                type="button"
-                onClick={() => setActiveTab('email')}
-                className={`flex-1 py-4 text-xs font-bold uppercase tracking-wider transition-colors relative font-mono ${activeTab === 'email'
-                  ? 'text-[var(--brand-ink)]'
-                  : 'text-[var(--ink-2)] hover:text-[var(--ink)]'
-                  }`}
-              >
-                E-mail corporativo
-                {activeTab === 'email' && (
-                  <motion.div
-                    layoutId="activeTab"
-                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-[var(--brand)]"
-                  />
-                )}
-              </button>
-              <button
-                type="button"
-                onClick={() => setActiveTab('sso')}
-                className={`flex-1 py-4 text-xs font-bold uppercase tracking-wider transition-colors relative font-mono ${activeTab === 'sso' ? 'text-[var(--brand-ink)]' : 'text-[var(--ink-2)] hover:text-[var(--ink)]'
-                  }`}
-              >
-                SSO Empresarial
-                {activeTab === 'sso' && (
-                  <motion.div
-                    layoutId="activeTab"
-                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-[var(--brand)]"
-                  />
-                )}
-              </button>
+            <div
+              className="flex border-b border-[var(--line)]"
+              role="tablist"
+              aria-label="Método de acesso"
+            >
+              {(['email', 'sso'] as const).map((tab) => (
+                <button
+                  key={tab}
+                  type="button"
+                  role="tab"
+                  aria-selected={activeTab === tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={[
+                    'flex-1 py-3.5 text-[10px] font-bold uppercase tracking-wider transition-colors relative font-mono',
+                    activeTab === tab
+                      ? 'text-[#1677FF]'
+                      : 'text-[var(--ink-2)] hover:text-[var(--ink)]',
+                  ].join(' ')}
+                >
+                  {tab === 'email' ? 'E-mail corporativo' : 'SSO Empresarial'}
+                  {activeTab === tab && (
+                    <motion.div
+                      layoutId="activeTabIndicator"
+                      className="absolute bottom-0 left-0 right-0 h-[2px]"
+                      style={{ background: '#1677FF' }}
+                    />
+                  )}
+                </button>
+              ))}
             </div>
 
-            <div className="p-6 md:p-8">
+            {/* Conteúdo do formulário */}
+            <div className="p-6 md:p-7">
               {verificationPending ? (
                 <div className="space-y-5 text-center">
-                  <div className="flex items-start gap-2.5 rounded-xl border border-[var(--brand)]/30 bg-[var(--brand)]/5 p-3.5 text-left text-sm text-[var(--ink)]">
-                    <Mail size={16} className="mt-0.5 shrink-0 text-[var(--brand)]" />
+                  <div className="flex items-start gap-2.5 rounded-xl border border-[#1677FF]/20 bg-[#1677FF]/5 p-3.5 text-left text-sm text-[var(--ink)]">
+                    <Mail size={16} className="mt-0.5 shrink-0 text-[#1677FF]" />
                     <p>
                       Enviamos um link de confirmação para <strong>{email}</strong>. Clique nele
-                      para confirmar que este e-mail é seu e ativar sua conta.
+                      para ativar sua conta.
                     </p>
                   </div>
                   <button
                     type="button"
                     onClick={backToSignIn}
-                    className="text-sm font-bold text-[var(--ink-2)] hover:text-[var(--brand)] transition-colors hover:underline"
+                    className="text-sm font-bold text-[var(--ink-2)] hover:text-[#1677FF] transition-colors"
                   >
                     Voltar para o login
                   </button>
@@ -324,8 +587,8 @@ export function LandingLoginSplitScreen() {
               ) : isForgotPassword ? (
                 forgotPasswordSent ? (
                   <div className="space-y-5 text-center">
-                    <div className="flex items-start gap-2.5 rounded-xl border border-brand/30 bg-brand/5 p-3.5 text-left text-sm text-[var(--ink)]">
-                      <Mail size={16} className="mt-0.5 shrink-0 text-brand" />
+                    <div className="flex items-start gap-2.5 rounded-xl border border-[#1677FF]/20 bg-[#1677FF]/5 p-3.5 text-left text-sm text-[var(--ink)]">
+                      <Mail size={16} className="mt-0.5 shrink-0 text-[#1677FF]" />
                       <p>
                         Se <strong>{email}</strong> tiver uma conta, enviamos um link de
                         redefinição. O link expira em 1 hora.
@@ -334,42 +597,49 @@ export function LandingLoginSplitScreen() {
                     <button
                       type="button"
                       onClick={backToSignIn}
-                      className="text-sm font-bold text-[var(--ink-2)] hover:text-brand transition-colors hover:underline"
+                      className="text-sm font-bold text-[var(--ink-2)] hover:text-[#1677FF] transition-colors"
                     >
                       Voltar para o login
                     </button>
                   </div>
                 ) : (
-                  <form onSubmit={handleForgotPassword} className="space-y-5">
+                  <form onSubmit={handleForgotPassword} className="space-y-5" noValidate>
                     {error && (
-                      <div className="flex items-start gap-2.5 rounded-xl border border-[var(--critical)]/30 bg-[var(--critical)]/5 p-3.5 text-xs text-[var(--critical)]">
-                        <AlertCircle size={16} className="mt-0.5 shrink-0" />
+                      <div
+                        role="alert"
+                        className="flex items-start gap-2.5 rounded-xl border border-[var(--critical)]/30 bg-[var(--critical)]/5 p-3.5 text-xs text-[var(--critical)]"
+                      >
+                        <AlertCircle size={16} className="mt-0.5 shrink-0" aria-hidden="true" />
                         <p>{error}</p>
                       </div>
                     )}
-                    <p className="font-mono text-sm text-[var(--ink-2)]">
-                      Informe o e-mail corporativo da sua conta. Se ele existir, enviaremos um link
-                      para redefinição de senha.
+                    <p className="font-mono text-xs text-[var(--ink-2)]">
+                      Informe o e-mail corporativo da sua conta para receber o link de redefinição
+                      de senha.
                     </p>
                     <div className="relative">
-                      <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--ink-2)]" />
+                      <Mail
+                        className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--ink-2)]"
+                        aria-hidden="true"
+                      />
                       <input
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         className={`${inputCls} pl-11`}
-                        aria-label="E-mail"
-                        placeholder="executivo@birthhub360.com.br"
+                        aria-label="E-mail corporativo"
+                        placeholder="executivo@empresa.com.br"
                         required
+                        autoComplete="email"
                       />
                     </div>
                     <button
                       type="submit"
                       disabled={isSubmitting || !email}
-                      className="w-full h-[44px] rounded-[10px] bg-brand-active text-on-brand text-sm font-extrabold uppercase tracking-wide shadow-lg transition-all hover:opacity-90 disabled:opacity-50 flex items-center justify-center"
+                      className="w-full h-[44px] rounded-[var(--radius-control)] bg-[#1677FF] text-white text-sm font-extrabold uppercase tracking-wide shadow-lg transition-all hover:bg-[#1565E0] disabled:opacity-50 flex items-center justify-center"
                     >
                       {isSubmitting ? (
-                        <Loader2 className="animate-spin mx-auto h-5 w-5" />
+                        <Loader2 className="animate-spin mx-auto h-5 w-5" aria-hidden="true" />
                       ) : (
                         'Enviar link de redefinição'
                       )}
@@ -378,7 +648,7 @@ export function LandingLoginSplitScreen() {
                       <button
                         type="button"
                         onClick={backToSignIn}
-                        className="text-sm font-bold text-[var(--ink-2)] hover:text-brand transition-colors hover:underline"
+                        className="text-xs font-bold text-[var(--ink-2)] hover:text-[#1677FF] transition-colors"
                       >
                         Voltar para o login
                       </button>
@@ -386,10 +656,13 @@ export function LandingLoginSplitScreen() {
                   </form>
                 )
               ) : (
-                <form onSubmit={handleAuth} className="space-y-5">
+                <form onSubmit={handleAuth} className="space-y-5" noValidate>
                   {error && (
-                    <div className="flex items-start gap-2.5 rounded-xl border border-[var(--critical)]/30 bg-[var(--critical)]/5 p-3.5 text-xs text-[var(--critical)]">
-                      <AlertCircle size={16} className="mt-0.5 shrink-0" />
+                    <div
+                      role="alert"
+                      className="flex items-start gap-2.5 rounded-xl border border-[var(--critical)]/30 bg-[var(--critical)]/5 p-3.5 text-xs text-[var(--critical)]"
+                    >
+                      <AlertCircle size={16} className="mt-0.5 shrink-0" aria-hidden="true" />
                       <p>{error}</p>
                     </div>
                   )}
@@ -398,7 +671,7 @@ export function LandingLoginSplitScreen() {
                     <div>
                       <label
                         htmlFor="login-name"
-                        className="block font-mono text-xs font-semibold text-[var(--ink-2)] mb-1.5 uppercase tracking-wide"
+                        className="block font-mono text-[10px] font-semibold text-[var(--ink-2)] mb-1.5 uppercase tracking-wide"
                       >
                         Nome completo
                       </label>
@@ -411,48 +684,56 @@ export function LandingLoginSplitScreen() {
                         aria-label="Nome completo"
                         placeholder="Seu Nome Completo"
                         required={isSignUp}
+                        autoComplete="name"
                       />
                     </div>
                   )}
 
                   <div className="space-y-4">
-                    {/* Email field */}
+                    {/* Email */}
                     <div>
                       <label
                         htmlFor="login-email"
-                        className="block font-mono text-xs font-semibold text-[var(--ink-2)] mb-1.5 uppercase tracking-wide"
+                        className="block font-mono text-[10px] font-semibold text-[var(--ink-2)] mb-1.5 uppercase tracking-wide"
                       >
                         E-mail
                       </label>
                       <div className="relative">
-                        <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--ink-2)]" />
+                        <Mail
+                          className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--ink-2)]"
+                          aria-hidden="true"
+                        />
                         <input
                           id="login-email"
                           type="email"
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
                           className={`${inputCls} pl-11`}
-                          aria-label="Credencial Institucional"
+                          aria-label="E-mail corporativo"
                           placeholder={
                             activeTab === 'sso'
                               ? 'seuemail@seudominio.com.br'
-                              : 'executivo@birthhub360.com.br'
+                              : 'executivo@empresa.com.br'
                           }
                           required
+                          autoComplete="email"
                         />
                       </div>
                     </div>
 
-                    {/* Password field */}
+                    {/* Senha */}
                     <div>
                       <label
                         htmlFor="login-password"
-                        className="block font-mono text-xs font-semibold text-[var(--ink-2)] mb-1.5 uppercase tracking-wide"
+                        className="block font-mono text-[10px] font-semibold text-[var(--ink-2)] mb-1.5 uppercase tracking-wide"
                       >
                         Senha
                       </label>
                       <div className="relative">
-                        <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--ink-2)]" />
+                        <Lock
+                          className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--ink-2)]"
+                          aria-hidden="true"
+                        />
                         <input
                           id="login-password"
                           type={showPassword ? 'text' : 'password'}
@@ -462,6 +743,7 @@ export function LandingLoginSplitScreen() {
                           aria-label="Senha"
                           placeholder="••••••••••••"
                           required
+                          autoComplete={isSignUp ? 'new-password' : 'current-password'}
                         />
                         <button
                           type="button"
@@ -471,9 +753,9 @@ export function LandingLoginSplitScreen() {
                           className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--ink-2)] hover:text-[var(--ink)] transition-colors"
                         >
                           {showPassword ? (
-                            <EyeOff className="h-4 w-4" />
+                            <EyeOff className="h-4 w-4" aria-hidden="true" />
                           ) : (
-                            <Eye className="h-4 w-4" />
+                            <Eye className="h-4 w-4" aria-hidden="true" />
                           )}
                         </button>
                       </div>
@@ -482,12 +764,12 @@ export function LandingLoginSplitScreen() {
 
                   {!isSignUp && (
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                      <label className="flex items-center gap-2 cursor-pointer font-mono text-xs font-semibold text-[var(--ink-2)]">
+                      <label className="flex items-center gap-2 cursor-pointer font-mono text-[10px] font-semibold text-[var(--ink-2)]">
                         <input
                           type="checkbox"
                           checked={rememberMe}
                           onChange={(e) => setRememberMe(e.target.checked)}
-                          className="rounded border-[var(--line)] text-[var(--brand)] focus:ring-[var(--brand)] w-4 h-4 bg-[var(--surface)]"
+                          className="rounded border-[var(--line)] w-4 h-4 bg-[var(--surface)] accent-[#1677FF]"
                         />
                         Manter sessão ativa
                       </label>
@@ -497,33 +779,35 @@ export function LandingLoginSplitScreen() {
                           setIsForgotPassword(true);
                           setError('');
                         }}
-                        className="font-mono text-xs font-bold text-[var(--ink-2)] hover:text-[var(--brand)] transition-colors sm:text-right"
+                        className="font-mono text-[10px] font-bold text-[var(--ink-2)] hover:text-[#1677FF] transition-colors sm:text-right"
                       >
-                        Esqueci minha senha?
+                        Esqueci minha senha
                       </button>
                     </div>
                   )}
 
-                  {/* Primary CTA */}
+                  {/* CTA principal — Blue, não Gold */}
                   <button
                     type="submit"
                     disabled={isSubmitting || !email || !password}
-                    className="w-full h-[44px] rounded-[var(--radius-control)] bg-[var(--brand-active)] text-[var(--on-brand)] text-sm font-extrabold uppercase tracking-wide shadow-lg hover:opacity-90 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                    className="w-full h-[44px] rounded-[var(--radius-control)] bg-[#1677FF] text-white text-sm font-extrabold uppercase tracking-wide shadow-lg transition-all hover:bg-[#1565E0] active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1677FF]"
                   >
                     {isSubmitting ? (
-                      <Loader2 className="animate-spin h-5 w-5" />
+                      <Loader2 className="animate-spin h-5 w-5" aria-hidden="true" />
                     ) : isSignUp ? (
                       'Criar conta'
                     ) : (
-                      <>ENTRAR NO BIRTH HUB &rarr;</>
+                      <>
+                        Entrar no Birth Hub <span aria-hidden="true">→</span>
+                      </>
                     )}
                   </button>
                 </form>
               )}
 
-              {/* Toggle Login/Signup */}
+              {/* Toggle login / cadastro */}
               {!isForgotPassword && !verificationPending && (
-                <div className="mt-6 text-center">
+                <div className="mt-5 text-center">
                   <button
                     type="button"
                     onClick={() => {
@@ -531,31 +815,32 @@ export function LandingLoginSplitScreen() {
                       setError('');
                       setName('');
                     }}
-                    className="font-mono text-xs font-bold text-[var(--ink-2)] hover:text-[var(--brand)] transition-colors"
+                    className="font-mono text-[10px] font-bold text-[var(--ink-2)] hover:text-[#1677FF] transition-colors"
                   >
                     {isSignUp ? 'Já tem conta? Fazer login' : 'Não tem conta? Criar conta'}
                   </button>
                 </div>
               )}
 
-              {/* SSO / Social integrations */}
+              {/* Opções SSO / Social */}
               {!isSignUp && !isForgotPassword && !verificationPending && (
-                <div className="mt-8">
-                  <div className="relative flex items-center justify-center mb-6">
+                <div className="mt-6">
+                  <div className="relative flex items-center justify-center mb-5">
                     <div className="absolute inset-0 flex items-center">
                       <div className="w-full border-t border-[var(--line)]" />
                     </div>
-                    <span className="relative bg-[var(--surface)] px-3 font-mono text-[10px] uppercase tracking-widest font-bold text-[var(--ink-2)]">
+                    <span className="relative bg-[var(--surface)] px-3 font-mono text-[9px] uppercase tracking-widest font-bold text-[var(--ink-2)]">
                       ou continue com
                     </span>
                   </div>
 
-                  <div className="grid grid-cols-3 gap-3">
+                  <div className="grid grid-cols-3 gap-2.5">
                     <button
                       type="button"
-                      className="flex items-center justify-center gap-2 rounded-[var(--radius-control)] border border-[var(--line)] py-2.5 text-xs font-semibold text-[var(--ink)] hover:bg-[var(--surface-2)] transition-colors"
+                      className="flex items-center justify-center gap-1.5 rounded-[var(--radius-control)] border border-[var(--line)] py-2.5 text-[10px] font-semibold text-[var(--ink)] hover:bg-[var(--surface-2)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#1677FF]"
+                      aria-label="Entrar com Google"
                     >
-                      <svg viewBox="0 0 24 24" className="w-4 h-4">
+                      <svg viewBox="0 0 24 24" className="w-3.5 h-3.5" aria-hidden="true">
                         <path
                           fill="#4285F4"
                           d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -577,9 +862,10 @@ export function LandingLoginSplitScreen() {
                     </button>
                     <button
                       type="button"
-                      className="flex items-center justify-center gap-2 rounded-[var(--radius-control)] border border-[var(--line)] py-2.5 text-xs font-semibold text-[var(--ink)] hover:bg-[var(--surface-2)] transition-colors"
+                      className="flex items-center justify-center gap-1.5 rounded-[var(--radius-control)] border border-[var(--line)] py-2.5 text-[10px] font-semibold text-[var(--ink)] hover:bg-[var(--surface-2)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#1677FF]"
+                      aria-label="Entrar com Microsoft"
                     >
-                      <svg viewBox="0 0 21 21" className="w-4 h-4">
+                      <svg viewBox="0 0 21 21" className="w-3.5 h-3.5" aria-hidden="true">
                         <path fill="#f25022" d="M0 0h10v10H0z" />
                         <path fill="#7fba00" d="M11 0h10v10H11z" />
                         <path fill="#00a4ef" d="M0 11h10v10H0z" />
@@ -589,9 +875,10 @@ export function LandingLoginSplitScreen() {
                     </button>
                     <button
                       type="button"
-                      className="flex items-center justify-center gap-2 rounded-[var(--radius-control)] border border-[var(--line)] py-2.5 text-xs font-semibold text-[var(--ink)] hover:bg-[var(--surface-2)] transition-colors"
+                      className="flex items-center justify-center gap-1.5 rounded-[var(--radius-control)] border border-[var(--line)] py-2.5 text-[10px] font-semibold text-[var(--ink)] hover:bg-[var(--surface-2)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#1677FF]"
+                      aria-label="Entrar com SSO"
                     >
-                      <Lock className="w-3.5 h-3.5 text-[var(--brand)]" />
+                      <Lock className="w-3.5 h-3.5 text-[var(--ink-2)]" aria-hidden="true" />
                       SSO
                     </button>
                   </div>
@@ -600,26 +887,32 @@ export function LandingLoginSplitScreen() {
             </div>
           </motion.div>
 
-          {/* ── Trust Badges ─────────────────────────────────────────── */}
-          <div className="mt-8">
-            <div className="flex flex-wrap justify-center gap-4 font-mono text-[10px] font-bold text-[var(--ink-2)]">
+          {/* ── Trust badges ──────────────────────────────────────────────── */}
+          <motion.div
+            className="mt-6"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+          >
+            <div className="flex flex-wrap justify-center gap-3 font-mono text-[9px] font-bold text-[var(--ink-2)]">
               <span className="flex items-center gap-1.5">
-                <ShieldCheck className="w-3.5 h-3.5 text-[var(--brand)]" /> Acesso protegido
+                <ShieldCheck className="w-3 h-3 text-[var(--ok)]" aria-hidden="true" />
+                Acesso protegido
               </span>
               <span className="flex items-center gap-1.5">
-                <Lock className="w-3.5 h-3.5 text-[var(--brand)]" /> Autenticação empresarial
+                <Lock className="w-3 h-3 text-[var(--ok)]" aria-hidden="true" />
+                Autenticação empresarial
               </span>
               <span className="flex items-center gap-1.5">
-                <Database className="w-3.5 h-3.5 text-[var(--brand)]" /> Controle de permissões
+                <Database className="w-3 h-3 text-[var(--ok)]" aria-hidden="true" />
+                Controle de permissões
               </span>
               <span className="flex items-center gap-1.5">
-                <CheckCircle2 className="w-3.5 h-3.5 text-[var(--brand)]" /> Conformidade LGPD
+                <CheckCircle2 className="w-3 h-3 text-[var(--ok)]" aria-hidden="true" />
+                Conformidade LGPD
               </span>
             </div>
-            <div className="mt-6 text-center font-mono text-[9px] uppercase tracking-widest font-bold text-[var(--ink-2)]">
-              BIRTH HUB 360&deg; | CENTRO DE COMANDO PARA OPERAÇÕES DE RECEITA
-            </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </div>

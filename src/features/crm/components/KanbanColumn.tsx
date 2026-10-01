@@ -40,9 +40,9 @@ export const KanbanColumn = React.memo(function KanbanColumn({
   return (
     <div
       ref={setNodeRef}
-      className={`relative flex flex-col bg-surface/80 backdrop-blur-md rounded-2xl min-w-[320px] max-w-[320px] max-h-full shrink-0 border transition-all duration-300 shadow-sm overflow-hidden before:absolute before:inset-x-0 before:top-0 before:h-[2px] before:bg-gradient-to-r before:from-transparent before:via-brand/35 before:to-transparent before:z-20 ${
+      className={`relative flex flex-col bg-surface/80 backdrop-blur-md rounded-2xl min-w-[320px] max-w-[320px] max-h-full shrink-0 border transition-all duration-300 shadow-sm overflow-hidden before:absolute before:inset-x-0 before:top-0 before:h-[2px] before:bg-gradient-to-r before:from-transparent before:via-[#1677FF]/35 before:to-transparent before:z-20 ${
         isOver
-          ? 'border-brand dark:border-brand-2 bg-brand/10 shadow-[0_0_25px_rgba(212,175,55,0.18)] scale-[1.01]'
+          ? 'border-[#1677FF] dark:border-[#1677FF] bg-[#1677FF]/10 shadow-[0_0_25px_rgba(22,119,255,0.18)] scale-[1.01]'
           : 'border-line hover:border-brand/25'
       }`}
     >
@@ -56,12 +56,12 @@ export const KanbanColumn = React.memo(function KanbanColumn({
           </h3>
           <span className="bg-surface-2 text-ink-2 text-xs font-bold px-2.5 py-0.5 rounded-full shrink-0 border border-line flex items-center gap-1.5">
             {leads.length > 0 && (
-              <span className="w-1.5 h-1.5 rounded-full bg-brand animate-pulse" />
+              <span className="w-1.5 h-1.5 rounded-full bg-[#1677FF] animate-pulse" />
             )}
             {leads.length}
           </span>
         </div>
-        <div className="text-xs text-brand-ink dark:text-brand font-medium">
+        <div className="text-xs text-[#1677FF] font-medium">
           Forecast:{' '}
           {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
             leads.reduce((acc, lead) => {
@@ -108,7 +108,7 @@ export const KanbanColumn = React.memo(function KanbanColumn({
           ))}
         </SortableContext>
         {leads.length === 0 && (
-          <div className="h-full min-h-[110px] border-2 border-dashed border-line/80 hover:border-brand/40 bg-surface-2/20 rounded-xl flex flex-col items-center justify-center text-ink-2 text-xs gap-1.5 transition-colors">
+          <div className="h-full min-h-[110px] border-2 border-dashed border-line/80 hover:border-[#1677FF]/40 bg-surface-2/20 rounded-xl flex flex-col items-center justify-center text-ink-2 text-xs gap-1.5 transition-colors">
             <span className="text-base" aria-hidden="true">
               📥
             </span>

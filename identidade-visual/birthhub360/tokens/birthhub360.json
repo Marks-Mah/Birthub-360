@@ -1,7 +1,7 @@
 {
   "name": "Birth Hub 360º",
-  "tagline": "Sua central de comando inteligente: integrando dados, potencializando decisões e acelerando a execução.",
-  "source": "Birth Hub 360 Brand Book Cinematic V2.0",
+  "tagline": "Sistema Operacional de Revenue Intelligence",
+  "source": "Birth Hub 360 Brand System Blueprint",
   "colors": {
     "obsidian": "#0B132B",
     "midnight": "#08090F",
@@ -17,7 +17,8 @@
   "typography": {
     "display": "Bodoni Moda",
     "sans": "Inter",
+    "mono": "JetBrains Mono",
     "emblem": "Playfair Display (italic 800, vetorizada nos SVGs)"
   },
-  "values": ["Innovation", "Data Intelligence", "Efficiency", "Scalability"]
+  "values": ["Data Flow", "AI Orchestration", "Command Center", "Revenue Intelligence"]
 }

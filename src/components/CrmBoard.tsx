@@ -625,9 +625,9 @@ export function CrmBoard({ funnel: funnelProp, embedded = false }: CrmBoardProps
       {/* Header com estilo moderno */}
       <div className="flex shrink-0 flex-col items-start justify-between gap-4 border-b border-line bg-surface-elevated/92 p-4 backdrop-blur-xl sm:flex-row sm:items-center lg:px-6 lg:py-5">
         <div>
-          <div className="bh-label mb-1 text-brand-ink dark:text-brand">PIPELINE COMERCIAL</div>
+          <div className="bh-label mb-1 text-[#1677FF]">PIPELINE COMERCIAL</div>
           <h2 className="flex items-center gap-2 font-display text-h2 font-bold text-ink">
-            <Target className="h-5 w-5 text-brand-ink dark:text-brand" aria-hidden="true" />
+            <Target className="h-5 w-5 text-[#1677FF]" aria-hidden="true" />
             {funnel === 'Lead' ? 'Leads e pré-vendas' : 'Negócios e fechamento'}
           </h2>
           <p className="text-ink-2 text-xs mt-1">
@@ -649,7 +649,7 @@ export function CrmBoard({ funnel: funnelProp, embedded = false }: CrmBoardProps
                 type="button"
                 onClick={() => handleFunnelChange('Lead')}
                 aria-pressed={funnel === 'Lead'}
-                className={`px-3 py-1.5 rounded-md text-xs font-bold transition-colors ${funnel === 'Lead' ? 'bg-brand-active text-on-brand' : 'text-ink-2 hover:bg-surface hover:text-ink'}`}
+                className={`px-3 py-1.5 rounded-md text-xs font-bold transition-colors ${funnel === 'Lead' ? 'bg-[#1677FF] text-white' : 'text-ink-2 hover:bg-surface hover:text-ink'}`}
               >
                 Leads
               </button>
@@ -657,7 +657,7 @@ export function CrmBoard({ funnel: funnelProp, embedded = false }: CrmBoardProps
                 type="button"
                 onClick={() => handleFunnelChange('Negocio')}
                 aria-pressed={funnel === 'Negocio'}
-                className={`px-3 py-1.5 rounded-md text-xs font-bold transition-colors ${funnel === 'Negocio' ? 'bg-brand-active text-on-brand' : 'text-ink-2 hover:bg-surface hover:text-ink'}`}
+                className={`px-3 py-1.5 rounded-md text-xs font-bold transition-colors ${funnel === 'Negocio' ? 'bg-[#1677FF] text-white' : 'text-ink-2 hover:bg-surface hover:text-ink'}`}
               >
                 Negócios
               </button>
@@ -754,7 +754,7 @@ export function CrmBoard({ funnel: funnelProp, embedded = false }: CrmBoardProps
             value={searchQuery}
             onChange={(e) => handleSearchQueryChange(e.target.value)}
             placeholder="Buscar por empresa ou contato..."
-            className="w-full rounded-control border border-line bg-surface-elevated py-2 pl-9 pr-3 text-xs text-ink placeholder:text-ink-2 focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/25"
+            className="w-full rounded-control border border-line bg-surface-elevated py-2 pl-9 pr-3 text-xs text-ink placeholder:text-ink-2 focus:outline-none focus:border-[#1677FF] focus:ring-2 focus:ring-[#1677FF]/25"
           />
         </div>
         <div className="flex items-center gap-1.5">
@@ -765,7 +765,7 @@ export function CrmBoard({ funnel: funnelProp, embedded = false }: CrmBoardProps
             id="crm-board-owner-filter"
             value={ownerFilter}
             onChange={(e) => handleOwnerFilterChange(e.target.value)}
-            className="rounded-control border border-line bg-surface-elevated px-2.5 py-2 text-xs font-medium text-ink focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/25"
+            className="rounded-control border border-line bg-surface-elevated px-2.5 py-2 text-xs font-medium text-ink focus:outline-none focus:border-[#1677FF] focus:ring-2 focus:ring-[#1677FF]/25"
           >
             <option value="">Todos os donos</option>
             {users.map((u) => (
@@ -780,7 +780,7 @@ export function CrmBoard({ funnel: funnelProp, embedded = false }: CrmBoardProps
             <button
               type="button"
               onClick={handleClearFilters}
-              className="text-xs font-semibold text-brand-ink dark:text-brand hover:underline"
+              className="text-xs font-semibold text-[#1677FF] hover:underline"
             >
               Limpar filtros
             </button>
@@ -820,13 +820,13 @@ export function CrmBoard({ funnel: funnelProp, embedded = false }: CrmBoardProps
         {loading ? (
           <div className="h-full flex items-center justify-center">
             <div className="flex flex-col items-center gap-3">
-              <div className="w-8 h-8 border-4 border-brand dark:border-brand-2 border-t-transparent rounded-full animate-spin" />
+              <div className="w-8 h-8 border-4 border-[#1677FF] dark:border-[#1677FF]-2 border-t-transparent rounded-full animate-spin" />
               <p className="text-ink-2 font-medium text-sm">Carregando pipeline comercial...</p>
             </div>
           </div>
         ) : error ? (
           <EmptyState
-            icon={<WifiOff className="w-8 h-8 text-brand" />}
+            icon={<WifiOff className="w-8 h-8 text-[#1677FF]" />}
             title="Não foi possível carregar o pipeline"
             description={error}
             actionLabel="Tentar novamente"
@@ -876,14 +876,14 @@ export function CrmBoard({ funnel: funnelProp, embedded = false }: CrmBoardProps
       {selectedLeadIds.size > 0 && (
         <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-40 bg-surface/95 backdrop-blur-xl border border-line shadow-2xl rounded-3xl p-3 px-5 flex flex-wrap items-center gap-3 animate-in slide-in-from-bottom-5 duration-300">
           <div className="flex items-center gap-2 pr-3 border-r border-line">
-            <span className="w-6 h-6 rounded-full bg-brand-active text-on-brand text-xs font-black flex items-center justify-center">
+            <span className="w-6 h-6 rounded-full bg-[#1677FF] text-white text-xs font-black flex items-center justify-center">
               {selectedLeadIds.size}
             </span>
             <span className="text-xs font-bold text-ink">selecionado(s)</span>
             <button
               type="button"
               onClick={handleSelectAll}
-              className="text-[11px] font-bold text-brand-ink dark:text-brand hover:underline ml-1"
+              className="text-[11px] font-bold text-[#1677FF] hover:underline ml-1"
             >
               {selectedLeadIds.size === filteredLeads.length ? 'Desmarcar Todos' : 'Todos'}
             </button>
@@ -901,7 +901,7 @@ export function CrmBoard({ funnel: funnelProp, embedded = false }: CrmBoardProps
               }}
               disabled={isBatchUpdating}
               defaultValue=""
-              className="px-2.5 py-1.5 bg-surface-2 border border-line rounded-xl text-xs font-bold text-ink focus:outline-none focus:border-brand"
+              className="px-2.5 py-1.5 bg-surface-2 border border-line rounded-xl text-xs font-bold text-ink focus:outline-none focus:border-[#1677FF]"
             >
               <option value="" disabled>
                 Mover para...
@@ -926,7 +926,7 @@ export function CrmBoard({ funnel: funnelProp, embedded = false }: CrmBoardProps
               }}
               disabled={isBatchUpdating}
               defaultValue=""
-              className="px-2.5 py-1.5 bg-surface-2 border border-line rounded-xl text-xs font-bold text-ink focus:outline-none focus:border-brand"
+              className="px-2.5 py-1.5 bg-surface-2 border border-line rounded-xl text-xs font-bold text-ink focus:outline-none focus:border-[#1677FF]"
             >
               <option value="" disabled>
                 Atribuir a...

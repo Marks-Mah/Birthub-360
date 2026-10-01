@@ -136,109 +136,87 @@ export function Sidebar({
   // 3. PILAR 2: PROSPECÇÃO INTELIGENTE (Busca ICP, Outbound, Cadências, Telefonia & Dialer)
   // 4. PILAR 3: COPILOTO COMERCIAL IA (IA generativa, inteligência de mercado, RAG, analytics & capacitação)
   // 5. ADMINISTRAÇÃO (Camada segregada de governança e integrações)
-  const navGroupsByJourney: NavGroupDefinition[] = isRestrictedSdrProfile
-    ? [
-        { title: 'COMMAND CENTER', items: ['daily-plan'] },
-        {
-          title: 'PROSPECÇÃO INTELIGENTE',
-          items: ['prospect', 'outbound', 'cadence', 'voice-hub', 'dialer'],
-        },
-        {
-          title: 'CRM COMERCIAL',
-          items: [
-            'companies',
-            'contacts',
-            ...(canAccessMesaTratamento ? (['mesa-tratamento'] as TabType[]) : []),
-            'activities',
-            'calendar',
-          ],
-        },
-        {
-          title: 'COPILOTO COMERCIAL IA',
-          items: ['intelligence', 'roleplay', 'objections_matrix', 'chatbook', 'topic_training'],
-        },
-        { title: 'ADMINISTRAÇÃO', items: ['notifications', 'bitrix', 'settings'] },
-      ]
-    : [
-        {
-          title: 'COMMAND CENTER',
-          items: ['dashboard', 'workspace', 'daily-plan'],
-        },
-        {
-          title: 'CRM COMERCIAL',
-          items: [
-            'crm',
-            'crm360',
-            'companies',
-            'contacts',
-            'activities',
-            'calendar',
-            'propostas',
-            ...(canAccessMesaTratamento ? (['mesa-tratamento'] as TabType[]) : []),
-          ],
-        },
-        {
-          title: 'PROSPECÇÃO INTELIGENTE',
-          items: ['prospect', 'outbound', 'cadence', 'voice-hub', 'dialer'],
-        },
-        {
-          title: 'COPILOTO COMERCIAL IA',
-          items: [
-            ...(canAccessCommercialIntelligence ? (['commercial_intelligence'] as TabType[]) : []),
-            ...(canAccessCopilotoIa ? (['copiloto_ia'] as TabType[]) : []),
-            'intelligence',
-            'market-intelligence',
-            'knowledge',
-            'analytics',
-            'winloss',
-            'reports',
-            'roleplay',
-            'chatbook',
-            'qualification_matrix',
-            'objections_matrix',
-            'topic_training',
-            'editor',
-          ],
-        },
-        { title: 'ADMINISTRAÇÃO', items: administrationItems },
-      ];
+  const allPillars = [
+    'PILAR 01 — HUB COMERCIAL',
+    'PILAR 02 — INTELIGÊNCIA DE MERCADO',
+    'PILAR 03 — ORQUESTRAÇÃO DE VENDAS',
+    'PILAR 04 — PERFORMANCE COMERCIAL',
+    'PILAR 05 — PREVISIBILIDADE COMERCIAL',
+    'PILAR 06 — INTELIGÊNCIA ARTIFICIAL',
+    'PILAR 07 — AUTOMAÇÃO & CONECTIVIDADE',
+    'PILAR 08 — ENGAJAMENTO COMERCIAL',
+    'ADMINISTRAÇÃO',
+  ];
+
+  const navGroupsByJourney: NavGroupDefinition[] = [
+    {
+      title: 'PILAR 01 — HUB COMERCIAL',
+      items: ['workspace', 'crm', 'crm360', 'propostas', 'companies', 'contacts'],
+    },
+    {
+      title: 'PILAR 02 — INTELIGÊNCIA DE MERCADO',
+      items: ['prospect', 'market-intelligence'],
+    },
+    {
+      title: 'PILAR 03 — ORQUESTRAÇÃO DE VENDAS',
+      items: [
+        'daily-plan',
+        'activities',
+        'calendar',
+        'cadence',
+        'roleplay',
+        'qualification_matrix',
+        'objections_matrix',
+        'topic_training',
+        'chatbook',
+        'editor',
+      ],
+    },
+    {
+      title: 'PILAR 04 — PERFORMANCE COMERCIAL',
+      items: ['dashboard', 'analytics', 'winloss', 'reports'],
+    },
+    {
+      title: 'PILAR 06 — INTELIGÊNCIA ARTIFICIAL',
+      items: [
+        ...(canAccessCommercialIntelligence ? (['commercial_intelligence'] as TabType[]) : []),
+        ...(canAccessCopilotoIa ? (['copiloto_ia'] as TabType[]) : []),
+        'intelligence',
+        'knowledge',
+        'sdr-diagnostic',
+      ],
+    },
+    {
+      title: 'PILAR 07 — AUTOMAÇÃO & CONECTIVIDADE',
+      items: [
+        ...(canManageOperations ? (['automations', 'integrations'] as TabType[]) : []),
+        'bitrix',
+      ],
+    },
+    {
+      title: 'PILAR 08 — ENGAJAMENTO COMERCIAL',
+      items: [
+        'voice-hub',
+        'outbound',
+        'dialer',
+        ...(canAccessMesaTratamento ? (['mesa-tratamento'] as TabType[]) : []),
+      ],
+    },
+    {
+      title: 'ADMINISTRAÇÃO',
+      items: ['notifications', 'usage', 'team', 'module-access', 'settings'].filter((item) => {
+        if (item === 'notifications' || item === 'settings') return true;
+        return isAdmin;
+      }) as TabType[],
+    },
+  ];
 
   const GROUP_ORDER_BY_ROLE: Partial<Record<string, string[]>> = {
-    CLOSER: [
-      'COMMAND CENTER',
-      'CRM COMERCIAL',
-      'PROSPECÇÃO INTELIGENTE',
-      'COPILOTO COMERCIAL IA',
-      'ADMINISTRAÇÃO',
-    ],
-    GESTOR: [
-      'COMMAND CENTER',
-      'CRM COMERCIAL',
-      'PROSPECÇÃO INTELIGENTE',
-      'COPILOTO COMERCIAL IA',
-      'ADMINISTRAÇÃO',
-    ],
-    ADMIN: [
-      'COMMAND CENTER',
-      'CRM COMERCIAL',
-      'PROSPECÇÃO INTELIGENTE',
-      'COPILOTO COMERCIAL IA',
-      'ADMINISTRAÇÃO',
-    ],
-    VISUALIZADOR: [
-      'COMMAND CENTER',
-      'CRM COMERCIAL',
-      'PROSPECÇÃO INTELIGENTE',
-      'COPILOTO COMERCIAL IA',
-      'ADMINISTRAÇÃO',
-    ],
-    SDR: [
-      'COMMAND CENTER',
-      'PROSPECÇÃO INTELIGENTE',
-      'CRM COMERCIAL',
-      'COPILOTO COMERCIAL IA',
-      'ADMINISTRAÇÃO',
-    ],
+    CLOSER: allPillars,
+    GESTOR: allPillars,
+    ADMIN: allPillars,
+    VISUALIZADOR: allPillars,
+    SDR: allPillars,
   };
 
   const roleOrder = GROUP_ORDER_BY_ROLE[currentUser?.role ?? ''];
