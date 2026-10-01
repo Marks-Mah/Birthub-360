@@ -1,20 +1,13 @@
+import { motion } from 'framer-motion';
 import { LogOut, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
-import React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import type React from 'react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext.js';
 import { hasRequiredRole, MESA_TRATAMENTO_ROLES } from '../../lib/auth/authorization.js';
-import { BirthHubLogo } from '../brand/BirthHubLogo.js';
+import { shimmerBeam, staggerContainer, staggerItem, useTilt } from '../../lib/motion.js';
 import { SoundFX } from '../../lib/soundEffects.js';
-import {
-  staggerContainer,
-  staggerItem,
-  useTilt,
-  useMagnetic,
-  fadeIn,
-  shimmerBeam,
-} from '../../lib/motion.js';
+import { BirthHubLogo } from '../brand/BirthHubLogo.js';
 import { TAB_META, type TabType } from './tabMeta.js';
 
 const SIDEBAR_COLLAPSED_KEY = '@birthhub:futuristic-sidebar-collapsed';
@@ -248,7 +241,8 @@ export function FuturisticSidebar({
             whileHover="hover"
             aria-hidden="true"
             style={{
-              background: 'linear-gradient(105deg, transparent 40%, rgba(212,175,55,0.18) 50%, transparent 60%)',
+              background:
+                'linear-gradient(105deg, transparent 40%, rgba(212,175,55,0.18) 50%, transparent 60%)',
             }}
           />
         )}
