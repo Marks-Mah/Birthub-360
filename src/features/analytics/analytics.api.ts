@@ -1,7 +1,4 @@
 import { api } from '../../lib/api.js';
-// Fonte única do contrato de OverviewMetrics — ver .agents/handoffs/onda-8/
-// 18-para-02-unificar-overviewmetrics-frontend.md. A interface local que existia aqui foi
-// removida em favor deste import; a forma pública do tipo não mudou.
 import type { OverviewMetrics } from '../../shared/contracts/analytics.contract.js';
 
 export type { OverviewMetrics };
@@ -13,6 +10,8 @@ export interface DistributionSlice {
 
 export interface FunnelStage extends DistributionSlice {
   conversionFromPrevious: number | null;
+  amount?: number;
+  conversionFromPreviousAmount?: number | null;
 }
 
 export interface MonthlyPoint {
@@ -22,29 +21,39 @@ export interface MonthlyPoint {
   lost: number;
 }
 
+export interface PerformanceAgentRow {
+  agent: string;
+  isAi: boolean;
+  leadsAssigned: number;
+  leadsQualified: number;
+  conversionRate: number;
+  wonAmount?: number;
+}
+
+export interface SalesSummaryMetrics {
+  totalWonDeals: number;
+  totalWonRevenue: number;
+  averageTicket: number | null;
+  salesVelocityDays: number | null;
+}
+
 export interface AnalyticsDashboard {
   overview: OverviewMetrics;
   funnel: FunnelStage[];
   byTemperature: DistributionSlice[];
   bySource: DistributionSlice[];
-  byOwner: Array<DistributionSlice & { won: number }>;
+  byOwner: Array<DistributionSlice & { won: number; wonAmount?: number }>;
   activitiesByType: DistributionSlice[];
   activitiesByStatus: DistributionSlice[];
   monthly: MonthlyPoint[];
-  tmqMetric: number | null; // Tempo médio de qualificação em dias
+  tmqMetric: number | null;
   lostReasons: DistributionSlice[];
   callHeatmap: { dayOfWeek: number; hour: number; count: number }[];
-  performanceReport: {
-    agent: string;
-    isAi: boolean;
-    leadsAssigned: number;
-    leadsQualified: number;
-    conversionRate: number;
-  }[];
+  performanceReport: PerformanceAgentRow[];
+  salesSummary?: SalesSummaryMetrics;
   isEmpty: boolean;
 }
 
-/** Períodos oferecidos no filtro. O backend limita a 3–24 meses. */
 export const PERIOD_OPTIONS = [3, 6, 12, 24] as const;
 
 export const analyticsApi = {
@@ -52,12 +61,8 @@ export const analyticsApi = {
     api.get<AnalyticsDashboard>(`/api/analytics/dashboard?months=${months}`, {
       timeoutMs: 30_000,
     }),
+  salesSummary: () =>
+    api.get<SalesSummaryMetrics>('/api/analytics/sales-summary', {
+      timeoutMs: 15_000,
+    }),
 };
-
-/** Converte "2026-07" no rótulo curto usado nos eixos ("jul/26"). */
-export function formatMonthLabel(month: string): string {
-  const [year, m] = month.split('-').map(Number);
-  if (!year || !m) return month;
-  const date = new Date(year, m - 1, 1);
-  return date.toLocaleDateString('pt-BR', { month: 'short', year: '2-digit' }).replace('.', '');
-}

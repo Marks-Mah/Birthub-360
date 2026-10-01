@@ -1,20 +1,12 @@
-import { describe, it, expect, vi } from 'vitest';
-import {
-  AnalyticsUseCases,
-  buildCohortCsv,
-} from '@/features/analytics/application/AnalyticsUseCases';
+import { describe, expect, it, vi } from 'vitest';
+import { AnalyticsUseCases, buildCohortCsv } from '@/features/analytics/application/AnalyticsUseCases';
 import type {
   AnalyticsRepository,
   ClosedLead,
   CohortLeadRow,
+  FunnelStageData,
   GroupCount,
 } from '@/features/analytics/domain/Analytics';
-
-// Auditoria de forecast/BI (Onda 7, Agente 04): prova, no nível da camada realmente conectada à
-// rota `/api/analytics/dashboard` (AnalyticsUseCases + PrismaAnalyticsRepository via DI, ver
-// shared/di/setup.ts), que nenhum número de forecast/pipeline é fabricado, e que os widgets que
-// antes vinham sempre vazios (tmqMetric/lostReasons/callHeatmap/performanceReport) passam a
-// refletir dado real do repositório em vez de zero/[] hardcoded.
 
 function buildFakeRepository(overrides: Partial<AnalyticsRepository> = {}): AnalyticsRepository {
   const base: AnalyticsRepository = {
@@ -29,25 +21,30 @@ function buildFakeRepository(overrides: Partial<AnalyticsRepository> = {}): Anal
     countLeadsByStatus: vi.fn().mockResolvedValue(0),
     averageOpenLeadScore: vi.fn().mockResolvedValue(null),
     sumOpenPipelineValue: vi.fn().mockResolvedValue({ total: 0, count: 0 }),
+    sumWonRevenueSince: vi.fn().mockResolvedValue({ total: 0, count: 0 }),
+    sumAllWonRevenue: vi.fn().mockResolvedValue({ total: 0, count: 0 }),
     groupLeadsByStatus: vi.fn().mockResolvedValue([] as GroupCount[]),
+    groupFunnelWithAmounts: vi.fn().mockResolvedValue([] as FunnelStageData[]),
     findLeadsCreatedSince: vi.fn().mockResolvedValue([]),
     findLeadsClosedSince: vi.fn().mockResolvedValue([] as ClosedLead[]),
     groupLeadsByTemperature: vi.fn().mockResolvedValue([] as GroupCount[]),
     groupLeadsBySource: vi.fn().mockResolvedValue([] as GroupCount[]),
     groupLeadsByOwner: vi.fn().mockResolvedValue([] as GroupCount[]),
+    groupWonAmountByOwner: vi.fn().mockResolvedValue([] as GroupCount[]),
     groupQualifiedLeadsByOwner: vi.fn().mockResolvedValue([] as GroupCount[]),
     groupActivitiesByType: vi.fn().mockResolvedValue([] as GroupCount[]),
     groupActivitiesByStatus: vi.fn().mockResolvedValue([] as GroupCount[]),
     groupLostLeadsByReason: vi.fn().mockResolvedValue([] as GroupCount[]),
     findCallActivityTimestamps: vi.fn().mockResolvedValue([]),
     findLeadsForCohort: vi.fn().mockResolvedValue([] as CohortLeadRow[]),
+    calculateRealTmq: vi.fn().mockResolvedValue(null),
   };
   return { ...base, ...overrides };
 }
 
 const ORG = 'org-1';
 
-describe('AnalyticsUseCases.overview — pipelineValue', () => {
+describe('AnalyticsUseCases.overview — pipelineValue e vendas reais', () => {
   it('devolve null (não 0) quando nenhum lead em aberto tem amount preenchido', async () => {
     const repo = buildFakeRepository({
       sumOpenPipelineValue: vi.fn().mockResolvedValue({ total: 0, count: 0 }),
@@ -69,16 +66,64 @@ describe('AnalyticsUseCases.overview — pipelineValue', () => {
 
     expect(overview.pipelineValue).toBe(125000);
   });
+
+  it('calcula wonRevenueThisMonth e averageTicketThisMonth com dados reais de vendas', async () => {
+    const repo = buildFakeRepository({
+      countLeadsByStatusSince: vi.fn().mockResolvedValue(4),
+      sumWonRevenueSince: vi.fn().mockResolvedValue({ total: 200000, count: 4 }),
+      sumAllWonRevenue: vi.fn().mockResolvedValue({ total: 600000, count: 12 }),
+    });
+    const useCases = new AnalyticsUseCases(repo);
+
+    const overview = await useCases.overview(ORG);
+
+    expect(overview.closedThisMonth).toBe(4);
+    expect(overview.wonRevenueThisMonth).toBe(200000);
+    expect(overview.averageTicketThisMonth).toBe(50000);
+    expect(overview.totalWonRevenueEver).toBe(600000);
+  });
 });
 
-describe('AnalyticsUseCases.dashboard — tmqMetric nunca fabricado', () => {
-  it('tmqMetric é sempre null — não existe timestamp real de qualificação para o funil Lead', async () => {
+describe('AnalyticsUseCases.funnel — agregações com valores monetários', () => {
+  it('calcula conversão e volume financeiro real acumulado em cada etapa', async () => {
+    const repo = buildFakeRepository({
+      groupFunnelWithAmounts: vi.fn().mockResolvedValue([
+        { status: 'Lead_Recebido', count: 10, amount: 100000 },
+        { status: 'Qualificacao_SDR', count: 5, amount: 60000 },
+        { status: 'Negocios_Ganhos', count: 2, amount: 40000 },
+      ] as FunnelStageData[]),
+    });
+    const useCases = new AnalyticsUseCases(repo);
+
+    const funnel = await useCases.funnel(ORG);
+
+    expect(funnel.length).toBeGreaterThan(0);
+    const firstStage = funnel[0];
+    expect(firstStage.count).toBe(17);
+    expect(firstStage.amount).toBe(200000);
+  });
+});
+
+describe('AnalyticsUseCases.dashboard — tmqMetric e vendas reais', () => {
+  it('tmqMetric é null quando não há histórico de transição registrado', async () => {
     const repo = buildFakeRepository();
     const useCases = new AnalyticsUseCases(repo);
 
     const dashboard = await useCases.dashboard(ORG);
 
     expect(dashboard.tmqMetric).toBeNull();
+  });
+
+  it('tmqMetric reflete a média real de dias calculada pelo repositório', async () => {
+    const repo = buildFakeRepository({
+      calculateRealTmq: vi.fn().mockResolvedValue(4.5),
+    });
+    const useCases = new AnalyticsUseCases(repo);
+
+    const dashboard = await useCases.dashboard(ORG);
+
+    expect(dashboard.tmqMetric).toBe(4.5);
+    expect(dashboard.salesSummary?.salesVelocityDays).toBe(4.5);
   });
 });
 
@@ -101,7 +146,6 @@ describe('AnalyticsUseCases.dashboard — widgets antes hardcoded para vazio ago
   });
 
   it('callHeatmap agrupa os timestamps reais de ligação em (dia da semana, hora)', async () => {
-    // Quarta-feira (getDay()===3), 14h — fixado por data literal para não depender de timezone do CI.
     const wednesday14h = new Date('2026-08-12T14:30:00');
     const repo = buildFakeRepository({
       findCallActivityTimestamps: vi.fn().mockResolvedValue([wednesday14h, wednesday14h]),
@@ -118,19 +162,25 @@ describe('AnalyticsUseCases.dashboard — widgets antes hardcoded para vazio ago
   it('performanceReport calcula leadsQualified/conversionRate a partir de dois agrupamentos reais (atribuídos x qualificados)', async () => {
     const repo = buildFakeRepository({
       groupLeadsByOwner: vi.fn((_org: string, status?: string) => {
-        if (status) return Promise.resolve([]); // wonByOwnerRows não é usado neste teste
+        if (status) return Promise.resolve([]);
         return Promise.resolve([{ value: 'user-1', count: 10 }] as GroupCount[]);
       }),
-      groupQualifiedLeadsByOwner: vi
-        .fn()
-        .mockResolvedValue([{ value: 'user-1', count: 4 }] as GroupCount[]),
+      groupQualifiedLeadsByOwner: vi.fn().mockResolvedValue([{ value: 'user-1', count: 4 }] as GroupCount[]),
+      groupWonAmountByOwner: vi.fn().mockResolvedValue([{ value: 'user-1', count: 50000 }] as GroupCount[]),
     });
     const useCases = new AnalyticsUseCases(repo);
 
     const dashboard = await useCases.dashboard(ORG);
 
     expect(dashboard.performanceReport).toEqual([
-      { agent: 'user-1', isAi: false, leadsAssigned: 10, leadsQualified: 4, conversionRate: 40 },
+      {
+        agent: 'user-1',
+        isAi: false,
+        leadsAssigned: 10,
+        leadsQualified: 4,
+        conversionRate: 40,
+        wonAmount: 50000,
+      },
     ]);
   });
 
@@ -149,10 +199,6 @@ describe('AnalyticsUseCases.dashboard — widgets antes hardcoded para vazio ago
   });
 });
 
-// Onda 2 (Agente 04): `getCohort`/`exportPdf` devolviam 3 linhas fixas no código-fonte ("Fake
-// data just for the prototype") e um buffer de PDF inválido, para QUALQUER organização — nunca
-// rastreável a um dado real (ver AGENTS.md do módulo, "Não pode: Não fabricar KPI"). Substituído
-// por cálculo real sobre `Lead.createdAt`/`closedAt`/`status`.
 describe('AnalyticsUseCases.cohortAnalysis — nunca fabricado', () => {
   const NOW = new Date('2026-08-15T12:00:00Z');
 
@@ -162,12 +208,12 @@ describe('AnalyticsUseCases.cohortAnalysis — nunca fabricado', () => {
         createdAt: new Date('2026-07-01T00:00:00Z'),
         closedAt: new Date('2026-07-20T00:00:00Z'),
         status: 'Negocios_Ganhos',
-      }, // 19 dias
+      },
       {
         createdAt: new Date('2026-07-01T00:00:00Z'),
         closedAt: new Date('2026-08-15T00:00:00Z'),
         status: 'Negocios_Ganhos',
-      }, // 45 dias
+      },
       { createdAt: new Date('2026-07-01T00:00:00Z'), closedAt: null, status: 'Negocios_Perdidos' },
     ];
     const repo = buildFakeRepository({ findLeadsForCohort: vi.fn().mockResolvedValue(rows) });

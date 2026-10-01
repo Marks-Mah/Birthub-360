@@ -3,6 +3,7 @@ import type {
   AnalyticsRepository,
   ClosedLead,
   CohortLeadRow,
+  FunnelStageData,
   GroupCount,
 } from '../domain/Analytics.js';
 import { CLOSED_STATUSES } from '../domain/Analytics.js';
@@ -18,11 +19,7 @@ export class PrismaAnalyticsRepository implements AnalyticsRepository {
 
   async countOpenLeads(organizationId: string): Promise<number> {
     return prisma.lead.count({
-      where: {
-        organizationId,
-        deletedAt: null,
-        status: { notIn: CLOSED_STATUSES as unknown as never[] },
-      },
+      where: { organizationId, deletedAt: null, status: { notIn: CLOSED_STATUSES as unknown as never[] } },
     });
   }
 
@@ -35,34 +32,23 @@ export class PrismaAnalyticsRepository implements AnalyticsRepository {
   }
 
   async countPendingActivities(organizationId: string): Promise<number> {
-    return prisma.activity.count({
-      where: { organizationId, deletedAt: null, status: 'Pendente' },
-    });
+    return prisma.activity.count({ where: { organizationId, deletedAt: null, status: 'Pendente' } });
   }
 
-  // Atrasada = pendente com data no passado. É o número que o time comercial cobra.
   async countOverdueActivities(organizationId: string, now: Date): Promise<number> {
     return prisma.activity.count({
       where: { organizationId, deletedAt: null, status: 'Pendente', date: { lt: now } },
     });
   }
 
-  // closedAt (não updatedAt: esse é @updatedAt e sobe em QUALQUER update do lead — sync do
-  // Bitrix, uma ligação do SDR de voz tocando só lastInteraction — não só em fechamento).
-  async countLeadsByStatusSince(
-    organizationId: string,
-    status: string,
-    since: Date,
-  ): Promise<number> {
+  async countLeadsByStatusSince(organizationId: string, status: string, since: Date): Promise<number> {
     return prisma.lead.count({
       where: { organizationId, deletedAt: null, status: status as never, closedAt: { gte: since } },
     });
   }
 
   async countLeadsByStatus(organizationId: string, status: string): Promise<number> {
-    return prisma.lead.count({
-      where: { organizationId, deletedAt: null, status: status as never },
-    });
+    return prisma.lead.count({ where: { organizationId, deletedAt: null, status: status as never } });
   }
 
   async averageOpenLeadScore(organizationId: string): Promise<number | null> {
@@ -92,6 +78,35 @@ export class PrismaAnalyticsRepository implements AnalyticsRepository {
     return { total: aggregate._sum?.amount ?? 0, count };
   }
 
+  async sumWonRevenueSince(organizationId: string, since: Date): Promise<{ total: number; count: number }> {
+    const where = {
+      organizationId,
+      deletedAt: null,
+      status: 'Negocios_Ganhos' as never,
+      closedAt: { gte: since },
+      amount: { not: null },
+    } as const;
+    const [aggregate, count] = await Promise.all([
+      prisma.lead.aggregate({ where, _sum: { amount: true } }),
+      prisma.lead.count({ where }),
+    ]);
+    return { total: aggregate._sum?.amount ?? 0, count };
+  }
+
+  async sumAllWonRevenue(organizationId: string): Promise<{ total: number; count: number }> {
+    const where = {
+      organizationId,
+      deletedAt: null,
+      status: 'Negocios_Ganhos' as never,
+      amount: { not: null },
+    } as const;
+    const [aggregate, count] = await Promise.all([
+      prisma.lead.aggregate({ where, _sum: { amount: true } }),
+      prisma.lead.count({ where }),
+    ]);
+    return { total: aggregate._sum?.amount ?? 0, count };
+  }
+
   async groupLeadsByStatus(organizationId: string): Promise<GroupCount[]> {
     const rows = await prisma.lead.groupBy({
       by: ['status'],
@@ -101,17 +116,27 @@ export class PrismaAnalyticsRepository implements AnalyticsRepository {
     return rows.map((row) => ({ value: row.status, count: row._count._all }));
   }
 
-  async findLeadsCreatedSince(
-    organizationId: string,
-    since: Date,
-  ): Promise<Array<{ createdAt: Date }>> {
+  async groupFunnelWithAmounts(organizationId: string): Promise<FunnelStageData[]> {
+    const rows = await prisma.lead.groupBy({
+      by: ['status'],
+      where: { organizationId, deletedAt: null },
+      _count: { _all: true },
+      _sum: { amount: true },
+    });
+    return rows.map((row) => ({
+      status: row.status,
+      count: row._count._all,
+      amount: row._sum?.amount ?? 0,
+    }));
+  }
+
+  async findLeadsCreatedSince(organizationId: string, since: Date): Promise<Array<{ createdAt: Date }>> {
     return prisma.lead.findMany({
       where: { organizationId, deletedAt: null, createdAt: { gte: since } },
       select: { createdAt: true },
     });
   }
 
-  // closedAt (não updatedAt) — mesmo motivo de countLeadsByStatusSince acima.
   async findLeadsClosedSince(organizationId: string, since: Date): Promise<ClosedLead[]> {
     const rows = await prisma.lead.findMany({
       where: {
@@ -122,7 +147,6 @@ export class PrismaAnalyticsRepository implements AnalyticsRepository {
       },
       select: { closedAt: true, status: true },
     });
-    // closedAt não pode ser null aqui: a query acima já filtra `closedAt: { gte: since }`.
     return rows.map((row) => ({ closedAt: row.closedAt as Date, status: row.status }));
   }
 
@@ -153,6 +177,15 @@ export class PrismaAnalyticsRepository implements AnalyticsRepository {
     return rows.map((row) => ({ value: row.owner, count: row._count._all }));
   }
 
+  async groupWonAmountByOwner(organizationId: string): Promise<GroupCount[]> {
+    const rows = await prisma.lead.groupBy({
+      by: ['owner'],
+      where: { organizationId, deletedAt: null, status: 'Negocios_Ganhos' as never, amount: { not: null } },
+      _sum: { amount: true },
+    });
+    return rows.map((row) => ({ value: row.owner, count: row._sum?.amount ?? 0 }));
+  }
+
   async groupActivitiesByType(organizationId: string): Promise<GroupCount[]> {
     const rows = await prisma.activity.groupBy({
       by: ['type'],
@@ -171,22 +204,13 @@ export class PrismaAnalyticsRepository implements AnalyticsRepository {
     return rows.map((row) => ({ value: row.status, count: row._count._all }));
   }
 
-  // Mesmo recorte de "qualificado" da versão legada (analytics.service.ts): saiu das duas
-  // primeiras etapas do funil e não foi desqualificado. Não usa CLOSED_STATUSES porque um
-  // negócio GANHO/PERDIDO também passou por qualificação — só o desqualificado nunca qualificou.
   async groupQualifiedLeadsByOwner(organizationId: string): Promise<GroupCount[]> {
     const rows = await prisma.lead.groupBy({
       by: ['owner'],
       where: {
         organizationId,
         deletedAt: null,
-        status: {
-          notIn: [
-            'Lead_Recebido',
-            'Cadencia_Iniciada',
-            'Lead_Desqualificado',
-          ] as unknown as never[],
-        },
+        status: { notIn: ['Lead_Recebido', 'Cadencia_Iniciada', 'Lead_Desqualificado'] as unknown as never[] },
       },
       _count: { _all: true },
     });
@@ -213,11 +237,6 @@ export class PrismaAnalyticsRepository implements AnalyticsRepository {
     return rows.map((row) => ({ value: row.lossReason, count: row._count._all }));
   }
 
-  // 'Ligacao' é o valor real do enum ActivityType no Prisma (ver schema.prisma) — a versão
-  // legada deste método (analytics.service.ts) filtrava por `type: 'call'`, um valor que não
-  // existe no enum, então a consulta lá sempre devolvia zero linhas silenciosamente (heatmap
-  // sempre vazio, indistinguível de "nenhuma ligação registrada" mesmo com ligações reais no
-  // banco). Corrigido aqui para o valor real.
   async findCallActivityTimestamps(organizationId: string): Promise<Date[]> {
     const rows = await prisma.activity.findMany({
       where: { organizationId, deletedAt: null, type: 'Ligacao' },
@@ -231,10 +250,44 @@ export class PrismaAnalyticsRepository implements AnalyticsRepository {
       where: { organizationId, deletedAt: null, createdAt: { gte: since } },
       select: { createdAt: true, closedAt: true, status: true },
     });
-    return rows.map((row) => ({
-      createdAt: row.createdAt,
-      closedAt: row.closedAt,
-      status: row.status,
-    }));
+    return rows.map((row) => ({ createdAt: row.createdAt, closedAt: row.closedAt, status: row.status }));
+  }
+
+  async calculateRealTmq(organizationId: string): Promise<number | null> {
+    try {
+      const historyRows = await prisma.leadStageHistory.findMany({
+        where: {
+          organizationId,
+          stageName: { in: ['Qualificacao_SDR', 'Reuniao_Agendada', 'Nova_Oportunidade'] },
+        },
+        select: { leadId: true, enteredAt: true },
+        orderBy: { enteredAt: 'asc' },
+        take: 200,
+      });
+
+      if (historyRows.length === 0) return null;
+
+      const leadIds = [...new Set(historyRows.map((h) => h.leadId))];
+      const leads = await prisma.lead.findMany({
+        where: { organizationId, id: { in: leadIds }, deletedAt: null },
+        select: { id: true, createdAt: true },
+      });
+      const leadMap = new Map(leads.map((l) => [l.id, l.createdAt]));
+
+      const DAY_MS = 24 * 60 * 60 * 1000;
+      const durations: number[] = [];
+      for (const h of historyRows) {
+        const createdAt = leadMap.get(h.leadId);
+        if (createdAt) {
+          const diff = (h.enteredAt.getTime() - createdAt.getTime()) / DAY_MS;
+          if (diff >= 0 && diff <= 180) durations.push(diff);
+        }
+      }
+
+      if (durations.length === 0) return null;
+      return Math.round((durations.reduce((sum, d) => sum + d, 0) / durations.length) * 100) / 100;
+    } catch {
+      return null;
+    }
   }
 }
