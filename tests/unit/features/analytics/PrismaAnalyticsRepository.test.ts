@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('@/lib/prisma', () => ({
   prisma: {
@@ -6,19 +6,24 @@ vi.mock('@/lib/prisma', () => ({
       count: vi.fn(),
       aggregate: vi.fn(),
       groupBy: vi.fn(),
+      findMany: vi.fn(),
     },
     activity: {
+      findMany: vi.fn(),
+    },
+    leadStageHistory: {
       findMany: vi.fn(),
     },
   },
 }));
 
-import { prisma } from '@/lib/prisma';
-import { PrismaAnalyticsRepository } from '@/features/analytics/infra/PrismaAnalyticsRepository';
+import { prisma } from '@/lib/prisma.js';
+import { PrismaAnalyticsRepository } from '@/features/analytics/infra/PrismaAnalyticsRepository.js';
 
 type Mocked<T> = { [K in keyof T]: ReturnType<typeof vi.fn> };
 const lead = prisma.lead as unknown as Mocked<typeof prisma.lead>;
 const activity = prisma.activity as unknown as Mocked<typeof prisma.activity>;
+const stageHistory = prisma.leadStageHistory as unknown as Mocked<typeof prisma.leadStageHistory>;
 
 const repo = new PrismaAnalyticsRepository();
 const ORG = 'org-1';
@@ -39,7 +44,6 @@ describe('PrismaAnalyticsRepository.sumOpenPipelineValue', () => {
     const countWhere = lead.count.mock.calls[0][0].where;
     expect(aggregateWhere.amount).toEqual({ not: null });
     expect(countWhere.amount).toEqual({ not: null });
-    // Exclui ganho/perdido/desqualificado/piloto cancelado — não só ganho/perdido.
     expect(aggregateWhere.status.notIn).toEqual(
       expect.arrayContaining([
         'Negocios_Ganhos',
@@ -49,6 +53,32 @@ describe('PrismaAnalyticsRepository.sumOpenPipelineValue', () => {
         'Piloto_Logistico_Cancelado',
       ]),
     );
+  });
+});
+
+describe('PrismaAnalyticsRepository.sumWonRevenueSince', () => {
+  it('soma amount de leads ganhos fechados desde since', async () => {
+    lead.aggregate.mockResolvedValue({ _sum: { amount: 350000 } });
+    lead.count.mockResolvedValue(5);
+
+    const result = await repo.sumWonRevenueSince(ORG, new Date('2026-08-01'));
+
+    expect(result).toEqual({ total: 350000, count: 5 });
+    const where = lead.aggregate.mock.calls[0][0].where;
+    expect(where.status).toBe('Negocios_Ganhos');
+    expect(where.amount).toEqual({ not: null });
+  });
+});
+
+describe('PrismaAnalyticsRepository.groupFunnelWithAmounts', () => {
+  it('agrupa por status obtendo count e soma de amount', async () => {
+    lead.groupBy.mockResolvedValue([
+      { status: 'Lead_Recebido', _count: { _all: 10 }, _sum: { amount: 50000 } },
+    ]);
+
+    const result = await repo.groupFunnelWithAmounts(ORG);
+
+    expect(result).toEqual([{ status: 'Lead_Recebido', count: 10, amount: 50000 }]);
   });
 });
 

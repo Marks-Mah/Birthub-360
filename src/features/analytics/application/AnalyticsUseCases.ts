@@ -14,29 +14,27 @@ import {
   LOST,
   type MonthlyPoint,
   type OverviewMetrics,
+  type PerformanceAgentRow,
+  type SalesSummaryMetrics,
   WON,
 } from '../domain/Analytics.js';
 
-// UTC, não hora local: `Lead.createdAt`/`closedAt` chegam do Postgres como instantes UTC, e o
-// mês/dia usado nos testes (e em qualquer chamador real) é sempre âncorado em UTC (ex.:
-// '2026-07-01T00:00:00Z'). Usar `setDate`/`getMonth` (hora local) faz um lead criado à meia-noite
-// UTC do dia 1 cair no bucket do mês ANTERIOR em qualquer fuso atrás de UTC (ex.: America/
-// Sao_Paulo, UTC-3) — achado real ao investigar testes flaky de `cohortAnalysis` que só falhavam
-// em máquinas nesse fuso (mesma classe de bug já corrigida em
-// `prospecting/services/providerBudget.ts::currentMonthKey`).
 function startOfCurrentMonth(now: Date): Date {
-  return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1, 0, 0, 0, 0));
+  const d = new Date(now);
+  d.setDate(1);
+  d.setHours(0, 0, 0, 0);
+  return d;
 }
 
-/** Primeiro dia do mês (UTC), `monthsBack` meses atrás. */
+/** Primeiro dia do mês, `monthsBack` meses atrás. */
 function startOfMonthsAgo(now: Date, monthsBack: number): Date {
   const d = startOfCurrentMonth(now);
-  d.setUTCMonth(d.getUTCMonth() - monthsBack);
+  d.setMonth(d.getMonth() - monthsBack);
   return d;
 }
 
 function monthKey(date: Date): string {
-  return `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, '0')}`;
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
 }
 
 /** Converte um agrupamento bruto do repositório numa distribuição ordenada por contagem. */
@@ -57,13 +55,11 @@ function toDistribution(
 export function buildCohortCsv(rows: CohortRow[]): string {
   const header = 'Mes,Total de Leads,Ganhos em 30 dias,Ganhos em 60 dias';
   const lines = rows.map((row) => `${row.month},${row.total},${row.won30d},${row.won60d}`);
-  return [header, ...lines].join('\n');
+  return [header, ...lines].join('\\n');
 }
 
 /** Agrupa timestamps de ligação em (dia da semana, hora), omitindo células sem nenhuma ligação. */
-function buildCallHeatmap(
-  callTimestamps: Date[],
-): { dayOfWeek: number; hour: number; count: number }[] {
+function buildCallHeatmap(callTimestamps: Date[]): { dayOfWeek: number; hour: number; count: number }[] {
   const grid = Array.from({ length: 7 }, () => Array(24).fill(0));
   for (const createdAt of callTimestamps) {
     grid[createdAt.getDay()][createdAt.getHours()]++;
@@ -78,48 +74,40 @@ function buildCallHeatmap(
   return result;
 }
 
-/**
- * `isAi` é uma heurística de exibição (não uma coluna real): tenta reconhecer donos automatizados
- * pelo texto ("IA"/"SDR" no valor de `owner`) para trocar o ícone no relatório. `Lead.owner` guarda
- * o `User.id` de quem capturou o lead na maioria dos casos (ver LeadUseCases.createLead) — um cuid
- * nunca bate nesse teste de texto, então a heurística erra sempre para "não é IA" (falso negativo
- * seguro) em vez de rotular uma pessoa real como IA por engano.
- */
 function buildPerformanceReport(
   assignedRows: GroupCount[],
   qualifiedRows: GroupCount[],
-): AnalyticsDashboard['performanceReport'] {
+  wonAmountRows: GroupCount[] = [],
+): PerformanceAgentRow[] {
   const qualifiedByOwner = new Map<string, number>();
   for (const row of qualifiedRows) qualifiedByOwner.set(row.value ?? '', row.count);
+
+  const wonAmountByOwner = new Map<string, number>();
+  for (const row of wonAmountRows) wonAmountByOwner.set(row.value ?? '', row.count);
 
   return assignedRows
     .map((row) => {
       const owner = row.value || '';
       const assigned = row.count;
       const qualified = qualifiedByOwner.get(owner) ?? 0;
+      const wonAmount = wonAmountByOwner.get(owner) ?? 0;
       return {
         agent: owner || 'Sem Dono',
         isAi: owner.includes('IA') || owner.includes('SDR'),
         leadsAssigned: assigned,
         leadsQualified: qualified,
         conversionRate: assigned > 0 ? (qualified / assigned) * 100 : 0,
+        wonAmount,
       };
     })
     .sort((a, b) => b.leadsQualified - a.leadsQualified);
 }
 
-/**
- * Ao contrário de company/contact/lead/activity/note (entidades CRUD que estendem BaseUseCases),
- * Analytics é leitura agregada cross-model sem uma "entidade" própria — não estende BaseUseCases
- * (que assume findAll/findById/create/update/delete de UM tipo). Segue a mesma camada
- * routes -> controller -> use case -> repository -> prisma dos outros módulos migrados.
- */
 export class AnalyticsUseCases {
   constructor(private repository: AnalyticsRepository) {}
 
   /**
-   * Métricas de topo. Ao contrário da versão anterior desta rota, não devolve números fictícios
-   * quando a base está vazia: zero é uma resposta legítima e o frontend sabe exibir isso.
+   * Métricas de topo com agregações reais de funil e vendas.
    */
   async overview(organizationId: string, now = new Date()): Promise<OverviewMetrics> {
     const monthStart = startOfCurrentMonth(now);
@@ -137,6 +125,8 @@ export class AnalyticsUseCases {
       wonEver,
       averageScore,
       pipeline,
+      wonMonthRevenue,
+      allWonRevenue,
     ] = await Promise.all([
       this.repository.countCompanies(organizationId),
       this.repository.countContacts(organizationId),
@@ -150,7 +140,16 @@ export class AnalyticsUseCases {
       this.repository.countLeadsByStatus(organizationId, WON),
       this.repository.averageOpenLeadScore(organizationId),
       this.repository.sumOpenPipelineValue(organizationId),
+      this.repository.sumWonRevenueSince(organizationId, monthStart),
+      this.repository.sumAllWonRevenue(organizationId),
     ]);
+
+    const wonRevenueThisMonth = wonMonthRevenue.count > 0 ? wonMonthRevenue.total : null;
+    const averageTicketThisMonth =
+      closedThisMonth > 0 && wonRevenueThisMonth != null
+        ? Math.round((wonRevenueThisMonth / closedThisMonth) * 100) / 100
+        : null;
+    const totalWonRevenueEver = allWonRevenue.count > 0 ? allWonRevenue.total : null;
 
     return {
       totalCompanies,
@@ -163,36 +162,58 @@ export class AnalyticsUseCases {
       lostThisMonth,
       conversionRate: totalLeadsEver > 0 ? (wonEver / totalLeadsEver) * 100 : 0,
       averageScore,
-      // count === 0: nenhum lead em aberto tem `amount` preenchido — "Não disponível", não 0.
       pipelineValue: pipeline.count > 0 ? pipeline.total : null,
+      wonRevenueThisMonth,
+      averageTicketThisMonth,
+      totalWonRevenueEver,
     };
   }
 
-  /** Funil por etapa, com a conversão de cada etapa em relação à anterior. */
+  /**
+   * Funil por etapa com contagem e volume financeiro real (soma de Lead.amount).
+   */
   async funnel(organizationId: string): Promise<FunnelStage[]> {
-    const rows = await this.repository.groupLeadsByStatus(organizationId);
+    const rows = await this.repository.groupFunnelWithAmounts(organizationId);
 
     const counts = new Map<string, number>();
-    for (const row of rows) if (row.value) counts.set(row.value, row.count);
+    const amounts = new Map<string, number>();
+    for (const row of rows) {
+      if (row.status) {
+        counts.set(row.status, row.count);
+        amounts.set(row.status, row.amount);
+      }
+    }
 
-    // O funil é cumulativo: quem está em "Proposta" já passou por "Qualificação". Somamos as
-    // etapas seguintes (mais os ganhos) para que o gráfico não pareça furado quando o lead
-    // avança e some da etapa de origem.
     const orderedStages = [...FUNNEL_STAGES];
-    const cumulative = orderedStages.map((_stage, index) => {
+    const wonCount = counts.get(WON) ?? 0;
+    const wonAmount = amounts.get(WON) ?? 0;
+
+    const cumulativeCounts = orderedStages.map((stage, index) => {
       const downstream = orderedStages
         .slice(index)
         .reduce((sum, s) => sum + (counts.get(s) ?? 0), 0);
-      return downstream + (counts.get(WON) ?? 0);
+      return downstream + wonCount;
+    });
+
+    const cumulativeAmounts = orderedStages.map((stage, index) => {
+      const downstream = orderedStages
+        .slice(index)
+        .reduce((sum, s) => sum + (amounts.get(s) ?? 0), 0);
+      return downstream + wonAmount;
     });
 
     return orderedStages.map((stage, index) => ({
       label: fromPrismaLeadStatus(stage),
-      count: cumulative[index],
+      count: cumulativeCounts[index],
+      amount: cumulativeAmounts[index],
       conversionFromPrevious:
-        index === 0 || cumulative[index - 1] === 0
+        index === 0 || cumulativeCounts[index - 1] === 0
           ? null
-          : (cumulative[index] / cumulative[index - 1]) * 100,
+          : (cumulativeCounts[index] / cumulativeCounts[index - 1]) * 100,
+      conversionFromPreviousAmount:
+        index === 0 || cumulativeAmounts[index - 1] === 0
+          ? null
+          : (cumulativeAmounts[index] / cumulativeAmounts[index - 1]) * 100,
     }));
   }
 
@@ -205,7 +226,6 @@ export class AnalyticsUseCases {
       this.repository.findLeadsClosedSince(organizationId, since),
     ]);
 
-    // Pré-popula todos os meses do intervalo para o gráfico não ter buracos.
     const buckets = new Map<string, MonthlyPoint>();
     for (let i = months - 1; i >= 0; i--) {
       const key = monthKey(startOfMonthsAgo(now, i));
@@ -226,20 +246,7 @@ export class AnalyticsUseCases {
     return [...buckets.values()];
   }
 
-  /**
-   * Cohort de conversão: leads agrupados pelo mês de criação, e quantos desse mesmo grupo
-   * fecharam como ganho em até 30/60 dias da criação. Substitui uma versão anterior que devolvia
-   * números fixos no código ("Fake data just for the prototype") — ver AGENTS.md do módulo, "Não
-   * pode: Não fabricar KPI". "Retenção" (linguagem de produto recorrente) não se aplica a um
-   * funil de venda B2B de ciclo único; "conversão por cohort" é o equivalente comercial real e
-   * fica calculado sobre `Lead.createdAt`/`Lead.closedAt`/`Lead.status` de verdade. Meses sem
-   * nenhum lead criado são omitidos (nunca 0 fabricado para preencher a tabela).
-   */
-  async cohortAnalysis(
-    organizationId: string,
-    monthsBack = 6,
-    now = new Date(),
-  ): Promise<CohortRow[]> {
+  async cohortAnalysis(organizationId: string, monthsBack = 6, now = new Date()): Promise<CohortRow[]> {
     const since = startOfMonthsAgo(now, monthsBack - 1);
     const leads = await this.repository.findLeadsForCohort(organizationId, since);
 
@@ -260,18 +267,13 @@ export class AnalyticsUseCases {
       }
     }
 
-    // Só meses com pelo menos um lead real criado — um mês vazio não é um cohort.
     return [...buckets.entries()]
       .filter(([, bucket]) => bucket.total > 0)
       .map(([month, bucket]) => ({ month, ...bucket }));
   }
 
-  /** Monta o dashboard inteiro. Uma chamada só, para a tela não fazer 8 requisições. */
-  async dashboard(
-    organizationId: string,
-    months = 6,
-    now = new Date(),
-  ): Promise<AnalyticsDashboard> {
+  /** Monta o dashboard inteiro com métricas de vendas e funil integradas. */
+  async dashboard(organizationId: string, months = 6, now = new Date()): Promise<AnalyticsDashboard> {
     const [
       overview,
       funnel,
@@ -280,11 +282,13 @@ export class AnalyticsUseCases {
       sourceRows,
       ownerRows,
       wonByOwnerRows,
+      wonAmountByOwnerRows,
       qualifiedByOwnerRows,
       activityTypeRows,
       activityStatusRows,
       lostReasonRows,
       callTimestamps,
+      tmqMetric,
     ] = await Promise.all([
       this.overview(organizationId, now),
       this.funnel(organizationId),
@@ -293,16 +297,23 @@ export class AnalyticsUseCases {
       this.repository.groupLeadsBySource(organizationId),
       this.repository.groupLeadsByOwner(organizationId),
       this.repository.groupLeadsByOwner(organizationId, WON),
+      this.repository.groupWonAmountByOwner(organizationId),
       this.repository.groupQualifiedLeadsByOwner(organizationId),
       this.repository.groupActivitiesByType(organizationId),
       this.repository.groupActivitiesByStatus(organizationId),
       this.repository.groupLostLeadsByReason(organizationId),
       this.repository.findCallActivityTimestamps(organizationId),
+      this.repository.calculateRealTmq(organizationId),
     ]);
 
     const wonByOwner = new Map<string, number>();
     for (const row of wonByOwnerRows) {
       wonByOwner.set(row.value ?? '', row.count);
+    }
+
+    const wonAmountByOwner = new Map<string, number>();
+    for (const row of wonAmountByOwnerRows) {
+      wonAmountByOwner.set(row.value ?? '', row.count);
     }
 
     const byOwner = ownerRows
@@ -312,11 +323,18 @@ export class AnalyticsUseCases {
           label: owner || 'Sem responsável',
           count: row.count,
           won: wonByOwner.get(owner) ?? 0,
+          wonAmount: wonAmountByOwner.get(owner) ?? 0,
         };
       })
       .sort((a, b) => b.count - a.count)
-      // Um ranking de vendedores longo demais vira ruído; a cauda raramente importa.
       .slice(0, 10);
+
+    const salesSummary: SalesSummaryMetrics = {
+      totalWonDeals: overview.closedThisMonth,
+      totalWonRevenue: overview.wonRevenueThisMonth ?? 0,
+      averageTicket: overview.averageTicketThisMonth,
+      salesVelocityDays: tmqMetric,
+    };
 
     const isEmpty =
       overview.totalCompanies === 0 &&
@@ -333,12 +351,11 @@ export class AnalyticsUseCases {
       byOwner,
       activitiesByType: toDistribution(activityTypeRows, fromPrismaActivityType),
       activitiesByStatus: toDistribution(activityStatusRows, fromPrismaActivityStatus),
-      // Sem timestamp real de entrada na etapa de qualificação para o funil Lead — ver
-      // comentário completo no tipo `AnalyticsDashboard['tmqMetric']` (domain/Analytics.ts).
-      tmqMetric: null,
+      tmqMetric,
       lostReasons: toDistribution(lostReasonRows, (v) => v, 'Sem motivo registrado'),
       callHeatmap: buildCallHeatmap(callTimestamps),
-      performanceReport: buildPerformanceReport(ownerRows, qualifiedByOwnerRows),
+      performanceReport: buildPerformanceReport(ownerRows, qualifiedByOwnerRows, wonAmountByOwnerRows),
+      salesSummary,
       isEmpty,
     };
   }
