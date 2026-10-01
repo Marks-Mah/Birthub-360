@@ -23,6 +23,7 @@ import {
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../../../components/ui/Button.js';
+import { AiReasoningVisualizer } from '../../../components/ui/AiReasoningVisualizer.js';
 import { BRAND } from '../../../config/brand.js';
 import { PLAYBOOKS } from '../../../config/playbooks.js';
 import { useActivePlaybook } from '../../../hooks/useActivePlaybook.js';
@@ -125,12 +126,12 @@ export function FloatingChatbook({ isOpen, onClose }: FloatingChatbookProps) {
             className="fixed top-0 right-0 h-full w-[540px] max-w-[95vw] bg-surface-elevated/95 backdrop-blur-2xl border-l border-line/80 shadow-[0_25px_70px_rgba(0,0,0,0.6)] z-[1000] flex flex-col overflow-hidden text-ink"
           >
             {/* Linha de luz especular 2026 */}
-            <div className="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-brand to-transparent pointer-events-none z-20" />
+            <div className="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-[#7C3AED] to-transparent pointer-events-none z-20" />
 
             {/* Header Superior */}
             <div className="p-5 border-b border-line/80 bg-surface/70 backdrop-blur-md flex items-center justify-between sticky top-0 z-10">
               <div className="flex items-center gap-3">
-                <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-brand via-brand-2 to-brand flex items-center justify-center text-on-brand shadow-[0_0_20px_rgba(212,175,55,0.35)]">
+                <div className="w-11 h-11 rounded-2xl bg-[#7C3AED] flex items-center justify-center text-on-brand shadow-[0_0_20px_rgba(124,58,237,0.35)]">
                   <Bot className="w-6 h-6" />
                 </div>
                 <div>
@@ -232,7 +233,7 @@ export function FloatingChatbook({ isOpen, onClose }: FloatingChatbookProps) {
                       aria-pressed={searchMode === 'general'}
                       className={`px-3 py-1 rounded-lg font-bold transition-colors flex items-center gap-1 cursor-pointer ${
                         searchMode === 'general'
-                          ? 'bg-brand-active text-on-brand shadow-sm'
+                          ? 'bg-[#1677FF] text-white shadow-sm'
                           : 'text-ink-2 hover:text-ink'
                       }`}
                     >
@@ -244,7 +245,7 @@ export function FloatingChatbook({ isOpen, onClose }: FloatingChatbookProps) {
                       aria-pressed={searchMode === 'internal'}
                       className={`px-3 py-1 rounded-lg font-bold transition-colors flex items-center gap-1 cursor-pointer ${
                         searchMode === 'internal'
-                          ? 'bg-brand-active text-on-brand shadow-sm'
+                          ? 'bg-[#1677FF] text-white shadow-sm'
                           : 'text-ink-2 hover:text-ink'
                       }`}
                     >
@@ -263,7 +264,7 @@ export function FloatingChatbook({ isOpen, onClose }: FloatingChatbookProps) {
                       <div
                         className={`max-w-[88%] p-4 rounded-2xl text-xs space-y-2 leading-relaxed shadow-md ${
                           msg.sender === 'user'
-                            ? 'bg-brand-active text-on-brand rounded-br-none font-medium'
+                            ? 'bg-[#1677FF] text-white rounded-br-none font-medium'
                             : 'bg-surface-2 text-ink-2 border border-line rounded-bl-none'
                         }`}
                       >
@@ -280,10 +281,7 @@ export function FloatingChatbook({ isOpen, onClose }: FloatingChatbookProps) {
                   ))}
 
                   {isSearching && (
-                    <div className="flex items-center gap-2 text-xs text-brand-ink dark:text-brand bg-surface-2 p-3 rounded-2xl border border-line w-fit animate-pulse">
-                      <RefreshCw className="w-4 h-4 animate-spin" />
-                      <span>Consultando o motor Groq...</span>
-                    </div>
+                    <AiReasoningVisualizer />
                   )}
 
                   <div ref={messagesEndRef} />
@@ -513,7 +511,7 @@ export function FloatingChatbook({ isOpen, onClose }: FloatingChatbookProps) {
                         onClick={() => setPlaybookView('objections')}
                         className={`px-3 py-1 rounded-lg font-bold transition-colors cursor-pointer ${
                           playbookView === 'objections'
-                            ? 'bg-brand-active text-on-brand'
+                            ? 'bg-[#1677FF] text-white'
                             : 'text-ink-2 hover:text-ink'
                         }`}
                       >
@@ -524,7 +522,7 @@ export function FloatingChatbook({ isOpen, onClose }: FloatingChatbookProps) {
                         onClick={() => setPlaybookView('qualifications')}
                         className={`px-3 py-1 rounded-lg font-bold transition-colors cursor-pointer ${
                           playbookView === 'qualifications'
-                            ? 'bg-brand-active text-on-brand'
+                            ? 'bg-[#1677FF] text-white'
                             : 'text-ink-2 hover:text-ink'
                         }`}
                       >

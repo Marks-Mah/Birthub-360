@@ -11,10 +11,13 @@ import {
   Lock,
   Mail,
   ShieldCheck,
+  Moon,
+  Sun,
 } from 'lucide-react';
 import { useEffect, useId, useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../contexts/AuthContext.js';
+import { useTheme } from '../../../contexts/ThemeContext.js';
 import { authClient } from '../../../lib/auth-client.js';
 import { EASE_OUT_EXPO, staggerContainer, staggerItem } from '../../../lib/motion.js';
 import { SoundFX } from '../../../lib/soundEffects.js';
@@ -26,9 +29,9 @@ const PILLARS = [
   { id: '03', slug: 'ORCH', label: 'Orquestração', symbol: '⟶', color: '#0891B2' },
   { id: '04', slug: 'PERF', label: 'Performance', symbol: '▥', color: '#059669' },
   { id: '05', slug: 'FORE', label: 'Previsibilidade', symbol: '⌁', color: '#D4AF37' },
-  { id: '06', slug: 'AI', label: 'IA', symbol: '✦', color: '#C53678' },
-  { id: '07', slug: 'AUTO', label: 'Automação', symbol: '◇', color: '#0B132B' },
-  { id: '08', slug: 'ENG', label: 'Engajamento', symbol: '◌', color: '#64748B' },
+  { id: '06', slug: 'AI', label: 'Inteligência Artificial', symbol: '✦', color: '#C53678' },
+  { id: '07', slug: 'AUTO', label: 'Automação', symbol: '◇', color: '#64748B' },
+  { id: '08', slug: 'ENG', label: 'Engajamento', symbol: '◌', color: '#94A3B8' },
 ] as const;
 
 // ─── Sistema visual BH360 Mark (símbolo reduzido) ────────────────────────────
@@ -83,7 +86,7 @@ function BH360Mark({ size = 40, animated = false }: { size?: number; animated?: 
 
       {/* B serifado */}
       <path
-        fill="#FAFAFA"
+        fill="var(--ink)"
         transform="matrix(0.0740 0 0 -0.0740 104.45 154.20)"
         d="M450.4 707Q574.2 707 627.9 670.8Q681.6 634.6 681.6 573.4Q681.6 520.8 646.8 476.7Q612 432.6 547 404.5Q482 376.4 391 370.8Q511 369.4 573.8 326.1Q636.6 282.8 636.6 218.2Q636.6 165.8 612.2 125.1Q587.8 84.4 543.2 56.4Q498.6 28.4 436 14.2Q373.4 0 297 0Q267.8 0 227.6 1.5Q187.4 3 121 3Q94.8 3 63.8 2.5Q32.8 2 3.7 1.5Q-25.4 1 -45 0L-41 20Q-7 22 12 28Q31 34 42 52Q53 70 62 106L194 602Q201.8 632.8 202.4 651.3Q203 669.8 188.5 678.5Q174 687.2 135 688L140 708Q159.6 707 188.2 706.5Q216.8 706 247.7 705.5Q278.6 705 303 705Q353.2 705 385.7 706Q418.2 707 450.4 707ZM266 359 270 376H339.2Q393.8 376 430.6 407.9Q467.4 439.8 486.2 490.8Q505 541.8 505 596.8Q505 636.6 491.5 662.3Q478 688 438.6 688Q413 688 401 674.1Q389 660.2 378 617L243 106Q238.2 86.4 235.7 67.1Q233.2 47.8 242.2 35.4Q251.2 23 278.8 23Q331.6 23 368.9 53.4Q406.2 83.8 426.6 132.9Q447 182 447 237.2Q447 270.4 437.2 297.9Q427.4 325.4 404.3 342.2Q381.2 359 341.6 359Z"
       />
@@ -133,7 +136,7 @@ function PillarStrip() {
   const reduceMotion = useReducedMotion();
 
   return (
-    <div className="flex flex-col gap-1 w-full" role="list" aria-label="8 pilares Birth Hub 360">
+    <div className="grid grid-cols-2 gap-x-3 gap-y-1.5 w-full" role="list" aria-label="8 pilares Birth Hub 360">
       {PILLARS.map((p, i) => (
         <motion.div
           key={p.id}
@@ -165,13 +168,13 @@ function PillarStrip() {
 
           {/* ID + símbolo */}
           <span
-            className="font-mono text-[9px] font-bold tracking-widest opacity-40 w-5 shrink-0 text-right"
+            className="font-mono text-[10px] font-bold tracking-widest opacity-40 w-5 shrink-0 text-right"
             style={{ color: p.color }}
           >
             {p.id}
           </span>
           <span
-            className="text-sm w-4 shrink-0 text-center transition-transform duration-200"
+            className="text-base w-4 shrink-0 text-center transition-transform duration-200"
             style={{
               color: p.color,
               transform: active === i && !reduceMotion ? 'scale(1.25)' : 'scale(1)',
@@ -183,11 +186,11 @@ function PillarStrip() {
 
           {/* Label + slug */}
           <span className="flex items-baseline gap-2 min-w-0">
-            <span className="font-sans text-xs font-medium text-[var(--ink-2)] truncate">
+            <span className="font-sans text-sm font-semibold text-white/60 group-hover:text-white/90 transition-colors leading-tight">
               {p.label}
             </span>
             <span
-              className="font-mono text-[8px] tracking-widest opacity-0 group-hover:opacity-60 transition-opacity"
+              className="font-mono text-[9px] tracking-widest opacity-0 group-hover:opacity-50 transition-opacity hidden sm:inline"
               style={{ color: p.color }}
             >
               {p.slug}
@@ -257,6 +260,7 @@ function SystemStatusBar({ dateLabel, timeLabel }: { dateLabel: string; timeLabe
 export function LandingLoginSplitScreen() {
   const navigate = useNavigate();
   const { currentUser, isPending } = useAuth();
+  const { theme, toggleTheme } = useTheme();
 
   // Auth Form State
   const [email, setEmail] = useState('');
@@ -348,8 +352,8 @@ export function LandingLoginSplitScreen() {
 
   // ─── Input classes ────────────────────────────────────────────────────────
   const inputCls =
-    'w-full h-[44px] rounded-[var(--radius-control)] border border-[var(--line)] bg-[var(--surface)] ' +
-    'px-4 font-mono text-sm text-[var(--ink)] placeholder-[var(--ink-2)]/50 ' +
+    'w-full h-[48px] rounded-[var(--radius-control)] border border-[var(--line)] bg-[var(--surface)] ' +
+    'px-4 font-mono text-base text-[var(--ink)] placeholder-[var(--ink-2)]/50 ' +
     'focus:border-[#1677FF] focus:outline-none focus:ring-2 focus:ring-[#1677FF]/20 transition-colors';
 
   // ══════════════════════════════════════════════════════════════════════════
@@ -360,73 +364,98 @@ export function LandingLoginSplitScreen() {
           Base: Obsidian / Midnight. Blue e Iris como informação. Gold = accent.
       ════════════════════════════════════════════════════════════════════ */}
       <div
-        className="relative flex flex-col lg:w-[480px] lg:min-w-[400px] xl:w-[520px] w-full overflow-hidden px-6 py-8 lg:py-10"
-        style={{ background: '#0B132B' }}
+        className="relative flex flex-col lg:w-[55%] w-full overflow-hidden px-10 py-10 lg:px-16 lg:py-14"
+        style={{ background: 'linear-gradient(135deg, #060d1a 0%, #0B132B 50%, #0d1535 100%)' }}
       >
-        {/* ── Grid estrutural (Obsidian + azul mínimo) ──────────────────── */}
+        {/* ── Grid estrutural ──────────────────── */}
         <div
           className="pointer-events-none absolute inset-0 z-0"
           aria-hidden="true"
           style={{
             backgroundImage:
-              'linear-gradient(rgba(22,119,255,0.04) 1px, transparent 1px), ' +
-              'linear-gradient(90deg, rgba(22,119,255,0.04) 1px, transparent 1px)',
-            backgroundSize: '48px 48px',
+              'linear-gradient(rgba(22,119,255,0.07) 1px, transparent 1px), ' +
+              'linear-gradient(90deg, rgba(22,119,255,0.07) 1px, transparent 1px)',
+            backgroundSize: '56px 56px',
           }}
         />
 
-        {/* ── Halo de dados — canto inferior direito, sutil ─────────────── */}
+        {/* ── Halo de dados — canto inferior direito ─────────────── */}
         <div
-          className="pointer-events-none absolute bottom-0 right-0 w-64 h-64 z-0"
+          className="pointer-events-none absolute bottom-0 right-0 w-[500px] h-[500px] z-0"
           aria-hidden="true"
           style={{
             background:
-              'radial-gradient(ellipse at 80% 90%, rgba(22,119,255,0.12) 0%, transparent 65%)',
+              'radial-gradient(ellipse at 70% 80%, rgba(22,119,255,0.18) 0%, transparent 60%)',
           }}
         />
         {/* ── Halo IA — canto superior esquerdo ─────────────────────────── */}
         <div
-          className="pointer-events-none absolute top-0 left-0 w-48 h-48 z-0"
+          className="pointer-events-none absolute top-0 left-0 w-[400px] h-[400px] z-0"
           aria-hidden="true"
           style={{
             background:
-              'radial-gradient(ellipse at 20% 10%, rgba(124,58,237,0.10) 0%, transparent 65%)',
+              'radial-gradient(ellipse at 20% 10%, rgba(124,58,237,0.20) 0%, transparent 60%)',
+          }}
+        />
+        {/* ── Halo gold — centro ─────────────────────────────── */}
+        <div
+          className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] z-0"
+          aria-hidden="true"
+          style={{
+            background:
+              'radial-gradient(ellipse at 50% 50%, rgba(212,175,55,0.05) 0%, transparent 70%)',
           }}
         />
 
         {/* ── Data flow lines — background animado ──────────────────────── */}
-        <div className="pointer-events-none absolute inset-0 z-0 opacity-100" aria-hidden="true">
+        <div className="pointer-events-none absolute inset-0 z-0 opacity-60" aria-hidden="true">
           <DataFlowLines />
         </div>
 
+
         {/* ── Header: BH360 Mark + Sistema ──────────────────────────────── */}
-        <header className="relative z-20 flex items-center justify-between mb-8">
+        <header className="relative z-20 flex items-center justify-between mb-10">
           <button
             type="button"
             onClick={() => {
               SoundFX.play('confirm');
               navigate('/');
             }}
-            className="flex items-center gap-3 group focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1677FF]/60 rounded-lg"
+            className="flex items-center gap-4 group focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1677FF]/60 rounded-lg"
             aria-label="Ir para página inicial Birth Hub 360"
           >
-            <BH360Mark size={36} animated />
-            <div className="flex flex-col gap-0.5">
-              <span className="font-display text-sm font-bold text-white leading-none tracking-tight">
-                Birth Hub
-                <span className="text-[#D4AF37] ml-1">360°</span>
+            <BH360Mark size={56} animated />
+            <div className="flex flex-col gap-1">
+              <span className="font-display text-xl font-bold text-white leading-none tracking-tight">
+                Birth Hub<span className="text-[#D4AF37] ml-1">360°</span>
               </span>
-              <span className="font-mono text-[8px] uppercase tracking-[0.2em] text-white/40">
+              <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-white/50">
                 Command Center
               </span>
             </div>
           </button>
         </header>
 
+
         {/* ── Status Bar ─────────────────────────────────────────────────── */}
-        <div className="relative z-20 mb-6">
-          <SystemStatusBar dateLabel={dateLabel} timeLabel={timeLabel} />
-          <div className="h-px w-full bg-gradient-to-r from-[#1677FF]/30 via-[#7C3AED]/20 to-transparent mt-2" />
+        <div className="relative z-20 mb-8">
+          <div className="flex items-center justify-between w-full py-2">
+            <div className="flex items-center gap-2">
+              <span className="relative flex h-1.5 w-1.5 shrink-0">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-green-400" />
+              </span>
+              <span className="font-mono text-[9px] font-bold uppercase tracking-[0.18em] text-green-400">LIVE</span>
+              <span className="w-px h-3 bg-white/10 mx-1" aria-hidden="true" />
+              <span className="font-mono text-[9px] uppercase tracking-widest text-white/40">Sistema Online</span>
+            </div>
+            <div className="hidden md:flex items-center gap-1.5 font-mono text-[9px] text-white/40 tabular-nums">
+              <span>{dateLabel}</span>
+              <span className="opacity-40">|</span>
+              <span className="font-bold text-white/70">{timeLabel}</span>
+            </div>
+          </div>
+          <div className="h-px w-full bg-gradient-to-r from-[#1677FF]/40 via-[#7C3AED]/30 to-transparent" />
         </div>
 
         {/* ── Hero Typeset ───────────────────────────────────────────────── */}
@@ -436,48 +465,58 @@ export function LandingLoginSplitScreen() {
           variants={staggerContainer(0.08)}
           className="relative z-20 flex-1 flex flex-col justify-center gap-5 mb-6"
         >
-          {/* Eyebrow — categoria sem dourado */}
+          {/* Eyebrow — posicionamento amplo */}
           <motion.p
             variants={staggerItem}
-            className="font-mono text-[9px] font-bold uppercase tracking-[0.25em] text-[#1677FF]"
+            className="font-mono text-[11px] font-bold uppercase tracking-[0.3em] text-[#1677FF]"
           >
-            Revenue Intelligence Platform
+            Sistema Operacional Comercial
           </motion.p>
 
-          {/* Headline — Snow, sem dourado em cima */}
+          {/* Headline — conceito oficial */}
           <motion.h1
             variants={staggerItem}
-            className="font-display text-3xl sm:text-4xl lg:text-[2.25rem] font-bold tracking-tight text-white leading-[1.1]"
+            className="font-display text-5xl sm:text-6xl lg:text-[4rem] xl:text-[4.5rem] font-bold tracking-tight text-white leading-[1.05]"
           >
-            Inteligência que
+            Dados que
             <br />
-            <span className="text-[#1677FF]">decide.</span> Dados que
+            <span className="text-[#1677FF]">Conectam.</span>
             <br />
+            Inteligência que{' '}
             <span
               className="bg-clip-text text-transparent"
               style={{
                 backgroundImage: 'linear-gradient(90deg, #7C3AED 0%, #D4AF37 100%)',
               }}
             >
-              acontecem.
+              Decide.
             </span>
           </motion.h1>
 
-          {/* Tagline operacional */}
+          {/* Sub-headline — a promessa de resultado */}
           <motion.p
             variants={staggerItem}
-            className="font-mono text-xs text-white/50 max-w-xs leading-relaxed"
+            className="font-display text-xl font-light text-white/50 tracking-tight"
           >
-            CRM · Pipeline · IA · Forecast · Automação
-            <br />
-            em um único Command Center.
+            Resultados que Acontecem.
           </motion.p>
 
+          {/* Tagline arquitetural */}
+          <motion.p
+            variants={staggerItem}
+            className="font-mono text-[11px] text-white/40 max-w-sm leading-relaxed"
+          >
+            CRM · Pipeline · Inteligência · Forecast · Automação · IA · Voz · Engajamento
+            <br />
+            Oito pilares. Um sistema operacional comercial integrado.
+          </motion.p>
+
+
           {/* Separador com metáfora de fluxo */}
-          <motion.div variants={staggerItem} className="flex items-center gap-3 my-1">
+          <motion.div variants={staggerItem} className="flex items-center gap-4 my-1">
             <div className="h-px flex-1 bg-gradient-to-r from-[#1677FF]/40 to-transparent" />
-            <span className="font-mono text-[8px] text-white/30 uppercase tracking-widest">
-              8 pilares
+            <span className="font-mono text-[9px] text-white/30 uppercase tracking-widest">
+              8 pilares integrados
             </span>
             <div className="h-px flex-1 bg-gradient-to-l from-[#7C3AED]/40 to-transparent" />
           </motion.div>
@@ -489,9 +528,9 @@ export function LandingLoginSplitScreen() {
         </motion.div>
 
         {/* ── Footer institucional ────────────────────────────────────────── */}
-        <div className="relative z-20 pt-4 border-t border-white/8">
-          <p className="font-mono text-[8px] uppercase tracking-[0.2em] text-white/25">
-            Birth Hub 360° · Centro de Comando para Operações de Receita
+        <div className="relative z-20 pt-6 border-t border-white/10">
+          <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/30">
+            Birth Hub 360° · Sistema Operacional para Operações Comerciais
           </p>
         </div>
       </div>
@@ -500,42 +539,73 @@ export function LandingLoginSplitScreen() {
           LADO DIREITO — Formulário de acesso
           Base: var(--bg) / var(--surface). Neutro, limpo, informação.
       ════════════════════════════════════════════════════════════════════ */}
-      <div className="flex-1 flex flex-col items-center justify-center relative bg-[var(--bg)] px-6 py-10 w-full">
-        {/* Indicador de versão / session — canto superior direito */}
-        <div className="absolute top-6 right-6 hidden sm:flex items-center gap-2 font-mono text-[9px] text-[var(--ink-2)] uppercase tracking-widest">
-          <span
-            className="inline-block w-1.5 h-1.5 rounded-full bg-[var(--ok)]"
-            aria-hidden="true"
-          />
-          BH360 · v4
+      <div className="flex-1 flex flex-col items-center justify-center relative bg-[#080f1f] px-8 py-12 w-full">
+        {/* Subtle radial gradient for depth */}
+        <div
+          className="pointer-events-none absolute inset-0 z-0"
+          style={{ background: 'radial-gradient(ellipse at 50% 40%, rgba(22,119,255,0.06) 0%, transparent 65%)' }}
+        />
+
+        {/* Top actions — canto superior direito */}
+        <div className="absolute top-6 right-6 hidden sm:flex items-center gap-4">
+          <button
+            type="button"
+            onClick={() => {
+              SoundFX.play('click');
+              toggleTheme();
+            }}
+            className="text-white/40 hover:text-white transition-colors p-1.5 rounded-md hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1677FF]"
+            aria-label={theme === 'dark' ? 'Mudar para tema claro' : 'Mudar para tema escuro'}
+            title={theme === 'dark' ? 'Mudar para tema claro' : 'Mudar para tema escuro'}
+          >
+            {theme === 'dark' ? <Sun size={16} strokeWidth={2} /> : <Moon size={16} strokeWidth={2} />}
+          </button>
+
+          <div className="flex items-center gap-2 font-mono text-[9px] text-white/30 uppercase tracking-widest">
+            <span
+              className="inline-block w-1.5 h-1.5 rounded-full bg-green-400"
+              aria-hidden="true"
+            />
+            BH360 · v4
+          </div>
         </div>
 
-        <div className="w-full max-w-[400px] z-10">
+        <div className="w-full max-w-[420px] z-10">
           {/* ── Header do formulário ──────────────────────────────────────── */}
           <motion.div
-            className="mb-7"
+            className="mb-8"
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, ease: EASE_OUT_EXPO }}
           >
-            <h2 className="font-display text-2xl font-bold tracking-tight text-[var(--ink)] mb-1">
+            <h2 className="font-display text-[2rem] font-bold tracking-tight text-white mb-1.5">
               {isSignUp ? 'Criar conta' : 'Acessar conta'}
             </h2>
-            <p className="font-mono text-[11px] text-[var(--ink-2)] uppercase tracking-wider">
-              {isSignUp ? 'Preencha seus dados para começar' : 'Central de Inteligência Comercial'}
+            <p className="font-mono text-xs text-white/40 uppercase tracking-wider mb-3">
+              {isSignUp ? 'Preencha seus dados para começar' : 'Acesse o sistema operacional comercial'}
             </p>
+            {!isSignUp && (
+              <p className="font-mono text-[11px] text-white/30 leading-relaxed border-l-2 border-[#1677FF]/30 pl-3">
+                8 pilares integrados em uma única plataforma — do CRM à IA, da prospecção ao engajamento.
+              </p>
+            )}
           </motion.div>
 
           {/* ── Card do formulário ────────────────────────────────────────── */}
           <motion.div
-            className="bg-[var(--surface)] rounded-2xl border border-[var(--line)] shadow-[var(--shadow-card)] overflow-hidden"
+            className="rounded-2xl border border-white/10 overflow-hidden"
+            style={{
+              background: 'rgba(255,255,255,0.04)',
+              backdropFilter: 'blur(24px)',
+              boxShadow: '0 0 0 1px rgba(255,255,255,0.06), 0 32px 64px rgba(0,0,0,0.5), 0 0 80px rgba(22,119,255,0.08)',
+            }}
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.06, ease: EASE_OUT_EXPO }}
           >
             {/* Tabs */}
             <div
-              className="flex border-b border-[var(--line)]"
+              className="flex border-b border-white/8"
               role="tablist"
               aria-label="Método de acesso"
             >
@@ -547,7 +617,7 @@ export function LandingLoginSplitScreen() {
                   aria-selected={activeTab === tab}
                   onClick={() => setActiveTab(tab)}
                   className={[
-                    'flex-1 py-3.5 text-[10px] font-bold uppercase tracking-wider transition-colors relative font-mono',
+                    'flex-1 py-3.5 text-xs font-bold uppercase tracking-wider transition-colors relative font-mono',
                     activeTab === tab
                       ? 'text-[#1677FF]'
                       : 'text-[var(--ink-2)] hover:text-[var(--ink)]',
@@ -636,7 +706,7 @@ export function LandingLoginSplitScreen() {
                     <button
                       type="submit"
                       disabled={isSubmitting || !email}
-                      className="w-full h-[44px] rounded-[var(--radius-control)] bg-[#1677FF] text-white text-sm font-extrabold uppercase tracking-wide shadow-lg transition-all hover:bg-[#1565E0] disabled:opacity-50 flex items-center justify-center"
+                      className="w-full h-[48px] rounded-[var(--radius-control)] bg-[#1677FF] text-white text-base font-extrabold uppercase tracking-wide shadow-lg transition-all hover:bg-[#1565E0] disabled:opacity-50 flex items-center justify-center"
                     >
                       {isSubmitting ? (
                         <Loader2 className="animate-spin mx-auto h-5 w-5" aria-hidden="true" />
@@ -671,7 +741,7 @@ export function LandingLoginSplitScreen() {
                     <div>
                       <label
                         htmlFor="login-name"
-                        className="block font-mono text-[10px] font-semibold text-[var(--ink-2)] mb-1.5 uppercase tracking-wide"
+                        className="block font-mono text-[11px] font-semibold text-[var(--ink-2)] mb-1.5 uppercase tracking-wide"
                       >
                         Nome completo
                       </label>
@@ -694,7 +764,7 @@ export function LandingLoginSplitScreen() {
                     <div>
                       <label
                         htmlFor="login-email"
-                        className="block font-mono text-[10px] font-semibold text-[var(--ink-2)] mb-1.5 uppercase tracking-wide"
+                        className="block font-mono text-[11px] font-semibold text-[var(--ink-2)] mb-1.5 uppercase tracking-wide"
                       >
                         E-mail
                       </label>
@@ -725,7 +795,7 @@ export function LandingLoginSplitScreen() {
                     <div>
                       <label
                         htmlFor="login-password"
-                        className="block font-mono text-[10px] font-semibold text-[var(--ink-2)] mb-1.5 uppercase tracking-wide"
+                        className="block font-mono text-[11px] font-semibold text-[var(--ink-2)] mb-1.5 uppercase tracking-wide"
                       >
                         Senha
                       </label>
@@ -764,7 +834,7 @@ export function LandingLoginSplitScreen() {
 
                   {!isSignUp && (
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                      <label className="flex items-center gap-2 cursor-pointer font-mono text-[10px] font-semibold text-[var(--ink-2)]">
+                      <label className="flex items-center gap-2 cursor-pointer font-mono text-[11px] font-semibold text-[var(--ink-2)]">
                         <input
                           type="checkbox"
                           checked={rememberMe}
@@ -779,7 +849,7 @@ export function LandingLoginSplitScreen() {
                           setIsForgotPassword(true);
                           setError('');
                         }}
-                        className="font-mono text-[10px] font-bold text-[var(--ink-2)] hover:text-[#1677FF] transition-colors sm:text-right"
+                        className="font-mono text-[11px] font-bold text-[var(--ink-2)] hover:text-[#1677FF] transition-colors sm:text-right"
                       >
                         Esqueci minha senha
                       </button>
@@ -790,7 +860,7 @@ export function LandingLoginSplitScreen() {
                   <button
                     type="submit"
                     disabled={isSubmitting || !email || !password}
-                    className="w-full h-[44px] rounded-[var(--radius-control)] bg-[#1677FF] text-white text-sm font-extrabold uppercase tracking-wide shadow-lg transition-all hover:bg-[#1565E0] active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1677FF]"
+                    className="w-full h-[48px] rounded-[var(--radius-control)] bg-[#1677FF] text-white text-base font-extrabold uppercase tracking-wide shadow-lg transition-all hover:bg-[#1565E0] active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1677FF]"
                   >
                     {isSubmitting ? (
                       <Loader2 className="animate-spin h-5 w-5" aria-hidden="true" />
@@ -815,7 +885,7 @@ export function LandingLoginSplitScreen() {
                       setError('');
                       setName('');
                     }}
-                    className="font-mono text-[10px] font-bold text-[var(--ink-2)] hover:text-[#1677FF] transition-colors"
+                    className="font-mono text-[11px] font-bold text-[var(--ink-2)] hover:text-[#1677FF] transition-colors"
                   >
                     {isSignUp ? 'Já tem conta? Fazer login' : 'Não tem conta? Criar conta'}
                   </button>
@@ -837,7 +907,7 @@ export function LandingLoginSplitScreen() {
                   <div className="grid grid-cols-3 gap-2.5">
                     <button
                       type="button"
-                      className="flex items-center justify-center gap-1.5 rounded-[var(--radius-control)] border border-[var(--line)] py-2.5 text-[10px] font-semibold text-[var(--ink)] hover:bg-[var(--surface-2)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#1677FF]"
+                      className="flex items-center justify-center gap-1.5 rounded-[var(--radius-control)] border border-[var(--line)] py-2.5 text-[11px] font-semibold text-[var(--ink)] hover:bg-[var(--surface-2)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#1677FF]"
                       aria-label="Entrar com Google"
                     >
                       <svg viewBox="0 0 24 24" className="w-3.5 h-3.5" aria-hidden="true">
@@ -862,7 +932,7 @@ export function LandingLoginSplitScreen() {
                     </button>
                     <button
                       type="button"
-                      className="flex items-center justify-center gap-1.5 rounded-[var(--radius-control)] border border-[var(--line)] py-2.5 text-[10px] font-semibold text-[var(--ink)] hover:bg-[var(--surface-2)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#1677FF]"
+                      className="flex items-center justify-center gap-1.5 rounded-[var(--radius-control)] border border-[var(--line)] py-2.5 text-[11px] font-semibold text-[var(--ink)] hover:bg-[var(--surface-2)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#1677FF]"
                       aria-label="Entrar com Microsoft"
                     >
                       <svg viewBox="0 0 21 21" className="w-3.5 h-3.5" aria-hidden="true">
@@ -875,7 +945,7 @@ export function LandingLoginSplitScreen() {
                     </button>
                     <button
                       type="button"
-                      className="flex items-center justify-center gap-1.5 rounded-[var(--radius-control)] border border-[var(--line)] py-2.5 text-[10px] font-semibold text-[var(--ink)] hover:bg-[var(--surface-2)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#1677FF]"
+                      className="flex items-center justify-center gap-1.5 rounded-[var(--radius-control)] border border-[var(--line)] py-2.5 text-[11px] font-semibold text-[var(--ink)] hover:bg-[var(--surface-2)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#1677FF]"
                       aria-label="Entrar com SSO"
                     >
                       <Lock className="w-3.5 h-3.5 text-[var(--ink-2)]" aria-hidden="true" />

@@ -52,61 +52,7 @@ function moduleMeta(moduleKey: string): { label: string; icon: typeof Layers } {
   return meta ?? { label: moduleKey, icon: Layers };
 }
 
-function WorkspaceKpiCard({ kpi }: { kpi: WorkspaceKpi }) {
-  const statusMeta = KPI_STATUS_META[kpi.status];
-  return (
-    <div className="rounded-card border border-line bg-surface p-4 shadow-card">
-      <div className="flex items-start justify-between gap-2">
-        <div>
-          <p className="text-sm font-bold text-ink">{kpi.label}</p>
-          {kpi.domain && (
-            <p className="mt-0.5 text-[10px] font-bold uppercase tracking-wide text-ink-2">
-              {kpi.domain}
-            </p>
-          )}
-        </div>
-        <Badge variant={statusMeta.badge}>{statusMeta.label}</Badge>
-      </div>
-      {kpi.description && <p className="mt-2 text-xs text-ink-2">{kpi.description}</p>}
-    </div>
-  );
-}
 
-function ModuleLink({
-  item,
-  onNavigate,
-  variant = 'nav',
-}: {
-  item: WorkspaceModule | WorkspaceQuickAction;
-  onNavigate: (moduleKey: string) => void;
-  variant?: 'nav' | 'quick';
-}) {
-  const { label, icon: Icon } = moduleMeta(item.moduleKey);
-  const displayLabel = 'label' in item ? item.label : label;
-
-  return (
-    <button
-      type="button"
-      disabled={item.locked}
-      onClick={() => onNavigate(item.moduleKey)}
-      title={item.locked ? (item.lockedReason ?? undefined) : undefined}
-      aria-disabled={item.locked}
-      className={cn(
-        'group flex items-center gap-2 rounded-lg border border-line bg-surface px-3 py-2 text-left text-xs font-semibold text-ink transition-colors',
-        !item.locked &&
-          'hover:border-brand/30 hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand cursor-pointer',
-        item.locked && 'cursor-not-allowed opacity-50',
-        variant === 'quick' && 'py-2.5',
-      )}
-    >
-      <Icon className="h-4 w-4 shrink-0 text-ink-2 group-hover:text-brand" />
-      <span className="truncate">{displayLabel}</span>
-      {!item.locked && (
-        <ArrowRight className="ml-auto h-3.5 w-3.5 shrink-0 text-ink-2 opacity-0 transition-opacity group-hover:opacity-100" />
-      )}
-    </button>
-  );
-}
 
 /** Conteúdo por cargo (PROMPT 6) — 1 componente genérico, nunca 12 telas duplicadas: o que muda
  *  por cargo é só o payload de `GET /api/workspace/me` (`ROLE_WORKSPACE_DEFINITIONS` + grants
@@ -119,109 +65,133 @@ export function WorkspaceReadySection({ workspace }: { workspace: Workspace }) {
   const widgets = new Set(workspace.homeWidgets);
 
   return (
-    <div className="w-full max-w-[92rem] space-y-6">
+    <div className="w-full max-w-[92rem] space-y-12">
+      {/* Header Minimalista */}
       {widgets.has('mission') && workspace.jobRole && (
-        <div className="flex flex-col gap-1">
-          <p className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-ink dark:text-brand">
-            {workspace.jobRole.department}
-          </p>
-          <h1 className="font-serif text-2xl font-medium tracking-tight text-ink md:text-3xl">
+        <div className="flex flex-col gap-2 pb-6 border-b border-white/5">
+          <div className="flex items-center gap-2">
+            <div className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" />
+            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/50">
+              {workspace.jobRole.department} ● LIVE
+            </p>
+          </div>
+          <h1 className="font-sans text-3xl font-light tracking-tight text-white md:text-4xl">
             {workspace.jobRole.name}
           </h1>
-          <p className="mt-0.5 max-w-2xl text-sm text-ink-2">{workspace.jobRole.description}</p>
+          <p className="mt-1 max-w-2xl text-sm font-light text-white/60">{workspace.jobRole.description}</p>
         </div>
       )}
 
-      {widgets.has('kpis') && (
-        <section aria-labelledby="workspace-kpis-heading" className="space-y-3">
-          <h2 id="workspace-kpis-heading" className="text-sm font-bold text-ink">
-            Indicadores do cargo
-          </h2>
-          {workspace.kpis.length === 0 ? (
-            <EmptyState
-              title="Nenhum indicador configurado"
-              description="Este cargo ainda não tem nenhuma capability de leitura mapeada."
-              icon={<Sparkles className="h-8 w-8" />}
-            />
-          ) : (
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-              {workspace.kpis.map((kpi) => (
-                <WorkspaceKpiCard key={kpi.capabilityCode} kpi={kpi} />
-              ))}
-            </div>
-          )}
-        </section>
-      )}
-
-      {widgets.has('agentGroups') && (
-        <section aria-labelledby="workspace-agents-heading" className="space-y-3">
-          <h2 id="workspace-agents-heading" className="text-sm font-bold text-ink">
-            Copilotos do cargo
-          </h2>
-          {workspace.agentGroups.length === 0 ? (
-            <EmptyState
-              title="Nenhum copiloto concedido ainda"
-              description="Peça a um administrador para conceder um copiloto a este cargo em Histórico."
-              icon={<Bot className="h-8 w-8" />}
-            />
-          ) : (
-            <div className="space-y-3">
-              {workspace.agentGroups.map((group) => (
-                <div
-                  key={group.accessLevel}
-                  className="rounded-card border border-line bg-surface p-4"
-                >
-                  <p className="mb-2 text-[10px] font-bold uppercase tracking-wide text-ink-2">
-                    {ACCESS_LEVEL_LABEL[group.accessLevel]}
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    {group.agents.map((agent) => (
-                      <span
-                        key={agent.code}
-                        className="inline-flex items-center gap-1.5 rounded-full border border-line bg-surface-2 px-3 py-1 text-xs font-semibold text-ink"
-                      >
-                        <Bot className="h-3.5 w-3.5 text-ink-2" />
-                        {agent.name}
-                        {agent.requiresApproval && (
-                          <Badge variant="warning" className="ml-1 py-0">
-                            aprovação
-                          </Badge>
-                        )}
-                      </span>
-                    ))}
-                  </div>
+      {/* Grid Fluido sem Cards */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+        
+        {/* Coluna Principal: KPIs e Navegação */}
+        <div className="col-span-1 lg:col-span-8 space-y-12">
+          
+          {/* KPIs borderless */}
+          {widgets.has('kpis') && (
+            <section aria-labelledby="workspace-kpis-heading" className="space-y-6">
+              <h2 id="workspace-kpis-heading" className="text-[11px] font-bold tracking-widest text-white/40 uppercase">
+                Indicadores Chave
+              </h2>
+              {workspace.kpis.length === 0 ? (
+                <EmptyState
+                  title="Nenhum indicador"
+                  description="Sem capacidades de leitura."
+                  icon={<Sparkles className="h-6 w-6 opacity-50" />}
+                />
+              ) : (
+                <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+                  {workspace.kpis.map((kpi) => {
+                    const statusMeta = KPI_STATUS_META[kpi.status];
+                    return (
+                      <div key={kpi.capabilityCode} className="flex flex-col">
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className={`w-1.5 h-1.5 rounded-full ${kpi.status === 'LIVE' ? 'bg-success' : 'bg-white/20'}`} />
+                          <p className="text-[10px] font-bold uppercase tracking-wide text-white/50">
+                            {kpi.domain || 'Métrica'}
+                          </p>
+                        </div>
+                        <p className="text-xl font-light tracking-tight text-white">{kpi.label}</p>
+                        {kpi.description && <p className="mt-2 text-xs font-light text-white/40">{kpi.description}</p>}
+                      </div>
+                    );
+                  })}
                 </div>
-              ))}
-            </div>
+              )}
+            </section>
           )}
-        </section>
-      )}
 
-      {widgets.has('quickActions') && workspace.quickActions.length > 0 && (
-        <section aria-labelledby="workspace-quick-actions-heading" className="space-y-3">
-          <h2 id="workspace-quick-actions-heading" className="text-sm font-bold text-ink">
-            Ações rápidas
-          </h2>
-          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
-            {workspace.quickActions.map((qa) => (
-              <ModuleLink key={qa.moduleKey} item={qa} onNavigate={goToModule} variant="quick" />
-            ))}
-          </div>
-        </section>
-      )}
+          {/* Navegação Rápida estilo Terminal */}
+          {widgets.has('quickActions') && workspace.quickActions.length > 0 && (
+            <section aria-labelledby="workspace-quick-actions-heading" className="space-y-6">
+              <h2 id="workspace-quick-actions-heading" className="text-[11px] font-bold tracking-widest text-white/40 uppercase">
+                Ações Rápidas
+              </h2>
+              <div className="flex flex-wrap gap-x-8 gap-y-4">
+                {workspace.quickActions.map((qa) => {
+                  const { label, icon: Icon } = moduleMeta(qa.moduleKey);
+                  const displayLabel = 'label' in qa ? qa.label : label;
+                  return (
+                    <button
+                      key={qa.moduleKey}
+                      type="button"
+                      disabled={qa.locked}
+                      onClick={() => goToModule(qa.moduleKey)}
+                      title={qa.locked ? (qa.lockedReason ?? undefined) : undefined}
+                      className={cn(
+                        'group flex items-center gap-2 text-sm font-medium transition-colors',
+                        !qa.locked ? 'text-white/70 hover:text-white cursor-pointer' : 'text-white/20 cursor-not-allowed'
+                      )}
+                    >
+                      <Icon className="h-4 w-4 opacity-50 group-hover:opacity-100 transition-opacity" />
+                      <span>{displayLabel}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </section>
+          )}
+        </div>
 
-      {widgets.has('navigation') && workspace.modules.length > 0 && (
-        <section aria-labelledby="workspace-navigation-heading" className="space-y-3">
-          <h2 id="workspace-navigation-heading" className="text-sm font-bold text-ink">
-            Navegação do cargo
-          </h2>
-          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4">
-            {workspace.modules.map((m) => (
-              <ModuleLink key={m.moduleKey} item={m} onNavigate={goToModule} />
-            ))}
-          </div>
-        </section>
-      )}
+        {/* Coluna Lateral: Agentes e Módulos */}
+        <div className="col-span-1 lg:col-span-4 space-y-12">
+          
+          {/* Agentes sem background box */}
+          {widgets.has('agentGroups') && (
+            <section aria-labelledby="workspace-agents-heading" className="space-y-6">
+              <h2 id="workspace-agents-heading" className="text-[11px] font-bold tracking-widest text-white/40 uppercase">
+                Copilotos Ativos
+              </h2>
+              {workspace.agentGroups.length === 0 ? (
+                <EmptyState title="Nenhum copiloto" description="" icon={<Bot className="h-6 w-6 opacity-50" />} />
+              ) : (
+                <div className="space-y-6">
+                  {workspace.agentGroups.map((group) => (
+                    <div key={group.accessLevel} className="flex flex-col gap-3">
+                      <p className="text-[10px] font-bold uppercase tracking-wide text-white/30">
+                        {ACCESS_LEVEL_LABEL[group.accessLevel]}
+                      </p>
+                      <div className="flex flex-col gap-2">
+                        {group.agents.map((agent) => (
+                          <div key={agent.code} className="flex items-center gap-2">
+                            <Bot className="h-4 w-4 text-brand/70" />
+                            <span className="text-sm text-white/80 font-medium">{agent.name}</span>
+                            {agent.requiresApproval && (
+                              <span className="ml-auto text-[10px] text-amber-400/80 uppercase tracking-widest">Aprovação</span>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </section>
+          )}
+
+        </div>
+      </div>
     </div>
   );
 }

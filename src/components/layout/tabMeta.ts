@@ -1,4 +1,13 @@
 import {
+  HubIcon,
+  IntelligenceIcon,
+  OrchestrationIcon,
+  PerformanceIcon,
+  AIIcon,
+  AutomationIcon,
+  EngagementIcon
+} from '../brand/PillarIcons.js';
+import {
   Activity,
   BarChart3,
   Bell,
@@ -126,21 +135,21 @@ export const NAV_ACCENT_VAR: Record<NavAccent, string> = {
 /** Metadados (rótulo + ícone + matiz) de cada módulo navegável — fonte única usada pela Sidebar, pelo
  * topbar e pelo Command Palette. Cada módulo tem um ícone SVG próprio (nenhum repetido).
  * Atualizado para paradigma Command Center: seções estratégicas agrupadas por função de comando. */
-export const TAB_META: Record<TabType, { label: string; icon: typeof Home; accent: NavAccent }> = {
+export const TAB_META: Record<TabType, { label: string; icon: any; accent: NavAccent }> = {
   // PILAR 01 — HUB COMERCIAL
   workspace: { label: 'Meu Espaço', icon: Briefcase, accent: 'blue' },
-  crm: { label: 'Pipeline CRM', icon: LayoutTemplate, accent: 'blue' },
+  crm: { label: 'Pipeline CRM', icon: HubIcon as any, accent: 'blue' },
   crm360: { label: 'Gestão de Negócios', icon: Gauge, accent: 'violet' },
   propostas: { label: 'Propostas', icon: FileSignature, accent: 'gold' },
   companies: { label: 'Empresas', icon: Building2, accent: 'green' },
   contacts: { label: 'Decisores', icon: Users, accent: 'iris' },
 
   // PILAR 02 — INTELIGÊNCIA DE MERCADO
-  prospect: { label: 'Prospecção', icon: Search, accent: 'teal' },
+  prospect: { label: 'Prospecção', icon: IntelligenceIcon as any, accent: 'teal' },
   'market-intelligence': { label: 'Pesquisa de Mercado', icon: Radar, accent: 'teal' },
 
   // PILAR 03 — ORQUESTRAÇÃO DE VENDAS
-  'daily-plan': { label: 'Plano Diário', icon: CalendarCheck, accent: 'green' },
+  'daily-plan': { label: 'Plano Diário', icon: OrchestrationIcon as any, accent: 'green' },
   activities: { label: 'Agenda', icon: Activity, accent: 'iris' },
   calendar: { label: 'Calendário', icon: CalendarDays, accent: 'blue' },
   cadence: { label: 'Cadência', icon: Repeat, accent: 'green' },
@@ -152,20 +161,20 @@ export const TAB_META: Record<TabType, { label: string; icon: typeof Home; accen
   editor: { label: 'Editor de Documentos', icon: FileText, accent: 'slate' },
 
   // PILAR 04 — PERFORMANCE COMERCIAL
-  dashboard: { label: 'Command Center', icon: Home, accent: 'gold' },
+  dashboard: { label: 'Command Center', icon: PerformanceIcon as any, accent: 'gold' },
   analytics: { label: 'Analytics', icon: BarChart3, accent: 'blue' },
   winloss: { label: 'Win/Loss', icon: Target, accent: 'red' },
   reports: { label: 'Relatórios Avançados', icon: FileBarChart, accent: 'slate' },
 
   // PILAR 06 — INTELIGÊNCIA ARTIFICIAL
-  commercial_intelligence: { label: 'Inteligência de Vendas', icon: LineChart, accent: 'violet' },
+  commercial_intelligence: { label: 'Inteligência de Vendas', icon: AIIcon as any, accent: 'violet' },
   copiloto_ia: { label: 'Copiloto IA', icon: Mic, accent: 'iris' },
   intelligence: { label: 'Assistente de Vendas', icon: Zap, accent: 'gold' },
   knowledge: { label: 'Base de Conhecimento', icon: Database, accent: 'green' },
   'sdr-diagnostic': { label: 'Diagnóstico SDR', icon: Stethoscope, accent: 'green' },
 
   // PILAR 07 — AUTOMAÇÃO & CONECTIVIDADE
-  automations: { label: 'Automações', icon: Cpu, accent: 'gold' },
+  automations: { label: 'Automações', icon: AutomationIcon as any, accent: 'gold' },
   integrations: { label: 'Integrações', icon: Globe, accent: 'blue' },
   bitrix: { label: 'Guia Prático Bitrix24', icon: Layers, accent: 'teal' },
 

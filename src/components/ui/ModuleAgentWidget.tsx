@@ -1,0 +1,234 @@
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Mic, Sparkles } from 'lucide-react';
+import type { TabType } from '../layout/tabMeta.js';
+import { SoundFX } from '../../lib/soundEffects.js';
+import { useAuth } from '../../contexts/AuthContext.js';
+import { hasRequiredRole, MESA_TRATAMENTO_ROLES } from '../../lib/auth/authorization.js';
+
+interface AgentCharacter {
+  name: string;
+  role: string;
+  seed: string;
+  command: string;
+  color: string;
+}
+
+const AGENTS_BY_PILLAR: Record<string, AgentCharacter> = {
+  'PILAR 01 — HUB COMERCIAL': {
+    name: 'Atlas',
+    role: 'Guardião do CRM',
+    seed: 'Atlas',
+    command: 'Ei Atlas',
+    color: 'from-amber-400 to-amber-600',
+  },
+  'PILAR 02 — INTELIGÊNCIA DE MERCADO': {
+    name: 'Nexus',
+    role: 'Analista de Dados',
+    seed: 'Felix',
+    command: 'Ei Nexus',
+    color: 'from-blue-400 to-blue-600',
+  },
+  'PILAR 03 — ORQUESTRAÇÃO DE VENDAS': {
+    name: 'Aria',
+    role: 'Maestrina de Fluxos',
+    seed: 'Aria',
+    command: 'Ei Aria',
+    color: 'from-emerald-400 to-emerald-600',
+  },
+  'PILAR 04 — PERFORMANCE COMERCIAL': {
+    name: 'Vanguard',
+    role: 'Estrategista de Metas',
+    seed: 'Vanguard',
+    command: 'Ei Vanguard',
+    color: 'from-rose-400 to-rose-600',
+  },
+  'PILAR 05 — PREVISIBILIDADE COMERCIAL': {
+    name: 'Oracle',
+    role: 'Visionário de Forecast',
+    seed: 'Oracle',
+    command: 'Ei Oracle',
+    color: 'from-purple-400 to-purple-600',
+  },
+  'PILAR 06 — INTELIGÊNCIA ARTIFICIAL': {
+    name: 'Core',
+    role: 'Mente Principal',
+    seed: 'Buster',
+    command: 'Ei Core',
+    color: 'from-indigo-400 to-indigo-600',
+  },
+  'PILAR 07 — AUTOMAÇÃO & CONECTIVIDADE': {
+    name: 'Spark',
+    role: 'Engenheiro de Integrações',
+    seed: 'Sparky',
+    command: 'Ei Spark',
+    color: 'from-teal-400 to-teal-600',
+  },
+  'PILAR 08 — ENGAJAMENTO COMERCIAL': {
+    name: 'Echo',
+    role: 'Especialista em Voz',
+    seed: 'Echo',
+    command: 'Ei Echo',
+    color: 'from-pink-400 to-pink-600',
+  },
+  'ADMINISTRAÇÃO': {
+    name: 'Sudo',
+    role: 'Controlador de Sistema',
+    seed: 'Sudo',
+    command: 'Ei Sudo',
+    color: 'from-slate-400 to-slate-600',
+  }
+};
+
+interface ModuleAgentWidgetProps {
+  activeTab: TabType;
+}
+
+export function ModuleAgentWidget({ activeTab }: ModuleAgentWidgetProps) {
+  const [isHovered, setIsHovered] = useState(false);
+  const { currentUser, isAdmin, canAccessCommercialIntelligence, canAccessCopilotoIa } = useAuth();
+
+  const canManageOperations =
+    !!currentUser && hasRequiredRole(currentUser.role, ['ADMIN', 'GESTOR']);
+  const canAccessMesaTratamento =
+    !!currentUser && hasRequiredRole(currentUser.role, MESA_TRATAMENTO_ROLES);
+
+  const navGroupsByJourney = [
+    {
+      title: 'PILAR 01 — HUB COMERCIAL',
+      items: ['workspace', 'crm', 'crm360', 'propostas', 'companies', 'contacts'],
+    },
+    {
+      title: 'PILAR 02 — INTELIGÊNCIA DE MERCADO',
+      items: ['prospect', 'market-intelligence'],
+    },
+    {
+      title: 'PILAR 03 — ORQUESTRAÇÃO DE VENDAS',
+      items: [
+        'daily-plan',
+        'activities',
+        'calendar',
+        'cadence',
+        'roleplay',
+        'qualification_matrix',
+        'objections_matrix',
+        'topic_training',
+        'chatbook',
+        'editor',
+      ],
+    },
+    {
+      title: 'PILAR 04 — PERFORMANCE COMERCIAL',
+      items: ['dashboard', 'analytics', 'winloss', 'reports'],
+    },
+    {
+      title: 'PILAR 06 — INTELIGÊNCIA ARTIFICIAL',
+      items: [
+        ...(canAccessCommercialIntelligence ? (['commercial_intelligence'] as TabType[]) : []),
+        ...(canAccessCopilotoIa ? (['copiloto_ia'] as TabType[]) : []),
+        'intelligence',
+        'knowledge',
+        'sdr-diagnostic',
+      ],
+    },
+    {
+      title: 'PILAR 07 — AUTOMAÇÃO & CONECTIVIDADE',
+      items: [
+        ...(canManageOperations ? (['automations', 'integrations'] as TabType[]) : []),
+        'bitrix',
+      ],
+    },
+    {
+      title: 'PILAR 08 — ENGAJAMENTO COMERCIAL',
+      items: [
+        'voice-hub',
+        'outbound',
+        'dialer',
+        ...(canAccessMesaTratamento ? (['mesa-tratamento'] as TabType[]) : []),
+      ],
+    },
+    {
+      title: 'ADMINISTRAÇÃO',
+      items: ['notifications', 'usage', 'team', 'module-access', 'settings'].filter((item) => {
+        if (item === 'notifications' || item === 'settings') return true;
+        return isAdmin;
+      }) as TabType[],
+    },
+  ];
+
+  const activeGroup = navGroupsByJourney.find(g => (g.items as TabType[]).includes(activeTab));
+
+  
+  if (!activeGroup) return null;
+  const agent = AGENTS_BY_PILLAR[activeGroup.title];
+  if (!agent) return null;
+
+  const handleInteract = () => {
+    SoundFX.play('focus');
+    // Em uma implementacao real, isso abriria o modal especifico desse agente
+    console.log(`Chamando agente ${agent.name}...`);
+  };
+
+  return (
+    <div className="fixed bottom-4 left-4 z-50">
+      <motion.button
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        onClick={handleInteract}
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.95 }}
+        className="relative flex items-center bg-surface-elevated/95 backdrop-blur-xl border border-white/10 p-1.5 pr-4 rounded-full shadow-2xl overflow-hidden group cursor-pointer"
+      >
+        {/* Fundo brilhante animado quando hover */}
+        <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/5 to-white/0 translate-x-[-100%] group-hover:animate-[shimmer_1.5s_infinite]" />
+        
+        {/* Avatar Miniatura do Agente (Bottts neutral) */}
+        <div className={`relative flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br ${agent.color} shadow-inner`}>
+          <img 
+            src={`https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${agent.seed}&backgroundColor=transparent`}
+            alt={`Avatar do agente ${agent.name}`}
+            className="w-7 h-7 drop-shadow-md"
+          />
+          <div className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-green-500 rounded-full border border-surface shadow-[0_0_8px_rgba(34,197,94,0.6)]" />
+        </div>
+
+        {/* Informacoes e Comando de Voz */}
+        <div className="ml-3 flex flex-col items-start justify-center">
+          <div className="flex items-center gap-1.5">
+            <span className="text-[13px] font-bold text-white leading-none">{agent.name}</span>
+            <Sparkles className="w-3 h-3 text-brand opacity-80" />
+          </div>
+          
+          <AnimatePresence mode="wait">
+            {isHovered ? (
+              <motion.div
+                key="command"
+                initial={{ opacity: 0, y: 5 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -5 }}
+                className="flex items-center gap-1 mt-0.5"
+              >
+                <Mic className="w-3 h-3 text-white/70 animate-pulse" />
+                <span className="text-[10px] font-semibold text-white/70 uppercase tracking-wide">
+                  Diga "{agent.command}"
+                </span>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="role"
+                initial={{ opacity: 0, y: 5 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -5 }}
+                className="mt-0.5"
+              >
+                <span className="text-[10px] font-medium text-white/40 leading-none">
+                  {agent.role}
+                </span>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </motion.button>
+    </div>
+  );
+}

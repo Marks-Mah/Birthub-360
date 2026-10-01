@@ -11,7 +11,8 @@ import { FloatingDock } from './FloatingDock.js';
 import { DataFlowLines } from '../ui/DataFlowLines.js';
 import { OfflineBanner } from './OfflineBanner.js';
 import { PageTransition } from './PageTransition.js';
-import { Sidebar } from './Sidebar.js';
+import { ModuleAgentWidget } from '../ui/ModuleAgentWidget.js';
+import { MacDock } from './MacDock.js';
 import type { TabType } from './tabMeta.js';
 
 interface MainLayoutProps {
@@ -65,13 +66,8 @@ export function MainLayout({ children }: MainLayoutProps) {
 
       <OfflineBanner />
 
-      <div className="relative z-10 flex flex-1 min-h-0 w-full">
-        {/* Removemos o Header global antigo, injetamos a Sidebar contínua */}
-        <Sidebar
-          activeTab={activeTab}
-          mobileOpen={mobileNavOpen}
-          onCloseMobile={() => setMobileNavOpen(false)}
-        />
+      <div className="relative z-10 flex flex-col flex-1 min-h-0 w-full">
+        <MacDock activeTab={activeTab} />
         {/* Backdrop da navegação mobile — some em telas md+, onde a Sidebar é estática */}
         {mobileNavOpen && (
           <div
@@ -92,7 +88,7 @@ export function MainLayout({ children }: MainLayoutProps) {
           <main className="flex-1 flex flex-col min-h-0 overflow-hidden relative bg-transparent">
             <PageTransition id={activeTab}>{children}</PageTransition>
           </main>
-          <FloatingDock activeTab={activeTab} onOpenFullMenu={() => setMobileNavOpen(true)} />
+          <ModuleAgentWidget activeTab={activeTab} />
           <Toaster />
           <VoiceCommandWidget />
           <CopilotTrigger />
