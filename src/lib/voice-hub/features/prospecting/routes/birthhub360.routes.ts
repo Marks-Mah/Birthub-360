@@ -88,14 +88,12 @@ function validateBlandCallbackToken(
       'Bland AI callback rejected: BLAND_WEBHOOK_TOKEN is not configured (failing closed)',
     );
     return res.status(503).json({ error: 'Callback da Bland AI não está configurado.' });
-    return;
   }
 
   const provided = req.params.token;
   if (typeof provided !== 'string' || !safeEqual(provided, expectedToken)) {
     logger.warn('Bland AI callback rejected: invalid token');
     return res.status(403).json({ error: 'Token inválido.' });
-    return;
   }
 
   return next();

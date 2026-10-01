@@ -12,7 +12,7 @@ suite('PostgreSQL de inteligência comercial', () => {
   });
 
   it('inicializa a imagem com pgvector e PostGIS', async () => {
-    const container = await new GenericContainer('birthhub360/postgres-intelligence:17')
+    const container = await new GenericContainer('birthhub360/postgres-intelligence:16')
       .withEnvironment({
         POSTGRES_USER: 'test',
         POSTGRES_PASSWORD: 'test',

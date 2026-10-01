@@ -15,9 +15,9 @@ import {
   ShieldCheck,
 } from 'lucide-react';
 import { useState } from 'react';
-import { type DealCardData } from '../../../components/ui/DealsGrid.js';
+import type { DealCardData } from '../../../components/ui/DealsGrid.js';
 import { Dialog } from '../../../components/ui/Dialog.js';
-import { type FunnelBarItem } from '../../../components/ui/FunnelBars.js';
+import type { FunnelBarItem } from '../../../components/ui/FunnelBars.js';
 import { useAuth } from '../../../contexts/AuthContext.js';
 import {
   CHANNEL_HEX,

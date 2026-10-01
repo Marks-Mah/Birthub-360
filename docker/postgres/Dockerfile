@@ -1,4 +1,4 @@
-FROM pgvector/pgvector:pg17
+FROM pgvector/pgvector:pg16
 
 # openssl: gera o certificado TLS autoassinado usado quando o Postgres sobe com `ssl=on`
 # (serviço `postgres` em docker-compose.oci.yml). O acesso direto ao banco da Oracle a partir das
@@ -9,7 +9,7 @@ FROM pgvector/pgvector:pg17
 # compose) — nunca é commitada nem sai do servidor. Clientes usam `sslmode=require` (cifra o canal
 # sem verificar CA), já que o certificado é autoassinado.
 RUN apt-get update \
-    && apt-get install --yes --no-install-recommends postgresql-17-postgis-3 openssl \
+    && apt-get install --yes --no-install-recommends postgresql-16-postgis-3 openssl \
     && rm -rf /var/lib/apt/lists/* \
     && mkdir -p /etc/postgresql/tls \
     && openssl req -x509 -newkey rsa:2048 -nodes -days 3650 \
