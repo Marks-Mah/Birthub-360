@@ -249,7 +249,7 @@ function LandingInnovativeContent() {
 
             <Link to="/login">
               <MagneticButton variant="primary">
-                Acessar Plataforma
+                Acessar Hub
                 <ArrowRight className="h-4 w-4 ml-2" />
               </MagneticButton>
             </Link>
@@ -270,14 +270,75 @@ function LandingInnovativeContent() {
             transition={{ duration: 0.8 }}
             className="space-y-8"
           >
-            {/* Platform Animated Logo Centerpiece */}
+            {/* Command Center Visual Map */}
             <motion.div
               initial={{ opacity: 0, scale: 0.85 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.7 }}
-              className="flex justify-center"
+              className="relative flex justify-center items-center h-[350px] sm:h-[450px] w-full max-w-2xl mx-auto"
             >
-              <AnimatedBirthHubEmblem size={220} showCta={false} />
+              {/* B360 Core */}
+              <div className="absolute z-20">
+                <AnimatedBirthHubEmblem size={160} showCta={false} />
+              </div>
+
+              {/* Pulsing connection lines */}
+              <svg className="absolute inset-0 w-full h-full pointer-events-none z-10" viewBox="0 0 400 400" preserveAspectRatio="xMidYMid meet">
+                <defs>
+                  <linearGradient id="line-grad-1" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="var(--color-brand)" stopOpacity="0" />
+                    <stop offset="50%" stopColor="var(--color-brand)" stopOpacity="0.4" />
+                    <stop offset="100%" stopColor="var(--color-brand)" stopOpacity="0" />
+                  </linearGradient>
+                </defs>
+                <circle cx="200" cy="200" r="140" fill="none" stroke="url(#line-grad-1)" strokeWidth="1" strokeDasharray="4 6" className="animate-[spin_40s_linear_infinite]" />
+                <circle cx="200" cy="200" r="100" fill="none" stroke="url(#line-grad-1)" strokeWidth="1" strokeDasharray="2 8" className="animate-[spin_25s_linear_infinite_reverse]" />
+
+                {/* Connection paths from center to nodes */}
+                <path d="M 200 200 L 200 40" stroke="url(#line-grad-1)" strokeWidth="1" />
+                <path d="M 200 200 L 320 80" stroke="url(#line-grad-1)" strokeWidth="1" />
+                <path d="M 200 200 L 360 200" stroke="url(#line-grad-1)" strokeWidth="1" />
+                <path d="M 200 200 L 320 320" stroke="url(#line-grad-1)" strokeWidth="1" />
+                <path d="M 200 200 L 200 360" stroke="url(#line-grad-1)" strokeWidth="1" />
+                <path d="M 200 200 L 80 320" stroke="url(#line-grad-1)" strokeWidth="1" />
+                <path d="M 200 200 L 40 200" stroke="url(#line-grad-1)" strokeWidth="1" />
+                <path d="M 200 200 L 80 80" stroke="url(#line-grad-1)" strokeWidth="1" />
+              </svg>
+
+              {/* Orbiting Nodes */}
+              {[
+                { label: 'CRM', angle: 0, distance: 160, delay: 0 },
+                { label: 'PIPELINE', angle: 45, distance: 130, delay: 0.1 },
+                { label: 'AI', angle: 90, distance: 160, delay: 0.2 },
+                { label: 'FORECAST', angle: 135, distance: 130, delay: 0.3 },
+                { label: 'ALERTS', angle: 180, distance: 160, delay: 0.4 },
+                { label: 'DATA', angle: 225, distance: 130, delay: 0.5 },
+                { label: 'INTEGRATIONS', angle: 270, distance: 160, delay: 0.6 },
+                { label: 'EXECUTION', angle: 315, distance: 130, delay: 0.7 },
+              ].map((node, i) => {
+                const angleRad = (node.angle - 90) * (Math.PI / 180);
+                const distancePct = (node.distance / 200) * 50;
+                const top = `${50 + Math.sin(angleRad) * distancePct}%`;
+                const left = `${50 + Math.cos(angleRad) * distancePct}%`;
+
+                return (
+                  <motion.div
+                    key={node.label}
+                    initial={{ opacity: 0, scale: 0 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.5 + node.delay, duration: 0.5, type: 'spring' }}
+                    className="absolute z-30 transform -translate-x-1/2 -translate-y-1/2 flex items-center justify-center group"
+                    style={{ top, left }}
+                  >
+                    <div className="relative">
+                      <div className="absolute inset-0 rounded-full bg-[var(--brand)]/20 blur-md group-hover:bg-[var(--brand)]/40 transition-colors duration-300" />
+                      <div className="relative px-3 py-1.5 rounded-full border border-[var(--brand)]/30 bg-slate-900/80 dark:bg-slate-950/80 backdrop-blur-sm text-[10px] font-mono font-bold text-[var(--brand)] uppercase tracking-wider group-hover:border-[var(--brand)]/70 group-hover:text-white group-hover:bg-[var(--brand)]/20 transition-all duration-300">
+                        {node.label}
+                      </div>
+                    </div>
+                  </motion.div>
+                );
+              })}
             </motion.div>
 
             <motion.div
@@ -317,13 +378,13 @@ function LandingInnovativeContent() {
             >
               <Link to="/login">
                 <MagneticButton variant="primary">
-                  Começar Agora
+                  Explorar o Birth Hub
                   <ArrowRight className="h-4 w-4 ml-2" />
                 </MagneticButton>
               </Link>
               <MagneticButton variant="secondary">
                 <Play className="h-4 w-4 mr-2" />
-                Ver Demonstração
+                Ver como funciona
               </MagneticButton>
             </motion.div>
 
@@ -339,23 +400,23 @@ function LandingInnovativeContent() {
                   <div className="flex items-center gap-2">
                     <Activity className="h-5 w-5 text-brand" />
                     <span className="text-sm font-semibold text-slate-900 dark:text-white">
-                      Sistema Operacional
+                      50+ Integrações Conectadas
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                    <span className="text-xs text-slate-500">Ao vivo</span>
+                    <span className="text-xs text-slate-500">24/7 Monitoramento</span>
                   </div>
                 </div>
                 <DataStream />
                 <div className="grid grid-cols-3 gap-4 mt-4 pt-4 border-t border-slate-200 dark:border-slate-800">
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-brand">99.98%</div>
-                    <div className="text-xs text-slate-500">Uptime</div>
+                    <div className="text-2xl font-bold text-brand">360°</div>
+                    <div className="text-xs text-slate-500">Visibilidade da Receita</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-iris">340ms</div>
-                    <div className="text-xs text-slate-500">Latência</div>
+                    <div className="text-2xl font-bold text-iris">IA</div>
+                    <div className="text-xs text-slate-500">Decisões Assistidas</div>
                   </div>
                   <div className="text-center">
                     <div className="text-2xl font-bold text-slate-900 dark:text-white">24/7</div>
@@ -421,7 +482,7 @@ function LandingInnovativeContent() {
               delay={0.2}
               icon={<Radio className="h-7 w-7 text-slate-900 dark:text-white" />}
               title="Voz em Tempo Real"
-              description="Latência sub-340ms com transcrição instantânea, síntese adaptativa e detecção de interrupção para conversas naturais."
+              description="Decisões Assistidas sub-IA com transcrição instantânea, síntese adaptativa e detecção de interrupção para conversas naturais."
             />
             <HolographicCard
               delay={0.3}
@@ -474,7 +535,7 @@ function LandingInnovativeContent() {
                   {
                     icon: Server,
                     title: 'Infraestrutura Distribuída',
-                    desc: 'SLA 99.98% com redundância geográfica',
+                    desc: 'SLA 360° com redundância geográfica',
                   },
                   {
                     icon: Terminal,
@@ -523,7 +584,7 @@ function LandingInnovativeContent() {
                     { label: 'Criptografia', value: 'AES-256' },
                     { label: 'Protocolo', value: 'TLS 1.3' },
                     { label: 'Compliance', value: 'LGPD' },
-                    { label: 'SLA', value: '99.98%' },
+                    { label: 'SLA', value: '360°' },
                   ].map((item, i) => (
                     <div
                       key={i}
@@ -562,7 +623,7 @@ function LandingInnovativeContent() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link to="/login">
                 <MagneticButton variant="primary">
-                  Começar Transformação
+                  Explorar o Birth Hub
                   <ArrowRight className="h-4 w-4 ml-2" />
                 </MagneticButton>
               </Link>
