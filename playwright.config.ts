@@ -25,7 +25,10 @@ export default defineConfig({
   // pra navegar pro app sob carga do runner  // (ver tests/e2e/helpers.ts). Aumentado de 30s para 45s (e agora 60s) para absorver o load total
   // sem esconder um hang de verdade - signUp() estoura o timeout dele primeiro nesse caso.
   timeout: 60_000,
-  reporter: [['html', { outputFolder: 'playwright-report', open: 'never' }]],
+  reporter: [
+    ...(process.env.CI ? [['line']] : []),
+    ['html', { outputFolder: 'playwright-report', open: 'never' }],
+  ],
   use: {
     baseURL: BASE_URL,
     // `page.request`/`request` mandam o cookie de sessão mas NÃO mandam `Origin` (um navegador real
