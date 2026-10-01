@@ -539,7 +539,7 @@ export function LandingLoginSplitScreen() {
           LADO DIREITO — Formulário de acesso
           Base: var(--bg) / var(--surface). Neutro, limpo, informação.
       ════════════════════════════════════════════════════════════════════ */}
-      <div className="flex-1 flex flex-col items-center justify-center relative bg-[#080f1f] px-8 py-12 w-full">
+      <div className="flex-1 flex flex-col items-center justify-center relative bg-[var(--bg)] px-8 py-12 w-full">
         {/* Subtle radial gradient for depth */}
         <div
           className="pointer-events-none absolute inset-0 z-0"
@@ -554,14 +554,14 @@ export function LandingLoginSplitScreen() {
               SoundFX.play('click');
               toggleTheme();
             }}
-            className="text-white/40 hover:text-white transition-colors p-1.5 rounded-md hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1677FF]"
+            className="text-[var(--ink-2)] hover:text-[var(--ink)] transition-colors p-1.5 rounded-md hover:bg-[var(--surface-2)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1677FF]"
             aria-label={theme === 'dark' ? 'Mudar para tema claro' : 'Mudar para tema escuro'}
             title={theme === 'dark' ? 'Mudar para tema claro' : 'Mudar para tema escuro'}
           >
             {theme === 'dark' ? <Sun size={16} strokeWidth={2} /> : <Moon size={16} strokeWidth={2} />}
           </button>
 
-          <div className="flex items-center gap-2 font-mono text-[9px] text-white/30 uppercase tracking-widest">
+          <div className="flex items-center gap-2 font-mono text-[9px] text-[var(--ink-2)] uppercase tracking-widest">
             <span
               className="inline-block w-1.5 h-1.5 rounded-full bg-green-400"
               aria-hidden="true"
@@ -578,14 +578,14 @@ export function LandingLoginSplitScreen() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, ease: EASE_OUT_EXPO }}
           >
-            <h2 className="font-display text-[2rem] font-bold tracking-tight text-white mb-1.5">
+            <h2 className="font-display text-[2rem] font-bold tracking-tight text-[var(--ink)] mb-1.5">
               {isSignUp ? 'Criar conta' : 'Acessar conta'}
             </h2>
-            <p className="font-mono text-xs text-white/40 uppercase tracking-wider mb-3">
+            <p className="font-mono text-xs text-[var(--ink-2)] uppercase tracking-wider mb-3">
               {isSignUp ? 'Preencha seus dados para começar' : 'Acesse o sistema operacional comercial'}
             </p>
             {!isSignUp && (
-              <p className="font-mono text-[11px] text-white/30 leading-relaxed border-l-2 border-[#1677FF]/30 pl-3">
+              <p className="font-mono text-[11px] text-[var(--ink-2)] leading-relaxed border-l-2 border-[#1677FF]/30 pl-3">
                 8 pilares integrados em uma única plataforma — do CRM à IA, da prospecção ao engajamento.
               </p>
             )}
@@ -593,11 +593,10 @@ export function LandingLoginSplitScreen() {
 
           {/* ── Card do formulário ────────────────────────────────────────── */}
           <motion.div
-            className="rounded-2xl border border-white/10 overflow-hidden"
+            className="rounded-2xl border border-[var(--line)] overflow-hidden bg-[var(--surface)]"
             style={{
-              background: 'rgba(255,255,255,0.04)',
               backdropFilter: 'blur(24px)',
-              boxShadow: '0 0 0 1px rgba(255,255,255,0.06), 0 32px 64px rgba(0,0,0,0.5), 0 0 80px rgba(22,119,255,0.08)',
+              boxShadow: '0 0 0 1px var(--line), 0 32px 64px rgba(0,0,0,0.12), 0 0 80px rgba(22,119,255,0.06)',
             }}
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
@@ -605,7 +604,7 @@ export function LandingLoginSplitScreen() {
           >
             {/* Tabs */}
             <div
-              className="flex border-b border-white/8"
+              className="flex border-b border-[var(--line)]"
               role="tablist"
               aria-label="Método de acesso"
             >

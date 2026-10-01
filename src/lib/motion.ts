@@ -5,7 +5,7 @@ import {
   useTransform,
   type Variants,
 } from 'framer-motion';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export const EASE_PREMIUM = [0.22, 1, 0.36, 1] as const;
 export const EASE_SPRING_SOFT = [0.34, 1.56, 0.64, 1] as const;
@@ -290,3 +290,83 @@ export function useCursorSpotlight() {
         : undefined,
   };
 }
+
+/**
+ * Rastreia a posição global do cursor (em % da viewport) para animar elementos
+ * de fundo que reagem à presença do usuário — parallax de profundidade sutil.
+ * Retorna valores normalizados [−0.5, 0.5] em x e y.
+ * Desativado automaticamente com prefers-reduced-motion.
+ */
+export function useGlobalCursorDepth() {
+  const reduceMotion = useReducedMotion();
+  const [pos, setPos] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    if (reduceMotion || typeof window === 'undefined') return;
+    const handler = (e: MouseEvent) => {
+      setPos({
+        x: e.clientX / window.innerWidth - 0.5,
+        y: e.clientY / window.innerHeight - 0.5,
+      });
+    };
+    window.addEventListener('mousemove', handler, { passive: true });
+    return () => window.removeEventListener('mousemove', handler);
+  }, [reduceMotion]);
+
+  return reduceMotion ? { x: 0, y: 0 } : pos;
+}
+
+/**
+ * Animação de entrada escalonada para blocos de métrica/KPI.
+ * Combina fadeInUp com leve rotação 3D de perspectiva na entrada.
+ */
+export const metricReveal: Variants = {
+  hidden: { opacity: 0, y: 24, rotateX: 8, filter: 'blur(8px)' },
+  show: {
+    opacity: 1,
+    y: 0,
+    rotateX: 0,
+    filter: 'blur(0px)',
+    transition: { duration: 0.55, ease: EASE_PREMIUM },
+  },
+};
+
+/**
+ * Container que orquestra entrada de métricas com stagger mais amplo.
+ * Usar em wrappers de KPI / dashboard sections.
+ */
+export const metricsContainer: Variants = {
+  hidden: {},
+  show: {
+    transition: { staggerChildren: 0.09, delayChildren: 0.1 },
+  },
+};
+
+/**
+ * Glow de CTA premium — usar como initial="rest" whileHover="glow" no motion.button.
+ * Aparece apenas no hover; nunca em resting state.
+ */
+export const ctaGlow: Variants = {
+  rest: { boxShadow: '0 0 0px rgba(212,175,55,0)' },
+  glow: {
+    boxShadow: [
+      '0 0 0px rgba(212,175,55,0)',
+      '0 0 24px rgba(212,175,55,0.45)',
+      '0 0 12px rgba(212,175,55,0.25)',
+    ],
+    transition: { duration: 0.4, ease: EASE_PREMIUM },
+  },
+};
+
+/**
+ * Linha de scan — entra uma única vez na montagem do layout como ambientação.
+ * NÃO repetir em loop (Design Language §8).
+ */
+export const scanLineEntry: Variants = {
+  hidden: { scaleX: 0, opacity: 0 },
+  show: {
+    scaleX: 1,
+    opacity: [0, 0.6, 0],
+    transition: { duration: 1.4, ease: EASE_OUT_EXPO, delay: 0.3 },
+  },
+};

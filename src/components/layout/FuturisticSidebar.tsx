@@ -1,10 +1,20 @@
 import { LogOut, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
+import React from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext.js';
 import { hasRequiredRole, MESA_TRATAMENTO_ROLES } from '../../lib/auth/authorization.js';
 import { BirthHubLogo } from '../brand/BirthHubLogo.js';
 import { SoundFX } from '../../lib/soundEffects.js';
+import {
+  staggerContainer,
+  staggerItem,
+  useTilt,
+  useMagnetic,
+  fadeIn,
+  shimmerBeam,
+} from '../../lib/motion.js';
 import { TAB_META, type TabType } from './tabMeta.js';
 
 const SIDEBAR_COLLAPSED_KEY = '@birthhub:futuristic-sidebar-collapsed';
@@ -20,6 +30,23 @@ interface FuturisticSidebarProps {
 interface NavGroupDefinition {
   title: string;
   items: TabType[];
+}
+
+/** Logo com inclinação 3D sutil — segue o cursor, desativado com prefers-reduced-motion */
+function LogoWithTilt({ children }: { children: React.ReactNode }) {
+  const tilt = useTilt(8);
+  return (
+    <motion.div
+      ref={tilt.ref as React.RefObject<HTMLDivElement>}
+      style={{ ...tilt.style, transformStyle: 'preserve-3d' }}
+      onPointerMove={tilt.onPointerMove as React.PointerEventHandler<HTMLDivElement>}
+      onPointerLeave={tilt.onPointerLeave}
+      className="cursor-default"
+      aria-hidden="true"
+    >
+      {children}
+    </motion.div>
+  );
 }
 
 export function FuturisticSidebar({
@@ -195,33 +222,51 @@ export function FuturisticSidebar({
     const isActive = activeTab === tab;
 
     return (
-      <button
+      <motion.button
         key={tab}
         type="button"
+        variants={staggerItem}
         onClick={() => selectTab(tab)}
         title={meta.label}
         aria-label={meta.label}
         aria-current={isActive ? 'page' : undefined}
-        className={`group relative flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-[13px] font-medium transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-surface-elevated cursor-pointer hover:scale-[1.02] active:scale-95 ${
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.95 }}
+        transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
+        className={`group relative flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-[13px] font-medium overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-surface-elevated cursor-pointer ${
           isActive
             ? 'bg-gradient-to-r from-brand/20 via-brand/10 to-transparent text-brand shadow-lg shadow-brand/20 ring-1 ring-brand/30 border-l-2 border-brand'
             : 'text-ink-2 hover:bg-surface-interactive/60 hover:text-ink hover:shadow-sm hover:border-l-2 hover:border-brand/30'
         } ${isCollapsed ? 'lg:px-0 lg:justify-center' : ''}`}
       >
+        {/* Shimmer beam no hover — apenas no item ativo */}
+        {isActive && (
+          <motion.span
+            className="absolute inset-0 w-full h-full pointer-events-none"
+            variants={shimmerBeam}
+            initial="initial"
+            whileHover="hover"
+            aria-hidden="true"
+            style={{
+              background: 'linear-gradient(105deg, transparent 40%, rgba(212,175,55,0.18) 50%, transparent 60%)',
+            }}
+          />
+        )}
+
         <Icon
           size={16}
           aria-hidden="true"
           className={`shrink-0 transition-all duration-300 ${isActive ? 'scale-110 text-brand' : 'group-hover:scale-110 group-hover:text-brand/60'}`}
         />
         <span
-          className={`truncate ${isCollapsed ? 'lg:hidden' : ''} ${isActive ? 'font-semibold tracking-tight' : ''}`}
+          className={`truncate relative z-10 ${isCollapsed ? 'lg:hidden' : ''} ${isActive ? 'font-semibold tracking-tight' : ''}`}
         >
           {meta.label}
         </span>
         {isActive && (
-          <span className="absolute right-2 w-1.5 h-1.5 rounded-full bg-brand shadow-[0_0_8px_var(--color-brand)] animate-pulse" />
+          <span className="absolute right-2 w-1.5 h-1.5 rounded-full bg-brand shadow-[0_0_8px_var(--color-brand)]" />
         )}
-      </button>
+      </motion.button>
     );
   };
 
@@ -240,17 +285,21 @@ export function FuturisticSidebar({
           className={`flex items-center justify-between border-b border-line/50 px-5 py-4 ${isCollapsed ? 'lg:justify-center lg:px-2' : ''}`}
         >
           {isCollapsed ? (
-            <BirthHubLogo
-              variant="symbol"
-              className="h-8 w-8 text-brand shadow-[0_0_12px_rgba(212,175,55,0.3)]"
-            />
+            <LogoWithTilt>
+              <BirthHubLogo
+                variant="symbol"
+                className="h-8 w-8 text-brand shadow-[0_0_12px_rgba(212,175,55,0.3)]"
+              />
+            </LogoWithTilt>
           ) : (
             <>
               <div className="flex items-center gap-2.5">
-                <BirthHubLogo
-                  variant="symbol"
-                  className="h-8 w-8 text-brand shadow-[0_0_12px_rgba(212,175,55,0.3)]"
-                />
+                <LogoWithTilt>
+                  <BirthHubLogo
+                    variant="symbol"
+                    className="h-8 w-8 text-brand shadow-[0_0_12px_rgba(212,175,55,0.3)]"
+                  />
+                </LogoWithTilt>
                 <div className="leading-tight">
                   <h1 className="flex items-center gap-1 text-sm font-bold tracking-tight text-ink">
                     Birth Hub 360°
@@ -291,7 +340,14 @@ export function FuturisticSidebar({
         className="custom-scrollbar flex-1 space-y-4 overflow-y-auto px-2.5 py-3"
       >
         {navGroups.map((group) => (
-          <section key={group.title} className="space-y-1" aria-label={group.title}>
+          <motion.section
+            key={group.title}
+            className="space-y-1"
+            aria-label={group.title}
+            variants={staggerContainer(0.05, 0.04)}
+            initial="hidden"
+            animate="show"
+          >
             <div className={`mb-2 flex items-center px-3 ${isCollapsed ? 'lg:hidden' : ''}`}>
               <p className="text-[10px] font-bold uppercase tracking-widest text-ink-2/80">
                 {group.title}
@@ -304,7 +360,7 @@ export function FuturisticSidebar({
               />
             )}
             {group.items.map(renderNavItem)}
-          </section>
+          </motion.section>
         ))}
       </nav>
 

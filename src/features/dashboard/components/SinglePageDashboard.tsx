@@ -13,6 +13,16 @@ import { GamificationWidget } from '../../../components/ui/GamificationWidget.js
 import { Skeleton } from '../../../components/ui/Skeleton.js';
 import { useAuth } from '../../../contexts/AuthContext.js';
 import { useAnalyticsDashboard } from '../../../hooks/useDatabase.js';
+import {
+  metricsContainer,
+  metricReveal,
+  staggerContainer,
+  staggerItem,
+  fadeInUp,
+  ctaGlow,
+  shimmerBeam,
+  useTilt,
+} from '../../../lib/motion.js';
 import { SoundFX } from '../../../lib/soundEffects.js';
 
 function greeting() {
