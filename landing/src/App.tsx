@@ -380,15 +380,15 @@ function Hero() {
           <motion.h1
             id="hero-title"
             variants={staggerItem}
-            className="mt-4 font-display text-4xl font-bold leading-[1.1] tracking-tight text-ink sm:text-5xl lg:text-6xl"
+            className="mt-4 font-display text-5xl font-bold leading-[1.15] tracking-tight text-ink sm:text-6xl lg:text-7xl"
           >
             <RevealLine delay={0.15}>
-              Dados que <span className="text-brand-ink dark:text-brand">conectam.</span>
+              Dados que <span className="text-brand-ink dark:text-brand">Conectam.</span>
             </RevealLine>
             <RevealLine delay={0.3}>
-              Inteligência que <span className="text-brand-ink dark:text-brand">decide.</span>
+              Inteligência que <span className="text-brand-ink dark:text-brand">Decide.</span>
             </RevealLine>
-            <RevealLine delay={0.45}>Resultados que acontecem.</RevealLine>
+            <RevealLine delay={0.45}>Resultados que Acontecem.</RevealLine>
           </motion.h1>
           <motion.p
             variants={staggerItem}
