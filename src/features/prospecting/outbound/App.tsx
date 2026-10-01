@@ -113,6 +113,7 @@ export default function App() {
     hunterApiKey: '',
     blandAiApiKey: '',
     bitrixBirthhub360Webhook: '',
+    bitrixAtlasGrWebhook: '',
     activeBitrixTarget: 'auto',
     customBitrixWebhook: '',
   });

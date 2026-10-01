@@ -495,12 +495,9 @@ export function HubScreen() {
               Birth Hub 360° &middot; Central Executiva
             </div>
             <h1 className="mt-0.5 font-display text-xl sm:text-2xl md:text-3xl font-semibold leading-tight tracking-tight text-white">
-              {clock.greeting},{' '}
-              <span className="text-brand font-bold">{firstName}</span>
+              {clock.greeting}, <span className="text-brand font-bold">{firstName}</span>
             </h1>
-            <p className="mt-0.5 text-xs font-normal text-white/45">
-              {brandInfo.slogan}
-            </p>
+            <p className="mt-0.5 text-xs font-normal text-white/45">{brandInfo.slogan}</p>
           </div>
 
           <div className="flex items-center gap-3">
@@ -536,7 +533,15 @@ export function HubScreen() {
 
             {/* Widgets da Topbar */}
             <div className="hidden items-stretch gap-2 lg:flex">
-              <div className="hub-widget flex min-w-[105px] flex-col items-center justify-center px-3 py-1" style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.10)', backdropFilter: 'blur(14px)', borderRadius: '18px' }}>
+              <div
+                className="hub-widget flex min-w-[105px] flex-col items-center justify-center px-3 py-1"
+                style={{
+                  background: 'rgba(255,255,255,0.06)',
+                  border: '1px solid rgba(255,255,255,0.10)',
+                  backdropFilter: 'blur(14px)',
+                  borderRadius: '18px',
+                }}
+              >
                 <span className="font-mono text-lg font-bold tabular-nums text-brand leading-none">
                   {clock.time}
                 </span>
@@ -545,7 +550,15 @@ export function HubScreen() {
                 </span>
               </div>
 
-              <div className="w-[150px] px-2 py-1" style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.10)', backdropFilter: 'blur(14px)', borderRadius: '18px' }}>
+              <div
+                className="w-[150px] px-2 py-1"
+                style={{
+                  background: 'rgba(255,255,255,0.06)',
+                  border: '1px solid rgba(255,255,255,0.10)',
+                  backdropFilter: 'blur(14px)',
+                  borderRadius: '18px',
+                }}
+              >
                 <p className="mb-0.5 text-center text-[8.5px] font-bold uppercase tracking-wider text-brand/80">
                   {clock.monthLabel}
                 </p>
@@ -676,8 +689,12 @@ function MobileDestinationList({ items }: { items: OrbitItem[] }) {
             <primary.icon className="h-6 w-6" aria-hidden="true" />
           </span>
           <div>
-            <span className="block font-display text-base font-bold text-white group-hover:text-brand transition-colors">{primary.label}</span>
-            <span className="mt-0.5 block font-mono text-xs text-white/50">{primary.description}</span>
+            <span className="block font-display text-base font-bold text-white group-hover:text-brand transition-colors">
+              {primary.label}
+            </span>
+            <span className="mt-0.5 block font-mono text-xs text-white/50">
+              {primary.description}
+            </span>
           </div>
         </button>
       )}
@@ -700,7 +717,9 @@ function MobileDestinationList({ items }: { items: OrbitItem[] }) {
             </span>
             <span className="flex items-center gap-1 font-display text-xs font-semibold text-white/90">
               {item.label}
-              {item.external && <ExternalLink className="h-3 w-3 text-white/40" aria-hidden="true" />}
+              {item.external && (
+                <ExternalLink className="h-3 w-3 text-white/40" aria-hidden="true" />
+              )}
             </span>
           </button>
         ))}
@@ -782,7 +801,9 @@ function ExecutiveCockpitView({
                   </span>
                   {item.external && <ExternalLink className="h-3 w-3 text-white/40 shrink-0" />}
                 </div>
-                <p className="font-mono text-[10px] text-white/50 truncate mt-0.5">{item.description}</p>
+                <p className="font-mono text-[10px] text-white/50 truncate mt-0.5">
+                  {item.description}
+                </p>
               </div>
             </button>
           );

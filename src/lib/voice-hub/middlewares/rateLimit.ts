@@ -21,22 +21,22 @@ redisClient.on('error', (err) => logger.error('Rate limiter Redis error', err));
 
 export const createRateLimiter =
   (keyPrefix: string, limit: number, windowSeconds: number) =>
-    async (req: express.Request, res: express.Response, next: express.NextFunction) => {
-      const ip = req.ip || (req.headers['x-forwarded-for'] as string) || 'unknown';
-      const key = `ratelimit:${keyPrefix}:${ip}`;
+  async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    const ip = req.ip || (req.headers['x-forwarded-for'] as string) || 'unknown';
+    const key = `ratelimit:${keyPrefix}:${ip}`;
 
-      try {
-        const current = await redisClient.incr(key);
-        if (current === 1) {
-          await redisClient.expire(key, windowSeconds);
-        }
-        if (current > limit) {
-          return res
-            .status(429)
-            .json({ error: 'Limite de requisições excedido. Tente novamente em um minuto.' });
-        }
-        return next();
-      } catch {
-        return next();
+    try {
+      const current = await redisClient.incr(key);
+      if (current === 1) {
+        await redisClient.expire(key, windowSeconds);
       }
-    };
+      if (current > limit) {
+        return res
+          .status(429)
+          .json({ error: 'Limite de requisições excedido. Tente novamente em um minuto.' });
+      }
+      return next();
+    } catch {
+      return next();
+    }
+  };

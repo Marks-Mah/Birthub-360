@@ -174,12 +174,30 @@ export function AnimatedBirthHubEmblem({
               fill="none"
               strokeWidth="16.0"
             >
-              <path stroke={`url(#bh-ani-o0-${uid})`} d="M127.14 46.00 A82.0 82.0 0 0 1 199.44 87.75" />
-              <path stroke={`url(#bh-ani-o1-${uid})`} d="M198.58 86.26 A82.0 82.0 0 0 1 198.58 169.74" />
-              <path stroke={`url(#bh-ani-o2-${uid})`} d="M199.44 168.25 A82.0 82.0 0 0 1 127.14 210.00" />
-              <path stroke={`url(#bh-ani-o3-${uid})`} d="M128.86 210.00 A82.0 82.0 0 0 1 56.56 168.25" />
-              <path stroke={`url(#bh-ani-o4-${uid})`} d="M57.42 169.74 A82.0 82.0 0 0 1 57.42 86.26" />
-              <path stroke={`url(#bh-ani-o5-${uid})`} d="M56.56 87.75 A82.0 82.0 0 0 1 128.86 46.00" />
+              <path
+                stroke={`url(#bh-ani-o0-${uid})`}
+                d="M127.14 46.00 A82.0 82.0 0 0 1 199.44 87.75"
+              />
+              <path
+                stroke={`url(#bh-ani-o1-${uid})`}
+                d="M198.58 86.26 A82.0 82.0 0 0 1 198.58 169.74"
+              />
+              <path
+                stroke={`url(#bh-ani-o2-${uid})`}
+                d="M199.44 168.25 A82.0 82.0 0 0 1 127.14 210.00"
+              />
+              <path
+                stroke={`url(#bh-ani-o3-${uid})`}
+                d="M128.86 210.00 A82.0 82.0 0 0 1 56.56 168.25"
+              />
+              <path
+                stroke={`url(#bh-ani-o4-${uid})`}
+                d="M57.42 169.74 A82.0 82.0 0 0 1 57.42 86.26"
+              />
+              <path
+                stroke={`url(#bh-ani-o5-${uid})`}
+                d="M56.56 87.75 A82.0 82.0 0 0 1 128.86 46.00"
+              />
             </motion.g>
 
             {/* ── Layer 3: Central Nucleus + Majestic 'B' (STAYS UPRIGHT) ─ */}
@@ -228,7 +246,9 @@ export function AnimatedBirthHubEmblem({
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#D4AF37] opacity-80" />
               <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#D4AF37]" />
             </span>
-            <span className="text-white group-hover:text-[#F7E9B8] transition-colors">{ctaText}</span>
+            <span className="text-white group-hover:text-[#F7E9B8] transition-colors">
+              {ctaText}
+            </span>
           </div>
         )}
       </button>

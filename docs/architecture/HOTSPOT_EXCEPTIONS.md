@@ -46,6 +46,14 @@ propósito por estar fora de "## Exceções ativas"):
 
 ## Exceções ativas
 
+### `src/features/auth/components/LandingLoginSplitScreen.tsx`
+
+- **Limite excepcional:** 1100 linhas
+- **Dono:** Marks-Mah (autor das alterações visuais recentes; fora do roster de agentes)
+- **Motivo:** a tela de login/landing reúne a composição visual e as animações da experiência institucional. As alterações visuais recentes elevaram o arquivo a 1082 linhas, bloqueando o gate. A exceção permite manter o deploy desbloqueado enquanto a extração dos blocos visuais para componentes próprios é planejada, sem elevar o limite padrão do repositório.
+- **Registrado em:** 2026-09-30
+- **Reavaliar até:** 2026-11-30
+
 ### `src/features/crm360/infra/PrismaCrm360Repository.ts`
 
 - **Limite excepcional:** 1200 linhas

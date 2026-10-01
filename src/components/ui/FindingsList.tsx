@@ -74,12 +74,12 @@ function FindingRow({
         animate={
           shouldEmphasize
             ? {
-              boxShadow: [
-                `0 0 0 0 ${t.ring}`,
-                '0 0 0 12px rgba(0,0,0,0)',
-                '0 0 0 0 rgba(0,0,0,0)',
-              ],
-            }
+                boxShadow: [
+                  `0 0 0 0 ${t.ring}`,
+                  '0 0 0 12px rgba(0,0,0,0)',
+                  '0 0 0 0 rgba(0,0,0,0)',
+                ],
+              }
             : undefined
         }
         transition={shouldEmphasize ? { duration: 1.4, ease: 'easeOut', repeat: 1 } : undefined}

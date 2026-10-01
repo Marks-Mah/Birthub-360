@@ -356,11 +356,7 @@ export function Sidebar({
         className="custom-scrollbar flex-1 overflow-y-auto px-2 py-3 space-y-0"
       >
         {navGroups.map((group, groupIndex) => (
-          <section
-            key={group.title}
-            className="space-y-0.5"
-            aria-label={group.title}
-          >
+          <section key={group.title} className="space-y-0.5" aria-label={group.title}>
             {/* Group label — hidden when collapsed */}
             <div
               className={`px-3 pb-1 ${
