@@ -4,6 +4,8 @@ import type { AuthRequest } from '../../../shared/middlewares/authenticateToken.
 import { requireRole } from '../../../shared/middlewares/requireRole.js';
 import { container } from '../../../shared/di/container.js';
 import { TeamController } from '../presentation/TeamController.js';
+import { TeamUseCases } from '../application/TeamUseCases.js';
+import { PrismaTeamRepository } from '../infrastructure/PrismaTeamRepository.js';
 import {
   ASSIGNABLE_ROLES,
   createTeamMember,
@@ -18,7 +20,17 @@ import {
 const router = Router();
 
 function resolve(): TeamController {
-  return container.resolve<TeamController>('TeamController');
+  try {
+    return container.resolve<TeamController>('TeamController');
+  } catch {
+    const repo = new PrismaTeamRepository();
+    const useCases = new TeamUseCases(repo);
+    const ctrl = new TeamController(useCases);
+    container.register('TeamRepository', repo);
+    container.register('TeamUseCases', useCases);
+    container.register('TeamController', ctrl);
+    return ctrl;
+  }
 }
 
 // Rota publica para usuarios autenticados da organizacao: ver a lista de possiveis responsaveis
