@@ -482,7 +482,7 @@ function LandingInnovativeContent() {
               delay={0.2}
               icon={<Radio className="h-7 w-7 text-slate-900 dark:text-white" />}
               title="Voz em Tempo Real"
-              description="Decisões Assistidas sub-IA com transcrição instantânea, síntese adaptativa e detecção de interrupção para conversas naturais."
+              description="Latência sub-340ms com transcrição instantânea, síntese adaptativa e detecção de interrupção para conversas naturais."
             />
             <HolographicCard
               delay={0.3}
@@ -535,7 +535,7 @@ function LandingInnovativeContent() {
                   {
                     icon: Server,
                     title: 'Infraestrutura Distribuída',
-                    desc: 'SLA 360° com redundância geográfica',
+                    desc: 'SLA 99.98% com redundância geográfica',
                   },
                   {
                     icon: Terminal,
@@ -584,7 +584,7 @@ function LandingInnovativeContent() {
                     { label: 'Criptografia', value: 'AES-256' },
                     { label: 'Protocolo', value: 'TLS 1.3' },
                     { label: 'Compliance', value: 'LGPD' },
-                    { label: 'SLA', value: '360°' },
+                    { label: 'SLA', value: '99.98%' },
                   ].map((item, i) => (
                     <div
                       key={i}
