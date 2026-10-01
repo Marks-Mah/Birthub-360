@@ -52,10 +52,10 @@ const NAV_LINKS = [
 ];
 
 const STATS = [
-  { to: 50, suffix: '+', label: 'Sistemas integrados', Icon: DatabaseZap },
-  { to: 100, suffix: '+', label: 'Empresas que confiam', Icon: BrainCircuit },
-  { to: 3, suffix: 'x', label: 'Mais eficiência comercial', Icon: Rocket },
-  { to: 360, suffix: '°', label: 'Visão da operação', Icon: Target },
+  { to: 50, suffix: '+', label: 'Integrações conectadas', Icon: DatabaseZap },
+  { to: 24, suffix: '/7', label: 'Monitoramento operacional', Icon: BrainCircuit },
+  { to: 360, suffix: '°', label: 'Visibilidade da receita', Icon: Target },
+  { to: 100, suffix: '%', label: 'Dados governados', Icon: Rocket },
 ];
 
 const PILLARS = [
@@ -119,26 +119,26 @@ const BENEFITS = [
 const ORBIT_NODES = [
   {
     Icon: DatabaseZap,
-    label: 'Dados',
-    hint: 'Integração sem limites',
+    label: 'CRM',
+    hint: 'Dados conectados',
     pos: 'left-1/2 top-0 -translate-x-1/2',
   },
   {
     Icon: BrainCircuit,
-    label: 'Inteligência',
-    hint: 'Insights em tempo real',
+    label: 'IA',
+    hint: 'Insights automáticos',
     pos: 'right-0 top-1/2 -translate-y-1/2',
   },
   {
     Icon: Target,
-    label: 'Decisão',
-    hint: 'Estratégia baseada em dados',
+    label: 'Forecast',
+    hint: 'Decisões baseadas em dados',
     pos: 'bottom-0 left-1/2 -translate-x-1/2',
   },
   {
     Icon: Rocket,
-    label: 'Execução',
-    hint: 'Resultados consistentes',
+    label: 'Pipeline',
+    hint: 'Execução automatizada',
     pos: 'left-0 top-1/2 -translate-y-1/2',
   },
 ];
@@ -304,21 +304,21 @@ function OrbitHub() {
       role="img"
       aria-label="Ciclo Dados, Inteligência, Decisão e Execução ao redor do emblema Birth Hub 360°"
     >
-      <motion.div 
+      <motion.div
         className="absolute inset-6 rounded-full border border-dashed border-line motion-safe:animate-[spin_70s_linear_infinite]"
         initial={{ opacity: 0, scale: 0.8 }}
         whileInView={{ opacity: 1, scale: 1 }}
         viewport={{ once: true }}
         transition={{ duration: 1 }}
       />
-      <motion.div 
+      <motion.div
         className="absolute inset-[18%] rounded-full border border-orbit-blue/30"
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
         transition={{ delay: 0.3, duration: 0.8 }}
       />
-      <motion.div 
+      <motion.div
         className="absolute inset-[30%] flex items-center justify-center rounded-full border border-brand/40 bg-surface shadow-card"
         initial={{ opacity: 0, scale: 0.9 }}
         whileInView={{ opacity: 1, scale: 1 }}
@@ -328,15 +328,15 @@ function OrbitHub() {
         <BirthHubLogo variant="symbol" className="h-[62%] w-[62%]" />
       </motion.div>
       {ORBIT_NODES.map(({ Icon, label, hint, pos }, i) => (
-        <motion.div 
-          key={label} 
+        <motion.div
+          key={label}
           className={`absolute flex flex-col items-center text-center ${pos}`}
           initial={{ opacity: 0, scale: 0.8 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
           transition={{ delay: 0.6 + i * 0.15, duration: 0.5 }}
         >
-          <motion.span 
+          <motion.span
             className="flex h-11 w-11 items-center justify-center rounded-xl border border-line bg-surface-elevated text-brand-ink shadow-card dark:text-brand"
             whileHover={{ scale: 1.15, rotate: 5 }}
             transition={{ duration: 0.2 }}
@@ -413,7 +413,7 @@ function Hero() {
               whileTap={{ y: 0 }}
             >
               <Play className="h-4 w-4 transition-transform duration-200 group-hover:scale-110" aria-hidden="true" />
-              Ver o cockpit
+              Ver como funciona
             </motion.a>
           </motion.div>
         </motion.div>

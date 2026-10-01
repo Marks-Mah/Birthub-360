@@ -4,7 +4,7 @@ export const BRAND = {
   slogan: 'Sua central de comando inteligente',
   ecosystemLabel: 'Ecossistema de Alta Performance',
   description:
-    'Ecossistema inteligente e unificado que atua como central de comando 360º para negócios — conectando dados, IA, automações e processos, e transformando o que está disperso em direção clara.',
+    'Conecte CRM, dados, processos e IA em um único Command Center. Monitore sua operação de receita em tempo real, identifique gargalos e transforme dados em ações executáveis.',
   credit: 'Desenvolvido pelo Coordenador Comercial Marcelo do Nascimento',
 } as const;
 
