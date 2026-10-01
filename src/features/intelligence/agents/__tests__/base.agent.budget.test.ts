@@ -5,6 +5,9 @@ vi.mock('../../../../config/env.js', () => ({ env: mockEnv }));
 vi.mock('../../../../lib/ai/budget.js', () => ({
   assertAiBudgetNotExceeded: vi.fn(),
 }));
+vi.mock('../fallback.util.js', () => ({
+  buildModelWithFallback: vi.fn(),
+}));
 
 /**
  * AI-011: `BaseAgent.runWithTools` (base.agent.ts) fala direto com LangChain/Groq via
