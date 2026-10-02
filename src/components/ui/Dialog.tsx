@@ -4,9 +4,15 @@ import { X } from 'lucide-react';
 
 import { cn } from '../../lib/utils.js';
 
-const Dialog = DialogPrimitive.Root;
-
-const DialogTrigger = DialogPrimitive.Trigger;
+export interface DialogProps extends React.ComponentPropsWithoutRef<typeof DialogPrimitive.Root> {
+  isOpen?: boolean;
+  onClose?: () => void;
+  title?: React.ReactNode;
+  maxWidth?: string;
+  preventClose?: boolean;
+  footer?: React.ReactNode;
+  children?: React.ReactNode;
+}
 
 const DialogPortal = DialogPrimitive.Portal;
 
@@ -87,6 +93,64 @@ const DialogDescription = React.forwardRef<
   />
 ));
 DialogDescription.displayName = DialogPrimitive.Description.displayName;
+
+const DialogTrigger = DialogPrimitive.Trigger;
+
+function Dialog({
+  open,
+  isOpen,
+  onClose,
+  onOpenChange,
+  title,
+  maxWidth,
+  preventClose,
+  footer,
+  children,
+  ...props
+}: DialogProps) {
+  const isConvenienceMode = isOpen !== undefined || onClose !== undefined || title !== undefined || footer !== undefined;
+  if (!isConvenienceMode) {
+    return (
+      <DialogPrimitive.Root open={open} onOpenChange={onOpenChange} {...props}>
+        {children}
+      </DialogPrimitive.Root>
+    );
+  }
+
+  const effectiveOpen = open ?? isOpen ?? false;
+  const handleOpenChange = (newOpen: boolean) => {
+    if (onOpenChange) onOpenChange(newOpen);
+    if (!newOpen && onClose) onClose();
+  };
+
+  return (
+    <DialogPrimitive.Root open={effectiveOpen} onOpenChange={handleOpenChange} {...props}>
+      <DialogPortal>
+        <DialogOverlay />
+        <DialogPrimitive.Content
+          className={cn(
+            'fixed left-[50%] top-[50%] z-50 grid w-full translate-x-[-50%] translate-y-[-50%] gap-4 border border-line bg-surface p-6 shadow-xl duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 sm:rounded-lg',
+            maxWidth || 'max-w-lg',
+          )}
+        >
+          {title && (
+            <DialogHeader>
+              <DialogTitle>{title}</DialogTitle>
+            </DialogHeader>
+          )}
+          {children}
+          {footer && <DialogFooter>{footer}</DialogFooter>}
+          {!preventClose && (
+            <DialogPrimitive.Close className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-bg transition-opacity hover:opacity-100">
+              <X className="h-4 w-4" />
+              <span className="sr-only">Close</span>
+            </DialogPrimitive.Close>
+          )}
+        </DialogPrimitive.Content>
+      </DialogPortal>
+    </DialogPrimitive.Root>
+  );
+}
 
 export {
   Dialog,

@@ -34,8 +34,15 @@ export function getAccessibleTextOnBrand(brandHex: string | null | undefined): '
   return ratioWhite >= ratioBlack ? '#ffffff' : '#000000';
 }
 
-export function getAccessibleBrandForeground(brandHex: string | null | undefined): string {
-  return getAccessibleTextOnBrand(brandHex);
+export function getAccessibleBrandForeground(
+  brandHex: string | null | undefined,
+  bgHex?: string,
+): string {
+  if (!brandHex) return bgHex === '#0f172a' ? '#38bdf8' : '#0284c7';
+  const targetBg = bgHex || '#ffffff';
+  const ratioCurrent = contrastRatio(brandHex, targetBg);
+  if (ratioCurrent >= 4.5) return brandHex;
+  return targetBg === '#0f172a' ? '#38bdf8' : '#0284c7';
 }
 
 export const colors = {
@@ -45,5 +52,11 @@ export const colors = {
     100: '#f1f5f9',
     800: '#1e293b',
     900: '#0f172a',
+  },
+  light: {
+    surface: '#ffffff',
+  },
+  dark: {
+    surface: '#0f172a',
   },
 };

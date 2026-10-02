@@ -600,7 +600,7 @@ export default function App() {
           setGoogleApiKey={setGoogleApiKey}
           apolloApiKey={apolloApiKey}
           setApolloApiKey={setApolloApiKey}
-          dbStats={dbStats}
+          dbStats={dbStats || undefined}
           onOpenBrandGuide={() => setIsBrandGuideOpen(true)}
           onNavigateTab={(tab) => setActiveTab(tab)}
           ollamaStatus={ollamaStatus}
@@ -610,7 +610,7 @@ export default function App() {
           setIsOpenMobile={setIsSidebarMobileOpen}
           theme={theme}
           recentSearches={recentSearches}
-          onSelectRecentSearch={(search) => {
+          onSelectRecentSearch={(search: any) => {
             setQuery(search.query);
             setLimit(search.limit);
           }}
