@@ -20,21 +20,16 @@ import {
 } from '../domain/Analytics.js';
 
 function startOfCurrentMonth(now: Date): Date {
-  const d = new Date(now);
-  d.setDate(1);
-  d.setHours(0, 0, 0, 0);
-  return d;
+  return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1, 0, 0, 0, 0));
 }
 
 /** Primeiro dia do mês, `monthsBack` meses atrás. */
 function startOfMonthsAgo(now: Date, monthsBack: number): Date {
-  const d = startOfCurrentMonth(now);
-  d.setMonth(d.getMonth() - monthsBack);
-  return d;
+  return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - monthsBack, 1, 0, 0, 0, 0));
 }
 
 function monthKey(date: Date): string {
-  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+  return `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, '0')}`;
 }
 
 /** Converte um agrupamento bruto do repositório numa distribuição ordenada por contagem. */
@@ -55,7 +50,7 @@ function toDistribution(
 export function buildCohortCsv(rows: CohortRow[]): string {
   const header = 'Mes,Total de Leads,Ganhos em 30 dias,Ganhos em 60 dias';
   const lines = rows.map((row) => `${row.month},${row.total},${row.won30d},${row.won60d}`);
-  return [header, ...lines].join('\\n');
+  return [header, ...lines].join('\n');
 }
 
 /** Agrupa timestamps de ligação em (dia da semana, hora), omitindo células sem nenhuma ligação. */

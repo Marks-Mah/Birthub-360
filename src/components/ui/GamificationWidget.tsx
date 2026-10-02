@@ -134,7 +134,7 @@ export function GamificationWidget({
   const progressPercent = Math.min(100, Math.round((xp / nextLevelXp) * 100));
 
   return (
-    <div className="relative overflow-hidden rounded-card-lg border border-line/80 bg-surface-elevated/85 backdrop-blur-2xl p-5 shadow-2xl transition-all duration-300">
+    <div className="relative overflow-hidden rounded-card-lg border border-brand/40 bg-surface-elevated/85 backdrop-blur-2xl p-5 shadow-glow-brand transition-all duration-300">
       {/* Luz Especular de Fundo */}
       <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-brand/15 blur-3xl" />
       <div className="pointer-events-none absolute -left-16 -bottom-16 h-48 w-48 rounded-full bg-accent-cyan/10 blur-3xl" />
@@ -241,7 +241,7 @@ export function GamificationWidget({
             initial={{ width: 0 }}
             animate={{ width: `${progressPercent}%` }}
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="relative h-full rounded-full bg-gradient-to-r from-brand via-brand-2 to-white shadow-[0_0_12px_rgba(212,175,55,0.6)]"
+            className="relative h-full rounded-full bg-gradient-to-r from-brand via-brand-2 to-white shadow-glow-brand-strong"
           >
             {/* Feixe de luz correndo sobre o progresso */}
             <span className="absolute inset-0 bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.7),transparent)] animate-pulse" />

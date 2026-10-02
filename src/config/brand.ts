@@ -37,31 +37,31 @@ export const BRAND = {
   /** Valores (brand book, p. 10). Em inglês no original. */
   values: ['Innovation', 'Data Intelligence', 'Efficiency', 'Scalability'] as const,
   colors: {
-    /** Antique Gold — cor primária: valor, foco e assinatura. Inalterada na rodada 09/2026. */
-    brand: '#D4AF37',
-    /** Gold Soft — segundo ponto da rampa metálica do logotipo; também o --ink do tema escuro. */
-    brandAccent: '#F0D77B',
-    /** Midnight Blue — Primária: âncora profunda (#0B132B). */
+    /** Primary / Brand */
+    brand: '#00E5FF',
+    /** Primary Hover */
+    brandAccent: '#33EBFF',
+    /** Midnight Blue (Base dark) */
     obsidian: '#0B132B',
-    /** Midnight Blue (#0B132B). */
+    /** Midnight Blue */
     midnight: '#0B132B',
-    /** Sunset Orange — Primária (#FF5841). */
-    sunsetOrange: '#FF5841',
-    /** Red-Violet — Primária (#C53678). */
-    redViolet: '#C53678',
-    /** White — Neutro (#FFFFFF). */
+    /** Error / Danger */
+    sunsetOrange: '#EF4444',
+    /** AI / Purple */
+    redViolet: '#8B5CF6',
+    /** White */
     white: '#FFFFFF',
-    /** Deep Iris — "roxo" da paleta. */
-    iris: '#C53678',
-    /** Orbit Blue — "azul" da paleta. */
-    orbitBlue: '#1677FF',
-    /** "Vermelho" da paleta / Sunset Orange. */
-    red: '#FF5841',
-    /** "Rosa" da paleta / Red-Violet. */
-    pink: '#C53678',
-    /** Alias de `blossom` para código legado. */
+    /** AI / Purple */
+    iris: '#8B5CF6',
+    /** Intelligence Blue */
+    orbitBlue: '#3B82F6',
+    /** Error / Danger */
+    red: '#EF4444',
+    /** AI / Purple */
+    pink: '#8B5CF6',
+    /** White */
     snow: '#FFFFFF',
-    /** White neutro da paleta. */
+    /** White */
     blossom: '#FFFFFF',
   },
   /**

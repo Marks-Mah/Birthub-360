@@ -400,7 +400,7 @@ export function CommandPalette() {
     >
       <div
         ref={panelRef}
-        className="w-full h-full sm:h-auto sm:max-w-2xl overflow-hidden sm:rounded-2xl border-0 sm:border border-line/80 bg-surface-elevated/95 backdrop-blur-2xl shadow-[0_25px_70px_-15px_rgba(0,0,0,0.6)] flex flex-col relative"
+        className="w-full h-full sm:h-auto sm:max-w-2xl overflow-hidden sm:rounded-2xl border-0 sm:border border-brand/40 bg-surface-elevated/95 backdrop-blur-2xl shadow-glow-brand flex flex-col relative"
       >
         <BorderBeam variant="brand" size={260} duration={10} borderWidth={1.5} radius={16} glow />
         <div className="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-brand to-transparent pointer-events-none" />
@@ -447,17 +447,17 @@ export function CommandPalette() {
                     }
                   }}
                   onClick={item.onSelect}
-                  className={`group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm transition-all duration-200 ${
+                  className={`group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm transition-all duration-300 ${
                     isActive
-                      ? 'bg-brand/15 text-ink shadow-[0_0_15px_rgba(212,175,55,0.08)] ring-1 ring-brand/35 translate-x-0.5'
-                      : 'text-ink-2 hover:bg-surface-2/70 hover:text-ink'
+                      ? 'bg-brand/15 text-ink shadow-glow-brand ring-1 ring-brand/50 translate-x-0.5'
+                      : 'text-ink-2 hover:bg-surface-2/70 hover:text-ink hover:shadow-glow-brand'
                   }`}
                 >
                   <span
                     className={`flex h-7 w-7 items-center justify-center rounded-lg border shrink-0 transition-colors ${
                       isActive
-                        ? 'border-brand/40 bg-brand/20 text-brand shadow-xs'
-                        : 'border-line bg-surface text-ink-2 group-hover:border-brand/30 group-hover:text-brand'
+                        ? 'border-brand/50 bg-gradient-to-br from-brand to-brand-2 text-on-brand shadow-glow-brand-strong'
+                        : 'border-line bg-surface text-ink-2 group-hover:border-brand/40 group-hover:text-brand'
                     }`}
                   >
                     <Icon className="h-3.5 w-3.5" />

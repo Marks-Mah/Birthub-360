@@ -123,7 +123,7 @@ export function AIContextPopover({
             ref={refs.setFloating}
             style={floatingStyles}
             {...getFloatingProps()}
-            className="z-[200] w-72 rounded-2xl border border-line bg-surface shadow-2xl backdrop-blur-xl"
+            className="z-[200] w-72 rounded-2xl border border-brand/40 bg-surface/95 shadow-glow-brand backdrop-blur-xl"
             role="dialog"
             aria-label={`Insight de IA — ${ENTITY_LABELS[entityType]} ${entityName}`}
           >
