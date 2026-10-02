@@ -21,8 +21,10 @@ export class GamificationController {
 
   getProfile = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const { organizationId, name } = (req as AuthRequest).user;
-      const seller = (req.query.seller as string) || name || 'Consultor';
+      const user = (req as AuthRequest).user;
+      const organizationId = user.organizationId;
+      const userName = (user as any).name;
+      const seller = (req.query.seller as string) || userName || 'Consultor';
       const result = await this.gamificationUseCases.getSellerProfile(organizationId, seller);
       res.json({ success: true, data: result });
     } catch (error) {
@@ -32,8 +34,10 @@ export class GamificationController {
 
   getCoaching = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const { organizationId, name } = (req as AuthRequest).user;
-      const seller = (req.query.seller as string) || name || 'Consultor';
+      const user = (req as AuthRequest).user;
+      const organizationId = user.organizationId;
+      const userName = (user as any).name;
+      const seller = (req.query.seller as string) || userName || 'Consultor';
 
       const now = new Date();
       const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);

@@ -1,9 +1,386 @@
+import {
+  ArrowUpRight,
+  ChevronDown,
+  CircleDot,
+  ExternalLink,
+  LayoutGrid,
+  Loader2,
+  LogOut,
+  Moon,
+  Sun,
+  Volume2,
+  VolumeX,
+} from 'lucide-react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { BirthHubLogo } from '../../../components/brand/BirthHubLogo.js';
+import { EXTERNAL_LINKS, MODULE_CATALOG } from '../../../config/module-catalog.js';
+import { useAuth } from '../../../contexts/AuthContext.js';
+import { useBrand } from '../../../contexts/BrandContext.js';
+import { useTheme } from '../../../contexts/ThemeContext.js';
+import { useModuleAccess } from '../../../hooks/useModuleAccess.js';
+import { SoundFX } from '../../../lib/soundEffects.js';
+import { CommercialAgentCellPanel } from './CommercialAgentCellPanel.js';
+import { type BurstHandle, HubBurstCanvas } from './HubBurstCanvas.js';
+import { HubTaskWidget } from './HubTaskWidget.js';
+import '../hub-orbit.css';
 
-import { Card, CardContent, CardHeader, CardTitle, Badge, Button } from '../../../components/ui/index.js';
-import { Bot, CheckCircle, Clock, Zap } from 'lucide-react';
-import { HubBurstCanvas } from './HubBurstCanvas.js';
+import { HubIcons } from './HubIcons.js';
+
+interface OrbitItem {
+  key: string;
+  label: string;
+  description: string;
+  icon: React.FC<React.SVGProps<SVGSVGElement>>;
+  external?: boolean;
+  primary?: boolean;
+  ring: 'inner' | 'outer';
+  colorRgb: string;
+  /** Token CSS (sem "--") usado pelo halo/aro/linha deste nó — ver ORBIT_PALETTE abaixo. */
+  colorVar: string;
+  onOpen: () => void;
+}
+
+// Paleta oficial: Midnight Blue, Sunset Orange, Red-Violet, Gold
+const ORBIT_PALETTE = ['sunset', 'red-violet', 'gold', 'midnight'] as const;
+
+function useIsDesktopOrbit(): boolean {
+  const [isDesktop, setIsDesktop] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia('(min-width: 901px)').matches,
+  );
+  useEffect(() => {
+    const query = window.matchMedia('(min-width: 901px)');
+    const handleChange = () => setIsDesktop(query.matches);
+    handleChange();
+    query.addEventListener('change', handleChange);
+    return () => query.removeEventListener('change', handleChange);
+  }, []);
+  return isDesktop;
+}
+
+function greetingWord(hour: number): string {
+  if (hour < 5) return 'Boa madrugada';
+  if (hour < 12) return 'Bom dia';
+  if (hour < 18) return 'Boa tarde';
+  return 'Boa noite';
+}
+
+function useLiveClock() {
+  const [now, setNow] = useState(() => new Date());
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(id);
+  }, []);
+  return {
+    time: now.toLocaleTimeString('pt-BR', { hour12: false }),
+    dateLabel: now.toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'short' }),
+    greeting: greetingWord(now.getHours()),
+    monthLabel: now.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' }),
+    year: now.getFullYear(),
+    month: now.getMonth(),
+    today: now.getDate(),
+  };
+}
+
+const WEEKDAYS_SHORT = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
+
+// HubBurstCanvas desenha em <canvas>, que não entende var(--brand) — precisa do RGB já resolvido
+// da marca ativa (BrandContext) para o burst de partículas não ficar laranja fixo com Birth Hub 360.
+function hexToRgbString(hex: string): string {
+  const clean = hex.replace('#', '');
+  const value = Number.parseInt(clean, 16);
+  const r = (value >> 16) & 255;
+  const g = (value >> 8) & 255;
+  const b = value & 255;
+  return `${r},${g},${b}`;
+}
+
+function buildCalendarCells(year: number, month: number, today: number, isCurrentMonth: boolean) {
+  const firstDow = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const cells: Array<{ day: number; isToday: boolean } | null> = [];
+  for (let i = 0; i < firstDow; i++) cells.push(null);
+  for (let d = 1; d <= daysInMonth; d++)
+    cells.push({ day: d, isToday: isCurrentMonth && d === today });
+  return cells;
+}
 
 export function HubScreen() {
+  const navigate = useNavigate();
+  const { currentUser, logout, canAccessCommercialIntelligence } = useAuth();
+  const { brandInfo } = useBrand();
+  const { theme, toggleTheme } = useTheme();
+  const { grantedModules, isLoading } = useModuleAccess();
+  const isDesktopOrbit = useIsDesktopOrbit();
+  const clock = useLiveClock();
+  const [soundOn, setSoundOn] = useState(() => SoundFX.isEnabled());
+  const [viewMode, setViewMode] = useState<'orbit' | 'cockpit'>('orbit');
+  const burstRef = useRef<BurstHandle>(null);
+
+  const firstName = currentUser?.name?.trim().split(/\s+/)[0] ?? 'Usuário';
+  const calendarCells = buildCalendarCells(clock.year, clock.month, clock.today, true);
+  const brandRgb = useMemo(() => hexToRgbString(brandInfo.colors.brand), [brandInfo.colors.brand]);
+  // RGB de cada cor da órbita de 5 cores, pro burst de partículas do canvas (que não entende
+  // var(--token)) poder reproduzir a mesma cor atribuída ao card clicado (ver ORBIT_PALETTE).
+  const orbitRgb = useMemo(
+    () => ({
+      sunset: hexToRgbString(brandInfo.colors.sunsetOrange),
+      'red-violet': hexToRgbString(brandInfo.colors.redViolet),
+      gold: hexToRgbString(brandInfo.colors.brand),
+      midnight: hexToRgbString(brandInfo.colors.midnight),
+      'orbit-blue': hexToRgbString(brandInfo.colors.midnight),
+      iris: hexToRgbString(brandInfo.colors.redViolet),
+      pink: hexToRgbString(brandInfo.colors.redViolet),
+      red: hexToRgbString(brandInfo.colors.sunsetOrange),
+      'brand-2': hexToRgbString(brandInfo.colors.brandAccent),
+    }),
+    [brandInfo.colors],
+  );
+
+  // Quem decide quais módulos executivos cada pessoa vê é o painel 'module-access' (ADMIN), para
+  // qualquer papel — inclusive SDR. O corte por papel que existia aqui escondia do SDR até os
+  // módulos que o gestor tinha liberado explicitamente ("as ferramentas dele não aparecem").
+  const grantedCatalog = useMemo(
+    () => MODULE_CATALOG.filter((m) => grantedModules.includes(m.key)),
+    [grantedModules],
+  );
+
+  const goTo = useCallback(
+    (path: string) => {
+      SoundFX.play('navigate');
+      navigate(path);
+    },
+    [navigate],
+  );
+
+  const openExternal = useCallback((url: string) => {
+    SoundFX.play('navigate');
+    window.open(url, '_blank', 'noopener,noreferrer');
+  }, []);
+
+  const items = useMemo<OrbitItem[]>(() => {
+    // Índice de ciclo pela paleta — incrementado a cada nó não-primário, na ordem em que
+    // aparecem, pra cada destino real (não só os fixos) ganhar uma cor própria e consistente
+    // entre renders (mesma ordem de entrada = mesma cor).
+    let paletteIndex = 0;
+    const nextColorVar = () => ORBIT_PALETTE[paletteIndex++ % ORBIT_PALETTE.length];
+
+    const outer: OrbitItem[] = [
+      {
+        key: 'sdr',
+        label: 'Acompanhamento SDR',
+        description: 'Mesa de Tratamento · Dashboard SDR',
+        icon: HubIcons.sdr,
+        ring: 'inner',
+        colorVar: nextColorVar(),
+        colorRgb: '',
+        onOpen: () => goTo('/app/mesa-tratamento'),
+      },
+      {
+        key: 'meeting-hub',
+        label: 'Birth Meeting Hub',
+        description: 'Cadência · Agendamento · Google Meet',
+        icon: HubIcons['meeting-hub'],
+        ring: 'inner',
+        colorVar: nextColorVar(),
+        colorRgb: '',
+        onOpen: () => goTo('/app/cadence'),
+      },
+      // Mesmo gate de papel do backend (RequireRole em App.tsx, COMMERCIAL_INTELLIGENCE_ROLES em
+      // authorization.ts) — quem não acessa a rota não vê o círculo, em vez de ver e levar um 403.
+      ...(canAccessCommercialIntelligence
+        ? [
+            {
+              key: 'revenue-intel',
+              label: 'Revenue Intelligence',
+              description: 'Comercial Inteligente · Métricas de receita',
+              icon: HubIcons['revenue-intel'],
+              ring: 'inner' as const,
+              colorVar: nextColorVar(),
+              colorRgb: '',
+              onOpen: () => goTo('/app/commercial_intelligence'),
+            },
+          ]
+        : []),
+      ...grantedCatalog.map((mod) => ({
+        key: mod.key,
+        label: mod.label,
+        description: mod.description,
+        icon: HubIcons[mod.key] || HubIcons.central,
+        ring: 'inner' as const,
+        colorVar: nextColorVar(),
+        colorRgb: '',
+        onOpen: () => goTo(`/${mod.key}`),
+      })),
+      ...EXTERNAL_LINKS.map((link) => ({
+        key: link.key,
+        label: link.label,
+        description: link.description,
+        icon: HubIcons[link.iconKey] || HubIcons.central,
+        external: true,
+        ring: 'outer' as const,
+        colorVar: nextColorVar(),
+        colorRgb: '',
+        onOpen: () => openExternal(link.url),
+      })),
+    ];
+
+    return [
+      {
+        key: 'central',
+        label: 'Central Comercial',
+        description: 'CRM · Prospecção · IA',
+        icon: HubIcons.central,
+        primary: true,
+        ring: 'inner',
+        colorVar: 'brand',
+        colorRgb: brandRgb,
+        onOpen: () => goTo('/app'),
+      },
+      ...outer.map((item) => ({
+        ...item,
+        colorRgb: orbitRgb[item.colorVar as keyof typeof orbitRgb],
+      })),
+    ];
+  }, [grantedCatalog, goTo, openExternal, canAccessCommercialIntelligence, brandRgb, orbitRgb]);
+
+  const orbitContainerRef = useRef<HTMLDivElement>(null);
+
+  // Cálculo matemático idêntico ao protótipo portalatlasprototype.html
+  const [orbitLines, setOrbitLines] = useState<React.ReactNode>(null);
+
+  // items.length é dependência real, não falso positivo do linter (ver biome-ignore abaixo): o
+  // efeito lê os cards via DOM (querySelectorAll), não via `items` diretamente, então o linter
+  // não enxerga que o layout precisa recalcular quando `grantedCatalog`/`items` muda (permissões
+  // carregam de forma assíncrona após o mount, ou quando canAccessCommercialIntelligence resolve).
+  // Removê-la deixaria os cards nas posições erradas até um resize.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: ver comentário acima
+  useLayoutEffect(() => {
+    const orbit = orbitContainerRef.current;
+    if (!orbit || !isDesktopOrbit || viewMode !== 'orbit') return;
+
+    function layout() {
+      if (!orbit) return;
+
+      const cards = Array.from(orbit.querySelectorAll('.hub-card')) as HTMLElement[];
+      const primary = orbit.querySelector('.hub-card.primary') as HTMLElement;
+      const outer = cards.filter((c) => c !== primary);
+
+      const w = orbit.clientWidth;
+      const h = orbit.clientHeight;
+      if (!w || !h) return;
+
+      const cx = w / 2;
+      const cy = h / 2;
+
+      const n = outer.length;
+      // Diâmetro do satélite é ~110px. Precisamos de pelo menos 68px de margem das bordas do container.
+      const maxPossibleRadius = Math.min(w / 2 - 68, h / 2 - 68);
+      // Raio adaptativo entre 125px e 215px para caber 100% no viewport sem overflow
+      const radius = Math.max(125, Math.min(maxPossibleRadius, 215));
+      // Escala suave caso o container seja compacto
+      const scale = Math.max(0.82, Math.min(1.0, radius / 180));
+
+      if (primary) {
+        primary.style.left = `${cx}px`;
+        primary.style.top = `${cy}px`;
+        primary.style.setProperty('--orb-scale', (scale * 0.98).toFixed(3));
+      }
+
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const lines: React.ReactNode[] = [];
+
+      outer.forEach((card, i) => {
+        const angle = (Math.PI * 2 * i) / n - Math.PI / 2;
+        const x = cx + radius * Math.cos(angle);
+        const y = cy + radius * Math.sin(angle);
+
+        card.style.left = `${x}px`;
+        card.style.top = `${y}px`;
+        card.style.setProperty('--orb-scale', scale.toFixed(3));
+
+        const pathId = `orbitPath${i}`;
+        const gradId = `orbitBeam${i}`;
+        const accent = `var(--${card.dataset.orbitAccent || 'brand'})`;
+
+        lines.push(
+          <g key={i}>
+            <linearGradient
+              id={gradId}
+              gradientUnits="userSpaceOnUse"
+              x1={cx}
+              y1={cy}
+              x2={x}
+              y2={y}
+            >
+              <stop offset="0%" stopColor="var(--brand)" stopOpacity=".75" />
+              <stop offset="100%" stopColor={accent} stopOpacity=".65" />
+            </linearGradient>
+            <path
+              id={pathId}
+              d={`M ${cx} ${cy} L ${x} ${y}`}
+              stroke={`url(#${gradId})`}
+              strokeWidth="2.4"
+            />
+            {!reduceMotion && (
+              <circle
+                className="pulse"
+                r="3.5"
+                fill={accent}
+                style={{ filter: `drop-shadow(0 0 8px ${accent})` }}
+              >
+                <animateMotion
+                  dur={`${2.2 + i * 0.3}s`}
+                  repeatCount="indefinite"
+                  begin={`${i * 0.35}s`}
+                >
+                  <mpath href={`#${pathId}`} />
+                </animateMotion>
+              </circle>
+            )}
+          </g>,
+        );
+      });
+
+      setOrbitLines(
+        <svg
+          className="orbit-lines"
+          viewBox={`0 0 ${w} ${h}`}
+          style={{
+            position: 'absolute',
+            inset: 0,
+            width: '100%',
+            height: '100%',
+            pointerEvents: 'none',
+            overflow: 'visible',
+          }}
+        >
+          <style>
+            {
+              'path { fill: none; stroke-linecap: round; } circle.pulse { filter: drop-shadow(0 0 6px var(--color-brand)); }'
+            }
+          </style>
+          {lines}
+        </svg>,
+      );
+    }
+
+    layout();
+    window.addEventListener('resize', layout);
+    const observer = new ResizeObserver(() => layout());
+    observer.observe(orbit);
+    return () => {
+      window.removeEventListener('resize', layout);
+      observer.disconnect();
+    };
+  }, [isDesktopOrbit, items.length, viewMode]);
+
+  const handleCardClick = (e: React.MouseEvent, item: OrbitItem) => {
+    burstRef.current?.trigger(e.clientX, e.clientY, item.colorRgb);
+    if (soundOn) SoundFX.play('focus');
+    item.onOpen();
+  };
+
   return (
     <div
       className="relative h-screen max-h-screen w-full overflow-hidden flex flex-col justify-between select-none text-white"
@@ -124,6 +501,7 @@ export function HubScreen() {
           </div>
 
           <div className="flex items-center gap-3">
+            {/* View Mode Toggle */}
             <div className="hidden sm:flex items-center rounded-full bg-white/8 p-0.5 border border-white/12 backdrop-blur-md">
               <button
                 type="button"
@@ -153,6 +531,7 @@ export function HubScreen() {
               </button>
             </div>
 
+            {/* Widgets da Topbar */}
             <div className="hidden items-stretch gap-2 lg:flex">
               <div
                 className="hub-widget flex min-w-[105px] flex-col items-center justify-center px-3 py-1"
@@ -242,6 +621,7 @@ export function HubScreen() {
           )}
 
           {isDesktopOrbit && viewMode === 'orbit' ? (
+            // biome-ignore lint/a11y/useSemanticElements: grupo de navegação orbital, fieldset é para formulários
             <div
               ref={orbitContainerRef}
               className="hub-orbit"
@@ -283,10 +663,151 @@ export function HubScreen() {
             </div>
           )}
 
+          {/* Equipe IA Comercial — catálogo somente leitura dos 12 agentes da Célula Comercial
+              (onda 43), seção separada abaixo da órbita, ver CommercialAgentCellPanel.tsx */}
           <div className="mx-auto w-full max-w-[1250px] px-8 pb-10 pt-6">
             <CommercialAgentCellPanel />
           </div>
         </main>
+      </div>
+    </div>
+  );
+}
+
+function MobileDestinationList({ items }: { items: OrbitItem[] }) {
+  const primary = items.find((i) => i.primary);
+  const rest = items.filter((i) => !i.primary);
+  return (
+    <div className="space-y-4 px-6 py-4">
+      {primary && (
+        <button
+          type="button"
+          onClick={primary.onOpen}
+          className="group relative flex w-full items-center gap-4 overflow-hidden rounded-2xl border border-brand/40 bg-gradient-to-r from-brand/15 via-white/5 to-transparent p-5 text-left shadow-glow-brand transition-all duration-200 active:scale-[0.99] backdrop-blur-md"
+        >
+          <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl border border-brand/40 bg-brand/20 text-brand">
+            <primary.icon className="h-6 w-6" aria-hidden="true" />
+          </span>
+          <div>
+            <span className="block font-display text-base font-bold text-white group-hover:text-brand transition-colors">
+              {primary.label}
+            </span>
+            <span className="mt-0.5 block font-mono text-xs text-white/50">
+              {primary.description}
+            </span>
+          </div>
+        </button>
+      )}
+      <div className="grid grid-cols-2 gap-3">
+        {rest.map((item) => (
+          <button
+            key={item.key}
+            type="button"
+            onClick={item.onOpen}
+            className="group flex flex-col items-start gap-2.5 rounded-xl border border-white/10 bg-white/5 p-4 text-left shadow-sm backdrop-blur-md transition-all duration-200 hover:border-white/20 hover:bg-white/10 active:scale-[0.98]"
+          >
+            <span
+              className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-white/10"
+              style={{
+                background: `color-mix(in srgb, var(--${item.colorVar}) 15%, transparent)`,
+                color: `var(--${item.colorVar})`,
+              }}
+            >
+              <item.icon className="h-4 w-4" aria-hidden="true" />
+            </span>
+            <span className="flex items-center gap-1 font-display text-xs font-semibold text-white/90">
+              {item.label}
+              {item.external && (
+                <ExternalLink className="h-3 w-3 text-white/40" aria-hidden="true" />
+              )}
+            </span>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ExecutiveCockpitView({
+  items,
+  onCardClick,
+}: {
+  items: OrbitItem[];
+  onCardClick: (e: React.MouseEvent, item: OrbitItem) => void;
+}) {
+  const primary = items.find((i) => i.primary);
+  const satellites = items.filter((i) => !i.primary);
+
+  return (
+    <div className="w-full max-w-4xl h-full flex flex-col justify-center gap-3 py-2 px-4 animate-in fade-in zoom-in-95 duration-200">
+      {primary && (
+        <button
+          type="button"
+          onClick={(e) => onCardClick(e, primary)}
+          className="group relative flex items-center justify-between w-full p-4 rounded-2xl bg-gradient-to-r from-brand/15 via-white/5 to-transparent border border-brand/40 shadow-glow-brand hover:border-brand hover:shadow-glow-brand-strong transition-all cursor-pointer text-left backdrop-blur-md"
+          aria-label={`${primary.label} - ${primary.description}`}
+        >
+          <div className="flex items-center gap-4">
+            <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-brand/40 to-brand flex items-center justify-center text-midnight shadow-md group-hover:scale-105 transition-transform shrink-0">
+              <primary.icon className="h-6 w-6 text-on-brand" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-brand text-on-brand">
+                  Principal
+                </span>
+                <span className="text-[11px] font-medium text-white/50">
+                  Central Comercial Integrada
+                </span>
+              </div>
+              <h2 className="font-display text-lg font-bold text-white mt-0.5 group-hover:text-brand transition-colors">
+                {primary.label}
+              </h2>
+              <p className="font-mono text-xs text-white/50">{primary.description}</p>
+            </div>
+          </div>
+          <div className="hidden sm:flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-brand text-on-brand font-bold text-xs shadow-xs group-hover:scale-105 transition-transform shrink-0">
+            <span>Acessar</span>
+            <ArrowUpRight className="h-4 w-4" />
+          </div>
+        </button>
+      )}
+
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-2.5">
+        {satellites.map((item) => {
+          const Icon = item.icon;
+          return (
+            <button
+              key={item.key}
+              type="button"
+              onClick={(e) => onCardClick(e, item)}
+              className="group relative flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10 shadow-sm hover:border-white/25 hover:bg-white/10 transition-all cursor-pointer text-left backdrop-blur-md overflow-hidden"
+              aria-label={`${item.label} - ${item.description}`}
+            >
+              <div
+                className="h-9 w-9 rounded-lg flex items-center justify-center shrink-0 transition-transform group-hover:scale-110"
+                style={{
+                  background: `color-mix(in srgb, var(--${item.colorVar}) 18%, transparent)`,
+                  color: `var(--${item.colorVar})`,
+                  border: `1px solid color-mix(in srgb, var(--${item.colorVar}) 30%, transparent)`,
+                }}
+              >
+                <Icon className="h-4 w-4" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-1">
+                  <span className="font-display text-xs font-semibold text-white/90 truncate group-hover:text-brand transition-colors">
+                    {item.label}
+                  </span>
+                  {item.external && <ExternalLink className="h-3 w-3 text-white/40 shrink-0" />}
+                </div>
+                <p className="font-mono text-[10px] text-white/50 truncate mt-0.5">
+                  {item.description}
+                </p>
+              </div>
+            </button>
+          );
+        })}
       </div>
     </div>
   );
