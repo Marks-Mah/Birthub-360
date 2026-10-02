@@ -62,7 +62,7 @@ export class TeamController {
 
       const updated = await this.teamUseCases.updateMemberRole(
         organizationId,
-        memberId,
+        memberId as string,
         role as TeamRole
       );
       res.json({ success: true, data: updated });
@@ -81,7 +81,7 @@ export class TeamController {
         return;
       }
 
-      await this.teamUseCases.removeMember(organizationId, memberId);
+      await this.teamUseCases.removeMember(organizationId, memberId as string);
       res.status(200).json({ success: true, message: 'Membro removido com sucesso' });
     } catch (error) {
       next(error);

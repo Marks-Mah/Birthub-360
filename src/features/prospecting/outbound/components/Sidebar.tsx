@@ -17,8 +17,15 @@ import {
   Trash2,
   Play,
   UserCheck,
+  ChevronUp,
+  ChevronDown,
+  Target,
+  Info,
+  Key,
 } from 'lucide-react';
 import type { ThemeMode } from '../types.js';
+import { BirthubLogo } from './BirthubLogo.js';
+import { RecentSearchModal } from './RecentSearchModal.js';
 
 interface SidebarProps {
   onNavigateTab: (tab: string) => void;
@@ -30,6 +37,7 @@ interface SidebarProps {
     apolloApiKey?: string;
     blandAiApiKey?: string;
     groqApiKey?: string;
+    hunterApiKey?: string;
   };
   setIntegrationsConfig: React.Dispatch<React.SetStateAction<any>>;
   dbStats?: {
@@ -39,9 +47,13 @@ interface SidebarProps {
   };
   theme: ThemeMode;
   onOpenBrandGuide: () => void;
+  isOpenMobile?: boolean;
+  setIsOpenMobile?: (open: boolean) => void;
+  aiConfig?: any;
+  setAiConfig?: React.Dispatch<React.SetStateAction<any>>;
+  pitch?: string;
+  setPitch?: (pitch: string) => void;
 }
-
-// Modal and child components omitted for brevity, keeping only the main layout structure changes
 
 export const Sidebar: React.FC<SidebarProps> = ({
   onNavigateTab,
@@ -50,9 +62,25 @@ export const Sidebar: React.FC<SidebarProps> = ({
   dbStats,
   theme,
   onOpenBrandGuide,
+  isOpenMobile = false,
+  setIsOpenMobile = () => {},
+  aiConfig = { groqModel: 'llama-3.3-70b-versatile', provider: 'gemini', temperature: 0.7 },
+  setAiConfig = () => {},
+  pitch = '',
+  setPitch = () => {},
 }) => {
   const isDark = theme === 'dark';
   const [showIntegrations, setShowIntegrations] = useState(false);
+  const [showAdvanced, setShowAdvanced] = useState(false);
+  const [showPitchHelp, setShowPitchHelp] = useState(false);
+  const [googleApiKey, setGoogleApiKey] = useState('');
+  const [apolloApiKey, setApolloApiKey] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalSearch, setModalSearch] = useState<any>(null);
+
+  const handleApplyToForm = (_search: any) => {};
+  const handleApplyAndSearch = (_search: any) => {};
+  const handleDeleteSearch = (_id: string) => {};
 
   return (
     <>

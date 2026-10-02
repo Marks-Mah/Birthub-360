@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { useSessionStore } from '../../store/useSessionStore.js';
 import { usePrefersReducedMotion } from './useReducedMotion.js';
+import { getAccessibleTextOnBrand, getAccessibleBrandForeground, colors } from '../tokens.js';
 
 const FOCUSABLE_SELECTOR =
   'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';

@@ -38,7 +38,7 @@ export class PrismaTeamRepository implements ITeamRepository {
         organizationId: member.organizationId,
         name: member.name,
         email: member.email,
-        role: member.role,
+        role: member.role as any,
       },
     });
 
@@ -48,7 +48,7 @@ export class PrismaTeamRepository implements ITeamRepository {
   async updateRole(id: string, organizationId: string, role: TeamRole): Promise<TeamMember> {
     const updated = await prisma.user.update({
       where: { id },
-      data: { role },
+      data: { role: role as any },
     });
 
     return this.mapToDomain(updated);
@@ -70,7 +70,7 @@ export class PrismaTeamRepository implements ITeamRepository {
     return prisma.user.count({
       where: {
         organizationId,
-        role: TeamRole.OWNER,
+        role: TeamRole.OWNER as any,
       },
     });
   }

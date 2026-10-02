@@ -38,7 +38,7 @@ export class RoleplayController {
         res.status(400).json({ success: false, error: 'message é obrigatória' });
         return;
       }
-      const data = await this.useCases.sendTurn(organizationId, id, message);
+      const data = await this.useCases.sendTurn(organizationId, id as string, message);
       res.json({ success: true, data });
     } catch (error) {
       next(error);
@@ -49,7 +49,7 @@ export class RoleplayController {
     try {
       const { organizationId } = (req as AuthRequest).user;
       const { id } = req.params;
-      const data = await this.useCases.evaluateSession(organizationId, id);
+      const data = await this.useCases.evaluateSession(organizationId, id as string);
       res.json({ success: true, data });
     } catch (error) {
       next(error);

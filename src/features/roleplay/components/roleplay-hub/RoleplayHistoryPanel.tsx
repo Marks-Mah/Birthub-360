@@ -120,7 +120,7 @@ export function RoleplayHistoryPanel({ playbook }: { playbook: PlaybookKey }) {
       </motion.div>
 
       <Dialog
-        isOpen={selected != null}
+        open={selected != null}
         onClose={() => setSelected(null)}
         title={selected?.personaLabel || ''}
         maxWidth="max-w-2xl"

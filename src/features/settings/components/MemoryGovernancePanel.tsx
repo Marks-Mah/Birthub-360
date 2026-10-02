@@ -450,7 +450,7 @@ export function MemoryGovernancePanel() {
                   >
                     <div className="flex flex-wrap items-center gap-2 justify-between">
                       <div className="flex flex-wrap items-center gap-2">
-                        <Badge variant="neon">{categoryLabel(candidate.category)}</Badge>
+                        <Badge variant="secondary">{categoryLabel(candidate.category)}</Badge>
                         <Badge variant="outline">
                           {scopeLabel(candidate.targetScope)}
                           {candidate.targetScope === 'AGENT' && ` · ${candidate.agentCode}`}
@@ -611,7 +611,7 @@ export function MemoryGovernancePanel() {
                 <div key={record.id} className="border border-line rounded-xl p-3 space-y-2">
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <div className="flex items-center gap-2">
-                      <Badge variant="neon">{categoryLabel(record.category)}</Badge>
+                      <Badge variant="secondary">{categoryLabel(record.category)}</Badge>
                       <Badge variant="outline">v{record.version}</Badge>
                     </div>
                     <span className="text-[11px] text-ink-2">
