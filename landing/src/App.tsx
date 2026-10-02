@@ -414,9 +414,7 @@ function Hero() {
             className="mt-4 font-display text-5xl font-bold leading-[1.15] tracking-tight text-ink sm:text-6xl lg:text-7xl"
           >
             <RevealLine delay={0.15}>
-              Dados que
-              <br />
-              <span className="text-brand-ink dark:text-brand"> Conectam.</span>
+              Dados que <span className="text-brand-ink dark:text-brand">Conectam.</span>
             </RevealLine>
             <RevealLine delay={0.3}>
               Inteligência que <span className="text-brand-ink dark:text-brand">Decide.</span>
@@ -433,7 +431,7 @@ function Hero() {
               Conecte CRM, dados, processos e IA em um único Lugar.
             </p>
             <p className="font-mono text-sm text-ink-2">
-              Monitore sua operação comercial em tempo real, identifique gargalos e transforme dados em ações executáveis
+              Monitore sua operação comercial em tempo real, identifique gargalos e transforme dados em ações executáveis.
             </p>
           </motion.div>
           <motion.div variants={staggerItem} className="mt-8 flex flex-wrap items-center gap-3">
