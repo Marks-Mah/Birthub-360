@@ -70,16 +70,10 @@ export function MainLayout({ children }: MainLayoutProps) {
         <MacDock activeTab={activeTab} />
         {/* Backdrop da navegação mobile — some em telas md+, onde a Sidebar é estática */}
         {mobileNavOpen && (
-          <div
+          <button
+            type="button"
+            aria-label="Fechar navegação móvel"
             className="fixed inset-0 z-30 bg-overlay backdrop-blur-sm lg:hidden transition-opacity duration-300 animate-fade-in"
-            role="button"
-            tabIndex={0}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                e.currentTarget.click();
-              }
-            }}
             onClick={() => setMobileNavOpen(false)}
           />
         )}

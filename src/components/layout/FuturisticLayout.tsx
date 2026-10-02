@@ -95,8 +95,8 @@ export function FuturisticLayout({ children }: FuturisticLayoutProps) {
         {mobileNavOpen && (
           <button
             type="button"
+            aria-label="Fechar navegação móvel"
             className="fixed inset-0 z-30 bg-overlay/80 backdrop-blur-md lg:hidden animate-fade-in w-full h-full cursor-default"
-            aria-label="Fechar menu de navegação"
             onKeyDown={(e) => {
               if (e.key === 'Escape') setMobileNavOpen(false);
             }}
