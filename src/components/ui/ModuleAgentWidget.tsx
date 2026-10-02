@@ -1,12 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Mic, Sparkles, X, Send } from 'lucide-react';
 import type { TabType } from '../layout/tabMeta.js';
 import { SoundFX } from '../../lib/soundEffects.js';
 import { useAuth } from '../../contexts/AuthContext.js';
 import { hasRequiredRole, MESA_TRATAMENTO_ROLES } from '../../lib/auth/authorization.js';
-import { AiReasoningPipeline } from './AiReasoningPipeline.js';
-import type { AiReasoningStep } from './AiReasoningPipeline.js';
+import { AiReasoningPipeline, type AiReasoningStep } from './AiReasoningPipeline.js';
 
 interface AgentCharacter {
   name: string;
@@ -14,7 +13,7 @@ interface AgentCharacter {
   seed: string;
   command: string;
   color: string;
-  monitoringContext: string;
+  contextMsg: string;
 }
 
 const AGENTS_BY_PILLAR: Record<string, AgentCharacter> = {
@@ -24,7 +23,7 @@ const AGENTS_BY_PILLAR: Record<string, AgentCharacter> = {
     seed: 'Atlas',
     command: 'Ei Atlas',
     color: 'from-amber-400 to-amber-600',
-    monitoringContext: 'Monitorando pipeline e negócios ativos',
+    contextMsg: 'Monitorando pipeline e negócios ativos',
   },
   'PILAR 02 — INTELIGÊNCIA DE MERCADO': {
     name: 'Nexus',
@@ -32,7 +31,7 @@ const AGENTS_BY_PILLAR: Record<string, AgentCharacter> = {
     seed: 'Felix',
     command: 'Ei Nexus',
     color: 'from-blue-400 to-blue-600',
-    monitoringContext: 'Analisando dados de mercado e tendências',
+    contextMsg: 'Analisando dados de mercado e prospecção',
   },
   'PILAR 03 — ORQUESTRAÇÃO DE VENDAS': {
     name: 'Aria',
@@ -40,7 +39,7 @@ const AGENTS_BY_PILLAR: Record<string, AgentCharacter> = {
     seed: 'Aria',
     command: 'Ei Aria',
     color: 'from-emerald-400 to-emerald-600',
-    monitoringContext: 'Orquestrando cadências e fluxos de vendas',
+    contextMsg: 'Otimizando fluxos de vendas diários',
   },
   'PILAR 04 — PERFORMANCE COMERCIAL': {
     name: 'Vanguard',
@@ -48,7 +47,7 @@ const AGENTS_BY_PILLAR: Record<string, AgentCharacter> = {
     seed: 'Vanguard',
     command: 'Ei Vanguard',
     color: 'from-rose-400 to-rose-600',
-    monitoringContext: 'Avaliando metas e performance da equipe',
+    contextMsg: 'Analisando indicadores de performance',
   },
   'PILAR 05 — PREVISIBILIDADE COMERCIAL': {
     name: 'Oracle',
@@ -56,7 +55,7 @@ const AGENTS_BY_PILLAR: Record<string, AgentCharacter> = {
     seed: 'Oracle',
     command: 'Ei Oracle',
     color: 'from-purple-400 to-purple-600',
-    monitoringContext: 'Projetando forecast e cenários futuros',
+    contextMsg: 'Projetando forecast e fechamentos',
   },
   'PILAR 06 — INTELIGÊNCIA ARTIFICIAL': {
     name: 'Core',
@@ -64,7 +63,7 @@ const AGENTS_BY_PILLAR: Record<string, AgentCharacter> = {
     seed: 'Buster',
     command: 'Ei Core',
     color: 'from-indigo-400 to-indigo-600',
-    monitoringContext: 'Processando modelos e aprendizados da IA',
+    contextMsg: 'Treinando copilotos e analisando contexto',
   },
   'PILAR 07 — AUTOMAÇÃO & CONECTIVIDADE': {
     name: 'Spark',
@@ -72,7 +71,7 @@ const AGENTS_BY_PILLAR: Record<string, AgentCharacter> = {
     seed: 'Sparky',
     command: 'Ei Spark',
     color: 'from-teal-400 to-teal-600',
-    monitoringContext: 'Monitorando integrações e conectores ativos',
+    contextMsg: 'Monitorando saúde das integrações e filas',
   },
   'PILAR 08 — ENGAJAMENTO COMERCIAL': {
     name: 'Echo',
@@ -80,37 +79,29 @@ const AGENTS_BY_PILLAR: Record<string, AgentCharacter> = {
     seed: 'Echo',
     command: 'Ei Echo',
     color: 'from-pink-400 to-pink-600',
-    monitoringContext: 'Acompanhando engajamento e canais de voz',
+    contextMsg: 'Acompanhando discador e cadência',
   },
-  ADMINISTRAÇÃO: {
+  'ADMINISTRAÇÃO': {
     name: 'Sudo',
     role: 'Controlador de Sistema',
     seed: 'Sudo',
     command: 'Ei Sudo',
     color: 'from-slate-400 to-slate-600',
-    monitoringContext: 'Supervisionando configurações e permissões',
-  },
+    contextMsg: 'Validando acessos e billing',
+  }
 };
+
+const STEPS: AiReasoningStep[] = ['CONTEXT', 'ANALYSIS', 'RECOMMENDATION', 'APPROVAL', 'EXECUTION'];
 
 interface ModuleAgentWidgetProps {
   activeTab: TabType;
 }
 
-const REASONING_STEPS: AiReasoningStep[] = [
-  'CONTEXT',
-  'ANALYSIS',
-  'RECOMMENDATION',
-  'APPROVAL',
-  'EXECUTION',
-];
-
 export function ModuleAgentWidget({ activeTab }: ModuleAgentWidgetProps) {
   const [isHovered, setIsHovered] = useState(false);
-  const [isPanelOpen, setIsPanelOpen] = useState(false);
-  const [question, setQuestion] = useState('');
-  const [reasoningStep, setReasoningStep] = useState<AiReasoningStep>('CONTEXT');
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [pipelineStep, setPipelineStep] = useState<AiReasoningStep>('CONTEXT');
+  const [inputText, setInputText] = useState('');
   const { currentUser, isAdmin, canAccessCommercialIntelligence, canAccessCopilotoIa } = useAuth();
 
   const canManageOperations =
@@ -118,31 +109,18 @@ export function ModuleAgentWidget({ activeTab }: ModuleAgentWidgetProps) {
   const canAccessMesaTratamento =
     !!currentUser && hasRequiredRole(currentUser.role, MESA_TRATAMENTO_ROLES);
 
-  // Cycle through reasoning steps every 2s when panel is open
+  // Animação da esteira em loop
   useEffect(() => {
-    if (!isPanelOpen) {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-        intervalRef.current = null;
-      }
-      setReasoningStep('CONTEXT');
-      return;
-    }
-
-    intervalRef.current = setInterval(() => {
-      setReasoningStep((prev) => {
-        const idx = REASONING_STEPS.indexOf(prev);
-        return REASONING_STEPS[(idx + 1) % REASONING_STEPS.length];
-      });
-    }, 2000);
-
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-        intervalRef.current = null;
-      }
-    };
-  }, [isPanelOpen]);
+    if (!isExpanded) return;
+    
+    let currentIdx = 0;
+    const interval = setInterval(() => {
+      currentIdx = (currentIdx + 1) % STEPS.length;
+      setPipelineStep(STEPS[currentIdx]);
+    }, 2000); // avança a cada 2s (10s total por ciclo)
+    
+    return () => clearInterval(interval);
+  }, [isExpanded]);
 
   const navGroupsByJourney = [
     {
@@ -207,144 +185,50 @@ export function ModuleAgentWidget({ activeTab }: ModuleAgentWidgetProps) {
     },
   ];
 
-  const activeGroup = navGroupsByJourney.find((g) => (g.items as TabType[]).includes(activeTab));
+  const activeGroup = navGroupsByJourney.find(g => (g.items as TabType[]).includes(activeTab));
 
   if (!activeGroup) return null;
   const agent = AGENTS_BY_PILLAR[activeGroup.title];
   if (!agent) return null;
 
-  const handleAvatarClick = () => {
+  const handleInteract = () => {
     SoundFX.play('focus');
-    setIsPanelOpen((prev) => !prev);
-  };
-
-  const handleClosePanel = () => {
-    setIsPanelOpen(false);
-  };
-
-  const handleSend = () => {
-    if (!question.trim()) return;
-    console.log(`[${agent.name}] Pergunta recebida: "${question.trim()}"`);
-    setQuestion('');
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSend();
+    if (!isExpanded) {
+      setPipelineStep('CONTEXT');
+      setIsExpanded(true);
     }
   };
 
+  const handleSend = () => {
+    if (!inputText.trim()) return;
+    SoundFX.play('click');
+    console.log(`[Agent ${agent.name}] User asked: ${inputText}`);
+    setInputText('');
+  };
+
+  const details = {
+    CONTEXT: 'Analisando os dados visíveis nesta tela...',
+    ANALYSIS: 'Cruzando padrões operacionais recentes...',
+    RECOMMENDATION: 'Gerando insights para sua ação...',
+    APPROVAL: 'Aguardando validação do processo...',
+    EXECUTION: 'Aplicando comando no sistema...',
+  };
+
   return (
-    <div className="fixed bottom-4 left-4 z-50 flex flex-col items-start gap-2">
-      {/* Floating Agent Panel */}
-      <AnimatePresence>
-        {isPanelOpen && (
-          <motion.div
-            key="agent-panel"
-            initial={{ opacity: 0, y: 16, scale: 0.96 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 12, scale: 0.96 }}
-            transition={{ duration: 0.22, ease: [0.4, 0, 0.2, 1] }}
-            style={{
-              background: 'rgba(6,13,26,0.97)',
-              backdropFilter: 'blur(24px)',
-              WebkitBackdropFilter: 'blur(24px)',
-            }}
-            className="w-[300px] rounded-2xl border border-white/10 shadow-2xl p-4 flex flex-col gap-4"
-          >
-            {/* Header: agent info + close */}
-            <div className="flex items-start justify-between gap-2">
-              <div className="flex items-center gap-3">
-                <div
-                  className={`relative flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br ${agent.color} shadow-inner flex-shrink-0`}
-                >
-                  <img
-                    src={`https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${agent.seed}&backgroundColor=transparent`}
-                    alt={`Avatar do agente ${agent.name}`}
-                    className="w-7 h-7 drop-shadow-md"
-                  />
-                  <div className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-green-500 rounded-full border border-surface shadow-[0_0_8px_rgba(34,197,94,0.6)]" />
-                </div>
-                <div className="flex flex-col">
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-[14px] font-bold text-white leading-none">
-                      {agent.name}
-                    </span>
-                    <Sparkles className="w-3 h-3 text-brand opacity-80" />
-                  </div>
-                  <span className="text-[11px] font-medium text-white/40 leading-tight mt-0.5">
-                    {agent.role}
-                  </span>
-                  <span className="text-[10px] text-white/30 leading-tight mt-0.5 italic">
-                    {agent.monitoringContext}
-                  </span>
-                </div>
-              </div>
-
-              <button
-                onClick={handleClosePanel}
-                className="flex-shrink-0 w-6 h-6 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors text-white/40 hover:text-white/80"
-                aria-label="Fechar painel do agente"
-              >
-                <X className="w-3.5 h-3.5" />
-              </button>
-            </div>
-
-            {/* Divider */}
-            <div className="h-px bg-white/5" />
-
-            {/* Reasoning Pipeline */}
-            <div>
-              <p className="text-[9px] font-mono uppercase tracking-widest text-white/30 mb-3">
-                Esteira de raciocínio
-              </p>
-              <AiReasoningPipeline currentStep={reasoningStep} />
-            </div>
-
-            {/* Divider */}
-            <div className="h-px bg-white/5" />
-
-            {/* Question input */}
-            <div className="flex flex-col gap-2">
-              <textarea
-                value={question}
-                onChange={(e) => setQuestion(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder={`Pergunte algo para ${agent.name}...`}
-                rows={3}
-                className="w-full resize-none rounded-lg bg-white/5 border border-white/10 text-white/80 placeholder:text-white/25 text-[12px] px-3 py-2 outline-none focus:border-white/20 focus:bg-white/[0.07] transition-colors"
-              />
-              <button
-                onClick={handleSend}
-                disabled={!question.trim()}
-                className="flex items-center justify-center gap-1.5 w-full rounded-lg py-2 text-[12px] font-semibold bg-brand/80 hover:bg-brand disabled:opacity-30 disabled:cursor-not-allowed text-white transition-colors"
-              >
-                <Send className="w-3.5 h-3.5" />
-                Enviar
-              </button>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Floating Button */}
+    <div className="fixed bottom-4 left-4 z-50 flex flex-col-reverse items-start gap-4">
+      {/* O Botão Flutuante */}
       <motion.button
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        onClick={handleAvatarClick}
+        onClick={handleInteract}
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.95 }}
         className="relative flex items-center bg-surface-elevated/95 backdrop-blur-xl border border-white/10 p-1.5 pr-4 rounded-full shadow-2xl overflow-hidden group cursor-pointer"
       >
-        {/* Fundo brilhante animado quando hover */}
         <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/5 to-white/0 translate-x-[-100%] group-hover:animate-[shimmer_1.5s_infinite]" />
-
-        {/* Avatar Miniatura do Agente (Bottts neutral) */}
-        <div
-          className={`relative flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br ${agent.color} shadow-inner`}
-        >
-          <img
+        
+        <div className={`relative flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br ${agent.color} shadow-inner`}>
+          <img 
             src={`https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${agent.seed}&backgroundColor=transparent`}
             alt={`Avatar do agente ${agent.name}`}
             className="w-7 h-7 drop-shadow-md"
@@ -352,13 +236,12 @@ export function ModuleAgentWidget({ activeTab }: ModuleAgentWidgetProps) {
           <div className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-green-500 rounded-full border border-surface shadow-[0_0_8px_rgba(34,197,94,0.6)]" />
         </div>
 
-        {/* Informacoes e Comando de Voz */}
         <div className="ml-3 flex flex-col items-start justify-center">
           <div className="flex items-center gap-1.5">
             <span className="text-[13px] font-bold text-white leading-none">{agent.name}</span>
             <Sparkles className="w-3 h-3 text-brand opacity-80" />
           </div>
-
+          
           <AnimatePresence mode="wait">
             {isHovered ? (
               <motion.div
@@ -389,6 +272,88 @@ export function ModuleAgentWidget({ activeTab }: ModuleAgentWidgetProps) {
           </AnimatePresence>
         </div>
       </motion.button>
+
+      {/* Painel Expandido (Card Flutuante) */}
+      <AnimatePresence>
+        {isExpanded && (
+          <motion.div
+            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.95 }}
+            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+            className="w-[360px] rounded-2xl border border-white/10 shadow-2xl overflow-hidden flex flex-col"
+            style={{
+              background: 'rgba(6,13,26,0.97)',
+              backdropFilter: 'blur(24px)'
+            }}
+          >
+            {/* Header do Card */}
+            <div className="px-5 py-4 border-b border-white/10 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className={`flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-br ${agent.color}`}>
+                  <img 
+                    src={`https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${agent.seed}&backgroundColor=transparent`}
+                    alt={agent.name}
+                    className="w-8 h-8"
+                  />
+                </div>
+                <div>
+                  <h3 className="text-white font-bold text-sm flex items-center gap-1.5">
+                    {agent.name} <Sparkles className="w-3.5 h-3.5 text-brand" />
+                  </h3>
+                  <p className="text-white/40 text-[11px] font-mono mt-0.5">
+                    {agent.role}
+                  </p>
+                </div>
+              </div>
+              <button 
+                onClick={() => {
+                  SoundFX.play('click');
+                  setIsExpanded(false);
+                }}
+                className="p-1.5 rounded-md hover:bg-white/10 text-white/40 hover:text-white transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Contexto & Pipeline Animado */}
+            <div className="px-5 py-6 flex-1 border-b border-white/10">
+              <p className="text-white/70 text-sm mb-6 flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                {agent.contextMsg}...
+              </p>
+              
+              <AiReasoningPipeline currentStep={pipelineStep} details={details} />
+            </div>
+
+            {/* Input para Pergunta */}
+            <div className="p-4 bg-black/20">
+              <div className="relative">
+                <textarea 
+                  value={inputText}
+                  onChange={(e) => setInputText(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                      e.preventDefault();
+                      handleSend();
+                    }
+                  }}
+                  placeholder={`Pergunte algo ao ${agent.name}...`}
+                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 pr-12 text-sm text-white placeholder-white/30 focus:outline-none focus:border-brand/50 focus:ring-1 focus:ring-brand/50 resize-none h-16"
+                />
+                <button 
+                  onClick={handleSend}
+                  disabled={!inputText.trim()}
+                  className="absolute right-2 bottom-2 p-2 rounded-lg bg-brand text-white hover:bg-brand-hover disabled:opacity-50 disabled:hover:bg-brand transition-colors"
+                >
+                  <Send className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

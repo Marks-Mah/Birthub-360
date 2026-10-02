@@ -39,7 +39,6 @@ export class RoleplayUseCases {
     };
 
     await this.repository.addMessage(organizationId, session.id, assistantMsg);
-    session.messages.push(assistantMsg);
 
     return { session, persona, initialGreeting };
   }
