@@ -142,13 +142,11 @@ avalie migrar com mais tempo e mais teste de regressão, não como próximo item
 `prospecting/services/*.ts` (enriquecimento — várias integrações externas encadeadas), qualquer
 coisa sob `integrations/bitrix/`.
 
-- [ ] `activities/services/activity.service.ts` — **não crie um repository novo**: já existe
-      `ActivityRepository`/`PrismaActivityRepository` (Estilo A, ver acima). O trabalho aqui é
-      trocar os `prisma.*` deste service legado (consumido por `aiPendingAction.service.ts` e pelas
-      tools de agente) para usar o repository já existente, eliminando a duplicação com
-      `ActivityUseCases`.
-- [ ] `contacts/services/contact.service.ts` — mesmo achado: já existe `ContactRepository`/
-      `PrismaContactRepository`. Consolidar, não recriar.
+- [x] `activities/services/activity.service.ts` — ✅ consolidado: resolvendo via
+      `ActivityRepository`/`ActivityUseCases` no container de DI central, eliminando chamadas
+      diretas a `prisma.*` e alinhando com o Estilo A.
+- [x] `contacts/services/contact.service.ts` — ✅ consolidado: alinhado com
+      `ContactRepository`/`ContactUseCases` e sem chamadas diretas a `prisma.*`.
 - [ ] `crm/services/assignment.service.ts` — CRM core, fora do escopo de um piloto pequeno.
 - [x] `crm/services/savedView.service.ts` — ✅ migrado (Estilo B, SavedViewRepository).
 - [ ] `gamification/services/sellerPerformanceAggregator.service.ts` — ✅ migrado neste piloto.
