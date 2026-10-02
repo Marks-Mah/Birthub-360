@@ -4,7 +4,7 @@ export const BRAND = {
   slogan: 'Aqui está o centro de comando da sua operação comercial',
   ecosystemLabel: 'Ecossistema de Alta Performance',
   description:
-    'Conecte CRM, dados, processos e IA em um único Lugar. Monitore sua operação comercial em tempo real, identifique gargalos e transforme dados em ações executáveis',
+    'Conecte CRM, dados, processos e IA em um único Lugar. Monitore sua operação comercial em tempo real, identifique gargalos e transforme dados em ações executáveis.',
   credit: 'Desenvolvido pelo Coordenador Comercial Marcelo do Nascimento',
 } as const;
 
