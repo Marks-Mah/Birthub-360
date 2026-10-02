@@ -1,0 +1,71 @@
+name: Deploy to AWS Production
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    name: Build, Test & Deploy to AWS
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+
+      - name: Setup Node.js & Dependencies
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run test
+
+      - name: Configure AWS Credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@ff717079ee2060e4bcee96c4779b553acc87447c # v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws-region: ${{ vars.AWS_REGION || 'us-east-1' }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@03f1aad4c6c7ffd436567f42f9384779290529bd # v2
+
+      - name: Build, tag, and push Docker image to ECR
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: birthhub-api
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -t $REGISTRY/$REPOSITORY:latest .
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+          docker push $REGISTRY/$REPOSITORY:latest
+
+      - name: Build and Sync Frontend to S3
+        run: |
+          npm run build
+          aws s3 sync dist/ s3://${{ secrets.AWS_S3_FRONTEND_BUCKET }} --delete
+          aws cloudfront create-invalidation --distribution-id ${{ secrets.AWS_CLOUDFRONT_DIST_ID }} --paths "/*"
+
+      - name: Deploy to Amazon ECS
+        run: |
+          aws ecs update-service --cluster birthhub-production --service birthhub-api-service --force-new-deployment
+
+      - name: Smoke Test Gate (Blocking)
+        run: |
+          echo "Aguardando estabilização do ECS..."
+          aws ecs wait services-stable --cluster birthhub-production --services birthhub-api-service
+
+          echo "Executando smoke test na API..."
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://api.birthhub360.com.br/health)
+          if [ "$STATUS" -ne 200 ]; then
+            echo "::error::Smoke test falhou com status $STATUS! Abortando validação de deploy."
+            exit 1
+          fi
+          echo "Smoke test aprovado com sucesso (HTTP 200)."

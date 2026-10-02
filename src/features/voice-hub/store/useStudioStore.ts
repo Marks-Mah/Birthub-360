@@ -7,7 +7,7 @@ import type {
   WorkflowVersionSummary,
 } from '../lib/studio/types.js';
 import { validationEngine } from '../../../lib/studio/ValidationEngine.js';
-import { addEdge, type Connection } from '@xyflow/react';
+import { addEdge, } from '@xyflow/react';
 import { logger } from '../../../lib/logger.js';
 import { nodeRegistry } from './nodeRegistry.js';
 import { initialNodes, initialEdges } from './initialData.js';

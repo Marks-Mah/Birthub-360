@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { Target, LineChart, Layers, Settings } from 'lucide-react';
 import { motion } from 'framer-motion';
 
