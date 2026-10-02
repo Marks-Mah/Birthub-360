@@ -56,6 +56,20 @@ export interface AnalyticsDashboard {
 
 export const PERIOD_OPTIONS = [3, 6, 12, 24] as const;
 
+/** Formata mês (YYYY-MM) para rótulo curto do eixo (ex: "jul/26"). */
+export function formatMonthLabel(month: string): string {
+  const match = month.match(/^(\d{4})-(\d{2})$/);
+  if (!match) return month;
+  const [, year, monthNum] = match;
+  const monthNames = [
+    'jan', 'fev', 'mar', 'abr', 'mai', 'jun',
+    'jul', 'ago', 'set', 'out', 'nov', 'dez',
+  ];
+  const monthIndex = parseInt(monthNum, 10) - 1;
+  if (monthIndex < 0 || monthIndex > 11) return month;
+  return `${monthNames[monthIndex]}/${year.slice(2)}`;
+}
+
 export const analyticsApi = {
   dashboard: (months: number) =>
     api.get<AnalyticsDashboard>(`/api/analytics/dashboard?months=${months}`, {

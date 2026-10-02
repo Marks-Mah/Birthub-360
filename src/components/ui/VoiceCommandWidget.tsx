@@ -166,7 +166,7 @@ export function VoiceCommandWidget() {
           <div className="absolute inset-x-0 top-0 h-1/2 rounded-t-2xl bg-gradient-to-b from-white/30 to-transparent pointer-events-none" />
 
           {isListening ? (
-            <Volume2 className="w-5 h-5 animate-bounce text-white relative z-10" />
+            <Volume2 className="w-5 h-5 animate-pulse text-white relative z-10" />
           ) : (
             <Mic className="w-5 h-5 group-hover:scale-110 transition-transform relative z-10" />
           )}

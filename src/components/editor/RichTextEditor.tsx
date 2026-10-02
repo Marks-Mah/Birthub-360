@@ -241,7 +241,7 @@ export function RichTextEditor({
           [&_.ProseMirror_h1]:text-2xl [&_.ProseMirror_h1]:font-black
           [&_.ProseMirror_h2]:text-xl [&_.ProseMirror_h2]:font-bold
           [&_.ProseMirror_h3]:text-base [&_.ProseMirror_h3]:font-bold
-          [&_.ProseMirror_blockquote]:border-l-4 [&_.ProseMirror_blockquote]:border-brand/50 [&_.ProseMirror_blockquote]:pl-4 [&_.ProseMirror_blockquote]:text-ink-2
+          [&_.ProseMirror_blockquote]:border border-line [&_.ProseMirror_blockquote]:border-brand/50 [&_.ProseMirror_blockquote]:pl-4 [&_.ProseMirror_blockquote]:text-ink-2
           [&_.ProseMirror_code]:rounded [&_.ProseMirror_code]:bg-surface-2 [&_.ProseMirror_code]:px-1.5 [&_.ProseMirror_code]:py-0.5 [&_.ProseMirror_code]:text-brand [&_.ProseMirror_code]:font-mono
           [&_.ProseMirror_pre]:rounded-xl [&_.ProseMirror_pre]:bg-surface-2 [&_.ProseMirror_pre]:p-4
           [&_.ProseMirror_ul]:list-disc [&_.ProseMirror_ul]:pl-5

@@ -15,11 +15,15 @@
   <title>Birth Hub 360º | Central de Comando Inteligente</title>
   <!-- Prevent FOUC: apply theme class immediately before React loads -->
   <script>
-    (function () {
-      const savedTheme = localStorage.getItem('atlas_theme');
-      if (savedTheme === 'dark') {
-        document.documentElement.classList.add('dark');
-      }
+    (function() {
+      try {
+        var theme = localStorage.getItem('atlas_theme');
+        if (theme === 'dark') {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      } catch (e) {}
     })();
   </script>
 </head>

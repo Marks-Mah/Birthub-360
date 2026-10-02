@@ -69,7 +69,7 @@ export function VersionHistoryPanel() {
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-slate-800 shrink-0">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-indigo-600 to-indigo-500 flex items-center justify-center text-white shadow-lg shadow-indigo-600/20">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-brand to-indigo-500 flex items-center justify-center text-white shadow-lg shadow-indigo-600/20">
               <History className="w-5 h-5" />
             </div>
             <div>

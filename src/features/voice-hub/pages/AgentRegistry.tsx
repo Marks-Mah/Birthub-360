@@ -78,11 +78,11 @@ export default function AgentRegistry() {
       <div className="relative max-w-2xl mx-auto -mt-14 z-20">
         <div className="absolute inset-0 bg-white/40 dark:bg-slate-900/40 backdrop-blur-xl rounded-2xl shadow-lg border border-white/50 dark:border-slate-700/50"></div>
         <div className="relative p-2 flex items-center">
-          <Search className="h-5 w-5 text-slate-400 ml-3" />
+          <Search className="h-5 w-5 text-red-900 ml-3" />
           <input
             type="text"
             placeholder="Pesquisar por nome ou modelo do agente..."
-            className="w-full bg-transparent border-none px-4 py-3 text-slate-800 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-0"
+            className="w-full bg-transparent border-none px-4 py-3 text-slate-800 dark:text-white placeholder:text-red-900 focus:outline-none focus:ring-0"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -92,7 +92,7 @@ export default function AgentRegistry() {
       {/* List / Grid */}
       {isLoading ? (
         <div className="flex justify-center items-center py-20">
-          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-brand-600"></div>
+          <div className="animate-spin rounded-full h-10 w-10 border-b border-line-600"></div>
         </div>
       ) : agents.length === 0 ? (
         <div className="text-center py-20 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm rounded-3xl border border-slate-200 dark:border-slate-800">
@@ -161,7 +161,7 @@ export default function AgentRegistry() {
                       <button
                         type="button"
                         onClick={(e) => handleDelete(e, agent.id)}
-                        className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-colors"
+                        className="p-2 text-red-900 hover:text-red-500 hover:bg-red-100 dark:hover:bg-red-900/20 rounded-xl transition-colors"
                       >
                         <Trash2 className="h-4 w-4" />
                       </button>
@@ -169,7 +169,7 @@ export default function AgentRegistry() {
                   </div>
 
                   <div className="relative z-10 space-y-4">
-                    <p className="text-sm text-slate-600 dark:text-slate-400 line-clamp-2 min-h-[40px]">
+                    <p className="text-sm text-slate-600 dark:text-red-900 line-clamp-2 min-h-[40px]">
                       {config.description || 'Nenhuma descrição fornecida para este agente.'}
                     </p>
 

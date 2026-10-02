@@ -816,12 +816,12 @@ export function Intelligence() {
                     <motion.div
                       animate={{ rotate: 360 }}
                       transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
-                      className="absolute inset-0 border-t-2 border-r-2 border-brand/50 rounded-full"
+                      className="absolute inset-0 border-t border-line border-r border-line border-brand/50 rounded-full"
                     ></motion.div>
                     <motion.div
                       animate={{ rotate: -360 }}
                       transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
-                      className="absolute inset-2 border-b-2 border-l-2 border-line rounded-full"
+                      className="absolute inset-2 border-b border-line border-l border-line border-line rounded-full"
                     ></motion.div>
                     <div className="absolute inset-4 bg-brand/10 rounded-full blur-md animate-pulse"></div>
                     <Zap size={32} className="text-brand relative z-10 animate-pulse" />
@@ -881,10 +881,10 @@ export function Intelligence() {
 
                   <div className="flex-1 bg-surface-2/80 backdrop-blur-xl p-6 md:p-8 rounded-2xl border border-line shadow-inner overflow-y-auto relative scrollbar-thin">
                     {/* Decoration Corners */}
-                    <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-brand/50 rounded-tl-lg"></div>
-                    <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-brand/50 rounded-tr-lg"></div>
-                    <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-brand/50 rounded-bl-lg"></div>
-                    <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-brand/50 rounded-br-lg"></div>
+                    <div className="absolute top-0 left-0 w-4 h-4 border-t border-line border-l border-line border-brand/50 rounded-tl-lg"></div>
+                    <div className="absolute top-0 right-0 w-4 h-4 border-t border-line border-r border-line border-brand/50 rounded-tr-lg"></div>
+                    <div className="absolute bottom-0 left-0 w-4 h-4 border-b border-line border-l border-line border-brand/50 rounded-bl-lg"></div>
+                    <div className="absolute bottom-0 right-0 w-4 h-4 border-b border-line border-r border-line border-brand/50 rounded-br-lg"></div>
 
                     <motion.div
                       initial={{ opacity: 0 }}

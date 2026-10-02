@@ -2,6 +2,16 @@ import { motion, useReducedMotion } from 'framer-motion';
 import type React from 'react';
 import { cn } from '../../lib/utils.js';
 
+/**
+ * @deprecated
+ * Este componente viola o Design Language v2.0 do Birth Hub 360°.
+ * Usa linhas de scan animadas, gradientes holográficos e bordas animadas
+ * que correspondem ao anti-pattern "neon-flicker (cyber-scan, hologram)".
+ *
+ * Migre para Card.tsx com variantes estruturais (default, accent, elevated).
+ * Documentação: docs/design/BIRTHHUB-360-DESIGN-LANGUAGE.md
+ */
+
 export interface HolographicCardProps {
   children: React.ReactNode;
   className?: string;
@@ -27,7 +37,7 @@ export function HolographicCard({
 
   const variantColors = {
     cyan: 'from-cyan-400/20 to-blue-500/20 border-cyan-400/50',
-    purple: 'from-purple-400/20 to-pink-500/20 border-purple-400/50',
+    purple: 'from-brand/20 to-pink-500/20 border-purple-400/50',
     gold: 'from-yellow-400/20 to-orange-500/20 border-yellow-400/50',
     mixed: 'from-brand/20 via-iris/20 to-orbit-blue/20 border-brand/50',
   };
@@ -70,8 +80,8 @@ export function HolographicCard({
         animate={
           !shouldReduceMotion
             ? {
-                backgroundPosition: ['0% 0%', '100% 100%', '0% 0%'],
-              }
+              backgroundPosition: ['0% 0%', '100% 100%', '0% 0%'],
+            }
             : undefined
         }
         transition={{

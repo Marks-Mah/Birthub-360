@@ -552,7 +552,7 @@ export function SwarmDashboard() {
             SoundFX.play('click');
             setView('mission');
           }}
-          className={`flex items-center gap-1.5 px-3 py-2 text-xs font-bold uppercase tracking-widest rounded-t-lg border-b-2 transition-colors cursor-pointer ${view === 'mission' ? `${accent.text} border-current` : 'text-ink-2 border-transparent hover:text-ink'}`}
+          className={`flex items-center gap-1.5 px-3 py-2 text-xs font-bold uppercase tracking-widest rounded-t-lg border-b border-line transition-colors cursor-pointer ${view === 'mission' ? `${accent.text} border-current` : 'text-ink-2 border-transparent hover:text-ink'}`}
         >
           <Send size={12} /> Missão ao vivo
         </button>
@@ -562,7 +562,7 @@ export function SwarmDashboard() {
             SoundFX.play('click');
             setView('slo');
           }}
-          className={`flex items-center gap-1.5 px-3 py-2 text-xs font-bold uppercase tracking-widest rounded-t-lg border-b-2 transition-colors cursor-pointer ${view === 'slo' ? `${accent.text} border-current` : 'text-ink-2 border-transparent hover:text-ink'}`}
+          className={`flex items-center gap-1.5 px-3 py-2 text-xs font-bold uppercase tracking-widest rounded-t-lg border-b border-line transition-colors cursor-pointer ${view === 'slo' ? `${accent.text} border-current` : 'text-ink-2 border-transparent hover:text-ink'}`}
         >
           <Gauge size={12} /> SLO por agente
         </button>

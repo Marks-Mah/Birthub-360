@@ -383,7 +383,7 @@ export function SalesMethodologyStudio() {
           {!result && !generating && (
             <div className="glass-panel p-12 rounded-3xl border border-line text-center bg-surface flex flex-col items-center justify-center min-h-[440px]">
               <div className="w-16 h-16 rounded-2xl bg-brand/10 flex items-center justify-center text-brand-ink dark:text-brand mb-4">
-                <Lightbulb className="w-8 h-8 animate-bounce" />
+                <Lightbulb className="w-8 h-8 animate-pulse" />
               </div>
               <h3 className="text-xl font-bold text-ink mb-2">
                 Motor de Engenharia Comercial Pronto

@@ -252,3 +252,4 @@ A IA é expressa como **capacidade e precisão**, nunca como decoração espalha
 - **Foco:** Nenhum elemento interativo possui `outline: none` sem um substituto visível de anel de foco.
 - **HTML Semântico:** Uso rigoroso de tags semânticas (`<nav>`, `<header>`, `<main>`, `<dialog>`, `<table>`).
 - **Touch Target:** Alvos de toque com área mínima de `44x44px` em dispositivos móveis.
+

@@ -1,142 +1,116 @@
-import { AnimatePresence, motion } from 'framer-motion';
+import * as React from 'react';
+import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { X } from 'lucide-react';
-import type React from 'react';
-import { useEffect, useRef } from 'react';
 
-interface DrawerProps {
-  isOpen: boolean;
-  onClose: () => void;
-  title: string;
-  subtitle?: string;
-  children: React.ReactNode;
-  side?: 'right' | 'left';
+import { cn } from '../../lib/utils.js';
+
+const Drawer = DialogPrimitive.Root;
+const DrawerTrigger = DialogPrimitive.Trigger;
+const DrawerPortal = DialogPrimitive.Portal;
+const DrawerClose = DialogPrimitive.Close;
+
+const DrawerOverlay = React.forwardRef<
+  React.ElementRef<typeof DialogPrimitive.Overlay>,
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay>
+>(({ className, ...props }, ref) => (
+  <DialogPrimitive.Overlay
+    ref={ref}
+    className={cn(
+      'fixed inset-0 z-50 bg-black/60 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
+      className,
+    )}
+    {...props}
+  />
+));
+DrawerOverlay.displayName = DialogPrimitive.Overlay.displayName;
+
+interface DrawerContentProps
+  extends React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> {
+  side?: 'top' | 'bottom' | 'left' | 'right';
 }
 
-const FOCUSABLE_SELECTOR =
-  'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
-
-export function Drawer({
-  isOpen,
-  onClose,
-  title,
-  subtitle,
-  children,
-  side = 'right',
-}: DrawerProps) {
-  const panelRef = useRef<HTMLDivElement>(null);
-  const closeButtonRef = useRef<HTMLButtonElement>(null);
-  const previouslyFocused = useRef<HTMLElement | null>(null);
-
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-      previouslyFocused.current = document.activeElement as HTMLElement | null;
-      closeButtonRef.current?.focus();
-    } else {
-      document.body.style.overflow = '';
-      previouslyFocused.current?.focus();
-    }
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [isOpen]);
-
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        event.preventDefault();
-        onClose();
-        return;
-      }
-
-      if (event.key !== 'Tab' || !panelRef.current) return;
-
-      const focusable = panelRef.current.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR);
-      if (focusable.length === 0) return;
-
-      const first = focusable[0];
-      const last = focusable[focusable.length - 1];
-      const active = document.activeElement;
-
-      if (event.shiftKey && active === first) {
-        event.preventDefault();
-        last.focus();
-      } else if (!event.shiftKey && active === last) {
-        event.preventDefault();
-        first.focus();
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onClose]);
-
-  const slideVariants = {
-    closed: {
-      x: side === 'right' ? '100%' : '-100%',
-      opacity: 0,
-      transition: { type: 'spring' as const, damping: 25, stiffness: 250 },
-    },
-    open: {
-      x: '0%',
-      opacity: 1,
-      transition: { type: 'spring' as const, damping: 25, stiffness: 250 },
-    },
+const DrawerContent = React.forwardRef<
+  React.ElementRef<typeof DialogPrimitive.Content>,
+  DrawerContentProps
+>(({ side = 'right', className, children, ...props }, ref) => {
+  const sideVariants = {
+    top: 'inset-x-0 top-0 border-b data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top',
+    bottom:
+      'inset-x-0 bottom-0 border-t data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom',
+    left: 'inset-y-0 left-0 h-full w-3/4 border-r data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left sm:max-w-sm',
+    right:
+      'inset-y-0 right-0 h-full w-3/4 border-l data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right sm:max-w-md',
   };
 
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <div className="fixed inset-0 z-50 flex">
-          {/* Backdrop */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={onClose}
-            className="fixed inset-0 bg-slate-950/70 backdrop-blur-md"
-          />
-
-          {/* Drawer Content */}
-          <motion.div
-            ref={panelRef}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="drawer-title"
-            initial="closed"
-            animate="open"
-            exit="closed"
-            variants={slideVariants}
-            className={`relative z-10 w-full max-w-lg bg-surface border-l border-line shadow-2xl flex flex-col h-full ml-auto ${
-              side === 'left' ? 'mr-auto ml-0 border-r border-l-0' : ''
-            }`}
-          >
-            {/* Header */}
-            <div className="p-6 border-b border-line flex items-center justify-between bg-surface backdrop-blur-md sticky top-0 z-10">
-              <div>
-                <h3 id="drawer-title" className="text-lg font-bold text-ink tracking-tight">
-                  {title}
-                </h3>
-                {subtitle && <p className="text-xs text-ink-2 mt-0.5">{subtitle}</p>}
-              </div>
-              <button
-                type="button"
-                ref={closeButtonRef}
-                onClick={onClose}
-                aria-label="Fechar gaveta"
-                className="p-2 rounded-xl text-ink-2 hover:text-ink hover:bg-surface-2 transition-colors focus-visible:ring-2 focus-visible:ring-brand outline-none"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            {/* Body */}
-            <div className="flex-1 overflow-y-auto p-6 space-y-6">{children}</div>
-          </motion.div>
-        </div>
-      )}
-    </AnimatePresence>
+    <DrawerPortal>
+      <DrawerOverlay />
+      <DialogPrimitive.Content
+        ref={ref}
+        className={cn(
+          'fixed z-50 gap-4 border-line bg-surface p-6 shadow-xl transition ease-out data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:duration-200 data-[state=open]:duration-300',
+          sideVariants[side],
+          className,
+        )}
+        {...props}
+      >
+        {children}
+        <DialogPrimitive.Close className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-bg transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-surface-elevated">
+          <X className="h-4 w-4 text-ink-2" />
+          <span className="sr-only">Close</span>
+        </DialogPrimitive.Close>
+      </DialogPrimitive.Content>
+    </DrawerPortal>
   );
-}
+});
+DrawerContent.displayName = DialogPrimitive.Content.displayName;
+
+const DrawerHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
+  <div className={cn('flex flex-col space-y-1.5 text-center sm:text-left', className)} {...props} />
+);
+DrawerHeader.displayName = 'DrawerHeader';
+
+const DrawerFooter = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
+  <div
+    className={cn('flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2', className)}
+    {...props}
+  />
+);
+DrawerFooter.displayName = 'DrawerFooter';
+
+const DrawerTitle = React.forwardRef<
+  React.ElementRef<typeof DialogPrimitive.Title>,
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Title>
+>(({ className, ...props }, ref) => (
+  <DialogPrimitive.Title
+    ref={ref}
+    className={cn('text-lg font-display font-semibold text-ink', className)}
+    {...props}
+  />
+));
+DrawerTitle.displayName = DialogPrimitive.Title.displayName;
+
+const DrawerDescription = React.forwardRef<
+  React.ElementRef<typeof DialogPrimitive.Description>,
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Description>
+>(({ className, ...props }, ref) => (
+  <DialogPrimitive.Description
+    ref={ref}
+    className={cn('text-sm text-ink-2', className)}
+    {...props}
+  />
+));
+DrawerDescription.displayName = DialogPrimitive.Description.displayName;
+
+export {
+  Drawer,
+  DrawerPortal,
+  DrawerOverlay,
+  DrawerTrigger,
+  DrawerClose,
+  DrawerContent,
+  DrawerHeader,
+  DrawerFooter,
+  DrawerTitle,
+  DrawerDescription,
+};

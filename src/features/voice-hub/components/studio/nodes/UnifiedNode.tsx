@@ -51,7 +51,7 @@ export function UnifiedNode({
     Validated: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
     Ready: 'bg-gray-500/10 text-gray-500 border-gray-500/20',
     Executing:
-      'bg-purple-500/20 text-purple-400 border-purple-500/30 animate-bounce shadow-[0_0_10px_rgba(168,85,247,0.3)]',
+      'bg-purple-500/20 text-purple-400 border-purple-500/30 animate-pulse shadow-[0_0_10px_rgba(168,85,247,0.3)]',
     Completed: 'bg-green-500/10 text-green-400 border-green-500/20',
     Failed: 'bg-red-500/10 text-red-400 border-red-500/20 shadow-[0_0_10px_rgba(239,68,68,0.2)]',
     Retry: 'bg-amber-500/10 text-amber-400 border-amber-500/20 animate-pulse',

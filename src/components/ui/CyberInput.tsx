@@ -4,6 +4,16 @@ import { useRef, useState } from 'react';
 import { SoundFX } from '../../lib/soundEffects.js';
 import { cn } from '../../lib/utils.js';
 
+/**
+ * @deprecated
+ * Este componente viola o Design Language v2.0 do Birth Hub 360°.
+ * As variantes "neon" e "cosmic" usam scan lines animadas, indicadores de canto
+ * e efeitos glow que violam a regra "Decorative borders with no structural function".
+ *
+ * Migre para Input.tsx com variantes estruturais (default, filled, ghost).
+ * Documentação: docs/design/BIRTHHUB-360-DESIGN-LANGUAGE.md
+ */
+
 export interface CyberInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> {
   variant?: 'neon' | 'glass' | 'metallic' | 'cosmic';
   size?: 'sm' | 'md' | 'lg';
@@ -133,7 +143,7 @@ export function CyberInput({
       {(variant === 'neon' || variant === 'cosmic') && (
         <>
           <motion.div
-            className="absolute top-0 left-0 w-2.5 h-2.5 border-t-2 border-l-2 border-brand/60 rounded-tl-lg pointer-events-none"
+            className="absolute top-0 left-0 w-2.5 h-2.5 border border-line border-brand/60 rounded-tl-lg pointer-events-none"
             animate={{
               opacity: isFocused ? 1 : 0.3,
               scale: isFocused ? 1 : 0.8,
@@ -141,7 +151,7 @@ export function CyberInput({
             transition={{ duration: 0.2 }}
           />
           <motion.div
-            className="absolute top-0 right-0 w-2.5 h-2.5 border-t-2 border-r-2 border-brand/60 rounded-tr-lg pointer-events-none"
+            className="absolute top-0 right-0 w-2.5 h-2.5 border border-line border-brand/60 rounded-tr-lg pointer-events-none"
             animate={{
               opacity: isFocused ? 1 : 0.3,
               scale: isFocused ? 1 : 0.8,
@@ -149,7 +159,7 @@ export function CyberInput({
             transition={{ duration: 0.2 }}
           />
           <motion.div
-            className="absolute bottom-0 left-0 w-2.5 h-2.5 border-b-2 border-l-2 border-brand/60 rounded-bl-lg pointer-events-none"
+            className="absolute bottom-0 left-0 w-2.5 h-2.5 border border-line border-brand/60 rounded-bl-lg pointer-events-none"
             animate={{
               opacity: isFocused ? 1 : 0.3,
               scale: isFocused ? 1 : 0.8,
@@ -157,7 +167,7 @@ export function CyberInput({
             transition={{ duration: 0.2 }}
           />
           <motion.div
-            className="absolute bottom-0 right-0 w-2.5 h-2.5 border-b-2 border-r-2 border-brand/60 rounded-br-lg pointer-events-none"
+            className="absolute bottom-0 right-0 w-2.5 h-2.5 border border-line border-brand/60 rounded-br-lg pointer-events-none"
             animate={{
               opacity: isFocused ? 1 : 0.3,
               scale: isFocused ? 1 : 0.8,

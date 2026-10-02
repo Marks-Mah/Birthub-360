@@ -1,213 +1,102 @@
+import * as React from 'react';
+import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { X } from 'lucide-react';
-import type React from 'react';
-import { useEffect, useId, useRef } from 'react';
-import { SoundFX } from '../../lib/soundEffects.js';
+
 import { cn } from '../../lib/utils.js';
 
-type DialogProps = {
-  isOpen: boolean;
-  onClose: () => void;
-  /** Normalmente uma string simples; aceita ReactNode para cabeçalhos com ícone/subtítulo (ex.:
-      SavedSearchesModal) sem duplicar a estrutura de header fora deste componente. */
-  title: React.ReactNode;
-  children: React.ReactNode;
-  /** Classe Tailwind de largura máxima do painel (ex.: "max-w-2xl"). Default: "max-w-md". */
-  maxWidth?: string;
-  /** Rodapé fixo (ex.: botões Cancelar/Salvar), renderizado fora da área rolável do corpo. */
-  footer?: React.ReactNode;
-  /** Quando true, clique no backdrop e Escape não fecham o dialog — use durante um submit em
-      andamento. O botão de fechar (X) e qualquer botão dentro de `footer`/`children` continuam
-      funcionando normalmente; é uma proteção contra fechamento acidental, não um lock total. */
-  preventClose?: boolean;
-  /** Ativa o efeito cinematográfico de borda em órbita contínua (ex: salvando formulário). */
-  isLoading?: boolean;
-  /** Estilo visual do dialog */
-  variant?: 'classic' | 'holographic' | 'neon' | 'cosmic';
-};
+const Dialog = DialogPrimitive.Root;
 
-export function Dialog({
-  isOpen,
-  onClose,
-  title,
-  children,
-  maxWidth = 'max-w-md',
-  footer,
-  preventClose = false,
-  isLoading = false,
-  variant = 'classic',
-}: DialogProps) {
-  const dialogRef = useRef<HTMLDialogElement>(null);
-  const previouslyFocused = useRef<HTMLElement | null>(null);
-  const titleId = useId();
-  const onCloseRef = useRef(onClose);
-  const preventCloseRef = useRef(preventClose);
-  onCloseRef.current = onClose;
-  preventCloseRef.current = preventClose;
+const DialogTrigger = DialogPrimitive.Trigger;
 
-  useEffect(() => {
-    const dialog = dialogRef.current;
-    if (!dialog) return;
+const DialogPortal = DialogPrimitive.Portal;
 
-    if (isOpen) {
-      if (!dialog.open) {
-        previouslyFocused.current = document.activeElement as HTMLElement | null;
-        dialog.showModal();
-        document.body.style.overflow = 'hidden';
-        SoundFX.play('focus');
-      }
-    } else {
-      if (dialog.open) {
-        dialog.close();
-        document.body.style.overflow = '';
-        previouslyFocused.current?.focus();
-      }
-    }
+const DialogClose = DialogPrimitive.Close;
 
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [isOpen]);
+const DialogOverlay = React.forwardRef<
+  React.ElementRef<typeof DialogPrimitive.Overlay>,
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay>
+>(({ className, ...props }, ref) => (
+  <DialogPrimitive.Overlay
+    ref={ref}
+    className={cn(
+      'fixed inset-0 z-50 bg-black/60 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
+      className,
+    )}
+    {...props}
+  />
+));
+DialogOverlay.displayName = DialogPrimitive.Overlay.displayName;
 
-  useEffect(() => {
-    const dialog = dialogRef.current;
-    if (!dialog) return;
-
-    const handleCancel = (e: Event) => {
-      e.preventDefault();
-      if (preventCloseRef.current) return;
-      onCloseRef.current();
-    };
-
-    dialog.addEventListener('cancel', handleCancel);
-    return () => {
-      dialog.removeEventListener('cancel', handleCancel);
-    };
-  }, []);
-
-  // Bug real de acessibilidade/teclado corrigido (Onda 3, Agente 03): este componente tinha um
-  // onKeyDown('Enter') no <dialog> que chamava onClose() a cada Enter, sem checar o alvo do
-  // evento. Como Enter borbulha de qualquer <input>/<textarea>/<button type="button"> focado dentro do corpo
-  // (todo formulário em Dialog — ContactForm, CompanyForm, PropostaForm, GoalEditorDialog etc. —
-  // tem campos de texto), digitar num campo e apertar Enter fechava o modal e descartava o que a
-  // pessoa tinha acabado de preencher, sem aviso. Escape para fechar já é tratado nativamente
-  // acima ('cancel', disparado pelo <dialog>); Enter deve continuar tendo o comportamento nativo
-  // de cada controle focado (ativar o botão em foco, ou nada em texto livre), não fechar o modal.
-  const handleBackdropClick = (e: React.MouseEvent<HTMLDialogElement>) => {
-    if (preventClose) return;
-    const dialog = dialogRef.current;
-    if (!dialog) return;
-
-    const rect = dialog.getBoundingClientRect();
-    const isInDialog =
-      rect.top <= e.clientY &&
-      e.clientY <= rect.top + rect.height &&
-      rect.left <= e.clientX &&
-      e.clientX <= rect.left + rect.width;
-    if (!isInDialog) {
-      onClose();
-    }
-  };
-
-  return (
-    // <dialog> nativo (não um <div> genérico): já tem semântica própria de modal, foco preso
-    // dentro dele via showModal(), e Escape tratado pelo evento nativo 'cancel' (acima) — o
-    // jsx-a11y não reconhece <dialog> como elemento interativo, então sinaliza o onClick de
-    // "clicar fora fecha" como se fosse um <div> qualquer sem teclado. Padrão documentado pelo
-    // próprio MDN para <dialog> + clique no backdrop; nenhum atalho de teclado fica sem
-    // equivalente (Escape já fecha, foco já é gerenciado nativamente).
-    // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
-    // biome-ignore lint/a11y/useKeyWithClickEvents: onClick detects backdrop clicks only. Keyboard is handled natively by <dialog> (Escape key).
-    <dialog
-      ref={dialogRef}
-      aria-labelledby={titleId}
-      onClick={handleBackdropClick}
+const DialogContent = React.forwardRef<
+  React.ElementRef<typeof DialogPrimitive.Content>,
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
+>(({ className, children, ...props }, ref) => (
+  <DialogPortal>
+    <DialogOverlay />
+    <DialogPrimitive.Content
+      ref={ref}
       className={cn(
-        'backdrop:bg-black/40 open:animate-fade-in fixed m-auto rounded-2xl border p-0 text-ink shadow-dialog outline-none backdrop:backdrop-blur-md sm:w-full transition-all',
-        variant === 'classic' && 'border-line bg-surface-elevated/90',
-        variant === 'holographic' &&
-          'border-brand/30 bg-surface-elevated/60 backdrop-blur-xl shadow-[0_0_40px_rgba(212,175,55,0.2)]',
-        variant === 'neon' &&
-          'border-cyan-400/30 bg-surface-elevated/60 backdrop-blur-xl shadow-[0_0_40px_rgba(34,211,238,0.2)]',
-        variant === 'cosmic' &&
-          'border-brand/45 bg-surface-elevated/85 backdrop-blur-2xl shadow-[0_0_50px_rgba(212,175,55,0.22)]',
-        maxWidth,
-        isLoading && 'border-transparent overflow-hidden isolate',
+        'fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border border-line bg-surface p-6 shadow-xl duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg',
+        className,
       )}
+      {...props}
     >
-      {isLoading && (
-        <>
-          <div className="absolute inset-[-100%] z-[-2] animate-[spin_3s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,transparent_0%,var(--brand)_50%,transparent_100%)] opacity-80 pointer-events-none" />
-          <div className="absolute inset-[1.5px] z-[-1] rounded-[calc(1rem-1.5px)] bg-surface-elevated/95 backdrop-blur-xl pointer-events-none" />
-        </>
-      )}
+      {children}
+      <DialogPrimitive.Close className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-bg transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-surface-elevated data-[state=open]:text-ink-2">
+        <X className="h-4 w-4" />
+        <span className="sr-only">Close</span>
+      </DialogPrimitive.Close>
+    </DialogPrimitive.Content>
+  </DialogPortal>
+));
+DialogContent.displayName = DialogPrimitive.Content.displayName;
 
-      {/* Efeito holográfico adicional para variantes especiais */}
-      {(variant === 'holographic' || variant === 'neon' || variant === 'cosmic') && !isLoading && (
-        <div className="absolute inset-0 overflow-hidden pointer-events-none rounded-2xl">
-          <div className="absolute inset-0 bg-[linear-gradient(transparent_49%,rgba(255,255,255,0.05)_50%,transparent_51%)] bg-[length:100%_4px] animate-pulse-slow" />
-          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-        </div>
-      )}
+const DialogHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
+  <div className={cn('flex flex-col space-y-1.5 text-center sm:text-left', className)} {...props} />
+);
+DialogHeader.displayName = 'DialogHeader';
 
-      <div
-        className={cn(
-          'flex max-h-[85vh] flex-col backdrop-blur-xl rounded-2xl relative z-10 transition-opacity duration-300',
-          isLoading && 'opacity-60 pointer-events-none select-none',
-        )}
-      >
-        {/* Header */}
-        <div
-          className={cn(
-            'flex shrink-0 items-center justify-between px-5 py-4',
-            variant === 'classic' && 'border-b border-line',
-            (variant === 'holographic' || variant === 'cosmic') && 'border-b border-brand/20',
-            variant === 'neon' && 'border-b border-cyan-400/20',
-          )}
-        >
-          {typeof title === 'string' ? (
-            <h2
-              id={titleId}
-              className={cn(
-                'font-display text-lg font-bold tracking-tight',
-                variant === 'neon' && 'text-cyan-300',
-                variant === 'cosmic' && 'text-brand',
-              )}
-            >
-              {title}
-            </h2>
-          ) : (
-            title
-          )}
-          <button
-            type="button"
-            onClick={() => {
-              SoundFX.play('click');
-              onClose();
-            }}
-            className={cn(
-              'rounded-full p-1.5 text-ink-2 transition-all duration-200 hover:bg-surface-interactive hover:text-ink hover:scale-110 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand',
-              variant === 'neon' && 'hover:text-cyan-200 focus-visible:ring-cyan-400',
-              variant === 'cosmic' && 'hover:text-brand focus-visible:ring-brand',
-            )}
-            aria-label="Fechar modal"
-          >
-            <X size={18} />
-          </button>
-        </div>
-        <div className="p-4 overflow-y-auto overscroll-contain">{children}</div>
-        {footer && (
-          <div
-            className={cn(
-              'p-4 shrink-0 flex justify-end gap-3',
-              variant === 'classic' && 'border-t border-line',
-              variant === 'holographic' && 'border-t border-brand/20',
-              variant === 'neon' && 'border-t border-cyan-400/20',
-            )}
-          >
-            {footer}
-          </div>
-        )}
-      </div>
-    </dialog>
-  );
-}
+const DialogFooter = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
+  <div
+    className={cn('flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2', className)}
+    {...props}
+  />
+);
+DialogFooter.displayName = 'DialogFooter';
+
+const DialogTitle = React.forwardRef<
+  React.ElementRef<typeof DialogPrimitive.Title>,
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Title>
+>(({ className, ...props }, ref) => (
+  <DialogPrimitive.Title
+    ref={ref}
+    className={cn('text-lg font-display font-semibold leading-none tracking-tight', className)}
+    {...props}
+  />
+));
+DialogTitle.displayName = DialogPrimitive.Title.displayName;
+
+const DialogDescription = React.forwardRef<
+  React.ElementRef<typeof DialogPrimitive.Description>,
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Description>
+>(({ className, ...props }, ref) => (
+  <DialogPrimitive.Description
+    ref={ref}
+    className={cn('text-sm text-ink-2', className)}
+    {...props}
+  />
+));
+DialogDescription.displayName = DialogPrimitive.Description.displayName;
+
+export {
+  Dialog,
+  DialogPortal,
+  DialogOverlay,
+  DialogTrigger,
+  DialogClose,
+  DialogContent,
+  DialogHeader,
+  DialogFooter,
+  DialogTitle,
+  DialogDescription,
+};

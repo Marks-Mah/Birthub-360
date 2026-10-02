@@ -1,7 +1,8 @@
-import { type ReactNode, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import { type ReactNode, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useNavigationBusBridge } from '../../hooks/useNavigationBusBridge.js';
+import { scanLineEntry, useGlobalCursorDepth } from '../../lib/motion.js';
 import { BugReportButton } from '../ui/BugReportButton.js';
 import { CommandPalette } from '../ui/CommandPalette.js';
 import { CopilotTrigger } from '../ui/CopilotTrigger.js';
@@ -9,10 +10,9 @@ import { Toaster } from '../ui/Toaster.js';
 import { VoiceCommandWidget } from '../ui/VoiceCommandWidget.js';
 import { AppTopbar } from './AppTopbar.js';
 import { FloatingDock } from './FloatingDock.js';
+import { FuturisticSidebar } from './FuturisticSidebar.js';
 import { OfflineBanner } from './OfflineBanner.js';
 import { PageTransition } from './PageTransition.js';
-import { FuturisticSidebar } from './FuturisticSidebar.js';
-import { useGlobalCursorDepth, scanLineEntry } from '../../lib/motion.js';
 import type { TabType } from './tabMeta.js';
 
 interface FuturisticLayoutProps {
@@ -93,15 +93,12 @@ export function FuturisticLayout({ children }: FuturisticLayoutProps) {
         />
 
         {mobileNavOpen && (
-          <div
-            className="fixed inset-0 z-30 bg-overlay/80 backdrop-blur-md lg:hidden animate-fade-in"
-            role="button"
-            tabIndex={0}
+          <button
+            type="button"
+            aria-label="Fechar navegação móvel"
+            className="fixed inset-0 z-30 bg-overlay/80 backdrop-blur-md lg:hidden animate-fade-in w-full h-full cursor-default"
             onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                e.currentTarget.click();
-              }
+              if (e.key === 'Escape') setMobileNavOpen(false);
             }}
             onClick={() => setMobileNavOpen(false)}
           />

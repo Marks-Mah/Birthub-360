@@ -11,7 +11,7 @@ export const EASE_PREMIUM = [0.22, 1, 0.36, 1] as const;
 export const EASE_SPRING_SOFT = [0.34, 1.56, 0.64, 1] as const;
 export const EASE_OUT_EXPO = [0.16, 1, 0.3, 1] as const;
 export const EASE_IN_OUT_SMOOTH = [0.4, 0, 0.2, 1] as const;
-export const EASE_BOUNCE = [0.34, 1.56, 0.64, 1] as const;
+export const EASE_BOUNCE = [0.22, 1, 0.36, 1] as const; // Replaced bounce with smooth
 export const EASE_SMOOTH = [0.25, 0.1, 0.25, 1] as const;
 
 export const MOTION_DURATION = {
@@ -25,8 +25,8 @@ export const MOTION_DURATION = {
 
 export const SPRING_SNAPPY = { type: 'spring', stiffness: 420, damping: 32, mass: 0.7 } as const;
 export const SPRING_SOFT = { type: 'spring', stiffness: 260, damping: 24, mass: 0.9 } as const;
-export const SPRING_ELASTIC = { type: 'spring', stiffness: 500, damping: 30, mass: 0.8 } as const;
-export const SPRING_BOUNCY = { type: 'spring', stiffness: 400, damping: 20, mass: 0.6 } as const;
+export const SPRING_ELASTIC = { type: 'spring', stiffness: 260, damping: 24, mass: 0.9 } as const;
+export const SPRING_BOUNCY = { type: 'spring', stiffness: 260, damping: 24, mass: 0.9 } as const; // Replaced with softer spring
 export const SPRING_TACTILE = { type: 'spring', stiffness: 500, damping: 28, mass: 0.6 } as const;
 export const SPRING_MOMENTUM = { type: 'spring', stiffness: 350, damping: 25, mass: 0.8 } as const;
 

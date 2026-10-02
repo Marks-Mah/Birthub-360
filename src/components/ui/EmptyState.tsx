@@ -43,10 +43,7 @@ export function EmptyState({ title, description, actionLabel, onAction, icon }: 
       {actionLabel && onAction && (
         <Button
           onClick={onAction}
-          variant="cosmic"
-          magnetic
-          sound="confirm"
-          shine
+          variant="primary"
           className="relative z-10 cursor-pointer text-xs font-bold"
         >
           {actionLabel}

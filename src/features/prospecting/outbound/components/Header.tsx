@@ -61,8 +61,8 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <header
-      className={`sticky top-0 z-30 shadow-md transition-colors duration-200 border-b ${
-        isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-slate-100'
+      className={`sticky top-0 z-30 shadow-none transition-colors duration-200 border-b ${
+        isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 '
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 py-3 flex flex-col md:flex-row md:items-center justify-between gap-3">
@@ -135,7 +135,7 @@ export const Header: React.FC<HeaderProps> = ({
                     onClick={() => setActiveTab(item.id)}
                     className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition whitespace-nowrap ${
                       isActive
-                        ? 'bg-[var(--brand-primary)] text-white shadow-md shadow-[var(--brand-primary)]/20'
+                        ? 'bg-[var(--brand-primary)] text-white shadow-none shadow-[var(--brand-primary)]/20'
                         : isDark
                           ? 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'
                           : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
