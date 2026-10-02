@@ -1,47 +1,107 @@
-import type { Prisma } from '@prisma/client';
-import { prisma } from '../../../lib/prisma.js';
+import { AppError } from '../../../shared/middlewares/errorHandler.js';
+import type {
+  CreatePromptData,
+  PromptEntity,
+  PromptRepository,
+  UpdatePromptData,
+} from '../domain/Prompt.js';
+import { prismaPromptRepository } from '../infra/PrismaPromptRepository.js';
 
-interface CreatePromptInput {
+export type { PromptEntity, CreatePromptData, UpdatePromptData, PromptRepository };
+
+export interface CreatePromptInput {
   name: string;
   category: string;
+  content: string;
   variables?: Record<string, unknown>;
 }
 
-export async function listPrompts(organizationId: string) {
-  return prisma.prompt.findMany({
-    where: { organizationId },
-    orderBy: { category: 'asc' },
-  });
-}
+export class PromptService {
+  constructor(
+    private readonly repository: PromptRepository = prismaPromptRepository,
+  ) {}
 
-export async function createPrompt(organizationId: string, input: CreatePromptInput) {
-  return prisma.prompt.create({
-    data: {
-      name: input.name,
-      category: input.category,
-      version: '1.0',
-      owner: organizationId,
+  async listPrompts(organizationId: string): Promise<PromptEntity[]> {
+    return this.repository.listByOrganization(organizationId);
+  }
+
+  async getPromptById(organizationId: string, id: string): Promise<PromptEntity> {
+    const prompt = await this.repository.findById(organizationId, id);
+    if (!prompt) {
+      throw new AppError('Prompt não encontrado.', 404);
+    }
+    return prompt;
+  }
+
+  async getPromptByCategory(organizationId: string, category: string): Promise<PromptEntity | null> {
+    return this.repository.findByCategory(organizationId, category);
+  }
+
+  async createPrompt(organizationId: string, input: CreatePromptInput): Promise<PromptEntity> {
+    const name = input.name?.trim();
+    if (!name) {
+      throw new AppError('Nome do prompt é obrigatório.', 400);
+    }
+    const category = input.category?.trim();
+    if (!category) {
+      throw new AppError('Categoria do prompt é obrigatória.', 400);
+    }
+    const content = input.content?.trim();
+    if (!content) {
+      throw new AppError('Conteúdo do prompt é obrigatório.', 400);
+    }
+
+    return this.repository.create({
       organizationId,
-      variables: (input.variables || {}) as Prisma.InputJsonValue,
-      history: [],
-      approved: true,
-    },
-  });
+      name,
+      category,
+      content,
+      variables: input.variables ?? {},
+    });
+  }
+
+  async updatePrompt(
+    organizationId: string,
+    id: string,
+    input: Partial<CreatePromptInput>,
+  ): Promise<PromptEntity> {
+    const updated = await this.repository.update(organizationId, id, input);
+    if (!updated) {
+      throw new AppError('Prompt não encontrado para atualização.', 404);
+    }
+    return updated;
+  }
+
+  async deletePrompt(organizationId: string, id: string): Promise<void> {
+    const deleted = await this.repository.deleteById(organizationId, id);
+    if (!deleted) {
+      throw new AppError('Prompt não encontrado.', 404);
+    }
+  }
 }
 
-// updateMany com organizationId no where garante que só afeta a linha se ela pertencer ao tenant
-// do request (proteção de IDOR — ver histórico de prompt.routes.ts antes desta função existir).
-export async function updatePromptVariables(
+export const promptService = new PromptService();
+
+export function listPrompts(organizationId: string) {
+  return promptService.listPrompts(organizationId);
+}
+
+export function createPrompt(organizationId: string, input: CreatePromptInput) {
+  return promptService.createPrompt(organizationId, input);
+}
+
+export function updatePrompt(
   organizationId: string,
   id: string,
-  variables: Record<string, unknown>,
+  input: Partial<CreatePromptInput>,
 ) {
-  const { count } = await prisma.prompt.updateMany({
-    where: { id, organizationId },
-    data: { variables: variables as Prisma.InputJsonValue },
-  });
-  if (count === 0) {
-    return null;
-  }
-  return prisma.prompt.findFirst({ where: { id, organizationId } });
+  return promptService.updatePrompt(organizationId, id, input);
+}
+
+export function deletePrompt(organizationId: string, id: string) {
+  return promptService.deletePrompt(organizationId, id);
+}
+
+export function getPrompt(organizationId: string, id: string) {
+  return promptService.getPromptById(organizationId, id);
 }
