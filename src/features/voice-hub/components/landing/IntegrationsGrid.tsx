@@ -10,12 +10,42 @@ interface IntegrationItem {
 }
 
 const INTEGRATIONS: IntegrationItem[] = [
-  { name: 'Bitrix24 CRM', category: 'CRM & ERP', description: 'Sincronização bidirecional de deals, contatos e atividades', status: 'Nativo' },
-  { name: 'WhatsApp Cloud API', category: 'Mensageria', description: 'Disparo de cadências e atendimento com agentes de IA', status: 'Oficial' },
-  { name: 'Google Workspace', category: 'Produtividade', description: 'Integração de agendas, reuniões no Meet e e-mails Gmail', status: 'Oficial' },
-  { name: 'Apollo.io & Hunter', category: 'Enriquecimento', description: 'Descoberta e validação de decisores e dados corporativos', status: 'Nativo' },
-  { name: 'LiveKit Voice Engine', category: 'Infraestrutura de Áudio', description: 'Transporte de voz ultra-rápido com WebRTC em tempo real', status: 'Certificado' },
-  { name: 'LiteLLM / OpenAI / Groq', category: 'Modelos de IA', description: 'Orquestração de LLMs com failover automático e controle de custos', status: 'Nativo' },
+  {
+    name: 'Bitrix24 CRM',
+    category: 'CRM & ERP',
+    description: 'Sincronização bidirecional de deals, contatos e atividades',
+    status: 'Nativo',
+  },
+  {
+    name: 'WhatsApp Cloud API',
+    category: 'Mensageria',
+    description: 'Disparo de cadências e atendimento com agentes de IA',
+    status: 'Oficial',
+  },
+  {
+    name: 'Google Workspace',
+    category: 'Produtividade',
+    description: 'Integração de agendas, reuniões no Meet e e-mails Gmail',
+    status: 'Oficial',
+  },
+  {
+    name: 'Apollo.io & Hunter',
+    category: 'Enriquecimento',
+    description: 'Descoberta e validação de decisores e dados corporativos',
+    status: 'Nativo',
+  },
+  {
+    name: 'LiveKit Voice Engine',
+    category: 'Infraestrutura de Áudio',
+    description: 'Transporte de voz ultra-rápido com WebRTC em tempo real',
+    status: 'Certificado',
+  },
+  {
+    name: 'LiteLLM / OpenAI / Groq',
+    category: 'Modelos de IA',
+    description: 'Orquestração de LLMs com failover automático e controle de custos',
+    status: 'Nativo',
+  },
 ];
 
 export function IntegrationsGrid(): React.ReactElement {
@@ -33,7 +63,8 @@ export function IntegrationsGrid(): React.ReactElement {
           </h2>
 
           <p className="text-base sm:text-lg text-slate-600 dark:text-white/70 leading-relaxed">
-            O Birth Hub 360° não exige que você abandone suas ferramentas atuais — ele se integra a elas potencializando a inteligência da operação.
+            O Birth Hub 360° não exige que você abandone suas ferramentas atuais — ele se integra a
+            elas potencializando a inteligência da operação.
           </p>
         </div>
 

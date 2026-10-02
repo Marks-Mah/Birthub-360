@@ -14,30 +14,50 @@ const STEPS: TimelineStep[] = [
   {
     step: '01',
     title: 'Ingestão & Conexão de Dados',
-    description: 'Conecte seu CRM, Bitrix24, planilhas e bases proprietárias com sincronização bidirecional em tempo real.',
+    description:
+      'Conecte seu CRM, Bitrix24, planilhas e bases proprietárias com sincronização bidirecional em tempo real.',
     icon: Database,
-    details: ['Mapeamento automático de campos', 'Desduplicação inteligente', 'Isolamento multi-inquilino seguro'],
+    details: [
+      'Mapeamento automático de campos',
+      'Desduplicação inteligente',
+      'Isolamento multi-inquilino seguro',
+    ],
   },
   {
     step: '02',
     title: 'Enriquecimento & Qualificação com IA',
-    description: 'Agentes pesquisam e qualificam decisores-chave (PICs) cruzando dados públicos e playbooks corporativos.',
+    description:
+      'Agentes pesquisam e qualificam decisores-chave (PICs) cruzando dados públicos e playbooks corporativos.',
     icon: Search,
-    details: ['Scoring preditivo de ICP', 'Descoberta de e-mails corporativos e WhatsApp', 'Mapeamento de organograma empresarial'],
+    details: [
+      'Scoring preditivo de ICP',
+      'Descoberta de e-mails corporativos e WhatsApp',
+      'Mapeamento de organograma empresarial',
+    ],
   },
   {
     step: '03',
     title: 'Engajamento Ativo & Voice Hub',
-    description: 'Agentes de voz hiper-realistas e cadências multi-canal iniciam o contato com quebra de objeções adaptativa.',
+    description:
+      'Agentes de voz hiper-realistas e cadências multi-canal iniciam o contato com quebra de objeções adaptativa.',
     icon: PhoneCall,
-    details: ['Discagem preditiva de baixíssima latência', 'Detecção precisa de secretárias eletrônicas', 'Transcrição e análise de sentimento em tempo real'],
+    details: [
+      'Discagem preditiva de baixíssima latência',
+      'Detecção precisa de secretárias eletrônicas',
+      'Transcrição e análise de sentimento em tempo real',
+    ],
   },
   {
     step: '04',
     title: 'Transição Qualificada & Receita',
-    description: 'Leads maduros são entregues diretamente na agenda do Closer com dossiê completo de contexto.',
+    description:
+      'Leads maduros são entregues diretamente na agenda do Closer com dossiê completo de contexto.',
     icon: Trophy,
-    details: ['Agendamento síncrono no Google Calendar', 'Atualização automática do pipeline no Bitrix24', 'Métricas de conversão registradas no dashboard'],
+    details: [
+      'Agendamento síncrono no Google Calendar',
+      'Atualização automática do pipeline no Bitrix24',
+      'Métricas de conversão registradas no dashboard',
+    ],
   },
 ];
 
@@ -58,7 +78,8 @@ export function HowItWorksTimeline(): React.ReactElement {
           </h2>
 
           <p className="text-base sm:text-lg text-slate-600 dark:text-white/70 leading-relaxed">
-            Uma esteira orquestrada que elimina tarefas manuais repetitivas e multiplica a capacidade produtiva da sua equipe comercial.
+            Uma esteira orquestrada que elimina tarefas manuais repetitivas e multiplica a
+            capacidade produtiva da sua equipe comercial.
           </p>
         </div>
 
@@ -95,7 +116,10 @@ export function HowItWorksTimeline(): React.ReactElement {
 
                 <div className="pt-4 border-t border-slate-200/60 dark:border-white/5 space-y-2">
                   {step.details.map((detail) => (
-                    <div key={detail} className="flex items-center gap-2 text-[11px] text-slate-500 dark:text-white/50">
+                    <div
+                      key={detail}
+                      className="flex items-center gap-2 text-[11px] text-slate-500 dark:text-white/50"
+                    >
                       <ArrowRight className="w-3 h-3 text-brand shrink-0" />
                       <span>{detail}</span>
                     </div>

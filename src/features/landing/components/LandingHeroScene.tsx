@@ -1,7 +1,7 @@
 ﻿import { Suspense, lazy } from 'react';
 
 const BrandOrb = lazy(() =>
-  import('@/components/ui/BrandOrb').then((mod) => ({ default: mod.BrandOrb }))
+  import('@/components/ui/BrandOrb').then((mod) => ({ default: mod.BrandOrb })),
 );
 
 export function LandingHeroScene() {
@@ -15,8 +15,10 @@ export function LandingHeroScene() {
           Birth Hub 360° One OS
         </div>
         <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-ink leading-tight">
-          Dados que Conectam.<br />
-          Inteligência que Decide.<br />
+          Dados que Conectam.
+          <br />
+          Inteligência que Decide.
+          <br />
           <span className="text-brand">Resultados que Acontecem.</span>
         </h1>
         <p className="text-base text-ink-muted leading-relaxed">

@@ -11,19 +11,23 @@ interface FaqItem {
 const FAQ_DATA: FaqItem[] = [
   {
     question: 'Como funciona a integração com o Bitrix24?',
-    answer: 'A integração com o Bitrix24 é nativa e bidirecional. Ela sincroniza automaticamente negócios (deals), contatos, empresas, tarefas e histórico de atividades sem necessidade de integrações de terceiros ou configurações complexas.',
+    answer:
+      'A integração com o Bitrix24 é nativa e bidirecional. Ela sincroniza automaticamente negócios (deals), contatos, empresas, tarefas e histórico de atividades sem necessidade de integrações de terceiros ou configurações complexas.',
   },
   {
     question: 'Qual é o modelo de cobrança para chamadas de voz e IA?',
-    answer: 'Trabalhamos com transparência total: planos com franquia inclusa e governança de orçamento. Você pode conectar suas próprias chaves de API (Bring Your Own Key) ou utilizar o saldo gerenciado pela plataforma com limites rígidos configuráveis por organização.',
+    answer:
+      'Trabalhamos com transparência total: planos com franquia inclusa e governança de orçamento. Você pode conectar suas próprias chaves de API (Bring Your Own Key) ou utilizar o saldo gerenciado pela plataforma com limites rígidos configuráveis por organização.',
   },
   {
     question: 'Os dados da minha empresa e dos meus leads estão protegidos pela LGPD?',
-    answer: 'Sim. Todos os dados são processados com isolamento multi-tenant intransigente. Informações pessoais identificáveis (PII) utilizam criptografia em repouso AES-256 e blind indexes auditados.',
+    answer:
+      'Sim. Todos os dados são processados com isolamento multi-tenant intransigente. Informações pessoais identificáveis (PII) utilizam criptografia em repouso AES-256 e blind indexes auditados.',
   },
   {
     question: 'É possível personalizar o tom de voz e os scripts dos agentes de IA?',
-    answer: 'Totalmente. Cada agente pode ser configurado com playbooks autorais da sua empresa, matriz de quebra de objeções personalizada, regras de conformidade e múltiplos perfis de voz ultra-realistas.',
+    answer:
+      'Totalmente. Cada agente pode ser configurado com playbooks autorais da sua empresa, matriz de quebra de objeções personalizada, regras de conformidade e múltiplos perfis de voz ultra-realistas.',
   },
 ];
 
@@ -35,7 +39,10 @@ export function PricingFaqSection(): React.ReactElement {
   };
 
   return (
-    <section id="faq" className="py-20 bg-slate-50 dark:bg-midnight border-b border-slate-200 dark:border-slate-800 text-left relative">
+    <section
+      id="faq"
+      className="py-20 bg-slate-50 dark:bg-midnight border-b border-slate-200 dark:border-slate-800 text-left relative"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto mb-16 space-y-4 text-center">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand/10 border border-brand/20 text-xs font-semibold text-brand tracking-wide">

@@ -36,11 +36,7 @@ export function LandingNavbar(): React.ReactElement {
         {/* Links Desktop */}
         <nav className="hidden lg:flex items-center gap-8 text-xs font-semibold text-white/70">
           {NAV_LINKS.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              className="hover:text-white transition-colors"
-            >
+            <a key={link.href} href={link.href} className="hover:text-white transition-colors">
               {link.label}
             </a>
           ))}

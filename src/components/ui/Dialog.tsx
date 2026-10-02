@@ -50,7 +50,10 @@ const DialogContent = React.forwardRef<
       {...props}
     >
       {children}
-      <DialogPrimitive.Close aria-label="Fechar" className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-bg transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-surface-elevated data-[state=open]:text-ink-2">
+      <DialogPrimitive.Close
+        aria-label="Fechar"
+        className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-bg transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-surface-elevated data-[state=open]:text-ink-2"
+      >
         <X className="h-4 w-4" />
         <span className="sr-only">Fechar</span>
       </DialogPrimitive.Close>
@@ -144,7 +147,10 @@ function Dialog({
           {children}
           {footer && <DialogFooter>{footer}</DialogFooter>}
           {!preventClose && (
-            <DialogPrimitive.Close aria-label="Fechar" className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-bg transition-opacity hover:opacity-100">
+            <DialogPrimitive.Close
+              aria-label="Fechar"
+              className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-bg transition-opacity hover:opacity-100"
+            >
               <X className="h-4 w-4" />
               <span className="sr-only">Fechar</span>
             </DialogPrimitive.Close>
