@@ -1,57 +1,36 @@
-import type { LeadStatus as PrismaLeadStatus } from '@prisma/client';
-import { logger } from '../../../lib/logger.js';
-import { prisma } from '../../../lib/prisma.js';
-
-const WON: PrismaLeadStatus = 'Negocios_Ganhos';
+import type { AbTestingRepository } from '../domain/AbTesting.js';
+import { prismaAbTestingRepository } from '../infrastructure/PrismaAbTestingRepository.js';
 
 export class ABTestingService {
+  constructor(
+    private readonly repository: AbTestingRepository = prismaAbTestingRepository,
+  ) {}
+
   /**
    * Registra o uso de um prompt específico para um Lead.
    */
-  async logPromptUsage(leadId: string, promptVariant: 'A' | 'B', promptName: string) {
-    try {
-      await prisma.note.create({
-        data: {
-          leadId,
-          content: `[A/B Test Tracking] O prompt variante '${promptVariant}' do modelo '${promptName}' foi utilizado nesta interação.`,
-          author: 'Sistema de A/B Testing',
-        },
-      });
-      logger.info({ leadId, promptVariant, promptName }, 'A/B Test prompt usage logged');
-    } catch (err: any) {
-      logger.error({ err }, 'Failed to log A/B test usage');
-    }
+  async logPromptUsage(leadId: string, promptVariant: 'A' | 'B', promptName: string): Promise<void> {
+    return this.repository.recordPromptUsage({ leadId, promptVariant, promptName });
   }
 
   /**
-   * Calcula a taxa de conversão real (% de Leads Ganhos) para as variantes de um prompt,
-   * a partir das Notas de tracking gravadas por `logPromptUsage` — não existe um modelo nativo
-   * `PromptABTest` no schema (decisão para não mexer no DB), então a extração faz match de
-   * `content` pelo texto gravado ali.
+   * Retorna taxa de conversão (status = 'Negocios_Ganhos') de leads que receberam variante A vs B.
    */
   async getConversionRates(promptName: string): Promise<{ variantA: number; variantB: number }> {
     const [variantA, variantB] = await Promise.all([
       this.conversionRateForVariant('A', promptName),
       this.conversionRateForVariant('B', promptName),
     ]);
+
     return { variantA, variantB };
   }
 
   /** Retorna 0 quando a variante ainda não tem nenhuma interação rastreada — zero real, não invenção. */
   private async conversionRateForVariant(variant: 'A' | 'B', promptName: string): Promise<number> {
-    const notes = await prisma.note.findMany({
-      where: { content: { contains: `variante '${variant}' do modelo '${promptName}'` } },
-      select: { leadId: true },
-    });
-    // CRM-004: Note.leadId virou opcional (Note agora também anexa a Company/Contact) — esta
-    // varredura de A/B test só rastreia Lead (logPromptUsage sempre grava com leadId), então
-    // descarta qualquer nota que não tenha um lead associado.
-    const leadIds = [
-      ...new Set(notes.map((n) => n.leadId).filter((id): id is string => id !== null)),
-    ];
+    const leadIds = await this.repository.findLeadIdsForVariant(variant, promptName);
     if (leadIds.length === 0) return 0;
 
-    const wonCount = await prisma.lead.count({ where: { id: { in: leadIds }, status: WON } });
+    const wonCount = await this.repository.countConvertedLeads(leadIds);
     return (wonCount / leadIds.length) * 100;
   }
 }

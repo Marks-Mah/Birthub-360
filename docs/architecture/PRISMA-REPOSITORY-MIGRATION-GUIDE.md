@@ -152,7 +152,7 @@ coisa sob `integrations/bitrix/`.
 - [ ] `crm/services/assignment.service.ts` — CRM core, fora do escopo de um piloto pequeno.
 - [x] `crm/services/savedView.service.ts` — ✅ migrado (Estilo B, SavedViewRepository).
 - [ ] `gamification/services/sellerPerformanceAggregator.service.ts` — ✅ migrado neste piloto.
-- [ ] `intelligence/services/abTesting.service.ts`
+- [x] `intelligence/services/abTesting.service.ts` — ✅ migrado (Estilo B, AbTestingRepository).
 - [x] `intelligence/services/ai-settings.service.ts` — ✅ migrado (Estilo B, AiSettingsRepository).
 - [ ] `intelligence/services/ai.service.ts` — módulo de IA central, avaliar com mais cautela (muitos
       consumidores).
