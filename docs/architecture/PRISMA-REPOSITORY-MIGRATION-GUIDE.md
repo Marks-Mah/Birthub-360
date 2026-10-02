@@ -155,7 +155,7 @@ coisa sob `integrations/bitrix/`.
 - [ ] `intelligence/services/ai.service.ts` — módulo de IA central, avaliar com mais cautela (muitos
       consumidores).
 - [ ] `intelligence/services/aiPendingAction.service.ts`
-- [ ] `intelligence/services/assistant-history.service.ts`
+- [x] `intelligence/services/assistant-history.service.ts` — ✅ migrado (Estilo B, AssistantHistoryRepository).
 - [ ] `intelligence/services/evaluationMetrics.service.ts`
 - [ ] `intelligence/services/guardrails.service.ts`
 - [ ] `intelligence/services/pending-actions.service.ts`
