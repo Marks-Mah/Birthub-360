@@ -1,5 +1,8 @@
 import * as React from 'react';
 
+import { cva, type VariantProps } from 'class-variance-authority';
+import { BorderBeam, type BorderBeamProps } from './BorderBeam.js';
+import { SoundFX } from '../../lib/soundEffects.js';
 import { cn } from '../../lib/utils.js';
 
 const cardVariants = cva('relative overflow-hidden rounded-card text-ink', {
@@ -16,21 +19,6 @@ const cardVariants = cva('relative overflow-hidden rounded-card text-ink', {
         'bg-surface-elevated border border-line shadow-card-hover transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-brand/25 hover:-translate-y-0.5 hover:scale-[1.005]',
       interactive:
         'group bg-surface-elevated/80 backdrop-blur-md border border-line shadow-card cursor-pointer transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-brand/30 hover:bg-surface-interactive hover:shadow-card-hover hover:-translate-y-0.5 hover:scale-[1.01] active:scale-[0.99]',
-      // --- Propostas "Neon Tokyo × Cosmic Gold" (catálogo visual, 10/09/2026) ---
-      // Mesmo idioma do "accent" acima (borda + shadow-glow em repouso, pra marcar destaque
-      // persistente — não é o glow transitório de hover do Button). shadow-glow-accent-*/pulse
-      // já são discretos no claro (20%) e vívidos no escuro (duas camadas) — o mesmo token
-      // resolve os dois temas sem precisar de dark: aqui.
-      iris: 'bg-surface border border-accent-violet/30 shadow-glow-accent-violet transition-[transform,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:scale-[1.005] hover:border-accent-violet/50',
-      cyan: 'bg-surface border border-accent-cyan/30 shadow-glow-accent-cyan transition-[transform,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:scale-[1.005] hover:border-accent-cyan/50',
-      pulse:
-        'bg-surface border border-pulse/30 shadow-glow-pulse transition-[transform,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:scale-[1.005] hover:border-pulse/50',
-      // Nova variante glass
-      glass:
-        'bg-surface/60 backdrop-blur-xl border border-line/50 shadow-card transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:bg-surface/80 hover:border-brand/30 hover:shadow-card-hover hover:-translate-y-0.5 hover:scale-[1.005]',
-      // Nova variante para metálico
-      metallic:
-        'bg-gradient-to-br from-surface to-surface-2 border border-line/60 shadow-card transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-brand/30 hover:shadow-card-hover hover:-translate-y-0.5 hover:scale-[1.005]',
       // Variantes estruturais recomendadas pelo Design System v2.0
       surface: 'bg-surface border border-line shadow-none',
       panel: 'bg-surface-elevated/90 border border-line shadow-subtle backdrop-blur-md',
@@ -40,7 +28,16 @@ const cardVariants = cva('relative overflow-hidden rounded-card text-ink', {
       feature:
         'bg-surface-elevated/95 border border-brand/30 shadow-card hover:border-brand/60 hover:shadow-glow-brand transition-all duration-200',
       floating: 'bg-surface-elevated/95 border border-line shadow-floating backdrop-blur-xl',
-      // Variantes legadas e estéticas preservadas para compatibilidade
+      // Variantes decorativas preservadas para compatibilidade (@deprecated)
+      // Prefira as variantes estruturais acima (surface, panel, metric, data, feature, floating)
+      iris: 'bg-surface border border-accent-violet/30 shadow-glow-accent-violet transition-[transform,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:scale-[1.005] hover:border-accent-violet/50',
+      cyan: 'bg-surface border border-accent-cyan/30 shadow-glow-accent-cyan transition-[transform,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:scale-[1.005] hover:border-accent-cyan/50',
+      pulse:
+        'bg-surface border border-pulse/30 shadow-glow-pulse transition-[transform,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:scale-[1.005] hover:border-pulse/50',
+      glass:
+        'bg-surface/60 backdrop-blur-xl border border-line/50 shadow-card transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:bg-surface/80 hover:border-brand/30 hover:shadow-card-hover hover:-translate-y-0.5 hover:scale-[1.005]',
+      metallic:
+        'bg-gradient-to-br from-surface to-surface-2 border border-line/60 shadow-card transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-brand/30 hover:shadow-card-hover hover:-translate-y-0.5 hover:scale-[1.005]',
       bento:
         'bg-surface-elevated/85 backdrop-blur-xl border border-line/80 shadow-card hover:border-brand/40 hover:shadow-card-hover hover:-translate-y-1 hover:scale-[1.006] transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]',
       cosmic:
@@ -63,7 +60,7 @@ const cardVariants = cva('relative overflow-hidden rounded-card text-ink', {
 
 export interface CardProps
   extends React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof cardVariants> {
+  VariantProps<typeof cardVariants> {
   /** Faixa de destaque no topo do card — usa os tokens de marca (`--brand`/`--brand-2`). */
   accentBar?: boolean;
   /** Ativa o efeito de borda em órbita contínua durante carregamento. */
@@ -154,16 +151,16 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
         onMouseLeave={handleMouseLeave}
         {...(onClick
           ? {
-              role: 'button',
-              tabIndex: 0,
-              onKeyDown: (e: React.KeyboardEvent<HTMLDivElement>) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  onClick?.(e as unknown as React.MouseEvent<HTMLDivElement>);
-                }
-              },
-              onClick: handleClick,
-            }
+            role: 'button',
+            tabIndex: 0,
+            onKeyDown: (e: React.KeyboardEvent<HTMLDivElement>) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                onClick?.(e as unknown as React.MouseEvent<HTMLDivElement>);
+              }
+            },
+            onClick: handleClick,
+          }
           : {})}
         {...props}
       >

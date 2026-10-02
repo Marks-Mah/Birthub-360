@@ -295,11 +295,11 @@ export function LandingLoginSplitScreen() {
 
     const result = isSignUp
       ? await authClient.signUp.email({
-        email,
-        password,
-        name: name || email.split('@')[0],
-        callbackURL: '/app',
-      })
+          email,
+          password,
+          name: name || email.split('@')[0],
+          callbackURL: '/app',
+        })
       : await authClient.signIn.email({ email, password, rememberMe, callbackURL: '/app' });
 
     if (result.error) {
@@ -359,7 +359,10 @@ export function LandingLoginSplitScreen() {
   // ══════════════════════════════════════════════════════════════════════════
   return (
     <div className="flex min-h-screen w-full overflow-x-hidden lg:flex-row flex-col">
-      {/* LADO ESQUERDO — Command Center Hero + 8 Pilares */}
+      {/* ════════════════════════════════════════════════════════════════════
+          LADO ESQUERDO — Command Center Hero + 8 Pilares
+          Base: Obsidian / Midnight. Blue e Iris como informação. Gold = accent.
+      ════════════════════════════════════════════════════════════════════ */}
       <div
         className="relative flex flex-col lg:w-[55%] w-full overflow-hidden px-10 py-10 lg:px-16 lg:py-14"
         style={{ background: 'linear-gradient(135deg, #060d1a 0%, #0B132B 50%, #0d1535 100%)' }}
@@ -409,723 +412,578 @@ export function LandingLoginSplitScreen() {
           <DataFlowLines />
         </div>
 
-        {/* Hero Content */}
-        <div className="relative z-20 flex-1 flex flex-col justify-center max-w-xl">
-          <motion.div
-            initial="hidden"
-            animate="show"
-            variants={staggerContainer(0.1)}
-            className="space-y-6"
-          >
-            <motion.p
-              variants={staggerItem}
-              className="text-[10px] font-bold uppercase tracking-[0.2em] text-brand"
-            >
-              Intelligent Business Command Center
-            </motion.p>
-            <motion.h1
-              variants={staggerItem}
-              className="font-display text-5xl md:text-6xl font-bold tracking-tight"
-            >
-              Birth Hub <span className="text-brand">360&deg;</span>
-            </motion.h1>
-            <motion.p
-              variants={staggerItem}
-              className="font-display text-2xl md:text-3xl font-normal leading-snug text-slate-700 dark:text-slate-200"
-            >
-              <RevealLine delay={0.35}>Dados que conectam.</RevealLine>
-              <RevealLine delay={0.5}>Inteligência que decide.</RevealLine>
-              <RevealLine delay={0.65}>Resultados que acontecem.</RevealLine>
-            </motion.p>
-            <motion.p
-              variants={staggerItem}
-              className="text-sm text-slate-500 dark:text-slate-400 max-w-md leading-relaxed"
-            >
-              O sistema operacional inteligente para operações de receita.
-            </motion.p>
 
-            <motion.div variants={staggerItem} className="flex items-center gap-4 pt-4">
-              <button
-                type="button"
-                onClick={() => navigate('/login')}
-                className="flex items-center gap-2 rounded-full transition-transform hover:-translate-y-0.5 active:translate-y-0 motion-reduce:transform-none bg-gradient-to-r from-gold to-gold/80 px-6 py-3 text-sm font-bold text-slate-900 shadow-[0_4px_14px_rgba(212,175,55,0.4)] transition-transform hover:-translate-y-0.5"
-              >
-                Explorar o Birth Hub &rarr;
-              </button>
-              <button
-                type="button"
-                className="flex items-center gap-3 text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-brand dark:hover:text-brand transition-colors"
-              >
-                <span className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-300 dark:border-white/20">
-                  <Play className="h-4 w-4 ml-0.5" />
-                </span>
-                Ver em 2 minutos
-              </button>
-            </motion.div>
-          </motion.div>
+        {/* ── Header: BH360 Mark + Sistema ──────────────────────────────── */}
+        <header className="relative z-20 flex items-center justify-between mb-10">
+          <button
+            type="button"
+            onClick={() => {
+              SoundFX.play('confirm');
+              navigate('/');
+            }}
+            className="flex items-center gap-4 group focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1677FF]/60 rounded-lg"
+            aria-label="Ir para página inicial Birth Hub 360"
+          >
+            <BH360Mark size={56} animated />
+            <div className="flex flex-col gap-1">
+              <span className="font-display text-xl font-bold text-white leading-none tracking-tight">
+                Birth Hub<span className="text-[#D4AF37] ml-1">360°</span>
+              </span>
+              <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-white/50">
+                Command Center
+              </span>
+            </div>
+          </button>
+        </header>
+
+
+        {/* ── Status Bar ─────────────────────────────────────────────────── */}
+        <div className="relative z-20 mb-8">
+          <div className="flex items-center justify-between w-full py-2">
+            <div className="flex items-center gap-2">
+              <span className="relative flex h-1.5 w-1.5 shrink-0">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-green-400" />
+              </span>
+              <span className="font-mono text-[9px] font-bold uppercase tracking-[0.18em] text-green-400">LIVE</span>
+              <span className="w-px h-3 bg-white/10 mx-1" aria-hidden="true" />
+              <span className="font-mono text-[9px] uppercase tracking-widest text-white/40">Sistema Online</span>
+            </div>
+            <div className="hidden md:flex items-center gap-1.5 font-mono text-[9px] text-white/40 tabular-nums">
+              <span>{dateLabel}</span>
+              <span className="opacity-40">|</span>
+              <span className="font-bold text-white/70">{timeLabel}</span>
+            </div>
+          </div>
+          <div className="h-px w-full bg-gradient-to-r from-[#1677FF]/40 via-[#7C3AED]/30 to-transparent" />
         </div>
 
-        {/* Stats Row */}
+        {/* ── Hero Typeset ───────────────────────────────────────────────── */}
         <motion.div
           initial="hidden"
           animate="show"
-          variants={staggerContainer(0.09)}
-          className="relative z-20 mt-12 grid max-w-xl grid-cols-2 gap-x-4 gap-y-6 border-t border-slate-200 dark:border-white/10 pt-8 sm:grid-cols-4"
+          variants={staggerContainer(0.08)}
+          className="relative z-20 flex-1 flex flex-col justify-center gap-5 mb-6"
         >
-          {HERO_STATS.map((stat, i) => (
-            <motion.div key={stat.lines.join(' ')} variants={staggerItem}>
-              <stat.Icon className="h-5 w-5 text-slate-400 dark:text-slate-500 mb-2" />
-              <div className="font-display text-3xl font-bold">
-                <CountUp to={stat.to} suffix={stat.suffix} delay={0.5 + i * 0.09} />
-              </div>
-              <div className="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider mt-1">
-                {stat.lines[0]}
-                <br />
-                {stat.lines[1]}
-              </div>
-            </motion.div>
-          ))}
-        </motion.div>
-
-        {/* Scroll indicator */}
-        <div className="relative z-20 mt-8 flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-slate-600 dark:text-slate-400">
-          <ArrowDown className="h-4 w-4 rounded-full border border-current p-0.5" />
-          Escrole para explorar
-        </div>
-
-        {/* Orbital Graphic */}
-        <div className="pointer-events-none absolute right-0 top-1/2 hidden h-[600px] w-[600px] -translate-y-1/2 -translate-x-[10%] lg:block">
-          <div className="relative w-full h-full flex items-center justify-center">
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 60, repeat: Infinity, ease: 'linear' }}
-              className="absolute inset-4 rounded-full border border-slate-200/50 dark:border-white/5 border-dashed"
-            />
-            <motion.div
-              animate={{ rotate: -360 }}
-              transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
-              className="absolute inset-[136px] rounded-full border-[3px] border-slate-300 dark:border-white/25"
-            />
-            <div
-              className="absolute w-[216px] h-[216px] rounded-full border-[14px] border-transparent"
-              style={{
-                background: `linear-gradient(currentColor, currentColor) padding-box, conic-gradient(from 0deg, ${BRAND.colors.orbitBlue} 0%, ${BRAND.colors.brand} 33%, ${BRAND.colors.pink} 66%, ${BRAND.colors.orbitBlue} 100%) border-box`,
-              }}
-            />
-            <div className="absolute w-[188px] h-[188px] rounded-full bg-white dark:bg-[#0B132B] flex items-center justify-center shadow-2xl border border-slate-100 dark:border-none">
-              <BirthHubLogo
-                variant="symbol"
-                className="w-24 h-24 drop-shadow-[0_0_15px_rgba(212,175,55,0.5)]"
-              />
-            </div>
-
-            <div className="absolute top-12 flex flex-col items-center">
-              <div className="w-10 h-10 rounded-full bg-white dark:bg-slate-800 shadow-lg border border-slate-100 dark:border-white/10 flex items-center justify-center mb-2">
-                <DatabaseZap className="h-4 w-4 text-orbit-blue" />
-              </div>
-              <span className="text-[10px] font-bold uppercase tracking-widest text-slate-700 dark:text-slate-300">Dados</span>
-              <span className="text-[9px] text-slate-500 dark:text-slate-300">Integração sem limites</span>
-            </div>
-
-            <div className="absolute bottom-12 flex flex-col items-center">
-              <div className="w-10 h-10 rounded-full bg-white dark:bg-slate-800 shadow-lg border border-slate-100 dark:border-white/10 flex items-center justify-center mb-2">
-                <Target className="h-4 w-4 text-pink" />
-              </div>
-              <span className="text-[10px] font-bold uppercase tracking-widest text-slate-700 dark:text-slate-300">Decisão</span>
-              <span className="text-[9px] text-slate-500 dark:text-slate-300">Estratégia baseada em dados</span>
-            </div>
-
-            <div className="absolute left-3 flex flex-col items-center">
-              <div className="w-10 h-10 rounded-full bg-white dark:bg-slate-800 shadow-lg border border-slate-100 dark:border-white/10 flex items-center justify-center mb-2">
-                <Rocket className="h-4 w-4 text-red" />
-              </div>
-              <span className="text-[10px] font-bold uppercase tracking-widest text-slate-700 dark:text-slate-300">Execução</span>
-              <span className="text-[9px] text-slate-500 dark:text-slate-300">Resultados consistentes</span>
-            </div>
-
-            <div className="absolute right-3 flex flex-col items-center">
-              <div className="w-10 h-10 rounded-full bg-white dark:bg-slate-800 shadow-lg border border-slate-100 dark:border-white/10 flex items-center justify-center mb-2">
-                <BrainCircuit className="h-4 w-4 text-iris" />
-              </div>
-              <span className="text-[10px] font-bold uppercase tracking-widest text-slate-700 dark:text-slate-300">Inteligência</span>
-              <span className="text-[9px] text-slate-500 dark:text-slate-300">Insights em tempo real</span>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-
-      {/* ── Header: BH360 Mark + Sistema ──────────────────────────────── */}
-      <header className="relative z-20 flex items-center justify-between mb-10">
-        <button
-          type="button"
-          onClick={() => {
-            SoundFX.play('confirm');
-            navigate('/');
-          }}
-          className="flex items-center gap-4 group focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1677FF]/60 rounded-lg"
-          aria-label="Ir para página inicial Birth Hub 360"
-        >
-          <BH360Mark size={56} animated />
-          <div className="flex flex-col gap-1">
-            <span className="font-display text-xl font-bold text-white leading-none tracking-tight">
-              Birth Hub<span className="text-[#D4AF37] ml-1">360°</span>
-            </span>
-            <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-white/50">
-              Command Center
-            </span>
-          </div>
-        </button>
-      </header>
-
-
-      {/* ── Status Bar ─────────────────────────────────────────────────── */}
-      <div className="relative z-20 mb-8">
-        <div className="flex items-center justify-between w-full py-2">
-          <div className="flex items-center gap-2">
-            <span className="relative flex h-1.5 w-1.5 shrink-0">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
-              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-green-400" />
-            </span>
-            <span className="font-mono text-[9px] font-bold uppercase tracking-[0.18em] text-green-400">LIVE</span>
-            <span className="w-px h-3 bg-white/10 mx-1" aria-hidden="true" />
-            <span className="font-mono text-[9px] uppercase tracking-widest text-white/40">Sistema Online</span>
-          </div>
-          <div className="hidden md:flex items-center gap-1.5 font-mono text-[9px] text-white/40 tabular-nums">
-            <span>{dateLabel}</span>
-            <span className="opacity-40">|</span>
-            <span className="font-bold text-white/70">{timeLabel}</span>
-          </div>
-        </div>
-        <div className="h-px w-full bg-gradient-to-r from-[#1677FF]/40 via-[#7C3AED]/30 to-transparent" />
-      </div>
-
-      {/* ── Hero Typeset ───────────────────────────────────────────────── */}
-      <motion.div
-        initial="hidden"
-        animate="show"
-        variants={staggerContainer(0.08)}
-        className="relative z-20 flex-1 flex flex-col justify-center gap-5 mb-6"
-      >
-        {/* Eyebrow — posicionamento amplo */}
-        <motion.p
-          variants={staggerItem}
-          className="font-mono text-[11px] font-bold uppercase tracking-[0.3em] text-[#1677FF]"
-        >
-          Sistema Operacional Comercial
-        </motion.p>
-
-        {/* Headline — conceito oficial */}
-        <motion.h1
-          variants={staggerItem}
-          className="font-display text-5xl sm:text-6xl lg:text-[4rem] xl:text-[4.5rem] font-bold tracking-tight text-white leading-[1.05]"
-        >
-          Dados que
-          <br />
-          <span className="text-[#1677FF]">Conectam.</span>
-          <br />
-          Inteligência que{' '}
-          <span
-            className="bg-clip-text text-transparent"
-            style={{
-              backgroundImage: 'linear-gradient(90deg, #7C3AED 0%, #D4AF37 100%)',
-            }}
+          {/* Eyebrow — posicionamento amplo */}
+          <motion.p
+            variants={staggerItem}
+            className="font-mono text-[11px] font-bold uppercase tracking-[0.3em] text-[#1677FF]"
           >
-            Decide.
-          </span>
-        </motion.h1>
+            Sistema Operacional Comercial
+          </motion.p>
 
-        {/* Sub-headline — a promessa de resultado */}
-        <motion.p
-          variants={staggerItem}
-          className="font-display text-xl font-light text-white/50 tracking-tight"
-        >
-          Resultados que Acontecem.
-        </motion.p>
-
-        {/* Tagline arquitetural */}
-        <motion.p
-          variants={staggerItem}
-          className="font-mono text-[11px] text-white/40 max-w-sm leading-relaxed"
-        >
-          CRM · Pipeline · Inteligência · Forecast · Automação · IA · Voz · Engajamento
-          <br />
-          Oito pilares. Um sistema operacional comercial integrado.
-        </motion.p>
-
-
-        {/* Separador com metáfora de fluxo */}
-        <motion.div variants={staggerItem} className="flex items-center gap-4 my-1">
-          <div className="h-px flex-1 bg-gradient-to-r from-[#1677FF]/40 to-transparent" />
-          <span className="font-mono text-[9px] text-white/30 uppercase tracking-widest">
-            8 pilares integrados
-          </span>
-          <div className="h-px flex-1 bg-gradient-to-l from-[#7C3AED]/40 to-transparent" />
-        </motion.div>
-
-        {/* 8 Pilares — linguagem visual proprietária */}
-        <motion.div variants={staggerItem}>
-          <PillarStrip />
-        </motion.div>
-      </motion.div>
-
-      {/* ── Footer institucional ────────────────────────────────────────── */}
-      <div className="relative z-20 pt-6 border-t border-white/10">
-        <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/30">
-          Birth Hub 360° · Sistema Operacional para Operações Comerciais
-        </p>
-      </div>
-    </div>
-
-      {/* LADO DIREITO — Formulário de acesso */ }
-  <div className="flex-1 flex flex-col items-center justify-center relative bg-[var(--bg)] px-8 py-12 w-full">
-    {/* Subtle radial gradient for depth */}
-    <div
-      className="pointer-events-none absolute inset-0 z-0"
-      style={{ background: 'radial-gradient(ellipse at 50% 40%, rgba(22,119,255,0.06) 0%, transparent 65%)' }}
-    />
-
-    {/* Top actions — canto superior direito */}
-    <div className="absolute top-6 right-6 hidden sm:flex items-center gap-4">
-      <button
-        type="button"
-        onClick={() => {
-          SoundFX.play('click');
-          toggleTheme();
-        }}
-        className="text-[var(--ink-2)] hover:text-[var(--ink)] transition-colors p-1.5 rounded-md hover:bg-[var(--surface-2)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1677FF]"
-        aria-label={theme === 'dark' ? 'Mudar para tema claro' : 'Mudar para tema escuro'}
-        title={theme === 'dark' ? 'Mudar para tema claro' : 'Mudar para tema escuro'}
-      >
-        {theme === 'dark' ? <Sun size={16} strokeWidth={2} /> : <Moon size={16} strokeWidth={2} />}
-      </button>
-
-      <div className="flex items-center gap-2 font-mono text-[9px] text-[var(--ink-2)] uppercase tracking-widest">
-        <span
-          className="inline-block w-1.5 h-1.5 rounded-full bg-green-400"
-          aria-hidden="true"
-        />
-        BH360 · v4
-      </div>
-    </div>
-
-    <div className="w-full max-w-[420px] z-10">
-      {/* ── Header do formulário ──────────────────────────────────────── */}
-      <motion.div
-        className="mb-8"
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: EASE_OUT_EXPO }}
-      >
-        <h2 className="font-display text-[2rem] font-bold tracking-tight text-[var(--ink)] mb-1.5">
-          {isSignUp ? 'Criar conta' : 'Acessar conta'}
-        </h2>
-        <p className="font-mono text-xs text-[var(--ink-2)] uppercase tracking-wider mb-3">
-          {isSignUp ? 'Preencha seus dados para começar' : 'Acesse o sistema operacional comercial'}
-        </p>
-        {!isSignUp && (
-          <p className="font-mono text-[11px] text-[var(--ink-2)] leading-relaxed border-l-2 border-[#1677FF]/30 pl-3">
-            8 pilares integrados em uma única plataforma — do CRM à IA, da prospecção ao engajamento.
-          </p>
-        )}
-      </motion.div>
-
-      {/* ── Card do formulário ────────────────────────────────────────── */}
-      <motion.div
-        className="rounded-2xl border border-[var(--line)] overflow-hidden bg-[var(--surface)]"
-        style={{
-          backdropFilter: 'blur(24px)',
-          boxShadow: '0 0 0 1px var(--line), 0 32px 64px rgba(0,0,0,0.12), 0 0 80px rgba(22,119,255,0.06)',
-        }}
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.06, ease: EASE_OUT_EXPO }}
-      >
-        {/* Tabs */}
-        <div
-          className="flex border-b border-[var(--line)]"
-          role="tablist"
-          aria-label="Método de acesso"
-        >
-          {(['email', 'sso'] as const).map((tab) => (
-            <button
-              key={tab}
-              type="button"
-              role="tab"
-              aria-selected={activeTab === tab}
-              onClick={() => setActiveTab(tab)}
-              className={[
-                'flex-1 py-3.5 text-xs font-bold uppercase tracking-wider transition-colors relative font-mono',
-                activeTab === tab
-                  ? 'text-[#1677FF]'
-                  : 'text-[var(--ink-2)] hover:text-[var(--ink)]',
-              ].join(' ')}
+          {/* Headline — conceito oficial */}
+          <motion.h1
+            variants={staggerItem}
+            className="font-display text-5xl sm:text-6xl lg:text-[4rem] xl:text-[4.5rem] font-bold tracking-tight text-white leading-[1.05]"
+          >
+            Dados que
+            <br />
+            <span className="text-[#1677FF]">Conectam.</span>
+            <br />
+            Inteligência que{' '}
+            <span
+              className="bg-clip-text text-transparent"
+              style={{
+                backgroundImage: 'linear-gradient(90deg, #7C3AED 0%, #D4AF37 100%)',
+              }}
             >
-              {tab === 'email' ? 'E-mail corporativo' : 'SSO Empresarial'}
-              {activeTab === tab && (
-                <motion.div
-                  layoutId="activeTabIndicator"
-                  className="absolute bottom-0 left-0 right-0 h-[2px]"
-                  style={{ background: '#1677FF' }}
-                />
-              )}
-            </button>
-          ))}
+              Decide.
+            </span>
+          </motion.h1>
+
+          {/* Sub-headline — a promessa de resultado */}
+          <motion.p
+            variants={staggerItem}
+            className="font-display text-xl font-light text-white/50 tracking-tight"
+          >
+            Resultados que Acontecem.
+          </motion.p>
+
+          {/* Tagline arquitetural */}
+          <motion.p
+            variants={staggerItem}
+            className="font-mono text-[11px] text-white/40 max-w-sm leading-relaxed"
+          >
+            CRM · Pipeline · Inteligência · Forecast · Automação · IA · Voz · Engajamento
+            <br />
+            Oito pilares. Um sistema operacional comercial integrado.
+          </motion.p>
+
+
+          {/* Separador com metáfora de fluxo */}
+          <motion.div variants={staggerItem} className="flex items-center gap-4 my-1">
+            <div className="h-px flex-1 bg-gradient-to-r from-[#1677FF]/40 to-transparent" />
+            <span className="font-mono text-[9px] text-white/30 uppercase tracking-widest">
+              8 pilares integrados
+            </span>
+            <div className="h-px flex-1 bg-gradient-to-l from-[#7C3AED]/40 to-transparent" />
+          </motion.div>
+
+          {/* 8 Pilares — linguagem visual proprietária */}
+          <motion.div variants={staggerItem}>
+            <PillarStrip />
+          </motion.div>
+        </motion.div>
+
+        {/* ── Footer institucional ────────────────────────────────────────── */}
+        <div className="relative z-20 pt-6 border-t border-white/10">
+          <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/30">
+            Birth Hub 360° · Sistema Operacional para Operações Comerciais
+          </p>
+        </div>
+      </div>
+
+      {/* ════════════════════════════════════════════════════════════════════
+          LADO DIREITO — Formulário de acesso
+          Base: var(--bg) / var(--surface). Neutro, limpo, informação.
+      ════════════════════════════════════════════════════════════════════ */}
+      <div className="flex-1 flex flex-col items-center justify-center relative bg-[var(--bg)] px-8 py-12 w-full">
+        {/* Subtle radial gradient for depth */}
+        <div
+          className="pointer-events-none absolute inset-0 z-0"
+          style={{ background: 'radial-gradient(ellipse at 50% 40%, rgba(22,119,255,0.06) 0%, transparent 65%)' }}
+        />
+
+        {/* Top actions — canto superior direito */}
+        <div className="absolute top-6 right-6 hidden sm:flex items-center gap-4">
+          <button
+            type="button"
+            onClick={() => {
+              SoundFX.play('click');
+              toggleTheme();
+            }}
+            className="text-[var(--ink-2)] hover:text-[var(--ink)] transition-colors p-1.5 rounded-md hover:bg-[var(--surface-2)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1677FF]"
+            aria-label={theme === 'dark' ? 'Mudar para tema claro' : 'Mudar para tema escuro'}
+            title={theme === 'dark' ? 'Mudar para tema claro' : 'Mudar para tema escuro'}
+          >
+            {theme === 'dark' ? <Sun size={16} strokeWidth={2} /> : <Moon size={16} strokeWidth={2} />}
+          </button>
+
+          <div className="flex items-center gap-2 font-mono text-[9px] text-[var(--ink-2)] uppercase tracking-widest">
+            <span
+              className="inline-block w-1.5 h-1.5 rounded-full bg-green-400"
+              aria-hidden="true"
+            />
+            BH360 · v4
+          </div>
         </div>
 
-        {/* Conteúdo do formulário */}
-        <div className="p-6 md:p-7">
-          {verificationPending ? (
-            <div className="space-y-5 text-center">
-              <div className="flex items-start gap-2.5 rounded-xl border border-[#1677FF]/20 bg-[#1677FF]/5 p-3.5 text-left text-sm text-[var(--ink)]">
-                <Mail size={16} className="mt-0.5 shrink-0 text-[#1677FF]" />
-                <p>
-                  Enviamos um link de confirmação para <strong>{email}</strong>. Clique nele
-                  para ativar sua conta.
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={backToSignIn}
-                className="text-sm font-bold text-[var(--ink-2)] hover:text-[#1677FF] transition-colors"
-              >
-                Voltar para o login
-              </button>
-            </div>
-          ) : isForgotPassword ? (
-            forgotPasswordSent ? (
-              <div className="space-y-5 text-center">
-                <div className="flex items-start gap-2.5 rounded-xl border border-[#1677FF]/20 bg-[#1677FF]/5 p-3.5 text-left text-sm text-[var(--ink)]">
-                  <Mail size={16} className="mt-0.5 shrink-0 text-[#1677FF]" />
-                  <p>
-                    Se <strong>{email}</strong> tiver uma conta, enviamos um link de
-                    redefinição. O link expira em 1 hora.
-                  </p>
-                </div>
+        <div className="w-full max-w-[420px] z-10">
+          {/* ── Header do formulário ──────────────────────────────────────── */}
+          <motion.div
+            className="mb-8"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: EASE_OUT_EXPO }}
+          >
+            <h2 className="font-display text-[2rem] font-bold tracking-tight text-[var(--ink)] mb-1.5">
+              {isSignUp ? 'Criar conta' : 'Acessar conta'}
+            </h2>
+            <p className="font-mono text-xs text-[var(--ink-2)] uppercase tracking-wider mb-3">
+              {isSignUp ? 'Preencha seus dados para começar' : 'Acesse o sistema operacional comercial'}
+            </p>
+            {!isSignUp && (
+              <p className="font-mono text-[11px] text-[var(--ink-2)] leading-relaxed border-l-2 border-[#1677FF]/30 pl-3">
+                8 pilares integrados em uma única plataforma — do CRM à IA, da prospecção ao engajamento.
+              </p>
+            )}
+          </motion.div>
+
+          {/* ── Card do formulário ────────────────────────────────────────── */}
+          <motion.div
+            className="rounded-2xl border border-[var(--line)] overflow-hidden bg-[var(--surface)]"
+            style={{
+              backdropFilter: 'blur(24px)',
+              boxShadow: '0 0 0 1px var(--line), 0 32px 64px rgba(0,0,0,0.12), 0 0 80px rgba(22,119,255,0.06)',
+            }}
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.06, ease: EASE_OUT_EXPO }}
+          >
+            {/* Tabs */}
+            <div
+              className="flex border-b border-[var(--line)]"
+              role="tablist"
+              aria-label="Método de acesso"
+            >
+              {(['email', 'sso'] as const).map((tab) => (
                 <button
+                  key={tab}
                   type="button"
-                  onClick={backToSignIn}
-                  className="text-sm font-bold text-[var(--ink-2)] hover:text-[#1677FF] transition-colors"
+                  role="tab"
+                  aria-selected={activeTab === tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={[
+                    'flex-1 py-3.5 text-xs font-bold uppercase tracking-wider transition-colors relative font-mono',
+                    activeTab === tab
+                      ? 'text-[#1677FF]'
+                      : 'text-[var(--ink-2)] hover:text-[var(--ink)]',
+                  ].join(' ')}
                 >
-                  Voltar para o login
-                </button>
-              </div>
-            ) : (
-              <form onSubmit={handleForgotPassword} className="space-y-5" noValidate>
-                {error && (
-                  <div
-                    role="alert"
-                    className="flex items-start gap-2.5 rounded-xl border border-[var(--critical)]/30 bg-[var(--critical)]/5 p-3.5 text-xs text-[var(--critical)]"
-                  >
-                    <AlertCircle size={16} className="mt-0.5 shrink-0" aria-hidden="true" />
-                    <p>{error}</p>
-                  </div>
-                )}
-                <p className="font-mono text-xs text-[var(--ink-2)]">
-                  Informe o e-mail corporativo da sua conta para receber o link de redefinição
-                  de senha.
-                </p>
-                <div className="relative">
-                  <Mail
-                    className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--ink-2)]"
-                    aria-hidden="true"
-                  />
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className={`${inputCls} pl-11`}
-                    aria-label="E-mail corporativo"
-                    placeholder="executivo@empresa.com.br"
-                    required
-                    autoComplete="email"
-                  />
-                </div>
-                <button
-                  type="submit"
-                  disabled={isSubmitting || !email}
-                  className="w-full h-[48px] rounded-[var(--radius-control)] bg-[#1677FF] text-white text-base font-extrabold uppercase tracking-wide shadow-lg transition-all hover:bg-[#1565E0] disabled:opacity-50 flex items-center justify-center"
-                >
-                  {isSubmitting ? (
-                    <Loader2 className="animate-spin mx-auto h-5 w-5" aria-hidden="true" />
-                  ) : (
-                    'Enviar link de redefinição'
+                  {tab === 'email' ? 'E-mail corporativo' : 'SSO Empresarial'}
+                  {activeTab === tab && (
+                    <motion.div
+                      layoutId="activeTabIndicator"
+                      className="absolute bottom-0 left-0 right-0 h-[2px]"
+                      style={{ background: '#1677FF' }}
+                    />
                   )}
                 </button>
-                <div className="text-center">
+              ))}
+            </div>
+
+            {/* Conteúdo do formulário */}
+            <div className="p-6 md:p-7">
+              {verificationPending ? (
+                <div className="space-y-5 text-center">
+                  <div className="flex items-start gap-2.5 rounded-xl border border-[#1677FF]/20 bg-[#1677FF]/5 p-3.5 text-left text-sm text-[var(--ink)]">
+                    <Mail size={16} className="mt-0.5 shrink-0 text-[#1677FF]" />
+                    <p>
+                      Enviamos um link de confirmação para <strong>{email}</strong>. Clique nele
+                      para ativar sua conta.
+                    </p>
+                  </div>
                   <button
                     type="button"
                     onClick={backToSignIn}
-                    className="text-xs font-bold text-[var(--ink-2)] hover:text-[#1677FF] transition-colors"
+                    className="text-sm font-bold text-[var(--ink-2)] hover:text-[#1677FF] transition-colors"
                   >
                     Voltar para o login
                   </button>
                 </div>
-              </form>
-            )
-          ) : (
-            <form onSubmit={handleAuth} className="space-y-5" noValidate>
-              {error && (
-                <div
-                  role="alert"
-                  className="flex items-start gap-2.5 rounded-xl border border-[var(--critical)]/30 bg-[var(--critical)]/5 p-3.5 text-xs text-[var(--critical)]"
-                >
-                  <AlertCircle size={16} className="mt-0.5 shrink-0" aria-hidden="true" />
-                  <p>{error}</p>
-                </div>
-              )}
-
-              {isSignUp && (
-                <div>
-                  <label
-                    htmlFor="login-name"
-                    className="block font-mono text-[11px] font-semibold text-[var(--ink-2)] mb-1.5 uppercase tracking-wide"
-
-                  >
-                    Nome completo
-                  </label>
-                  <input
-                    id="login-name"
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className={inputCls}
-                    aria-label="Nome completo"
-                    placeholder="Seu Nome Completo"
-                    required={isSignUp}
-                    autoComplete="name"
-                  />
-                </div>
-              )}
-
-              <div className="space-y-4">
-                {/* Email */}
-                <div>
-                  <label
-                    htmlFor="login-email"
-                    className="block font-mono text-[11px] font-semibold text-[var(--ink-2)] mb-1.5 uppercase tracking-wide"
-                  >
-                    E-mail
-                  </label>
-                  <div className="relative">
-                    <Mail
-                      className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--ink-2)]"
-                      aria-hidden="true"
-                    />
-                    <input
-                      id="login-email"
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className={`${inputCls} pl-11`}
-                      aria-label="E-mail corporativo"
-                      placeholder={
-                        activeTab === 'sso'
-                          ? 'seuemail@seudominio.com.br'
-                          : 'executivo@empresa.com.br'
-                      }
-                      required
-                      autoComplete="email"
-                    />
-                  </div>
-                </div>
-
-                {/* Senha */}
-                <div>
-                  <label
-                    htmlFor="login-password"
-                    className="block font-mono text-[11px] font-semibold text-[var(--ink-2)] mb-1.5 uppercase tracking-wide"
-                  >
-                    Senha
-                  </label>
-                  <div className="relative">
-                    <Lock
-                      className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--ink-2)]"
-                      aria-hidden="true"
-                    />
-                    <input
-                      id="login-password"
-                      type={showPassword ? 'text' : 'password'}
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      className={`${inputCls} pl-11 pr-11`}
-                      aria-label="Senha"
-                      placeholder="••••••••••••"
-                      required
-                      autoComplete={isSignUp ? 'new-password' : 'current-password'}
-                    />
+              ) : isForgotPassword ? (
+                forgotPasswordSent ? (
+                  <div className="space-y-5 text-center">
+                    <div className="flex items-start gap-2.5 rounded-xl border border-[#1677FF]/20 bg-[#1677FF]/5 p-3.5 text-left text-sm text-[var(--ink)]">
+                      <Mail size={16} className="mt-0.5 shrink-0 text-[#1677FF]" />
+                      <p>
+                        Se <strong>{email}</strong> tiver uma conta, enviamos um link de
+                        redefinição. O link expira em 1 hora.
+                      </p>
+                    </div>
                     <button
                       type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
-                      aria-pressed={showPassword}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--ink-2)] hover:text-[var(--ink)] transition-colors"
+                      onClick={backToSignIn}
+                      className="text-sm font-bold text-[var(--ink-2)] hover:text-[#1677FF] transition-colors"
                     >
-                      {showPassword ? (
-                        <EyeOff className="h-4 w-4" aria-hidden="true" />
-                      ) : (
-                        <Eye className="h-4 w-4" aria-hidden="true" />
-                      )}
+                      Voltar para o login
                     </button>
                   </div>
-                </div>
-              </div>
+                ) : (
+                  <form onSubmit={handleForgotPassword} className="space-y-5" noValidate>
+                    {error && (
+                      <div
+                        role="alert"
+                        className="flex items-start gap-2.5 rounded-xl border border-[var(--critical)]/30 bg-[var(--critical)]/5 p-3.5 text-xs text-[var(--critical)]"
+                      >
+                        <AlertCircle size={16} className="mt-0.5 shrink-0" aria-hidden="true" />
+                        <p>{error}</p>
+                      </div>
+                    )}
+                    <p className="font-mono text-xs text-[var(--ink-2)]">
+                      Informe o e-mail corporativo da sua conta para receber o link de redefinição
+                      de senha.
+                    </p>
+                    <div className="relative">
+                      <Mail
+                        className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--ink-2)]"
+                        aria-hidden="true"
+                      />
+                      <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className={`${inputCls} pl-11`}
+                        aria-label="E-mail corporativo"
+                        placeholder="executivo@empresa.com.br"
+                        required
+                        autoComplete="email"
+                      />
+                    </div>
+                    <button
+                      type="submit"
+                      disabled={isSubmitting || !email}
+                      className="w-full h-[48px] rounded-[var(--radius-control)] bg-[#1677FF] text-white text-base font-extrabold uppercase tracking-wide shadow-lg transition-all hover:bg-[#1565E0] disabled:opacity-50 flex items-center justify-center"
+                    >
+                      {isSubmitting ? (
+                        <Loader2 className="animate-spin mx-auto h-5 w-5" aria-hidden="true" />
+                      ) : (
+                        'Enviar link de redefinição'
+                      )}
+                    </button>
+                    <div className="text-center">
+                      <button
+                        type="button"
+                        onClick={backToSignIn}
+                        className="text-xs font-bold text-[var(--ink-2)] hover:text-[#1677FF] transition-colors"
+                      >
+                        Voltar para o login
+                      </button>
+                    </div>
+                  </form>
+                )
+              ) : (
+                <form onSubmit={handleAuth} className="space-y-5" noValidate>
+                  {error && (
+                    <div
+                      role="alert"
+                      className="flex items-start gap-2.5 rounded-xl border border-[var(--critical)]/30 bg-[var(--critical)]/5 p-3.5 text-xs text-[var(--critical)]"
+                    >
+                      <AlertCircle size={16} className="mt-0.5 shrink-0" aria-hidden="true" />
+                      <p>{error}</p>
+                    </div>
+                  )}
 
-              {!isSignUp && (
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                  <label className="flex items-center gap-2 cursor-pointer font-mono text-[11px] font-semibold text-[var(--ink-2)]">
-                    <input
-                      type="checkbox"
-                      checked={rememberMe}
-                      onChange={(e) => setRememberMe(e.target.checked)}
-                      className="rounded border-[var(--line)] w-4 h-4 bg-[var(--surface)] accent-[#1677FF]"
-                    />
-                    Manter sessão ativa
-                  </label>
+                  {isSignUp && (
+                    <div>
+                      <label
+                        htmlFor="login-name"
+                        className="block font-mono text-[11px] font-semibold text-[var(--ink-2)] mb-1.5 uppercase tracking-wide"
+                      >
+                        Nome completo
+                      </label>
+                      <input
+                        id="login-name"
+                        type="text"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        className={inputCls}
+                        aria-label="Nome completo"
+                        placeholder="Seu Nome Completo"
+                        required={isSignUp}
+                        autoComplete="name"
+                      />
+                    </div>
+                  )}
+
+                  <div className="space-y-4">
+                    {/* Email */}
+                    <div>
+                      <label
+                        htmlFor="login-email"
+                        className="block font-mono text-[11px] font-semibold text-[var(--ink-2)] mb-1.5 uppercase tracking-wide"
+                      >
+                        E-mail
+                      </label>
+                      <div className="relative">
+                        <Mail
+                          className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--ink-2)]"
+                          aria-hidden="true"
+                        />
+                        <input
+                          id="login-email"
+                          type="email"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          className={`${inputCls} pl-11`}
+                          aria-label="E-mail corporativo"
+                          placeholder={
+                            activeTab === 'sso'
+                              ? 'seuemail@seudominio.com.br'
+                              : 'executivo@empresa.com.br'
+                          }
+                          required
+                          autoComplete="email"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Senha */}
+                    <div>
+                      <label
+                        htmlFor="login-password"
+                        className="block font-mono text-[11px] font-semibold text-[var(--ink-2)] mb-1.5 uppercase tracking-wide"
+                      >
+                        Senha
+                      </label>
+                      <div className="relative">
+                        <Lock
+                          className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--ink-2)]"
+                          aria-hidden="true"
+                        />
+                        <input
+                          id="login-password"
+                          type={showPassword ? 'text' : 'password'}
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          className={`${inputCls} pl-11 pr-11`}
+                          aria-label="Senha"
+                          placeholder="••••••••••••"
+                          required
+                          autoComplete={isSignUp ? 'new-password' : 'current-password'}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
+                          aria-pressed={showPassword}
+                          className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--ink-2)] hover:text-[var(--ink)] transition-colors"
+                        >
+                          {showPassword ? (
+                            <EyeOff className="h-4 w-4" aria-hidden="true" />
+                          ) : (
+                            <Eye className="h-4 w-4" aria-hidden="true" />
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {!isSignUp && (
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                      <label className="flex items-center gap-2 cursor-pointer font-mono text-[11px] font-semibold text-[var(--ink-2)]">
+                        <input
+                          type="checkbox"
+                          checked={rememberMe}
+                          onChange={(e) => setRememberMe(e.target.checked)}
+                          className="rounded border-[var(--line)] w-4 h-4 bg-[var(--surface)] accent-[#1677FF]"
+                        />
+                        Manter sessão ativa
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIsForgotPassword(true);
+                          setError('');
+                        }}
+                        className="font-mono text-[11px] font-bold text-[var(--ink-2)] hover:text-[#1677FF] transition-colors sm:text-right"
+                      >
+                        Esqueci minha senha
+                      </button>
+                    </div>
+                  )}
+
+                  {/* CTA principal — Blue, não Gold */}
+                  <button
+                    type="submit"
+                    disabled={isSubmitting || !email || !password}
+                    className="w-full h-[48px] rounded-[var(--radius-control)] bg-[#1677FF] text-white text-base font-extrabold uppercase tracking-wide shadow-lg transition-all hover:bg-[#1565E0] active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1677FF]"
+                  >
+                    {isSubmitting ? (
+                      <Loader2 className="animate-spin h-5 w-5" aria-hidden="true" />
+                    ) : isSignUp ? (
+                      'Criar conta'
+                    ) : (
+                      <>
+                        Entrar no Birth Hub <span aria-hidden="true">→</span>
+                      </>
+                    )}
+                  </button>
+                </form>
+              )}
+
+              {/* Toggle login / cadastro */}
+              {!isForgotPassword && !verificationPending && (
+                <div className="mt-5 text-center">
                   <button
                     type="button"
                     onClick={() => {
-                      setIsForgotPassword(true);
+                      setIsSignUp(!isSignUp);
                       setError('');
+                      setName('');
                     }}
-                    className="font-mono text-[11px] font-bold text-[var(--ink-2)] hover:text-[#1677FF] transition-colors sm:text-right"
+                    className="font-mono text-[11px] font-bold text-[var(--ink-2)] hover:text-[#1677FF] transition-colors"
                   >
-                    Esqueci minha senha
+                    {isSignUp ? 'Já tem conta? Fazer login' : 'Não tem conta? Criar conta'}
                   </button>
                 </div>
               )}
 
-              {/* CTA principal — Blue, não Gold */}
-              <button
-                type="submit"
-                disabled={isSubmitting || !email || !password}
-                className="w-full h-[48px] rounded-[var(--radius-control)] bg-[#1677FF] text-white text-base font-extrabold uppercase tracking-wide shadow-lg transition-all hover:bg-[#1565E0] active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1677FF]"
-              >
-                {isSubmitting ? (
-                  <Loader2 className="animate-spin h-5 w-5" aria-hidden="true" />
-                ) : isSignUp ? (
-                  'Criar conta'
-                ) : (
-                  <>
-                    Entrar no Birth Hub <span aria-hidden="true">→</span>
-                  </>
-                )}
-              </button>
-            </form>
-          )}
+              {/* Opções SSO / Social */}
+              {!isSignUp && !isForgotPassword && !verificationPending && (
+                <div className="mt-6">
+                  <div className="relative flex items-center justify-center mb-5">
+                    <div className="absolute inset-0 flex items-center">
+                      <div className="w-full border-t border-[var(--line)]" />
+                    </div>
+                    <span className="relative bg-[var(--surface)] px-3 font-mono text-[9px] uppercase tracking-widest font-bold text-[var(--ink-2)]">
+                      ou continue com
+                    </span>
+                  </div>
 
-          {/* Toggle login / cadastro */}
-          {!isForgotPassword && !verificationPending && (
-            <div className="mt-5 text-center">
-              <button
-                type="button"
-                onClick={() => {
-                  setIsSignUp(!isSignUp);
-                  setError('');
-                  setName('');
-                }}
-                className="font-mono text-[11px] font-bold text-[var(--ink-2)] hover:text-[#1677FF] transition-colors"
-              >
-                {isSignUp ? 'Já tem conta? Fazer login' : 'Não tem conta? Criar conta'}
-              </button>
-            </div>
-          )}
-
-
-          {/* Opções SSO / Social */}
-          {!isSignUp && !isForgotPassword && !verificationPending && (
-            <div className="mt-6">
-              <div className="relative flex items-center justify-center mb-5">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-[var(--line)]" />
+                  <div className="grid grid-cols-3 gap-2.5">
+                    <button
+                      type="button"
+                      className="flex items-center justify-center gap-1.5 rounded-[var(--radius-control)] border border-[var(--line)] py-2.5 text-[11px] font-semibold text-[var(--ink)] hover:bg-[var(--surface-2)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#1677FF]"
+                      aria-label="Entrar com Google"
+                    >
+                      <svg viewBox="0 0 24 24" className="w-3.5 h-3.5" aria-hidden="true">
+                        <path
+                          fill="#4285F4"
+                          d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                        />
+                        <path
+                          fill="#34A853"
+                          d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                        />
+                        <path
+                          fill="#FBBC05"
+                          d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                        />
+                        <path
+                          fill="#EA4335"
+                          d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                        />
+                      </svg>
+                      Google
+                    </button>
+                    <button
+                      type="button"
+                      className="flex items-center justify-center gap-1.5 rounded-[var(--radius-control)] border border-[var(--line)] py-2.5 text-[11px] font-semibold text-[var(--ink)] hover:bg-[var(--surface-2)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#1677FF]"
+                      aria-label="Entrar com Microsoft"
+                    >
+                      <svg viewBox="0 0 21 21" className="w-3.5 h-3.5" aria-hidden="true">
+                        <path fill="#f25022" d="M0 0h10v10H0z" />
+                        <path fill="#7fba00" d="M11 0h10v10H11z" />
+                        <path fill="#00a4ef" d="M0 11h10v10H0z" />
+                        <path fill="#ffb900" d="M11 11h10v10H11z" />
+                      </svg>
+                      Microsoft
+                    </button>
+                    <button
+                      type="button"
+                      className="flex items-center justify-center gap-1.5 rounded-[var(--radius-control)] border border-[var(--line)] py-2.5 text-[11px] font-semibold text-[var(--ink)] hover:bg-[var(--surface-2)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#1677FF]"
+                      aria-label="Entrar com SSO"
+                    >
+                      <Lock className="w-3.5 h-3.5 text-[var(--ink-2)]" aria-hidden="true" />
+                      SSO
+                    </button>
+                  </div>
                 </div>
-                <span className="relative bg-[var(--surface)] px-3 font-mono text-[9px] uppercase tracking-widest font-bold text-[var(--ink-2)]">
-                  ou continue com
-                </span>
-              </div>
-
-              <div className="grid grid-cols-3 gap-2.5">
-                <button
-                  type="button"
-                  className="flex items-center justify-center gap-1.5 rounded-[var(--radius-control)] border border-[var(--line)] py-2.5 text-[11px] font-semibold text-[var(--ink)] hover:bg-[var(--surface-2)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#1677FF]"
-                  aria-label="Entrar com Google"
-                >
-                  <svg viewBox="0 0 24 24" className="w-3.5 h-3.5" aria-hidden="true">
-                    <path
-                      fill="#4285F4"
-                      d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                    />
-                    <path
-                      fill="#34A853"
-                      d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                    />
-                    <path
-                      fill="#FBBC05"
-                      d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-                    />
-                    <path
-                      fill="#EA4335"
-                      d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-                    />
-                  </svg>
-                  Google
-                </button>
-                <button
-                  type="button"
-                  className="flex items-center justify-center gap-1.5 rounded-[var(--radius-control)] border border-[var(--line)] py-2.5 text-[11px] font-semibold text-[var(--ink)] hover:bg-[var(--surface-2)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#1677FF]"
-                  aria-label="Entrar com Microsoft"
-                >
-                  <svg viewBox="0 0 21 21" className="w-3.5 h-3.5" aria-hidden="true">
-                    <path fill="#f25022" d="M0 0h10v10H0z" />
-                    <path fill="#7fba00" d="M11 0h10v10H11z" />
-                    <path fill="#00a4ef" d="M0 11h10v10H0z" />
-                    <path fill="#ffb900" d="M11 11h10v10H11z" />
-                  </svg>
-                  Microsoft
-                </button>
-                <button
-                  type="button"
-                  className="flex items-center justify-center gap-1.5 rounded-[var(--radius-control)] border border-[var(--line)] py-2.5 text-[11px] font-semibold text-[var(--ink)] hover:bg-[var(--surface-2)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#1677FF]"
-                  aria-label="Entrar com SSO"
-                >
-                  <Lock className="w-3.5 h-3.5 text-[var(--ink-2)]" aria-hidden="true" />
-                  SSO
-                </button>
-              </div>
+              )}
             </div>
-          )}
-        </div>
-      </motion.div>
+          </motion.div>
 
-      {/* ── Trust badges ──────────────────────────────────────────────── */}
-      <motion.div
-        className="mt-6"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.6, delay: 0.3 }}
-      >
-        <div className="flex flex-wrap justify-center gap-3 font-mono text-[9px] font-bold text-[var(--ink-2)]">
-          <span className="flex items-center gap-1.5">
-            <ShieldCheck className="w-3 h-3 text-[var(--ok)]" aria-hidden="true" />
-            Acesso protegido
-          </span>
-          <span className="flex items-center gap-1.5">
-            <Lock className="w-3 h-3 text-[var(--ok)]" aria-hidden="true" />
-            Autenticação empresarial
-          </span>
-          <span className="flex items-center gap-1.5">
-            <Database className="w-3 h-3 text-[var(--ok)]" aria-hidden="true" />
-            Controle de permissões
-          </span>
-          <span className="flex items-center gap-1.5">
-            <CheckCircle2 className="w-3 h-3 text-[var(--ok)]" aria-hidden="true" />
-            Conformidade LGPD
-          </span>
+          {/* ── Trust badges ──────────────────────────────────────────────── */}
+          <motion.div
+            className="mt-6"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+          >
+            <div className="flex flex-wrap justify-center gap-3 font-mono text-[9px] font-bold text-[var(--ink-2)]">
+              <span className="flex items-center gap-1.5">
+                <ShieldCheck className="w-3 h-3 text-[var(--ok)]" aria-hidden="true" />
+                Acesso protegido
+              </span>
+              <span className="flex items-center gap-1.5">
+                <Lock className="w-3 h-3 text-[var(--ok)]" aria-hidden="true" />
+                Autenticação empresarial
+              </span>
+              <span className="flex items-center gap-1.5">
+                <Database className="w-3 h-3 text-[var(--ok)]" aria-hidden="true" />
+                Controle de permissões
+              </span>
+              <span className="flex items-center gap-1.5">
+                <CheckCircle2 className="w-3 h-3 text-[var(--ok)]" aria-hidden="true" />
+                Conformidade LGPD
+              </span>
+            </div>
+          </motion.div>
         </div>
-      </motion.div>
+      </div>
     </div>
-  </div>
-    </div >
   );
 }

@@ -4,6 +4,16 @@ import { useRef, useState } from 'react';
 import { SoundFX } from '../../lib/soundEffects.js';
 import { cn } from '../../lib/utils.js';
 
+/**
+ * @deprecated
+ * Este componente viola o Design Language v2.0 do Birth Hub 360°.
+ * As variantes "neon" e "cosmic" usam scan lines animadas, indicadores de canto
+ * e efeitos glow que violam a regra "Decorative borders with no structural function".
+ *
+ * Migre para Input.tsx com variantes estruturais (default, filled, ghost).
+ * Documentação: docs/design/BIRTHHUB-360-DESIGN-LANGUAGE.md
+ */
+
 export interface CyberInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> {
   variant?: 'neon' | 'glass' | 'metallic' | 'cosmic';
   size?: 'sm' | 'md' | 'lg';

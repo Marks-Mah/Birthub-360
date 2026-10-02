@@ -3,6 +3,16 @@ import type React from 'react';
 import { SoundFX, type UiSound } from '../../lib/soundEffects.js';
 import { cn } from '../../lib/utils.js';
 
+/**
+ * @deprecated
+ * Este componente viola o Design Language v2.0 do Birth Hub 360°.
+ * Usa efeitos neon artificiais e cores genéricas (cyan, purple, pink, green)
+ * que não seguem a identidade "Strategic Command Center".
+ *
+ * Migre para Button.tsx com variantes padrão (default, primary, outline).
+ * Documentação: docs/design/BIRTHHUB-360-DESIGN-LANGUAGE.md
+ */
+
 // Omite os 4 handlers cujo tipo o framer-motion redefine em `motion.button` (drag/animation): sem
 // isto, o spread de `...props` no <motion.button> não compila.
 export interface NeonButtonProps
