@@ -13,6 +13,8 @@ const badgeVariants = cva(
           'border-transparent bg-surface-elevated text-ink',
         destructive:
           'border-transparent bg-danger text-white shadow-sm',
+        danger:
+          'border-transparent bg-danger text-white shadow-sm',
         outline:
           'text-ink border-line',
         success:

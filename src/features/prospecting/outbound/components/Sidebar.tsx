@@ -22,6 +22,12 @@ import {
   Target,
   Info,
   Key,
+  Terminal,
+  Eye,
+  Cpu,
+  RefreshCw,
+  CheckCircle2,
+  XCircle,
 } from 'lucide-react';
 import type { ThemeMode } from '../types.js';
 import { BirthubLogo } from './BirthubLogo.js';
@@ -53,6 +59,18 @@ interface SidebarProps {
   setAiConfig?: React.Dispatch<React.SetStateAction<any>>;
   pitch?: string;
   setPitch?: (pitch: string) => void;
+  googleApiKey?: string;
+  setGoogleApiKey?: (key: string) => void;
+  apolloApiKey?: string;
+  setApolloApiKey?: (key: string) => void;
+  ollamaStatus?: any;
+  checkOllama?: () => void;
+  isCheckingOllama?: boolean;
+  recentSearches?: any[];
+  onSelectRecentSearch?: (search: any) => void;
+  onExecuteRecentSearch?: (search: any) => void;
+  onDeleteRecentSearch?: (search: any) => void;
+  onClearRecentSearches?: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -68,15 +86,38 @@ export const Sidebar: React.FC<SidebarProps> = ({
   setAiConfig = () => {},
   pitch = '',
   setPitch = () => {},
+  googleApiKey: propGoogleApiKey = '',
+  setGoogleApiKey: propSetGoogleApiKey = () => {},
+  apolloApiKey: propApolloApiKey = '',
+  setApolloApiKey: propSetApolloApiKey = () => {},
+  ollamaStatus = { connected: true, model: 'llama3:latest' },
+  checkOllama = () => {},
+  isCheckingOllama = false,
+  recentSearches = [],
+  onSelectRecentSearch = () => {},
+  onExecuteRecentSearch = () => {},
+  onDeleteRecentSearch = () => {},
+  onClearRecentSearches = () => {},
 }) => {
   const isDark = theme === 'dark';
   const [showIntegrations, setShowIntegrations] = useState(false);
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [showPitchHelp, setShowPitchHelp] = useState(false);
-  const [googleApiKey, setGoogleApiKey] = useState('');
-  const [apolloApiKey, setApolloApiKey] = useState('');
+  const [showRecentSearches, setShowRecentSearches] = useState(false);
+  const [googleApiKey, setGoogleApiKey] = useState(propGoogleApiKey);
+  const [apolloApiKey, setApolloApiKey] = useState(propApolloApiKey);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalSearch, setModalSearch] = useState<any>(null);
+
+  const handleProviderChange = (e: any) => {
+    const provider = e.target.value;
+    setAiConfig((prev: any) => ({ ...prev, provider }));
+  };
+  const formatSearchTime = (_time: any) => 'Recente';
+  const handleOpenSearchModal = (search: any) => {
+    setModalSearch(search);
+    setIsModalOpen(true);
+  };
 
   const handleApplyToForm = (_search: any) => {};
   const handleApplyAndSearch = (_search: any) => {};
