@@ -221,7 +221,7 @@ function PillarStrip() {
 }
 
 // ─── Ticker de estado do sistema ──────────────────────────────────────────────
-function SystemStatusBar({ dateLabel, timeLabel }: { dateLabel: string; timeLabel: string }) {
+function _SystemStatusBar({ dateLabel, timeLabel }: { dateLabel: string; timeLabel: string }) {
   return (
     <div className="flex items-center justify-between w-full px-0 py-2">
       <div className="flex items-center gap-2">

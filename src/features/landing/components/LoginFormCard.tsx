@@ -1,4 +1,4 @@
-﻿import React from 'react';
+﻿import type React from 'react';
 import type { AuthFormState } from '../hooks/useAuthForm';
 import { Button } from '@/components/ui/Button';
 

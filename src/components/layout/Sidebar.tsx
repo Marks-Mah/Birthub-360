@@ -70,7 +70,7 @@ export function Sidebar({
   // SDR vê um menu enxuto centrado no Plano Diário e nas ferramentas de trabalho do dia
   // (prospecção, qualificação, cadência, treino), não os ~30 itens do menu completo. Aplica-se ao
   // papel como um todo (não a uma conta específica), então vale para qualquer futuro SDR contratado.
-  const isRestrictedSdrProfile = currentUser?.role === 'SDR';
+  const _isRestrictedSdrProfile = currentUser?.role === 'SDR';
 
   const reduceMotion = useReducedMotion();
   const [launch, setLaunch] = useState<(NavLaunch & { tab: TabType }) | null>(null);
@@ -121,7 +121,7 @@ export function Sidebar({
     });
   };
 
-  const administrationItems: TabType[] = [
+  const _administrationItems: TabType[] = [
     'notifications',
     'bitrix',
     ...(canManageOperations ? (['integrations', 'automations'] as TabType[]) : []),

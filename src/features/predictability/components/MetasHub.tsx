@@ -1,5 +1,5 @@
-import React from 'react';
-import { Target, Trophy, ArrowUpRight, ArrowDownRight, Users, Medal } from 'lucide-react';
+
+import { Target, Trophy, ArrowUpRight, Users, Medal } from 'lucide-react';
 import { CommandCenterHeader } from '../../../components/ui/CommandCenterHeader.js';
 import { Card, CardHeader, CardTitle, CardContent } from '../../../components/ui/Card.js';
 import { KpiCard } from '../../../components/ui/KpiCard.js';
@@ -11,7 +11,6 @@ import {
   TableHeader,
   TableRow,
 } from '../../../components/ui/Table.js';
-import { Badge } from '../../../components/ui/Badge.js';
 
 export function MetasHub() {
   return (

@@ -186,7 +186,6 @@ export function RevenueSignalOrb({
 
       <div
         className="h-[15rem] pt-16 cursor-pointer focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
-        aria-hidden="true"
         role="button"
         tabIndex={0}
         onKeyDown={(e) => {

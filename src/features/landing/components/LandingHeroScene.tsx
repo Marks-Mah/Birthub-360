@@ -1,4 +1,4 @@
-﻿import React, { Suspense, lazy } from 'react';
+﻿import { Suspense, lazy } from 'react';
 
 const BrandOrb = lazy(() =>
   import('@/components/ui/BrandOrb').then((mod) => ({ default: mod.BrandOrb }))
