@@ -26,6 +26,7 @@ const createPromptSchema = z.object({
   body: z.object({
     name: z.string(),
     category: z.string(),
+    content: z.string().optional(),
     variables: z.record(z.string(), z.unknown()).optional(),
   }),
 });
@@ -35,12 +36,15 @@ promptRoutes.post(
   validateRequest(createPromptSchema),
   async (req, res, next) => {
     try {
-      const { name, category, variables } = req.body;
-      // Bug anterior: lia `req.tenantId`, que authenticateToken nunca seta (o middleware expõe
-      // `req.user.organizationId`) — todo prompt criado por qualquer tenant caía em owner='system'.
+      const { name, category, content, variables } = req.body;
       const { organizationId } = (req as AuthRequest).user;
 
-      const prompt = await createPrompt(organizationId, { name, category, variables });
+      const prompt = await createPrompt(organizationId, {
+        name,
+        category,
+        content: content ?? '',
+        variables,
+      });
       res.status(201).json({ success: true, data: prompt });
     } catch (err: any) {
       next(err);

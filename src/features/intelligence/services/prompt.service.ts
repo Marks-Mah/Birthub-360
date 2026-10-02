@@ -105,3 +105,11 @@ export function deletePrompt(organizationId: string, id: string) {
 export function getPrompt(organizationId: string, id: string) {
   return promptService.getPromptById(organizationId, id);
 }
+
+export function updatePromptVariables(
+  organizationId: string,
+  id: string,
+  variables: Record<string, unknown>,
+) {
+  return promptService.updatePrompt(organizationId, id, { variables });
+}

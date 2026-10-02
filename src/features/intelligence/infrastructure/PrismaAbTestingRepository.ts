@@ -1,9 +1,8 @@
 import { logger } from '../../../lib/logger.js';
 import { prisma } from '../../../lib/prisma.js';
-import type { PrismaLeadStatus } from '../../../types/prisma-custom.js';
 import type { AbTestingRepository, LogPromptUsageInput } from '../domain/AbTesting.js';
 
-const WON: PrismaLeadStatus = 'Negocios_Ganhos';
+const WON = 'Negocios_Ganhos';
 
 export class PrismaAbTestingRepository implements AbTestingRepository {
   async recordPromptUsage(input: LogPromptUsageInput): Promise<void> {
@@ -17,7 +16,7 @@ export class PrismaAbTestingRepository implements AbTestingRepository {
         },
       });
     } catch (err) {
-      logger.error('Failed to log prompt usage in lead notes', { leadId, promptVariant, err });
+      logger.error({ leadId, promptVariant, err }, 'Failed to log prompt usage in lead notes');
     }
   }
 
@@ -26,7 +25,7 @@ export class PrismaAbTestingRepository implements AbTestingRepository {
       where: { content: { contains: `variante '${variant}' do modelo '${promptName}'` } },
       select: { leadId: true },
     });
-    return Array.from(new Set(notes.map((n) => n.leadId).filter(Boolean)));
+    return Array.from(new Set(notes.map((n) => n.leadId).filter((id): id is string => Boolean(id))));
   }
 
   async countConvertedLeads(leadIds: string[]): Promise<number> {

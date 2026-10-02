@@ -66,7 +66,7 @@ export class PrismaPromptRepository implements PromptRepository {
         category: data.category,
         content: data.content,
         variables: (data.variables ?? {}) as object,
-      },
+      } as any,
     });
     return {
       id: r.id,
