@@ -89,7 +89,7 @@ Inventar um terceiro estilo para um módulo novo é o erro a evitar.
     antes, shape de retorno idêntico. Exporta `prismaModuleAccessRepository` (singleton).
   - `services/moduleAccess.service.ts` — agora define `class ModuleAccessService` com o
     repository injetado por construtor (`constructor(repository: ModuleAccessRepository =
-prismaModuleAccessRepository)`) e exporta `moduleAccessService` (instância com a
+    prismaModuleAccessRepository)`) e exporta `moduleAccessService` (instância com a
     implementação real). **As 4 funções livres originais continuam exportadas** como wrappers
     finos que delegam para `moduleAccessService` — decisão deliberada para não precisar tocar
     `moduleAccess.routes.ts` (zero mudança de comportamento, zero risco de regressão no único
@@ -150,10 +150,10 @@ coisa sob `integrations/bitrix/`.
 - [ ] `contacts/services/contact.service.ts` — mesmo achado: já existe `ContactRepository`/
       `PrismaContactRepository`. Consolidar, não recriar.
 - [ ] `crm/services/assignment.service.ts` — CRM core, fora do escopo de um piloto pequeno.
-- [ ] `crm/services/savedView.service.ts` — idem.
+- [x] `crm/services/savedView.service.ts` — ✅ migrado (Estilo B, SavedViewRepository).
 - [ ] `gamification/services/sellerPerformanceAggregator.service.ts` — ✅ migrado neste piloto.
 - [ ] `intelligence/services/abTesting.service.ts`
-- [ ] `intelligence/services/ai-settings.service.ts`
+- [x] `intelligence/services/ai-settings.service.ts` — ✅ migrado (Estilo B, AiSettingsRepository).
 - [ ] `intelligence/services/ai.service.ts` — módulo de IA central, avaliar com mais cautela (muitos
       consumidores).
 - [ ] `intelligence/services/aiPendingAction.service.ts`
