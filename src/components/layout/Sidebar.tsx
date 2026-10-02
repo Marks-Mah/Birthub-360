@@ -151,11 +151,11 @@ export function Sidebar({
   const navGroupsByJourney: NavGroupDefinition[] = [
     {
       title: 'PILAR 01 — HUB COMERCIAL',
-      items: ['workspace', 'crm', 'crm360', 'propostas', 'companies', 'contacts'],
+      items: ['workspace', 'crm', 'crm360', 'propostas', 'companies', 'contacts', 'settings_hub'],
     },
     {
       title: 'PILAR 02 — INTELIGÊNCIA DE MERCADO',
-      items: ['prospect', 'market-intelligence'],
+      items: ['prospect', 'market-intelligence', 'settings_market'],
     },
     {
       title: 'PILAR 03 — ORQUESTRAÇÃO DE VENDAS',
@@ -170,11 +170,16 @@ export function Sidebar({
         'topic_training',
         'chatbook',
         'editor',
+        'settings_sales',
       ],
     },
     {
       title: 'PILAR 04 — PERFORMANCE COMERCIAL',
-      items: ['dashboard', 'analytics', 'winloss', 'reports'],
+      items: ['dashboard', 'analytics', 'winloss', 'reports', 'settings_performance'],
+    },
+    {
+      title: 'PILAR 05 — PREVISIBILIDADE COMERCIAL',
+      items: ['forecast', 'metas', 'pipeline_ponderado', 'settings_predictability'],
     },
     {
       title: 'PILAR 06 — INTELIGÊNCIA ARTIFICIAL',
@@ -184,6 +189,7 @@ export function Sidebar({
         'intelligence',
         'knowledge',
         'sdr-diagnostic',
+        'settings_ai',
       ],
     },
     {
@@ -191,6 +197,7 @@ export function Sidebar({
       items: [
         ...(canManageOperations ? (['automations', 'integrations'] as TabType[]) : []),
         'bitrix',
+        'settings_automation',
       ],
     },
     {
@@ -200,6 +207,7 @@ export function Sidebar({
         'outbound',
         'dialer',
         ...(canAccessMesaTratamento ? (['mesa-tratamento'] as TabType[]) : []),
+        'settings_engagement',
       ],
     },
     {

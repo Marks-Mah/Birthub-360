@@ -49,9 +49,17 @@ export interface RoleplaySession {
 export interface RoleplayRepository {
   listPersonas(): Promise<RoleplayPersona[]>;
   getPersonaById(id: string): Promise<RoleplayPersona | null>;
-  createSession(data: { organizationId: string; userId: string; personaId: string }): Promise<RoleplaySession>;
+  createSession(data: {
+    organizationId: string;
+    userId: string;
+    personaId: string;
+  }): Promise<RoleplaySession>;
   getSession(organizationId: string, sessionId: string): Promise<RoleplaySession | null>;
   addMessage(organizationId: string, sessionId: string, message: RoleplayMessage): Promise<void>;
-  completeSession(organizationId: string, sessionId: string, feedback: RoleplayFeedback): Promise<void>;
+  completeSession(
+    organizationId: string,
+    sessionId: string,
+    feedback: RoleplayFeedback,
+  ): Promise<void>;
   listSessionsByUser(organizationId: string, userId: string): Promise<RoleplaySession[]>;
 }

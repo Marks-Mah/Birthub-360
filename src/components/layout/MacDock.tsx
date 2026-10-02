@@ -21,7 +21,7 @@ export function MacDock({ activeTab }: MacDockProps) {
   const [hoveredGroup, setHoveredGroup] = useState<string | null>(null);
 
   const { currentUser, isAdmin, canAccessCommercialIntelligence, canAccessCopilotoIa } = useAuth();
-  
+
   const canManageOperations =
     !!currentUser && hasRequiredRole(currentUser.role, ['ADMIN', 'GESTOR']);
   const canAccessMesaTratamento =
@@ -117,9 +117,8 @@ export function MacDock({ activeTab }: MacDockProps) {
       )
     : navGroupsByJourney;
 
-
   // Find which group is currently active
-  const activeGroup = navGroups.find(g => g.items.includes(activeTab)) || navGroups[0];
+  const activeGroup = navGroups.find((g) => g.items.includes(activeTab)) || navGroups[0];
 
   return (
     <div className="flex flex-col w-full z-40 shrink-0">
@@ -130,7 +129,9 @@ export function MacDock({ activeTab }: MacDockProps) {
           <BirthHubLogo variant="micro" animated className="h-10 w-10" />
           <div className="leading-tight hidden sm:block">
             <h1 className="text-[13px] font-bold text-white tracking-tight">Birth Hub 360°</h1>
-            <p className="text-[10px] text-white/50 tracking-widest uppercase mt-0.5">Command Center</p>
+            <p className="text-[10px] text-white/50 tracking-widest uppercase mt-0.5">
+              Command Center
+            </p>
           </div>
         </div>
 
@@ -140,10 +141,13 @@ export function MacDock({ activeTab }: MacDockProps) {
             const isGroupActive = group === activeGroup;
             const isHovered = hoveredGroup === group.title;
             const Icon = PILLAR_ICONS[group.title];
-            const cleanTitle = group.title.replace('PILAR 0', '').replace(/^\d+ - /, '').replace(/^\d+ — /, '');
+            const cleanTitle = group.title
+              .replace('PILAR 0', '')
+              .replace(/^\d+ - /, '')
+              .replace(/^\d+ — /, '');
 
             return (
-              <div 
+              <div
                 key={group.title}
                 className="relative flex flex-col items-center"
                 onMouseEnter={() => setHoveredGroup(group.title)}
@@ -173,18 +177,18 @@ export function MacDock({ activeTab }: MacDockProps) {
                   }}
                   whileHover={{ scale: 1.35, y: 4 }}
                   whileTap={{ scale: 0.9 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 25 }}
                   className={`relative grid place-items-center w-[46px] h-[46px] rounded-[18px] border transition-colors ${
-                    isGroupActive 
-                      ? 'bg-white/10 border-white/20 shadow-[0_0_15px_rgba(255,255,255,0.05)] text-white' 
+                    isGroupActive
+                      ? 'bg-white/10 border-white/20 shadow-[0_0_15px_rgba(255,255,255,0.05)] text-white'
                       : 'bg-white/5 border-transparent text-white/60 hover:text-white hover:bg-white/15 hover:border-white/20'
                   }`}
                 >
                   {Icon ? <Icon isActive={isGroupActive} className="w-[22px] h-[22px]" /> : null}
-                  
+
                   {/* Active Indicator dot */}
                   {isGroupActive && (
-                    <motion.div 
+                    <motion.div
                       layoutId="active-dock-dot"
                       className="absolute -top-2 w-1.5 h-1.5 rounded-full bg-white"
                     />

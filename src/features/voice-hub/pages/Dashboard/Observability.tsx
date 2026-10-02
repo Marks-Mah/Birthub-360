@@ -376,9 +376,7 @@ export default function ObservabilityPage() {
                           key={span.id}
                           onClick={() => setSelectedSpan(span)}
                           className={`cursor-pointer transition-all ${
-                            isSelected
-                              ? 'bg-brand/5 dark:bg-brand/10 border border-line'
-                              : ''
+                            isSelected ? 'bg-brand/5 dark:bg-brand/10 border border-line' : ''
                           }`}
                         >
                           <TableCell className="font-mono text-xs font-semibold">

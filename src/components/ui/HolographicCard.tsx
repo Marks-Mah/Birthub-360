@@ -80,8 +80,8 @@ export function HolographicCard({
         animate={
           !shouldReduceMotion
             ? {
-              backgroundPosition: ['0% 0%', '100% 100%', '0% 0%'],
-            }
+                backgroundPosition: ['0% 0%', '100% 100%', '0% 0%'],
+              }
             : undefined
         }
         transition={{

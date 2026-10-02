@@ -8,7 +8,7 @@ export interface SellerPerformanceData {
   // "proposta", nem função de vendas em User.role, que é RBAC — ver Piloto 007 em
   // .claude/PILOTS.md). Opcionais em vez de fabricados: nunca preenchidos com um valor inventado.
   role?: 'SDR / Hunter' | 'Closer / Executivo de Contas' | 'Account Manager / Farmer';
-  period: string;
+  period?: string;
   callsMade: number;
   connectionsRatePercent?: number;
   meetingsScheduled: number;
@@ -30,6 +30,10 @@ export interface SellerCoachingReport {
 }
 
 export class SellerCoachingService {
+  async generateCoaching(data: SellerPerformanceData): Promise<SellerCoachingReport> {
+    return this.generateCoachingReport(data);
+  }
+
   async generateCoachingReport(data: SellerPerformanceData): Promise<SellerCoachingReport> {
     const model = getAiModel('local-llama3-fast', 0.3, 'seller-coaching');
     const startTime = Date.now();
@@ -87,3 +91,5 @@ Retorne SEMPRE e APENAS um JSON válido no formato:
     }
   }
 }
+
+export const sellerCoachingService = new SellerCoachingService();

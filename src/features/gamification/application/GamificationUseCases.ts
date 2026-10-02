@@ -7,9 +7,7 @@ import {
 import { prismaGamificationRepository } from '../infra/PrismaGamificationRepository.js';
 
 export class GamificationUseCases {
-  constructor(
-    private repository: GamificationRepository = prismaGamificationRepository,
-  ) {}
+  constructor(private repository: GamificationRepository = prismaGamificationRepository) {}
 
   async getLeaderboard(
     organizationId: string,
@@ -30,10 +28,7 @@ export class GamificationUseCases {
     return { period, rankings };
   }
 
-  async getSellerProfile(
-    organizationId: string,
-    sellerName: string,
-  ): Promise<SellerScore> {
+  async getSellerProfile(organizationId: string, sellerName: string): Promise<SellerScore> {
     const profile = await this.repository.getSellerScore(organizationId, sellerName);
     if (!profile) {
       return {

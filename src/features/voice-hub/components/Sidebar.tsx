@@ -113,7 +113,9 @@ export function Sidebar() {
 
   const navItemClass = (path: string) =>
     `flex items-center justify-between group/item p-2.5 rounded-lg transition-all text-xs font-semibold ${
-      isActive(path) ? 'shadow-none' : 'text-slate-400 hover:bg-surface-interactive hover:text-white'
+      isActive(path)
+        ? 'shadow-none'
+        : 'text-slate-400 hover:bg-surface-interactive hover:text-white'
     }`;
 
   // `--brand-color` is tenant-controlled, so the active nav item's text color must be computed
@@ -248,9 +250,7 @@ export function Sidebar() {
           </div>
           <div className="text-left">
             <h1 className="text-base font-bold leading-none tracking-tight">Birth Hub 360</h1>
-            <span className="text-xs text-slate-400 uppercase font-semibold">
-              Voice Enterprise
-            </span>
+            <span className="text-xs text-slate-400 uppercase font-semibold">Voice Enterprise</span>
           </div>
         </div>
 
@@ -399,9 +399,7 @@ export function Sidebar() {
 
       {/* Theme selector widget */}
       <div className="py-2.5 px-2 mb-2 mt-4 bg-slate-850/40 rounded-lg border border-slate-800/65 flex items-center justify-between">
-        <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
-          Aparência
-        </span>
+        <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Aparência</span>
         <div className="flex gap-1">
           <button
             type="button"

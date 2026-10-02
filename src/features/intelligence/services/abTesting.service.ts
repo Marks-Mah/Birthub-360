@@ -2,14 +2,16 @@ import type { AbTestingRepository } from '../domain/AbTesting.js';
 import { prismaAbTestingRepository } from '../infrastructure/PrismaAbTestingRepository.js';
 
 export class ABTestingService {
-  constructor(
-    private readonly repository: AbTestingRepository = prismaAbTestingRepository,
-  ) {}
+  constructor(private readonly repository: AbTestingRepository = prismaAbTestingRepository) {}
 
   /**
    * Registra o uso de um prompt específico para um Lead.
    */
-  async logPromptUsage(leadId: string, promptVariant: 'A' | 'B', promptName: string): Promise<void> {
+  async logPromptUsage(
+    leadId: string,
+    promptVariant: 'A' | 'B',
+    promptName: string,
+  ): Promise<void> {
     return this.repository.recordPromptUsage({ leadId, promptVariant, promptName });
   }
 

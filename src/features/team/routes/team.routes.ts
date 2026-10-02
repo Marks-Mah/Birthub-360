@@ -55,37 +55,32 @@ router.get('/', (req: Request, res: Response, next: NextFunction) =>
   resolve().getMembers(req, res, next),
 );
 
-router.post(
-  '/',
-  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    try {
-      const authReq = req as AuthRequest;
-      const { name, email, role } = req.body;
-      const { member, tempPassword } = await createTeamMember({
-        organizationId: authReq.user.organizationId,
-        name,
-        email,
-        role,
-      });
-      res.status(201).json({ success: true, data: { member, tempPassword } });
-    } catch (error) {
-      if (error instanceof TeamServiceError) {
-        res.status(error.statusCode).json({ success: false, error: error.message });
-        return;
-      }
-      next(error);
+router.post('/', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const authReq = req as AuthRequest;
+    const { name, email, role } = req.body;
+    const { member, tempPassword } = await createTeamMember({
+      organizationId: authReq.user.organizationId,
+      name,
+      email,
+      role,
+    });
+    res.status(201).json({ success: true, data: { member, tempPassword } });
+  } catch (error) {
+    if (error instanceof TeamServiceError) {
+      res.status(error.statusCode).json({ success: false, error: error.message });
+      return;
     }
-  },
+    next(error);
+  }
+});
+
+router.post('/invite', (req: Request, res: Response, next: NextFunction) =>
+  resolve().inviteMember(req, res, next),
 );
 
-router.post(
-  '/invite',
-  (req: Request, res: Response, next: NextFunction) => resolve().inviteMember(req, res, next),
-);
-
-router.put(
-  '/:memberId/role',
-  (req: Request, res: Response, next: NextFunction) => resolve().updateRole(req, res, next),
+router.put('/:memberId/role', (req: Request, res: Response, next: NextFunction) =>
+  resolve().updateRole(req, res, next),
 );
 
 router.post(
@@ -128,25 +123,22 @@ router.post(
   },
 );
 
-router.delete(
-  '/:id',
-  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    try {
-      const authReq = req as AuthRequest;
-      await deleteTeamMember(
-        authReq.user.organizationId,
-        routeParam(req.params.id, 'id'),
-        authReq.user.id,
-      );
-      res.json({ success: true, message: 'Usuario removido.' });
-    } catch (error) {
-      if (error instanceof TeamServiceError) {
-        res.status(error.statusCode).json({ success: false, error: error.message });
-        return;
-      }
-      next(error);
+router.delete('/:id', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const authReq = req as AuthRequest;
+    await deleteTeamMember(
+      authReq.user.organizationId,
+      routeParam(req.params.id, 'id'),
+      authReq.user.id,
+    );
+    res.json({ success: true, message: 'Usuario removido.' });
+  } catch (error) {
+    if (error instanceof TeamServiceError) {
+      res.status(error.statusCode).json({ success: false, error: error.message });
+      return;
     }
-  },
-);
+    next(error);
+  }
+});
 
 export const teamRoutes = router;

@@ -114,7 +114,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
     setAiConfig((prev: any) => ({ ...prev, provider }));
   };
   const formatSearchTime = (_time: any) => 'Recente';
-  const handleOpenSearchModal = (search: any) => {
+  const handleOpenSearchModal = (a: any, b?: any) => {
+    const search = b !== undefined ? b : a;
     setModalSearch(search);
     setIsModalOpen(true);
   };
@@ -382,7 +383,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     type="text"
                     value={aiConfig.ollamaUrl}
                     onChange={(e) =>
-                      setAiConfig((prev) => ({ ...prev, ollamaUrl: e.target.value }))
+                      setAiConfig((prev: any) => ({ ...prev, ollamaUrl: e.target.value }))
                     }
                     className={`w-full rounded-lg px-2.5 py-1.5 text-xs outline-none border focus:border-[var(--brand-primary)] ${
                       isDark
@@ -406,7 +407,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     type="text"
                     value={aiConfig.ollamaModel}
                     onChange={(e) =>
-                      setAiConfig((prev) => ({ ...prev, ollamaModel: e.target.value }))
+                      setAiConfig((prev: any) => ({ ...prev, ollamaModel: e.target.value }))
                     }
                     className={`w-full rounded-lg px-2.5 py-1.5 text-xs font-mono outline-none border focus:border-[var(--brand-primary)] ${
                       isDark
@@ -455,8 +456,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     type="password"
                     value={aiConfig.groqApiKey}
                     onChange={(e) => {
-                      setAiConfig((prev) => ({ ...prev, groqApiKey: e.target.value }));
-                      setIntegrationsConfig((prev) => ({ ...prev, groqApiKey: e.target.value }));
+                      setAiConfig((prev: any) => ({ ...prev, groqApiKey: e.target.value }));
+                      setIntegrationsConfig((prev: any) => ({
+                        ...prev,
+                        groqApiKey: e.target.value,
+                      }));
                     }}
                     className={`w-full rounded-lg px-2.5 py-1.5 text-xs font-mono outline-none border focus:border-[var(--brand-primary)] ${
                       isDark
@@ -473,7 +477,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   <select
                     value={aiConfig.groqModel}
                     onChange={(e) =>
-                      setAiConfig((prev) => ({ ...prev, groqModel: e.target.value }))
+                      setAiConfig((prev: any) => ({ ...prev, groqModel: e.target.value }))
                     }
                     className={`w-full rounded-lg px-2.5 py-1.5 text-xs outline-none border focus:border-[var(--brand-primary)] ${
                       isDark
@@ -538,7 +542,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                       step="0.1"
                       value={aiConfig.temperature}
                       onChange={(e) =>
-                        setAiConfig((prev) => ({
+                        setAiConfig((prev: any) => ({
                           ...prev,
                           temperature: parseFloat(e.target.value),
                         }))
@@ -699,7 +703,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   <select
                     value={integrationsConfig.activeBitrixTarget}
                     onChange={(e) =>
-                      setIntegrationsConfig((prev) => ({
+                      setIntegrationsConfig((prev: any) => ({
                         ...prev,
                         activeBitrixTarget: e.target.value as any,
                       }))
@@ -730,7 +734,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     value={googleApiKey}
                     onChange={(e) => {
                       setGoogleApiKey(e.target.value);
-                      setIntegrationsConfig((prev) => ({
+                      setIntegrationsConfig((prev: any) => ({
                         ...prev,
                         googlePlacesApiKey: e.target.value,
                       }));
@@ -755,7 +759,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     value={apolloApiKey}
                     onChange={(e) => {
                       setApolloApiKey(e.target.value);
-                      setIntegrationsConfig((prev) => ({ ...prev, apolloApiKey: e.target.value }));
+                      setIntegrationsConfig((prev: any) => ({
+                        ...prev,
+                        apolloApiKey: e.target.value,
+                      }));
                     }}
                     className={`w-full rounded-lg px-2.5 py-1.5 text-xs font-mono outline-none border focus:border-[var(--brand-primary)] ${
                       isDark
@@ -870,6 +877,5 @@ export const Sidebar: React.FC<SidebarProps> = ({
         theme={theme}
       />
     </>
-
   );
 };

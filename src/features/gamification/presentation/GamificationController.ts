@@ -48,8 +48,8 @@ export class GamificationController {
 
       const coaching = await sellerCoachingService.generateCoaching({
         sellerName: seller,
-        callsCount: metrics.callsMade,
-        meetingsCount: metrics.meetingsScheduled,
+        callsMade: metrics.callsMade,
+        meetingsScheduled: metrics.meetingsScheduled,
         dealsClosed: metrics.dealsClosed,
         conversionRatePercent: metrics.conversionRatePercent,
         avgTicket: metrics.avgTicket,

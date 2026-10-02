@@ -62,8 +62,18 @@ export function formatMonthLabel(month: string): string {
   if (!match) return month;
   const [, year, monthNum] = match;
   const monthNames = [
-    'jan', 'fev', 'mar', 'abr', 'mai', 'jun',
-    'jul', 'ago', 'set', 'out', 'nov', 'dez',
+    'jan',
+    'fev',
+    'mar',
+    'abr',
+    'mai',
+    'jun',
+    'jul',
+    'ago',
+    'set',
+    'out',
+    'nov',
+    'dez',
   ];
   const monthIndex = parseInt(monthNum, 10) - 1;
   if (monthIndex < 0 || monthIndex > 11) return month;

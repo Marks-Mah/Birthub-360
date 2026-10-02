@@ -10,11 +10,41 @@ interface AiReasoningPipelineProps {
 }
 
 const STEPS = [
-  { id: 'CONTEXT', label: 'CONTEXT', icon: Database, color: 'text-blue-400', activeBg: 'bg-blue-400/10' },
-  { id: 'ANALYSIS', label: 'ANALYSIS', icon: Brain, color: 'text-indigo-400', activeBg: 'bg-indigo-400/10' },
-  { id: 'RECOMMENDATION', label: 'RECOMMENDATION', icon: Sparkles, color: 'text-brand', activeBg: 'bg-brand/10' },
-  { id: 'APPROVAL', label: 'APPROVAL', icon: CheckCircle2, color: 'text-amber-400', activeBg: 'bg-amber-400/10' },
-  { id: 'EXECUTION', label: 'EXECUTION', icon: Zap, color: 'text-emerald-400', activeBg: 'bg-emerald-400/10' },
+  {
+    id: 'CONTEXT',
+    label: 'CONTEXT',
+    icon: Database,
+    color: 'text-blue-400',
+    activeBg: 'bg-blue-400/10',
+  },
+  {
+    id: 'ANALYSIS',
+    label: 'ANALYSIS',
+    icon: Brain,
+    color: 'text-indigo-400',
+    activeBg: 'bg-indigo-400/10',
+  },
+  {
+    id: 'RECOMMENDATION',
+    label: 'RECOMMENDATION',
+    icon: Sparkles,
+    color: 'text-brand',
+    activeBg: 'bg-brand/10',
+  },
+  {
+    id: 'APPROVAL',
+    label: 'APPROVAL',
+    icon: CheckCircle2,
+    color: 'text-amber-400',
+    activeBg: 'bg-amber-400/10',
+  },
+  {
+    id: 'EXECUTION',
+    label: 'EXECUTION',
+    icon: Zap,
+    color: 'text-emerald-400',
+    activeBg: 'bg-emerald-400/10',
+  },
 ] as const;
 
 export function AiReasoningPipeline({ currentStep, details }: AiReasoningPipelineProps) {
@@ -48,12 +78,22 @@ export function AiReasoningPipeline({ currentStep, details }: AiReasoningPipelin
               <div className="relative z-10 flex flex-col items-center">
                 <motion.div
                   animate={{
-                    borderColor: isActive ? 'rgba(212,175,55,0.5)' : isPast ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.05)',
-                    backgroundColor: isActive ? 'rgba(212,175,55,0.1)' : isPast ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0)',
+                    borderColor: isActive
+                      ? 'rgba(212,175,55,0.5)'
+                      : isPast
+                        ? 'rgba(255,255,255,0.2)'
+                        : 'rgba(255,255,255,0.05)',
+                    backgroundColor: isActive
+                      ? 'rgba(212,175,55,0.1)'
+                      : isPast
+                        ? 'rgba(255,255,255,0.05)'
+                        : 'rgba(0,0,0,0)',
                   }}
                   className={`w-6 h-6 rounded-full border flex items-center justify-center transition-colors duration-500`}
                 >
-                  <Icon className={`w-3 h-3 ${isActive ? step.color : isPast ? 'text-white/50' : 'text-white/20'}`} />
+                  <Icon
+                    className={`w-3 h-3 ${isActive ? step.color : isPast ? 'text-white/50' : 'text-white/20'}`}
+                  />
                 </motion.div>
                 {isActive && (
                   <motion.div
@@ -64,11 +104,15 @@ export function AiReasoningPipeline({ currentStep, details }: AiReasoningPipelin
               </div>
 
               {/* Content */}
-              <div className={`flex flex-col pb-2 ${isActive ? 'opacity-100' : isPast ? 'opacity-50' : 'opacity-20'}`}>
-                <span className={`text-[11px] font-bold tracking-widest uppercase ${isActive ? step.color : 'text-white'}`}>
+              <div
+                className={`flex flex-col pb-2 ${isActive ? 'opacity-100' : isPast ? 'opacity-50' : 'opacity-20'}`}
+              >
+                <span
+                  className={`text-[11px] font-bold tracking-widest uppercase ${isActive ? step.color : 'text-white'}`}
+                >
                   {step.label}
                 </span>
-                
+
                 <AnimatePresence mode="wait">
                   {isActive && details?.[step.id as AiReasoningStep] && (
                     <motion.div

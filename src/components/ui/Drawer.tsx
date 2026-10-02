@@ -4,7 +4,6 @@ import { X } from 'lucide-react';
 
 import { cn } from '../../lib/utils.js';
 
-const Drawer = DialogPrimitive.Root;
 const DrawerTrigger = DialogPrimitive.Trigger;
 const DrawerPortal = DialogPrimitive.Portal;
 const DrawerClose = DialogPrimitive.Close;
@@ -101,6 +100,55 @@ const DrawerDescription = React.forwardRef<
   />
 ));
 DrawerDescription.displayName = DialogPrimitive.Description.displayName;
+
+export interface DrawerProps extends React.ComponentPropsWithoutRef<typeof DialogPrimitive.Root> {
+  isOpen?: boolean;
+  onClose?: () => void;
+  title?: React.ReactNode;
+  subtitle?: React.ReactNode;
+  children?: React.ReactNode;
+}
+
+function Drawer({
+  open,
+  isOpen,
+  onClose,
+  onOpenChange,
+  title,
+  subtitle,
+  children,
+  ...props
+}: DrawerProps) {
+  const isConvenienceMode =
+    isOpen !== undefined || onClose !== undefined || title !== undefined || subtitle !== undefined;
+  if (!isConvenienceMode) {
+    return (
+      <DialogPrimitive.Root open={open} onOpenChange={onOpenChange} {...props}>
+        {children}
+      </DialogPrimitive.Root>
+    );
+  }
+
+  const effectiveOpen = open ?? isOpen ?? false;
+  const handleOpenChange = (newOpen: boolean) => {
+    if (onOpenChange) onOpenChange(newOpen);
+    if (!newOpen && onClose) onClose();
+  };
+
+  return (
+    <DialogPrimitive.Root open={effectiveOpen} onOpenChange={handleOpenChange} {...props}>
+      <DrawerContent>
+        {title && (
+          <DrawerHeader>
+            <DrawerTitle>{title}</DrawerTitle>
+            {subtitle && <DrawerDescription>{subtitle}</DrawerDescription>}
+          </DrawerHeader>
+        )}
+        {children}
+      </DrawerContent>
+    </DialogPrimitive.Root>
+  );
+}
 
 export {
   Drawer,

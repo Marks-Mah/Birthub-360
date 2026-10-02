@@ -59,7 +59,9 @@ export function buildCohortCsv(rows: CohortRow[]): string {
 }
 
 /** Agrupa timestamps de ligação em (dia da semana, hora), omitindo células sem nenhuma ligação. */
-function buildCallHeatmap(callTimestamps: Date[]): { dayOfWeek: number; hour: number; count: number }[] {
+function buildCallHeatmap(
+  callTimestamps: Date[],
+): { dayOfWeek: number; hour: number; count: number }[] {
   const grid = Array.from({ length: 7 }, () => Array(24).fill(0));
   for (const createdAt of callTimestamps) {
     grid[createdAt.getDay()][createdAt.getHours()]++;
@@ -246,7 +248,11 @@ export class AnalyticsUseCases {
     return [...buckets.values()];
   }
 
-  async cohortAnalysis(organizationId: string, monthsBack = 6, now = new Date()): Promise<CohortRow[]> {
+  async cohortAnalysis(
+    organizationId: string,
+    monthsBack = 6,
+    now = new Date(),
+  ): Promise<CohortRow[]> {
     const since = startOfMonthsAgo(now, monthsBack - 1);
     const leads = await this.repository.findLeadsForCohort(organizationId, since);
 
@@ -273,7 +279,11 @@ export class AnalyticsUseCases {
   }
 
   /** Monta o dashboard inteiro com métricas de vendas e funil integradas. */
-  async dashboard(organizationId: string, months = 6, now = new Date()): Promise<AnalyticsDashboard> {
+  async dashboard(
+    organizationId: string,
+    months = 6,
+    now = new Date(),
+  ): Promise<AnalyticsDashboard> {
     const [
       overview,
       funnel,
@@ -332,7 +342,7 @@ export class AnalyticsUseCases {
     const salesSummary: SalesSummaryMetrics = {
       totalWonDeals: overview.closedThisMonth,
       totalWonRevenue: overview.wonRevenueThisMonth ?? 0,
-      averageTicket: overview.averageTicketThisMonth,
+      averageTicket: overview.averageTicketThisMonth ?? null,
       salesVelocityDays: tmqMetric,
     };
 
@@ -354,7 +364,11 @@ export class AnalyticsUseCases {
       tmqMetric,
       lostReasons: toDistribution(lostReasonRows, (v) => v, 'Sem motivo registrado'),
       callHeatmap: buildCallHeatmap(callTimestamps),
-      performanceReport: buildPerformanceReport(ownerRows, qualifiedByOwnerRows, wonAmountByOwnerRows),
+      performanceReport: buildPerformanceReport(
+        ownerRows,
+        qualifiedByOwnerRows,
+        wonAmountByOwnerRows,
+      ),
       salesSummary,
       isEmpty,
     };

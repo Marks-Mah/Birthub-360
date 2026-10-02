@@ -59,10 +59,12 @@ const MODULE_ORDER: TabType[] = [
   'propostas',
   'companies',
   'contacts',
+  'settings_hub',
 
   // PILAR 02 — INTELIGÊNCIA DE MERCADO
   'prospect',
   'market-intelligence',
+  'settings_market',
 
   // PILAR 03 — ORQUESTRAÇÃO DE VENDAS
   'daily-plan',
@@ -75,12 +77,20 @@ const MODULE_ORDER: TabType[] = [
   'topic_training',
   'chatbook',
   'editor',
+  'settings_sales',
 
   // PILAR 04 — PERFORMANCE COMERCIAL
   'dashboard',
   'analytics',
   'winloss',
   'reports',
+  'settings_performance',
+
+  // PILAR 05 — PREVISIBILIDADE COMERCIAL
+  'forecast',
+  'metas',
+  'pipeline_ponderado',
+  'settings_predictability',
 
   // PILAR 06 — INTELIGÊNCIA ARTIFICIAL
   'commercial_intelligence',
@@ -88,17 +98,20 @@ const MODULE_ORDER: TabType[] = [
   'intelligence',
   'knowledge',
   'sdr-diagnostic',
+  'settings_ai',
 
   // PILAR 07 — AUTOMAÇÃO & CONECTIVIDADE
   'automations',
   'integrations',
   'bitrix',
+  'settings_automation',
 
   // PILAR 08 — ENGAJAMENTO COMERCIAL
   'voice-hub',
   'outbound',
   'dialer',
   'mesa-tratamento',
+  'settings_engagement',
 
   // ADMINISTRAÇÃO & CONFIGURAÇÕES
   'notifications',

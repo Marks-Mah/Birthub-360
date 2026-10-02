@@ -12,6 +12,7 @@ import { cn } from '../../lib/utils.js';
 import { TAB_META, type TabType } from '../layout/tabMeta.js';
 import { Badge, type BadgeProps } from '../ui/Badge.js';
 import { EmptyState } from '../ui/EmptyState.js';
+import { VisualState } from '../ui/VisualState.js';
 
 // Vive fora de src/features/** de propósito: é reaproveitado por duas features (`workspace`, tela
 // dedicada em /app/workspace, e `dashboard`, seção da home unificada em /app e /app/dashboard) —
@@ -52,8 +53,6 @@ function moduleMeta(moduleKey: string): { label: string; icon: typeof Layers } {
   return meta ?? { label: moduleKey, icon: Layers };
 }
 
-
-
 /** Conteúdo por cargo (PROMPT 6) — 1 componente genérico, nunca 12 telas duplicadas: o que muda
  *  por cargo é só o payload de `GET /api/workspace/me` (`ROLE_WORKSPACE_DEFINITIONS` + grants
  *  reais no backend), nunca este arquivo. Consumido por `WorkspaceHome.tsx` (tela dedicada
@@ -78,20 +77,23 @@ export function WorkspaceReadySection({ workspace }: { workspace: Workspace }) {
           <h1 className="font-sans text-3xl font-light tracking-tight text-white md:text-4xl">
             {workspace.jobRole.name}
           </h1>
-          <p className="mt-1 max-w-2xl text-sm font-light text-white/60">{workspace.jobRole.description}</p>
+          <p className="mt-1 max-w-2xl text-sm font-light text-white/60">
+            {workspace.jobRole.description}
+          </p>
         </div>
       )}
 
       {/* Grid Fluido sem Cards */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-        
         {/* Coluna Principal: KPIs e Navegação */}
         <div className="col-span-1 lg:col-span-8 space-y-12">
-          
           {/* KPIs borderless */}
           {widgets.has('kpis') && (
             <section aria-labelledby="workspace-kpis-heading" className="space-y-6">
-              <h2 id="workspace-kpis-heading" className="text-[11px] font-bold tracking-widest text-white/40 uppercase">
+              <h2
+                id="workspace-kpis-heading"
+                className="text-[11px] font-bold tracking-widest text-white/40 uppercase"
+              >
                 Indicadores Chave
               </h2>
               {workspace.kpis.length === 0 ? (
@@ -107,13 +109,18 @@ export function WorkspaceReadySection({ workspace }: { workspace: Workspace }) {
                     return (
                       <div key={kpi.capabilityCode} className="flex flex-col">
                         <div className="flex items-center gap-2 mb-2">
-                          <span className={`w-1.5 h-1.5 rounded-full ${kpi.status === 'LIVE' ? 'bg-success' : 'bg-white/20'}`} />
+                          <VisualState
+                            state={kpi.status === 'AVAILABLE' ? 'LIVE' : 'NO_DATA'}
+                            size="sm"
+                          />
                           <p className="text-[10px] font-bold uppercase tracking-wide text-white/50">
                             {kpi.domain || 'Métrica'}
                           </p>
                         </div>
                         <p className="text-xl font-light tracking-tight text-white">{kpi.label}</p>
-                        {kpi.description && <p className="mt-2 text-xs font-light text-white/40">{kpi.description}</p>}
+                        {kpi.description && (
+                          <p className="mt-2 text-xs font-light text-white/40">{kpi.description}</p>
+                        )}
                       </div>
                     );
                   })}
@@ -125,7 +132,10 @@ export function WorkspaceReadySection({ workspace }: { workspace: Workspace }) {
           {/* Navegação Rápida estilo Terminal */}
           {widgets.has('quickActions') && workspace.quickActions.length > 0 && (
             <section aria-labelledby="workspace-quick-actions-heading" className="space-y-6">
-              <h2 id="workspace-quick-actions-heading" className="text-[11px] font-bold tracking-widest text-white/40 uppercase">
+              <h2
+                id="workspace-quick-actions-heading"
+                className="text-[11px] font-bold tracking-widest text-white/40 uppercase"
+              >
                 Ações Rápidas
               </h2>
               <div className="flex flex-wrap gap-x-8 gap-y-4">
@@ -141,7 +151,9 @@ export function WorkspaceReadySection({ workspace }: { workspace: Workspace }) {
                       title={qa.locked ? (qa.lockedReason ?? undefined) : undefined}
                       className={cn(
                         'group flex items-center gap-2 text-sm font-medium transition-colors',
-                        !qa.locked ? 'text-white/70 hover:text-white cursor-pointer' : 'text-white/20 cursor-not-allowed'
+                        !qa.locked
+                          ? 'text-white/70 hover:text-white cursor-pointer'
+                          : 'text-white/20 cursor-not-allowed',
                       )}
                     >
                       <Icon className="h-4 w-4 opacity-50 group-hover:opacity-100 transition-opacity" />
@@ -156,15 +168,21 @@ export function WorkspaceReadySection({ workspace }: { workspace: Workspace }) {
 
         {/* Coluna Lateral: Agentes e Módulos */}
         <div className="col-span-1 lg:col-span-4 space-y-12">
-          
           {/* Agentes sem background box */}
           {widgets.has('agentGroups') && (
             <section aria-labelledby="workspace-agents-heading" className="space-y-6">
-              <h2 id="workspace-agents-heading" className="text-[11px] font-bold tracking-widest text-white/40 uppercase">
+              <h2
+                id="workspace-agents-heading"
+                className="text-[11px] font-bold tracking-widest text-white/40 uppercase"
+              >
                 Copilotos Ativos
               </h2>
               {workspace.agentGroups.length === 0 ? (
-                <EmptyState title="Nenhum copiloto" description="" icon={<Bot className="h-6 w-6 opacity-50" />} />
+                <EmptyState
+                  title="Nenhum copiloto"
+                  description=""
+                  icon={<Bot className="h-6 w-6 opacity-50" />}
+                />
               ) : (
                 <div className="space-y-6">
                   {workspace.agentGroups.map((group) => (
@@ -178,7 +196,9 @@ export function WorkspaceReadySection({ workspace }: { workspace: Workspace }) {
                             <Bot className="h-4 w-4 text-brand/70" />
                             <span className="text-sm text-white/80 font-medium">{agent.name}</span>
                             {agent.requiresApproval && (
-                              <span className="ml-auto text-[10px] text-amber-400/80 uppercase tracking-widest">Aprovação</span>
+                              <span className="ml-auto text-[10px] text-amber-400/80 uppercase tracking-widest">
+                                Aprovação
+                              </span>
                             )}
                           </div>
                         ))}
@@ -189,7 +209,6 @@ export function WorkspaceReadySection({ workspace }: { workspace: Workspace }) {
               )}
             </section>
           )}
-
         </div>
       </div>
     </div>

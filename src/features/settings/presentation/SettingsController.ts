@@ -12,7 +12,8 @@ export class SettingsController {
 
   async getSettings(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const organizationId = (req as AuthRequest).user?.organizationId || (req.query.organizationId as string);
+      const organizationId =
+        (req as AuthRequest).user?.organizationId || (req.query.organizationId as string);
       if (!organizationId) {
         res.status(400).json({ success: false, error: 'Contexto de organizacao obrigatorio' });
         return;

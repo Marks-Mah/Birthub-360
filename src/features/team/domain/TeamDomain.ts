@@ -57,7 +57,11 @@ export interface ITeamRepository {
   findByEmail(email: string, organizationId: string): Promise<TeamMember | null>;
   createMember(member: Omit<TeamMember, 'id' | 'createdAt' | 'updatedAt'>): Promise<TeamMember>;
   updateRole(id: string, organizationId: string, role: TeamRole): Promise<TeamMember>;
-  updateStatus(id: string, organizationId: string, status: TeamMember['status']): Promise<TeamMember>;
+  updateStatus(
+    id: string,
+    organizationId: string,
+    status: TeamMember['status'],
+  ): Promise<TeamMember>;
   removeMember(id: string, organizationId: string): Promise<void>;
   countOwners(organizationId: string): Promise<number>;
   createInvite(invite: Omit<MemberInvite, 'id' | 'createdAt'>): Promise<MemberInvite>;

@@ -11,9 +11,7 @@ export type { SavedViewFilters, SavedViewEntity, SavedViewRepository };
 const VALID_FUNNELS = new Set(['Lead', 'Negocio']);
 
 export class SavedViewService {
-  constructor(
-    private readonly repository: SavedViewRepository = prismaSavedViewRepository,
-  ) {}
+  constructor(private readonly repository: SavedViewRepository = prismaSavedViewRepository) {}
 
   async listSavedViews(organizationId: string, userId: string): Promise<SavedViewEntity[]> {
     return this.repository.listByUser(organizationId, userId);

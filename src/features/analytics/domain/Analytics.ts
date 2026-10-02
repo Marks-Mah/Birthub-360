@@ -125,7 +125,10 @@ export interface AnalyticsRepository {
   countLeadsByStatus(organizationId: string, status: string): Promise<number>;
   averageOpenLeadScore(organizationId: string): Promise<number | null>;
   sumOpenPipelineValue(organizationId: string): Promise<{ total: number; count: number }>;
-  sumWonRevenueSince(organizationId: string, since: Date): Promise<{ total: number; count: number }>;
+  sumWonRevenueSince(
+    organizationId: string,
+    since: Date,
+  ): Promise<{ total: number; count: number }>;
   sumAllWonRevenue(organizationId: string): Promise<{ total: number; count: number }>;
   groupLeadsByStatus(organizationId: string): Promise<GroupCount[]>;
   groupFunnelWithAmounts(organizationId: string): Promise<FunnelStageData[]>;

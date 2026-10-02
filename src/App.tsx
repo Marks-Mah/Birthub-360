@@ -140,6 +140,28 @@ const CommercialIntelligenceHub = lazy(() =>
   ),
 );
 
+// PILAR 05
+const ForecastHub = lazy(() =>
+  import('./features/predictability/components/ForecastHub.js').then((m) => ({
+    default: m.ForecastHub,
+  })),
+);
+const MetasHub = lazy(() =>
+  import('./features/predictability/components/MetasHub.js').then((m) => ({ default: m.MetasHub })),
+);
+const PipelinePonderadoHub = lazy(() =>
+  import('./features/predictability/components/PipelinePonderadoHub.js').then((m) => ({
+    default: m.PipelinePonderadoHub,
+  })),
+);
+
+// SETTINGS PER PILLAR
+const PillarSettingsPlaceholder = lazy(() =>
+  import('./features/settings/components/PillarSettingsPlaceholder.js').then((m) => ({
+    default: m.PillarSettingsPlaceholder,
+  })),
+);
+
 const DailyPlanHub = lazy(() =>
   import('./features/commercial-intelligence/components/DailyPlanHub.js').then((m) => ({
     default: m.DailyPlanHub,
@@ -387,6 +409,46 @@ function AppLayout() {
               }
             />
             <Route path="settings" element={<Settings />} />
+
+            {/* PILAR 05 */}
+            <Route path="forecast" element={<ForecastHub />} />
+            <Route path="metas" element={<MetasHub />} />
+            <Route path="pipeline_ponderado" element={<PipelinePonderadoHub />} />
+
+            {/* SETTINGS PER PILLAR */}
+            <Route
+              path="settings_hub"
+              element={<PillarSettingsPlaceholder pillarName="Hub Comercial" />}
+            />
+            <Route
+              path="settings_market"
+              element={<PillarSettingsPlaceholder pillarName="Inteligência de Mercado" />}
+            />
+            <Route
+              path="settings_sales"
+              element={<PillarSettingsPlaceholder pillarName="Orquestração de Vendas" />}
+            />
+            <Route
+              path="settings_performance"
+              element={<PillarSettingsPlaceholder pillarName="Performance Comercial" />}
+            />
+            <Route
+              path="settings_predictability"
+              element={<PillarSettingsPlaceholder pillarName="Previsibilidade Comercial" />}
+            />
+            <Route
+              path="settings_ai"
+              element={<PillarSettingsPlaceholder pillarName="Inteligência Artificial" />}
+            />
+            <Route
+              path="settings_automation"
+              element={<PillarSettingsPlaceholder pillarName="Automação & Conectividade" />}
+            />
+            <Route
+              path="settings_engagement"
+              element={<PillarSettingsPlaceholder pillarName="Engajamento Comercial" />}
+            />
+
             <Route path="*" element={<Navigate to="/app" replace />} />
           </Routes>
         </Suspense>

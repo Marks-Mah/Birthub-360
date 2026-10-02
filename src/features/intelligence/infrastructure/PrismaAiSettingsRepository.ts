@@ -1,9 +1,5 @@
 import { prisma } from '../../../lib/prisma.js';
-import type {
-  AiSettingInput,
-  AiSettingItem,
-  AiSettingsRepository,
-} from '../domain/AiSettings.js';
+import type { AiSettingInput, AiSettingItem, AiSettingsRepository } from '../domain/AiSettings.js';
 
 export class PrismaAiSettingsRepository implements AiSettingsRepository {
   async listAll(): Promise<AiSettingItem[]> {

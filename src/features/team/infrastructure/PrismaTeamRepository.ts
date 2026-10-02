@@ -32,7 +32,9 @@ export class PrismaTeamRepository implements ITeamRepository {
     return user ? this.mapToDomain(user) : null;
   }
 
-  async createMember(member: Omit<TeamMember, 'id' | 'createdAt' | 'updatedAt'>): Promise<TeamMember> {
+  async createMember(
+    member: Omit<TeamMember, 'id' | 'createdAt' | 'updatedAt'>,
+  ): Promise<TeamMember> {
     const created = await prisma.user.create({
       data: {
         organizationId: member.organizationId,
@@ -54,7 +56,11 @@ export class PrismaTeamRepository implements ITeamRepository {
     return this.mapToDomain(updated);
   }
 
-  async updateStatus(id: string, organizationId: string, status: TeamMember['status']): Promise<TeamMember> {
+  async updateStatus(
+    id: string,
+    organizationId: string,
+    status: TeamMember['status'],
+  ): Promise<TeamMember> {
     const user = await prisma.user.findFirst({ where: { id, organizationId } });
     if (!user) throw new Error('Membro não encontrado');
     return this.mapToDomain(user);

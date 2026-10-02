@@ -13,26 +13,28 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          'bg-brand-active text-on-brand shadow-brand-sm hover:bg-brand hover:shadow-glow-brand hover:scale-[1.02] hover:-translate-y-0.5 active:scale-95',
+          'bg-gradient-to-r from-brand to-brand-2 text-on-brand shadow-glow-brand hover:shadow-glow-brand-strong hover:scale-[1.02] hover:-translate-y-0.5 active:scale-95',
         primary:
-          'bg-brand-active text-on-brand shadow-brand-sm hover:bg-brand hover:shadow-glow-brand hover:scale-[1.02] hover:-translate-y-0.5 active:scale-95',
+          'bg-gradient-to-r from-brand to-brand-2 text-on-brand shadow-glow-brand hover:shadow-glow-brand-strong hover:scale-[1.02] hover:-translate-y-0.5 active:scale-95',
         tertiary:
-          'bg-surface-subtle border-transparent text-ink hover:bg-surface-interactive hover:text-ink hover:scale-[1.02] active:scale-95',
+          'bg-surface-subtle border-transparent text-ink hover:bg-surface-interactive hover:text-ink hover:shadow-glow-brand hover:scale-[1.02] active:scale-95',
         success:
-          'bg-ok-solid text-white shadow-sm hover:opacity-90 hover:shadow-card hover:scale-[1.02] hover:-translate-y-0.5 active:scale-95',
+          'bg-gradient-to-r from-ok to-green-400 text-white shadow-sm hover:opacity-90 hover:shadow-glow-neon-green hover:scale-[1.02] hover:-translate-y-0.5 active:scale-95',
         // bg-btn-danger (color-mix com --danger, globals.css) — bg-red-500 cru com texto branco
         // media ~3.76:1, abaixo do mínimo AA 4.5:1 (mesma classe de achado do DQA-19 que motivou
         // bg-brand-active acima). btn-danger-hover escurece mais, mesma lógica de bg-brand-2.
 
         destructive:
-          'bg-danger text-white shadow-sm hover:bg-danger/90 active:bg-danger/80',
+          'bg-gradient-to-r from-danger to-pulse text-white shadow-sm hover:shadow-glow-pulse hover:bg-danger/90 active:bg-danger/80',
         outline:
-          'border border-line bg-transparent text-ink hover:border-ink-2/30 hover:bg-surface-interactive active:bg-surface-subtle',
+          'border border-brand/50 bg-transparent text-ink hover:border-brand hover:shadow-glow-brand hover:bg-surface-interactive active:bg-surface-subtle',
         secondary:
-          'border border-transparent bg-surface-elevated text-ink shadow-sm hover:bg-surface-interactive active:bg-surface-subtle',
+          'border border-transparent bg-surface-elevated text-ink shadow-sm hover:bg-surface-interactive hover:shadow-glow-brand active:bg-surface-subtle',
         ghost:
-          'border border-transparent text-ink-2 hover:bg-surface-interactive hover:text-ink active:bg-surface-subtle',
-        link: 'text-brand-ink dark:text-brand underline-offset-4 hover:underline',
+          'border border-transparent text-ink-2 hover:bg-surface-interactive hover:text-ink hover:shadow-glow-brand active:bg-surface-subtle',
+        link: 'text-brand-ink dark:text-brand underline-offset-4 hover:underline hover:text-brand hover:drop-shadow-[0_0_8px_rgba(0,229,255,0.8)]',
+        cosmic:
+          'bg-gradient-to-r from-brand to-brand-2 text-on-brand shadow-glow-brand hover:shadow-glow-brand-strong hover:opacity-90',
       },
       size: {
         default: 'h-9 px-4 py-2',
@@ -41,7 +43,6 @@ const buttonVariants = cva(
         icon: 'h-9 w-9 p-0',
         'icon-sm': 'h-8 w-8 p-0',
         'icon-lg': 'h-10 w-10 p-0',
-
       },
     },
     defaultVariants: {
@@ -57,10 +58,28 @@ export interface ButtonProps
   asChild?: boolean;
   loading?: boolean;
   soundClick?: boolean;
+  soundHover?: boolean;
+  sound?: string;
+  shine?: boolean;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, loading = false, soundClick = false, children, ...props }, ref) => {
+  (
+    {
+      className,
+      variant,
+      size,
+      asChild = false,
+      loading = false,
+      soundClick = false,
+      soundHover = false,
+      sound,
+      shine = false,
+      children,
+      ...props
+    },
+    ref,
+  ) => {
     const Comp = asChild ? Slot : 'button';
 
     return (

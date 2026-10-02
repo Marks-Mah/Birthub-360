@@ -1,4 +1,3 @@
-
 import { Button } from './Button.js';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from './Card.js';
 import { Input } from './Input.js';
@@ -29,22 +28,30 @@ export function StyleShowcase() {
 
       {/* Inputs */}
       <section>
-        <h2 className="text-xl font-bold text-ink mb-4 border-b border-line pb-2">Inputs & Forms</h2>
+        <h2 className="text-xl font-bold text-ink mb-4 border-b border-line pb-2">
+          Inputs & Forms
+        </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
-             <label htmlFor="standard-input" className="text-sm font-semibold text-ink">Standard Input</label>
-             <Input id="standard-input" placeholder="Enter your data..." />
+            <label htmlFor="standard-input" className="text-sm font-semibold text-ink">
+              Standard Input
+            </label>
+            <Input id="standard-input" placeholder="Enter your data..." />
           </div>
           <div className="space-y-2">
-             <label htmlFor="standard-input" className="text-sm font-semibold text-ink">Error Input</label>
-             <Input id="error-input" placeholder="Enter your data..." error />
+            <label htmlFor="standard-input" className="text-sm font-semibold text-ink">
+              Error Input
+            </label>
+            <Input id="error-input" placeholder="Enter your data..." error />
           </div>
         </div>
       </section>
 
       {/* Badges */}
       <section>
-        <h2 className="text-xl font-bold text-ink mb-4 border-b border-line pb-2">Badges & Status</h2>
+        <h2 className="text-xl font-bold text-ink mb-4 border-b border-line pb-2">
+          Badges & Status
+        </h2>
         <div className="flex flex-wrap gap-4">
           <Badge variant="default">Default</Badge>
           <Badge variant="secondary">Secondary</Badge>
@@ -58,7 +65,9 @@ export function StyleShowcase() {
 
       {/* Cards */}
       <section>
-        <h2 className="text-xl font-bold text-ink mb-4 border-b border-line pb-2">Cards & Surfaces</h2>
+        <h2 className="text-xl font-bold text-ink mb-4 border-b border-line pb-2">
+          Cards & Surfaces
+        </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <Card>
             <CardHeader>
@@ -66,7 +75,9 @@ export function StyleShowcase() {
               <CardDescription>Default surface elevation</CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-ink-2">Used for grouping related information within the command center.</p>
+              <p className="text-sm text-ink-2">
+                Used for grouping related information within the command center.
+              </p>
             </CardContent>
           </Card>
           <Card className="bg-surface-subtle">
@@ -75,7 +86,9 @@ export function StyleShowcase() {
               <CardDescription>Recessed surface</CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-ink-2">Used for nested or secondary information grouping.</p>
+              <p className="text-sm text-ink-2">
+                Used for nested or secondary information grouping.
+              </p>
             </CardContent>
           </Card>
         </div>
@@ -83,12 +96,14 @@ export function StyleShowcase() {
 
       {/* Icons & Motion */}
       <section>
-        <h2 className="text-xl font-bold text-ink mb-4 border-b border-line pb-2">Icons & Motion</h2>
+        <h2 className="text-xl font-bold text-ink mb-4 border-b border-line pb-2">
+          Icons & Motion
+        </h2>
         <div className="flex flex-wrap gap-8 items-center">
-           <AnimatedIcon icon={Bot} size="xl" animation="float" color="brand" badge />
-           <AnimatedIcon icon={Sparkles} size="lg" animation="pulse" color="info" />
-           <AnimatedIcon icon={Database} size="lg" animation="none" color="ink" badge />
-           <AnimatedIcon icon={Shield} size="lg" animation="none" color="success" />
+          <AnimatedIcon icon={Bot} size="xl" animation="float" color="brand" badge />
+          <AnimatedIcon icon={Sparkles} size="lg" animation="pulse" color="info" />
+          <AnimatedIcon icon={Database} size="lg" animation="none" color="ink" badge />
+          <AnimatedIcon icon={Shield} size="lg" animation="none" color="success" />
         </div>
       </section>
     </div>

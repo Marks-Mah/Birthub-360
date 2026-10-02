@@ -1,9 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type {
-  AiSettingInput,
-  AiSettingItem,
-  AiSettingsRepository,
-} from '../../domain/AiSettings';
+import type { AiSettingInput, AiSettingItem, AiSettingsRepository } from '../../domain/AiSettings';
 import { AiSettingsService } from '../ai-settings.service';
 
 class FakeAiSettingsRepository implements AiSettingsRepository {

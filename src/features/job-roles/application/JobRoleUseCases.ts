@@ -1,4 +1,8 @@
-import type { AgentCapability, AgentDefinition, JobRoleRepository } from '../domain/JobRoleDomain.js';
+import type {
+  AgentCapability,
+  AgentDefinition,
+  JobRoleRepository,
+} from '../domain/JobRoleDomain.js';
 import { prismaJobRoleRepository } from '../infra/PrismaJobRoleRepository.js';
 
 export class JobRoleUseCases {

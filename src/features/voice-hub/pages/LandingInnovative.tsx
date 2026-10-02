@@ -283,7 +283,11 @@ function LandingInnovativeContent() {
               </div>
 
               {/* Pulsing connection lines */}
-              <svg className="absolute inset-0 w-full h-full pointer-events-none z-10" viewBox="0 0 400 400" preserveAspectRatio="xMidYMid meet">
+              <svg
+                className="absolute inset-0 w-full h-full pointer-events-none z-10"
+                viewBox="0 0 400 400"
+                preserveAspectRatio="xMidYMid meet"
+              >
                 <defs>
                   <linearGradient id="line-grad-1" x1="0%" y1="0%" x2="100%" y2="100%">
                     <stop offset="0%" stopColor="var(--color-brand)" stopOpacity="0" />
@@ -291,8 +295,26 @@ function LandingInnovativeContent() {
                     <stop offset="100%" stopColor="var(--color-brand)" stopOpacity="0" />
                   </linearGradient>
                 </defs>
-                <circle cx="200" cy="200" r="140" fill="none" stroke="url(#line-grad-1)" strokeWidth="1" strokeDasharray="4 6" className="animate-[spin_40s_linear_infinite]" />
-                <circle cx="200" cy="200" r="100" fill="none" stroke="url(#line-grad-1)" strokeWidth="1" strokeDasharray="2 8" className="animate-[spin_25s_linear_infinite_reverse]" />
+                <circle
+                  cx="200"
+                  cy="200"
+                  r="140"
+                  fill="none"
+                  stroke="url(#line-grad-1)"
+                  strokeWidth="1"
+                  strokeDasharray="4 6"
+                  className="animate-[spin_40s_linear_infinite]"
+                />
+                <circle
+                  cx="200"
+                  cy="200"
+                  r="100"
+                  fill="none"
+                  stroke="url(#line-grad-1)"
+                  strokeWidth="1"
+                  strokeDasharray="2 8"
+                  className="animate-[spin_25s_linear_infinite_reverse]"
+                />
 
                 {/* Connection paths from center to nodes */}
                 <path d="M 200 200 L 200 40" stroke="url(#line-grad-1)" strokeWidth="1" />
@@ -356,7 +378,6 @@ function LandingInnovativeContent() {
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight text-slate-950 dark:text-white font-display">
               Birth Hub <span className="text-brand font-semibold">360º</span>
             </h1>
-
 
             <motion.div
               initial={{ opacity: 0, y: 15 }}

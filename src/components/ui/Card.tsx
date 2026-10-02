@@ -9,41 +9,44 @@ const cardVariants = cva('relative overflow-hidden rounded-card text-ink', {
   variants: {
     variant: {
       default:
-        'bg-surface-elevated/80 backdrop-blur-md border border-line shadow-card transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-ink-2/20 hover:shadow-card-hover hover:-translate-y-0.5 hover:scale-[1.005]',
-      stat: 'bg-surface-elevated/80 backdrop-blur-md border border-line shadow-card transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-brand/25 hover:shadow-card-hover hover:-translate-y-0.5 hover:scale-[1.005]',
+        'bg-surface-elevated/80 backdrop-blur-md border border-brand/20 shadow-card transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-brand/60 hover:shadow-glow-brand hover:-translate-y-0.5 hover:scale-[1.005]',
+      stat: 'bg-surface-elevated/80 backdrop-blur-md border border-brand/20 shadow-card transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-brand/60 hover:shadow-glow-brand hover:-translate-y-0.5 hover:scale-[1.005]',
       outline:
-        'border border-line bg-transparent transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-ink-2/30 hover:bg-surface-subtle/50',
+        'border border-brand/30 bg-transparent transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-brand hover:shadow-glow-brand hover:bg-brand/5',
       accent:
-        'bg-surface-elevated/80 backdrop-blur-md border border-brand/35 shadow-card transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-brand/55 hover:shadow-glow-brand hover:-translate-y-0.5 hover:scale-[1.005]',
+        'bg-surface-elevated/80 backdrop-blur-md border border-brand/40 shadow-glow-brand transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-brand/80 hover:shadow-glow-brand-strong hover:-translate-y-0.5 hover:scale-[1.005]',
       elevated:
-        'bg-surface-elevated border border-line shadow-card-hover transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-brand/25 hover:-translate-y-0.5 hover:scale-[1.005]',
+        'bg-surface-elevated border border-brand/20 shadow-glow-brand transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-brand/60 hover:shadow-glow-brand-strong hover:-translate-y-0.5 hover:scale-[1.005]',
       interactive:
-        'group bg-surface-elevated/80 backdrop-blur-md border border-line shadow-card cursor-pointer transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-brand/30 hover:bg-surface-interactive hover:shadow-card-hover hover:-translate-y-0.5 hover:scale-[1.01] active:scale-[0.99]',
+        'group bg-surface-elevated/80 backdrop-blur-md border border-brand/20 shadow-card cursor-pointer transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-brand hover:bg-surface-interactive hover:shadow-glow-brand-strong hover:-translate-y-0.5 hover:scale-[1.01] active:scale-[0.99]',
       // Variantes estruturais recomendadas pelo Design System v2.0
-      surface: 'bg-surface border border-line shadow-none',
-      panel: 'bg-surface-elevated/90 border border-line shadow-subtle backdrop-blur-md',
+      surface:
+        'bg-surface border border-brand/10 shadow-none hover:shadow-glow-brand hover:border-brand/40 transition-all duration-300',
+      panel:
+        'bg-surface-elevated/90 border border-brand/20 shadow-subtle backdrop-blur-md hover:shadow-glow-brand hover:border-brand/50 transition-all duration-300',
       metric:
-        'bg-surface-elevated border border-line/80 shadow-card hover:border-brand/30 transition-all duration-200',
-      data: 'bg-surface border border-line/70 shadow-none',
+        'bg-surface-elevated border border-brand/30 shadow-card hover:border-brand hover:shadow-glow-brand-strong transition-all duration-300 hover:-translate-y-0.5',
+      data: 'bg-surface border border-brand/20 shadow-none hover:shadow-glow-brand hover:border-brand/50 transition-all duration-300',
       feature:
-        'bg-surface-elevated/95 border border-brand/30 shadow-card hover:border-brand/60 hover:shadow-glow-brand transition-all duration-200',
-      floating: 'bg-surface-elevated/95 border border-line shadow-floating backdrop-blur-xl',
+        'bg-gradient-to-br from-surface-elevated/95 to-brand/5 border border-brand/40 shadow-glow-brand hover:border-brand hover:shadow-glow-brand-strong transition-all duration-300 hover:-translate-y-0.5 hover:scale-[1.005]',
+      floating:
+        'bg-surface-elevated/95 border border-brand/40 shadow-glow-brand backdrop-blur-xl hover:shadow-glow-brand-strong transition-all duration-300',
       // Variantes decorativas preservadas para compatibilidade (@deprecated)
       // Prefira as variantes estruturais acima (surface, panel, metric, data, feature, floating)
-      iris: 'bg-surface border border-accent-violet/30 shadow-glow-accent-violet transition-[transform,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:scale-[1.005] hover:border-accent-violet/50',
-      cyan: 'bg-surface border border-accent-cyan/30 shadow-glow-accent-cyan transition-[transform,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:scale-[1.005] hover:border-accent-cyan/50',
+      iris: 'bg-surface border border-accent-violet/40 shadow-glow-accent-violet transition-[transform,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:scale-[1.005] hover:border-accent-violet hover:shadow-[0_0_30px_rgba(139,92,246,0.6)]',
+      cyan: 'bg-surface border border-accent-cyan/40 shadow-glow-accent-cyan transition-[transform,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:scale-[1.005] hover:border-accent-cyan hover:shadow-neon-cyan',
       pulse:
-        'bg-surface border border-pulse/30 shadow-glow-pulse transition-[transform,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:scale-[1.005] hover:border-pulse/50',
+        'bg-surface border border-pulse/40 shadow-glow-pulse transition-[transform,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:scale-[1.005] hover:border-pulse hover:shadow-[0_0_30px_rgba(239,68,68,0.6)]',
       glass:
-        'bg-surface/60 backdrop-blur-xl border border-line/50 shadow-card transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:bg-surface/80 hover:border-brand/30 hover:shadow-card-hover hover:-translate-y-0.5 hover:scale-[1.005]',
+        'bg-surface/60 backdrop-blur-xl border border-brand/30 shadow-glow-brand transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:bg-surface/80 hover:border-brand hover:shadow-glow-brand-strong hover:-translate-y-0.5 hover:scale-[1.005]',
       metallic:
-        'bg-gradient-to-br from-surface to-surface-2 border border-line/60 shadow-card transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-brand/30 hover:shadow-card-hover hover:-translate-y-0.5 hover:scale-[1.005]',
+        'bg-gradient-to-br from-surface via-brand/5 to-surface-2 border border-brand/40 shadow-glow-brand transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-brand hover:shadow-glow-brand-strong hover:-translate-y-0.5 hover:scale-[1.005]',
       bento:
-        'bg-surface-elevated/85 backdrop-blur-xl border border-line/80 shadow-card hover:border-brand/40 hover:shadow-card-hover hover:-translate-y-1 hover:scale-[1.006] transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]',
+        'bg-surface-elevated/85 backdrop-blur-xl border border-brand/30 shadow-card hover:border-brand hover:shadow-glow-brand-strong hover:-translate-y-1 hover:scale-[1.006] transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]',
       cosmic:
-        'bg-surface-elevated/90 backdrop-blur-2xl border border-brand/40 shadow-glow-brand hover:border-brand/70 hover:shadow-[0_12px_36px_rgba(212,175,55,0.22)] hover:-translate-y-1 transition-all duration-300',
+        'bg-gradient-to-br from-surface-elevated/90 to-brand/10 backdrop-blur-2xl border border-brand/50 shadow-glow-brand hover:border-brand hover:shadow-glow-brand-strong hover:-translate-y-1 transition-all duration-300',
       specular:
-        'bg-surface/75 backdrop-blur-2xl border border-line/60 shadow-[inset_0_1px_1px_rgba(255,255,255,0.15),0_10px_30px_rgba(0,0,0,0.25)] hover:border-brand/35 hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300',
+        'bg-surface/75 backdrop-blur-2xl border border-brand/40 shadow-glow-brand hover:border-brand hover:shadow-glow-brand-strong hover:-translate-y-1 transition-all duration-300',
     },
     padding: {
       default: 'p-6',
@@ -60,7 +63,7 @@ const cardVariants = cva('relative overflow-hidden rounded-card text-ink', {
 
 export interface CardProps
   extends React.HTMLAttributes<HTMLDivElement>,
-  VariantProps<typeof cardVariants> {
+    VariantProps<typeof cardVariants> {
   /** Faixa de destaque no topo do card — usa os tokens de marca (`--brand`/`--brand-2`). */
   accentBar?: boolean;
   /** Ativa o efeito de borda em órbita contínua durante carregamento. */
@@ -151,16 +154,16 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
         onMouseLeave={handleMouseLeave}
         {...(onClick
           ? {
-            role: 'button',
-            tabIndex: 0,
-            onKeyDown: (e: React.KeyboardEvent<HTMLDivElement>) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                onClick?.(e as unknown as React.MouseEvent<HTMLDivElement>);
-              }
-            },
-            onClick: handleClick,
-          }
+              role: 'button',
+              tabIndex: 0,
+              onKeyDown: (e: React.KeyboardEvent<HTMLDivElement>) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  onClick?.(e as unknown as React.MouseEvent<HTMLDivElement>);
+                }
+              },
+              onClick: handleClick,
+            }
           : {})}
         {...props}
       >

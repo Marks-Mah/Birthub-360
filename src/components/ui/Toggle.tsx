@@ -82,9 +82,9 @@ export function Toggle({
             shouldReduceMotion
               ? { duration: 0.1 }
               : {
-                x: { type: 'spring', stiffness: 500, damping: 30, mass: 0.8 },
-                scale: { duration: 0.25, ease: 'easeOut' },
-              }
+                  x: { type: 'spring', stiffness: 500, damping: 30, mass: 0.8 },
+                  scale: { duration: 0.25, ease: 'easeOut' },
+                }
           }
         />
       </button>

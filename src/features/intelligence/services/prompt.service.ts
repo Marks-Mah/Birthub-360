@@ -17,9 +17,7 @@ export interface CreatePromptInput {
 }
 
 export class PromptService {
-  constructor(
-    private readonly repository: PromptRepository = prismaPromptRepository,
-  ) {}
+  constructor(private readonly repository: PromptRepository = prismaPromptRepository) {}
 
   async listPrompts(organizationId: string): Promise<PromptEntity[]> {
     return this.repository.listByOrganization(organizationId);
@@ -33,7 +31,10 @@ export class PromptService {
     return prompt;
   }
 
-  async getPromptByCategory(organizationId: string, category: string): Promise<PromptEntity | null> {
+  async getPromptByCategory(
+    organizationId: string,
+    category: string,
+  ): Promise<PromptEntity | null> {
     return this.repository.findByCategory(organizationId, category);
   }
 

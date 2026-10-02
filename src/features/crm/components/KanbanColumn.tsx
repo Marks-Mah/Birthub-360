@@ -40,28 +40,34 @@ export const KanbanColumn = React.memo(function KanbanColumn({
   return (
     <div
       ref={setNodeRef}
-      className={`relative flex flex-col bg-surface/80 backdrop-blur-md rounded-2xl min-w-[320px] max-w-[320px] max-h-full shrink-0 border transition-all duration-300 shadow-sm overflow-hidden before:absolute before:inset-x-0 before:top-0 before:h-[2px] before:bg-gradient-to-r before:from-transparent before:via-[#1677FF]/35 before:to-transparent before:z-20 ${
+      className={`relative flex flex-col rounded-xl min-w-[320px] max-w-[320px] max-h-full shrink-0 border transition-all duration-300 overflow-hidden before:absolute before:inset-x-0 before:top-0 before:h-[1px] before:bg-gradient-to-r before:from-transparent before:via-[#1677FF]/20 before:to-transparent before:z-20 ${
         isOver
-          ? 'border-[#1677FF] dark:border-[#1677FF] bg-[#1677FF]/10 shadow-[0_0_25px_rgba(22,119,255,0.18)] scale-[1.01]'
-          : 'border-line hover:border-brand/25'
+          ? 'border-[#1677FF]/50 shadow-[0_0_30px_rgba(22,119,255,0.15)] scale-[1.01]'
+          : 'border-white/8 hover:border-white/12'
       }`}
+      style={{ background: '#0B132B' }}
     >
-      <div className="p-4 border-b border-line bg-surface-2/60 rounded-t-2xl sticky top-0 backdrop-blur-xl z-10 flex flex-col gap-1 shadow-sm">
+      {/* Cabeçalho da coluna */}
+      <div
+        className="px-4 pt-4 pb-3 sticky top-0 z-10 flex flex-col gap-1"
+        style={{ background: '#0B132B', borderBottom: '1px solid rgba(255,255,255,0.06)' }}
+      >
         <div className="flex justify-between items-center gap-2">
-          <h3 className="text-sm font-bold text-ink-2 flex items-center gap-1.5 min-w-0">
-            <span className="text-xs opacity-60 shrink-0" aria-hidden="true">
+          <h3 className="font-mono text-[11px] font-semibold tracking-widest uppercase text-white/40 flex items-center gap-1.5 min-w-0">
+            <span className="shrink-0" aria-hidden="true">
               {STATUS_EMOJI[status] || '📌'}
             </span>
-            <span className="line-clamp-2 leading-tight text-ink">{status}</span>
+            <span className="line-clamp-2 leading-tight">{status}</span>
           </h3>
-          <span className="bg-surface-2 text-ink-2 text-xs font-bold px-2.5 py-0.5 rounded-full shrink-0 border border-line flex items-center gap-1.5">
+          {/* Badge de contagem minimalista: ponto pulsante + número, sem bg colorido */}
+          <span className="flex items-center gap-1.5 text-xs text-white/60 font-semibold shrink-0">
             {leads.length > 0 && (
               <span className="w-1.5 h-1.5 rounded-full bg-[#1677FF] animate-pulse" />
             )}
             {leads.length}
           </span>
         </div>
-        <div className="text-xs text-[#1677FF] font-medium">
+        <div className="text-xs text-[#1677FF]/70 font-mono">
           Forecast:{' '}
           {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
             leads.reduce((acc, lead) => {
@@ -91,7 +97,7 @@ export const KanbanColumn = React.memo(function KanbanColumn({
         // sem essa validação é mais arriscado do que manter o estado atual — ver seção 4 regra
         // #8 e seção 12 item 6 de .claude/CLAUDE.md.
       }
-      <div className="p-3 flex-1 overflow-y-auto space-y-3 min-h-[150px] custom-scrollbar">
+      <div className="p-3 flex-1 overflow-y-auto space-y-2.5 min-h-[150px] custom-scrollbar">
         <SortableContext items={leads.map((lead) => lead.id)} strategy={rectSortingStrategy}>
           {leads.map((lead) => (
             <KanbanCard
@@ -108,11 +114,14 @@ export const KanbanColumn = React.memo(function KanbanColumn({
           ))}
         </SortableContext>
         {leads.length === 0 && (
-          <div className="h-full min-h-[110px] border-2 border-dashed border-line/80 hover:border-[#1677FF]/40 bg-surface-2/20 rounded-xl flex flex-col items-center justify-center text-ink-2 text-xs gap-1.5 transition-colors">
+          <div
+            className="h-full min-h-[110px] rounded-lg flex flex-col items-center justify-center text-white/20 text-xs gap-1.5 transition-colors"
+            style={{ border: '1px dashed rgba(255,255,255,0.1)' }}
+          >
             <span className="text-base" aria-hidden="true">
               📥
             </span>
-            <span className="font-semibold text-ink-2">Solte cards aqui</span>
+            <span className="font-mono text-[10px] uppercase tracking-wider">Solte cards aqui</span>
           </div>
         )}
       </div>

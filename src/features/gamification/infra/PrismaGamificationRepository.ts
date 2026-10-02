@@ -103,7 +103,11 @@ export class PrismaGamificationRepository implements GamificationRepository {
     return scores.sort((a, b) => b.totalPoints - a.totalPoints);
   }
 
-  async getSellerScore(organizationId: string, owner: string, since?: Date): Promise<SellerScore | null> {
+  async getSellerScore(
+    organizationId: string,
+    owner: string,
+    since?: Date,
+  ): Promise<SellerScore | null> {
     const leaderboard = await this.getLeaderboard(organizationId, since);
     return leaderboard.find((s) => s.sellerName.toLowerCase() === owner.toLowerCase()) ?? null;
   }

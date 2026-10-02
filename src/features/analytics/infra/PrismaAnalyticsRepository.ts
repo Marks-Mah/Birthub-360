@@ -19,7 +19,11 @@ export class PrismaAnalyticsRepository implements AnalyticsRepository {
 
   async countOpenLeads(organizationId: string): Promise<number> {
     return prisma.lead.count({
-      where: { organizationId, deletedAt: null, status: { notIn: CLOSED_STATUSES as unknown as never[] } },
+      where: {
+        organizationId,
+        deletedAt: null,
+        status: { notIn: CLOSED_STATUSES as unknown as never[] },
+      },
     });
   }
 
@@ -32,7 +36,9 @@ export class PrismaAnalyticsRepository implements AnalyticsRepository {
   }
 
   async countPendingActivities(organizationId: string): Promise<number> {
-    return prisma.activity.count({ where: { organizationId, deletedAt: null, status: 'Pendente' } });
+    return prisma.activity.count({
+      where: { organizationId, deletedAt: null, status: 'Pendente' },
+    });
   }
 
   async countOverdueActivities(organizationId: string, now: Date): Promise<number> {
@@ -41,14 +47,20 @@ export class PrismaAnalyticsRepository implements AnalyticsRepository {
     });
   }
 
-  async countLeadsByStatusSince(organizationId: string, status: string, since: Date): Promise<number> {
+  async countLeadsByStatusSince(
+    organizationId: string,
+    status: string,
+    since: Date,
+  ): Promise<number> {
     return prisma.lead.count({
       where: { organizationId, deletedAt: null, status: status as never, closedAt: { gte: since } },
     });
   }
 
   async countLeadsByStatus(organizationId: string, status: string): Promise<number> {
-    return prisma.lead.count({ where: { organizationId, deletedAt: null, status: status as never } });
+    return prisma.lead.count({
+      where: { organizationId, deletedAt: null, status: status as never },
+    });
   }
 
   async averageOpenLeadScore(organizationId: string): Promise<number | null> {
@@ -78,7 +90,10 @@ export class PrismaAnalyticsRepository implements AnalyticsRepository {
     return { total: aggregate._sum?.amount ?? 0, count };
   }
 
-  async sumWonRevenueSince(organizationId: string, since: Date): Promise<{ total: number; count: number }> {
+  async sumWonRevenueSince(
+    organizationId: string,
+    since: Date,
+  ): Promise<{ total: number; count: number }> {
     const where = {
       organizationId,
       deletedAt: null,
@@ -130,7 +145,10 @@ export class PrismaAnalyticsRepository implements AnalyticsRepository {
     }));
   }
 
-  async findLeadsCreatedSince(organizationId: string, since: Date): Promise<Array<{ createdAt: Date }>> {
+  async findLeadsCreatedSince(
+    organizationId: string,
+    since: Date,
+  ): Promise<Array<{ createdAt: Date }>> {
     return prisma.lead.findMany({
       where: { organizationId, deletedAt: null, createdAt: { gte: since } },
       select: { createdAt: true },
@@ -180,7 +198,12 @@ export class PrismaAnalyticsRepository implements AnalyticsRepository {
   async groupWonAmountByOwner(organizationId: string): Promise<GroupCount[]> {
     const rows = await prisma.lead.groupBy({
       by: ['owner'],
-      where: { organizationId, deletedAt: null, status: 'Negocios_Ganhos' as never, amount: { not: null } },
+      where: {
+        organizationId,
+        deletedAt: null,
+        status: 'Negocios_Ganhos' as never,
+        amount: { not: null },
+      },
       _sum: { amount: true },
     });
     return rows.map((row) => ({ value: row.owner, count: row._sum?.amount ?? 0 }));
@@ -210,7 +233,13 @@ export class PrismaAnalyticsRepository implements AnalyticsRepository {
       where: {
         organizationId,
         deletedAt: null,
-        status: { notIn: ['Lead_Recebido', 'Cadencia_Iniciada', 'Lead_Desqualificado'] as unknown as never[] },
+        status: {
+          notIn: [
+            'Lead_Recebido',
+            'Cadencia_Iniciada',
+            'Lead_Desqualificado',
+          ] as unknown as never[],
+        },
       },
       _count: { _all: true },
     });
@@ -250,7 +279,11 @@ export class PrismaAnalyticsRepository implements AnalyticsRepository {
       where: { organizationId, deletedAt: null, createdAt: { gte: since } },
       select: { createdAt: true, closedAt: true, status: true },
     });
-    return rows.map((row) => ({ createdAt: row.createdAt, closedAt: row.closedAt, status: row.status }));
+    return rows.map((row) => ({
+      createdAt: row.createdAt,
+      closedAt: row.closedAt,
+      status: row.status,
+    }));
   }
 
   async calculateRealTmq(organizationId: string): Promise<number | null> {

@@ -1,16 +1,10 @@
-import type {
-  AiSettingInput,
-  AiSettingItem,
-  AiSettingsRepository,
-} from '../domain/AiSettings.js';
+import type { AiSettingInput, AiSettingItem, AiSettingsRepository } from '../domain/AiSettings.js';
 import { prismaAiSettingsRepository } from '../infrastructure/PrismaAiSettingsRepository.js';
 
 export type { AiSettingInput, AiSettingItem, AiSettingsRepository };
 
 export class AiSettingsService {
-  constructor(
-    private readonly repository: AiSettingsRepository = prismaAiSettingsRepository,
-  ) {}
+  constructor(private readonly repository: AiSettingsRepository = prismaAiSettingsRepository) {}
 
   async listSettings(): Promise<AiSettingItem[]> {
     return this.repository.listAll();

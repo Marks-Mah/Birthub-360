@@ -80,7 +80,11 @@ export class PrismaPromptRepository implements PromptRepository {
     };
   }
 
-  async update(organizationId: string, id: string, data: UpdatePromptData): Promise<PromptEntity | null> {
+  async update(
+    organizationId: string,
+    id: string,
+    data: UpdatePromptData,
+  ): Promise<PromptEntity | null> {
     const existing = await prisma.prompt.findFirst({
       where: { id, organizationId },
     });

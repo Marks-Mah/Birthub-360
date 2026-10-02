@@ -14,7 +14,8 @@ export class TeamController {
 
   async getMembers(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const organizationId = (req as AuthRequest).user?.organizationId || (req.query.organizationId as string);
+      const organizationId =
+        (req as AuthRequest).user?.organizationId || (req.query.organizationId as string);
       if (!organizationId) {
         res.status(400).json({ success: false, error: 'Contexto de organizacao obrigatorio' });
         return;
@@ -41,7 +42,7 @@ export class TeamController {
         organizationId,
         invitedBy,
         email,
-        role as TeamRole
+        role as TeamRole,
       );
       res.status(201).json({ success: true, data: invite });
     } catch (error) {
@@ -56,14 +57,16 @@ export class TeamController {
       const { role } = req.body;
 
       if (!memberId || !role) {
-        res.status(400).json({ success: false, error: 'ID do membro e novo papel sao obrigatorios' });
+        res
+          .status(400)
+          .json({ success: false, error: 'ID do membro e novo papel sao obrigatorios' });
         return;
       }
 
       const updated = await this.teamUseCases.updateMemberRole(
         organizationId,
         memberId as string,
-        role as TeamRole
+        role as TeamRole,
       );
       res.json({ success: true, data: updated });
     } catch (error) {
@@ -73,7 +76,8 @@ export class TeamController {
 
   async removeMember(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const organizationId = (req as AuthRequest).user?.organizationId || (req.query.organizationId as string);
+      const organizationId =
+        (req as AuthRequest).user?.organizationId || (req.query.organizationId as string);
       const { memberId } = req.params;
 
       if (!memberId) {

@@ -188,7 +188,6 @@ export default function ResultsPage() {
                   }}
                   onClick={() => setSelectedSession(s)}
                   className={`p-4 cursor-pointer hover:bg-slate-50 transition-colors border-l-4 ${
-
                     selectedSession?.id === s.id ? 'bg-brand-50 border-brand' : 'border-transparent'
                   }`}
                 >

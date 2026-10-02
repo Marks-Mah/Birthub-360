@@ -25,7 +25,9 @@ export class PrismaAbTestingRepository implements AbTestingRepository {
       where: { content: { contains: `variante '${variant}' do modelo '${promptName}'` } },
       select: { leadId: true },
     });
-    return Array.from(new Set(notes.map((n) => n.leadId).filter((id): id is string => Boolean(id))));
+    return Array.from(
+      new Set(notes.map((n) => n.leadId).filter((id): id is string => Boolean(id))),
+    );
   }
 
   async countConvertedLeads(leadIds: string[]): Promise<number> {

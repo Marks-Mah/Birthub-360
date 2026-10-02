@@ -88,7 +88,13 @@ export function calculateSellerPoints(metrics: {
   const pointsFromClosed = metrics.dealsClosed * 200;
   const pointsFromRevenue = Math.floor(metrics.wonRevenue / 1000);
 
-  return pointsFromCalls + pointsFromMeetings + pointsFromQualified + pointsFromClosed + pointsFromRevenue;
+  return (
+    pointsFromCalls +
+    pointsFromMeetings +
+    pointsFromQualified +
+    pointsFromClosed +
+    pointsFromRevenue
+  );
 }
 
 export function calculateSellerLevel(points: number): { level: number; title: string } {
@@ -114,7 +120,8 @@ export function evaluateBadges(metrics: {
     { ...BADGE_DEFINITIONS.CLOSER_ELITE, unlocked: metrics.wonRevenue >= 100000 },
     {
       ...BADGE_DEFINITIONS.DISCIPLINE_STREAK,
-      unlocked: metrics.callsCount + metrics.meetingsCount >= 5 && (metrics.overdueCount ?? 0) === 0,
+      unlocked:
+        metrics.callsCount + metrics.meetingsCount >= 5 && (metrics.overdueCount ?? 0) === 0,
     },
     { ...BADGE_DEFINITIONS.QUALIFICATION_HERO, unlocked: metrics.qualifiedCount >= 20 },
   ];

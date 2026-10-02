@@ -1,9 +1,10 @@
 import * as React from 'react';
+import { cva, type VariantProps } from 'class-variance-authority';
 
 import { cn } from '../../lib/utils.js';
 
 const inputVariants = cva(
-  'flex w-full rounded-control border border-line bg-surface-elevated/70 backdrop-blur-sm text-ink placeholder:text-ink-2/75 transition-all duration-150 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-brand/40 hover:bg-surface-elevated hover:shadow-[inset_0_2px_10px_rgba(0,0,0,0.02)] focus-visible:outline-none focus-visible:border-brand focus-visible:ring-2 focus-visible:ring-brand/25 focus-visible:shadow-[inset_0_2px_8px_rgba(212,175,55,0.06)] disabled:cursor-not-allowed disabled:bg-surface-subtle disabled:opacity-60 disabled:hover:border-line',
+  'flex w-full rounded-control border border-brand/20 bg-surface-elevated/70 backdrop-blur-sm text-ink placeholder:text-ink-2/75 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-brand hover:shadow-glow-brand hover:bg-surface-elevated focus-visible:outline-none focus-visible:border-brand focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:shadow-glow-brand-strong disabled:cursor-not-allowed disabled:bg-surface-subtle disabled:opacity-60 disabled:hover:border-line disabled:hover:shadow-none',
   {
     variants: {
       inputSize: {
@@ -15,11 +16,11 @@ const inputVariants = cva(
       variant: {
         default: '',
         filled:
-          'bg-surface-2 border-transparent hover:bg-surface-interactive focus-visible:bg-surface focus-visible:border-brand',
+          'bg-surface-2 border-transparent hover:bg-surface-interactive hover:shadow-glow-brand focus-visible:bg-surface focus-visible:border-brand focus-visible:shadow-glow-brand-strong',
         ghost:
-          'bg-transparent border-transparent hover:bg-surface-subtle focus-visible:bg-surface-subtle focus-visible:border-brand/30',
+          'bg-transparent border-transparent hover:bg-surface-subtle hover:shadow-glow-brand focus-visible:bg-surface-subtle focus-visible:border-brand/50 focus-visible:shadow-glow-brand-strong',
         cosmic:
-          'bg-surface-elevated/80 border-brand/30 shadow-[0_0_15px_rgba(212,175,55,0.08)] hover:border-brand/60 focus-visible:border-brand focus-visible:ring-4 focus-visible:ring-brand/25 focus-visible:shadow-[0_0_20px_rgba(212,175,55,0.18)]',
+          'bg-gradient-to-br from-surface-elevated/80 to-brand/5 border-brand/40 shadow-glow-brand hover:border-brand hover:shadow-glow-brand-strong focus-visible:border-brand focus-visible:ring-2 focus-visible:ring-brand/40 focus-visible:shadow-glow-brand-strong',
       },
     },
     defaultVariants: {
@@ -31,16 +32,19 @@ const inputVariants = cva(
 
 export interface InputProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'>,
-    VariantProps<typeof inputVariants> {}
+    VariantProps<typeof inputVariants> {
+  error?: boolean;
+}
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type, error, ...props }, ref) => {
+  ({ className, type, variant, inputSize, error, ...props }, ref) => {
     return (
       <input
         type={type}
         className={cn(
-          'flex h-9 w-full rounded-md border bg-surface-subtle px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-ink-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand disabled:cursor-not-allowed disabled:opacity-50',
-          error ? 'border-danger focus-visible:ring-danger' : 'border-line',
+          inputVariants({ variant, inputSize }),
+          error &&
+            'border-danger focus-visible:ring-danger focus-visible:shadow-[0_0_15px_rgba(239,68,68,0.4)]',
           className,
         )}
         ref={ref}

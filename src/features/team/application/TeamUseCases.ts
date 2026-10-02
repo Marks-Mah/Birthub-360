@@ -3,7 +3,13 @@
  * UseCases implementing business rules for membership, roles and permissions
  */
 
-import { ITeamRepository, TeamMember, TeamRole, Permission, MemberInvite } from '../domain/TeamDomain.js';
+import {
+  ITeamRepository,
+  TeamMember,
+  TeamRole,
+  Permission,
+  MemberInvite,
+} from '../domain/TeamDomain.js';
 
 export class TeamUseCases {
   constructor(private readonly teamRepository: ITeamRepository) {}
@@ -25,7 +31,7 @@ export class TeamUseCases {
     organizationId: string,
     invitedBy: string,
     email: string,
-    role: TeamRole
+    role: TeamRole,
   ): Promise<MemberInvite> {
     const normalizedEmail = email.trim().toLowerCase();
     const existing = await this.teamRepository.findByEmail(normalizedEmail, organizationId);
@@ -52,7 +58,7 @@ export class TeamUseCases {
   async updateMemberRole(
     organizationId: string,
     targetMemberId: string,
-    newRole: TeamRole
+    newRole: TeamRole,
   ): Promise<TeamMember> {
     const member = await this.teamRepository.findById(targetMemberId, organizationId);
     if (!member) {

@@ -280,9 +280,7 @@ export function FloatingChatbook({ isOpen, onClose }: FloatingChatbookProps) {
                     </div>
                   ))}
 
-                  {isSearching && (
-                    <AiReasoningVisualizer />
-                  )}
+                  {isSearching && <AiReasoningVisualizer />}
 
                   <div ref={messagesEndRef} />
                 </div>

@@ -14,7 +14,11 @@ export class RoleplayUseCases {
     return this.repository.listPersonas();
   }
 
-  async startSession(organizationId: string, userId: string, personaId: string): Promise<{
+  async startSession(
+    organizationId: string,
+    userId: string,
+    personaId: string,
+  ): Promise<{
     session: RoleplaySession;
     persona: RoleplayPersona;
     initialGreeting: string;

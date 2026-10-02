@@ -1,4 +1,6 @@
-export function hexToRgb(hex: string | null | undefined): { r: number; g: number; b: number } | null {
+export function hexToRgb(
+  hex: string | null | undefined,
+): { r: number; g: number; b: number } | null {
   if (!hex || typeof hex !== 'string') return null;
   const clean = hex.trim().replace(/^#/, '');
   if (clean.length !== 6) return null;
@@ -27,7 +29,9 @@ export function contrastRatio(hex1: string, hex2: string): number {
   return (max + 0.05) / (min + 0.05);
 }
 
-export function getAccessibleTextOnBrand(brandHex: string | null | undefined): '#ffffff' | '#000000' {
+export function getAccessibleTextOnBrand(
+  brandHex: string | null | undefined,
+): '#ffffff' | '#000000' {
   if (!brandHex) return '#ffffff';
   const ratioWhite = contrastRatio(brandHex, '#ffffff');
   const ratioBlack = contrastRatio(brandHex, '#000000');

@@ -136,7 +136,11 @@ function PillarStrip() {
   const reduceMotion = useReducedMotion();
 
   return (
-    <div className="grid grid-cols-2 gap-x-3 gap-y-1.5 w-full" role="list" aria-label="8 pilares Birth Hub 360">
+    <div
+      className="grid grid-cols-2 gap-x-3 gap-y-1.5 w-full"
+      role="list"
+      aria-label="8 pilares Birth Hub 360"
+    >
       {PILLARS.map((p, i) => (
         <motion.div
           key={p.id}
@@ -412,7 +416,6 @@ export function LandingLoginSplitScreen() {
           <DataFlowLines />
         </div>
 
-
         {/* ── Header: BH360 Mark + Sistema ──────────────────────────────── */}
         <header className="relative z-20 flex items-center justify-between mb-10">
           <button
@@ -436,7 +439,6 @@ export function LandingLoginSplitScreen() {
           </button>
         </header>
 
-
         {/* ── Status Bar ─────────────────────────────────────────────────── */}
         <div className="relative z-20 mb-8">
           <div className="flex items-center justify-between w-full py-2">
@@ -445,9 +447,13 @@ export function LandingLoginSplitScreen() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
                 <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-green-400" />
               </span>
-              <span className="font-mono text-[9px] font-bold uppercase tracking-[0.18em] text-green-400">LIVE</span>
+              <span className="font-mono text-[9px] font-bold uppercase tracking-[0.18em] text-green-400">
+                LIVE
+              </span>
               <span className="w-px h-3 bg-white/10 mx-1" aria-hidden="true" />
-              <span className="font-mono text-[9px] uppercase tracking-widest text-white/40">Sistema Online</span>
+              <span className="font-mono text-[9px] uppercase tracking-widest text-white/40">
+                Sistema Online
+              </span>
             </div>
             <div className="hidden md:flex items-center gap-1.5 font-mono text-[9px] text-white/40 tabular-nums">
               <span>{dateLabel}</span>
@@ -511,7 +517,6 @@ export function LandingLoginSplitScreen() {
             Oito pilares. Um sistema operacional comercial integrado.
           </motion.p>
 
-
           {/* Separador com metáfora de fluxo */}
           <motion.div variants={staggerItem} className="flex items-center gap-4 my-1">
             <div className="h-px flex-1 bg-gradient-to-r from-[#1677FF]/40 to-transparent" />
@@ -543,7 +548,10 @@ export function LandingLoginSplitScreen() {
         {/* Subtle radial gradient for depth */}
         <div
           className="pointer-events-none absolute inset-0 z-0"
-          style={{ background: 'radial-gradient(ellipse at 50% 40%, rgba(22,119,255,0.06) 0%, transparent 65%)' }}
+          style={{
+            background:
+              'radial-gradient(ellipse at 50% 40%, rgba(22,119,255,0.06) 0%, transparent 65%)',
+          }}
         />
 
         {/* Top actions — canto superior direito */}
@@ -558,7 +566,11 @@ export function LandingLoginSplitScreen() {
             aria-label={theme === 'dark' ? 'Mudar para tema claro' : 'Mudar para tema escuro'}
             title={theme === 'dark' ? 'Mudar para tema claro' : 'Mudar para tema escuro'}
           >
-            {theme === 'dark' ? <Sun size={16} strokeWidth={2} /> : <Moon size={16} strokeWidth={2} />}
+            {theme === 'dark' ? (
+              <Sun size={16} strokeWidth={2} />
+            ) : (
+              <Moon size={16} strokeWidth={2} />
+            )}
           </button>
 
           <div className="flex items-center gap-2 font-mono text-[9px] text-[var(--ink-2)] uppercase tracking-widest">
@@ -582,11 +594,14 @@ export function LandingLoginSplitScreen() {
               {isSignUp ? 'Criar conta' : 'Acessar conta'}
             </h2>
             <p className="font-mono text-xs text-[var(--ink-2)] uppercase tracking-wider mb-3">
-              {isSignUp ? 'Preencha seus dados para começar' : 'Acesse o sistema operacional comercial'}
+              {isSignUp
+                ? 'Preencha seus dados para começar'
+                : 'Acesse o sistema operacional comercial'}
             </p>
             {!isSignUp && (
               <p className="font-mono text-[11px] text-[var(--ink-2)] leading-relaxed border-l-2 border-[#1677FF]/30 pl-3">
-                8 pilares integrados em uma única plataforma — do CRM à IA, da prospecção ao engajamento.
+                8 pilares integrados em uma única plataforma — do CRM à IA, da prospecção ao
+                engajamento.
               </p>
             )}
           </motion.div>
@@ -596,7 +611,8 @@ export function LandingLoginSplitScreen() {
             className="rounded-2xl border border-[var(--line)] overflow-hidden bg-[var(--surface)]"
             style={{
               backdropFilter: 'blur(24px)',
-              boxShadow: '0 0 0 1px var(--line), 0 32px 64px rgba(0,0,0,0.12), 0 0 80px rgba(22,119,255,0.06)',
+              boxShadow:
+                '0 0 0 1px var(--line), 0 32px 64px rgba(0,0,0,0.12), 0 0 80px rgba(22,119,255,0.06)',
             }}
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}

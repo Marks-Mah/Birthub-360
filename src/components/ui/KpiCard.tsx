@@ -60,10 +60,13 @@ export type KpiTone = keyof typeof KPI_TONES;
 
 export interface KpiCardProps {
   icon: ComponentType<{ className?: string }>;
-  label: string;
+  label?: string;
+  title?: string;
   value: string | number;
   caption?: string;
+  subtitle?: string;
   tone?: KpiTone;
+  variant?: string;
   /** Indicador dinâmico de tendência (ex: +12% ou -3%) */
   trend?: {
     value: string | number;
@@ -83,9 +86,12 @@ export interface KpiCardProps {
 export function KpiCard({
   icon: Icon,
   label,
+  title,
   value,
   caption,
-  tone = 'ink',
+  subtitle,
+  tone,
+  variant,
   trend,
   spotlight = true,
   sound = true,
@@ -93,7 +99,10 @@ export function KpiCard({
   active = false,
   className,
 }: KpiCardProps) {
-  const t = KPI_TONES[tone];
+  const displayLabel = label ?? title ?? '';
+  const displaySubtitle = caption ?? subtitle;
+  const rawTone = tone ?? variant ?? 'ink';
+  const t = KPI_TONES[rawTone as KpiTone] ?? KPI_TONES.ink;
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [isHovered, setIsHovered] = useState(false);
 
@@ -218,9 +227,11 @@ export function KpiCard({
         {value}
       </p>
       <p className="relative z-10 mt-1 text-[10px] font-bold uppercase tracking-wide text-ink-2">
-        {label}
+        {displayLabel}
       </p>
-      {caption && <p className="relative z-10 mt-0.5 text-[10px] text-ink-2">{caption}</p>}
+      {displaySubtitle && (
+        <p className="relative z-10 mt-0.5 text-[10px] text-ink-2">{displaySubtitle}</p>
+      )}
     </>
   );
 

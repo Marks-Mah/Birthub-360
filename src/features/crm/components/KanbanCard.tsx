@@ -156,7 +156,10 @@ export const KanbanCard = React.memo(function KanbanCard({
   return (
     <div
       ref={setNodeRef}
-      style={style}
+      style={{
+        ...style,
+        background: isSelected ? 'rgba(22,119,255,0.06)' : 'rgba(255,255,255,0.03)',
+      }}
       role="button"
       tabIndex={0}
       onPointerMove={handlePointerMove}
@@ -170,13 +173,13 @@ export const KanbanCard = React.memo(function KanbanCard({
           e.preventDefault();
         }
       }}
-      className={`bg-surface-elevated/90 backdrop-blur-md rounded-2xl border transition-all duration-200 group relative overflow-hidden ${
+      className={`backdrop-blur-[8px] rounded-xl border transition-all duration-200 group relative overflow-hidden ${
         isSelected
-          ? 'border-[#1677FF] ring-2 ring-[#1677FF] shadow-[0_0_20px_rgba(22,119,255,0.25)] bg-[#1677FF]/5'
+          ? 'border-[#1677FF] ring-1 ring-[#1677FF]/60 shadow-[0_0_20px_rgba(22,119,255,0.2)]'
           : isHighPriority
-            ? 'border-brand/40 shadow-card hover:border-brand hover:shadow-card-hover hover:-translate-y-0.5'
-            : 'border-line/80 shadow-sm hover:border-brand/40 hover:shadow-card hover:-translate-y-0.5'
-      } ${isDragging ? 'shadow-2xl ring-2 ring-[#1677FF] dark:ring-[#1677FF] z-50 scale-105 rotate-1 bg-surface-2' : ''}`}
+            ? 'border-white/10 shadow-[0_2px_12px_rgba(0,0,0,0.4)] hover:border-white/15 hover:bg-white/5 hover:-translate-y-0.5'
+            : 'border-white/6 shadow-[0_2px_12px_rgba(0,0,0,0.4)] hover:border-white/15 hover:bg-white/5 hover:-translate-y-0.5'
+      } ${isDragging ? 'shadow-2xl ring-2 ring-[#1677FF]/60 z-50 scale-105 rotate-1' : ''}`}
     >
       {/* 2026 Bento Spotlight */}
       {isHovered && !isDragging && (
@@ -202,12 +205,16 @@ export const KanbanCard = React.memo(function KanbanCard({
           type="button"
           onClick={handleCheckboxClick}
           aria-label={isSelected ? `Desmarcar ${companyName}` : `Selecionar ${companyName}`}
-          className="absolute top-3 left-3 z-20 p-1 rounded-lg bg-surface border border-line text-[#1677FF] hover:scale-110 active:scale-95 transition-all shadow-sm"
+          className="absolute top-3 left-3 z-20 p-1 rounded-lg text-[#1677FF] hover:scale-110 active:scale-95 transition-all"
+          style={{
+            background: 'rgba(255,255,255,0.06)',
+            border: '1px solid rgba(255,255,255,0.1)',
+          }}
         >
           {isSelected ? (
             <CheckSquare className="w-4 h-4 text-[#1677FF] fill-[#1677FF]/20" />
           ) : (
-            <Square className="w-4 h-4 text-ink-2" />
+            <Square className="w-4 h-4 text-white/40" />
           )}
         </button>
       )}
@@ -238,12 +245,12 @@ export const KanbanCard = React.memo(function KanbanCard({
           {hasCompanyName ? (
             <h4
               title={companyName}
-              className="font-bold text-ink group-hover:text-[#1677FF] dark:group-hover:text-[#1677FF] transition-colors text-sm line-clamp-2 leading-snug"
+              className="font-bold text-white/90 group-hover:text-[#1677FF] transition-colors text-sm line-clamp-2 leading-snug"
             >
               {companyName}
             </h4>
           ) : (
-            <h4 className="font-medium italic text-ink-2 text-sm">
+            <h4 className="font-medium italic text-white/30 text-sm">
               Sem empresa <span className="not-italic">· dados incompletos</span>
             </h4>
           )}
@@ -308,16 +315,16 @@ export const KanbanCard = React.memo(function KanbanCard({
           )}
         </div>
 
-        <div className="space-y-1.5 mt-2 text-xs text-ink-2">
+        <div className="space-y-1.5 mt-2 text-xs text-white/40">
           {lead.contact && (
-            <div className="flex items-center gap-1.5 text-ink-2">
-              <User className="w-3.5 h-3.5 text-ink-2" />
+            <div className="flex items-center gap-1.5 text-white/40">
+              <User className="w-3.5 h-3.5 text-white/30" />
               <span className="truncate">{lead.contact.name}</span>
             </div>
           )}
           {lead.company?.segment && (
-            <div className="flex items-center gap-1.5 text-ink-2">
-              <Building2 className="w-3.5 h-3.5 text-ink-2" />
+            <div className="flex items-center gap-1.5 text-white/40">
+              <Building2 className="w-3.5 h-3.5 text-white/30" />
               <span className="truncate">{lead.company.segment}</span>
             </div>
           )}
@@ -337,9 +344,12 @@ export const KanbanCard = React.memo(function KanbanCard({
         </div>
       </div>
 
-      <div className="flex items-center justify-between mx-4 mb-4 mt-3 pt-2.5 border-t border-line">
-        <div className="flex items-center gap-1.5 text-[11px] text-ink-2 min-w-0">
-          <Calendar className="w-3.5 h-3.5 shrink-0" />
+      <div
+        className="flex items-center justify-between mx-4 mb-4 mt-3 pt-2.5"
+        style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}
+      >
+        <div className="flex items-center gap-1.5 text-[11px] text-white/40 min-w-0">
+          <Calendar className="w-3.5 h-3.5 shrink-0 text-white/30" />
           {new Date(lead.updatedAt || lead.createdAt || '').toLocaleDateString('pt-BR')}
           {lead.owner && (
             <span className="truncate">· {ownerNameById?.[lead.owner] ?? lead.owner}</span>

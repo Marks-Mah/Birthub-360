@@ -8,13 +8,13 @@ const selectVariants = cva(
     variants: {
       variant: {
         default:
-          'border-line hover:border-brand/40 hover:bg-surface-elevated hover:shadow-[inset_0_2px_10px_rgba(0,0,0,0.02)] hover:scale-[1.005] focus-visible:border-brand focus-visible:ring-4 focus-visible:ring-brand/20 focus-visible:scale-[1.01] focus-visible:shadow-[inset_0_2px_12px_rgba(212,175,55,0.08)]',
+          'border-brand/20 hover:border-brand hover:shadow-glow-brand hover:bg-surface-elevated hover:scale-[1.005] focus-visible:border-brand focus-visible:ring-2 focus-visible:ring-brand/40 focus-visible:scale-[1.01] focus-visible:shadow-glow-brand-strong',
         filled:
-          'border-transparent bg-surface-2 hover:bg-surface-interactive hover:border-brand/30 hover:scale-[1.005] focus-visible:bg-surface focus-visible:border-brand focus-visible:ring-4 focus-visible:ring-brand/20 focus-visible:scale-[1.01]',
+          'border-transparent bg-surface-2 hover:bg-surface-interactive hover:border-brand/30 hover:shadow-glow-brand hover:scale-[1.005] focus-visible:bg-surface focus-visible:border-brand focus-visible:ring-2 focus-visible:ring-brand/30 focus-visible:shadow-glow-brand-strong focus-visible:scale-[1.01]',
         ghost:
-          'border-transparent bg-transparent hover:bg-surface-subtle hover:border-brand/20 hover:scale-[1.005] focus-visible:bg-surface-subtle focus-visible:border-brand/30 focus-visible:ring-4 focus-visible:ring-brand/20 focus-visible:scale-[1.01]',
+          'border-transparent bg-transparent hover:bg-surface-subtle hover:border-brand/20 hover:shadow-glow-brand hover:scale-[1.005] focus-visible:bg-surface-subtle focus-visible:border-brand/40 focus-visible:ring-2 focus-visible:ring-brand/30 focus-visible:shadow-glow-brand-strong focus-visible:scale-[1.01]',
         cosmic:
-          'border-brand/30 bg-surface-elevated/80 shadow-[0_0_15px_rgba(212,175,55,0.08)] hover:border-brand/60 focus-visible:border-brand focus-visible:ring-4 focus-visible:ring-brand/25 focus-visible:scale-[1.01] focus-visible:shadow-[0_0_20px_rgba(212,175,55,0.18)]',
+          'border-brand/40 bg-gradient-to-br from-surface-elevated/80 to-brand/5 shadow-glow-brand hover:border-brand/70 hover:shadow-glow-brand-strong focus-visible:border-brand focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:scale-[1.01] focus-visible:shadow-glow-brand-strong',
       },
       size: {
         default: 'h-10 px-3 py-2',

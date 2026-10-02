@@ -157,7 +157,6 @@ export function Input({ label, error, helperText, className = '', id, ...props }
         className={`w-full px-3.5 py-2.5 border rounded-lg text-sm bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent transition-all shadow-xs dark:bg-slate-800 dark:text-slate-100 dark:border-slate-700 dark:focus:ring-brand ${
           error ? 'border-red-350 focus:ring-red-500 dark:border-red-550' : 'border-slate-300'
         } ${className}`}
-
         {...props}
       />
       {error && (
@@ -210,7 +209,6 @@ export function Textarea({
         className={`w-full p-3.5 border rounded-lg text-sm bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent transition-all shadow-xs dark:bg-slate-800 dark:text-slate-100 dark:border-slate-700 dark:focus:ring-brand ${
           error ? 'border-red-350 focus:ring-red-500 dark:border-red-550' : 'border-slate-300'
         } ${className}`}
-
         {...props}
       />
       {error && (
@@ -340,7 +338,6 @@ export function Select({ label, error, options, className = '', id, ...props }: 
           className={`w-full px-3.5 py-2.5 pr-10 border rounded-lg text-sm bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent transition-all shadow-xs appearance-none dark:bg-slate-800 dark:text-slate-100 dark:border-slate-700 ${
             error ? 'border-red-300 focus:ring-red-500' : 'border-slate-300'
           } ${className}`}
-
           {...props}
         >
           {options.map((opt) => (

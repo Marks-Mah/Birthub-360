@@ -68,7 +68,10 @@ export function AnimatedIcon({
     xl: 'p-4 rounded-2xl',
   };
 
-  const getAnimationVariants = (): { animate?: Record<string, unknown>; transition?: Record<string, unknown> } => {
+  const getAnimationVariants = (): {
+    animate?: Record<string, unknown>;
+    transition?: Record<string, unknown>;
+  } => {
     if (reduceMotion || animation === 'none') {
       return {};
     }
@@ -99,7 +102,7 @@ export function AnimatedIcon({
   const iconContent = (
     <motion.span
       className={cn('inline-flex items-center justify-center', colorStyles[color], className)}
-      animate={animVariants.animate}
+      animate={animVariants.animate as any}
       transition={animVariants.transition}
       whileHover={interactive && !reduceMotion ? { scale: 1.05 } : undefined}
       whileTap={interactive && !reduceMotion ? { scale: 0.95 } : undefined}

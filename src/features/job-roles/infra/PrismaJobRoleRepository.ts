@@ -1,11 +1,16 @@
-import type { AgentCapability, AgentDefinition, JobRoleRepository } from '../domain/JobRoleDomain.js';
+import type {
+  AgentCapability,
+  AgentDefinition,
+  JobRoleRepository,
+} from '../domain/JobRoleDomain.js';
 
 export const PLATFORM_AGENTS: AgentDefinition[] = [
   {
     id: 'agent-sdr-inbound',
     code: 'SDR_INBOUND',
     name: 'SDR Inbound Autônomo',
-    description: 'Atende, qualifica e engaja leads vindos de formulários, landing pages e WhatsApp.',
+    description:
+      'Atende, qualifica e engaja leads vindos de formulários, landing pages e WhatsApp.',
     category: 'SDR',
     requiredCapabilities: ['READ_CRM', 'EXECUTE_COMMUNICATION', 'MOVE_PIPELINE'],
     allowedUserRoles: ['ADMIN', 'GESTOR', 'VENDEDOR'],
@@ -25,7 +30,8 @@ export const PLATFORM_AGENTS: AgentDefinition[] = [
     id: 'agent-closer-nba',
     code: 'CLOSER_NBA',
     name: 'Closer NBA (Next Best Action)',
-    description: 'Analisa o pipeline aberto e recomenda a melhor ação comercial para acelerar fechamento.',
+    description:
+      'Analisa o pipeline aberto e recomenda a melhor ação comercial para acelerar fechamento.',
     category: 'CLOSER',
     requiredCapabilities: ['READ_CRM', 'GENERATE_STRATEGY'],
     allowedUserRoles: ['ADMIN', 'GESTOR', 'VENDEDOR'],

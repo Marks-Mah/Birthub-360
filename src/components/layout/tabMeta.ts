@@ -5,7 +5,7 @@ import {
   PerformanceIcon,
   AIIcon,
   AutomationIcon,
-  EngagementIcon
+  EngagementIcon,
 } from '../brand/PillarIcons.js';
 import {
   Activity,
@@ -112,7 +112,18 @@ export type TabType =
   | 'module-access'
   | 'voice-hub'
   | 'outbound'
-  | 'dialer';
+  | 'dialer'
+  | 'forecast'
+  | 'metas'
+  | 'pipeline_ponderado'
+  | 'settings_hub'
+  | 'settings_market'
+  | 'settings_sales'
+  | 'settings_performance'
+  | 'settings_predictability'
+  | 'settings_ai'
+  | 'settings_automation'
+  | 'settings_engagement';
 
 /**
  * Matiz do ícone de cada módulo na navegação lateral — chave para uma das variáveis
@@ -143,10 +154,12 @@ export const TAB_META: Record<TabType, { label: string; icon: any; accent: NavAc
   propostas: { label: 'Propostas', icon: FileSignature, accent: 'gold' },
   companies: { label: 'Empresas', icon: Building2, accent: 'green' },
   contacts: { label: 'Decisores', icon: Users, accent: 'iris' },
+  settings_hub: { label: 'Ajustes do Hub', icon: SettingsIcon, accent: 'slate' },
 
   // PILAR 02 — INTELIGÊNCIA DE MERCADO
   prospect: { label: 'Prospecção', icon: IntelligenceIcon as any, accent: 'teal' },
   'market-intelligence': { label: 'Pesquisa de Mercado', icon: Radar, accent: 'teal' },
+  settings_market: { label: 'Ajustes de Mercado', icon: SettingsIcon, accent: 'slate' },
 
   // PILAR 03 — ORQUESTRAÇÃO DE VENDAS
   'daily-plan': { label: 'Plano Diário', icon: OrchestrationIcon as any, accent: 'green' },
@@ -159,35 +172,54 @@ export const TAB_META: Record<TabType, { label: string; icon: any; accent: NavAc
   topic_training: { label: 'Academy', icon: BookOpen, accent: 'gold' },
   chatbook: { label: 'Chatbook', icon: MessageSquare, accent: 'blue' },
   editor: { label: 'Editor de Documentos', icon: FileText, accent: 'slate' },
+  settings_sales: { label: 'Ajustes de Orquestração', icon: SettingsIcon, accent: 'slate' },
 
   // PILAR 04 — PERFORMANCE COMERCIAL
   dashboard: { label: 'Command Center', icon: PerformanceIcon as any, accent: 'gold' },
   analytics: { label: 'Analytics', icon: BarChart3, accent: 'blue' },
   winloss: { label: 'Win/Loss', icon: Target, accent: 'red' },
   reports: { label: 'Relatórios Avançados', icon: FileBarChart, accent: 'slate' },
+  settings_performance: { label: 'Ajustes de Performance', icon: SettingsIcon, accent: 'slate' },
+
+  // PILAR 05 — PREVISIBILIDADE COMERCIAL
+  forecast: { label: 'Forecast', icon: LineChart, accent: 'gold' },
+  metas: { label: 'Metas e Projeções', icon: Target, accent: 'blue' },
+  pipeline_ponderado: { label: 'Pipeline Ponderado', icon: Layers, accent: 'teal' },
+  settings_predictability: {
+    label: 'Ajustes de Previsibilidade',
+    icon: SettingsIcon,
+    accent: 'slate',
+  },
 
   // PILAR 06 — INTELIGÊNCIA ARTIFICIAL
-  commercial_intelligence: { label: 'Inteligência de Vendas', icon: AIIcon as any, accent: 'violet' },
+  commercial_intelligence: {
+    label: 'Inteligência de Vendas',
+    icon: AIIcon as any,
+    accent: 'violet',
+  },
   copiloto_ia: { label: 'Copiloto IA', icon: Mic, accent: 'iris' },
   intelligence: { label: 'Assistente de Vendas', icon: Zap, accent: 'gold' },
   knowledge: { label: 'Base de Conhecimento', icon: Database, accent: 'green' },
   'sdr-diagnostic': { label: 'Diagnóstico SDR', icon: Stethoscope, accent: 'green' },
+  settings_ai: { label: 'Ajustes de IA', icon: SettingsIcon, accent: 'slate' },
 
   // PILAR 07 — AUTOMAÇÃO & CONECTIVIDADE
   automations: { label: 'Automações', icon: AutomationIcon as any, accent: 'gold' },
   integrations: { label: 'Integrações', icon: Globe, accent: 'blue' },
   bitrix: { label: 'Guia Prático Bitrix24', icon: Layers, accent: 'teal' },
+  settings_automation: { label: 'Ajustes de Automação', icon: SettingsIcon, accent: 'slate' },
 
   // PILAR 08 — ENGAJAMENTO COMERCIAL
   'voice-hub': { label: 'Voice Hub', icon: Mic, accent: 'iris' },
   outbound: { label: 'Outbound AI', icon: PhoneCall, accent: 'red' },
   dialer: { label: 'Discador 3CX', icon: PhoneCall, accent: 'teal' },
   'mesa-tratamento': { label: 'Mesa de Tratamento', icon: Headset, accent: 'red' },
+  settings_engagement: { label: 'Ajustes de Engajamento', icon: SettingsIcon, accent: 'slate' },
 
   // ADMINISTRAÇÃO & CONFIGURAÇÕES
   notifications: { label: 'Notificações', icon: Bell, accent: 'gold' },
   usage: { label: 'Consumo de IA', icon: Wallet, accent: 'violet' },
   team: { label: 'Equipe', icon: UserCog, accent: 'blue' },
   'module-access': { label: 'Acesso a Módulos', icon: ShieldCheck, accent: 'green' },
-  settings: { label: 'Configurações', icon: SettingsIcon, accent: 'slate' },
+  settings: { label: 'Ajustes Globais', icon: SettingsIcon, accent: 'slate' },
 };
