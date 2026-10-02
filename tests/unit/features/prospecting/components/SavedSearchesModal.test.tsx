@@ -113,11 +113,9 @@ describe('SavedSearchesModal — fechamento via Dialog compartilhado', () => {
     const { container } = render(<SavedSearchesModal isOpen onClose={onClose} />);
 
     await screen.findByText('Frotas SP');
-    const dialogEl = container.querySelector('dialog');
-    expect(dialogEl).not.toBeNull();
-    // Escape num <dialog> modal dispara o evento nativo `cancel` (é assim que ui/Dialog fecha); o
-    // jsdom não traduz keydown em `cancel`, então o evento é disparado direto.
-    fireEvent(dialogEl as Element, new Event('cancel', { cancelable: true }));
+    const dialogEl = screen.getByRole('dialog');
+    expect(dialogEl).toBeInTheDocument();
+    fireEvent.keyDown(dialogEl, { key: 'Escape', code: 'Escape', keyCode: 27 });
 
     expect(onClose).toHaveBeenCalledTimes(1);
   });

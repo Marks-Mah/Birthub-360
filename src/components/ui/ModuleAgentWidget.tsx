@@ -81,14 +81,14 @@ const AGENTS_BY_PILLAR: Record<string, AgentCharacter> = {
     color: 'from-pink-400 to-pink-600',
     contextMsg: 'Acompanhando discador e cadência',
   },
-  'ADMINISTRAÇÃO': {
+  ADMINISTRAÇÃO: {
     name: 'Sudo',
     role: 'Controlador de Sistema',
     seed: 'Sudo',
     command: 'Ei Sudo',
     color: 'from-slate-400 to-slate-600',
     contextMsg: 'Validando acessos e billing',
-  }
+  },
 };
 
 const STEPS: AiReasoningStep[] = ['CONTEXT', 'ANALYSIS', 'RECOMMENDATION', 'APPROVAL', 'EXECUTION'];
@@ -112,13 +112,13 @@ export function ModuleAgentWidget({ activeTab }: ModuleAgentWidgetProps) {
   // Animação da esteira em loop
   useEffect(() => {
     if (!isExpanded) return;
-    
+
     let currentIdx = 0;
     const interval = setInterval(() => {
       currentIdx = (currentIdx + 1) % STEPS.length;
       setPipelineStep(STEPS[currentIdx]);
     }, 2000); // avança a cada 2s (10s total por ciclo)
-    
+
     return () => clearInterval(interval);
   }, [isExpanded]);
 
@@ -185,7 +185,7 @@ export function ModuleAgentWidget({ activeTab }: ModuleAgentWidgetProps) {
     },
   ];
 
-  const activeGroup = navGroupsByJourney.find(g => (g.items as TabType[]).includes(activeTab));
+  const activeGroup = navGroupsByJourney.find((g) => (g.items as TabType[]).includes(activeTab));
 
   if (!activeGroup) return null;
   const agent = AGENTS_BY_PILLAR[activeGroup.title];
@@ -226,9 +226,11 @@ export function ModuleAgentWidget({ activeTab }: ModuleAgentWidgetProps) {
         className="relative flex items-center bg-surface-elevated/95 backdrop-blur-xl border border-white/10 p-1.5 pr-4 rounded-full shadow-2xl overflow-hidden group cursor-pointer"
       >
         <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/5 to-white/0 translate-x-[-100%] group-hover:animate-[shimmer_1.5s_infinite]" />
-        
-        <div className={`relative flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br ${agent.color} shadow-inner`}>
-          <img 
+
+        <div
+          className={`relative flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br ${agent.color} shadow-inner`}
+        >
+          <img
             src={`https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${agent.seed}&backgroundColor=transparent`}
             alt={`Avatar do agente ${agent.name}`}
             className="w-7 h-7 drop-shadow-md"
@@ -241,7 +243,7 @@ export function ModuleAgentWidget({ activeTab }: ModuleAgentWidgetProps) {
             <span className="text-[13px] font-bold text-white leading-none">{agent.name}</span>
             <Sparkles className="w-3 h-3 text-brand opacity-80" />
           </div>
-          
+
           <AnimatePresence mode="wait">
             {isHovered ? (
               <motion.div
@@ -284,14 +286,16 @@ export function ModuleAgentWidget({ activeTab }: ModuleAgentWidgetProps) {
             className="w-[360px] rounded-2xl border border-white/10 shadow-2xl overflow-hidden flex flex-col"
             style={{
               background: 'rgba(6,13,26,0.97)',
-              backdropFilter: 'blur(24px)'
+              backdropFilter: 'blur(24px)',
             }}
           >
             {/* Header do Card */}
             <div className="px-5 py-4 border-b border-white/10 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className={`flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-br ${agent.color}`}>
-                  <img 
+                <div
+                  className={`flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-br ${agent.color}`}
+                >
+                  <img
                     src={`https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${agent.seed}&backgroundColor=transparent`}
                     alt={agent.name}
                     className="w-8 h-8"
@@ -301,12 +305,10 @@ export function ModuleAgentWidget({ activeTab }: ModuleAgentWidgetProps) {
                   <h3 className="text-white font-bold text-sm flex items-center gap-1.5">
                     {agent.name} <Sparkles className="w-3.5 h-3.5 text-brand" />
                   </h3>
-                  <p className="text-white/40 text-[11px] font-mono mt-0.5">
-                    {agent.role}
-                  </p>
+                  <p className="text-white/40 text-[11px] font-mono mt-0.5">{agent.role}</p>
                 </div>
               </div>
-              <button 
+              <button
                 onClick={() => {
                   SoundFX.play('click');
                   setIsExpanded(false);
@@ -323,14 +325,14 @@ export function ModuleAgentWidget({ activeTab }: ModuleAgentWidgetProps) {
                 <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
                 {agent.contextMsg}...
               </p>
-              
+
               <AiReasoningPipeline currentStep={pipelineStep} details={details} />
             </div>
 
             {/* Input para Pergunta */}
             <div className="p-4 bg-black/20">
               <div className="relative">
-                <textarea 
+                <textarea
                   value={inputText}
                   onChange={(e) => setInputText(e.target.value)}
                   onKeyDown={(e) => {
@@ -342,7 +344,7 @@ export function ModuleAgentWidget({ activeTab }: ModuleAgentWidgetProps) {
                   placeholder={`Pergunte algo ao ${agent.name}...`}
                   className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 pr-12 text-sm text-white placeholder-white/30 focus:outline-none focus:border-brand/50 focus:ring-1 focus:ring-brand/50 resize-none h-16"
                 />
-                <button 
+                <button
                   onClick={handleSend}
                   disabled={!inputText.trim()}
                   className="absolute right-2 bottom-2 p-2 rounded-lg bg-brand text-white hover:bg-brand-hover disabled:opacity-50 disabled:hover:bg-brand transition-colors"

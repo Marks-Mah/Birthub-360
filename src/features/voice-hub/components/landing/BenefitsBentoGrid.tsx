@@ -1,14 +1,14 @@
 import type React from 'react';
 import { motion } from 'framer-motion';
-import { 
-  Bot, 
-  Mic2, 
-  LineChart, 
-  Cpu, 
-  ShieldCheck, 
+import {
+  Bot,
+  Mic2,
+  LineChart,
+  Cpu,
+  ShieldCheck,
   Workflow,
   Sparkles,
-  ArrowUpRight
+  ArrowUpRight,
 } from 'lucide-react';
 
 interface BentoCardProps {
@@ -42,9 +42,7 @@ function BentoCard({ icon: Icon, title, description, badge, className = '' }: Be
       <h3 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight mb-2">
         {title}
       </h3>
-      <p className="text-sm text-slate-600 dark:text-white/60 leading-relaxed">
-        {description}
-      </p>
+      <p className="text-sm text-slate-600 dark:text-white/60 leading-relaxed">{description}</p>
 
       <div className="mt-4 pt-4 border-t border-slate-100 dark:border-white/5 flex items-center gap-1 text-xs font-semibold text-brand group cursor-pointer">
         <span>Conhecer capacidade</span>
@@ -72,8 +70,8 @@ export function BenefitsBentoGrid(): React.ReactElement {
           </h2>
 
           <p className="text-base sm:text-lg text-slate-600 dark:text-white/70 leading-relaxed">
-            Arquitetura desenhada para conectar enriquecimento de dados, qualificação profunda, síntese vocal
-            em tempo real e governança corporativa sem fricção.
+            Arquitetura desenhada para conectar enriquecimento de dados, qualificação profunda,
+            síntese vocal em tempo real e governança corporativa sem fricção.
           </p>
         </div>
 

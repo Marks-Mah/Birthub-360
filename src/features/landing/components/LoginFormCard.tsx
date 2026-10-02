@@ -26,13 +26,19 @@ export function LoginFormCard({
 
       <form onSubmit={onSubmit} className="space-y-6" noValidate>
         {formState.errorMessage && (
-          <div role="alert" className="rounded-card border border-danger/30 bg-danger/10 p-3 text-xs text-danger">
+          <div
+            role="alert"
+            className="rounded-card border border-danger/30 bg-danger/10 p-3 text-xs text-danger"
+          >
             {formState.errorMessage}
           </div>
         )}
 
         <div className="space-y-2">
-          <label htmlFor="auth-email" className="block text-xs font-semibold uppercase tracking-wider text-ink-muted">
+          <label
+            htmlFor="auth-email"
+            className="block text-xs font-semibold uppercase tracking-wider text-ink-muted"
+          >
             E-mail Corporativo
           </label>
           <input
@@ -59,7 +65,10 @@ export function LoginFormCard({
             />
             Manter sessão ativa
           </label>
-          <a href="/recuperar-senha" className="font-medium text-brand hover:underline focus:outline-none">
+          <a
+            href="/recuperar-senha"
+            className="font-medium text-brand hover:underline focus:outline-none"
+          >
             Esqueceu a senha?
           </a>
         </div>

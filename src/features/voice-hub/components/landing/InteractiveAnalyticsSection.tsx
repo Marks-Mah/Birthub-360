@@ -34,7 +34,8 @@ export function InteractiveAnalyticsSection(): React.ReactElement {
             </h2>
 
             <p className="text-base text-slate-600 dark:text-white/70 leading-relaxed">
-              O motor de Commercial Intelligence cruza métricas de toque com a resposta real dos decisores, identificando gargalos antes que eles impactem a meta do trimestre.
+              O motor de Commercial Intelligence cruza métricas de toque com a resposta real dos
+              decisores, identificando gargalos antes que eles impactem a meta do trimestre.
             </p>
 
             <div className="grid grid-cols-2 gap-4 pt-2">
@@ -44,7 +45,9 @@ export function InteractiveAnalyticsSection(): React.ReactElement {
                   <span>Win Rate Médio</span>
                 </div>
                 <div className="text-2xl font-black text-slate-900 dark:text-white">+41%</div>
-                <div className="text-[11px] text-slate-500 dark:text-white/50 mt-0.5">Após qualificação neural</div>
+                <div className="text-[11px] text-slate-500 dark:text-white/50 mt-0.5">
+                  Após qualificação neural
+                </div>
               </div>
 
               <div className="rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/[0.02] p-4">
@@ -53,7 +56,9 @@ export function InteractiveAnalyticsSection(): React.ReactElement {
                   <span>Tempo de Resposta</span>
                 </div>
                 <div className="text-2xl font-black text-slate-900 dark:text-white">&lt; 2 min</div>
-                <div className="text-[11px] text-slate-500 dark:text-white/50 mt-0.5">No primeiro toque inbound/outbound</div>
+                <div className="text-[11px] text-slate-500 dark:text-white/50 mt-0.5">
+                  No primeiro toque inbound/outbound
+                </div>
               </div>
             </div>
           </div>
@@ -64,7 +69,9 @@ export function InteractiveAnalyticsSection(): React.ReactElement {
               <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-4">
                 <div className="flex items-center gap-2">
                   <Target className="w-5 h-5 text-brand" />
-                  <span className="text-sm font-bold text-slate-900 dark:text-white">Cockpit de Resultados</span>
+                  <span className="text-sm font-bold text-slate-900 dark:text-white">
+                    Cockpit de Resultados
+                  </span>
                 </div>
 
                 <div className="flex items-center gap-1 bg-slate-200 dark:bg-white/10 p-1 rounded-lg">
@@ -89,26 +96,42 @@ export function InteractiveAnalyticsSection(): React.ReactElement {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
                   <span className="text-xs text-slate-500 dark:text-white/50">Pipeline Gerado</span>
-                  <div className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">{DATA_POINTS.pipeline}</div>
+                  <div className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+                    {DATA_POINTS.pipeline}
+                  </div>
                 </div>
                 <div className="space-y-1">
-                  <span className="text-xs text-slate-500 dark:text-white/50">Negócios Avançados</span>
-                  <div className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">{DATA_POINTS.deals}</div>
+                  <span className="text-xs text-slate-500 dark:text-white/50">
+                    Negócios Avançados
+                  </span>
+                  <div className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+                    {DATA_POINTS.deals}
+                  </div>
                 </div>
                 <div className="space-y-1">
-                  <span className="text-xs text-slate-500 dark:text-white/50">Taxa de Conversão</span>
-                  <div className="text-xl sm:text-2xl font-bold text-emerald-500">{DATA_POINTS.conversion}</div>
+                  <span className="text-xs text-slate-500 dark:text-white/50">
+                    Taxa de Conversão
+                  </span>
+                  <div className="text-xl sm:text-2xl font-bold text-emerald-500">
+                    {DATA_POINTS.conversion}
+                  </div>
                 </div>
                 <div className="space-y-1">
-                  <span className="text-xs text-slate-500 dark:text-white/50">Horas Economizadas</span>
-                  <div className="text-xl sm:text-2xl font-bold text-brand">{DATA_POINTS.hoursSaved}</div>
+                  <span className="text-xs text-slate-500 dark:text-white/50">
+                    Horas Economizadas
+                  </span>
+                  <div className="text-xl sm:text-2xl font-bold text-brand">
+                    {DATA_POINTS.hoursSaved}
+                  </div>
                 </div>
               </div>
 
               {/* Barra de Progresso de Meta */}
               <div className="space-y-2 pt-2 border-t border-slate-200 dark:border-white/5">
                 <div className="flex justify-between text-xs font-medium">
-                  <span className="text-slate-600 dark:text-white/70">Acurácia Preditiva do Forecast</span>
+                  <span className="text-slate-600 dark:text-white/70">
+                    Acurácia Preditiva do Forecast
+                  </span>
                   <span className="text-brand font-bold">96.8%</span>
                 </div>
                 <div className="w-full h-2 rounded-full bg-slate-200 dark:bg-white/10 overflow-hidden">

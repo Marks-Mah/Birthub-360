@@ -66,7 +66,8 @@ export function ComparisonTable(): React.ReactElement {
           </h2>
 
           <p className="text-base sm:text-lg text-slate-600 dark:text-white/70 leading-relaxed">
-            Compare o impacto de ter uma plataforma unificada frente à colcha de retalhos de ferramentas avulsas.
+            Compare o impacto de ter uma plataforma unificada frente à colcha de retalhos de
+            ferramentas avulsas.
           </p>
         </div>
 
@@ -74,17 +75,26 @@ export function ComparisonTable(): React.ReactElement {
           <table className="w-full text-left border-collapse min-w-[720px]">
             <thead>
               <tr className="border-b border-slate-200 dark:border-white/10 bg-slate-100/60 dark:bg-white/[0.04]">
-                <th className="py-4 px-6 text-sm font-semibold text-slate-900 dark:text-white">Capacidade / Recurso</th>
+                <th className="py-4 px-6 text-sm font-semibold text-slate-900 dark:text-white">
+                  Capacidade / Recurso
+                </th>
                 <th className="py-4 px-6 text-sm font-bold text-brand bg-brand/5 border-x border-brand/20">
                   Birth Hub 360°
                 </th>
-                <th className="py-4 px-6 text-sm font-semibold text-slate-600 dark:text-white/70">CRMs Tradicionais</th>
-                <th className="py-4 px-6 text-sm font-semibold text-slate-600 dark:text-white/70">Ferramentas de IA Avulsas</th>
+                <th className="py-4 px-6 text-sm font-semibold text-slate-600 dark:text-white/70">
+                  CRMs Tradicionais
+                </th>
+                <th className="py-4 px-6 text-sm font-semibold text-slate-600 dark:text-white/70">
+                  Ferramentas de IA Avulsas
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-white/5 text-xs sm:text-sm">
               {COMPARISON_DATA.map((row) => (
-                <tr key={row.feature} className="hover:bg-slate-50/50 dark:hover:bg-white/[0.01] transition-colors">
+                <tr
+                  key={row.feature}
+                  className="hover:bg-slate-50/50 dark:hover:bg-white/[0.01] transition-colors"
+                >
                   <td className="py-4 px-6 font-medium text-slate-800 dark:text-white/90">
                     {row.feature}
                   </td>
@@ -100,14 +110,22 @@ export function ComparisonTable(): React.ReactElement {
                   </td>
                   <td className="py-4 px-6 text-slate-500 dark:text-white/50">
                     {typeof row.traditionalCrm === 'boolean' ? (
-                      row.traditionalCrm ? <Check className="w-5 h-5 text-emerald-500" /> : <X className="w-5 h-5 text-rose-500/70" />
+                      row.traditionalCrm ? (
+                        <Check className="w-5 h-5 text-emerald-500" />
+                      ) : (
+                        <X className="w-5 h-5 text-rose-500/70" />
+                      )
                     ) : (
                       row.traditionalCrm
                     )}
                   </td>
                   <td className="py-4 px-6 text-slate-500 dark:text-white/50">
                     {typeof row.fragmentedAi === 'boolean' ? (
-                      row.fragmentedAi ? <Check className="w-5 h-5 text-emerald-500" /> : <X className="w-5 h-5 text-rose-500/70" />
+                      row.fragmentedAi ? (
+                        <Check className="w-5 h-5 text-emerald-500" />
+                      ) : (
+                        <X className="w-5 h-5 text-rose-500/70" />
+                      )
                     ) : (
                       row.fragmentedAi
                     )}

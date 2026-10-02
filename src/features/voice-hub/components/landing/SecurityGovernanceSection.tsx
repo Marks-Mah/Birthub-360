@@ -11,27 +11,32 @@ interface SecurityFeature {
 const SECURITY_ITEMS: SecurityFeature[] = [
   {
     title: 'Isolamento de Dados Multi-Inquilino',
-    description: 'Arquitetura rigorosamente isolada por organizationId em todas as queries e rotinas de banco, sem risco de vazamento entre contas.',
+    description:
+      'Arquitetura rigorosamente isolada por organizationId em todas as queries e rotinas de banco, sem risco de vazamento entre contas.',
     icon: Lock,
   },
   {
     title: 'Conformidade Estrita com LGPD e GDPR',
-    description: 'Campos de PII criptografados em repouso com chave simétrica AES-256 e blind index seguro para buscas determinísticas auditadas.',
+    description:
+      'Campos de PII criptografados em repouso com chave simétrica AES-256 e blind index seguro para buscas determinísticas auditadas.',
     icon: ShieldCheck,
   },
   {
     title: 'Trilha de Auditoria Imutável (Audit Trail)',
-    description: 'Cada ação de prospecção, chamada de voz, alteração de permissão e disparo de IA é carimbada com timestamp e autor.',
+    description:
+      'Cada ação de prospecção, chamada de voz, alteração de permissão e disparo de IA é carimbada com timestamp e autor.',
     icon: History,
   },
   {
     title: 'Controle de Acessos Baseado em Papéis (RBAC)',
-    description: 'Matriz granular de privilégios separando administradores, gestores comerciais, SDRs, closers e visualizadores convidados.',
+    description:
+      'Matriz granular de privilégios separando administradores, gestores comerciais, SDRs, closers e visualizadores convidados.',
     icon: UserCheck,
   },
   {
     title: 'Cofre e Rotação de Credenciais de Provedores',
-    description: 'Armazenamento isolado de tokens de APIs (Apollo, Hunter, Bitrix24, OpenAI) com validação de assinatura e TTL estrito.',
+    description:
+      'Armazenamento isolado de tokens de APIs (Apollo, Hunter, Bitrix24, OpenAI) com validação de assinatura e TTL estrito.',
     icon: FileKey,
   },
 ];
@@ -54,7 +59,8 @@ export function SecurityGovernanceSection(): React.ReactElement {
           </h2>
 
           <p className="text-base sm:text-lg text-slate-600 dark:text-white/70 leading-relaxed">
-            Desenvolvido para atender aos mais altos requisitos corporativos de compliance e segurança da informação.
+            Desenvolvido para atender aos mais altos requisitos corporativos de compliance e
+            segurança da informação.
           </p>
         </div>
 

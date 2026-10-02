@@ -8,12 +8,7 @@ interface MobileNavDrawerProps {
   onSelectTab?: (tab: string) => void;
 }
 
-export function MobileNavDrawer({
-  isOpen,
-  onClose,
-  activeTab,
-  onSelectTab,
-}: MobileNavDrawerProps) {
+export function MobileNavDrawer({ isOpen, onClose, activeTab, onSelectTab }: MobileNavDrawerProps) {
   if (!isOpen) return null;
 
   return (

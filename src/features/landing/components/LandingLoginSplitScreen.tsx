@@ -3,7 +3,7 @@ import { useAuthForm } from '../hooks/useAuthForm';
 import { LoginFormCard } from './LoginFormCard';
 
 const LandingHeroScene = lazy(() =>
-  import('./LandingHeroScene').then((mod) => ({ default: mod.LandingHeroScene }))
+  import('./LandingHeroScene').then((mod) => ({ default: mod.LandingHeroScene })),
 );
 
 export function LandingLoginSplitScreen() {

@@ -1,14 +1,6 @@
 import type React from 'react';
 import { motion } from 'framer-motion';
-import { 
-  Users, 
-  PhoneCall, 
-  BarChart3, 
-  Boxes, 
-  Sliders, 
-  Building2,
-  CheckCircle2
-} from 'lucide-react';
+import { Users, PhoneCall, BarChart3, Boxes, Sliders, Building2, CheckCircle2 } from 'lucide-react';
 
 interface ModuleCardProps {
   icon: React.ElementType;
@@ -35,14 +27,15 @@ function ModuleCard({ icon: Icon, title, subtitle, features }: ModuleCardProps) 
           <h3 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight">
             {title}
           </h3>
-          <p className="text-xs text-brand font-medium tracking-wide uppercase mt-1">
-            {subtitle}
-          </p>
+          <p className="text-xs text-brand font-medium tracking-wide uppercase mt-1">{subtitle}</p>
         </div>
 
         <ul className="space-y-2.5 pt-2 border-t border-slate-100 dark:border-white/5">
           {features.map((feature) => (
-            <li key={feature} className="flex items-start gap-2.5 text-xs text-slate-600 dark:text-white/70">
+            <li
+              key={feature}
+              className="flex items-start gap-2.5 text-xs text-slate-600 dark:text-white/70"
+            >
               <CheckCircle2 className="w-4 h-4 text-brand shrink-0 mt-0.5" />
               <span>{feature}</span>
             </li>
@@ -65,7 +58,8 @@ export function ProductModulesSection(): React.ReactElement {
             Plataforma Completa — Módulos Integrados
           </h2>
           <p className="text-base sm:text-lg text-slate-600 dark:text-white/70 leading-relaxed">
-            Uma suíte de engenharia projetada para cada estágio da operação comercial, sem silos de dados e com governança unificada.
+            Uma suíte de engenharia projetada para cada estágio da operação comercial, sem silos de
+            dados e com governança unificada.
           </p>
         </div>
 
@@ -78,7 +72,7 @@ export function ProductModulesSection(): React.ReactElement {
               'Enriquecimento em cascata (Apollo / Hunter / Google)',
               'Qualificação de PICs e decisores-chave',
               'Playbooks dinâmicos com roteiro anti-objeção',
-              'Cadência multi-canal automatizada'
+              'Cadência multi-canal automatizada',
             ]}
           />
 
@@ -90,7 +84,7 @@ export function ProductModulesSection(): React.ReactElement {
               'Síntese de voz de baixíssima latência (Livekit / ElevenLabs)',
               'Detecção inteligente de caixas postais e secretárias',
               'Transcrição síncrona e extração de insights de chamada',
-              'Registro instantâneo de interações no histórico do lead'
+              'Registro instantâneo de interações no histórico do lead',
             ]}
           />
 
@@ -102,7 +96,7 @@ export function ProductModulesSection(): React.ReactElement {
               'Análise de gargalos em cada etapa do funil de vendas',
               'Benchmark individual e coletivo de consultores',
               'Matriz Win/Loss com clusterização semântica de motivos',
-              'Forecast dinâmico ponderado por engajamento real'
+              'Forecast dinâmico ponderado por engajamento real',
             ]}
           />
 
@@ -114,7 +108,7 @@ export function ProductModulesSection(): React.ReactElement {
               'Gestão visual de pipeline estilo Kanban ágil',
               'Dossiê completo de contas, empresas e propostas',
               'Histórico consolidado de toque e auditoria de ações',
-              'Isolamento total multi-inquilino (Multi-Tenancy Silo/Pool)'
+              'Isolamento total multi-inquilino (Multi-Tenancy Silo/Pool)',
             ]}
           />
 
@@ -126,7 +120,7 @@ export function ProductModulesSection(): React.ReactElement {
               'Conector nativo bidirecional para Bitrix24',
               'Webhooks de alta vazão com fila assíncrona (BullMQ)',
               'Disparo automatizado de mensagens no WhatsApp',
-              'Exportação estruturada de relatórios operacionais'
+              'Exportação estruturada de relatórios operacionais',
             ]}
           />
 
@@ -138,7 +132,7 @@ export function ProductModulesSection(): React.ReactElement {
               'Controle estrito de papéis (RBAC: Admin, Gestor, SDR, Closer)',
               'Gestão de orçamentos e tokens de IA por organização',
               'Logs de auditoria e segurança contra vazamento de PII',
-              'Comando geral de monitoramento e telemetria'
+              'Comando geral de monitoramento e telemetria',
             ]}
           />
         </div>
