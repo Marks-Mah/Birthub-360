@@ -40,7 +40,21 @@ const data = s => 'data:image/svg+xml;base64,' + Buffer.from(s).toString('base64
 const image = (s, cl = '', alt = 'Birth Hub 360º') => `<img class="${cl}" src="${data(s)}" alt="${alt}" width="630" height="162">`;
 const mark = (cl = '', ink = colors.midnight, accent = colors.gold) => `<div class="mark ${cl}">${svg(symbol(ink, accent))}</div>`;
 const arrow = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.7"/></svg>';
-const sections = [['essencia', 'Essência'], ['posicionamento', 'Posicionamento'], ['narrativa', 'Narrativa'], ['logo', 'Novo logotipo'], ['construcao', 'Construção'], ['versoes', 'Versões e redução'], ['regras', 'Proteção e usos'], ['cores', 'Sistema de cores'], ['contraste', 'Contraste'], ['tipografia', 'Tipografia'], ['grafismos', 'Linguagem visual'], ['voz', 'Voz e mensagens'], ['arquitetura', 'Arquitetura de marca'], ['digital', 'Marca no produto'], ['aplicacoes', 'Aplicações CRM'], ['producao', 'Produção'], ['governanca', 'Governança'], ['downloads', 'Arquivos da marca']];
+const sections = [
+  ['brand-core', 'Brand Core'],
+  ['logo-system', 'Logo System'],
+  ['color-system', 'Color System'],
+  ['typography', 'Typography'],
+  ['iconography', 'Iconography'],
+  ['eight-pillars', '8 Pillars Visual System'],
+  ['data-vis', 'Data Visualization (Data DNA)'],
+  ['motion', 'Motion & Transitions'],
+  ['ui-components', 'UI Components & Command Center'],
+  ['ai-language', 'AI Language & Workflow'],
+  ['voice-copy', 'Voice & Copy'],
+  ['usage-rules', 'Usage Rules & Governance'],
+  ['downloads', 'Arquivos da Marca']
+];
 const title = (id, n, t, lead) => `<header class="section-head"><span class="chapter">${String(n).padStart(2, '0')} / ${sections.length}</span><h2>${t}</h2><p class="lead">${lead}</p></header>`;
 const table = (heads, rows) => `<div class="table-scroll" tabindex="0" role="region" aria-label="Tabela: ${heads[0]}"><table><thead><tr>${heads.map(h => `<th scope="col">${h}</th>`).join('')}</tr></thead><tbody>${rows.map(row => `<tr>${row.map((c, i) => i ? `<td>${c}</td>` : `<th scope="row">${c}</th>`).join('')}</tr>`).join('')}</tbody></table></div>`;
 const luminance = hex => { const a = hex.replace('#', '').match(/../g).map(x => parseInt(x, 16) / 255).map(v => v <= .04045 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4); return .2126 * a[0] + .7152 * a[1] + .0722 * a[2]; };

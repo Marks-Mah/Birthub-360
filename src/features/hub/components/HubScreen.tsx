@@ -289,8 +289,5 @@ export function HubScreen() {
         </main>
       </div>
     </div>
-
-      </div>
-    </div>
   );
 }

@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import { ArrowLeft, Bell, LogOut, Menu, Moon, Search, Sun, Volume2, VolumeX } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -130,23 +131,29 @@ export function AppTopbar({ activeTab, onOpenMobileNav }: AppTopbarProps) {
           </p>
         </div>
 
-        <button
+        <motion.button
           type="button"
+          whileHover={{ scale: 1.08 }}
+          whileTap={{ scale: 0.92 }}
+          transition={{ type: 'spring', stiffness: 400, damping: 25 }}
           onClick={() => {
             SoundFX.play('navigate');
             toggleTheme();
           }}
-          className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-xl border border-transparent text-ink-2 transition-all duration-200 hover:scale-105 hover:border-line hover:bg-surface-2 hover:text-ink hover:shadow-sm active:scale-95"
+          className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-xl border border-transparent text-ink-2 transition-colors duration-200 hover:border-line hover:bg-surface-2 hover:text-ink hover:shadow-sm"
           aria-label="Alternar tema"
           title={`Mudar para modo ${theme === 'dark' ? 'claro' : 'escuro'}`}
         >
           {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-        </button>
+        </motion.button>
 
-        <button
+        <motion.button
           type="button"
+          whileHover={{ scale: 1.08 }}
+          whileTap={{ scale: 0.92 }}
+          transition={{ type: 'spring', stiffness: 400, damping: 25 }}
           onClick={toggleSound}
-          className={`flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-xl border transition-all duration-200 hover:scale-105 active:scale-95 hover:shadow-sm ${
+          className={`flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-xl border transition-colors duration-200 hover:shadow-sm ${
             soundEnabled
               ? 'border-brand/15 bg-brand/8 text-brand-ink dark:text-brand hover:border-brand/30'
               : 'border-transparent text-ink-2 hover:border-line hover:bg-surface-2 hover:text-ink'
@@ -156,15 +163,18 @@ export function AppTopbar({ activeTab, onOpenMobileNav }: AppTopbarProps) {
           title={soundEnabled ? 'Sons da interface ligados' : 'Sons da interface desligados'}
         >
           {soundEnabled ? <Volume2 className="h-5 w-5" /> : <VolumeX className="h-5 w-5" />}
-        </button>
+        </motion.button>
 
-        <button
+        <motion.button
           type="button"
+          whileHover={{ scale: 1.08 }}
+          whileTap={{ scale: 0.92 }}
+          transition={{ type: 'spring', stiffness: 400, damping: 25 }}
           onClick={() => {
             SoundFX.play('navigate');
             navigate('/app/notifications');
           }}
-          className="relative flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-xl border border-transparent text-ink-2 transition-all duration-200 hover:scale-105 hover:border-line hover:bg-surface-2 hover:text-brand hover:shadow-sm active:scale-95"
+          className="relative flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-xl border border-transparent text-ink-2 transition-colors duration-200 hover:border-line hover:bg-surface-2 hover:text-brand hover:shadow-sm"
           aria-label={
             unreadCount > 0
               ? `Notificações — ${unreadCount} não lida${unreadCount === 1 ? '' : 's'}`
@@ -178,26 +188,31 @@ export function AppTopbar({ activeTab, onOpenMobileNav }: AppTopbarProps) {
               aria-hidden="true"
             />
           )}
-        </button>
+        </motion.button>
 
-        <div
+        <motion.div
+          whileHover={{ scale: 1.08 }}
+          transition={{ type: 'spring', stiffness: 400, damping: 25 }}
           role="img"
           aria-label={`Avatar de ${currentUser?.name || 'Usuário'}`}
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-brand to-brand-2 text-sm font-bold text-on-brand shadow-sm ring-1 ring-white/10"
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-brand to-brand-2 text-sm font-bold text-on-brand shadow-sm ring-1 ring-white/10 cursor-pointer"
           title={`${currentUser?.name || 'Usuário'} (${currentUser?.roleTitle || currentUser?.role || ''})`}
         >
           {userInitial}
-        </div>
+        </motion.div>
 
-        <button
+        <motion.button
           type="button"
+          whileHover={{ scale: 1.08 }}
+          whileTap={{ scale: 0.92 }}
+          transition={{ type: 'spring', stiffness: 400, damping: 25 }}
           onClick={logout}
-          className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-xl border border-transparent text-ink-2 transition-all duration-200 hover:scale-105 hover:border-critical/20 hover:bg-critical/10 hover:text-critical hover:shadow-sm active:scale-95"
+          className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-xl border border-transparent text-ink-2 transition-colors duration-200 hover:border-critical/20 hover:bg-critical/10 hover:text-critical hover:shadow-sm"
           aria-label="Sair da conta"
           title="Sair da conta"
         >
           <LogOut className="h-5 w-5" />
-        </button>
+        </motion.button>
       </div>
     </header>
   );

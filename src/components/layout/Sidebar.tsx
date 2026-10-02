@@ -315,9 +315,6 @@ export function Sidebar({
                 </span>
               </div>
             </div>
-            <button ...>...
-              </div>
-            </div>
             {/* Collapse toggle — top right when expanded */}
             <button
               type="button"
@@ -345,10 +342,6 @@ export function Sidebar({
               } ${isCollapsed ? 'lg:hidden' : ''}`}
             >
               <p className="text-[10px] font-normal uppercase tracking-[0.08em] text-white/30 font-[family-name:var(--font-brand-sans)]">
-                {group.title}
-              </p>
-            </div>
-
                 {group.title}
               </p>
             </div>
@@ -401,8 +394,6 @@ export function Sidebar({
               <p className="truncate text-[10px] font-normal leading-tight text-white/40 font-[family-name:var(--font-brand-sans)]">
                 {currentUser.roleTitle || currentUser.role}
               </p>
-            </div>
-
             </div>
           </div>
         )}
