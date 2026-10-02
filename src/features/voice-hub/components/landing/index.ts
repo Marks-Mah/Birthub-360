@@ -8,3 +8,5 @@ export * from './IntegrationsGrid.js';
 export * from './SecurityGovernanceSection.js';
 export * from './InteractiveAnalyticsSection.js';
 export * from './PricingFaqSection.js';
+export * from './LandingNavbar.js';
+export * from './LandingFooter.js';
