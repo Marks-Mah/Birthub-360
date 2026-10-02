@@ -1,7 +1,7 @@
 /** Subconjunto da identidade (espelha `src/config/brand.ts` da plataforma). */
 export const BRAND = {
   name: 'Birth Hub 360º',
-  slogan: 'Sua central de comando inteligente',
+  slogan: 'Aqui está o centro de comando da sua operação comercial',
   ecosystemLabel: 'Ecossistema de Alta Performance',
   description:
     'Conecte CRM, dados, processos e IA em um único Lugar. Monitore sua operação comercial em tempo real, identifique gargalos e transforme dados em ações executáveis',
