@@ -161,7 +161,7 @@ coisa sob `integrations/bitrix/`.
 - [ ] `intelligence/services/evaluationMetrics.service.ts`
 - [ ] `intelligence/services/guardrails.service.ts`
 - [ ] `intelligence/services/pending-actions.service.ts`
-- [ ] `intelligence/services/prompt.service.ts`
+- [x] `intelligence/services/prompt.service.ts` — ✅ migrado (Estilo B, PromptRepository).
 - [ ] `intelligence/services/roleplay-session.service.ts`
 - [ ] `intelligence/services/swarmScheduler.service.ts`
 - [ ] `intelligence/services/winLossAnalysis.worker.ts`
