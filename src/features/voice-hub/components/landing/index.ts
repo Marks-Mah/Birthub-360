@@ -5,3 +5,6 @@ export * from './ProductModulesSection.js';
 export * from './HowItWorksTimeline.js';
 export * from './ComparisonTable.js';
 export * from './IntegrationsGrid.js';
+export * from './SecurityGovernanceSection.js';
+export * from './InteractiveAnalyticsSection.js';
+export * from './PricingFaqSection.js';
