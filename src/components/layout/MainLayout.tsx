@@ -1,95 +1,49 @@
-import { type ReactNode, useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
-import { useNavigationBusBridge } from '../../hooks/useNavigationBusBridge.js';
-import { BugReportButton } from '../ui/BugReportButton.js';
-import { CommandPalette } from '../ui/CommandPalette.js';
-import { CopilotTrigger } from '../ui/CopilotTrigger.js';
-import { Toaster } from '../ui/Toaster.js';
-import { VoiceCommandWidget } from '../ui/VoiceCommandWidget.js';
-import { AppTopbar } from './AppTopbar.js';
-import { FloatingDock } from './FloatingDock.js';
-import { DataFlowLines } from '../ui/DataFlowLines.js';
-import { OfflineBanner } from './OfflineBanner.js';
-import { PageTransition } from './PageTransition.js';
-import { ModuleAgentWidget } from '../ui/ModuleAgentWidget.js';
-import { MacDock } from './MacDock.js';
-import type { TabType } from './tabMeta.js';
+﻿import React from 'react';
+import { Sidebar } from './Sidebar';
+import { AppTopbar } from './AppTopbar';
+import { OfflineBanner } from './OfflineBanner';
+import { DataFlowLines } from '../ui/DataFlowLines';
+import { VoiceCommandWidget } from '../ui/VoiceCommandWidget';
+import { useNavigationState } from './hooks/useNavigationState';
+import { MobileNavDrawer } from './MobileNavDrawer';
 
 interface MainLayoutProps {
-  children: ReactNode;
+  children: React.ReactNode;
+  activeTab?: string;
+  onSelectTab?: (tab: string) => void;
 }
 
-export function MainLayout({ children }: MainLayoutProps) {
-  const [mobileNavOpen, setMobileNavOpen] = useState(false);
-  const location = useLocation();
-  // Liga o navigationBus (usado hoje pelo comando de voz) à navegação real — ver
-  // useNavigationBusBridge.ts sobre por que isto precisa ficar aqui dentro do Router.
-  useNavigationBusBridge();
-  // "/app" (dashboard) ou "/app/prospect" etc — o segmento logo após "/app" é o módulo ativo.
-  // TabType assumido aqui porque toda rota é registrada em App.tsx com um valor de TabType como
-  // path; qualquer path desconhecido já é redirecionado pra "/app" antes de chegar aqui.
-  const activeTab = (location.pathname.split('/')[2] as TabType) || 'dashboard';
-
-  // Fecha a navegação mobile sempre que o módulo ativo muda (ex.: usuário tocou num item do menu).
-  useEffect(() => {
-    setMobileNavOpen(false);
-  }, []);
-
-  // Fecha com Escape, igual ao comportamento do Drawer/Dialog compartilhados.
-  useEffect(() => {
-    if (!mobileNavOpen) return;
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setMobileNavOpen(false);
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [mobileNavOpen]);
+export function MainLayout({ children, activeTab, onSelectTab }: MainLayoutProps) {
+  const { mobileNavOpen, toggleMobileNav, closeMobileNav } = useNavigationState();
 
   return (
-    <div className="relative flex h-screen w-full flex-col overflow-hidden bg-bg font-sans text-ink transition-colors duration-300">
-      {/* Ambientação de marca contida: clara no light, profunda sem neon no dark. */}
-      <div className="absolute inset-0 flex z-0 overflow-hidden pointer-events-none bg-bg mix-blend-screen dark:mix-blend-color-dodge">
-        <div className="absolute -right-48 -top-56 h-[36rem] w-[36rem] rounded-full bg-[#1677FF]/15 blur-[160px] dark:bg-[#1677FF]/10 transition-colors duration-1000 animate-pulse-slow" />
-        <div className="absolute -left-48 bottom-0 h-[36rem] w-[36rem] rounded-full bg-[#7C3AED]/10 blur-[160px] pointer-events-none" />
-        <div className="absolute inset-0 z-0 pointer-events-none opacity-50">
-          <DataFlowLines />
-        </div>
-        <div
-          className="absolute -bottom-64 -left-48 h-[34rem] w-[34rem] rounded-full bg-iris/10 blur-[180px] dark:bg-orbit-blue/10 transition-colors duration-1000 animate-pulse-slow"
-          style={{ animationDelay: '2s' }}
-        />
-        <div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[40rem] w-[40rem] rounded-full bg-orbit-blue/5 blur-[200px] dark:bg-orbit-blue/8 transition-colors duration-1000 animate-pulse-slow"
-          style={{ animationDelay: '4s' }}
-        />
-      </div>
-
+    <div className="relative flex min-h-screen bg-background text-foreground antialiased selection:bg-brand selection:text-on-brand">
       <OfflineBanner />
 
-      <div className="relative z-10 flex flex-col flex-1 min-h-0 w-full">
-        <MacDock activeTab={activeTab} />
-        {/* Backdrop da navegação mobile — some em telas md+, onde a Sidebar é estática */}
-        {mobileNavOpen && (
-          <button
-            type="button"
-            aria-label="Fechar navegação móvel"
-            className="fixed inset-0 z-30 bg-overlay backdrop-blur-sm lg:hidden transition-opacity duration-300 animate-fade-in"
-            onClick={() => setMobileNavOpen(false)}
-          />
-        )}
-        <div className="flex-1 flex flex-col h-full overflow-hidden relative">
-          <AppTopbar activeTab={activeTab} onOpenMobileNav={() => setMobileNavOpen(true)} />
-          <main className="flex-1 flex flex-col min-h-0 overflow-hidden relative bg-transparent">
-            <PageTransition id={activeTab}>{children}</PageTransition>
-          </main>
-          <ModuleAgentWidget activeTab={activeTab} />
-          <Toaster />
-          <VoiceCommandWidget />
-          <CopilotTrigger />
-          <BugReportButton />
-          <CommandPalette />
-        </div>
+      {/* Sidebar Desktop Estática */}
+      <aside className="hidden lg:flex lg:w-64 lg:flex-col lg:fixed lg:inset-y-0 z-30 border-r border-border-subtle bg-surface">
+        <Sidebar activeTab={activeTab} onSelectTab={onSelectTab} />
+      </aside>
+
+      {/* Drawer Mobile Desacoplado */}
+      <MobileNavDrawer
+        isOpen={mobileNavOpen}
+        onClose={closeMobileNav}
+        activeTab={activeTab}
+        onSelectTab={onSelectTab}
+      />
+
+      {/* Conteúdo Principal */}
+      <div className="flex flex-1 flex-col lg:pl-64">
+        <AppTopbar onMenuClick={toggleMobileNav} activeTab={activeTab} />
+
+        <main role="main" className="relative flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
+          <DataFlowLines />
+          {children}
+        </main>
       </div>
+
+      <VoiceCommandWidget />
     </div>
   );
 }
