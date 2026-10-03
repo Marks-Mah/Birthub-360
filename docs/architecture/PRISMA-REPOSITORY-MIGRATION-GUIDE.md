@@ -159,7 +159,7 @@ coisa sob `integrations/bitrix/`.
 - [ ] `intelligence/services/aiPendingAction.service.ts`
 - [x] `intelligence/services/assistant-history.service.ts` — ✅ migrado (Estilo B, AssistantHistoryRepository).
 - [ ] `intelligence/services/evaluationMetrics.service.ts`
-- [ ] `intelligence/services/guardrails.service.ts`
+- [x] `intelligence/services/guardrails.service.ts` — ✅ migrado (Estilo B, GuardrailRepository).
 - [ ] `intelligence/services/pending-actions.service.ts`
 - [x] `intelligence/services/prompt.service.ts` — ✅ migrado (Estilo B, PromptRepository).
 - [ ] `intelligence/services/roleplay-session.service.ts`
