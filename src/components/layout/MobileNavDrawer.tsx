@@ -1,6 +1,6 @@
 import React from 'react';
-import { Sidebar } from './Sidebar';
-import type { TabType } from './tabMeta';
+import { Sidebar } from './Sidebar.js';
+import type { TabType } from './tabMeta.js';
 
 interface MobileNavDrawerProps {
   isOpen: boolean;
@@ -9,7 +9,7 @@ interface MobileNavDrawerProps {
   onSelectTab?: (tab: string) => void;
 }
 
-export function MobileNavDrawer({ isOpen, onClose, activeTab, onSelectTab }: MobileNavDrawerProps) {
+export function MobileNavDrawer({ isOpen, onClose, activeTab }: MobileNavDrawerProps) {
   if (!isOpen) return null;
 
   return (
@@ -29,11 +29,8 @@ export function MobileNavDrawer({ isOpen, onClose, activeTab, onSelectTab }: Mob
       >
         <Sidebar
           activeTab={activeTab as TabType}
-          onSelectTab={(tab) => {
-            onSelectTab?.(tab);
-            onClose();
-          }}
-          isMobile
+          onCloseMobile={onClose}
+          mobileOpen={isOpen}
         />
       </aside>
     </div>
