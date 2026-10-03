@@ -566,9 +566,10 @@ export function NewLoginScreen({ initialScreen = 'intro' }: { initialScreen?: 'i
       ════════════════════════════════════════════════════════════════════ */}
       <section
         id="screen-login"
-        className={`absolute inset-0 w-full h-full flex flex-col items-center justify-center transition-transform duration-700 ease-in-out z-30 bg-[var(--bg)] px-6 py-10 lg:px-12 overflow-y-auto ${
+        className={`absolute inset-0 w-full h-full flex flex-col items-center justify-start transition-transform duration-700 ease-in-out z-30 bg-[#0B132B] px-6 py-10 lg:px-12 overflow-y-auto ${
           activeScreen === 'login' ? 'translate-x-0' : 'translate-x-full'
         }`}
+        style={{ background: 'linear-gradient(135deg, #060d1a 0%, #0B132B 50%, #0d1535 100%)' }}
       >
         {/* Botão Voltar */}
         <button

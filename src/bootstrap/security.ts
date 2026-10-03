@@ -150,7 +150,18 @@ export function applySecurityMiddleware(app: Express): void {
         // instalações, então não há um id único para hardcodear aqui; o mecanismo correto já
         // existe (ALLOWED_ORIGINS aceita `chrome-extension://<id>` como qualquer outra origem —
         // ver o `includes` abaixo), só faltava remover este bypass amplo.
-        if (ALLOWED_ORIGINS.includes(origin)) return callback(null, true);
+        const isAllowed =
+          ALLOWED_ORIGINS.includes(origin) ||
+          ALLOWED_ORIGINS.some((allowed) => {
+            try {
+              const allowedUrl = new URL(allowed);
+              const originUrl = new URL(origin);
+              return allowedUrl.hostname === originUrl.hostname;
+            } catch {
+              return false;
+            }
+          });
+        if (isAllowed) return callback(null, true);
         callback(new Error(`CORS policy: origin ${origin} not allowed`));
       },
       credentials: true, // Necessário para Better Auth (cookies de sessão)
