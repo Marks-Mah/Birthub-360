@@ -89,6 +89,7 @@ import {
   createNewsMonitorWorker,
   scheduleGlobalNewsScan,
 } from '../lib/queue/newsMonitor.worker.js';
+import { createCheckpointerPruneWorker, scheduleCheckpointerPrune } from '../lib/queue/checkpointerPrune.worker.js';
 import { createWhatsAppCommandWorker } from '../lib/queue/whatsappCommand.worker.js';
 
 // `unknown` não serve aqui: os workers reais guardados neste handle têm DataType/ResultType todos
@@ -185,6 +186,7 @@ export function startEmbeddedWorkers(): EmbeddedWorkersHandle {
       ? createCopilotoTranscriptionWorker({ meetingSynthesisPort: new MeetingSynthesisService() })
       : null,
     newsMonitorWorker: embeddedWorkersEnabled ? createNewsMonitorWorker() : null,
+    checkpointerPruneWorker: embeddedWorkersEnabled ? createCheckpointerPruneWorker() : null,
     cadenceRunWorker: embeddedWorkersEnabled ? createCadenceRunWorker() : null,
     agentMemoryCleanupWorker: embeddedWorkersEnabled ? createAgentMemoryCleanupWorker() : null,
     accountIntelligenceInsightsWorker: embeddedWorkersEnabled
@@ -250,8 +252,9 @@ export function startEmbeddedWorkers(): EmbeddedWorkersHandle {
       logger.error({ err }, 'Falha ao agendar job de insights de account intelligence'),
     );
     scheduleGlobalNewsScan().catch((err) =>
-      logger.error({ err }, 'Falha ao agendar o job de monitoramento de notícias'),
+      logger.error({ err }, 'Falha ao agendar o job de monitoramento de noticias'),
     );
+    scheduleCheckpointerPrune().catch((err) => logger.error({ err }, 'Falha ao agendar checkpointer prune'));
   }
 
   handle.searchWorker = embeddedWorkersEnabled && env.ENABLE_SEARCH ? createSearchWorker() : null;
@@ -288,3 +291,6 @@ export function startEmbeddedWorkers(): EmbeddedWorkersHandle {
 
   return handle;
 }
+
+
+

@@ -144,7 +144,7 @@ export function minimizePii(
   for (const { token, value } of values) {
     if (!value || typeof value !== 'string') continue;
     const cleanValue = value.trim();
-    if (!cleanValue) continue;
+    if (!cleanValue || cleanValue.length < 3) continue;
     if (result.includes(cleanValue)) {
       result = result.split(cleanValue).join(token);
       applied.push({ token, value: cleanValue });

@@ -82,7 +82,8 @@ async function callWithFallback(
   const _startTime = Date.now();
   const errorsByProvider = new Map<string, unknown>();
 
-  for (const provider of PROVIDER_CHAIN) {
+  const chain = resolvedModel.startsWith('openrouter/') ? [openrouterProvider, litellmProvider] : PROVIDER_CHAIN;
+  for (const provider of chain) {
     if (!provider.isConfigured()) continue;
     try {
       const response = await provider.chatCompletion({
@@ -210,6 +211,8 @@ export const getAiModel = (
     },
   };
 };
+
+
 
 
 

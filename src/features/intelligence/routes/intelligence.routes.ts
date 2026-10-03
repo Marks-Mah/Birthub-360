@@ -4,6 +4,7 @@ import { HumanMessage, SystemMessage } from '@langchain/core/messages';
 import { type Prisma, ReportSource } from '@prisma/client';
 import { type NextFunction, type Request, type Response, Router } from 'express';
 import { z } from 'zod';
+import { swarmObservabilityRoutes } from './swarm-observability.routes.js';
 import {
   analyzeCompetitors,
   analyzeSentiment,
@@ -965,4 +966,7 @@ router.get(
   },
 );
 
+router.use('/observability', swarmObservabilityRoutes);
+
 export const intelligenceRoutes = router;
+
