@@ -1,6 +1,6 @@
 import { OrbitalSystem } from './OrbitalSystem.js';
-import { LandingLoginSplitScreen } from './LandingLoginSplitScreen.js';
+import { NewLoginScreen } from './NewLoginScreen.js';
 
 export function WelcomeScreen() {
-  return <LandingLoginSplitScreen />;
+  return <NewLoginScreen />;
 }

@@ -2,13 +2,12 @@ import type { PlaybookKey } from '../../../config/playbooks.js';
 import { logger } from '../../../lib/logger.js';
 import { prisma } from '../../../lib/prisma.js';
 import type {
-  AppendTurnInput,
   AssistantHistoryMessage,
   AssistantHistoryRepository,
 } from '../domain/AssistantHistory.js';
 
 export class PrismaAssistantHistoryRepository implements AssistantHistoryRepository {
-  async listRecentMessages(
+  async listRecent(
     organizationId: string,
     userId: string,
     brand: PlaybookKey,
@@ -21,7 +20,8 @@ export class PrismaAssistantHistoryRepository implements AssistantHistoryReposit
       select: {
         id: true,
         role: true,
-        text: true,
+        content: true,
+        brand: true,
         createdAt: true,
       },
     });
@@ -29,13 +29,19 @@ export class PrismaAssistantHistoryRepository implements AssistantHistoryReposit
     return rows.map((r) => ({
       id: r.id,
       role: r.role as 'user' | 'assistant',
-      text: r.text,
+      content: r.content,
+      brand: r.brand as PlaybookKey,
       createdAt: r.createdAt,
     }));
   }
 
-  async appendTurn(input: AppendTurnInput): Promise<void> {
-    const { organizationId, userId, brand, userMessage, assistantResponse } = input;
+  async appendTurn(
+    organizationId: string,
+    userId: string,
+    brand: PlaybookKey,
+    userText: string,
+    assistantText: string,
+  ): Promise<void> {
     try {
       await prisma.$transaction([
         prisma.assistantMessage.create({
@@ -44,7 +50,7 @@ export class PrismaAssistantHistoryRepository implements AssistantHistoryReposit
             userId,
             brand,
             role: 'user',
-            text: userMessage,
+            content: userText,
           },
         }),
         prisma.assistantMessage.create({
@@ -53,17 +59,17 @@ export class PrismaAssistantHistoryRepository implements AssistantHistoryReposit
             userId,
             brand,
             role: 'assistant',
-            text: assistantResponse,
+            content: assistantText,
           },
         }),
       ]);
-    } catch (err) {
-      logger.error('Failed to persist assistant history turn', {
+    } catch (err: any) {
+      logger.error({
         organizationId,
         userId,
         brand,
         err,
-      });
+      }, 'Failed to persist assistant history turn');
     }
   }
 }
