@@ -107,6 +107,7 @@ export interface DrawerProps extends React.ComponentPropsWithoutRef<typeof Dialo
   title?: React.ReactNode;
   subtitle?: React.ReactNode;
   children?: React.ReactNode;
+  side?: 'top' | 'bottom' | 'left' | 'right';
 }
 
 function Drawer({
@@ -117,6 +118,7 @@ function Drawer({
   title,
   subtitle,
   children,
+  side,
   ...props
 }: DrawerProps) {
   const isConvenienceMode =
@@ -137,7 +139,7 @@ function Drawer({
 
   return (
     <DialogPrimitive.Root open={effectiveOpen} onOpenChange={handleOpenChange} {...props}>
-      <DrawerContent>
+      <DrawerContent side={side}>
         {title && (
           <DrawerHeader>
             <DrawerTitle>{title}</DrawerTitle>

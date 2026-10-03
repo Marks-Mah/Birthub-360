@@ -1,7 +1,6 @@
 import type { NextFunction, Request, Response } from 'express';
 import { prisma } from '../../../lib/prisma.js';
 import type { AuthRequest } from '../../../shared/middlewares/authenticateToken.js';
-import { aiSuite } from '../../intelligence/services/CentralAISuiteService.js';
 import { GamificationUseCases } from '../application/GamificationUseCases.js';
 import type { LeaderboardPeriod } from '../domain/Gamification.js';
 import { sellerCoachingService } from '../services/seller-coaching.service.js';
