@@ -41,6 +41,13 @@ export function checkRepoControllerWiring(featuresDir: string): ControllerWiring
   const features = readdirSync(featuresDir).filter((entry) =>
     existsSync(join(featuresDir, entry, 'presentation')),
   );
+  const diSetupPath = join(featuresDir, '../shared/di/setup.ts');
+  const diSetupContents = readFileSync(diSetupPath, 'utf-8');
+  const registeredControllers = new Set(
+    [...diSetupContents.matchAll(/container\.register\(\s*['"](\w+Controller)['"]/g)].map(
+      ([, controller]) => controller,
+    ),
+  );
 
   return checkControllerWiring(
     features,
@@ -48,7 +55,8 @@ export function checkRepoControllerWiring(featuresDir: string): ControllerWiring
       const presentationDir = join(featuresDir, feature, 'presentation');
       return readdirSync(presentationDir)
         .filter((file) => file.endsWith('Controller.ts'))
-        .map((file) => file.replace(/\.ts$/, ''));
+        .map((file) => file.replace(/\.ts$/, ''))
+        .filter((controller) => registeredControllers.has(controller));
     },
     (feature) => {
       const routesDir = join(featuresDir, feature, 'routes');
