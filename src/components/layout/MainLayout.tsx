@@ -37,7 +37,7 @@ export function MainLayout({ children, activeTab }: MainLayoutProps) {
       <div className="flex flex-1 flex-col lg:pl-64">
         <AppTopbar onOpenMobileNav={toggleMobileNav} activeTab={activeTab as TabType} />
 
-        <main role="main" className="relative flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
+        <main className="relative flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
           <DataFlowLines />
           {children}
         </main>
