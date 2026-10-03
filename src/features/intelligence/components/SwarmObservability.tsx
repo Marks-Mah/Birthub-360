@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { api } from '../../../lib/api.js';
 import { Activity, Server, Cpu, Database, AlertCircle, Clock } from 'lucide-react';
 
 interface AgentStatus {
@@ -18,74 +19,37 @@ interface LogEntry {
   level: 'info' | 'warn' | 'error';
 }
 
-const mockAgents: AgentStatus[] = [
-  {
-    id: 'ag-01',
-    name: 'Alpha',
-    role: 'Qualificador de Leads',
-    status: 'WORKING',
-    tokensUsed: 14500,
-    lastActive: 'Agora',
-  },
-  {
-    id: 'ag-02',
-    name: 'Beta',
-    role: 'Analisador de CRM',
-    status: 'IDLE',
-    tokensUsed: 8900,
-    lastActive: 'Há 5 min',
-  },
-  {
-    id: 'ag-03',
-    name: 'Gamma',
-    role: 'Gerador de Reports',
-    status: 'WORKING',
-    tokensUsed: 32150,
-    lastActive: 'Agora',
-  },
-  {
-    id: 'ag-04',
-    name: 'Delta',
-    role: 'Monitor de Fila',
-    status: 'ERROR',
-    tokensUsed: 4200,
-    lastActive: 'Há 12 min',
-  },
-];
 
-const mockLogs: LogEntry[] = [
-  {
-    id: 'log-1',
-    timestamp: '10:45:01',
-    agent: 'Alpha',
-    action: 'Processando lead #4892 - Score calculado: 85',
-    level: 'info',
-  },
-  {
-    id: 'log-2',
-    timestamp: '10:45:15',
-    agent: 'Gamma',
-    action: 'Iniciando extração semanal de pipeline',
-    level: 'info',
-  },
-  {
-    id: 'log-3',
-    timestamp: '10:46:02',
-    agent: 'Delta',
-    action: 'Falha ao conectar na API externa (timeout)',
-    level: 'error',
-  },
-  {
-    id: 'log-4',
-    timestamp: '10:46:10',
-    agent: 'Alpha',
-    action: 'Enviando webhook de qualificação concluída',
-    level: 'info',
-  },
-];
+
+
 
 export function SwarmObservability() {
   const [activeTab, setActiveTab] = useState<'agents' | 'logs' | 'traces'>('agents');
+  const [agents, setAgents] = useState<AgentStatus[]>([]);
+  const [logs, setLogs] = useState<LogEntry[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchData = async () => {
+    try {
+      const [agentsRes, logsRes] = (await Promise.all([
+        api.get('/api/intelligence/observability/agents'),
+        api.get('/api/intelligence/observability/logs')
+      ]);
+      setAgents(agentsRes.data?.data || []);
+      setLogs(logsRes.data?.data || []);
+    } catch (err) {
+      console.error('Failed to fetch swarm observability data', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+    // Refresh every 10 seconds
+    const interval = setInterval(fetchData, 10000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="flex flex-col h-full bg-gray-50 text-gray-900 p-6 font-sans">
@@ -165,7 +129,7 @@ export function SwarmObservability() {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {mockAgents.map((agent) => (
+                {agents.map((agent) => (
                   <tr key={agent.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex flex-col">
@@ -205,7 +169,7 @@ export function SwarmObservability() {
 
         {activeTab === 'logs' && (
           <div className="p-4 bg-gray-900 h-full font-mono text-sm text-gray-300 overflow-y-auto">
-            {mockLogs.map((log) => (
+            {logs.map((log) => (
               <div key={log.id} className="mb-2 flex gap-3">
                 <span className="text-gray-500 shrink-0">[{log.timestamp}]</span>
                 <span
@@ -235,3 +199,5 @@ export function SwarmObservability() {
     </div>
   );
 }
+
+
