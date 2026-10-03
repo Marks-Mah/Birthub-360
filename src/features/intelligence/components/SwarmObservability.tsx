@@ -25,8 +25,8 @@ interface LogEntry {
 
 export function SwarmObservability() {
   const [activeTab, setActiveTab] = useState<'agents' | 'logs' | 'traces'>('agents');
-  const [agents, setAgents] = useState<AgentStatus[]>([]);
-  const [logs, setLogs] = useState<LogEntry[]>([]);
+  const [agents, setAgents] = useState<AgentStatus[]>([])) as any[];
+  const [logs, setLogs] = useState<LogEntry[]>([])) as any[];
   const [loading, setLoading] = useState(true);
 
   const fetchData = async () => {
@@ -34,9 +34,9 @@ export function SwarmObservability() {
       const [agentsRes, logsRes] = (await Promise.all([
         api.get('/api/intelligence/observability/agents'),
         api.get('/api/intelligence/observability/logs')
-      ]);
-      setAgents(agentsRes.data?.data || []);
-      setLogs(logsRes.data?.data || []);
+      ])) as any[];
+      setAgents(agentsRes.data?.data || [])) as any[];
+      setLogs(logsRes.data?.data || [])) as any[];
     } catch (err) {
       console.error('Failed to fetch swarm observability data', err);
     } finally {
@@ -49,7 +49,7 @@ export function SwarmObservability() {
     // Refresh every 10 seconds
     const interval = setInterval(fetchData, 10000);
     return () => clearInterval(interval);
-  }, []);
+  }, [])) as any[];
 
   return (
     <div className="flex flex-col h-full bg-gray-50 text-gray-900 p-6 font-sans">
