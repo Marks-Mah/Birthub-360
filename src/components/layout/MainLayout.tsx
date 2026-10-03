@@ -11,10 +11,9 @@ import type { TabType } from './tabMeta';
 interface MainLayoutProps {
   children: React.ReactNode;
   activeTab?: string;
-  
 }
 
-export function MainLayout({ children, activeTab, onSelectTab }: MainLayoutProps) {
+export function MainLayout({ children, activeTab }: MainLayoutProps) {
   const { mobileNavOpen, toggleMobileNav, closeMobileNav } = useNavigationState();
 
   return (
@@ -23,7 +22,7 @@ export function MainLayout({ children, activeTab, onSelectTab }: MainLayoutProps
 
       {/* Sidebar Desktop Estática */}
       <aside className="hidden lg:flex lg:w-64 lg:flex-col lg:fixed lg:inset-y-0 z-30 border-r border-border-subtle bg-surface">
-        <Sidebar activeTab={activeTab as TabType}  />
+        <Sidebar activeTab={activeTab as TabType} />
       </aside>
 
       {/* Drawer Mobile Desacoplado */}
