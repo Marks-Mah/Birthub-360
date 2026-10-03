@@ -15,12 +15,12 @@ export const EASE_BOUNCE = [0.22, 1, 0.36, 1] as const; // Replaced bounce with 
 export const EASE_SMOOTH = [0.25, 0.1, 0.25, 1] as const;
 
 export const MOTION_DURATION = {
-  instant: 0.1,
-  fast: 0.18,
-  base: 0.28,
-  deliberate: 0.42,
-  gentle: 0.6,
-  slow: 0.8,
+  instant: 0.1, // --duration-instant (100ms)
+  fast: 0.15, // --duration-fast (150ms)
+  base: 0.25, // --duration-normal (250ms)
+  deliberate: 0.35, // --duration-slow (350ms)
+  gentle: 0.6, // no CSS equivalent
+  slow: 0.8, // no CSS equivalent
 } as const;
 
 export const SPRING_SNAPPY = { type: 'spring', stiffness: 420, damping: 32, mass: 0.7 } as const;
@@ -285,7 +285,7 @@ export function useCursorSpotlight() {
     spotlightStyle:
       isHovered && !reduceMotion
         ? {
-            background: `radial-gradient(400px circle at ${coords.x}px ${coords.y}px, rgba(212, 175, 55, 0.14), transparent 65%)`,
+            background: `radial-gradient(400px circle at ${coords.x}px ${coords.y}px, rgba(0, 229, 255, 0.14), transparent 65%)`,
           }
         : undefined,
   };
@@ -347,12 +347,12 @@ export const metricsContainer: Variants = {
  * Aparece apenas no hover; nunca em resting state.
  */
 export const ctaGlow: Variants = {
-  rest: { boxShadow: '0 0 0px rgba(212,175,55,0)' },
+  rest: { boxShadow: '0 0 0px rgba(0,229,255,0)' },
   glow: {
     boxShadow: [
-      '0 0 0px rgba(212,175,55,0)',
-      '0 0 24px rgba(212,175,55,0.45)',
-      '0 0 12px rgba(212,175,55,0.25)',
+      '0 0 0px rgba(0,229,255,0)',
+      '0 0 24px rgba(0,229,255,0.45)',
+      '0 0 12px rgba(0,229,255,0.25)',
     ],
     transition: { duration: 0.4, ease: EASE_PREMIUM },
   },
