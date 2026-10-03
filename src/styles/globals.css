@@ -121,7 +121,7 @@
   --gold: #d4af37;
   --white: #ffffff;
 
-  /* BirthHub 360 - Destaque (7 colors) */
+  /* BirthHub 360 - Destaque (7 colors) - atualizado para cores do HTML */
   --brand: #00e5ff;
   --brand-2: #33ebff;
   --on-brand: #0b132b;
@@ -131,6 +131,11 @@
   --pink: #8b5cf6;
   --warn: #f59e0b;
   --ok: #22c55e;
+
+  /* Gradientes e glows para landing/login */
+  --grad-brand: linear-gradient(135deg, #00E5FF 0%, #3B82F6 55%, #8B5CF6 100%);
+  --glow-brand: 0 0 22px rgba(0, 229, 255, 0.35);
+  --glow-iris: 0 0 22px rgba(139, 92, 246, 0.30);
   /* Indireção pro --color-info do @theme poder ser sobrescrito por tema (mesmo padrão de
      --warn/--ok acima e --critical mais abaixo) — sem isso, `.dark { --color-info: ... }` perderia
      pra `--color-info: #3b82f6` gerado pelo bloco `@theme` (que vem depois no arquivo e empata em
@@ -246,6 +251,76 @@
   --ease-enter: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-exit: cubic-bezier(0.4, 0, 1, 1);
   --ease-emphasized: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Landing/Login Screen Visual Effects */
+.grad-text {
+  background-image: var(--grad-brand);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.glow-text {
+  text-shadow: 0 0 20px rgba(0, 229, 255, 0.6), 0 0 40px rgba(0, 229, 255, 0.3);
+}
+
+.grad-text.glow-text {
+  text-shadow: none;
+  filter: drop-shadow(0 0 20px rgba(0, 229, 255, 0.6)) drop-shadow(0 0 40px rgba(0, 229, 255, 0.3));
+}
+
+/* Balloon animation for pillar tags */
+@keyframes balloon-explode {
+  0% {
+    opacity: 0;
+    transform: scale(0) rotate(-20deg);
+    filter: blur(15px);
+    box-shadow: 0 0 0 rgba(0, 229, 255, 0);
+  }
+  40% {
+    opacity: 1;
+    transform: scale(1.5) rotate(10deg);
+    filter: blur(0px);
+    box-shadow: 0 0 40px currentColor, 0 0 80px currentColor;
+  }
+  60% {
+    transform: scale(0.85) rotate(-5deg);
+    box-shadow: 0 0 30px currentColor, 0 0 60px currentColor;
+  }
+  80% {
+    transform: scale(1.1) rotate(3deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+    filter: blur(0px);
+    box-shadow: 0 0 25px currentColor, 0 0 50px currentColor;
+  }
+}
+
+.balloon-item {
+  opacity: 0;
+  transform: scale(0);
+  display: inline-block;
+  padding: 8px 16px;
+  border-radius: 50px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow-hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.balloon-item.explode {
+  animation: balloon-explode 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.balloon-item:hover {
+  transform: scale(1.15) !important;
+  box-shadow: 0 0 35px currentColor, 0 0 70px currentColor !important;
+  border-color: rgba(255, 255, 255, 0.3);
 }
 
 .dark {
