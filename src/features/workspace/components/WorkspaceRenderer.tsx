@@ -141,37 +141,36 @@ export function WorkspaceRenderer({ layout }: { layout: WorkspaceLayoutDef }) {
 export function WorkspaceHome() {
   const { workspace, isLoading, error, reload } = useWorkspace();
 
-  // MOCK: Simulando o layout dinâmico que viria do backend
-  // Isso será substituído por dados reais do Prisma (WorkspaceLayout/WorkspaceSection)
-  const dynamicLayoutMock = useMemo<WorkspaceLayoutDef>(
-    () => ({
-      id: 'layout-1',
+  const dynamicLayout = useMemo<WorkspaceLayoutDef>(() => {
+    const rawWidgets = workspace?.homeWidgets?.length
+      ? workspace.homeWidgets
+      : (['mission', 'kpis', 'quickActions'] as const);
+
+    const widgets: WorkspaceWidgetDef[] = rawWidgets.map((w) => {
+      const componentCode =
+        w === 'mission'
+          ? 'Mission'
+          : w === 'kpis'
+            ? 'Kpis'
+            : w === 'quickActions'
+              ? 'QuickActions'
+              : w === 'agentGroups'
+                ? 'AgentGroups'
+                : 'Navigation';
+      return { id: `widget-${w}`, componentCode };
+    });
+
+    return {
+      id: `layout-${workspace?.jobRole?.code ?? 'default'}`,
       sections: [
         {
-          id: 'sec-1',
-          columns: 1,
-          widgets: [{ id: 'w-1', componentCode: 'Mission' }],
-        },
-        {
-          id: 'sec-2',
-          title: 'Gestão Diária',
-          columns: 3,
-          widgets: [
-            { id: 'w-2', componentCode: 'Kpis' },
-            { id: 'w-3', componentCode: 'QuickActions' },
-            { id: 'w-4', componentCode: 'UnknownWidget' },
-          ],
-        },
-        {
-          id: 'sec-3',
-          title: 'Operação',
-          columns: 1,
-          widgets: [{ id: 'w-5', componentCode: 'ProspectList' }],
+          id: 'sec-primary',
+          columns: widgets.length > 2 ? 2 : 1,
+          widgets,
         },
       ],
-    }),
-    [],
-  );
+    };
+  }, [workspace]);
 
   return (
     <div className="relative flex min-h-full flex-1 flex-col items-center overflow-y-auto bg-transparent font-sans px-4 pb-8 md:px-8 pt-8">
@@ -223,7 +222,7 @@ export function WorkspaceHome() {
             className="w-full"
           >
             {/* Aqui usamos a nova engine */}
-            <WorkspaceRenderer layout={dynamicLayoutMock} />
+            <WorkspaceRenderer layout={dynamicLayout} />
           </motion.div>
         )}
       </div>

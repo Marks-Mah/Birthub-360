@@ -65,7 +65,11 @@ export async function signUpRealUser(
 
   const { payload, headers } = await withRlsBypass(async () => {
     const { response } = (await auth.api.signUpEmail({
-      body: { email, password: TEST_PASSWORD, name: `RBAC Test ${prefix}` },
+      body: {
+        email,
+        password: TEST_PASSWORD,
+        name: `RBAC Test ${prefix} ${Date.now()}_${Math.floor(Math.random() * 1e6)}`,
+      },
       returnHeaders: true,
     })) as {
       response: { user: { id: string; organizationId: string; role: string } };

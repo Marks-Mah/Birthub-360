@@ -88,6 +88,64 @@ router.post(
   },
 );
 
+// Custom AI Tools (DT-006: persistência real no PostgreSQL via Prisma)
+router.get(
+  '/tools/custom',
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const { organizationId } = (req as AuthRequest).user;
+      const tools = await prisma.customAiTool.findMany({
+        where: { organizationId },
+        orderBy: { createdAt: 'desc' },
+      });
+      res.json({ success: true, data: tools });
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+router.post(
+  '/tools/custom',
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const { organizationId } = (req as AuthRequest).user;
+      const { name, category, prompt } = req.body;
+      if (!name || !category || !prompt) {
+        res.status(400).json({ success: false, error: 'name, category e prompt são obrigatórios' });
+        return;
+      }
+      const tool = await prisma.customAiTool.create({
+        data: {
+          organizationId,
+          name,
+          category,
+          prompt,
+        },
+      });
+      res.json({ success: true, data: tool });
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+router.delete(
+  '/tools/custom/:id',
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const { organizationId } = (req as AuthRequest).user;
+      const { id } = req.params;
+      await prisma.customAiTool.deleteMany({
+        where: { id: String(id), organizationId },
+      });
+      res.json({ success: true });
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
 // Histórico de conversa do Chatbook (AssistantMessage) — GET carrega ao montar/trocar de marca,
 // POST /studio/stream grava os dois turnos (usuário + assistente) ao final de cada resposta.
 router.get(

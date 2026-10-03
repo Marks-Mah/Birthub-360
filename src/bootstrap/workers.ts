@@ -134,6 +134,7 @@ export interface EmbeddedWorkersHandle {
   /** ACH-16-05: já registrados em worker.ts, faltavam aqui — ver comentário nos imports acima. */
   newsMonitorWorker: CloseableWorker;
   cadenceRunWorker: CloseableWorker;
+  checkpointerPruneWorker: CloseableWorker;
   agentMemoryCleanupWorker: CloseableWorker;
   accountIntelligenceInsightsWorker: CloseableWorker;
   searchWorker: CloseableWorker;

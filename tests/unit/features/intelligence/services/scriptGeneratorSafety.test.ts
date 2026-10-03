@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const invokeTextMock = vi.fn();
-vi.mock('../../shared.js', () => ({
+vi.mock('../../../../../src/features/intelligence/services/studio/shared.js', () => ({
   SYSTEM_RULES: 'REGRAS DO SISTEMA',
   invokeText: (...args: unknown[]) => invokeTextMock(...args),
   stripCodeFence: (value: string) =>
@@ -11,7 +11,7 @@ vi.mock('../../shared.js', () => ({
       .trim(),
 }));
 
-import { generateScript } from '../script.js';
+import { generateScript } from '../../../../../src/features/intelligence/services/studio/generators/script.js';
 
 const request = {
   kind: 'script' as const,
@@ -25,7 +25,7 @@ const request = {
   },
 };
 
-describe('studio/generators/script', () => {
+describe('studio/generators/script safety integration', () => {
   beforeEach(() => vi.clearAllMocks());
 
   it('chama invokeText com o contexto/temperatura corretos e remove a cerca de código Markdown do resultado', async () => {

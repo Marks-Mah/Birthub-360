@@ -1025,6 +1025,7 @@ model Organization {
   webhookEndpoints   OrganizationWebhookEndpoint[]
   campaigns          Campaign[]
   dncLists           DncList[]
+  customAiTools      CustomAiTool[]
 }
 
 // ─── Comercial Inteligente (Revenue Command Center) ────────────────────────
@@ -5334,5 +5335,18 @@ model DncList {
   createdAt      DateTime     @default(now())
 
   @@unique([organizationId, phone])
+  @@index([organizationId])
+}
+
+model CustomAiTool {
+  id             String       @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  name           String
+  category       String
+  prompt         String       @db.Text
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
   @@index([organizationId])
 }

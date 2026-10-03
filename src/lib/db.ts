@@ -207,36 +207,36 @@ export const analyticsDB = {
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
-// AI TOOL BUILDER STORE (uses localStorage as persistence for custom AI tools)
+// AI TOOL BUILDER STORE (DT-006: PostgreSQL persistence via REST API)
 // ─────────────────────────────────────────────────────────────────────────────
+export interface CustomAiToolRecord {
+  id: string;
+  organizationId: string;
+  name: string;
+  category: string;
+  prompt: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export const aiToolsStore = {
-  STORAGE_KEY: 'atlas_custom_ai_tools',
-
-  list: (): { id: string; name: string; category: string; prompt: string; createdAt: string }[] => {
-    try {
-      return JSON.parse(localStorage.getItem(aiToolsStore.STORAGE_KEY) || '[]');
-    } catch {
-      return [];
-    }
+  list: async (): Promise<CustomAiToolRecord[]> => {
+    const res = await api.get<{ success: boolean; data: CustomAiToolRecord[] }>(
+      '/api/intelligence/tools/custom',
+    );
+    return res.data;
   },
 
-  save: (tool: { name: string; category: string; prompt: string }) => {
-    const tools = aiToolsStore.list();
-    const newTool = {
-      ...tool,
-      id:
-        typeof crypto !== 'undefined' && crypto.randomUUID
-          ? crypto.randomUUID()
-          : Date.now().toString(),
-      createdAt: new Date().toISOString(),
-    };
-    tools.unshift(newTool);
-    localStorage.setItem(aiToolsStore.STORAGE_KEY, JSON.stringify(tools));
-    return newTool;
+  save: async (tool: { name: string; category: string; prompt: string }): Promise<CustomAiToolRecord> => {
+    const res = await api.post<{ success: boolean; data: CustomAiToolRecord }>(
+      '/api/intelligence/tools/custom',
+      tool,
+    );
+    return res.data;
   },
 
-  delete: (id: string) => {
-    const filtered = aiToolsStore.list().filter((t) => t.id !== id);
-    localStorage.setItem(aiToolsStore.STORAGE_KEY, JSON.stringify(filtered));
+  delete: async (id: string): Promise<void> => {
+    await api.delete<{ success: boolean }>(`/api/intelligence/tools/custom/${id}`);
   },
 };
+

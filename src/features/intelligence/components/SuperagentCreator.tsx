@@ -22,6 +22,7 @@ import { useActivePlaybook } from '../../../hooks/useActivePlaybook.js';
 import { useBrandAccent } from '../../../hooks/useBrandAccent.js';
 import { api } from '../../../lib/api.js';
 import { BorderBeam } from '../../../components/ui/BorderBeam.js';
+import { TerminalSafetyService } from '../../../shared/security/terminalSafety.service.js';
 
 const PROVIDERS = [
   { id: 'groq', name: 'Groq Cloud (Fast)', models: ['openai/gpt-oss-120b', 'openai/gpt-oss-20b'] },
@@ -349,6 +350,14 @@ $status | ConvertTo-Json -Depth 3
     if (activeTabOutput === 'python') textToCopy = result.pythonScript;
     if (activeTabOutput === 'powershell') textToCopy = result.powershellScript;
 
+    if (activeTabOutput === 'powershell' || activeTabOutput === 'python') {
+      const safety = TerminalSafetyService.analyzeCommand(textToCopy);
+      if (safety.isBlocked) {
+        setError(`Ação bloqueada pela política de segurança: ${safety.reason}`);
+        return;
+      }
+    }
+
     navigator.clipboard.writeText(textToCopy);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -372,6 +381,14 @@ $status | ConvertTo-Json -Depth 3
     } else if (activeTabOutput === 'powershell') {
       content = result.powershellScript;
       filename = `${safeName}_deploy.ps1`;
+    }
+
+    if (activeTabOutput === 'powershell' || activeTabOutput === 'python') {
+      const safety = TerminalSafetyService.analyzeCommand(content);
+      if (safety.isBlocked) {
+        setError(`Download bloqueado pela política de segurança: ${safety.reason}`);
+        return;
+      }
     }
 
     const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
