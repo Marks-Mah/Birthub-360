@@ -170,10 +170,8 @@
   --pulse: #c2255c;
   /* Glow discreto no claro — "neon só no escuro" (regra do brief). Mesma fórmula de
      --shadow-glow-brand acima (20%, blur 15px), só trocando a cor de base. */
-  --shadow-glow-accent-violet-value: 0 0 15px -3px
-    color-mix(in srgb, var(--accent-violet) 20%, transparent);
-  --shadow-glow-accent-cyan-value: 0 0 15px -3px
-    color-mix(in srgb, var(--accent-cyan) 20%, transparent);
+  --shadow-glow-accent-violet-value: 0 0 15px -3px color-mix(in srgb, var(--accent-violet) 20%, transparent);
+  --shadow-glow-accent-cyan-value: 0 0 15px -3px color-mix(in srgb, var(--accent-cyan) 20%, transparent);
   --shadow-glow-pulse-value: 0 0 15px -3px color-mix(in srgb, var(--pulse) 20%, transparent);
   /* Vermelho de estado crítico/risco (Comercial Inteligente: Centro de Decisão, Alertas, drill-down
      de negócios) — precisa ser redefinido por tema porque nenhum hex único passa 4.5:1 (WCAG AA)
@@ -278,19 +276,23 @@
     filter: blur(15px);
     box-shadow: 0 0 0 rgba(0, 229, 255, 0);
   }
+
   40% {
     opacity: 1;
     transform: scale(1.5) rotate(10deg);
     filter: blur(0px);
     box-shadow: 0 0 40px currentColor, 0 0 80px currentColor;
   }
+
   60% {
     transform: scale(0.85) rotate(-5deg);
     box-shadow: 0 0 30px currentColor, 0 0 60px currentColor;
   }
+
   80% {
     transform: scale(1.1) rotate(3deg);
   }
+
   100% {
     opacity: 1;
     transform: scale(1) rotate(0deg);
@@ -309,7 +311,6 @@
   backdrop-filter: blur(10px);
   border: 2px solid rgba(255, 255, 255, 0.1);
   position: relative;
-  overflow-hidden;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -346,11 +347,9 @@
   --nav-c-blue: color-mix(in srgb, var(--orbit-blue) 75%, white);
   --nav-c-red: color-mix(in srgb, var(--red) 88%, white);
   --nav-c-green: color-mix(in srgb, var(--ok) 70%, white);
-  --nav-c-violet: color-mix(
-    in srgb,
-    color-mix(in srgb, var(--iris) 45%, var(--orbit-blue)) 72%,
-    white
-  );
+  --nav-c-violet: color-mix(in srgb,
+      color-mix(in srgb, var(--iris) 45%, var(--orbit-blue)) 72%,
+      white);
   --nav-c-teal: color-mix(in srgb, color-mix(in srgb, var(--ok) 55%, var(--orbit-blue)) 72%, white);
   --nav-c-slate: var(--ink-2);
   /* --ok cru (#0f9d64) sobre --surface-elevated escura mede 4.44:1 como texto de 12px, abaixo do
@@ -702,6 +701,7 @@
   }
 
   @keyframes float {
+
     0%,
     100% {
       transform: translateY(0);
@@ -713,6 +713,7 @@
   }
 
   @keyframes pulse-glow {
+
     0%,
     100% {
       filter: drop-shadow(0 0 12px color-mix(in srgb, var(--brand) 25%, transparent));
@@ -724,6 +725,7 @@
   }
 
   @keyframes gradient-xy {
+
     0%,
     100% {
       background-position: 0% 50%;
@@ -771,6 +773,7 @@
   }
 
   @keyframes pulse-slow {
+
     0%,
     100% {
       opacity: 0.6;
@@ -794,6 +797,7 @@
   }
 
   @keyframes hologram {
+
     0%,
     100% {
       opacity: 0.8;
@@ -817,6 +821,7 @@
   }
 
   @keyframes neon-flicker {
+
     0%,
     100% {
       opacity: 1;
@@ -834,16 +839,12 @@
     font-family: var(--font-sans);
     background-color: var(--bg);
     background-image:
-      radial-gradient(
-        at 0% 0%,
+      radial-gradient(at 0% 0%,
         color-mix(in srgb, var(--brand) 10%, transparent) 0px,
-        transparent 50%
-      ),
-      radial-gradient(
-        at 100% 100%,
+        transparent 50%),
+      radial-gradient(at 100% 100%,
         color-mix(in srgb, var(--brand-2) 10%, transparent) 0px,
-        transparent 50%
-      );
+        transparent 50%);
     background-attachment: fixed;
     color: var(--ink);
   }
@@ -1128,19 +1129,18 @@
 }
 
 @layer utilities {
+
   /* Órbita 360º de assinatura (dourado → vermelho → rosa → íris → azul) — atualização 09/2026 da
      órbita de 3 cores (dourado → íris → azul) para as 5 cores da nova direção. Reservada a
      halo/borda/hero por regra da marca (CLAUDE.md, seção 4, regra #3): nunca fundo de superfície
      com texto em cima, no máximo uma por composição. */
   .bg-gradient-orbit5 {
-    background-image: linear-gradient(
-      100deg,
-      var(--brand) 0%,
-      var(--red) 26%,
-      var(--pink) 48%,
-      var(--iris) 70%,
-      var(--orbit-blue) 100%
-    );
+    background-image: linear-gradient(100deg,
+        var(--brand) 0%,
+        var(--red) 26%,
+        var(--pink) 48%,
+        var(--iris) 70%,
+        var(--orbit-blue) 100%);
   }
 
   .text-gradient-brand {
@@ -1150,12 +1150,10 @@
   }
 
   .shimmer-bg {
-    background: linear-gradient(
-      90deg,
-      rgba(255, 255, 255, 0) 0%,
-      rgba(255, 255, 255, 0.08) 50%,
-      rgba(255, 255, 255, 0) 100%
-    );
+    background: linear-gradient(90deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.08) 50%,
+        rgba(255, 255, 255, 0) 100%);
     background-size: 200% 100%;
     animation: shimmer 2.5s infinite linear;
   }
@@ -1223,40 +1221,32 @@
 
   /* Shimmer dos skeletons */
   .bh-skeleton-shimmer {
-    background: linear-gradient(
-      90deg,
-      color-mix(in srgb, var(--surface-2) 100%, transparent) 0%,
-      color-mix(in srgb, var(--surface-2) 60%, var(--surface)) 50%,
-      color-mix(in srgb, var(--surface-2) 100%, transparent) 100%
-    );
+    background: linear-gradient(90deg,
+        color-mix(in srgb, var(--surface-2) 100%, transparent) 0%,
+        color-mix(in srgb, var(--surface-2) 60%, var(--surface)) 50%,
+        color-mix(in srgb, var(--surface-2) 100%, transparent) 100%);
     background-size: 200% 100%;
     animation: shimmer 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
 
   /* Padrões geométricos de atmosfera (60°) */
   .bh-pattern-diagonal-60 {
-    background-image: repeating-linear-gradient(
-      60deg,
-      transparent,
-      transparent 28px,
-      color-mix(in srgb, var(--brand) 4%, transparent) 28px,
-      color-mix(in srgb, var(--brand) 4%, transparent) 29px
-    );
+    background-image: repeating-linear-gradient(60deg,
+        transparent,
+        transparent 28px,
+        color-mix(in srgb, var(--brand) 4%, transparent) 28px,
+        color-mix(in srgb, var(--brand) 4%, transparent) 29px);
   }
 
   .bh-pattern-grid {
     background-size: 32px 32px;
     background-image:
-      linear-gradient(
-        to right,
+      linear-gradient(to right,
         color-mix(in srgb, var(--line) 40%, transparent) 1px,
-        transparent 1px
-      ),
-      linear-gradient(
-        to bottom,
+        transparent 1px),
+      linear-gradient(to bottom,
         color-mix(in srgb, var(--line) 40%, transparent) 1px,
-        transparent 1px
-      );
+        transparent 1px);
   }
 }
 
@@ -1269,6 +1259,7 @@
    árvore de rotas. Verificado na Onda 8: comentário anterior citava isso como backlog pendente,
    mas o MotionConfig já estava implementado — só o comentário estava desatualizado. */
 @media (prefers-reduced-motion: reduce) {
+
   *,
   *::before,
   *::after {
