@@ -15,15 +15,18 @@ export function useLeadCardState({ lead, onUpdateStatus, onPromoteToDeal }: UseL
 
   const toggleExpand = useCallback(() => setIsExpanded((prev) => !prev), []);
 
-  const handleStatusChange = useCallback(async (newStatus: string) => {
-    if (!onUpdateStatus) return;
-    try {
-      setIsSaving(true);
-      await onUpdateStatus(lead.id, newStatus);
-    } finally {
-      setIsSaving(false);
-    }
-  }, [lead.id, onUpdateStatus]);
+  const handleStatusChange = useCallback(
+    async (newStatus: string) => {
+      if (!onUpdateStatus) return;
+      try {
+        setIsSaving(true);
+        await onUpdateStatus(lead.id, newStatus);
+      } finally {
+        setIsSaving(false);
+      }
+    },
+    [lead.id, onUpdateStatus],
+  );
 
   const handlePromote = useCallback(async () => {
     if (!onPromoteToDeal) return;
@@ -35,10 +38,15 @@ export function useLeadCardState({ lead, onUpdateStatus, onPromoteToDeal }: UseL
     }
   }, [lead, onPromoteToDeal]);
 
-  const handleStartCall = useCallback((phone: string) => {
-    setIsCalling(true);
-    window.dispatchEvent(new CustomEvent('voicehub:dial', { detail: { phone, leadId: lead.id } }));
-  }, [lead.id]);
+  const handleStartCall = useCallback(
+    (phone: string) => {
+      setIsCalling(true);
+      window.dispatchEvent(
+        new CustomEvent('voicehub:dial', { detail: { phone, leadId: lead.id } }),
+      );
+    },
+    [lead.id],
+  );
 
   return {
     isExpanded,

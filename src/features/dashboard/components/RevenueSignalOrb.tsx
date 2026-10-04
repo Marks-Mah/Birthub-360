@@ -170,7 +170,9 @@ export function RevenueSignalOrb({
           <p className="text-[10px] font-extrabold uppercase tracking-[0.22em] text-brand-ink dark:text-brand">
             Signal Core 3D · 2026
           </p>
-          <h3 className="mt-1 text-base font-display font-bold text-ink">Pressão Comercial ao Vivo</h3>
+          <h3 className="mt-1 text-base font-display font-bold text-ink">
+            Pressão Comercial ao Vivo
+          </h3>
           <p className="mt-1 max-w-[18rem] text-xs leading-relaxed text-ink-2">
             Volume e movimento respondem às métricas reais. Clique no núcleo para impulso.
           </p>

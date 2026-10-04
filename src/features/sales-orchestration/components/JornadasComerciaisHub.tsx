@@ -1,7 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { GitBranch, Clock, ArrowRight, CheckCircle2, Shield, AlertTriangle, Users } from 'lucide-react';
+import {
+  GitBranch,
+  Clock,
+  ArrowRight,
+  CheckCircle2,
+  Shield,
+  AlertTriangle,
+  Users,
+} from 'lucide-react';
 import { CommandCenterHeader } from '../../../components/ui/CommandCenterHeader.js';
-import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '../../../components/ui/Card.js';
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  CardDescription,
+} from '../../../components/ui/Card.js';
 import { KpiCard } from '../../../components/ui/KpiCard.js';
 import { Button } from '../../../components/ui/Button.js';
 import { Badge } from '../../../components/ui/Badge.js';
@@ -42,7 +56,8 @@ export function JornadasComerciaisHub() {
         <div>
           <h2 className="text-xl font-bold">Mapeamento da Jornada do Comprador</h2>
           <p className="text-sm text-[var(--ink-2)]">
-            Acompanhe o caminho percorrido pelo cliente desde a descoberta inicial até a assinatura e kickoff, com SLAs e pontos de atrito controlados.
+            Acompanhe o caminho percorrido pelo cliente desde a descoberta inicial até a assinatura
+            e kickoff, com SLAs e pontos de atrito controlados.
           </p>
         </div>
 
@@ -51,7 +66,7 @@ export function JornadasComerciaisHub() {
           <KpiCard
             title="Ciclo Médio de Venda"
             value="15.5 dias"
-            trend={{ value: "-3.2 dias vs mês anterior", isPositive: true }}
+            trend={{ value: '-3.2 dias vs mês anterior', isPositive: true }}
             icon={Clock}
             subtitle="Do primeiro toque ao fechamento"
             variant="default"
@@ -59,7 +74,7 @@ export function JornadasComerciaisHub() {
           <KpiCard
             title="Conversão Ponta a Ponta"
             value="11.4%"
-            trend={{ value: "+1.8%", isPositive: true }}
+            trend={{ value: '+1.8%', isPositive: true }}
             icon={CheckCircle2}
             subtitle="De Lead Descoberto a Negócio Ganho"
             variant="default"
@@ -67,7 +82,7 @@ export function JornadasComerciaisHub() {
           <KpiCard
             title="SLA de Passagem de Bastão"
             value="94.2%"
-            trend={{ value: "Dentro do limite de 4h", isPositive: true }}
+            trend={{ value: 'Dentro do limite de 4h', isPositive: true }}
             icon={Shield}
             subtitle="SDR → Closer sem atrasos"
             variant="default"
@@ -79,7 +94,10 @@ export function JornadasComerciaisHub() {
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
               <span>Fluxo Operacional da Jornada Padrão</span>
-              <Badge variant="default" className="bg-[var(--nav-c-blue)]/10 text-[var(--nav-c-blue)] font-normal">
+              <Badge
+                variant="default"
+                className="bg-[var(--nav-c-blue)]/10 text-[var(--nav-c-blue)] font-normal"
+              >
                 Modelo Ativo: Enterprise & Mid-Market
               </Badge>
             </CardTitle>
@@ -115,7 +133,10 @@ export function JornadasComerciaisHub() {
                             Touchpoints
                           </span>
                           {etapa.touchpoints.map((tp) => (
-                            <div key={tp} className="text-xs text-[var(--ink-2)] flex items-center gap-1.5">
+                            <div
+                              key={tp}
+                              className="text-xs text-[var(--ink-2)] flex items-center gap-1.5"
+                            >
                               <span className="w-1.5 h-1.5 rounded-full bg-[var(--nav-c-blue)]" />
                               {tp}
                             </div>

@@ -1,7 +1,23 @@
 import React, { useState } from 'react';
-import { Target, Search, BarChart2, Zap, Building2, TrendingUp, Filter, Globe, ArrowUpRight } from 'lucide-react';
+import {
+  Target,
+  Search,
+  BarChart2,
+  Zap,
+  Building2,
+  TrendingUp,
+  Filter,
+  Globe,
+  ArrowUpRight,
+} from 'lucide-react';
 import { CommandCenterHeader } from '../../../components/ui/CommandCenterHeader.js';
-import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '../../../components/ui/Card.js';
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  CardDescription,
+} from '../../../components/ui/Card.js';
 import { KpiCard } from '../../../components/ui/KpiCard.js';
 import { Button } from '../../../components/ui/Button.js';
 import { Badge } from '../../../components/ui/Badge.js';
@@ -10,9 +26,24 @@ export function InteligenciaMercadoHub() {
   const [selectedSegmento, setSelectedSegmento] = useState('SaaS B2B');
 
   const sinais = [
-    { empresa: 'TechLog Soluções', sinal: 'Abriu 5 vagas comerciais (SDR/Closer)', timing: 'Hoje às 09:15', score: 94 },
-    { empresa: 'AgroFinance Tech', sinal: 'Recebeu aporte Series A de R$ 15M', timing: 'Ontem', score: 89 },
-    { empresa: 'Varejo Connect', sinal: 'Trocou de CRM no stack público', timing: 'Há 2 dias', score: 82 },
+    {
+      empresa: 'TechLog Soluções',
+      sinal: 'Abriu 5 vagas comerciais (SDR/Closer)',
+      timing: 'Hoje às 09:15',
+      score: 94,
+    },
+    {
+      empresa: 'AgroFinance Tech',
+      sinal: 'Recebeu aporte Series A de R$ 15M',
+      timing: 'Ontem',
+      score: 89,
+    },
+    {
+      empresa: 'Varejo Connect',
+      sinal: 'Trocou de CRM no stack público',
+      timing: 'Há 2 dias',
+      score: 82,
+    },
   ];
 
   return (
@@ -31,7 +62,9 @@ export function InteligenciaMercadoHub() {
       <div className="flex-1 p-6 space-y-6 overflow-y-auto">
         <div className="mb-4">
           <h2 className="text-xl font-bold">Radar de Mercado & ICP</h2>
-          <p className="text-sm text-[var(--ink-2)]">Transforme dados de mercado e sinais de intenção em oportunidades qualificadas.</p>
+          <p className="text-sm text-[var(--ink-2)]">
+            Transforme dados de mercado e sinais de intenção em oportunidades qualificadas.
+          </p>
         </div>
 
         {/* KPIs */}
@@ -39,7 +72,7 @@ export function InteligenciaMercadoHub() {
           <KpiCard
             title="Contas no Radar ICP"
             value="1.420 empresas"
-            trend={{ value: "+120 novas este mês", isPositive: true }}
+            trend={{ value: '+120 novas este mês', isPositive: true }}
             icon={Building2}
             subtitle="Faturamento e CNAE aderentes"
             variant="default"
@@ -47,7 +80,7 @@ export function InteligenciaMercadoHub() {
           <KpiCard
             title="Sinais Quentes Captados"
             value="38 alertas"
-            trend={{ value: "Intenção alta", isPositive: true }}
+            trend={{ value: 'Intenção alta', isPositive: true }}
             icon={Zap}
             subtitle="Gatilhos de expansão e contratação"
             variant="default"
@@ -55,7 +88,7 @@ export function InteligenciaMercadoHub() {
           <KpiCard
             title="Taxa de Precisão ICP"
             value="91.4%"
-            trend={{ value: "+3.2%", isPositive: true }}
+            trend={{ value: '+3.2%', isPositive: true }}
             icon={TrendingUp}
             subtitle="Validação com base na Receita"
             variant="default"
@@ -67,15 +100,23 @@ export function InteligenciaMercadoHub() {
           <Card>
             <CardHeader>
               <CardTitle>Sinais de Mercado Recentes</CardTitle>
-              <CardDescription>Oportunidades com momento ideal de abordagem detectado pela IA.</CardDescription>
+              <CardDescription>
+                Oportunidades com momento ideal de abordagem detectado pela IA.
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-3 border-t border-[var(--line)] pt-4">
               {sinais.map((s) => (
-                <div key={s.empresa} className="p-3.5 rounded-xl bg-[var(--surface-2)] border border-[var(--line)] flex items-center justify-between">
+                <div
+                  key={s.empresa}
+                  className="p-3.5 rounded-xl bg-[var(--surface-2)] border border-[var(--line)] flex items-center justify-between"
+                >
                   <div>
                     <div className="flex items-center gap-2">
                       <span className="font-semibold text-sm">{s.empresa}</span>
-                      <Badge variant="default" className="bg-[var(--nav-c-teal)]/10 text-[var(--nav-c-teal)] text-xs">
+                      <Badge
+                        variant="default"
+                        className="bg-[var(--nav-c-teal)]/10 text-[var(--nav-c-teal)] text-xs"
+                      >
                         Score {s.score}
                       </Badge>
                     </div>
@@ -93,7 +134,9 @@ export function InteligenciaMercadoHub() {
           <Card>
             <CardHeader>
               <CardTitle>Distribuição de ICP por Setor</CardTitle>
-              <CardDescription>Segmentos mais representativos no seu mercado endereçável (TAM).</CardDescription>
+              <CardDescription>
+                Segmentos mais representativos no seu mercado endereçável (TAM).
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4 border-t border-[var(--line)] pt-6">
               {[
@@ -105,7 +148,9 @@ export function InteligenciaMercadoHub() {
                 <div key={item.setor} className="space-y-1.5">
                   <div className="flex justify-between text-xs font-medium">
                     <span>{item.setor}</span>
-                    <span className="text-[var(--ink-3)]">{item.count} empresas ({item.percent}%)</span>
+                    <span className="text-[var(--ink-3)]">
+                      {item.count} empresas ({item.percent}%)
+                    </span>
                   </div>
                   <div className="h-2 w-full bg-[var(--surface-2)] rounded-full overflow-hidden border border-[var(--line)]">
                     <div

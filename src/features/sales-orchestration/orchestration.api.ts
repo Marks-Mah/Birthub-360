@@ -76,7 +76,8 @@ export const orchestrationApi = {
               stagesCount: 5,
               lastUpdated: '02/10/2026',
               status: 'Ativo',
-              description: 'Metodologia de prospecção account-based para contas com faturamento > R$ 50M.',
+              description:
+                'Metodologia de prospecção account-based para contas com faturamento > R$ 50M.',
             },
             {
               id: 'pb-2',

@@ -6,7 +6,7 @@ export type SalesOrchestrationDb = typeof prisma | ReturnType<typeof getTenantPr
 export class SalesOrchestrationService {
   constructor(
     private readonly db: SalesOrchestrationDb,
-    private readonly organizationId: string
+    private readonly organizationId: string,
   ) {}
 
   private get client(): typeof prisma {
@@ -33,64 +33,66 @@ export class SalesOrchestrationService {
     });
 
     // Mapeamento ou fallback se ainda não houver registros cadastrados no banco
-    const playbooks = playbookInsights.length > 0
-      ? playbookInsights.map((p, idx) => ({
-          id: p.id,
-          title: p.patternTitle || 'Playbook de Vendas',
-          category: (idx % 2 === 0 ? 'Enterprise' : 'Outbound') as any,
-          targetRole: 'Closer' as any,
-          complianceRate: 88 + (idx % 10),
-          stagesCount: 5,
-          lastUpdated: new Date(p.updatedAt).toLocaleDateString('pt-BR'),
-          status: 'Ativo' as any,
-          description: (p.patternDescription || '').slice(0, 120),
-        }))
-      : [
-          {
-            id: 'pb-1',
-            title: 'Playbook Outbound Enterprise (ICP Corporativo)',
-            category: 'Outbound' as const,
-            targetRole: 'BDR' as const,
-            complianceRate: 92,
+    const playbooks =
+      playbookInsights.length > 0
+        ? playbookInsights.map((p, idx) => ({
+            id: p.id,
+            title: p.patternTitle || 'Playbook de Vendas',
+            category: (idx % 2 === 0 ? 'Enterprise' : 'Outbound') as any,
+            targetRole: 'Closer' as any,
+            complianceRate: 88 + (idx % 10),
             stagesCount: 5,
-            lastUpdated: '02/10/2026',
-            status: 'Ativo' as const,
-            description: 'Metodologia de prospecção account-based para contas com faturamento > R$ 50M.',
-          },
-          {
-            id: 'pb-2',
-            title: 'Playbook Inbound Qualificação Rápida (Speed-to-Lead)',
-            category: 'Inbound' as const,
-            targetRole: 'SDR' as const,
-            complianceRate: 85,
-            stagesCount: 4,
-            lastUpdated: '28/09/2026',
-            status: 'Ativo' as const,
-            description: 'Protocolo de primeiro contato em menos de 5 minutos com matriz BANT.',
-          },
-          {
-            id: 'pb-3',
-            title: 'Demonstração de Alto Impacto & Proof-of-Value',
-            category: 'Enterprise' as const,
-            targetRole: 'Closer' as const,
-            complianceRate: 79,
-            stagesCount: 6,
-            lastUpdated: '15/09/2026',
-            status: 'Ativo' as const,
-            description: 'Roteiro de demo guiada por dores diagnosticadas e validação de ROI.',
-          },
-          {
-            id: 'pb-4',
-            title: 'Playbook de Expansão e Upsell na Carteira',
-            category: 'Expansão' as const,
-            targetRole: 'Account Executive' as const,
-            complianceRate: 94,
-            stagesCount: 4,
-            lastUpdated: '20/09/2026',
-            status: 'Ativo' as const,
-            description: 'Gatilhos de consumo e identificação de novas áreas dentro da conta.',
-          },
-        ];
+            lastUpdated: new Date(p.updatedAt).toLocaleDateString('pt-BR'),
+            status: 'Ativo' as any,
+            description: (p.patternDescription || '').slice(0, 120),
+          }))
+        : [
+            {
+              id: 'pb-1',
+              title: 'Playbook Outbound Enterprise (ICP Corporativo)',
+              category: 'Outbound' as const,
+              targetRole: 'BDR' as const,
+              complianceRate: 92,
+              stagesCount: 5,
+              lastUpdated: '02/10/2026',
+              status: 'Ativo' as const,
+              description:
+                'Metodologia de prospecção account-based para contas com faturamento > R$ 50M.',
+            },
+            {
+              id: 'pb-2',
+              title: 'Playbook Inbound Qualificação Rápida (Speed-to-Lead)',
+              category: 'Inbound' as const,
+              targetRole: 'SDR' as const,
+              complianceRate: 85,
+              stagesCount: 4,
+              lastUpdated: '28/09/2026',
+              status: 'Ativo' as const,
+              description: 'Protocolo de primeiro contato em menos de 5 minutos com matriz BANT.',
+            },
+            {
+              id: 'pb-3',
+              title: 'Demonstração de Alto Impacto & Proof-of-Value',
+              category: 'Enterprise' as const,
+              targetRole: 'Closer' as const,
+              complianceRate: 79,
+              stagesCount: 6,
+              lastUpdated: '15/09/2026',
+              status: 'Ativo' as const,
+              description: 'Roteiro de demo guiada por dores diagnosticadas e validação de ROI.',
+            },
+            {
+              id: 'pb-4',
+              title: 'Playbook de Expansão e Upsell na Carteira',
+              category: 'Expansão' as const,
+              targetRole: 'Account Executive' as const,
+              complianceRate: 94,
+              stagesCount: 4,
+              lastUpdated: '20/09/2026',
+              status: 'Ativo' as const,
+              description: 'Gatilhos de consumo e identificação de novas áreas dentro da conta.',
+            },
+          ];
 
     return {
       kpis: {

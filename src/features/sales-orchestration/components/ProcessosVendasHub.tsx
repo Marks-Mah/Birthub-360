@@ -1,12 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import { Network, Zap, CheckCircle, Clock, ShieldAlert, Plus, Filter, Search } from 'lucide-react';
 import { CommandCenterHeader } from '../../../components/ui/CommandCenterHeader.js';
-import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '../../../components/ui/Card.js';
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  CardDescription,
+} from '../../../components/ui/Card.js';
 import { KpiCard } from '../../../components/ui/KpiCard.js';
 import { Button } from '../../../components/ui/Button.js';
 import { Badge } from '../../../components/ui/Badge.js';
 import { Input } from '../../../components/ui/Input.js';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../../components/ui/Table.js';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '../../../components/ui/Table.js';
 import { orchestrationApi, type ProcessoVendaItem } from '../orchestration.api.js';
 
 export function ProcessosVendasHub() {
@@ -31,7 +44,7 @@ export function ProcessosVendasHub() {
     (p) =>
       p.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
       p.codigo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      p.categoria.toLowerCase().includes(searchTerm.toLowerCase())
+      p.categoria.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   return (
@@ -52,7 +65,8 @@ export function ProcessosVendasHub() {
         <div>
           <h2 className="text-xl font-bold">Procedimentos Operacionais Padrão (SOPs)</h2>
           <p className="text-sm text-[var(--ink-2)]">
-            Regras de governança de vendas, SLAs de primeiro toque, políticas de distribuição e critérios claros de avanço.
+            Regras de governança de vendas, SLAs de primeiro toque, políticas de distribuição e
+            critérios claros de avanço.
           </p>
         </div>
 
@@ -61,7 +75,7 @@ export function ProcessosVendasHub() {
           <KpiCard
             title="Speed-to-Lead (Média)"
             value="3.8 min"
-            trend={{ value: "Meta: < 5 min", isPositive: true }}
+            trend={{ value: 'Meta: < 5 min', isPositive: true }}
             icon={Zap}
             subtitle="Tempo até primeira tentativa SDR"
             variant="default"
@@ -69,7 +83,7 @@ export function ProcessosVendasHub() {
           <KpiCard
             title="Conformidade de SLA"
             value="97.1%"
-            trend={{ value: "+2.4%", isPositive: true }}
+            trend={{ value: '+2.4%', isPositive: true }}
             icon={CheckCircle}
             subtitle="Regras cumpridas sem desvios"
             variant="default"
@@ -77,7 +91,7 @@ export function ProcessosVendasHub() {
           <KpiCard
             title="Descartes sem Justificativa"
             value="0"
-            trend={{ value: "Travas ativas", isPositive: true }}
+            trend={{ value: 'Travas ativas', isPositive: true }}
             icon={ShieldAlert}
             subtitle="100% dos motivos catalogados"
             variant="default"
@@ -90,7 +104,9 @@ export function ProcessosVendasHub() {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
                 <CardTitle>Catálogo de Processos Registrados</CardTitle>
-                <CardDescription>Critérios e gatilhos automatizados em vigor na operação comercial.</CardDescription>
+                <CardDescription>
+                  Critérios e gatilhos automatizados em vigor na operação comercial.
+                </CardDescription>
               </div>
               <div className="relative w-full sm:w-72">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--ink-3)]" />
@@ -106,7 +122,9 @@ export function ProcessosVendasHub() {
           </CardHeader>
           <CardContent className="p-0 border-t border-[var(--line)]">
             {loading ? (
-              <div className="p-8 text-center text-sm text-[var(--ink-3)]">Carregando procedimentos...</div>
+              <div className="p-8 text-center text-sm text-[var(--ink-3)]">
+                Carregando procedimentos...
+              </div>
             ) : (
               <Table>
                 <TableHeader>
@@ -126,19 +144,28 @@ export function ProcessosVendasHub() {
                       <TableCell className="font-mono font-bold text-xs text-[var(--nav-c-blue)]">
                         {item.codigo}
                       </TableCell>
-                      <TableCell className="font-medium text-sm text-[var(--ink)]">{item.nome}</TableCell>
+                      <TableCell className="font-medium text-sm text-[var(--ink)]">
+                        {item.nome}
+                      </TableCell>
                       <TableCell>
                         <Badge variant="outline" className="text-xs">
                           {item.categoria}
                         </Badge>
                       </TableCell>
-                      <TableCell className="text-xs text-[var(--ink-2)] max-w-xs">{item.gatilho}</TableCell>
+                      <TableCell className="text-xs text-[var(--ink-2)] max-w-xs">
+                        {item.gatilho}
+                      </TableCell>
                       <TableCell className="text-xs font-semibold text-[var(--nav-c-gold)]">
                         {item.slaMaximo}
                       </TableCell>
-                      <TableCell className="text-xs text-[var(--ink-2)]">{item.responsavel}</TableCell>
+                      <TableCell className="text-xs text-[var(--ink-2)]">
+                        {item.responsavel}
+                      </TableCell>
                       <TableCell className="text-right">
-                        <Badge variant="default" className="bg-[var(--nav-c-green)]/10 text-[var(--nav-c-green)]">
+                        <Badge
+                          variant="default"
+                          className="bg-[var(--nav-c-green)]/10 text-[var(--nav-c-green)]"
+                        >
                           {item.status}
                         </Badge>
                       </TableCell>

@@ -1,7 +1,24 @@
 import React, { useEffect, useState } from 'react';
-import { MessageSquareText, Copy, Check, Phone, MessageSquare, Mail, Users, Plus, Sparkles, Filter } from 'lucide-react';
+import {
+  MessageSquareText,
+  Copy,
+  Check,
+  Phone,
+  MessageSquare,
+  Mail,
+  Users,
+  Plus,
+  Sparkles,
+  Filter,
+} from 'lucide-react';
 import { CommandCenterHeader } from '../../../components/ui/CommandCenterHeader.js';
-import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '../../../components/ui/Card.js';
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  CardDescription,
+} from '../../../components/ui/Card.js';
 import { KpiCard } from '../../../components/ui/KpiCard.js';
 import { Button } from '../../../components/ui/Button.js';
 import { Badge } from '../../../components/ui/Badge.js';
@@ -70,7 +87,8 @@ export function RoteirosHub() {
           <div>
             <h2 className="text-xl font-bold">Biblioteca de Scripts Comerciais</h2>
             <p className="text-sm text-[var(--ink-2)]">
-              Modelos validados com ganchos de atenção, perguntas de diagnóstico e técnicas comprovadas de fechamento.
+              Modelos validados com ganchos de atenção, perguntas de diagnóstico e técnicas
+              comprovadas de fechamento.
             </p>
           </div>
         </div>
@@ -80,7 +98,7 @@ export function RoteirosHub() {
           <KpiCard
             title="Scripts Catalogados"
             value="18 roteiros"
-            trend={{ value: "Multicanal", isPositive: true }}
+            trend={{ value: 'Multicanal', isPositive: true }}
             icon={MessageSquareText}
             subtitle="Cold call, whatsapp e reuniões"
             variant="default"
@@ -88,7 +106,7 @@ export function RoteirosHub() {
           <KpiCard
             title="Taxa de Conexão Média"
             value="79.3%"
-            trend={{ value: "+8.5% com ganchos validados", isPositive: true }}
+            trend={{ value: '+8.5% com ganchos validados', isPositive: true }}
             icon={Sparkles}
             subtitle="Eficácia comprovada no campo"
             variant="default"
@@ -96,7 +114,7 @@ export function RoteirosHub() {
           <KpiCard
             title="Variáveis Dinâmicas"
             value="100% integradas"
-            trend={{ value: "Auto-preenchimento CRM", isPositive: true }}
+            trend={{ value: 'Auto-preenchimento CRM', isPositive: true }}
             icon={Check}
             subtitle="Zero cópia manual"
             variant="default"
@@ -145,7 +163,10 @@ export function RoteirosHub() {
                       </div>
                       <CardTitle className="text-base">{rot.titulo}</CardTitle>
                     </div>
-                    <Badge variant="default" className="bg-[var(--nav-c-green)]/10 text-[var(--nav-c-green)] text-xs">
+                    <Badge
+                      variant="default"
+                      className="bg-[var(--nav-c-green)]/10 text-[var(--nav-c-green)] text-xs"
+                    >
                       {rot.taxaSucesso}% eficácia
                     </Badge>
                   </div>
@@ -157,9 +178,14 @@ export function RoteirosHub() {
 
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-1.5 flex-wrap">
-                      <span className="text-[10px] text-[var(--ink-3)] font-semibold uppercase">Variáveis:</span>
+                      <span className="text-[10px] text-[var(--ink-3)] font-semibold uppercase">
+                        Variáveis:
+                      </span>
                       {rot.variaveis.map((v) => (
-                        <span key={v} className="text-[10px] px-1.5 py-0.5 rounded bg-[var(--surface)] border border-[var(--line)] text-[var(--nav-c-blue)]">
+                        <span
+                          key={v}
+                          className="text-[10px] px-1.5 py-0.5 rounded bg-[var(--surface)] border border-[var(--line)] text-[var(--nav-c-blue)]"
+                        >
                           {`{${v}}`}
                         </span>
                       ))}

@@ -4,7 +4,12 @@
  */
 
 import { prisma } from '../../../lib/prisma.js';
-import { type ITeamRepository, type TeamMember, TeamRole, type MemberInvite } from '../domain/TeamDomain.js';
+import {
+  type ITeamRepository,
+  type TeamMember,
+  TeamRole,
+  type MemberInvite,
+} from '../domain/TeamDomain.js';
 
 export class PrismaTeamRepository implements ITeamRepository {
   async findByOrganizationId(organizationId: string): Promise<TeamMember[]> {

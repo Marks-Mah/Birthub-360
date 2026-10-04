@@ -6,8 +6,10 @@ export function LeadCardPlaybookAdvisor({ lead }: { lead: Lead }): React.ReactEl
   const playbook = lead.playbook || {
     openingHook: `Olá ${lead.contactName || 'tudo bem'}? Vi que você lidera a área em ${lead.companyName}. Como vocês tratam previsibilidade de receita hoje?`,
     keyObjection: 'Já usamos CRM interno e não vemos necessidade de IA.',
-    recommendedResponse: 'O Birth Hub 360° não substitui seu CRM atual, ele conecta via Bitrix24 e automatiza a qualificação prévia por voz.',
-    competitorDifferentiator: 'Diferencial Atlas: 100% dos dados integrados com playbooks proprietários de transporte e logística.',
+    recommendedResponse:
+      'O Birth Hub 360° não substitui seu CRM atual, ele conecta via Bitrix24 e automatiza a qualificação prévia por voz.',
+    competitorDifferentiator:
+      'Diferencial Atlas: 100% dos dados integrados com playbooks proprietários de transporte e logística.',
   };
 
   return (
@@ -17,9 +19,7 @@ export function LeadCardPlaybookAdvisor({ lead }: { lead: Lead }): React.ReactEl
           <Lightbulb className="w-3.5 h-3.5" />
           <span>Gancho Recomendado</span>
         </div>
-        <p className="text-slate-700 dark:text-white/80 italic pl-5">
-          "{playbook.openingHook}"
-        </p>
+        <p className="text-slate-700 dark:text-white/80 italic pl-5">"{playbook.openingHook}"</p>
       </div>
 
       <div className="space-y-1 pt-2 border-t border-slate-200/60 dark:border-white/5">
@@ -28,7 +28,8 @@ export function LeadCardPlaybookAdvisor({ lead }: { lead: Lead }): React.ReactEl
           <span>Objeção Mapeada: {playbook.keyObjection}</span>
         </div>
         <p className="text-slate-600 dark:text-white/70 pl-5">
-          ↳ <span className="font-semibold text-slate-800 dark:text-white">Resposta:</span> {playbook.recommendedResponse}
+          ↳ <span className="font-semibold text-slate-800 dark:text-white">Resposta:</span>{' '}
+          {playbook.recommendedResponse}
         </p>
       </div>
 

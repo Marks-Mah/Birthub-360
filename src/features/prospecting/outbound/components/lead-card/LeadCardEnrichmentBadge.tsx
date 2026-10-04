@@ -22,7 +22,9 @@ export function LeadCardEnrichmentBadge({
   return (
     <div className="flex items-center gap-2 text-[11px] text-slate-500 dark:text-white/50">
       <Database className="w-3 h-3 text-brand" />
-      <span>Fonte: <strong className="text-slate-700 dark:text-white/80">{source}</strong></span>
+      <span>
+        Fonte: <strong className="text-slate-700 dark:text-white/80">{source}</strong>
+      </span>
       <span>•</span>
       <span className={`inline-flex items-center gap-1 ${confidenceConfig.color} font-medium`}>
         <Icon className="w-3 h-3" />

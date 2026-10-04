@@ -1,4 +1,3 @@
-
 import { Layers, Calculator, BarChart4, AlertCircle } from 'lucide-react';
 import { CommandCenterHeader } from '../../../components/ui/CommandCenterHeader.js';
 import { Card, CardHeader, CardTitle, CardContent } from '../../../components/ui/Card.js';

@@ -96,7 +96,9 @@ export function SellerCoachingCard() {
               <p className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-brand-ink dark:text-brand">
                 Desenvolvimento comercial · IA 2026
               </p>
-              <h3 className="mt-0.5 text-base font-display font-bold text-ink">Coaching Semanal Inteligente</h3>
+              <h3 className="mt-0.5 text-base font-display font-bold text-ink">
+                Coaching Semanal Inteligente
+              </h3>
             </div>
           </div>
           {period && (

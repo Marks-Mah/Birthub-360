@@ -63,7 +63,9 @@ describe('Testes de Segurança - Endpoints de IA (TD-001)', () => {
       const res = await request(app).get('/api/intelligence/search?q=contrato');
 
       expect(res.status).toBe(401);
-      expect(res.body).toEqual(expect.objectContaining({ success: false, error: 'Authentication required.' }));
+      expect(res.body).toEqual(
+        expect.objectContaining({ success: false, error: 'Authentication required.' }),
+      );
       expect(searchChunksMock).not.toHaveBeenCalled();
       expect(logAiUsageMock).not.toHaveBeenCalled();
     });
@@ -112,11 +114,17 @@ describe('Testes de Segurança - Endpoints de IA (TD-001)', () => {
         .send({ functionName: 'summarizeLead', args: ['Lead data'] });
 
       expect(res.status).toBe(401);
-      expect(res.body).toEqual(expect.objectContaining({ success: false, error: 'Authentication required.' }));
+      expect(res.body).toEqual(
+        expect.objectContaining({ success: false, error: 'Authentication required.' }),
+      );
     });
 
     it('Cenário 2: Rejeita usuário sem cargo autorizado com 403', async () => {
-      const app = buildApp({ id: 'user-guest', organizationId: 'org-authorized', role: 'VISUALIZADOR' });
+      const app = buildApp({
+        id: 'user-guest',
+        organizationId: 'org-authorized',
+        role: 'VISUALIZADOR',
+      });
 
       const res = await request(app)
         .post('/api/intelligence/toolkit/execute')
@@ -131,9 +139,7 @@ describe('Testes de Segurança - Endpoints de IA (TD-001)', () => {
     it('Cenário 1: Rejeita requisição anônima com 401', async () => {
       const app = buildApp(undefined);
 
-      const res = await request(app)
-        .post('/api/agent/tts')
-        .send({ text: 'Olá, bom dia' });
+      const res = await request(app).post('/api/agent/tts').send({ text: 'Olá, bom dia' });
 
       expect(res.status).toBe(401);
       expect(synthesizeSpeechMock).not.toHaveBeenCalled();
@@ -143,9 +149,7 @@ describe('Testes de Segurança - Endpoints de IA (TD-001)', () => {
     it('Cenário 2: Rejeita usuário sem permissão de escrita com 403', async () => {
       const app = buildApp({ id: 'user-ro', organizationId: 'org-1', role: 'VISUALIZADOR' });
 
-      const res = await request(app)
-        .post('/api/agent/tts')
-        .send({ text: 'Olá, bom dia' });
+      const res = await request(app).post('/api/agent/tts').send({ text: 'Olá, bom dia' });
 
       expect(res.status).toBe(403);
       expect(synthesizeSpeechMock).not.toHaveBeenCalled();

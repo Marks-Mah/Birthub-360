@@ -1,7 +1,23 @@
 import React, { useEffect, useState } from 'react';
-import { BookOpen, CheckCircle2, Clock, Users, Plus, ArrowUpRight, ShieldCheck, Search, Filter } from 'lucide-react';
+import {
+  BookOpen,
+  CheckCircle2,
+  Clock,
+  Users,
+  Plus,
+  ArrowUpRight,
+  ShieldCheck,
+  Search,
+  Filter,
+} from 'lucide-react';
 import { CommandCenterHeader } from '../../../components/ui/CommandCenterHeader.js';
-import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '../../../components/ui/Card.js';
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  CardDescription,
+} from '../../../components/ui/Card.js';
 import { KpiCard } from '../../../components/ui/KpiCard.js';
 import { Button } from '../../../components/ui/Button.js';
 import { Badge } from '../../../components/ui/Badge.js';
@@ -56,7 +72,8 @@ export function PlaybooksHub() {
           <div>
             <h2 className="text-xl font-bold">Diretório de Playbooks</h2>
             <p className="text-sm text-[var(--ink-2)]">
-              Padronização de abordagens, réguas operacionais e critérios de avanço por papel comercial.
+              Padronização de abordagens, réguas operacionais e critérios de avanço por papel
+              comercial.
             </p>
           </div>
         </div>
@@ -66,7 +83,7 @@ export function PlaybooksHub() {
           <KpiCard
             title="Playbooks Ativos"
             value="6"
-            trend={{ value: "+2 este trimestre", isPositive: true }}
+            trend={{ value: '+2 este trimestre', isPositive: true }}
             icon={BookOpen}
             subtitle="100% alinhados ao ICP"
             variant="default"
@@ -74,7 +91,7 @@ export function PlaybooksHub() {
           <KpiCard
             title="Aderência Operacional"
             value="88.4%"
-            trend={{ value: "+4.2%", isPositive: true }}
+            trend={{ value: '+4.2%', isPositive: true }}
             icon={ShieldCheck}
             subtitle="Execução dos passos obrigatórios"
             variant="default"
@@ -82,7 +99,7 @@ export function PlaybooksHub() {
           <KpiCard
             title="Tempo Médio de Rampa"
             value="14 dias"
-            trend={{ value: "-5 dias", isPositive: true }}
+            trend={{ value: '-5 dias', isPositive: true }}
             icon={Clock}
             subtitle="Novos vendedores operando"
             variant="default"
@@ -90,7 +107,7 @@ export function PlaybooksHub() {
           <KpiCard
             title="Pessoas Impactadas"
             value="28 rep."
-            trend={{ value: "SDRs e Closers", isPositive: true }}
+            trend={{ value: 'SDRs e Closers', isPositive: true }}
             icon={Users}
             subtitle="Engajamento diário ativo"
             variant="default"
@@ -137,12 +154,18 @@ export function PlaybooksHub() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {filteredPlaybooks.map((pb) => (
-              <Card key={pb.id} className="flex flex-col justify-between hover:border-[var(--nav-c-blue)]/50 transition-all">
+              <Card
+                key={pb.id}
+                className="flex flex-col justify-between hover:border-[var(--nav-c-blue)]/50 transition-all"
+              >
                 <CardHeader>
                   <div className="flex items-start justify-between gap-2">
                     <div>
                       <div className="flex items-center gap-2 mb-2">
-                        <Badge variant="default" className="bg-[var(--nav-c-blue)]/10 text-[var(--nav-c-blue)]">
+                        <Badge
+                          variant="default"
+                          className="bg-[var(--nav-c-blue)]/10 text-[var(--nav-c-blue)]"
+                        >
                           {pb.category}
                         </Badge>
                         <Badge variant="outline" className="text-xs">
@@ -172,7 +195,10 @@ export function PlaybooksHub() {
                       <CheckCircle2 className="w-4 h-4 text-[var(--nav-c-green)]" />
                       {pb.stagesCount} Etapas Definidas
                     </span>
-                    <span>Aderência: <strong className="text-[var(--nav-c-blue)]">{pb.complianceRate}%</strong></span>
+                    <span>
+                      Aderência:{' '}
+                      <strong className="text-[var(--nav-c-blue)]">{pb.complianceRate}%</strong>
+                    </span>
                     <span>Atualizado: {pb.lastUpdated}</span>
                   </div>
                   <div className="flex gap-2">

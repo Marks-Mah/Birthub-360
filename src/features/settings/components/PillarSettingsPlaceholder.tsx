@@ -38,7 +38,9 @@ interface PillarSettingsProps {
 }
 
 export function PillarSettingsPlaceholder({ pillarName }: PillarSettingsProps) {
-  const [activeTab, setActiveTab] = useState<'ferramentas' | 'permissoes' | 'automacoes' | 'integracoes'>('ferramentas');
+  const [activeTab, setActiveTab] = useState<
+    'ferramentas' | 'permissoes' | 'automacoes' | 'integracoes'
+  >('ferramentas');
   const [saveStatus, setSaveStatus] = useState<string | null>(null);
 
   // Estados locais interativos para as ferramentas
@@ -104,9 +106,12 @@ export function PillarSettingsPlaceholder({ pillarName }: PillarSettingsProps) {
               <CardContent className="space-y-4 border-t border-[var(--line)] pt-6">
                 <div className="flex items-center justify-between p-3.5 rounded-lg bg-[var(--surface-2)] border border-[var(--line)]">
                   <div>
-                    <p className="font-medium text-sm">Tempo Limite de Estagnação de Oportunidades</p>
+                    <p className="font-medium text-sm">
+                      Tempo Limite de Estagnação de Oportunidades
+                    </p>
                     <p className="text-xs text-[var(--ink-3)]">
-                      Alerta visual quando um negócio passa mais tempo que o permitido na mesma etapa.
+                      Alerta visual quando um negócio passa mais tempo que o permitido na mesma
+                      etapa.
                     </p>
                   </div>
                   <div className="flex items-center gap-2">
@@ -122,9 +127,12 @@ export function PillarSettingsPlaceholder({ pillarName }: PillarSettingsProps) {
 
                 <div className="flex items-center justify-between p-3.5 rounded-lg bg-[var(--surface-2)] border border-[var(--line)]">
                   <div>
-                    <p className="font-medium text-sm">Exigir Motivo Padronizado ao Perder Negócio</p>
+                    <p className="font-medium text-sm">
+                      Exigir Motivo Padronizado ao Perder Negócio
+                    </p>
                     <p className="text-xs text-[var(--ink-3)]">
-                      Obrigatório catalogar concorrente e motivo de perda para alimentar o módulo Win/Loss.
+                      Obrigatório catalogar concorrente e motivo de perda para alimentar o módulo
+                      Win/Loss.
                     </p>
                   </div>
                   <label className="relative inline-flex items-center cursor-pointer">
@@ -140,9 +148,12 @@ export function PillarSettingsPlaceholder({ pillarName }: PillarSettingsProps) {
 
                 <div className="flex items-center justify-between p-3.5 rounded-lg bg-[var(--surface-2)] border border-[var(--line)]">
                   <div>
-                    <p className="font-medium text-sm">Deduplicação Automática por CNPJ e Domínio</p>
+                    <p className="font-medium text-sm">
+                      Deduplicação Automática por CNPJ e Domínio
+                    </p>
                     <p className="text-xs text-[var(--ink-3)]">
-                      Impede a criação de contas duplicadas e vincula novos leads a contas existentes.
+                      Impede a criação de contas duplicadas e vincula novos leads a contas
+                      existentes.
                     </p>
                   </div>
                   <label className="relative inline-flex items-center cursor-pointer">
@@ -177,7 +188,9 @@ export function PillarSettingsPlaceholder({ pillarName }: PillarSettingsProps) {
                 <div className="flex items-center justify-between p-3.5 rounded-lg bg-[var(--surface-2)] border border-[var(--line)]">
                   <div>
                     <p className="font-medium text-sm">Faturamento Mínimo Estimado para ICP</p>
-                    <p className="text-xs text-[var(--ink-3)]">Empresas abaixo desse piso são marcadas como SMB / Fora de Perfil.</p>
+                    <p className="text-xs text-[var(--ink-3)]">
+                      Empresas abaixo desse piso são marcadas como SMB / Fora de Perfil.
+                    </p>
                   </div>
                   <Input
                     type="text"
@@ -190,7 +203,10 @@ export function PillarSettingsPlaceholder({ pillarName }: PillarSettingsProps) {
                 <div className="flex items-center justify-between p-3.5 rounded-lg bg-[var(--surface-2)] border border-[var(--line)]">
                   <div>
                     <p className="font-medium text-sm">Enriquecimento Automático em Cascata</p>
-                    <p className="text-xs text-[var(--ink-3)]">Consulta Receita Federal, decisores no LinkedIn e contatos telefônicos verificados.</p>
+                    <p className="text-xs text-[var(--ink-3)]">
+                      Consulta Receita Federal, decisores no LinkedIn e contatos telefônicos
+                      verificados.
+                    </p>
                   </div>
                   <label className="relative inline-flex items-center cursor-pointer">
                     <input
@@ -206,7 +222,10 @@ export function PillarSettingsPlaceholder({ pillarName }: PillarSettingsProps) {
                 <div className="flex items-center justify-between p-3.5 rounded-lg bg-[var(--surface-2)] border border-[var(--line)]">
                   <div>
                     <p className="font-medium text-sm">Radar de Sinais & Alertas de Contratação</p>
-                    <p className="text-xs text-[var(--ink-3)]">Notifica SDRs quando empresas-alvo abrem vagas em cargos comerciais estratégicos.</p>
+                    <p className="text-xs text-[var(--ink-3)]">
+                      Notifica SDRs quando empresas-alvo abrem vagas em cargos comerciais
+                      estratégicos.
+                    </p>
                   </div>
                   <label className="relative inline-flex items-center cursor-pointer">
                     <input
@@ -233,14 +252,17 @@ export function PillarSettingsPlaceholder({ pillarName }: PillarSettingsProps) {
                   <CardTitle>SLAs de Execução & Cadência de Vendas</CardTitle>
                 </div>
                 <CardDescription>
-                  Políticas operacionais de atendimento, passagem de bastão e limites de toque diário.
+                  Políticas operacionais de atendimento, passagem de bastão e limites de toque
+                  diário.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4 border-t border-[var(--line)] pt-6">
                 <div className="flex items-center justify-between p-3.5 rounded-lg bg-[var(--surface-2)] border border-[var(--line)]">
                   <div>
                     <p className="font-medium text-sm">SLA de Speed-to-Lead Inbound</p>
-                    <p className="text-xs text-[var(--ink-3)]">Tempo limite para o primeiro contato telefônico após entrada do lead.</p>
+                    <p className="text-xs text-[var(--ink-3)]">
+                      Tempo limite para o primeiro contato telefônico após entrada do lead.
+                    </p>
                   </div>
                   <div className="flex items-center gap-2">
                     <Input
@@ -256,7 +278,10 @@ export function PillarSettingsPlaceholder({ pillarName }: PillarSettingsProps) {
                 <div className="flex items-center justify-between p-3.5 rounded-lg bg-[var(--surface-2)] border border-[var(--line)]">
                   <div>
                     <p className="font-medium text-sm">Checklist Obrigatório BANT / MEDDICC</p>
-                    <p className="text-xs text-[var(--ink-3)]">Bloqueia envio da reunião para Closer sem notas de Orçamento, Autoridade e Prazo preenchidas.</p>
+                    <p className="text-xs text-[var(--ink-3)]">
+                      Bloqueia envio da reunião para Closer sem notas de Orçamento, Autoridade e
+                      Prazo preenchidas.
+                    </p>
                   </div>
                   <label className="relative inline-flex items-center cursor-pointer">
                     <input
@@ -272,7 +297,10 @@ export function PillarSettingsPlaceholder({ pillarName }: PillarSettingsProps) {
                 <div className="flex items-center justify-between p-3.5 rounded-lg bg-[var(--surface-2)] border border-[var(--line)]">
                   <div>
                     <p className="font-medium text-sm">Capacidade Máxima Diária por SDR</p>
-                    <p className="text-xs text-[var(--ink-3)]">Evita sobrecarga e distribui automaticamente novos leads para vendedores disponíveis.</p>
+                    <p className="text-xs text-[var(--ink-3)]">
+                      Evita sobrecarga e distribui automaticamente novos leads para vendedores
+                      disponíveis.
+                    </p>
                   </div>
                   <div className="flex items-center gap-2">
                     <Input
@@ -306,7 +334,9 @@ export function PillarSettingsPlaceholder({ pillarName }: PillarSettingsProps) {
                 <div className="flex items-center justify-between p-3.5 rounded-lg bg-[var(--surface-2)] border border-[var(--line)]">
                   <div>
                     <p className="font-medium text-sm">Benchmark de Conversão Mínima de Funil</p>
-                    <p className="text-xs text-[var(--ink-3)]">Taxa esperada de MQL → Fechamento para sinalizar equipes no verde.</p>
+                    <p className="text-xs text-[var(--ink-3)]">
+                      Taxa esperada de MQL → Fechamento para sinalizar equipes no verde.
+                    </p>
                   </div>
                   <div className="flex items-center gap-2">
                     <Input
@@ -321,8 +351,13 @@ export function PillarSettingsPlaceholder({ pillarName }: PillarSettingsProps) {
 
                 <div className="flex items-center justify-between p-3.5 rounded-lg bg-[var(--surface-2)] border border-[var(--line)]">
                   <div>
-                    <p className="font-medium text-sm">Ranking e Pontuação de Vendedores (Rep Score)</p>
-                    <p className="text-xs text-[var(--ink-3)]">Calcula o score de 0 a 100 baseado em velocidade de atendimento, conversão e disciplina de CRM.</p>
+                    <p className="font-medium text-sm">
+                      Ranking e Pontuação de Vendedores (Rep Score)
+                    </p>
+                    <p className="text-xs text-[var(--ink-3)]">
+                      Calcula o score de 0 a 100 baseado em velocidade de atendimento, conversão e
+                      disciplina de CRM.
+                    </p>
                   </div>
                   <label className="relative inline-flex items-center cursor-pointer">
                     <input
@@ -338,7 +373,9 @@ export function PillarSettingsPlaceholder({ pillarName }: PillarSettingsProps) {
                 <div className="flex items-center justify-between p-3.5 rounded-lg bg-[var(--surface-2)] border border-[var(--line)]">
                   <div>
                     <p className="font-medium text-sm">Notificações de Quedas Bruscas no Funil</p>
-                    <p className="text-xs text-[var(--ink-3)]">Dispara aviso à liderança quando a taxa de conversão semanal cair mais de 15%.</p>
+                    <p className="text-xs text-[var(--ink-3)]">
+                      Dispara aviso à liderança quando a taxa de conversão semanal cair mais de 15%.
+                    </p>
                   </div>
                   <label className="relative inline-flex items-center cursor-pointer">
                     <input
@@ -365,14 +402,18 @@ export function PillarSettingsPlaceholder({ pillarName }: PillarSettingsProps) {
                   <CardTitle>Modelo Preditivo & Travas de Forecast</CardTitle>
                 </div>
                 <CardDescription>
-                  Parâmetros de cálculo de probabilidade e data de congelamento de projeções mensais.
+                  Parâmetros de cálculo de probabilidade e data de congelamento de projeções
+                  mensais.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4 border-t border-[var(--line)] pt-6">
                 <div className="flex items-center justify-between p-3.5 rounded-lg bg-[var(--surface-2)] border border-[var(--line)]">
                   <div>
                     <p className="font-medium text-sm">Método de Cálculo do Pipeline Ponderado</p>
-                    <p className="text-xs text-[var(--ink-3)]">Escolha entre Win Rate histórico dos últimos 90 dias ou valores manuais por etapa.</p>
+                    <p className="text-xs text-[var(--ink-3)]">
+                      Escolha entre Win Rate histórico dos últimos 90 dias ou valores manuais por
+                      etapa.
+                    </p>
                   </div>
                   <select
                     value={predModelType}
@@ -387,7 +428,9 @@ export function PillarSettingsPlaceholder({ pillarName }: PillarSettingsProps) {
                 <div className="flex items-center justify-between p-3.5 rounded-lg bg-[var(--surface-2)] border border-[var(--line)]">
                   <div>
                     <p className="font-medium text-sm">Dia de Congelamento do Commit Mensal</p>
-                    <p className="text-xs text-[var(--ink-3)]">Data limite em que os closers travam a previsão irrevogável para a diretoria.</p>
+                    <p className="text-xs text-[var(--ink-3)]">
+                      Data limite em que os closers travam a previsão irrevogável para a diretoria.
+                    </p>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="text-xs text-[var(--ink-2)]">Todo dia</span>
@@ -404,7 +447,9 @@ export function PillarSettingsPlaceholder({ pillarName }: PillarSettingsProps) {
                 <div className="flex items-center justify-between p-3.5 rounded-lg bg-[var(--surface-2)] border border-[var(--line)]">
                   <div>
                     <p className="font-medium text-sm">Fator de Confiança do Best Case</p>
-                    <p className="text-xs text-[var(--ink-3)]">Corte de probabilidade mínima para um negócio ser somado no cenário otimista.</p>
+                    <p className="text-xs text-[var(--ink-3)]">
+                      Corte de probabilidade mínima para um negócio ser somado no cenário otimista.
+                    </p>
                   </div>
                   <div className="flex items-center gap-2">
                     <Input
@@ -438,7 +483,9 @@ export function PillarSettingsPlaceholder({ pillarName }: PillarSettingsProps) {
                 <div className="flex items-center justify-between p-3.5 rounded-lg bg-[var(--surface-2)] border border-[var(--line)]">
                   <div>
                     <p className="font-medium text-sm">Modelo de IA Ativo para Vendas</p>
-                    <p className="text-xs text-[var(--ink-3)]">Provedor utilizado no Copiloto, Roleplay e Resumo de Chamadas.</p>
+                    <p className="text-xs text-[var(--ink-3)]">
+                      Provedor utilizado no Copiloto, Roleplay e Resumo de Chamadas.
+                    </p>
                   </div>
                   <select
                     value={aiModel}
@@ -453,8 +500,12 @@ export function PillarSettingsPlaceholder({ pillarName }: PillarSettingsProps) {
 
                 <div className="flex items-center justify-between p-3.5 rounded-lg bg-[var(--surface-2)] border border-[var(--line)]">
                   <div>
-                    <p className="font-medium text-sm">Temperatura de Inferência ({aiTemperature})</p>
-                    <p className="text-xs text-[var(--ink-3)]">Valores baixos produzem respostas mais estruturadas e factuais.</p>
+                    <p className="font-medium text-sm">
+                      Temperatura de Inferência ({aiTemperature})
+                    </p>
+                    <p className="text-xs text-[var(--ink-3)]">
+                      Valores baixos produzem respostas mais estruturadas e factuais.
+                    </p>
                   </div>
                   <input
                     type="range"
@@ -470,7 +521,9 @@ export function PillarSettingsPlaceholder({ pillarName }: PillarSettingsProps) {
                 <div className="flex items-center justify-between p-3.5 rounded-lg bg-[var(--surface-2)] border border-[var(--line)]">
                   <div>
                     <p className="font-medium text-sm">Sanitização e Mascaramento de PII (LGPD)</p>
-                    <p className="text-xs text-[var(--ink-3)]">Remove CPFs, dados bancários e senhas dos prompts antes do envio para a LLM.</p>
+                    <p className="text-xs text-[var(--ink-3)]">
+                      Remove CPFs, dados bancários e senhas dos prompts antes do envio para a LLM.
+                    </p>
                   </div>
                   <label className="relative inline-flex items-center cursor-pointer">
                     <input
@@ -504,7 +557,9 @@ export function PillarSettingsPlaceholder({ pillarName }: PillarSettingsProps) {
                 <div className="flex items-center justify-between p-3.5 rounded-lg bg-[var(--surface-2)] border border-[var(--line)]">
                   <div>
                     <p className="font-medium text-sm">Sincronização Bidirecional com Bitrix24</p>
-                    <p className="text-xs text-[var(--ink-3)]">Mantém campos de leads, contatos e negócios atualizados em tempo real.</p>
+                    <p className="text-xs text-[var(--ink-3)]">
+                      Mantém campos de leads, contatos e negócios atualizados em tempo real.
+                    </p>
                   </div>
                   <label className="relative inline-flex items-center cursor-pointer">
                     <input
@@ -519,8 +574,12 @@ export function PillarSettingsPlaceholder({ pillarName }: PillarSettingsProps) {
 
                 <div className="flex items-center justify-between p-3.5 rounded-lg bg-[var(--surface-2)] border border-[var(--line)]">
                   <div>
-                    <p className="font-medium text-sm">Intervalo de Sincronização em Segundo Plano</p>
-                    <p className="text-xs text-[var(--ink-3)]">Frequência com que os workers buscam alterações nos sistemas integrados.</p>
+                    <p className="font-medium text-sm">
+                      Intervalo de Sincronização em Segundo Plano
+                    </p>
+                    <p className="text-xs text-[var(--ink-3)]">
+                      Frequência com que os workers buscam alterações nos sistemas integrados.
+                    </p>
                   </div>
                   <div className="flex items-center gap-2">
                     <Input
@@ -536,7 +595,10 @@ export function PillarSettingsPlaceholder({ pillarName }: PillarSettingsProps) {
                 <div className="flex items-center justify-between p-3.5 rounded-lg bg-[var(--surface-2)] border border-[var(--line)]">
                   <div>
                     <p className="font-medium text-sm">Tentativas de Reenvio em Falha de Webhook</p>
-                    <p className="text-xs text-[var(--ink-3)]">Política de backoff exponencial para garantir entrega mesmo em instabilidades de rede.</p>
+                    <p className="text-xs text-[var(--ink-3)]">
+                      Política de backoff exponencial para garantir entrega mesmo em instabilidades
+                      de rede.
+                    </p>
                   </div>
                   <div className="flex items-center gap-2">
                     <Input
@@ -570,7 +632,9 @@ export function PillarSettingsPlaceholder({ pillarName }: PillarSettingsProps) {
                 <div className="flex items-center justify-between p-3.5 rounded-lg bg-[var(--surface-2)] border border-[var(--line)]">
                   <div>
                     <p className="font-medium text-sm">Click-to-Call Integrado (3CX / Voice Hub)</p>
-                    <p className="text-xs text-[var(--ink-3)]">Disca diretamente com 1 clique a partir de qualquer lead ou contato no CRM.</p>
+                    <p className="text-xs text-[var(--ink-3)]">
+                      Disca diretamente com 1 clique a partir de qualquer lead ou contato no CRM.
+                    </p>
                   </div>
                   <label className="relative inline-flex items-center cursor-pointer">
                     <input
@@ -586,7 +650,9 @@ export function PillarSettingsPlaceholder({ pillarName }: PillarSettingsProps) {
                 <div className="flex items-center justify-between p-3.5 rounded-lg bg-[var(--surface-2)] border border-[var(--line)]">
                   <div>
                     <p className="font-medium text-sm">Gravação & Transcrição Automática por IA</p>
-                    <p className="text-xs text-[var(--ink-3)]">Salva o áudio e gera ata da conversa com extração de próximos passos.</p>
+                    <p className="text-xs text-[var(--ink-3)]">
+                      Salva o áudio e gera ata da conversa com extração de próximos passos.
+                    </p>
                   </div>
                   <label className="relative inline-flex items-center cursor-pointer">
                     <input
@@ -602,7 +668,9 @@ export function PillarSettingsPlaceholder({ pillarName }: PillarSettingsProps) {
                 <div className="flex items-center justify-between p-3.5 rounded-lg bg-[var(--surface-2)] border border-[var(--line)]">
                   <div>
                     <p className="font-medium text-sm">Trava de Horário Comercial (Anti-Spam)</p>
-                    <p className="text-xs text-[var(--ink-3)]">Bloqueia tentativas automáticas fora do horário das 08:00 às 18:00 e feriados.</p>
+                    <p className="text-xs text-[var(--ink-3)]">
+                      Bloqueia tentativas automáticas fora do horário das 08:00 às 18:00 e feriados.
+                    </p>
                   </div>
                   <label className="relative inline-flex items-center cursor-pointer">
                     <input
@@ -626,7 +694,9 @@ export function PillarSettingsPlaceholder({ pillarName }: PillarSettingsProps) {
               <CardTitle>Parâmetros Gerais do Pilar ({pillarName})</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-[var(--ink-2)]">Módulo configurado de acordo com as diretrizes do Birth Hub 360.</p>
+              <p className="text-sm text-[var(--ink-2)]">
+                Módulo configurado de acordo com as diretrizes do Birth Hub 360.
+              </p>
             </CardContent>
           </Card>
         );
@@ -681,7 +751,9 @@ export function PillarSettingsPlaceholder({ pillarName }: PillarSettingsProps) {
           })}
 
           <div className="mt-auto p-3.5 rounded-xl bg-[var(--surface-2)] border border-[var(--line)]">
-            <span className="text-xs font-semibold text-[var(--ink)] block mb-1">Status do Pilar</span>
+            <span className="text-xs font-semibold text-[var(--ink)] block mb-1">
+              Status do Pilar
+            </span>
             <div className="flex items-center gap-1.5 text-xs text-[var(--nav-c-green)] font-medium">
               <span className="w-2 h-2 rounded-full bg-[var(--nav-c-green)] animate-pulse" />
               100% Operacional
@@ -697,15 +769,17 @@ export function PillarSettingsPlaceholder({ pillarName }: PillarSettingsProps) {
                 <Badge variant="outline" className="text-xs font-semibold">
                   {pillarName}
                 </Badge>
-                <Badge variant="default" className="bg-[var(--nav-c-green)]/10 text-[var(--nav-c-green)] text-xs">
+                <Badge
+                  variant="default"
+                  className="bg-[var(--nav-c-green)]/10 text-[var(--nav-c-green)] text-xs"
+                >
                   Ativo no Ambiente
                 </Badge>
               </div>
-              <h2 className="text-2xl font-bold">
-                {tabs.find((t) => t.id === activeTab)?.label}
-              </h2>
+              <h2 className="text-2xl font-bold">{tabs.find((t) => t.id === activeTab)?.label}</h2>
               <p className="text-[var(--ink-2)] text-sm">
-                Gerencie regras operacionais, governança e conectores exclusivos do <strong>{pillarName}</strong>.
+                Gerencie regras operacionais, governança e conectores exclusivos do{' '}
+                <strong>{pillarName}</strong>.
               </p>
             </div>
 
@@ -717,16 +791,26 @@ export function PillarSettingsPlaceholder({ pillarName }: PillarSettingsProps) {
                 <CardHeader>
                   <CardTitle>Controle de Acesso Modular (RBAC)</CardTitle>
                   <CardDescription>
-                    Nível de privilégio concedido a cada papel para visualização e edição dentro de {pillarName}.
+                    Nível de privilégio concedido a cada papel para visualização e edição dentro de{' '}
+                    {pillarName}.
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-3 border-t border-[var(--line)] pt-6">
                   {[
                     { role: 'Admin', desc: 'Acesso total, auditoria e edição de parâmetros' },
-                    { role: 'Gestor Comercial', desc: 'Edição de metas, distribuição e relatórios' },
+                    {
+                      role: 'Gestor Comercial',
+                      desc: 'Edição de metas, distribuição e relatórios',
+                    },
                     { role: 'Closer / AE', desc: 'Leitura de dados e execução de negociações' },
-                    { role: 'SDR / Pré-Vendas', desc: 'Operação de toques e qualificação de leads' },
-                    { role: 'Visualizador', desc: 'Apenas leitura executiva sem permissão de escrita' },
+                    {
+                      role: 'SDR / Pré-Vendas',
+                      desc: 'Operação de toques e qualificação de leads',
+                    },
+                    {
+                      role: 'Visualizador',
+                      desc: 'Apenas leitura executiva sem permissão de escrita',
+                    },
                   ].map((item) => (
                     <div
                       key={item.role}
@@ -756,7 +840,9 @@ export function PillarSettingsPlaceholder({ pillarName }: PillarSettingsProps) {
                         <label className="flex items-center gap-2 text-xs font-medium cursor-pointer">
                           <input
                             type="checkbox"
-                            defaultChecked={item.role.includes('Admin') || item.role.includes('Gestor')}
+                            defaultChecked={
+                              item.role.includes('Admin') || item.role.includes('Gestor')
+                            }
                             className="rounded border-[var(--line)] text-[var(--nav-c-blue)] focus:ring-[var(--nav-c-blue)]"
                           />
                           Excluir
@@ -828,9 +914,21 @@ export function PillarSettingsPlaceholder({ pillarName }: PillarSettingsProps) {
                 </CardHeader>
                 <CardContent className="space-y-3 border-t border-[var(--line)] pt-6">
                   {[
-                    { name: 'Banco de Dados Principal (PostgreSQL / Prisma)', status: 'Conectado', latency: '4ms' },
-                    { name: 'Fila de Mensageria (Redis / BullMQ)', status: 'Operacional', latency: '2ms' },
-                    { name: 'Gateway de Telemetria e Logs (OpenTelemetry)', status: 'Ativo', latency: '12ms' },
+                    {
+                      name: 'Banco de Dados Principal (PostgreSQL / Prisma)',
+                      status: 'Conectado',
+                      latency: '4ms',
+                    },
+                    {
+                      name: 'Fila de Mensageria (Redis / BullMQ)',
+                      status: 'Operacional',
+                      latency: '2ms',
+                    },
+                    {
+                      name: 'Gateway de Telemetria e Logs (OpenTelemetry)',
+                      status: 'Ativo',
+                      latency: '12ms',
+                    },
                   ].map((conn) => (
                     <div
                       key={conn.name}
@@ -840,10 +938,15 @@ export function PillarSettingsPlaceholder({ pillarName }: PillarSettingsProps) {
                         <CheckCircle2 className="w-4 h-4 text-[var(--nav-c-green)]" />
                         <div>
                           <p className="font-semibold text-sm">{conn.name}</p>
-                          <p className="text-xs text-[var(--ink-3)]">Latência de resposta: {conn.latency}</p>
+                          <p className="text-xs text-[var(--ink-3)]">
+                            Latência de resposta: {conn.latency}
+                          </p>
                         </div>
                       </div>
-                      <Badge variant="default" className="bg-[var(--nav-c-green)]/10 text-[var(--nav-c-green)]">
+                      <Badge
+                        variant="default"
+                        className="bg-[var(--nav-c-green)]/10 text-[var(--nav-c-green)]"
+                      >
                         {conn.status}
                       </Badge>
                     </div>
@@ -860,8 +963,8 @@ export function PillarSettingsPlaceholder({ pillarName }: PillarSettingsProps) {
                   Isolamento Seguro por Organização (Multi-Tenant)
                 </h4>
                 <p className="text-xs text-[var(--ink-2)] mt-1">
-                  Todas as regras e limites definidos nesta tela afetam unicamente a sua organização e estão
-                  protegidos por Row-Level Security e criptografia em repouso.
+                  Todas as regras e limites definidos nesta tela afetam unicamente a sua organização
+                  e estão protegidos por Row-Level Security e criptografia em repouso.
                 </p>
               </div>
             </div>

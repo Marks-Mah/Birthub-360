@@ -35,11 +35,7 @@ export function LeadCardHeader({
             {companyName}
           </h3>
         </div>
-        {sector && (
-          <p className="text-xs text-slate-500 dark:text-white/50 pl-6">
-            {sector}
-          </p>
-        )}
+        {sector && <p className="text-xs text-slate-500 dark:text-white/50 pl-6">{sector}</p>}
       </div>
 
       <div className="flex items-center gap-2 shrink-0">

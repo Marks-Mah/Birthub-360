@@ -9,7 +9,8 @@ export function LeadCardHistoryPreview({ leadId }: { leadId: string }): React.Re
     {
       id: '1',
       channel: 'VOZ',
-      summary: 'Ligação realizada (1m 42s). Decisor confirmou interesse e solicitou apresentação executiva.',
+      summary:
+        'Ligação realizada (1m 42s). Decisor confirmou interesse e solicitou apresentação executiva.',
       createdAt: 'Hoje às 14:15',
       authorName: 'SDR Autônomo',
     },
@@ -82,7 +83,9 @@ export function LeadCardHistoryPreview({ leadId }: { leadId: string }): React.Re
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between text-[11px] text-slate-400 dark:text-white/40 mb-0.5">
-                <span className="font-semibold text-slate-700 dark:text-white/70">{touch.authorName}</span>
+                <span className="font-semibold text-slate-700 dark:text-white/70">
+                  {touch.authorName}
+                </span>
                 <span>{touch.createdAt}</span>
               </div>
               <p className="text-slate-600 dark:text-white/80 leading-relaxed text-[11px]">

@@ -1,4 +1,3 @@
-
 import { LineChart, TrendingUp, Target, DollarSign, Calendar, Filter } from 'lucide-react';
 import { CommandCenterHeader } from '../../../components/ui/CommandCenterHeader.js';
 import { Card, CardHeader, CardTitle, CardContent } from '../../../components/ui/Card.js';

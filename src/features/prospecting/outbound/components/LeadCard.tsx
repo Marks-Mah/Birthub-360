@@ -36,8 +36,14 @@ export function LeadCard({
   className = '',
 }: LeadCardProps): React.ReactElement {
   const effectiveUpdateStatus = onUpdateStatus
-    ? async (id: string, st: string) => { await onUpdateStatus(id, st); }
-    : (onUpdateStage ? async (id: string, st: string) => { await onUpdateStage(id, st); } : undefined);
+    ? async (id: string, st: string) => {
+        await onUpdateStatus(id, st);
+      }
+    : onUpdateStage
+      ? async (id: string, st: string) => {
+          await onUpdateStage(id, st);
+        }
+      : undefined;
 
   const {
     isExpanded,
@@ -86,7 +92,10 @@ export function LeadCard({
       />
 
       <div className="mt-3 pt-3 border-t border-slate-100 dark:border-white/5 flex items-center justify-between">
-        <LeadCardEnrichmentBadge source={lead.enrichmentSource} confidence={lead.enrichmentConfidence} />
+        <LeadCardEnrichmentBadge
+          source={lead.enrichmentSource}
+          confidence={lead.enrichmentConfidence}
+        />
         <button
           type="button"
           onClick={toggleExpand}

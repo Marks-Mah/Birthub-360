@@ -1,4 +1,3 @@
-
 import { motion, AnimatePresence } from 'framer-motion';
 import { Database, Brain, Sparkles, CheckCircle2, Zap } from 'lucide-react';
 
