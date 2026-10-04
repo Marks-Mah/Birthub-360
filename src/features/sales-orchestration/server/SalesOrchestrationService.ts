@@ -1,26 +1,34 @@
-import type { PrismaClient } from '@prisma/client';
+import type { prisma } from '../../../lib/prisma.js';
+import type { getTenantPrisma } from '../../../lib/tenant-prisma.js';
+
+export type SalesOrchestrationDb = typeof prisma | ReturnType<typeof getTenantPrisma>;
 
 export class SalesOrchestrationService {
   constructor(
-    private readonly db: PrismaClient,
+    private readonly db: SalesOrchestrationDb,
     private readonly organizationId: string
   ) {}
 
+  private get client(): typeof prisma {
+    return this.db as typeof prisma;
+  }
+
   async getOverview() {
     // 1. Buscar Playbooks reais no banco
-    const playbookInsights = await this.db.playbookInsight.findMany({
+    const playbookInsights = await this.client.playbookInsight.findMany({
+      where: { organizationId: this.organizationId },
       take: 10,
       orderBy: { createdAt: 'desc' },
     });
 
     // 2. Buscar Cadências ativas
-    const cadences = await this.db.cadenceSequence.findMany({
+    const cadences = await this.client.cadenceSequence.findMany({
       where: { organizationId: this.organizationId },
       take: 10,
     });
 
     // 3. Buscar Matriz de Qualificação
-    const qualMatrix = await this.db.qualificationMatrixItem.findMany({
+    const qualMatrix = await this.client.qualificationMatrixItem.findMany({
       take: 10,
     });
 
@@ -28,14 +36,14 @@ export class SalesOrchestrationService {
     const playbooks = playbookInsights.length > 0
       ? playbookInsights.map((p, idx) => ({
           id: p.id,
-          title: p.title,
+          title: p.patternTitle || 'Playbook de Vendas',
           category: (idx % 2 === 0 ? 'Enterprise' : 'Outbound') as any,
           targetRole: 'Closer' as any,
           complianceRate: 88 + (idx % 10),
           stagesCount: 5,
           lastUpdated: new Date(p.updatedAt).toLocaleDateString('pt-BR'),
           status: 'Ativo' as any,
-          description: p.content.slice(0, 120),
+          description: (p.patternDescription || '').slice(0, 120),
         }))
       : [
           {

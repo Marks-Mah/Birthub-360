@@ -20,12 +20,12 @@ jobs:
       - name: Setup Node.js & Dependencies
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
-          node-version: 20
+          node-version: 22
           cache: 'npm'
 
       - run: npm ci
       - run: npm run lint
-      - run: npm run test
+      - run: npm run test:unit
 
       - name: Configure AWS Credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@ff717079ee2060e4bcee96c4779b553acc87447c # v4

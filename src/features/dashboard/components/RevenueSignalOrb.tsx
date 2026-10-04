@@ -145,7 +145,7 @@ export function RevenueSignalOrb({
       particleCount: 25,
       spread: 45,
       origin: { y: 0.6 },
-      colors: ['#D4AF37', '#F0D77B', '#FFFFFF'],
+      colors: ['#00E5FF', '#38BDF8', '#FFFFFF'],
     });
     setTimeout(() => {
       setIsBoosting(false);
@@ -162,7 +162,7 @@ export function RevenueSignalOrb({
 
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 opacity-60 bg-[radial-gradient(circle_at_50%_42%,rgba(212,175,55,0.22),transparent_48%)]"
+        className="pointer-events-none absolute inset-0 opacity-60 bg-[radial-gradient(circle_at_50%_42%,rgba(0,229,255,0.22),transparent_48%)]"
       />
 
       <div className="absolute inset-x-5 top-5 z-10 flex items-start justify-between gap-4">
@@ -170,7 +170,7 @@ export function RevenueSignalOrb({
           <p className="text-[10px] font-extrabold uppercase tracking-[0.22em] text-brand-ink dark:text-brand">
             Signal Core 3D · 2026
           </p>
-          <h3 className="mt-1 text-base font-bold text-ink">Pressão Comercial ao Vivo</h3>
+          <h3 className="mt-1 text-base font-display font-bold text-ink">Pressão Comercial ao Vivo</h3>
           <p className="mt-1 max-w-[18rem] text-xs leading-relaxed text-ink-2">
             Volume e movimento respondem às métricas reais. Clique no núcleo para impulso.
           </p>

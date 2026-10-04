@@ -144,7 +144,7 @@ export function SinglePageDashboard() {
                 aria-hidden="true"
                 style={{
                   background:
-                    'linear-gradient(105deg, transparent 40%, rgba(212,175,55,0.22) 50%, transparent 60%)',
+                    'linear-gradient(105deg, transparent 40%, rgba(0,229,255,0.22) 50%, transparent 60%)',
                 }}
               />
               <Activity className="w-4 h-4 relative z-10" />
@@ -169,7 +169,7 @@ export function SinglePageDashboard() {
             variants={metricReveal}
             className="space-y-3 cursor-default"
           >
-            <h3 className="text-[10px] font-bold uppercase tracking-[0.15em] text-ink-2 flex items-center gap-2">
+            <h3 className="text-[10px] font-display font-bold uppercase tracking-[0.15em] text-ink-2 flex items-center gap-2">
               <Target className="w-3.5 h-3.5" /> Forecast (Pipeline)
             </h3>
             <p className="text-4xl lg:text-5xl font-mono text-ink tracking-tight font-medium">
@@ -193,7 +193,7 @@ export function SinglePageDashboard() {
             variants={metricReveal}
             className="space-y-3 cursor-default"
           >
-            <h3 className="text-[10px] font-bold uppercase tracking-[0.15em] text-ink-2 flex items-center gap-2">
+            <h3 className="text-[10px] font-display font-bold uppercase tracking-[0.15em] text-ink-2 flex items-center gap-2">
               <TrendingUp className="w-3.5 h-3.5" /> Win Rate
             </h3>
             <p className="text-4xl lg:text-5xl font-mono text-ink tracking-tight font-medium">
@@ -211,7 +211,7 @@ export function SinglePageDashboard() {
             variants={metricReveal}
             className="space-y-3 cursor-default"
           >
-            <h3 className="text-[10px] font-bold uppercase tracking-[0.15em] text-ink-2 flex items-center gap-2">
+            <h3 className="text-[10px] font-display font-bold uppercase tracking-[0.15em] text-ink-2 flex items-center gap-2">
               <Activity className="w-3.5 h-3.5" /> Velocity (Atividades)
             </h3>
             <p className="text-4xl lg:text-5xl font-mono text-ink tracking-tight font-medium">
@@ -229,13 +229,13 @@ export function SinglePageDashboard() {
             variants={metricReveal}
             className="space-y-3 cursor-default"
           >
-            <h3 className="text-[10px] font-bold uppercase tracking-[0.15em] text-ink-2 flex items-center gap-2">
+            <h3 className="text-[10px] font-display font-bold uppercase tracking-[0.15em] text-ink-2 flex items-center gap-2">
               <Search className="w-3.5 h-3.5" /> Market (Empresas)
             </h3>
             <p className="text-4xl lg:text-5xl font-mono text-ink tracking-tight font-medium">
               {totalCompanies}
             </p>
-            <p className="text-xs text-ink-2 font-mono">contas ativas na base</p>
+            <p className="text-xs text-ink-2 font-mono">{totalCompanies} contas ativas na base</p>
           </motion.div>
         </motion.div>
 
@@ -303,7 +303,7 @@ export function SinglePageDashboard() {
           </div>
 
           {/* Gamification clean integration */}
-          <div className="bg-surface-interactive/30 p-8 rounded-none border border-line/50">
+          <div className="bg-surface-interactive/30 p-8 rounded-card border border-line/40">
             <GamificationWidget
               initialXp={Math.max(350, totalLeads * 50 + closedThisMonth * 200)}
               level={Math.max(1, Math.floor((totalLeads * 50 + closedThisMonth * 200) / 1000) + 1)}
