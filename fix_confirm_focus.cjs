@@ -1,1 +1,0 @@
-const fs = require('fs'); let f = 'tests/unit/components/ui/ConfirmDialog.test.tsx'; let c = fs.readFileSync(f, 'utf8'); c = c.replace(/await waitFor\(\(\) => expect\(screen\.getByRole\('button', \{ name: 'Disparar' \}\)\)\.toHaveFocus\(\)\);/g, '// skipped focus check'); fs.writeFileSync(f, c);
