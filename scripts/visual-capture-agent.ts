@@ -4,7 +4,7 @@ import path from 'path';
 import crypto from 'crypto';
 
 const CATALOG_DIR = path.join(process.cwd(), 'visual-catalog');
-const BASE_URL = 'http://localhost:3000';
+const BASE_URL = 'http://localhost:3024';
 
 // Let's use the actual application routes
 const ROUTES = [
