@@ -54,9 +54,12 @@ const DrawerContent = React.forwardRef<
         {...props}
       >
         {children}
-        <DialogPrimitive.Close className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-bg transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-surface-elevated">
+        <DialogPrimitive.Close
+          aria-label="Fechar gaveta"
+          className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-bg transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-surface-elevated"
+        >
           <X className="h-4 w-4 text-ink-2" />
-          <span className="sr-only">Close</span>
+          <span className="sr-only">Fechar gaveta</span>
         </DialogPrimitive.Close>
       </DialogPrimitive.Content>
     </DrawerPortal>
@@ -107,6 +110,7 @@ export interface DrawerProps extends React.ComponentPropsWithoutRef<typeof Dialo
   title?: React.ReactNode;
   subtitle?: React.ReactNode;
   children?: React.ReactNode;
+  side?: 'top' | 'bottom' | 'left' | 'right';
 }
 
 function Drawer({
@@ -117,6 +121,7 @@ function Drawer({
   title,
   subtitle,
   children,
+  side,
   ...props
 }: DrawerProps) {
   const isConvenienceMode =
@@ -137,7 +142,7 @@ function Drawer({
 
   return (
     <DialogPrimitive.Root open={effectiveOpen} onOpenChange={handleOpenChange} {...props}>
-      <DrawerContent>
+      <DrawerContent side={side}>
         {title && (
           <DrawerHeader>
             <DrawerTitle>{title}</DrawerTitle>

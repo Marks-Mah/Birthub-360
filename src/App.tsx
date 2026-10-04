@@ -162,6 +162,40 @@ const PillarSettingsPlaceholder = lazy(() =>
   })),
 );
 
+// PILAR 03 - ORQUESTRAÇÃO DE VENDAS
+const PlaybooksHub = lazy(() =>
+  import('./features/sales-orchestration/components/PlaybooksHub.js').then((m) => ({
+    default: m.PlaybooksHub,
+  })),
+);
+const JornadasComerciaisHub = lazy(() =>
+  import('./features/sales-orchestration/components/JornadasComerciaisHub.js').then((m) => ({
+    default: m.JornadasComerciaisHub,
+  })),
+);
+const ProcessosVendasHub = lazy(() =>
+  import('./features/sales-orchestration/components/ProcessosVendasHub.js').then((m) => ({
+    default: m.ProcessosVendasHub,
+  })),
+);
+const RoteirosHub = lazy(() =>
+  import('./features/sales-orchestration/components/RoteirosHub.js').then((m) => ({
+    default: m.RoteirosHub,
+  })),
+);
+
+// PILAR 02 - INTELIGÊNCIA DE MERCADO
+const InteligenciaMercadoHub = lazy(() =>
+  import('./features/market-intelligence/components/InteligenciaMercadoHub.js').then((m) => ({
+    default: m.InteligenciaMercadoHub,
+  })),
+);
+const ProspeccaoInteligenteHub = lazy(() =>
+  import('./features/market-intelligence/components/ProspeccaoInteligenteHub.js').then((m) => ({
+    default: m.ProspeccaoInteligenteHub,
+  })),
+);
+
 const DailyPlanHub = lazy(() =>
   import('./features/commercial-intelligence/components/DailyPlanHub.js').then((m) => ({
     default: m.DailyPlanHub,
@@ -347,6 +381,10 @@ function AppLayout() {
             <Route path="dialer" element={<DialerFrontend />} />
 
             <Route path="cadence" element={<CadenceHub />} />
+            <Route path="playbooks" element={<PlaybooksHub />} />
+            <Route path="jornadas" element={<JornadasComerciaisHub />} />
+            <Route path="processos" element={<ProcessosVendasHub />} />
+            <Route path="roteiros" element={<RoteirosHub />} />
             <Route path="chatbook" element={<ChatbookHub />} />
             <Route path="roleplay" element={<RoleplayHub />} />
             <Route path="qualification_matrix" element={<QualificationMatrixPage />} />
@@ -359,8 +397,10 @@ function AppLayout() {
             <Route path="analytics" element={<Analytics />} />
             <Route path="winloss" element={<WinLossAnalysis />} />
             <Route path="market-intelligence" element={<Ldr />} />
+            <Route path="market-intelligence/hub" element={<InteligenciaMercadoHub />} />
             <Route path="market-intelligence/accounts/:id" element={<Account360 />} />
             <Route path="market-intelligence/deck" element={<LeadApprovalDeck />} />
+            <Route path="prospect/inteligente" element={<ProspeccaoInteligenteHub />} />
             <Route path="propostas" element={<PropostasList />} />
             {/* Comercial Inteligente — módulo executivo restrito. RequireRole bloqueia acesso
               direto por URL (não só o item de menu); a autorização real (que nunca confia no

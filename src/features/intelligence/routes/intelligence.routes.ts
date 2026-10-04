@@ -453,7 +453,10 @@ router.get(
 
 import { VectorSearchService } from '../services/vector-search.service.js';
 
-router.get('/search', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+router.get(
+  '/search',
+  requireRole(['ADMIN', 'GESTOR', 'CLOSER', 'SDR']),
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const query = typeof req.query.q === 'string' ? req.query.q.trim() : '';
     const requestedLimit = Number.parseInt(String(req.query.limit || '5'), 10);
@@ -468,8 +471,21 @@ router.get('/search', async (req: Request, res: Response, next: NextFunction): P
       return;
     }
 
-    const organizationId = (req as AuthRequest).user.organizationId;
+    const organizationId = (req as AuthRequest).user?.organizationId;
+    const userId = (req as AuthRequest).user?.id;
     const results = await VectorSearchService.searchChunks(query, organizationId, limit);
+
+    await logAiUsage({
+      promptId: 'search_vector_query',
+      organizationId,
+      userId,
+      providerUsed: 'VectorSearch',
+      costInUsd: 0,
+      model: 'VectorSearch',
+      usage: { promptTokens: 0, completionTokens: 0, totalTokens: 0 },
+      latencyMs: 0,
+    });
+
     res.json({ results });
   } catch (error: any) {
     logger.error({ err: error }, 'Error performing vector search');

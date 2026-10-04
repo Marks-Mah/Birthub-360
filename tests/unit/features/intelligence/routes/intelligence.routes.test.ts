@@ -24,6 +24,13 @@ vi.mock('@/features/intelligence/services/ai-settings.service', () => ({
   saveAiSettings: (...args: unknown[]) => saveAiSettingsMock(...args),
 }));
 
+const searchChunksMock = vi.fn();
+vi.mock('@/features/intelligence/services/vector-search.service', () => ({
+  VectorSearchService: {
+    searchChunks: (...args: unknown[]) => searchChunksMock(...args),
+  },
+}));
+
 const listPendingActionsMock = vi.fn();
 const approvePendingActionMock = vi.fn();
 const discardPendingActionMock = vi.fn();
@@ -124,6 +131,7 @@ beforeEach(() => {
   analyzeOrgWinLossMock.mockResolvedValue(null);
   persistWinLossReportMock.mockResolvedValue(undefined);
   reportFindFirstMock.mockResolvedValue(null);
+  searchChunksMock.mockResolvedValue([]);
 });
 
 afterEach(() => {
@@ -413,3 +421,47 @@ describe('GET /api/intelligence/win-loss-analysis/latest — expõe o resultado 
     expect(res.body.data).toBeNull();
   });
 });
+
+describe('GET /api/intelligence/search (Busca Vetorial RAG) — RBAC e isolamento de tenant', () => {
+  it('rejeita com 401 quando não há usuário autenticado', async () => {
+    const app = express();
+    app.use(express.json());
+    app.use('/api/intelligence', intelligenceRoutes);
+    app.use(errorHandler);
+
+    const res = await request(app).get('/api/intelligence/search?q=contrato');
+
+    expect(res.status).toBe(401);
+    expect(res.body.success).toBe(false);
+    expect(searchChunksMock).not.toHaveBeenCalled();
+  });
+
+  it('rejeita com 403 para papel não autorizado (VISUALIZADOR)', async () => {
+    const res = await request(buildApp('VISUALIZADOR')).get('/api/intelligence/search?q=contrato');
+
+    expect(res.status).toBe(403);
+    expect(res.body.success).toBe(false);
+    expect(searchChunksMock).not.toHaveBeenCalled();
+  });
+
+  it('executa com 200 para papéis permitidos (SDR/CLOSER/GESTOR/ADMIN) e escopa a busca por tenant', async () => {
+    searchChunksMock.mockResolvedValueOnce([
+      { id: 'chunk-1', content: 'Trecho do documento', similarity: 0.95 },
+    ]);
+
+    const res = await request(buildApp('SDR')).get('/api/intelligence/search?q=contrato&limit=10');
+
+    expect(res.status).toBe(200);
+    expect(res.body.results).toHaveLength(1);
+    expect(searchChunksMock).toHaveBeenCalledWith('contrato', 'test-org-id', 10);
+  });
+
+  it('valida query vazia com 400', async () => {
+    const res = await request(buildApp('SDR')).get('/api/intelligence/search?q=');
+
+    expect(res.status).toBe(400);
+    expect(res.body.error).toContain('Search query (q) is required');
+    expect(searchChunksMock).not.toHaveBeenCalled();
+  });
+});
+

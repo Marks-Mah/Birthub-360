@@ -31,6 +31,10 @@ import {
   MessageSquare,
   Bot,
   TrendingUp,
+  Database,
+  PhoneCall,
+  Search,
+  Building2,
 } from 'lucide-react';
 import { useAuth } from '../../../contexts/AuthContext.js';
 import { useTheme } from '../../../contexts/ThemeContext.js';
@@ -376,6 +380,7 @@ export function NewLoginScreen({ initialScreen = 'intro' }: { initialScreen?: 'i
               <a href="#performance" className="hover:text-[#0284C7] transition-colors">Performance</a>
               <a href="#previsibilidade" className="hover:text-[#0284C7] transition-colors">Previsibilidade</a>
               <a href="#ecossistema" className="hover:text-[#0284C7] transition-colors">Ecossistema</a>
+              <a href="#command-center" className="hover:text-[#0284C7] transition-colors">Cockpit</a>
             </nav>
 
             {/* Botão Acessar Plataforma na Navbar */}
@@ -760,39 +765,39 @@ export function NewLoginScreen({ initialScreen = 'intro' }: { initialScreen?: 'i
                 Como os dados fluem da prospecção ao fechamento
               </h2>
               <p className="mt-3 text-sm sm:text-base text-[#475569]">
-                Cada etapa é governada por automações e inteligência para garantir velocidade e zero perda de oportunidades.
+                Um processo ponta a ponta estruturado com governança de dados, rastreamento de interações e transições claras entre etapas.
               </p>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
               <div className="flow-step-card p-5">
                 <div className="font-mono text-xs font-bold text-[#0284C7] mb-2">ETAPA 01</div>
-                <h4 className="font-display text-sm font-bold text-[#0F172A] mb-1">Entrada &amp; Captura</h4>
-                <p className="text-xs text-[#64748B]">Leads e contas são integrados via Bitrix24, campanhas ou prospecção ativa.</p>
+                <h4 className="font-display text-sm font-bold text-[#0F172A] mb-1">Captura &amp; Ingestão</h4>
+                <p className="text-xs text-[#64748B]">Entrada de contas e contatos através de formulários, listas prospectadas ou sincronização direta com Bitrix24 e CRMs integrados.</p>
               </div>
 
               <div className="flow-step-card p-5">
                 <div className="font-mono text-xs font-bold text-[#2563EB] mb-2">ETAPA 02</div>
-                <h4 className="font-display text-sm font-bold text-[#0F172A] mb-1">Enriquecimento B2B</h4>
-                <p className="text-xs text-[#64748B]">Dados de receita, decisores e porte validam o fit do cliente ideal (ICP).</p>
+                <h4 className="font-display text-sm font-bold text-[#0F172A] mb-1">Enriquecimento Cadastral</h4>
+                <p className="text-xs text-[#64748B]">Validação de CNPJ e dados corporativos, identificação de decisores e confirmação de e-mails via provedores analíticos.</p>
               </div>
 
               <div className="flow-step-card p-5">
                 <div className="font-mono text-xs font-bold text-[#0EA5E9] mb-2">ETAPA 03</div>
-                <h4 className="font-display text-sm font-bold text-[#0F172A] mb-1">Cadência &amp; SLA</h4>
-                <p className="text-xs text-[#64748B]">Distribuição instantânea ao SDR com réguas de contato automáticas.</p>
+                <h4 className="font-display text-sm font-bold text-[#0F172A] mb-1">Triagem &amp; Distribuição</h4>
+                <p className="text-xs text-[#64748B]">Atribuição aos responsáveis de pré-vendas (SDR) e execução de réguas de contato com controle de horário e opt-out.</p>
               </div>
 
               <div className="flow-step-card p-5">
                 <div className="font-mono text-xs font-bold text-[#7C3AED] mb-2">ETAPA 04</div>
-                <h4 className="font-display text-sm font-bold text-[#0F172A] mb-1">Apoio com IA</h4>
-                <p className="text-xs text-[#64748B]">Copiloto analisa objeções, histórico e recomenda a abordagem ideal.</p>
+                <h4 className="font-display text-sm font-bold text-[#0F172A] mb-1">Negociação Assistida</h4>
+                <p className="text-xs text-[#64748B]">Apoio em tempo real com matriz de objeções, sugestões do copiloto comercial e histórico unificado de chamadas e mensagens.</p>
               </div>
 
               <div className="flow-step-card p-5">
                 <div className="font-mono text-xs font-bold text-[#16A34A] mb-2">ETAPA 05</div>
-                <h4 className="font-display text-sm font-bold text-[#0F172A] mb-1">Fechamento &amp; Dados</h4>
-                <p className="text-xs text-[#64748B]">Contrato fechado e aprendizados de win/loss retroalimentam o sistema.</p>
+                <h4 className="font-display text-sm font-bold text-[#0F172A] mb-1">Conclusão &amp; Aprendizado</h4>
+                <p className="text-xs text-[#64748B]">Registro formal de fechamento com auditoria de causas de perda (Win/Loss) para calibração contínua do processo.</p>
               </div>
             </div>
           </div>
@@ -804,32 +809,32 @@ export function NewLoginScreen({ initialScreen = 'intro' }: { initialScreen?: 'i
             <div className="lg:w-1/2">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-mono font-bold uppercase tracking-widest bg-purple-50 border border-purple-200 text-[#7C3AED] mb-3">
                 <Bot className="w-3.5 h-3.5" />
-                IA COM CONTEXTO OPERACIONAL REAL
+                IA CONTEXTUAL ESPECIALIZADA
               </div>
               <h2 className="font-display text-2xl sm:text-4xl font-extrabold text-[#0F172A] tracking-tight mb-4">
-                Inteligência Artificial que compreende o seu pipeline
+                Inteligência Artificial orientada a processos e dados comerciais
               </h2>
               <p className="text-sm sm:text-base text-[#475569] leading-relaxed mb-6">
-                Ao contrário de ferramentas genéricas de texto, a IA do Birth Hub 360° é diretamente conectada aos dados operacionais do seu CRM, entendendo o estágio de cada negociação, o histórico de contatos e as objeções recorrentes.
+                Modelos de linguagem conectados à base de conhecimento da sua empresa para apoiar o vendedor em momentos decisivos da negociação, respeitando o contexto e a governança de cada conta.
               </p>
               <div className="space-y-3 font-sans text-xs sm:text-sm text-[#334155]">
                 <div className="flex items-start gap-3">
                   <div className="w-5 h-5 rounded-full bg-purple-100 text-[#7C3AED] flex items-center justify-center shrink-0 mt-0.5">
                     <Check className="w-3.5 h-3.5" />
                   </div>
-                  <span><strong>Diagnóstico de Entraves:</strong> Alerta deals estagnados com sugestões claras de destravamento.</span>
+                  <span><strong>Diagnóstico de Negociações:</strong> Análise dos fatores de avanço e detecção de riscos de estagnação com base no tempo de permanência em cada estágio.</span>
                 </div>
                 <div className="flex items-start gap-3">
                   <div className="w-5 h-5 rounded-full bg-purple-100 text-[#7C3AED] flex items-center justify-center shrink-0 mt-0.5">
                     <Check className="w-3.5 h-3.5" />
                   </div>
-                  <span><strong>Próxima Melhor Ação:</strong> Recomendações acionáveis para o vendedor avançar o contato.</span>
+                  <span><strong>Playbooks &amp; Simulação (Roleplay):</strong> Treinamento ativo da equipe contra objeções típicas de mercado com avaliações orientadas por IA.</span>
                 </div>
                 <div className="flex items-start gap-3">
                   <div className="w-5 h-5 rounded-full bg-purple-100 text-[#7C3AED] flex items-center justify-center shrink-0 mt-0.5">
                     <Check className="w-3.5 h-3.5" />
                   </div>
-                  <span><strong>Isolamento &amp; Segurança:</strong> Seus dados comerciais jamais são utilizados para treinar modelos públicos.</span>
+                  <span><strong>Sugestão de Próxima Ação:</strong> Recomendações fundamentadas no histórico de interações registradas no CRM, auxiliando no avanço do pipeline.</span>
                 </div>
               </div>
             </div>
@@ -841,14 +846,29 @@ export function NewLoginScreen({ initialScreen = 'intro' }: { initialScreen?: 'i
                     <span className="w-3 h-3 rounded-full bg-[#7C3AED]" />
                     <span className="font-mono text-xs font-bold text-[#7C3AED]">COPILOTO COMERCIAL ATIVO</span>
                   </div>
-                  <span className="font-mono text-[10px] text-slate-400">Contexto: Deal #4892</span>
+                  <span className="font-mono text-[10px] text-slate-500 font-semibold">Análise Contextual</span>
                 </div>
                 <div className="space-y-3 font-mono text-xs">
-                  <div className="p-3 rounded-xl bg-purple-50/70 border border-purple-100 text-[#475569]">
-                    <span className="text-[#7C3AED] font-bold">Diagnóstico:</span> Negociação de R$ 140k sem retorno há 4 dias após envio de proposta.
+                  <div className="p-3.5 rounded-xl bg-purple-50/70 border border-purple-100 text-[#475569]">
+                    <div className="text-[#7C3AED] font-bold mb-1 flex items-center gap-1.5">
+                      <Sparkles className="w-3.5 h-3.5" />
+                      Diagnóstico Operacional:
+                    </div>
+                    Negociação em fase de Proposta Comercial com 5 dias sem nova interação registrada pelo responsável.
                   </div>
-                  <div className="p-3 rounded-xl bg-white border border-slate-200 text-[#334155]">
-                    <span className="text-[#0284C7] font-bold">Ação Sugerida:</span> Disparar cadência de validação de decisor financeiro abordando ROI estimado em 90 dias.
+                  <div className="p-3.5 rounded-xl bg-white border border-slate-200 text-[#334155]">
+                    <div className="text-[#0284C7] font-bold mb-1 flex items-center gap-1.5">
+                      <Zap className="w-3.5 h-3.5" />
+                      Recomendação de Próxima Ação:
+                    </div>
+                    Reengajamento via WhatsApp Corporativo abordando critérios de decisão técnica validados na última reunião.
+                  </div>
+                  <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-[#475569]">
+                    <div className="text-[#16A34A] font-bold mb-1 flex items-center gap-1.5">
+                      <Layers className="w-3.5 h-3.5" />
+                      Living Playbook Ativo:
+                    </div>
+                    Matriz de Objeções: Justificativa de retorno sobre investimento e comparativo de prazo de implantação.
                   </div>
                 </div>
               </div>
@@ -862,33 +882,42 @@ export function NewLoginScreen({ initialScreen = 'intro' }: { initialScreen?: 'i
             <div className="text-center max-w-3xl mx-auto mb-12">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-mono font-bold uppercase tracking-widest bg-orange-50 border border-orange-200 text-[#EA580C] mb-3">
                 <Workflow className="w-3.5 h-3.5" />
-                AUTOMAÇÃO OPERACIONAL
+                MOTOR DE REGRAS E WORKERS
               </div>
               <h2 className="font-display text-2xl sm:text-4xl font-extrabold text-[#0F172A] tracking-tight">
-                Eficiência sem desumanizar o contato comercial
+                Automação precisa para eliminar gargalos operacionais
               </h2>
               <p className="mt-3 text-sm sm:text-base text-[#475569]">
-                Remova tarefas braçais repetitivas e deixe seu time focado no que gera receita: construir relacionamentos e fechar negócios.
+                Regras determinísticas e filas assíncronas que garantem consistência nas rotinas comerciais sem depender de lembretes manuais.
               </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="section-card p-6 bg-white">
-                <h3 className="font-display text-base font-bold text-[#0F172A] mb-2">Sincronização Bitrix24</h3>
+                <div className="w-9 h-9 rounded-xl bg-orange-100 text-[#EA580C] flex items-center justify-center font-bold mb-3">
+                  <Zap className="w-4 h-4" />
+                </div>
+                <h3 className="font-display text-base font-bold text-[#0F172A] mb-2">Gatilhos por Eventos</h3>
                 <p className="text-xs sm:text-sm text-[#64748B] leading-relaxed">
-                  Atualizações automáticas de campos, estágios de oportunidade e tarefas sem necessidade de digitação dupla.
+                  Disparo imediato de rotinas na criação de leads, avanço de etapas no pipeline ou conclusão de atividades da equipe.
                 </p>
               </div>
               <div className="section-card p-6 bg-white">
-                <h3 className="font-display text-base font-bold text-[#0F172A] mb-2">Gatilhos de Comportamento</h3>
+                <div className="w-9 h-9 rounded-xl bg-orange-100 text-[#EA580C] flex items-center justify-center font-bold mb-3">
+                  <Clock className="w-4 h-4" />
+                </div>
+                <h3 className="font-display text-base font-bold text-[#0F172A] mb-2">Escaneamento de Estagnação</h3>
                 <p className="text-xs sm:text-sm text-[#64748B] leading-relaxed">
-                  Aberturas de proposta, acessos a links ou ausência de contato disparam alertas imediatos para a equipe responsável.
+                  Rotinas em segundo plano que identificam negociações paradas e alertam o responsável antes da perda de tração.
                 </p>
               </div>
               <div className="section-card p-6 bg-white">
-                <h3 className="font-display text-base font-bold text-[#0F172A] mb-2">Distribuição Inteligente</h3>
+                <div className="w-9 h-9 rounded-xl bg-orange-100 text-[#EA580C] flex items-center justify-center font-bold mb-3">
+                  <Network className="w-4 h-4" />
+                </div>
+                <h3 className="font-display text-base font-bold text-[#0F172A] mb-2">Sincronização Bidirecional</h3>
                 <p className="text-xs sm:text-sm text-[#64748B] leading-relaxed">
-                  Roteamento de oportunidades com base em carga de trabalho, especialidade do vendedor e tamanho da conta.
+                  Atualização contínua de status, tarefas e contatos entre o Birth Hub 360° e CRMs legados sem digitação dupla.
                 </p>
               </div>
             </div>
@@ -901,13 +930,13 @@ export function NewLoginScreen({ initialScreen = 'intro' }: { initialScreen?: 'i
             <div className="text-center max-w-3xl mx-auto mb-12">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-mono font-bold uppercase tracking-widest bg-emerald-50 border border-emerald-200 text-[#16A34A] mb-3">
                 <BarChart3 className="w-3.5 h-3.5" />
-                TELEMETRIA DE RESULTADOS
+                TELEMETRIA E GESTÃO DE METAS
               </div>
               <h2 className="font-display text-2xl sm:text-4xl font-extrabold text-[#0F172A] tracking-tight">
-                Visibilidade cirúrgica da tração e das metas
+                Visibilidade analítica sobre a tração da sua equipe
               </h2>
               <p className="mt-3 text-sm sm:text-base text-[#475569]">
-                Monitore taxas de passagem por fase, tempo de permanência em cada estágio e produtividade real da equipe.
+                Acompanhe métricas essenciais de pipeline, conversão por fase e motivos de perda com precisão cirúrgica.
               </p>
             </div>
 
@@ -915,25 +944,25 @@ export function NewLoginScreen({ initialScreen = 'intro' }: { initialScreen?: 'i
               <div className="section-card p-5 border-t-4 border-t-[#16A34A]">
                 <div className="font-mono text-xs text-[#64748B] uppercase">Taxa de Conversão</div>
                 <div className="font-display text-2xl font-extrabold text-[#0F172A] my-1">Funil 360°</div>
-                <p className="text-xs text-[#64748B]">Acompanhamento da taxa de conversão entre cada etapa do pipeline.</p>
+                <p className="text-xs text-[#64748B]">Visualização clara das passagens de fase no funil para identificar onde a operação perde volume.</p>
               </div>
 
               <div className="section-card p-5 border-t-4 border-t-[#0284C7]">
                 <div className="font-mono text-xs text-[#64748B] uppercase">Velocidade de Vendas</div>
                 <div className="font-display text-2xl font-extrabold text-[#0F172A] my-1">Ciclo Médio</div>
-                <p className="text-xs text-[#64748B]">Identificação do tempo exato que um lead leva da qualificação ao fechamento.</p>
+                <p className="text-xs text-[#64748B]">Acompanhamento do ciclo médio de vendas e do tempo que oportunidades permanecem em cada etapa.</p>
               </div>
 
               <div className="section-card p-5 border-t-4 border-t-[#2563EB]">
                 <div className="font-mono text-xs text-[#64748B] uppercase">Gestão de Metas</div>
                 <div className="font-display text-2xl font-extrabold text-[#0F172A] my-1">Ritmo &amp; Pace</div>
-                <p className="text-xs text-[#64748B]">Comparativo diário de faturamento atingido versus meta mensal estabelecida.</p>
+                <p className="text-xs text-[#64748B]">Monitoramento contínuo do faturamento realizado frente aos objetivos traçados para o período.</p>
               </div>
 
               <div className="section-card p-5 border-t-4 border-t-[#E11D48]">
                 <div className="font-mono text-xs text-[#64748B] uppercase">Motivos de Perda</div>
                 <div className="font-display text-2xl font-extrabold text-[#0F172A] my-1">Win / Loss</div>
-                <p className="text-xs text-[#64748B]">Análise estruturada de causas de perda para correção contínua do produto.</p>
+                <p className="text-xs text-[#64748B]">Diagnóstico estruturado sobre as razões de ganho e perda de contas para aprimorar a estratégia de produto e abordagem.</p>
               </div>
             </div>
           </div>
@@ -945,13 +974,13 @@ export function NewLoginScreen({ initialScreen = 'intro' }: { initialScreen?: 'i
             <div className="text-center max-w-3xl mx-auto mb-12">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-mono font-bold uppercase tracking-widest bg-amber-50 border border-amber-200 text-[#D97706] mb-3">
                 <TrendingUp className="w-3.5 h-3.5" />
-                RIGOR ANALÍTICO
+                RIGOR ANALÍTICO E PROBABILIDADE
               </div>
               <h2 className="font-display text-2xl sm:text-4xl font-extrabold text-[#0F172A] tracking-tight">
-                Previsibilidade comercial baseada em dados reais
+                Previsibilidade construída sobre a maturidade dos seus dados
               </h2>
               <p className="mt-3 text-sm sm:text-base text-[#475569] leading-relaxed">
-                Sem promessas mágicas: modelagem estatística séria que pondera a maturidade do pipeline e as taxas históricas de conversão.
+                Modelagem explicável de pipeline ponderado baseada em probabilidades de fechamento e taxas históricas, sem ilusões de previsões automáticas sem dados.
               </p>
             </div>
 
@@ -960,9 +989,9 @@ export function NewLoginScreen({ initialScreen = 'intro' }: { initialScreen?: 'i
                 <div className="w-8 h-8 rounded-lg bg-amber-100 text-[#D97706] flex items-center justify-center font-bold mb-3">
                   1
                 </div>
-                <h3 className="font-display text-base font-bold text-[#0F172A] mb-2">Pipeline Ponderado</h3>
+                <h3 className="font-display text-base font-bold text-[#0F172A] mb-2">Pipeline Ponderado Explicável</h3>
                 <p className="text-xs sm:text-sm text-[#64748B] leading-relaxed">
-                  Cálculo de probabilidade de fechamento por estágio formal de negociação, evitando expectativas infladas de receita.
+                  Cálculo transparente que ajusta a probabilidade de fechamento conforme o histórico de adiamentos e a etapa real da negociação.
                 </p>
               </div>
 
@@ -970,9 +999,9 @@ export function NewLoginScreen({ initialScreen = 'intro' }: { initialScreen?: 'i
                 <div className="w-8 h-8 rounded-lg bg-amber-100 text-[#D97706] flex items-center justify-center font-bold mb-3">
                   2
                 </div>
-                <h3 className="font-display text-base font-bold text-[#0F172A] mb-2">Maturidade de Dados</h3>
+                <h3 className="font-display text-base font-bold text-[#0F172A] mb-2">Dependência de Dados Declarada</h3>
                 <p className="text-xs sm:text-sm text-[#64748B] leading-relaxed">
-                  O sistema reconhece que a precisão preditiva depende da consistência de preenchimento e do histórico da organização.
+                  O sistema é honesto com a liderança: a acurácia de projeções futuras exige disciplina e preenchimento consistente do time.
                 </p>
               </div>
 
@@ -980,97 +1009,193 @@ export function NewLoginScreen({ initialScreen = 'intro' }: { initialScreen?: 'i
                 <div className="w-8 h-8 rounded-lg bg-amber-100 text-[#D97706] flex items-center justify-center font-bold mb-3">
                   3
                 </div>
-                <h3 className="font-display text-base font-bold text-[#0F172A] mb-2">Cenários Conservador &amp; Otimista</h3>
+                <h3 className="font-display text-base font-bold text-[#0F172A] mb-2">Cenários de Projeção</h3>
                 <p className="text-xs sm:text-sm text-[#64748B] leading-relaxed">
-                  Simulação de faixas de faturamento para que a liderança tome decisões de contratação e investimento com segurança.
+                  Comparação entre cenários conservadores e prováveis para embasar decisões de alocação de recursos e metas.
                 </p>
               </div>
             </div>
           </div>
         </section>
 
-        {/* 11. ECOSSISTEMA */}
+        {/* 11. ECOSSISTEMA (CONECTIVIDADE COMPLETA E DIVERSIFICADA) */}
         <section id="ecossistema" className="px-5 py-16 sm:px-8 lg:px-14 bg-[#FFFFFF] border-b border-slate-200">
           <div className="max-w-6xl mx-auto">
             <div className="text-center max-w-3xl mx-auto mb-12">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-mono font-bold uppercase tracking-widest bg-sky-50 border border-sky-200 text-[#0284C7] mb-3">
                 <Network className="w-3.5 h-3.5" />
-                CONECTIVIDADE ENTERPRISE
+                CONECTIVIDADE MULTI-PLATAFORMA
               </div>
               <h2 className="font-display text-2xl sm:text-4xl font-extrabold text-[#0F172A] tracking-tight">
-                Integrado ao ecossistema tecnológico da sua empresa
+                Conectado ao ecossistema tecnológico corporativo
               </h2>
               <p className="mt-3 text-sm sm:text-base text-[#475569]">
-                Construído para operar em harmonia com as ferramentas corporativas que você já utiliza.
+                O Birth Hub 360° integra-se nativamente com as principais ferramentas do seu fluxo de vendas, gestão e comunicação.
               </p>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-              <div className="p-5 rounded-2xl bg-[#F8FAFC] border border-slate-200 text-center">
-                <div className="font-mono text-sm font-bold text-[#0284C7]">Bitrix24</div>
-                <div className="font-sans text-xs text-[#64748B] mt-1">Sincronização Nativa</div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="p-5 rounded-2xl bg-[#F8FAFC] border border-slate-200 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <Database className="w-4 h-4 text-[#0284C7]" />
+                    <span className="font-mono text-sm font-bold text-[#0284C7]">Bitrix24</span>
+                  </div>
+                  <div className="font-display text-xs font-bold text-[#0F172A] mb-1">CRM Central</div>
+                  <p className="text-xs text-[#64748B]">Sincronização bidirecional de leads, deals, tarefas e writeback estruturado.</p>
+                </div>
+                <div className="mt-3 pt-2 border-t border-slate-200 text-[10px] font-mono font-semibold text-[#0284C7]">Nativo · Webhooks</div>
               </div>
 
-              <div className="p-5 rounded-2xl bg-[#F8FAFC] border border-slate-200 text-center">
-                <div className="font-mono text-sm font-bold text-[#16A34A]">WhatsApp API</div>
-                <div className="font-sans text-xs text-[#64748B] mt-1">Comunicação Direta</div>
+              <div className="p-5 rounded-2xl bg-[#F8FAFC] border border-slate-200 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <Building2 className="w-4 h-4 text-[#2563EB]" />
+                    <span className="font-mono text-sm font-bold text-[#2563EB]">CRMs Externos</span>
+                  </div>
+                  <div className="font-display text-xs font-bold text-[#0F172A] mb-1">HubSpot, Pipedrive, RD</div>
+                  <p className="text-xs text-[#64748B]">Barramento unificado para espelhamento e transição de contatos entre sistemas.</p>
+                </div>
+                <div className="mt-3 pt-2 border-t border-slate-200 text-[10px] font-mono font-semibold text-[#2563EB]">Conectores Ativos</div>
               </div>
 
-              <div className="p-5 rounded-2xl bg-[#F8FAFC] border border-slate-200 text-center">
-                <div className="font-mono text-sm font-bold text-[#7C3AED]">Telefonia em Nuvem</div>
-                <div className="font-sans text-xs text-[#64748B] mt-1">Gravação &amp; Métricas</div>
+              <div className="p-5 rounded-2xl bg-[#F8FAFC] border border-slate-200 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <Server className="w-4 h-4 text-[#0EA5E9]" />
+                    <span className="font-mono text-sm font-bold text-[#0EA5E9]">Omie ERP</span>
+                  </div>
+                  <div className="font-display text-xs font-bold text-[#0F172A] mb-1">Faturamento &amp; Contas</div>
+                  <p className="text-xs text-[#64748B]">Consulta e conciliação de faturamento e dados cadastrais de clientes.</p>
+                </div>
+                <div className="mt-3 pt-2 border-t border-slate-200 text-[10px] font-mono font-semibold text-[#0EA5E9]">Financeiro · Cadastros</div>
               </div>
 
-              <div className="p-5 rounded-2xl bg-[#F8FAFC] border border-slate-200 text-center">
-                <div className="font-mono text-sm font-bold text-[#D97706]">Webhooks &amp; APIs</div>
-                <div className="font-sans text-xs text-[#64748B] mt-1">Conexão Flexível</div>
+              <div className="p-5 rounded-2xl bg-[#F8FAFC] border border-slate-200 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <MessageSquare className="w-4 h-4 text-[#16A34A]" />
+                    <span className="font-mono text-sm font-bold text-[#16A34A]">WhatsApp Corporativo</span>
+                  </div>
+                  <div className="font-display text-xs font-bold text-[#0F172A] mb-1">Baileys Engine</div>
+                  <p className="text-xs text-[#64748B]">Sessão isolada via QR Code por organização com trava distribuída e opt-out.</p>
+                </div>
+                <div className="mt-3 pt-2 border-t border-slate-200 text-[10px] font-mono font-semibold text-[#16A34A]">Multi-Tenant · Opt-Out</div>
+              </div>
+
+              <div className="p-5 rounded-2xl bg-[#F8FAFC] border border-slate-200 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <PhoneCall className="w-4 h-4 text-[#E11D48]" />
+                    <span className="font-mono text-sm font-bold text-[#E11D48]">Telefonia &amp; Voz</span>
+                  </div>
+                  <div className="font-display text-xs font-bold text-[#0F172A] mb-1">3CX &amp; Birth Voice</div>
+                  <p className="text-xs text-[#64748B]">Integração com centrais PBX e discador ativo com controle de supressão.</p>
+                </div>
+                <div className="mt-3 pt-2 border-t border-slate-200 text-[10px] font-mono font-semibold text-[#E11D48]">PBX · Discagem Ativa</div>
+              </div>
+
+              <div className="p-5 rounded-2xl bg-[#F8FAFC] border border-slate-200 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <Search className="w-4 h-4 text-[#D97706]" />
+                    <span className="font-mono text-sm font-bold text-[#D97706]">Enriquecimento B2B</span>
+                  </div>
+                  <div className="font-display text-xs font-bold text-[#0F172A] mb-1">Apollo, Hunter, CNPJ</div>
+                  <p className="text-xs text-[#64748B]">Identificação de decisores, validação de e-mails e dados na Receita Federal.</p>
+                </div>
+                <div className="mt-3 pt-2 border-t border-slate-200 text-[10px] font-mono font-semibold text-[#D97706]">Cascata Inteligente</div>
+              </div>
+
+              <div className="p-5 rounded-2xl bg-[#F8FAFC] border border-slate-200 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <Mail className="w-4 h-4 text-[#EA580C]" />
+                    <span className="font-mono text-sm font-bold text-[#EA580C]">Google &amp; Slack</span>
+                  </div>
+                  <div className="font-display text-xs font-bold text-[#0F172A] mb-1">Workspace &amp; Alertas</div>
+                  <p className="text-xs text-[#64748B]">Leitura de interações no Gmail, agendamento no Calendar e avisos no Slack.</p>
+                </div>
+                <div className="mt-3 pt-2 border-t border-slate-200 text-[10px] font-mono font-semibold text-[#EA580C]">OAuth2 · Canais</div>
+              </div>
+
+              <div className="p-5 rounded-2xl bg-[#F8FAFC] border border-slate-200 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <Cpu className="w-4 h-4 text-[#7C3AED]" />
+                    <span className="font-mono text-sm font-bold text-[#7C3AED]">Infraestrutura de IA</span>
+                  </div>
+                  <div className="font-display text-xs font-bold text-[#0F172A] mb-1">LiteLLM, Ollama, Qdrant</div>
+                  <p className="text-xs text-[#64748B]">Gateway para múltiplos modelos, IA self-hosted e banco vetorial semântico.</p>
+                </div>
+                <div className="mt-3 pt-2 border-t border-slate-200 text-[10px] font-mono font-semibold text-[#7C3AED]">RAG · Vetores</div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* 12. COMMAND CENTER */}
+        {/* 12. COMMAND CENTER (COCKPIT OPERACIONAL UNIFICADO SEM DADOS FALSOS) */}
         <section id="command-center" className="px-5 py-16 sm:px-8 lg:px-14 bg-[#F8FAFC] border-b border-slate-200">
           <div className="max-w-6xl mx-auto flex flex-col lg:flex-row items-center gap-10">
             <div className="lg:w-1/2">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-mono font-bold uppercase tracking-widest bg-sky-50 border border-sky-200 text-[#0284C7] mb-3">
                 <Compass className="w-3.5 h-3.5" />
-                COCKPIT OPERACIONAL
+                COCKPIT OPERACIONAL UNIFICADO
               </div>
               <h2 className="font-display text-2xl sm:text-4xl font-extrabold text-[#0F172A] tracking-tight mb-4">
-                O centro de comando unificado para liderança e time
+                O centro de comando desenhado para cada função comercial
               </h2>
               <p className="text-sm sm:text-base text-[#475569] leading-relaxed mb-6">
-                Tenha um ambiente único onde diretores acompanham a saúde da receita, gerentes supervisionam gargalos em tempo real e executivos de vendas recebem sua rotina de atividades organizada por prioridade.
+                Ambientes especializados com foco na execução diária de SDRs, no fechamento de negócios por Closers e na governança estratégica de Gestores.
               </p>
-              <div className="grid grid-cols-2 gap-3 font-mono text-xs">
-                <div className="p-3 rounded-xl bg-white border border-slate-200">
-                  <span className="font-bold text-[#0284C7]">SDRs &amp; BDRs:</span> Fila organizada e dados enriquecidos na tela.
+              <div className="space-y-3 font-sans text-xs sm:text-sm text-[#334155]">
+                <div className="p-3.5 rounded-xl bg-white border border-slate-200">
+                  <span className="font-mono font-bold text-[#0284C7] uppercase text-xs block mb-1">Mesa de Tratamento (SDR / BDR)</span>
+                  <p className="text-xs text-[#64748B]">Fila de oportunidades ordenada por prioridade, dados de contato enriquecidos e sugestões imediatas de abordagem.</p>
                 </div>
-                <div className="p-3 rounded-xl bg-white border border-slate-200">
-                  <span className="font-bold text-[#16A34A]">Closers:</span> Histórico 360°, objeções e apoio do copiloto.
+                <div className="p-3.5 rounded-xl bg-white border border-slate-200">
+                  <span className="font-mono font-bold text-[#16A34A] uppercase text-xs block mb-1">Gestão de Oportunidades (Closer)</span>
+                  <p className="text-xs text-[#64748B]">Visão completa do histórico de interações, suporte a objeções e diagnóstico de saúde da negociação.</p>
+                </div>
+                <div className="p-3.5 rounded-xl bg-white border border-slate-200">
+                  <span className="font-mono font-bold text-[#7C3AED] uppercase text-xs block mb-1">Central de Inteligência (Gestor)</span>
+                  <p className="text-xs text-[#64748B]">Visão agregada do funil, alertas de estagnação de negócios e acompanhamento do cumprimento de metas em tempo real.</p>
                 </div>
               </div>
             </div>
 
             <div className="lg:w-1/2 w-full">
-              <div className="section-card p-6 bg-white border-2 border-slate-200">
+              <div className="section-card p-6 bg-white border-2 border-slate-200 shadow-sm">
                 <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
-                  <span className="font-mono text-xs font-bold text-[#0F172A]">BIRTH HUB 360° · COCKPIT</span>
-                  <span className="font-mono text-[10px] px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 font-bold">100% OPERACIONAL</span>
+                  <div className="flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-[#0284C7]" />
+                    <span className="font-mono text-xs font-bold text-[#0F172A]">BIRTH HUB 360° · COCKPIT</span>
+                  </div>
+                  <span className="font-mono text-[10px] px-2.5 py-0.5 rounded bg-sky-50 text-[#0284C7] font-bold border border-sky-200">ARQUITETURA UNIFICADA</span>
                 </div>
                 <div className="space-y-3 font-mono text-xs">
-                  <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200">
-                    <span className="text-[#475569]">Leads Ativos na Fila</span>
-                    <span className="font-bold text-[#0F172A]">184 contatos</span>
+                  <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="font-bold text-[#0F172A]">Mesa de Tratamento (SDR)</span>
+                      <span className="text-[10px] text-[#0284C7] font-semibold">Priorização Ativa</span>
+                    </div>
+                    <p className="text-[11px] text-[#64748B] font-sans">Triagem contínua por qualificação, prioridade de atendimento e controle de janela comercial.</p>
                   </div>
-                  <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200">
-                    <span className="text-[#475569]">Deals com Risco Identificado</span>
-                    <span className="font-bold text-amber-600">3 oportunidades</span>
+
+                  <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="font-bold text-[#0F172A]">Pipeline Comercial Unificado</span>
+                      <span className="text-[10px] text-[#16A34A] font-semibold">Passagem de Bastão</span>
+                    </div>
+                    <p className="text-[11px] text-[#64748B] font-sans">Governança de etapas, regras de transição e checklist de qualificação entre equipes.</p>
                   </div>
-                  <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200">
-                    <span className="text-[#475569]">Cadências em Execução</span>
-                    <span className="font-bold text-[#0284C7]">12 ativas</span>
+
+                  <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="font-bold text-[#0F172A]">Central Executiva de Governança</span>
+                      <span className="text-[10px] text-[#7C3AED] font-semibold">Visão Estratégica</span>
+                    </div>
+                    <p className="text-[11px] text-[#64748B] font-sans">Diagnóstico de estagnação, ritmo de atingimento de metas e calibração de previsibilidade.</p>
                   </div>
                 </div>
               </div>
@@ -1082,10 +1207,10 @@ export function NewLoginScreen({ initialScreen = 'intro' }: { initialScreen?: 'i
         <section id="cta" className="px-5 py-20 sm:px-8 lg:px-14 bg-gradient-to-br from-sky-50 via-white to-purple-50/40 text-center border-b border-slate-200">
           <div className="max-w-4xl mx-auto">
             <h2 className="font-display text-3xl sm:text-5xl font-extrabold text-[#0F172A] tracking-tight leading-tight">
-              Pronto para transformar sua operação comercial em um centro de comando inteligente?
+              Pronto para estruturar sua operação comercial com rigor e inteligência?
             </h2>
             <p className="mt-4 text-base sm:text-lg text-[#475569] max-w-2xl mx-auto">
-              Acesse a plataforma corporativa do Birth Hub 360° e conecte dados, equipe e execução em tempo real.
+              Acesse o centro de comando do Birth Hub 360° e conecte equipe, processos e decisões em uma única plataforma.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
               <button
@@ -1096,6 +1221,13 @@ export function NewLoginScreen({ initialScreen = 'intro' }: { initialScreen?: 'i
                 <span>Acessar Plataforma</span>
                 <ArrowRight className="w-5 h-5" />
               </button>
+            </div>
+            <div className="mt-6 flex flex-wrap items-center justify-center gap-4 font-mono text-xs text-[#64748B]">
+              <span className="inline-flex items-center gap-1.5"><ShieldCheck className="w-3.5 h-3.5 text-[#0284C7]" /> Acesso Corporativo Seguro</span>
+              <span>·</span>
+              <span className="inline-flex items-center gap-1.5"><Server className="w-3.5 h-3.5 text-[#16A34A]" /> Isolamento por Organização</span>
+              <span>·</span>
+              <span className="inline-flex items-center gap-1.5"><Lock className="w-3.5 h-3.5 text-[#7C3AED]" /> Criptografia AES-256</span>
             </div>
           </div>
         </section>
@@ -1117,8 +1249,11 @@ export function NewLoginScreen({ initialScreen = 'intro' }: { initialScreen?: 'i
               <a href="#pilares" className="hover:text-[#0284C7]">8 Pilares</a>
               <a href="#fluxo" className="hover:text-[#0284C7]">Fluxo</a>
               <a href="#ia" className="hover:text-[#0284C7]">IA</a>
+              <a href="#automacao" className="hover:text-[#0284C7]">Automação</a>
               <a href="#performance" className="hover:text-[#0284C7]">Performance</a>
               <a href="#previsibilidade" className="hover:text-[#0284C7]">Previsibilidade</a>
+              <a href="#ecossistema" className="hover:text-[#0284C7]">Ecossistema</a>
+              <a href="#command-center" className="hover:text-[#0284C7]">Cockpit</a>
             </div>
           </div>
 
@@ -1127,9 +1262,9 @@ export function NewLoginScreen({ initialScreen = 'intro' }: { initialScreen?: 'i
             <div className="flex items-center gap-4">
               <span>Isolamento Multi-Tenant</span>
               <span>·</span>
-              <span>Conformidade LGPD/GDPR</span>
+              <span>Conformidade LGPD</span>
               <span>·</span>
-              <span>Criptografia AES-256</span>
+              <span>Criptografia em Repouso AES-256-GCM</span>
             </div>
           </div>
         </footer>
