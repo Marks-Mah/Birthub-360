@@ -89,7 +89,10 @@ import {
   createNewsMonitorWorker,
   scheduleGlobalNewsScan,
 } from '../lib/queue/newsMonitor.worker.js';
-import { createCheckpointerPruneWorker, scheduleCheckpointerPrune } from '../lib/queue/checkpointerPrune.worker.js';
+import {
+  createCheckpointerPruneWorker,
+  scheduleCheckpointerPrune,
+} from '../lib/queue/checkpointerPrune.worker.js';
 import { createWhatsAppCommandWorker } from '../lib/queue/whatsappCommand.worker.js';
 
 // `unknown` não serve aqui: os workers reais guardados neste handle têm DataType/ResultType todos
