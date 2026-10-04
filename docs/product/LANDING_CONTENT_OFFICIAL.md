@@ -149,6 +149,7 @@ A landing page é composta pelas seguintes 14 seções em ordem estrita:
   - Performance (`#performance`)
   - Previsibilidade (`#previsibilidade`)
   - Ecossistema (`#ecossistema`)
+  - Cockpit (`#command-center`)
 - **Ações:** Botão "Acessar Plataforma" (redireciona para o modal de autenticação).
 
 ---
@@ -311,13 +312,3 @@ A landing page é composta pelas seguintes 14 seções em ordem estrita:
 - **Rodapé Legal e Técnico:**
   - Copyright: `© 2026 Birth Hub 360°. Todos os direitos reservados.`
   - Badges de Conformidade: `Isolamento Multi-Tenant` · `Conformidade LGPD` · `Criptografia em Repouso AES-256-GCM`.
-
----
-
-## 5. Próximos Passos de Implementação
-
-Com a aprovação deste documento:
-1. Atualizar cirurgicamente as seções 6 a 14 no arquivo [`src/features/auth/components/NewLoginScreen.tsx`], substituindo os textos e blocos visuais pelos especificados neste documento.
-2. Garantir que nenhuma métrica inventada persista no código.
-3. Executar o gate de qualidade local (`npx tsc --noEmit` e `npm run build`).
-4. Realizar o deploy e validação visual da página em produção.
