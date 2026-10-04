@@ -138,12 +138,20 @@ propósito por estar fora de "## Exceções ativas"):
 - **Registrado em:** 2026-09-24
 - **Reavaliar até:** 2026-11-30
 
-### `src/features/voice-hub/pages/Landing.tsx`
+### `src/features/auth/components/NewLoginScreen.tsx`
 
-- **Limite excepcional:** 2200 linhas
-- **Dono:** Agente 06 — Integrações e Telefonia
-- **Motivo:** Integração massiva e bruta da aplicação satélite Voice Hub na onda 13 (ajustado após Biome format).
-- **Registrado em:** 2026-09-24
+- **Limite excepcional:** 1500 linhas
+- **Dono:** Agente 02 — Produto e UX
+- **Motivo:** Arquivo refatorado mas acabou cruzando o limite de falha; necessita planejamento de componentização e limpeza de lógica visual.
+- **Registrado em:** 2026-10-03
+- **Reavaliar até:** 2026-11-30
+
+### `src/features/intelligence/routes/intelligence.routes.ts`
+
+- **Limite excepcional:** 1100 linhas
+- **Dono:** Agente 07 — IA e Automações
+- **Motivo:** O arquivo superou o limite de 1000 linhas devido à adição contínua de rotas e integrações de IA, precisará ser fatiado em sub-rotas por domínio (agents, swarms, automations).
+- **Registrado em:** 2026-10-03
 - **Reavaliar até:** 2026-11-30
 
 ### `src/features/voice-hub/store/useStudioStore.ts`

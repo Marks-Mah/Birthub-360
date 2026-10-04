@@ -46,6 +46,7 @@ const DrawerContent = React.forwardRef<
       <DrawerOverlay />
       <DialogPrimitive.Content
         ref={ref}
+        aria-modal="true"
         className={cn(
           'fixed z-50 gap-4 border-line bg-surface p-6 shadow-xl transition ease-out data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:duration-200 data-[state=open]:duration-300',
           sideVariants[side],

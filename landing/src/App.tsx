@@ -2,33 +2,24 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import {
   ArrowRight,
   Brain,
-  Check,
   ChevronDown,
   Database,
-  Layers,
   LineChart,
-  Lock,
   Moon,
   Play,
   ShieldCheck,
-  Sparkles,
   Sun,
   Workflow,
   Zap,
 } from 'lucide-react';
-import { type ReactNode, useEffect, useId, useMemo, useRef, useState } from 'react';
-import { APP_URL, BRAND, LOGIN_URL } from './brand.js';
+import { type ReactNode, useEffect, useId, useRef, useState } from 'react';
+import { BRAND, LOGIN_URL } from './brand.js';
 
 /* -------------------------------------------------------------------------- */
 /* Motion tokens (espelhados da plataforma para manter harmonia)              */
 /* -------------------------------------------------------------------------- */
 
 const EASE_OUT_EXPO = [0.16, 1, 0.3, 1] as const;
-
-const fadeInUp = {
-  hidden: { opacity: 0, y: 16 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: EASE_OUT_EXPO } },
-};
 
 const scaleIn = {
   hidden: { opacity: 0, scale: 0.96 },
@@ -244,11 +235,10 @@ function OrbitHub() {
                 key={node.id}
                 type="button"
                 onClick={() => setActiveNode(node.id)}
-                className={`group relative flex flex-col items-start rounded-xl border p-4 text-left transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand ${
-                  isActive
-                    ? 'border-brand/60 bg-surface-2 shadow-sm'
-                    : 'border-line bg-surface hover:border-line-strong hover:bg-surface-2/60'
-                }`}
+                className={`group relative flex flex-col items-start rounded-xl border p-4 text-left transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand ${isActive
+                  ? 'border-brand/60 bg-surface-2 shadow-sm'
+                  : 'border-line bg-surface hover:border-line-strong hover:bg-surface-2/60'
+                  }`}
               >
                 <div className="flex w-full items-center justify-between">
                   <span
@@ -313,7 +303,7 @@ function Header({
 }) {
   return (
     <header className="sticky top-0 z-40 w-full border-b border-line bg-bg/85 backdrop-blur-md transition-colors duration-300">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto flex h-16 max-w-[1280px] items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Brand */}
         <a href="#" className="flex items-center gap-2.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand rounded-lg">
           <span className="flex h-8 w-8 items-center justify-center rounded-lg border border-line bg-surface font-mono text-sm font-bold text-brand shadow-sm">
@@ -507,78 +497,179 @@ function StatsStrip() {
 const PILLARS_DATA = [
   {
     num: '01',
-    title: 'CRM Nativo',
-    desc: 'Pipeline visual, contatos e histórico unificados sem silos.',
-    Icon: Database,
+    slug: 'HUB',
+    title: 'HUB COMERCIAL',
+    desc: 'Centralização de contas, pipeline comercial unificado e visão 360° de cada oportunidade em negociação.',
+    tag: 'Pipeline Central',
+    focus: 'Gestão Unificada de Oportunidades',
+    color: '#0284C7',
+    symbol: '◉',
   },
   {
     num: '02',
-    title: 'Agentes de IA',
-    desc: 'LDR, BDR e Closer com contexto do playbook e governança.',
-    Icon: Brain,
+    slug: 'INTEL',
+    title: 'INTELIGÊNCIA DE MERCADO',
+    desc: 'Enriquecimento analítico de dados B2B, sinais de compra, qualificação precisa e inteligência de decisores.',
+    tag: 'Decisão por Dados',
+    focus: 'Sinais & Qualificação Preditiva',
+    color: '#2563EB',
+    symbol: '◎',
   },
   {
     num: '03',
-    title: 'Orquestração',
-    desc: 'Distribuição inteligente de leads e regras de prioridade.',
-    Icon: Workflow,
+    slug: 'ORCH',
+    title: 'ORQUESTRAÇÃO DE VENDAS',
+    desc: 'Cadências multicanal coordenadas, regras de transição de bastão e alinhamento operacional de ponta a ponta.',
+    tag: 'Fluxos Integrados',
+    focus: 'Cadências & Passagem de Bastão',
+    color: '#0EA5E9',
+    symbol: '⟶',
   },
   {
     num: '04',
-    title: 'Previsibilidade',
-    desc: 'Forecast com base em sinais reais de avanço do pipeline.',
-    Icon: LineChart,
+    slug: 'PERF',
+    title: 'PERFORMANCE COMERCIAL',
+    desc: 'Telemetria de conversão, velocidade de avanço no funil, metas operacionais e produtividade da equipe.',
+    tag: 'Metas & Velocidade',
+    focus: 'Métricas & Conversão em Tempo Real',
+    color: '#16A34A',
+    symbol: '▥',
   },
   {
     num: '05',
-    title: 'Automação',
-    desc: 'Gatilhos por evento, transições de estágio e alertas.',
-    Icon: Zap,
+    slug: 'FORE',
+    title: 'PREVISIBILIDADE COMERCIAL',
+    desc: 'Modelagem estatística de probabilidade, análise de pipeline ponderado e cenários embasados no histórico real.',
+    tag: 'Pipeline Ponderado',
+    focus: 'Cenários & Probabilidade Real',
+    color: '#D97706',
+    symbol: '⌁',
   },
   {
     num: '06',
-    title: 'Auditoria & Logs',
-    desc: 'Rastreabilidade ponta a ponta de cada decisão e ação.',
-    Icon: ShieldCheck,
+    slug: 'AI',
+    title: 'INTELIGÊNCIA ARTIFICIAL',
+    desc: 'Copiloto comercial ancorado nos dados da empresa, diagnóstico de entraves e suporte ativo em negociações.',
+    tag: 'Copiloto & Modelos',
+    focus: 'Agentes & Diagnóstico Contextual',
+    color: '#7C3AED',
+    symbol: '✦',
+  },
+  {
+    num: '07',
+    slug: 'AUTO',
+    title: 'AUTOMAÇÃO & CONECTIVIDADE',
+    desc: 'Sincronização contínua bidirecional, gatilhos de follow-up em tempo real e integração profunda com Bitrix24.',
+    tag: 'Gatilhos & Bitrix24',
+    focus: 'Integrações & Ações Instantâneas',
+    color: '#EA580C',
+    symbol: '◇',
+  },
+  {
+    num: '08',
+    slug: 'ENG',
+    title: 'ENGAJAMENTO COMERCIAL',
+    desc: 'Comunicação integrada, telefonia em nuvem, histórico de interações e rastreabilidade total de contatos.',
+    tag: 'Voz & Omnichannel',
+    focus: 'Telefonia & Registro de Contato',
+    color: '#E11D48',
+    symbol: '◌',
   },
 ] as const;
 
 function Pillars() {
   return (
     <section id="pilares" className="py-20 sm:py-28">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
         <div className="max-w-2xl">
-          <SectionLabel>Arquitetura da Solução</SectionLabel>
+          <SectionLabel>Os 8 Pilares Oficiais</SectionLabel>
           <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-ink sm:text-4xl">
-            Uma plataforma. Seis pilares operacionais integrados.
+            Uma plataforma. Oito pilares operacionais integrados.
           </h2>
           <p className="mt-3 text-base text-ink-2">
-            Elimine a fragmentação entre ferramentas. Tudo o que sua equipe precisa para gerar,
-            conduzir e fechar oportunidades vive sob a mesma governança.
+            Cada pilar resolve uma dimensão estratégica da operação comercial, operando de forma independente ou em perfeita sinergia sistêmica.
           </p>
         </div>
 
-        <div className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {PILLARS_DATA.map((p) => {
-            const Icon = p.Icon;
-            return (
+        <div className="mt-12 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {PILLARS_DATA.map((p) => (
+            <div
+              key={p.num}
+              className="group relative flex flex-col justify-between rounded-xl border p-6 transition-all duration-200 hover:scale-[1.02]"
+              style={{
+                backgroundColor: '#FFFFFF',
+                borderColor: `${p.color}50`,
+                borderWidth: '1.5px',
+                boxShadow: `0 4px 16px -2px rgba(15, 23, 42, 0.05), 0 2px 8px -2px ${p.color}20`,
+              }}
+            >
               <div
-                key={p.num}
-                className="group relative flex flex-col justify-between rounded-xl border border-line bg-surface p-6 transition-all duration-200 hover:border-brand/40 hover:bg-surface-2"
-              >
-                <div>
-                  <div className="flex items-center justify-between">
-                    <span className="font-mono text-xs font-semibold text-brand">{p.num}</span>
-                    <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-line bg-surface-2 text-ink-2 group-hover:text-brand">
-                      <Icon className="h-4 w-4" aria-hidden="true" />
-                    </span>
-                  </div>
-                  <h3 className="mt-4 font-sans text-base font-semibold text-ink">{p.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-ink-2">{p.desc}</p>
+                className="absolute top-0 left-0 right-0 h-1.5 rounded-t-xl transition-all duration-300 group-hover:h-2"
+                style={{
+                  background: `linear-gradient(90deg, ${p.color} 0%, ${p.color}88 100%)`,
+                }}
+              />
+
+              <div className="flex items-center justify-between mb-3 pt-1">
+                <div className="flex items-center gap-2">
+                  <span
+                    className="font-mono text-xs font-bold px-2 py-0.5 rounded-md"
+                    style={{
+                      backgroundColor: `${p.color}15`,
+                      color: p.color,
+                      border: `1px solid ${p.color}35`,
+                    }}
+                  >
+                    {p.num}
+                  </span>
+                  <span
+                    className="font-mono text-[11px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md"
+                    style={{
+                      backgroundColor: `${p.color}12`,
+                      color: p.color,
+                    }}
+                  >
+                    {p.slug}
+                  </span>
+                </div>
+
+                <div
+                  className="w-8 h-8 rounded-xl flex items-center justify-center font-bold text-base transition-transform duration-300 group-hover:scale-110"
+                  style={{
+                    backgroundColor: `${p.color}18`,
+                    color: p.color,
+                    border: `1px solid ${p.color}40`,
+                  }}
+                >
+                  {p.symbol}
                 </div>
               </div>
-            );
-          })}
+
+              <div className="flex-1 my-1">
+                <h3 className="font-display text-sm sm:text-base font-bold text-ink leading-tight mb-1 group-hover:text-black">
+                  {p.title}
+                </h3>
+                <p className="font-sans text-xs text-ink-2 leading-snug mb-3">
+                  {p.desc}
+                </p>
+                <div className="inline-block px-2 py-0.5 rounded text-[10px] font-mono font-semibold bg-surface-2 text-ink-2">
+                  Foco: {p.focus}
+                </div>
+              </div>
+
+              <div className="mt-4 pt-2.5 border-t border-line flex items-center justify-between">
+                <div className="flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: p.color }} />
+                  <span className="font-mono text-[10px] font-bold uppercase tracking-wider" style={{ color: p.color }}>
+                    {p.tag}
+                  </span>
+                </div>
+                <span className="font-mono text-[10px] opacity-0 group-hover:opacity-100 transition-opacity font-bold" style={{ color: p.color }}>
+                  CONECTADO →
+                </span>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </section>
@@ -642,9 +733,8 @@ function FaqItem({ q, a }: { q: string; a: string }) {
       >
         <span>{q}</span>
         <ChevronDown
-          className={`h-4 w-4 shrink-0 text-ink-2 transition-transform duration-200 ${
-            open ? 'rotate-180' : ''
-          }`}
+          className={`h-4 w-4 shrink-0 text-ink-2 transition-transform duration-200 ${open ? 'rotate-180' : ''
+            }`}
           aria-hidden="true"
         />
       </button>
