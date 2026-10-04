@@ -1,5 +1,5 @@
-﻿
 import { Sidebar } from './Sidebar';
+import type { TabType } from './tabMeta';
 
 interface MobileNavDrawerProps {
   isOpen: boolean;
@@ -8,7 +8,7 @@ interface MobileNavDrawerProps {
   onSelectTab?: (tab: string) => void;
 }
 
-export function MobileNavDrawer({ isOpen, onClose, activeTab, onSelectTab }: MobileNavDrawerProps) {
+export function MobileNavDrawer({ isOpen, onClose, activeTab }: MobileNavDrawerProps) {
   if (!isOpen) return null;
 
   return (
@@ -27,12 +27,9 @@ export function MobileNavDrawer({ isOpen, onClose, activeTab, onSelectTab }: Mob
         className="relative z-50 flex h-full w-72 max-w-[80vw] flex-col bg-surface border-r border-border-subtle shadow-2xl animate-slide-in-left"
       >
         <Sidebar
-          activeTab={activeTab}
-          onSelectTab={(tab) => {
-            onSelectTab?.(tab);
-            onClose();
-          }}
-          isMobile
+          activeTab={activeTab as TabType}
+          onCloseMobile={onClose}
+          mobileOpen={isOpen}
         />
       </aside>
     </div>

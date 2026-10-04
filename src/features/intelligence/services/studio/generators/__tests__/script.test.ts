@@ -47,4 +47,12 @@ describe('studio/generators/script', () => {
 
     expect(result).toEqual({ content: 'print("já sem cerca")' });
   });
+
+  it('rejeita artefato gerado contendo comandos destrutivos bloqueados', async () => {
+    invokeTextMock.mockResolvedValueOnce('rm -rf /');
+
+    await expect(generateScript(request)).rejects.toThrow(
+      'Artefato gerado rejeitado pela política de segurança de terminal',
+    );
+  });
 });

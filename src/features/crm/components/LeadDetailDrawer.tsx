@@ -348,7 +348,7 @@ export function LeadDetailDrawer({ leadId, onClose, onChanged }: LeadDetailDrawe
             particleCount: 50,
             spread: 60,
             origin: { y: 0.6 },
-            colors: ['#D4AF37', '#1677FF', '#C53678', '#10B981'],
+            colors: ['#00E5FF', '#1677FF', '#C53678', '#10B981'],
           });
         } catch {
           // ignore

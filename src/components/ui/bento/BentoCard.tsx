@@ -98,7 +98,7 @@ export function BentoCard({
       aria-hidden="true"
       className="pointer-events-none absolute -inset-px rounded-[inherit] transition-opacity duration-300"
       style={{
-        background: `radial-gradient(350px circle at ${mousePos.x}px ${mousePos.y}px, rgba(212, 175, 55, 0.12), transparent 70%)`,
+        background: `radial-gradient(350px circle at ${mousePos.x}px ${mousePos.y}px, rgba(0, 229, 255, 0.12), transparent 70%)`,
       }}
     />
   );

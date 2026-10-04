@@ -36,6 +36,7 @@ import { stripeRoutes } from '../features/integrations/stripe/stripe.routes.js';
 import { threecxRoutes } from '../features/integrations/threecx/threecx.routes.js';
 import { whatsappRoutes } from '../features/integrations/whatsapp/whatsapp.routes.js';
 import { agentRoutes } from '../features/intelligence/routes/agent.routes.js';
+import { commercialAgentRoutes } from '../features/intelligence/routes/commercial-agent.routes.js';
 import { intelligenceRoutes } from '../features/intelligence/routes/intelligence.routes.js';
 import { promptRoutes } from '../features/intelligence/routes/prompt.routes.js';
 import { accessRequestRoutes } from '../features/job-roles/routes/accessRequest.routes.js';
@@ -133,6 +134,7 @@ export function mountFeatureRoutes(app: Express): void {
   // authenticateToken já rodou pra estas 3 (junto com o aiLimiter, ver SEC-008b em rateLimiters.ts) —
   // só falta requireTenant aqui, chamar de novo seria uma segunda consulta de sessão redundante.
   app.use('/api/intelligence', requireTenant, intelligenceRoutes);
+  app.use('/api/commercial-agent', authenticateToken, requireTenant, commercialAgentRoutes);
   app.use('/api/prompts', authenticateToken, requireTenant, promptRoutes);
   app.use('/api/analytics', authenticateToken, requireTenant, analyticsRoutes);
   app.use('/api/events', authenticateToken, requireTenant, eventsRoutes);

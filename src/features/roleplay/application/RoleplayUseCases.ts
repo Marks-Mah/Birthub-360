@@ -5,10 +5,14 @@ import type {
   RoleplayRepository,
   RoleplaySession,
 } from '../domain/Roleplay.js';
-import { inMemoryRoleplayRepository } from '../infra/PrismaRoleplayRepository.js';
+import { prismaRoleplayRepository } from '../infra/PrismaRoleplayRepository.js';
+import { RoleplayAiService } from '../services/roleplay-ai.service.js';
 
 export class RoleplayUseCases {
-  constructor(private repository: RoleplayRepository = inMemoryRoleplayRepository) {}
+  constructor(
+    private repository: RoleplayRepository = prismaRoleplayRepository,
+    private aiService: RoleplayAiService = new RoleplayAiService(),
+  ) {}
 
   async listPersonas(): Promise<RoleplayPersona[]> {
     return this.repository.listPersonas();
@@ -63,18 +67,35 @@ export class RoleplayUseCases {
     };
     await this.repository.addMessage(organizationId, sessionId, userMsg);
 
-    // Geração determinística e consistente de réplicas e objeções com base na persona
-    const turn = session.messages.filter((m) => m.role === 'user').length;
-    let replyText = '';
+    const personaDifficulty =
+      persona.difficulty === 'AVANCADO'
+        ? ('Difícil' as const)
+        : persona.difficulty === 'INTERMEDIARIO'
+          ? ('Médio' as const)
+          : ('Fácil' as const);
 
-    if (turn === 1) {
-      replyText = `Entendi a proposta inicial, mas na prática ${persona.coreObjections[0]}. Como a solução de vocês resolve especificamente esse ponto?`;
-    } else if (turn === 2) {
-      replyText = `Certo, faz sentido no papel. Porém, ${persona.coreObjections[1] || 'o risco de implementação ainda me preocupa'}. Qual é o cronograma e os resultados esperados no primeiro mês?`;
-    } else {
-      replyText = `Compreendi suas respostas e a demonstração de valor. Vamos avançar: você pode me enviar um sumário executivo com os custos e cronograma por e-mail para eu levar ao comitê?`;
-    }
+    const personaInput = {
+      name: persona.name,
+      role: persona.title,
+      companyProfile: persona.companyType,
+      difficulty: personaDifficulty,
+      mainObjection: persona.coreObjections[0] || 'Orçamento restrito',
+      personality: persona.personalityTraits.join(', '),
+    };
 
+    const history = session.messages.map((m) => ({
+      sender: (m.role === 'user' ? 'user' : 'persona') as 'user' | 'persona',
+      text: m.content,
+    }));
+
+    // Execução real do LLM provider (DT-007: sem MOCK_DATA no caminho produtivo)
+    const aiResponse = await this.aiService.simulateCustomerResponse({
+      persona: personaInput,
+      history,
+      userMessage: userText,
+    });
+
+    const replyText = aiResponse.personaReply;
     const assistantReply: RoleplayMessage = {
       id: `msg-${Date.now() + 1}`,
       role: 'assistant',
@@ -83,6 +104,7 @@ export class RoleplayUseCases {
     };
     await this.repository.addMessage(organizationId, sessionId, assistantReply);
 
+    const turn = session.messages.filter((m) => m.role === 'user').length + 1;
     return { response: replyText, turnCount: turn };
   }
 
@@ -90,36 +112,45 @@ export class RoleplayUseCases {
     const session = await this.repository.getSession(organizationId, sessionId);
     if (!session) throw new Error('Sessão não encontrada');
 
-    const userMessages = session.messages.filter((m) => m.role === 'user');
-    const totalWords = userMessages.reduce((sum, m) => sum + m.content.split(' ').length, 0);
+    const persona = await this.repository.getPersonaById(session.personaId);
+    if (!persona) throw new Error('Persona não encontrada');
 
-    // Avaliação metodológica orientada a SPIN Selling
-    const situation = Math.min(100, Math.max(60, 70 + (userMessages.length >= 2 ? 15 : 0)));
-    const problem = Math.min(100, Math.max(55, 65 + (totalWords > 40 ? 20 : 5)));
-    const implication = Math.min(100, Math.max(50, 60 + (totalWords > 80 ? 25 : 10)));
-    const needPayoff = Math.min(100, Math.max(60, 70 + (userMessages.length >= 3 ? 20 : 0)));
+    const personaDifficulty =
+      persona.difficulty === 'AVANCADO'
+        ? ('Difícil' as const)
+        : persona.difficulty === 'INTERMEDIARIO'
+          ? ('Médio' as const)
+          : ('Fácil' as const);
 
-    const objectionHandling = Math.min(100, Math.round((problem + implication) / 2));
-    const overall = Math.round((situation + problem + implication + needPayoff) / 4);
+    const personaInput = {
+      name: persona.name,
+      role: persona.title,
+      companyProfile: persona.companyType,
+      difficulty: personaDifficulty,
+      mainObjection: persona.coreObjections[0] || 'Orçamento restrito',
+      personality: persona.personalityTraits.join(', '),
+    };
+
+    const history = session.messages.map((m) => ({
+      sender: (m.role === 'user' ? 'user' : 'persona') as 'user' | 'persona',
+      text: m.content,
+    }));
+
+    // Avaliação real da IA (DT-007: sem fórmulas matemáticas arbitrárias falsificando avaliação de IA)
+    const aiEvaluation = await this.aiService.evaluateSession(personaInput, history);
 
     const feedback: RoleplayFeedback = {
-      overallScore: overall,
+      overallScore: aiEvaluation.overallScore,
       spinSellingScores: {
-        situation,
-        problem,
-        implication,
-        needPayoff,
+        situation: aiEvaluation.clarityScore,
+        problem: aiEvaluation.objectionHandlingScore,
+        implication: Math.round((aiEvaluation.clarityScore + aiEvaluation.objectionHandlingScore) / 2),
+        needPayoff: aiEvaluation.closingAttemptScore,
       },
-      objectionHandlingScore: objectionHandling,
-      strengths: [
-        'Boa postura profissional e condução inicial da conversa.',
-        'Capacidade de manter o diálogo objetivo sem divagações.',
-      ],
-      improvementAreas: [
-        'Aprofundar perguntas de implicação para que o decisor sinta o custo da inação.',
-        'Quantificar o retorno financeiro com números concretos antes do fechamento.',
-      ],
-      summary: `Treinamento concluído com nota geral ${overall}/100. Demonstrou bom domínio de produto e habilidade para avançar para os próximos passos comerciais.`,
+      objectionHandlingScore: aiEvaluation.objectionHandlingScore,
+      strengths: aiEvaluation.strengths,
+      improvementAreas: aiEvaluation.weaknesses,
+      summary: aiEvaluation.actionableFeedback,
     };
 
     await this.repository.completeSession(organizationId, sessionId, feedback);

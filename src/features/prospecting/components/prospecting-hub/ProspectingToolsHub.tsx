@@ -22,7 +22,7 @@ type ToolId = 'google-places' | 'apollo' | 'hunter' | 'linkedin' | 'github' | 'n
 const TOOL_TABS: {
   id: ToolId;
   label: string;
-  icon: typeof MapPin;
+  icon: any;
   description: string;
   statusKey: keyof Omit<ToolsStatus, 'providerMode'>;
 }[] = [

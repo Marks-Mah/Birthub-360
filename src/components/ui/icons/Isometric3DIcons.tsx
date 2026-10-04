@@ -21,7 +21,7 @@ export function Trophy3DIcon({ size = 40, className, animate = true, ...props }:
       viewBox="0 0 48 48"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className={cn('shrink-0 filter drop-shadow-[0_8px_16px_rgba(212,175,55,0.35)]', className)}
+      className={cn('shrink-0 transition-all duration-300 hover:drop-shadow-[0_8px_16px_rgba(212,175,55,0.35)]', className)}
       whileHover={shouldAnimate ? { scale: 1.1, rotateY: 15 } : undefined}
       transition={{ type: 'spring', stiffness: 400, damping: 20 }}
       aria-hidden="true"
@@ -69,7 +69,7 @@ export function Trophy3DIcon({ size = 40, className, animate = true, ...props }:
         d="M17 38H31L33 44H15L17 38Z"
         fill="url(#gold-base)"
         stroke="#453406"
-        strokeWidth="0.8"
+        strokeWidth="1.75"
       />
       {/* Pilar Central */}
       <path d="M22 28H26V38H22V28Z" fill="url(#gold-cup)" />
@@ -78,13 +78,13 @@ export function Trophy3DIcon({ size = 40, className, animate = true, ...props }:
       <path
         d="M14 12C9 12 7 17 8 22C9 27 14 27 15 26"
         stroke="url(#gold-cup)"
-        strokeWidth="2.5"
+        strokeWidth="1.75"
         strokeLinecap="round"
       />
       <path
         d="M34 12C39 12 41 17 40 22C39 27 34 27 33 26"
         stroke="url(#gold-cup)"
-        strokeWidth="2.5"
+        strokeWidth="1.75"
         strokeLinecap="round"
       />
 
@@ -133,7 +133,7 @@ export function Gem3DIcon({ size = 40, className, animate = true, ...props }: Ic
       viewBox="0 0 48 48"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className={cn('shrink-0 filter drop-shadow-[0_8px_18px_rgba(22,119,255,0.4)]', className)}
+      className={cn('shrink-0 transition-all duration-300 hover:drop-shadow-[0_8px_18px_rgba(22,119,255,0.4)]', className)}
       whileHover={shouldAnimate ? { scale: 1.12, rotate: 6 } : undefined}
       transition={{ type: 'spring', stiffness: 400, damping: 20 }}
       aria-hidden="true"
@@ -215,7 +215,7 @@ export function FlameStreakIcon({ size = 40, className, animate = true, ...props
       viewBox="0 0 48 48"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className={cn('shrink-0 filter drop-shadow-[0_8px_18px_rgba(255,88,65,0.45)]', className)}
+      className={cn('shrink-0 transition-all duration-300 hover:drop-shadow-[0_8px_18px_rgba(255,88,65,0.45)]', className)}
       whileHover={shouldAnimate ? { scale: 1.15 } : undefined}
       aria-hidden="true"
       {...props}
@@ -287,7 +287,7 @@ export function ShieldSecurityIcon({
       viewBox="0 0 48 48"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className={cn('shrink-0 filter drop-shadow-[0_8px_16px_rgba(212,175,55,0.3)]', className)}
+      className={cn('shrink-0 transition-all duration-300 hover:drop-shadow-[0_8px_16px_rgba(212,175,55,0.3)]', className)}
       whileHover={shouldAnimate ? { scale: 1.1 } : undefined}
       aria-hidden="true"
       {...props}
@@ -345,7 +345,7 @@ export function ShieldSecurityIcon({
       <path
         d="M18 23L22 27L30 19"
         stroke="#D4AF37"
-        strokeWidth="2.8"
+        strokeWidth="1.75"
         strokeLinecap="round"
         strokeLinejoin="round"
       />

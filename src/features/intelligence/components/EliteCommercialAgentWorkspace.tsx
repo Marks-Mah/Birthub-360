@@ -18,6 +18,7 @@ import {
   Layers,
   Award,
   Clock,
+  AlertCircle,
 } from 'lucide-react';
 import type { AgentCenterTrace, SellerWorkspaceOverview } from '../agents/triad/triad.types.js';
 import { CORE_AND_SPECIALIST_TAXONOMY } from '../agents/triad/agentGraphTaxonomy.js';
@@ -27,6 +28,7 @@ export const EliteCommercialAgentWorkspace: React.FC = () => {
   const [trace, setTrace] = useState<AgentCenterTrace | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'workspace' | 'agentCenter' | 'taxonomy'>('workspace');
+  const [error, setError] = useState<string | null>(null);
   const [showScoreEvidence, setShowScoreEvidence] = useState(false);
   const [executingAction, setExecutingAction] = useState(false);
   const [actionSuccessMessage, setActionSuccessMessage] = useState<string | null>(null);
@@ -34,25 +36,27 @@ export const EliteCommercialAgentWorkspace: React.FC = () => {
   const fetchWorkspaceData = useCallback(async () => {
     try {
       setLoading(true);
+      setError(null);
       const res = await fetch('/api/commercial-agent/workspace');
+      if (!res.ok) {
+        throw new Error(`Falha ao obter workspace comercial: HTTP ${res.status}`);
+      }
       const json = await res.json();
       if (json.success && json.data) {
         setOverview(json.data);
       } else {
-        // Fallback robusto para visualização local imediata
-        setOverview(getMockOverview());
+        throw new Error(json.error || 'Erro ao carregar dados do workspace comercial');
       }
 
       const traceRes = await fetch('/api/commercial-agent/mission/default/trace');
-      const traceJson = await traceRes.json();
-      if (traceJson.success && traceJson.data) {
-        setTrace(traceJson.data);
-      } else {
-        setTrace(getMockTrace());
+      if (traceRes.ok) {
+        const traceJson = await traceRes.json();
+        if (traceJson.success && traceJson.data) {
+          setTrace(traceJson.data);
+        }
       }
-    } catch {
-      setOverview(getMockOverview());
-      setTrace(getMockTrace());
+    } catch (err: any) {
+      setError(err?.message || 'Falha na comunicação com o backend comercial.');
     } finally {
       setLoading(false);
     }
@@ -134,6 +138,25 @@ export const EliteCommercialAgentWorkspace: React.FC = () => {
           <p className="text-sm text-neutral-400 font-medium">
             Carregando Agente Comercial de Elite...
           </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !overview) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="max-w-md p-6 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-200 text-center space-y-4">
+          <AlertCircle className="w-10 h-10 text-rose-400 mx-auto" />
+          <h3 className="font-semibold text-lg text-rose-100">Falha ao carregar Workspace Comercial</h3>
+          <p className="text-sm text-rose-300/80">{error || 'Dados indisponíveis no momento.'}</p>
+          <button
+            type="button"
+            onClick={fetchWorkspaceData}
+            className="px-4 py-2 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 border border-rose-500/40 text-xs font-bold uppercase tracking-wider text-rose-200 transition-colors"
+          >
+            Tentar Novamente
+          </button>
         </div>
       </div>
     );
@@ -781,194 +804,3 @@ export const EliteCommercialAgentWorkspace: React.FC = () => {
   );
 };
 
-function getMockOverview(): SellerWorkspaceOverview {
-  return {
-    metrics: {
-      monthTarget: 420000,
-      closedWon: 268000,
-      gap: 152000,
-      influencablePipeline: 734000,
-      commitForecast: 390000,
-      aiForecast: 415000,
-      targetCompletionPercent: 63.8,
-    },
-    nextBestAction: {
-      actionId: 'nba-acme-default',
-      title: '📞 Ligar para Carlos Mendes',
-      type: 'CALL',
-      accountName: 'ACME Logística S/A',
-      opportunityScore: {
-        score: 91,
-        reason:
-          'Empresa em forte expansão regional no Sudeste, frota de 85 veículos e sinais de fragmentação operacional.',
-        evidence: [
-          'Frota cadastrada em 85 veículos (critério ICP ideal > 30)',
-          'Abriu proposta comercial 4 vezes nas últimas 24h',
-          '3 dias sem contato do vendedor responsável',
-          'Decisor identificado: Carlos Mendes (Diretor de Operações)',
-        ],
-        confidence: 0.94,
-      },
-      contactName: 'Carlos Mendes',
-      contactRole: 'Diretor de Operações e Logística',
-      contactPhone: '+55 11 98765-4321',
-      contactEmail: 'carlos.mendes@acmelogistica.com.br',
-      windowRecommendation: 'Hoje entre 10h00 e 11h30',
-      reasons: [
-        'ICP Score 96 (Frota 85 veículos, expansão regional detectada)',
-        'Abriu a proposta comercial 4 vezes nas últimas 24 horas',
-        '3 dias sem contato do vendedor responsável',
-        'Decisor primário de operações e compras identificado e validado',
-      ],
-      battlecardHints: [
-        'Senior Sistemas: Diferencial é nossa torre unificada mobile em tempo real sem necessidade de múltiplos módulos contratuais.',
-      ],
-      suggestedQuestions: [
-        'Essa plataforma que vocês utilizam hoje também consolida indicadores comerciais e operacionais ou vocês precisam combinar várias ferramentas?',
-        'Como a abertura do novo CD em Campinas impactou o controle de sinistros e a comunicação com os motoristas?',
-      ],
-    },
-    recentMissions: [
-      {
-        missionId: 'm-acme',
-        accountName: 'ACME Logística S/A',
-        opportunityScore: 91,
-        status: 'COMPLETED',
-        lastUpdated: new Date().toISOString(),
-      },
-      {
-        missionId: 'm-transp-sul',
-        accountName: 'Transportes Sul Brasil Ltda',
-        opportunityScore: 84,
-        status: 'COMPLETED',
-        lastUpdated: new Date(Date.now() - 3600000 * 4).toISOString(),
-      },
-      {
-        missionId: 'm-express-rio',
-        accountName: 'Express Cargas Sudeste',
-        opportunityScore: 76,
-        status: 'COMPLETED',
-        lastUpdated: new Date(Date.now() - 3600000 * 24).toISOString(),
-      },
-    ],
-  };
-}
-
-function getMockTrace(): AgentCenterTrace {
-  const now = new Date().toISOString();
-  return {
-    missionId: 'mission-acme-trace',
-    title: 'Preparar Abordagem e Estratégia: ACME Logística S/A',
-    accountName: 'ACME Logística S/A',
-    status: 'COMPLETED',
-    root: 'Tagarela (Supervisor Geral)',
-    directors: {
-      giselle: {
-        status: 'COMPLETED',
-        specialists: [
-          {
-            id: 'n-icp',
-            agentCode: 'icp-analyst',
-            agentName: 'ICP Analyst',
-            roleLabel: 'Analista de Perfil Ideal',
-            director: 'GISELLE',
-            status: 'COMPLETED',
-            resultSummary:
-              'ICP Score 96/100 com alta compatibilidade (85 veículos, R$ 48M receita)',
-            timestamp: now,
-          },
-          {
-            id: 'n-acc',
-            agentCode: 'account-intelligence',
-            agentName: 'Account Intelligence Specialist',
-            roleLabel: 'Mapeador de Conta',
-            director: 'GISELLE',
-            status: 'COMPLETED',
-            resultSummary: 'Decisor mapeado: Carlos Mendes (Diretor de Operações e Logística)',
-            timestamp: now,
-          },
-          {
-            id: 'n-val',
-            agentCode: 'value-proposition-strategist',
-            agentName: 'Value Proposition Strategist',
-            roleLabel: 'Estrategista de Valor',
-            director: 'GISELLE',
-            status: 'COMPLETED',
-            resultSummary: 'Tese: Eliminar fragmentação de telemetria e sinistros em torre única',
-            timestamp: now,
-          },
-          {
-            id: 'n-comp',
-            agentCode: 'competitor-intel',
-            agentName: 'Competitor Intelligence Agent',
-            roleLabel: 'Inteligência Concorrencial',
-            director: 'GISELLE',
-            status: 'COMPLETED',
-            resultSummary: 'Battlecard ativo contra Senior Sistemas carregado com sucesso',
-            timestamp: now,
-          },
-        ],
-      },
-      patricia: {
-        status: 'COMPLETED',
-        specialists: [
-          {
-            id: 'n-out',
-            agentCode: 'outbound-specialist',
-            agentName: 'Outbound Specialist',
-            roleLabel: 'Especialista em Cadência',
-            director: 'PATRICIA',
-            status: 'COMPLETED',
-            resultSummary: 'Cadência multicanal adaptativa de 5 toques ativada',
-            timestamp: now,
-          },
-          {
-            id: 'n-nba',
-            agentCode: 'next-best-action-agent',
-            agentName: 'Next Best Action Agent',
-            roleLabel: 'Otimizador de Próxima Ação',
-            director: 'PATRICIA',
-            status: 'COMPLETED',
-            resultSummary: '📞 Ligar para Carlos Mendes (Janela recomendada: 10h00 - 11h30)',
-            timestamp: now,
-          },
-          {
-            id: 'n-book',
-            agentCode: 'meeting-booker',
-            agentName: 'Meeting Booker',
-            roleLabel: 'Agendador de Reunião',
-            director: 'PATRICIA',
-            status: 'PENDING',
-            resultSummary: 'Aguardando encerramento da chamada telefônica para fixar agenda',
-            timestamp: now,
-          },
-        ],
-      },
-      guardiao: {
-        status: 'COMPLETED',
-        specialists: [
-          {
-            id: 'n-crm',
-            agentCode: 'crm-guardian',
-            agentName: 'CRM Guardian',
-            roleLabel: 'Guardião do CRM',
-            director: 'GUARDIAO',
-            status: 'COMPLETED',
-            resultSummary: 'Dados desduplicados e higienizados. Sem inconsistências no Bitrix/CRM',
-            timestamp: now,
-          },
-          {
-            id: 'n-pol',
-            agentCode: 'policy-engine-agent',
-            agentName: 'Commercial Policy Engine',
-            roleLabel: 'Motor de Alçadas e Margem',
-            director: 'GUARDIAO',
-            status: 'COMPLETED',
-            resultSummary: 'Desconto de 5% dentro da alçada do vendedor Closer (teto: 8%)',
-            timestamp: now,
-          },
-        ],
-      },
-    },
-  };
-}

@@ -18,6 +18,7 @@ import { groqProvider } from './providers/groq.provider.js';
 import { litellmProvider } from './providers/litellm.provider.js';
 import { openaiProvider } from './providers/openai.provider.js';
 import { vllmProvider } from './providers/vllm.provider.js';
+import { openrouterProvider } from './providers/openrouter.provider.js';
 import type { ProviderAdapter } from './providers/types.js';
 import { sanitizeProviderMessage } from './redaction.js';
 import { traceAiGeneration } from './telemetry.js';
@@ -30,6 +31,7 @@ const PROVIDER_CHAIN: readonly ProviderAdapter[] = [
   vllmProvider,
   groqProvider,
   openaiProvider,
+  openrouterProvider,
   litellmProvider,
 ];
 
@@ -38,6 +40,7 @@ function buildExhaustedProvidersError(errorsByProvider: Map<string, unknown>): E
     vllm: 'vLLM',
     groq: 'Groq',
     openai: 'OpenAI',
+    openrouter: 'OpenRouter',
     litellm: 'Ollama/LiteLLM',
   };
   const configured = PROVIDER_CHAIN.filter((provider) => provider.isConfigured())
@@ -53,9 +56,10 @@ function buildExhaustedProvidersError(errorsByProvider: Map<string, unknown>): E
   const vllmMessage = sanitizeProviderMessage(describeError(errorsByProvider.get('vllm')));
   const groqMessage = sanitizeProviderMessage(describeError(errorsByProvider.get('groq')));
   const openaiMessage = sanitizeProviderMessage(describeError(errorsByProvider.get('openai')));
+  const openrouterMessage = sanitizeProviderMessage(describeError(errorsByProvider.get('openrouter')));
   const litellmMessage = sanitizeProviderMessage(describeError(errorsByProvider.get('litellm')));
   return new Error(
-    `Os motores de IA estão indisponíveis (${configured}). vLLM: ${vllmMessage}. Groq: ${groqMessage}. OpenAI: ${openaiMessage}. LiteLLM: ${litellmMessage}`,
+    `Os motores de IA estão indisponíveis (${configured}). vLLM: ${vllmMessage}. Groq: ${groqMessage}. OpenAI: ${openaiMessage}. OpenRouter: ${openrouterMessage}. LiteLLM: ${litellmMessage}`,
   );
 }
 
@@ -78,7 +82,8 @@ async function callWithFallback(
   const _startTime = Date.now();
   const errorsByProvider = new Map<string, unknown>();
 
-  for (const provider of PROVIDER_CHAIN) {
+  const chain = resolvedModel.startsWith('openrouter/') ? [openrouterProvider, litellmProvider] : PROVIDER_CHAIN;
+  for (const provider of chain) {
     if (!provider.isConfigured()) continue;
     try {
       const response = await provider.chatCompletion({
@@ -206,3 +211,8 @@ export const getAiModel = (
     },
   };
 };
+
+
+
+
+

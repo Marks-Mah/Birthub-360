@@ -4,6 +4,7 @@ import { HumanMessage, SystemMessage } from '@langchain/core/messages';
 import { type Prisma, ReportSource } from '@prisma/client';
 import { type NextFunction, type Request, type Response, Router } from 'express';
 import { z } from 'zod';
+import { swarmObservabilityRoutes } from './swarm-observability.routes.js';
 import {
   analyzeCompetitors,
   analyzeSentiment,
@@ -82,6 +83,64 @@ router.post(
       res.json({ result });
     } catch (error: any) {
       logger.error({ err: error }, 'Error generating AI studio artifact');
+      next(error);
+    }
+  },
+);
+
+// Custom AI Tools (DT-006: persistência real no PostgreSQL via Prisma)
+router.get(
+  '/tools/custom',
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const { organizationId } = (req as AuthRequest).user;
+      const tools = await prisma.customAiTool.findMany({
+        where: { organizationId },
+        orderBy: { createdAt: 'desc' },
+      });
+      res.json({ success: true, data: tools });
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+router.post(
+  '/tools/custom',
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const { organizationId } = (req as AuthRequest).user;
+      const { name, category, prompt } = req.body;
+      if (!name || !category || !prompt) {
+        res.status(400).json({ success: false, error: 'name, category e prompt são obrigatórios' });
+        return;
+      }
+      const tool = await prisma.customAiTool.create({
+        data: {
+          organizationId,
+          name,
+          category,
+          prompt,
+        },
+      });
+      res.json({ success: true, data: tool });
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+router.delete(
+  '/tools/custom/:id',
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const { organizationId } = (req as AuthRequest).user;
+      const { id } = req.params;
+      await prisma.customAiTool.deleteMany({
+        where: { id: String(id), organizationId },
+      });
+      res.json({ success: true });
+    } catch (error) {
       next(error);
     }
   },
@@ -965,4 +1024,7 @@ router.get(
   },
 );
 
+router.use('/observability', swarmObservabilityRoutes);
+
 export const intelligenceRoutes = router;
+

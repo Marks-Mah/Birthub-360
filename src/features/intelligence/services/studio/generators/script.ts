@@ -1,5 +1,6 @@
 import type { StudioGenerationRequest } from '../schema.js';
 import { invokeText, SYSTEM_RULES, stripCodeFence } from '../shared.js';
+import { TerminalSafetyService } from '../../../../../shared/security/terminalSafety.service.js';
 
 export async function generateScript(
   request: Extract<StudioGenerationRequest, { kind: 'script' }>,
@@ -14,5 +15,10 @@ O resultado deve ser completo, coerente com a linguagem escolhida e seguro por p
 validação, erros úteis, timeouts e variáveis de ambiente; não afirme que integrações foram testadas; não use
 credenciais hardcoded. Para prompt de sistema: não solicite cadeia de pensamento privada e defina um contrato
 de saída verificável. Retorne SOMENTE o artefato, sem bloco Markdown.`;
-  return { content: stripCodeFence(await invokeText(prompt, 'studio:script', 0.25)) };
+  const content = stripCodeFence(await invokeText(prompt, 'studio:script', 0.25));
+  const safety = TerminalSafetyService.analyzeCommand(content);
+  if (safety.isBlocked) {
+    throw new Error(`Artefato gerado rejeitado pela política de segurança de terminal: ${safety.reason}`);
+  }
+  return { content };
 }

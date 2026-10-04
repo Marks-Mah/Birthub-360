@@ -22,8 +22,9 @@ vi.mock('../../../../../src/features/intelligence/services/guardrails.service.js
 vi.mock('../../../../../src/features/intelligence/services/evaluationMetrics.service.js', () => ({
   getEvaluationMetricsSnapshot: vi.fn(),
 }));
+const synthesizeSpeechMock = vi.fn();
 vi.mock('../../../../../src/features/intelligence/services/voicebox.service.js', () => ({
-  synthesizeSpeech: vi.fn(),
+  synthesizeSpeech: (...args: unknown[]) => synthesizeSpeechMock(...args),
 }));
 vi.mock('../../../../../src/features/intelligence/agents/supervisor.agent.js', () => ({
   SwarmOrchestrator: vi.fn(),
@@ -35,14 +36,14 @@ vi.mock('../../../../../src/features/intelligence/agents/learning.agent.js', () 
 import { agentRoutes } from '@/features/intelligence/routes/agent.routes';
 import { errorHandler } from '@/shared/middlewares/errorHandler';
 
-function buildApp(organizationId = 'org-1') {
+function buildApp(organizationId = 'org-1', role = 'GESTOR') {
   const app = express();
   app.use(express.json());
   app.use((req, _res, next) => {
     (req as unknown as { user: { id: string; organizationId: string; role: string } }).user = {
       id: 'test-user',
       organizationId,
-      role: 'GESTOR',
+      role,
     };
     next();
   });
@@ -111,3 +112,51 @@ describe('GET /api/agent/swarm/slo (AI-009/onda-20)', () => {
     expect(getSwarmSloSnapshotMock).toHaveBeenCalledWith('org-real', 30);
   });
 });
+
+describe('POST /api/agent/tts (Síntese de Voz / Audio) — RBAC e proteção', () => {
+  it('rejeita com 401 quando não há usuário autenticado', async () => {
+    const app = express();
+    app.use(express.json());
+    app.use('/api/agent', agentRoutes);
+    app.use(errorHandler);
+
+    const res = await request(app).post('/api/agent/tts').send({ text: 'Texto de teste' });
+
+    expect(res.status).toBe(401);
+    expect(res.body.success).toBe(false);
+    expect(synthesizeSpeechMock).not.toHaveBeenCalled();
+  });
+
+  it('rejeita com 403 para papel não autorizado (VISUALIZADOR)', async () => {
+    const res = await request(buildApp('org-1', 'VISUALIZADOR'))
+      .post('/api/agent/tts')
+      .send({ text: 'Texto de teste' });
+
+    expect(res.status).toBe(403);
+    expect(res.body.success).toBe(false);
+    expect(synthesizeSpeechMock).not.toHaveBeenCalled();
+  });
+
+  it('permite para papel autorizado (CLOSER) e devolve audio/wav', async () => {
+    const fakeAudioBuffer = Buffer.from('RIFF....WAVEfmt');
+    synthesizeSpeechMock.mockResolvedValueOnce(fakeAudioBuffer);
+
+    const res = await request(buildApp('org-1', 'CLOSER'))
+      .post('/api/agent/tts')
+      .send({ text: 'Texto de teste para voz' });
+
+    expect(res.status).toBe(200);
+    expect(res.header['content-type']).toBe('audio/wav');
+    expect(synthesizeSpeechMock).toHaveBeenCalledWith('Texto de teste para voz');
+  });
+
+  it('rejeita texto vazio com 400', async () => {
+    const res = await request(buildApp('org-1', 'CLOSER'))
+      .post('/api/agent/tts')
+      .send({ text: '   ' });
+
+    expect(res.status).toBe(400);
+    expect(synthesizeSpeechMock).not.toHaveBeenCalled();
+  });
+});
+

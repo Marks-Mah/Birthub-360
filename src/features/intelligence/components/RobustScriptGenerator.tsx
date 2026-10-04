@@ -20,6 +20,7 @@ import { useActivePlaybook } from '../../../hooks/useActivePlaybook.js';
 import { useBrandAccent } from '../../../hooks/useBrandAccent.js';
 import { api } from '../../../lib/api.js';
 import { BorderBeam } from '../../../components/ui/BorderBeam.js';
+import { TerminalSafetyService } from '../../../shared/security/terminalSafety.service.js';
 
 const LANGUAGES = [
   { id: 'prompt', label: 'Prompt de Sistema IA (System Prompt)', ext: 'txt' },
@@ -138,6 +139,11 @@ export function RobustScriptGenerator() {
 
   const handleCopy = () => {
     if (result) {
+      const safety = TerminalSafetyService.analyzeCommand(result);
+      if (safety.isBlocked) {
+        setError(`Ação bloqueada pela política de segurança de terminal: ${safety.reason}`);
+        return;
+      }
       navigator.clipboard.writeText(result);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
@@ -146,6 +152,11 @@ export function RobustScriptGenerator() {
 
   const handleDownload = () => {
     if (!result) return;
+    const safety = TerminalSafetyService.analyzeCommand(result);
+    if (safety.isBlocked) {
+      setError(`Download bloqueado pela política de segurança de terminal: ${safety.reason}`);
+      return;
+    }
     const filename = `script_${purpose}_${language}.${selectedLangObj.ext}`;
     const blob = new Blob([result], { type: 'text/plain;charset=utf-8' });
     const url = URL.createObjectURL(blob);

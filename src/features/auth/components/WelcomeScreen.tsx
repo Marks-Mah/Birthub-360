@@ -1,6 +1,5 @@
-
-import { LandingLoginSplitScreen } from './LandingLoginSplitScreen.js';
+import { NewLoginScreen } from './NewLoginScreen';
 
 export function WelcomeScreen() {
-  return <LandingLoginSplitScreen />;
+  return <NewLoginScreen />;
 }

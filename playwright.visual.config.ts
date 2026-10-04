@@ -9,7 +9,10 @@ export default defineConfig({
   workers: process.env.CI ? 2 : undefined,
   retries: process.env.CI ? 1 : 0,
   timeout: 60_000,
-  reporter: [['html', { outputFolder: 'visual-regression-report', open: 'never' }]],
+  reporter: [
+    ...(process.env.CI ? [['line'] as const] : []),
+    ['html', { outputFolder: 'visual-regression-report', open: 'never' }],
+  ],
   snapshotPathTemplate: '{testDir}/baselines/{testFilePath}/{arg}-{projectName}{ext}',
   use: {
     baseURL: process.env.E2E_BASE_URL ?? `http://localhost:${PORT}`,
