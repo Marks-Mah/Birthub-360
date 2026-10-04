@@ -54,7 +54,7 @@ export interface GovernanceReport {
  */
 export function parsePrismaSchema(schemaContent: string): ModelAudit[] {
   const models: ModelAudit[] = [];
-  const modelRegex = /model\s+(\w+)\s+{([\s\S]*?)\n}/g;
+  const modelRegex = /model\s+(\w+)\s+{([\s\S]*?)\n\s*}/g;
   let match: RegExpExecArray | null;
 
   while ((match = modelRegex.exec(schemaContent)) !== null) {
