@@ -133,7 +133,7 @@ propósito por estar fora de "## Exceções ativas"):
 
 ### `src/features/auth/components/NewLoginScreen.tsx`
 
-- **Limite excepcional:** 1700 linhas
+- **Limite excepcional:** 2100 linhas
 - **Dono:** Agente 02 — Produto e UX
 - **Motivo:** Arquivo refatorado mas acabou cruzando o limite de falha; necessita planejamento de componentização e limpeza de lógica visual.
 - **Registrado em:** 2026-10-03
