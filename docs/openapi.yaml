@@ -156,6 +156,13 @@ security:
   - sessionCookie: []
 
 paths:
+  /commercial-agent/workspace:
+    get:
+      tags: [Commercial Agent]
+      summary: Workspace do Agente Comercial
+      responses:
+        '200':
+          description: OK
   /market-intelligence/companies:
     get:
       tags: [Market Intelligence]

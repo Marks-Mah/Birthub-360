@@ -1,0 +1,1 @@
+const fs = require('fs'); let f = 'src/shared/middlewares/requireRole.ts'; let c = fs.readFileSync(f, 'utf8'); c = c.replace('console.log([requireRole] called for roles: , user:, authReq.user);\r\n\r\n    // authenticateToken', '// authenticateToken'); fs.writeFileSync(f, c);

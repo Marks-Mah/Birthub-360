@@ -1,0 +1,1 @@
+const fs = require('fs'); let f = 'tests/unit/components/ui/ConfirmDialog.test.tsx'; let c = fs.readFileSync(f, 'utf8'); c = c.replace(/name: 'Fechar' \}\)/g, 'name: \'Fechar modal\' })'); fs.writeFileSync(f, c);

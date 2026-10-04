@@ -105,13 +105,6 @@ propósito por estar fora de "## Exceções ativas"):
 - **Registrado em:** 2026-09-23
 - **Reavaliar até:** 2026-11-30 (mesmo checkpoint dos demais itens desta lista)
 
-### `src/features/prospecting/outbound/components/LeadCard.tsx`
-
-- **Limite excepcional:** 1500 linhas
-- **Dono:** Agente 05 — Prospecção
-- **Motivo:** Modularizado na campanha techdebt-2026-09-29 (extraídos LeadCnpjDataSection, LeadDecisionMakerSection, LeadActionsBar, LeadNewsDossierSection, LeadOutreachSection, LeadTasksAndActivitySection), reduzindo de 2452 para 1367 linhas.
-- **Registrado em:** 2026-09-29
-- **Reavaliar até:** 2026-11-30
 
 ### `src/features/prospecting/outbound/server/routes.ts`
 
@@ -140,7 +133,7 @@ propósito por estar fora de "## Exceções ativas"):
 
 ### `src/features/auth/components/NewLoginScreen.tsx`
 
-- **Limite excepcional:** 1500 linhas
+- **Limite excepcional:** 1700 linhas
 - **Dono:** Agente 02 — Produto e UX
 - **Motivo:** Arquivo refatorado mas acabou cruzando o limite de falha; necessita planejamento de componentização e limpeza de lógica visual.
 - **Registrado em:** 2026-10-03

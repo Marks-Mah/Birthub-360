@@ -1,4 +1,4 @@
-﻿import type React from 'react';
+import type React from 'react';
 import type { Lead, LeadStatus } from './lead-card/types.js';
 import { useLeadCardState } from './lead-card/useLeadCardState.js';
 import { LeadCardHeader } from './lead-card/LeadCardHeader.js';
@@ -9,19 +9,19 @@ import { LeadCardEnrichmentBadge } from './lead-card/LeadCardEnrichmentBadge.js'
 import { LeadCardHistoryPreview } from './lead-card/LeadCardHistoryPreview.js';
 
 export interface LeadCardProps {
-  lead: Lead;
+  lead: any;
   index?: number;
   pitch?: any;
   aiConfig?: any;
   onUpdateMessage?: (messageId: string, content: string, status: string) => void;
   user?: any;
-  onUpdateStage?: (id: any, stage: any) => Promise<void>;
-  onUpdateTags?: (id: any, tags: any) => Promise<void>;
-  onUpdateStatus?: (leadId: string, newStatus: string) => Promise<void>;
-  onPromoteToDeal?: (lead: Lead) => Promise<void>;
+  onUpdateStage?: (id: any, stage: any) => Promise<void> | void;
+  onUpdateTags?: (id: any, tags: any) => Promise<void> | void;
+  onUpdateStatus?: (leadId: string, newStatus: string) => Promise<void> | void;
+  onPromoteToDeal?: (lead: any) => Promise<void>;
   theme?: string;
   isReadOnly?: boolean;
-  onLeadSaved?: (updatedLead: Lead) => void;
+  onLeadSaved?: (updatedLead: any) => void;
   isUserView?: boolean;
   startCollapsed?: boolean;
   className?: string;
@@ -35,7 +35,9 @@ export function LeadCard({
   onPromoteToDeal,
   className = '',
 }: LeadCardProps): React.ReactElement {
-  const effectiveUpdateStatus = onUpdateStatus || (onUpdateStage ? async (id: string, st: string) => { await onUpdateStage(id, st); } : undefined);
+  const effectiveUpdateStatus = onUpdateStatus
+    ? async (id: string, st: string) => { await onUpdateStatus(id, st); }
+    : (onUpdateStage ? async (id: string, st: string) => { await onUpdateStage(id, st); } : undefined);
 
   const {
     isExpanded,

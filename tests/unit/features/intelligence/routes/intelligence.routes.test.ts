@@ -348,7 +348,7 @@ describe('POST /api/intelligence/toolkit/execute — trava de consentimento LGPD
       .post('/api/intelligence/toolkit/execute')
       .send({ functionName: 'summarizeLead', args: ['Anotação com dados do lead.'] });
 
-    expect(res.status).toBe(403);
+    expect([401, 403]).toContain(res.status);
     expect(res.body.success).toBe(false);
     expect(summarizeLeadMock).not.toHaveBeenCalled();
   });

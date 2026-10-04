@@ -1,0 +1,1 @@
+const fs = require('fs'); let f = 'docs/openapi.yaml'; let c = fs.readFileSync(f, 'utf8'); c = c.replace('paths:\r\n', 'paths:\r\n  /commercial-agent/workspace:\r\n    get:\r\n      tags: [Commercial Agent]\r\n      summary: Workspace do Agente Comercial\r\n      responses:\r\n        \'200\':\r\n          description: OK\r\n'); fs.writeFileSync(f, c);

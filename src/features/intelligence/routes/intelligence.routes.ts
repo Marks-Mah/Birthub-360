@@ -916,6 +916,7 @@ function normalizePiiValues(raw: unknown): PiiValue[] {
 
 router.post(
   '/toolkit/execute',
+  requireRole(['ADMIN', 'GESTOR', 'CLOSER', 'SDR']),
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const { functionName, args, piiValues } = req.body as {

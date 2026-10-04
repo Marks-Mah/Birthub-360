@@ -18,14 +18,14 @@ vi.mock('../../../../lib/ai/gateway.js', () => ({
 }));
 
 const searchChunksMock = vi.fn();
-vi.mock('../services/vector-search.service.js', () => ({
+vi.mock('../../services/vector-search.service.js', () => ({
   VectorSearchService: {
     searchChunks: (...args: unknown[]) => searchChunksMock(...args),
   },
 }));
 
 const synthesizeSpeechMock = vi.fn();
-vi.mock('../services/voicebox.service.js', () => ({
+vi.mock('../../services/voicebox.service.js', () => ({
   synthesizeSpeech: (...args: unknown[]) => synthesizeSpeechMock(...args),
 }));
 
