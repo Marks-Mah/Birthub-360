@@ -1,5 +1,5 @@
 ﻿import { useState, useCallback } from 'react';
-import type { Lead } from '../types.js';
+import type { Lead } from './types.js';
 
 interface UseLeadCardStateProps {
   lead: Lead;

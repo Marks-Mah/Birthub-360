@@ -1,5 +1,5 @@
 ﻿import type React from 'react';
-import type { Lead } from './types.js';
+import type { Lead, LeadStatus } from './lead-card/types.js';
 import { useLeadCardState } from './lead-card/useLeadCardState.js';
 import { LeadCardHeader } from './lead-card/LeadCardHeader.js';
 import { LeadCardDecisorProfile } from './lead-card/LeadCardDecisorProfile.js';
@@ -8,14 +8,35 @@ import { LeadCardPlaybookAdvisor } from './lead-card/LeadCardPlaybookAdvisor.js'
 import { LeadCardEnrichmentBadge } from './lead-card/LeadCardEnrichmentBadge.js';
 import { LeadCardHistoryPreview } from './lead-card/LeadCardHistoryPreview.js';
 
-interface LeadCardProps {
+export interface LeadCardProps {
   lead: Lead;
+  index?: number;
+  pitch?: any;
+  aiConfig?: any;
+  onUpdateMessage?: (messageId: string, content: string, status: string) => void;
+  user?: any;
+  onUpdateStage?: (id: any, stage: any) => Promise<void>;
+  onUpdateTags?: (id: any, tags: any) => Promise<void>;
   onUpdateStatus?: (leadId: string, newStatus: string) => Promise<void>;
   onPromoteToDeal?: (lead: Lead) => Promise<void>;
+  theme?: string;
+  isReadOnly?: boolean;
+  onLeadSaved?: (updatedLead: Lead) => void;
+  isUserView?: boolean;
+  startCollapsed?: boolean;
   className?: string;
+  [key: string]: any;
 }
 
-export function LeadCard({ lead, onUpdateStatus, onPromoteToDeal, className = '' }: LeadCardProps): React.ReactElement {
+export function LeadCard({
+  lead,
+  onUpdateStatus,
+  onUpdateStage,
+  onPromoteToDeal,
+  className = '',
+}: LeadCardProps): React.ReactElement {
+  const effectiveUpdateStatus = onUpdateStatus || (onUpdateStage ? async (id: string, st: string) => { await onUpdateStage(id, st); } : undefined);
+
   const {
     isExpanded,
     toggleExpand,
@@ -25,7 +46,11 @@ export function LeadCard({ lead, onUpdateStatus, onPromoteToDeal, className = ''
     handleStatusChange,
     handlePromote,
     handleStartCall,
-  } = useLeadCardState({ lead, onUpdateStatus, onPromoteToDeal });
+  } = useLeadCardState({
+    lead,
+    onUpdateStatus: effectiveUpdateStatus,
+    onPromoteToDeal,
+  });
 
   return (
     <article
@@ -37,7 +62,7 @@ export function LeadCard({ lead, onUpdateStatus, onPromoteToDeal, className = ''
         sector={lead.sector}
         icpScore={lead.icpScore}
         status={lead.status}
-        onStatusChange={handleStatusChange}
+        onStatusChange={(newStatus: LeadStatus) => handleStatusChange(newStatus)}
         isSaving={isSaving}
       />
 
@@ -63,7 +88,7 @@ export function LeadCard({ lead, onUpdateStatus, onPromoteToDeal, className = ''
         <button
           type="button"
           onClick={toggleExpand}
-          className="text-xs font-semibold text-brand hover:underline"
+          className="text-xs font-semibold text-brand hover:underline cursor-pointer"
           aria-expanded={isExpanded}
         >
           {isExpanded ? 'Ocultar Inteligência ▲' : 'Ver Recomendações de IA ▼'}
@@ -76,14 +101,18 @@ export function LeadCard({ lead, onUpdateStatus, onPromoteToDeal, className = ''
             <button
               type="button"
               onClick={() => setActiveTab('playbook')}
-              className={`px-3 py-1 text-xs rounded-md font-medium ${activeTab === 'playbook' ? 'bg-brand text-midnight font-bold' : 'text-slate-500'}`}
+              className={`px-3 py-1 text-xs rounded-md font-medium cursor-pointer ${
+                activeTab === 'playbook' ? 'bg-brand text-midnight font-bold' : 'text-slate-500'
+              }`}
             >
               Playbook IA
             </button>
             <button
               type="button"
               onClick={() => setActiveTab('history')}
-              className={`px-3 py-1 text-xs rounded-md font-medium ${activeTab === 'history' ? 'bg-brand text-midnight font-bold' : 'text-slate-500'}`}
+              className={`px-3 py-1 text-xs rounded-md font-medium cursor-pointer ${
+                activeTab === 'history' ? 'bg-brand text-midnight font-bold' : 'text-slate-500'
+              }`}
             >
               Histórico de Toques
             </button>
@@ -96,3 +125,5 @@ export function LeadCard({ lead, onUpdateStatus, onPromoteToDeal, className = ''
     </article>
   );
 }
+
+export default LeadCard;
