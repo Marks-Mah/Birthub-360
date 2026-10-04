@@ -83,7 +83,7 @@ describe('useConfirmDialog', () => {
     const onResult = vi.fn();
     render(<Harness onResult={onResult} />);
     await user.click(screen.getByRole('button', { name: 'Disparar' }));
-    await user.click(screen.getByRole('button', { name: 'Fechar modal' }));
+    await user.click(screen.getByRole('button', { name: 'Close' }));
 
     await waitFor(() => expect(onResult).toHaveBeenCalledWith(false));
   });

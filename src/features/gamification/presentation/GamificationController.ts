@@ -96,7 +96,7 @@ export class GamificationController {
         to: now,
       });
 
-      const report = await aiSuite.sellerCoaching.generateCoachingReport({
+      const report = await sellerCoachingService.generateCoachingReport({
         sellerName,
         role: role as any,
         callsMade: performance.callsMade,
