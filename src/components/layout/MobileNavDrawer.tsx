@@ -1,6 +1,5 @@
-import React from 'react';
-import { Sidebar } from './Sidebar.js';
-import type { TabType } from './tabMeta.js';
+import { Sidebar } from './Sidebar';
+import type { TabType } from './tabMeta';
 
 interface MobileNavDrawerProps {
   isOpen: boolean;

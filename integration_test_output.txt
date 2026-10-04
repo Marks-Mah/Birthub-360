@@ -1,0 +1,277 @@
+
+> react-example@0.0.1 pretest:integration
+> node scripts/test/prepare-integration-env.js && npx dotenv-cli -e .env.test -- npx prisma migrate deploy
+
+Containers ausentes: birthhub_postgres, birthhub_redis, birthhub_meilisearch — subindo só postgres, redis, meilisearch (os demais já em execução são reaproveitados, não recriados).
+ Image maarkss/postgres-intelligence:16 Pulling
+ 32a162df1425 Pulling fs layer 0B
+ 912457a31f13 Pulling fs layer 0B
+ 039e6f9f9752 Pulling fs layer 0B
+ e7c73af1eeb3 Pulling fs layer 0B
+ 8654846d99fb Pulling fs layer 0B
+ d100bd361c59 Pulling fs layer 0B
+ 03995e31cd48 Pulling fs layer 0B
+ ff16cf9d59a9 Pulling fs layer 0B
+ 537cf577f508 Pulling fs layer 0B
+ f4b681e14ff8 Pulling fs layer 0B
+ a8a8272ab698 Pulling fs layer 0B
+ efb5baa83a6e Pulling fs layer 0B
+ 61c973a13167 Pulling fs layer 0B
+ a372a0a1082a Pulling fs layer 0B
+ c7449a7c51b4 Pulling fs layer 0B
+ 8c8ff1de0b18 Pulling fs layer 0B
+ 5471e06bfc52 Pulling fs layer 0B
+ 8654846d99fb Download complete 0B
+ 03995e31cd48 Download complete 0B
+ 5471e06bfc52 Download complete 0B
+ 537cf577f508 Downloading 168B
+ 32a162df1425 Download complete 0B
+ e7c73af1eeb3 Downloading 2.097MB
+ 537cf577f508 Download complete 0B
+ efb5baa83a6e Download complete 0B
+ 61c973a13167 Download complete 0B
+ c7449a7c51b4 Downloading 40.96kB
+ a372a0a1082a Download complete 0B
+ 912457a31f13 Downloading 1.049MB
+ f4b681e14ff8 Downloading 1.049MB
+ 8c8ff1de0b18 Downloading 935.1kB
+ 039e6f9f9752 Downloading 1.049MB
+ e7c73af1eeb3 Downloading 3.146MB
+ ff16cf9d59a9 Download complete 0B
+ a8a8272ab698 Downloading 1.196MB
+ c7449a7c51b4 Download complete 0B
+ d100bd361c59 Downloading 2.097MB
+ 039e6f9f9752 Downloading 3.633MB
+ e7c73af1eeb3 Downloading 6.291MB
+ 44136fa355b3 Downloading 2B
+ a8a8272ab698 Download complete 0B
+ d100bd361c59 Downloading 4.194MB
+ 912457a31f13 Downloading 2.097MB
+ f4b681e14ff8 Downloading 2.097MB
+ 8c8ff1de0b18 Download complete 0B
+ d100bd361c59 Download complete 0B
+ 912457a31f13 Downloading 5.243MB
+ f4b681e14ff8 Downloading 4.194MB
+ 039e6f9f9752 Downloading 6.291MB
+ e7c73af1eeb3 Downloading 8.389MB
+ 44136fa355b3 Download complete 0B
+ 912457a31f13 Downloading 8.122MB
+ f4b681e14ff8 Downloading 8.066MB
+ 2049b944a816 Download complete 0B
+ 039e6f9f9752 Downloading 10.49MB
+ e7c73af1eeb3 Downloading 11.53MB
+ e7c73af1eeb3 Downloading 12.58MB
+ 912457a31f13 Downloading 8.389MB
+ f4b681e14ff8 Download complete 0B
+ 039e6f9f9752 Downloading 10.49MB
+ 912457a31f13 Downloading 9.437MB
+ 039e6f9f9752 Downloading 12.03MB
+ e7c73af1eeb3 Downloading 12.58MB
+ 912457a31f13 Downloading 9.437MB
+ 039e6f9f9752 Downloading 13.63MB
+ e7c73af1eeb3 Downloading 13.63MB
+ 912457a31f13 Downloading 10.49MB
+ 039e6f9f9752 Downloading 13.63MB
+ e7c73af1eeb3 Downloading 14.68MB
+ 912457a31f13 Downloading 10.49MB
+ 039e6f9f9752 Downloading 14.68MB
+ e7c73af1eeb3 Downloading 15.73MB
+ 039e6f9f9752 Downloading 14.68MB
+ e7c73af1eeb3 Downloading 15.73MB
+ 912457a31f13 Downloading 11.53MB
+ 039e6f9f9752 Downloading 15.73MB
+ e7c73af1eeb3 Downloading 16.78MB
+ 912457a31f13 Downloading 12.58MB
+ 912457a31f13 Downloading 12.58MB
+ 039e6f9f9752 Downloading 16.78MB
+ e7c73af1eeb3 Downloading 17.83MB
+ 912457a31f13 Downloading 12.58MB
+ 039e6f9f9752 Downloading 17.83MB
+ e7c73af1eeb3 Downloading 18.87MB
+ 039e6f9f9752 Downloading 17.83MB
+ e7c73af1eeb3 Downloading 18.87MB
+ 912457a31f13 Downloading 12.58MB
+ 912457a31f13 Downloading 13.63MB
+ 039e6f9f9752 Downloading 18.87MB
+ e7c73af1eeb3 Downloading 18.87MB
+ 039e6f9f9752 Downloading 18.87MB
+ e7c73af1eeb3 Downloading 19.92MB
+ 912457a31f13 Downloading 14.68MB
+ e7c73af1eeb3 Downloading 20.97MB
+ 912457a31f13 Downloading 15.73MB
+ 039e6f9f9752 Downloading 19.92MB
+ 912457a31f13 Downloading 15.73MB
+ 039e6f9f9752 Downloading 20.97MB
+ e7c73af1eeb3 Downloading 22.02MB
+ 912457a31f13 Downloading 16.78MB
+ 039e6f9f9752 Downloading 20.97MB
+ e7c73af1eeb3 Downloading 22.02MB
+ 912457a31f13 Downloading 17.83MB
+ 039e6f9f9752 Downloading 22.02MB
+ e7c73af1eeb3 Downloading 23.07MB
+ 039e6f9f9752 Downloading 22.02MB
+ e7c73af1eeb3 Downloading 24.12MB
+ 912457a31f13 Downloading 17.83MB
+ 912457a31f13 Downloading 18.87MB
+ 039e6f9f9752 Downloading 23.07MB
+ e7c73af1eeb3 Downloading 24.12MB
+ 912457a31f13 Downloading 19.92MB
+ 039e6f9f9752 Downloading 24.12MB
+ e7c73af1eeb3 Downloading 25.17MB
+ 912457a31f13 Downloading 20.97MB
+ 039e6f9f9752 Downloading 25.17MB
+ e7c73af1eeb3 Downloading 25.17MB
+ 912457a31f13 Downloading 20.97MB
+ 039e6f9f9752 Downloading 25.17MB
+ e7c73af1eeb3 Downloading 26.21MB
+ 039e6f9f9752 Downloading 26.21MB
+ e7c73af1eeb3 Downloading 27.26MB
+ 912457a31f13 Downloading 22.02MB
+ 912457a31f13 Downloading 23.07MB
+ 039e6f9f9752 Downloading 27.26MB
+ e7c73af1eeb3 Downloading 27.26MB
+ 912457a31f13 Downloading 24.12MB
+ 039e6f9f9752 Downloading 27.26MB
+ e7c73af1eeb3 Downloading 28.31MB
+ 912457a31f13 Downloading 25.17MB
+ 039e6f9f9752 Downloading 28.23MB
+ e7c73af1eeb3 Downloading 29.36MB
+ 912457a31f13 Downloading 26.21MB
+ 039e6f9f9752 Download complete 0B
+ e7c73af1eeb3 Downloading 30.41MB
+ 039e6f9f9752 Extracting 1B
+ 912457a31f13 Downloading 27.26MB
+ e7c73af1eeb3 Downloading 31.46MB
+ 039e6f9f9752 Extracting 1B
+ 912457a31f13 Downloading 28.31MB
+ e7c73af1eeb3 Downloading 32.51MB
+ 039e6f9f9752 Extracting 1B
+ e7c73af1eeb3 Downloading 33.55MB
+ 912457a31f13 Downloading 29.36MB
+ 039e6f9f9752 Extracting 1B
+ 912457a31f13 Downloading 30.41MB
+ e7c73af1eeb3 Downloading 34.6MB
+ 039e6f9f9752 Extracting 1B
+ e7c73af1eeb3 Downloading 35.65MB
+ 912457a31f13 Downloading 31.46MB
+ 039e6f9f9752 Extracting 1B
+ e7c73af1eeb3 Downloading 36.7MB
+ 912457a31f13 Downloading 32.51MB
+ 039e6f9f9752 Extracting 1B
+ 912457a31f13 Downloading 33.55MB
+ e7c73af1eeb3 Downloading 37.75MB
+ 039e6f9f9752 Extracting 1B
+ 912457a31f13 Downloading 34.6MB
+ e7c73af1eeb3 Downloading 39.73MB
+ 039e6f9f9752 Extracting 1B
+ e7c73af1eeb3 Downloading 39.85MB
+ 912457a31f13 Downloading 34.6MB
+ 039e6f9f9752 Extracting 1B
+ 912457a31f13 Downloading 35.65MB
+ e7c73af1eeb3 Downloading 40.89MB
+ 039e6f9f9752 Extracting 2B
+ e7c73af1eeb3 Downloading 41.94MB
+ 912457a31f13 Downloading 36.7MB
+ 039e6f9f9752 Extracting 2B
+ 912457a31f13 Downloading 36.7MB
+ e7c73af1eeb3 Downloading 42.99MB
+ 039e6f9f9752 Extracting 2B
+ 912457a31f13 Downloading 37.75MB
+ e7c73af1eeb3 Downloading 44.04MB
+ 039e6f9f9752 Extracting 2B
+ 912457a31f13 Downloading 38.8MB
+ e7c73af1eeb3 Downloading 45.09MB
+ 039e6f9f9752 Extracting 2B
+ e7c73af1eeb3 Downloading 46.14MB
+ 912457a31f13 Downloading 39.85MB
+ 039e6f9f9752 Extracting 2B
+ 912457a31f13 Downloading 40.89MB
+ e7c73af1eeb3 Downloading 47.19MB
+ 039e6f9f9752 Extracting 2B
+ 912457a31f13 Downloading 41.94MB
+ e7c73af1eeb3 Downloading 48.23MB
+ 039e6f9f9752 Extracting 2B
+ 912457a31f13 Downloading 42.99MB
+ e7c73af1eeb3 Downloading 50.33MB
+ 039e6f9f9752 Extracting 2B
+ 912457a31f13 Downloading 44.04MB
+ e7c73af1eeb3 Downloading 51.38MB
+ 039e6f9f9752 Extracting 2B
+ 912457a31f13 Downloading 45.09MB
+ e7c73af1eeb3 Downloading 52.43MB
+ 039e6f9f9752 Extracting 2B
+ 912457a31f13 Downloading 45.09MB
+ e7c73af1eeb3 Downloading 53.48MB
+ 039e6f9f9752 Extracting 3B
+ 912457a31f13 Downloading 47.19MB
+ e7c73af1eeb3 Downloading 54.53MB
+ 039e6f9f9752 Extracting 3B
+ 912457a31f13 Downloading 48.23MB
+ e7c73af1eeb3 Downloading 55.57MB
+ 039e6f9f9752 Extracting 3B
+ 912457a31f13 Downloading 48.23MB
+ e7c73af1eeb3 Downloading 56.62MB
+ 039e6f9f9752 Pull complete 0B
+ 912457a31f13 Downloading 48.23MB
+ e7c73af1eeb3 Downloading 56.62MB
+ 32a162df1425 Pull complete 0B
+ Image maarkss/postgres-intelligence:16 Building
+#1 [internal] load local bake definitions
+#1 reading from stdin 512B done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile
+#2 transferring dockerfile: 1.23kB done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/pgvector/pgvector:pg16
+#3 DONE 0.3s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 2B done
+#4 DONE 0.0s
+
+#5 [1/2] FROM docker.io/pgvector/pgvector:pg16@sha256:7b822b0aac60967beb1ea5e576b8602c94c300a157d187f385ae3e0da199b90a
+#5 resolve docker.io/pgvector/pgvector:pg16@sha256:7b822b0aac60967beb1ea5e576b8602c94c300a157d187f385ae3e0da199b90a 0.0s done
+#5 extracting sha256:8445317dd84fa26748917bcb3765c81735e7b221a7c7baf1187cb0962b1d5b2e done
+#5 sha256:3e13d544cd355a55b950e459f551e83e5ebca49b7d972ecc298e8ca28f5d28de 0B / 111.81MB
+#5 ...
+
+#6 [2/2] RUN apt-get update     && apt-get install --yes --no-install-recommends postgresql-16-postgis-3 openssl     && rm -rf /var/lib/apt/lists/*     && mkdir -p /etc/postgresql/tls     && openssl req -x509 -newkey rsa:2048 -nodes -days 3650          -subj "/CN=birthhub-postgres"          -keyout /etc/postgresql/tls/server.key          -out /etc/postgresql/tls/server.crt     && chown postgres:postgres /etc/postgresql/tls/server.key /etc/postgresql/tls/server.crt     && chmod 600 /etc/postgresql/tls/server.key
+#6 ERROR: failed to convert whiteout file "etc/alternatives/.wh.pager.1.gz": operation not permitted
+------
+ > [2/2] RUN apt-get update     && apt-get install --yes --no-install-recommends postgresql-16-postgis-3 openssl     && rm -rf /var/lib/apt/lists/*     && mkdir -p /etc/postgresql/tls     && openssl req -x509 -newkey rsa:2048 -nodes -days 3650          -subj "/CN=birthhub-postgres"          -keyout /etc/postgresql/tls/server.key          -out /etc/postgresql/tls/server.crt     && chown postgres:postgres /etc/postgresql/tls/server.key /etc/postgresql/tls/server.crt     && chmod 600 /etc/postgresql/tls/server.key:
+------
+Dockerfile:11
+
+--------------------
+
+  10 |     # sem verificar CA), já que o certificado é autoassinado.
+
+  11 | >>> RUN apt-get update \
+
+  12 | >>>     && apt-get install --yes --no-install-recommends postgresql-16-postgis-3 openssl \
+
+  13 | >>>     && rm -rf /var/lib/apt/lists/* \
+
+  14 | >>>     && mkdir -p /etc/postgresql/tls \
+
+  15 | >>>     && openssl req -x509 -newkey rsa:2048 -nodes -days 3650 \
+
+  16 | >>>          -subj "/CN=birthhub-postgres" \
+
+  17 | >>>          -keyout /etc/postgresql/tls/server.key \
+
+  18 | >>>          -out /etc/postgresql/tls/server.crt \
+
+  19 | >>>     && chown postgres:postgres /etc/postgresql/tls/server.key /etc/postgresql/tls/server.crt \
+
+  20 | >>>     && chmod 600 /etc/postgresql/tls/server.key
+
+  21 |
+
+--------------------
+
+failed to solve: failed to compute cache key: failed to convert whiteout file "etc/alternatives/.wh.pager.1.gz": operation not permitted
+
+Falha ao subir docker-compose (postgres, redis, meilisearch). Se o erro for "container name already in use", outro worktree já subiu esse container sob um projeto compose diferente — defina COMPOSE_PROJECT_NAME igual ao worktree que os criou primeiro, ou pare-os (`docker stop birthhub_postgres birthhub_redis birthhub_meilisearch`) antes de tentar de novo. Veja a saída acima para o erro exato.

@@ -109,7 +109,6 @@ export function WhatsAppChatPanel({
         aria-modal="true"
         aria-labelledby="whatsapp-chat-panel-title"
         className="bg-surface border border-line rounded-2xl shadow-2xl w-full max-w-md h-[600px] flex flex-col overflow-hidden relative before:absolute before:inset-x-0 before:top-0 before:h-[2px] before:bg-gradient-to-r before:from-transparent before:via-emerald-400/50 before:to-transparent before:z-20"
-        tabIndex={0}
         onKeyDown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault();

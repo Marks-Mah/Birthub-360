@@ -175,11 +175,11 @@ export const KanbanCard = React.memo(function KanbanCard({
       }}
       className={`backdrop-blur-[8px] rounded-xl border transition-all duration-200 group relative overflow-hidden ${
         isSelected
-          ? 'border-[#1677FF] ring-1 ring-[#1677FF]/60 shadow-[0_0_20px_rgba(22,119,255,0.2)]'
+          ? 'border-brand ring-1 ring-brand/60 shadow-glow-brand'
           : isHighPriority
             ? 'border-white/10 shadow-[0_2px_12px_rgba(0,0,0,0.4)] hover:border-white/15 hover:bg-white/5 hover:-translate-y-0.5'
             : 'border-white/6 shadow-[0_2px_12px_rgba(0,0,0,0.4)] hover:border-white/15 hover:bg-white/5 hover:-translate-y-0.5'
-      } ${isDragging ? 'shadow-2xl ring-2 ring-[#1677FF]/60 z-50 scale-105 rotate-1' : ''}`}
+      } ${isDragging ? 'shadow-2xl ring-2 ring-brand/60 z-50 scale-105 rotate-1' : ''}`}
     >
       {/* 2026 Bento Spotlight */}
       {isHovered && !isDragging && (
@@ -194,7 +194,7 @@ export const KanbanCard = React.memo(function KanbanCard({
 
       {/* Luz especular de topo: visível em hover e destacada para leads de alta relevância */}
       <div
-        className={`absolute top-0 inset-x-0 h-[1.5px] bg-gradient-to-r from-transparent via-[#1677FF]/70 to-transparent pointer-events-none rounded-t-2xl z-20 transition-opacity duration-300 ${
+        className={`absolute top-0 inset-x-0 h-[1.5px] bg-gradient-to-r from-transparent via-brand/70 to-transparent pointer-events-none rounded-t-2xl z-20 transition-opacity duration-300 ${
           isHighPriority ? 'opacity-90' : 'opacity-0 group-hover:opacity-100'
         }`}
       />
@@ -205,14 +205,14 @@ export const KanbanCard = React.memo(function KanbanCard({
           type="button"
           onClick={handleCheckboxClick}
           aria-label={isSelected ? `Desmarcar ${companyName}` : `Selecionar ${companyName}`}
-          className="absolute top-3 left-3 z-20 p-1 rounded-lg text-[#1677FF] hover:scale-110 active:scale-95 transition-all"
+          className="absolute top-3 left-3 z-20 p-1 rounded-lg text-brand hover:scale-110 active:scale-95 transition-all"
           style={{
             background: 'rgba(255,255,255,0.06)',
             border: '1px solid rgba(255,255,255,0.1)',
           }}
         >
           {isSelected ? (
-            <CheckSquare className="w-4 h-4 text-[#1677FF] fill-[#1677FF]/20" />
+            <CheckSquare className="w-4 h-4 text-brand fill-brand/20" />
           ) : (
             <Square className="w-4 h-4 text-white/40" />
           )}
