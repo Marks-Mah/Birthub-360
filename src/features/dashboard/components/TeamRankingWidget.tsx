@@ -46,14 +46,14 @@ export function TeamRankingWidget({
       <Card variant="bento" padding="lg" spotlight soundHover>
         <div className="mb-5 flex flex-wrap items-start justify-between gap-3 border-b border-line/70 pb-4">
           <div className="flex items-center gap-3">
-            <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-brand/30 bg-brand/10 shadow-[0_0_15px_rgba(212,175,55,0.2)] text-brand">
+            <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-brand/20 bg-brand/10 text-brand">
               <Users className="h-5 w-5" aria-hidden="true" />
             </span>
             <div>
               <p className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-brand-ink dark:text-brand">
                 Performance da equipe · 2026
               </p>
-              <h3 className="mt-0.5 text-base font-bold text-ink flex items-center gap-1.5">
+              <h3 className="mt-0.5 text-base font-display font-bold text-ink flex items-center gap-1.5">
                 Ranking Comercial & Fechamentos
               </h3>
             </div>
@@ -111,7 +111,7 @@ export function TeamRankingWidget({
                   }}
                   className={`group flex items-center gap-3.5 rounded-xl border p-3 transition-all duration-300 hover:scale-[1.01] hover:-translate-y-0.5 ${
                     isFirst
-                      ? 'border-brand/50 bg-gradient-to-r from-brand/15 via-surface-elevated to-surface-elevated shadow-[0_4px_20px_rgba(212,175,55,0.15)]'
+                      ? 'border-brand/50 bg-gradient-to-r from-brand/15 via-surface-elevated to-surface-elevated shadow-[0_4px_20px_rgba(0,229,255,0.15)]'
                       : isCurrentUser
                         ? 'border-brand/40 bg-brand/10'
                         : 'border-line/70 bg-surface/70 hover:border-brand/35 hover:bg-surface-interactive'

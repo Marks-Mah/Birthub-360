@@ -11,7 +11,7 @@ const KPI_TONES = {
     bar: 'bg-brand',
     chip: 'bg-brand/10 text-brand border-brand/20',
     value: 'text-brand',
-    glow: 'rgba(212,175,55,0.12)',
+    glow: 'rgba(0,229,255,0.12)',
   },
   ink: {
     bar: 'bg-ink-2/30',

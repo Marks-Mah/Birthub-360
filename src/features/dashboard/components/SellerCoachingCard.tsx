@@ -73,7 +73,7 @@ export function SellerCoachingCard() {
           particleCount: 40,
           spread: 60,
           origin: { y: 0.65 },
-          colors: ['#D4AF37', '#F0D77B', '#10B981', '#FFFFFF'],
+          colors: ['#00E5FF', '#38BDF8', '#10B981', '#FFFFFF'],
         });
       }
     } catch (e: any) {
@@ -89,14 +89,14 @@ export function SellerCoachingCard() {
       <Card variant="bento" padding="lg" spotlight soundHover>
         <div className="mb-5 flex flex-wrap items-start justify-between gap-3 border-b border-line/70 pb-4">
           <div className="flex items-center gap-3">
-            <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-brand/30 bg-brand/10 text-brand shadow-[0_0_15px_rgba(212,175,55,0.2)]">
+            <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-brand/20 bg-brand/10 text-brand">
               <Sparkles className="h-5 w-5" aria-hidden="true" />
             </span>
             <div>
               <p className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-brand-ink dark:text-brand">
                 Desenvolvimento comercial · IA 2026
               </p>
-              <h3 className="mt-0.5 text-base font-bold text-ink">Coaching Semanal Inteligente</h3>
+              <h3 className="mt-0.5 text-base font-display font-bold text-ink">Coaching Semanal Inteligente</h3>
             </div>
           </div>
           {period && (
