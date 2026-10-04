@@ -63,3 +63,11 @@ vulnerabilities:
     expired_at: 2026-10-30
     statement: >-
       nodemailer high vulnerability, see AUDIT_WAIVERS.md
+  - id: CVE-2026-84961
+    expired_at: 2026-10-30
+    statement: >-
+      undici TLS validation bypass in BalancedPool, see AUDIT_WAIVERS.md
+  - id: CVE-2026-19534
+    expired_at: 2026-10-30
+    statement: >-
+      undici WebSocket subprotocol DoS, see AUDIT_WAIVERS.md
