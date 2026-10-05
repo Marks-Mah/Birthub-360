@@ -146,6 +146,9 @@ tags:
     description: >-
       Matriz de Qualificação (SPIN/BANT/MEDDPICC) e Matriz de Objeções, editáveis por
       organização — consumidas pelas telas do Playbook e pelo Chatbook (assistente, roleplay)
+  - name: Orquestração Comercial
+    description: >-
+      Módulo de Orquestração Comercial — playbooks, roteiros, jornadas comerciais e processos de vendas
   - name: Webhooks
     description: >-
       Endpoints de entrada de provedores externos, montados ANTES do `express.json()` global —
@@ -156,6 +159,14 @@ security:
   - sessionCookie: []
 
 paths:
+  /sales-orchestration/overview:
+    get:
+      tags: [Sales Orchestration]
+      summary: Visão geral e métricas de orquestração de vendas
+      responses:
+        '200':
+          description: OK
+
   /commercial-agent/workspace:
     get:
       tags: [Commercial Agent]

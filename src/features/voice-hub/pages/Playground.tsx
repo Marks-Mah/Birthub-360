@@ -75,8 +75,7 @@ export default function PlaygroundPage() {
       canvasCtx.lineWidth = 2.5;
       // Get --brand or default to canonical cyan #00e5ff
       const brandColor =
-        getComputedStyle(document.documentElement).getPropertyValue('--brand').trim() ||
-        '#00e5ff';
+        getComputedStyle(document.documentElement).getPropertyValue('--brand').trim() || '#00e5ff';
       canvasCtx.strokeStyle = brandColor;
 
       canvasCtx.beginPath();
