@@ -37,27 +37,24 @@ function renderSidebar(role: string) {
 }
 
 describe('Sidebar — visibilidade de Automações/Integrações por papel', () => {
-  it('GESTOR vê Automações e Integrações (permissão real de gerenciar, per backend), mas não Equipe/Consumo de IA', () => {
+  it('GESTOR vê Automações e Integrações (permissão real de gerenciar, per backend), mas não Gestão de Time', () => {
     renderSidebar('GESTOR');
     expect(screen.getByRole('button', { name: /Automações/ })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Integrações/ })).toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: /^Equipe$/ })).not.toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: /Consumo de IA/ })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /Gestão de Time/ })).not.toBeInTheDocument();
   });
 
-  it('ADMIN vê os quatro itens administrativos', () => {
+  it('ADMIN vê os itens administrativos da governança', () => {
     renderSidebar('ADMIN');
     expect(screen.getByRole('button', { name: /Automações/ })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Integrações/ })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /Equipe/ })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /Consumo de IA/ })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Gestão de Time/ })).toBeInTheDocument();
   });
 
-  it('CLOSER não vê nenhum dos quatro itens administrativos', () => {
+  it('CLOSER não vê nenhum dos itens administrativos', () => {
     renderSidebar('CLOSER');
     expect(screen.queryByRole('button', { name: /Automações/ })).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /Integrações/ })).not.toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: /Equipe/ })).not.toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: /Consumo de IA/ })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /Gestão de Time/ })).not.toBeInTheDocument();
   });
 });

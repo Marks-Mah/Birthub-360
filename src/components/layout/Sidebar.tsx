@@ -95,6 +95,7 @@ export function Sidebar({
     crm: true,
     intelligence: true,
     orchestration: true,
+    governance: true,
   });
 
   const toggleGroupExpand = (groupId: string, e: React.MouseEvent) => {
@@ -260,11 +261,11 @@ export function Sidebar({
       {launch && <NavLaunchTransition launch={launch} onFinish={finishLaunch} />}
 
       <aside
-        className={`relative z-30 flex flex-col h-full border-r bg-[#070A0F] border-white/[0.07] text-[#F8FAFC] transition-[width] duration-300 ${
+        className={`relative z-30 flex flex-col h-full border-r bg-[#0b132b] border-white/10 text-slate-100 transition-[width] duration-300 ${
           isCollapsed ? 'w-20' : 'w-72'
         } ${
           mobileOpen
-            ? 'fixed inset-y-0 left-0 z-50 h-full w-72 translate-x-0 bg-[#070A0F]'
+            ? 'fixed inset-y-0 left-0 z-50 h-full w-72 translate-x-0 bg-[#0b132b]'
             : 'hidden lg:flex'
         }`}
         aria-label="Navegação Principal"
@@ -273,7 +274,7 @@ export function Sidebar({
         <button
           type="button"
           onClick={toggleCollapse}
-          className="absolute -right-3.5 top-6 z-50 hidden lg:flex h-7 w-7 items-center justify-center rounded-full border border-white/[0.12] bg-[#0D121A] text-[#94A3B8] shadow-xl transition-all duration-200 hover:scale-110 hover:border-[#22D3EE] hover:text-[#22D3EE] cursor-pointer"
+          className="absolute -right-3.5 top-6 z-50 hidden lg:flex h-7 w-7 items-center justify-center rounded-full border border-white/15 bg-[#0b132b] text-slate-400 shadow-xl transition-all duration-200 hover:scale-110 hover:border-brand hover:text-brand cursor-pointer"
           title={isCollapsed ? 'Expandir menu lateral' : 'Recolher menu lateral'}
         >
           <ChevronLeft
@@ -283,28 +284,28 @@ export function Sidebar({
           />
         </button>
 
-        {/* ── Perfil do Usuário Premium com Microinteração no Hover ────────────── */}
-        <div className="shrink-0 p-4 border-b border-white/[0.07]">
-          <div className="group flex items-center gap-3.5 p-2 rounded-2xl transition-all duration-200 hover:bg-[#0D121A] cursor-pointer">
-            <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-[#121A24] border border-white/[0.1] text-[#22D3EE] shadow-md group-hover:border-[#22D3EE]/40 transition-colors">
+        {/* ── Perfil do Usuário Premium em Container Arredondado ────────────── */}
+        <div className="shrink-0 p-3.5 border-b border-white/10">
+          <div className="group flex items-center gap-3.5 p-2.5 rounded-2xl bg-white/[0.03] border border-white/10 shadow-sm transition-all duration-200 hover:bg-white/[0.06] hover:border-brand/30 cursor-pointer">
+            <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand/15 border border-brand/30 text-brand shadow-md group-hover:border-brand/60 transition-colors">
               {currentUser?.image ? (
                 <img
                   src={currentUser.image}
                   alt={userName}
-                  className="h-full w-full rounded-2xl object-cover"
+                  className="h-full w-full rounded-xl object-cover"
                 />
               ) : (
-                <User className="h-5 w-5 text-[#22D3EE]" />
+                <User className="h-5 w-5 text-brand" />
               )}
-              <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-emerald-400 ring-2 ring-[#070A0F]" />
+              <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-emerald-400 ring-2 ring-[#0b132b]" />
             </div>
 
             {!isCollapsed && (
               <div className="min-w-0 leading-tight">
-                <span className="block text-[9px] font-extrabold tracking-widest text-[#22D3EE] uppercase font-mono truncate">
+                <span className="block text-[9px] font-extrabold tracking-widest text-brand uppercase font-mono truncate">
                   {userRoleTitle}
                 </span>
-                <h2 className="text-xs font-bold text-[#F8FAFC] truncate font-display group-hover:text-white transition-colors">
+                <h2 className="text-xs font-bold text-slate-100 truncate font-display group-hover:text-white transition-colors">
                   {userName}
                 </h2>
               </div>
@@ -312,17 +313,17 @@ export function Sidebar({
           </div>
         </div>
 
-        {/* ── Navegação Operating System Level ──────────────────────────────────── */}
-        <nav className="custom-scrollbar flex-1 overflow-y-auto px-3 py-4 space-y-6">
+        {/* ── Navegação com Containers Arredondados Individuais ────────────────── */}
+        <nav className="custom-scrollbar flex-1 overflow-y-auto px-3.5 py-4 space-y-6">
           {navSections.map((section) => (
-            <div key={section.title} className="space-y-2">
+            <div key={section.title} className="space-y-2.5">
               {!isCollapsed && (
-                <h3 className="px-3 text-[10px] font-extrabold uppercase tracking-widest text-[#94A3B8]/70 font-mono">
+                <h3 className="px-3 text-[10px] font-extrabold uppercase tracking-widest text-slate-400/80 font-mono">
                   {section.title}
                 </h3>
               )}
 
-              <div className="space-y-1">
+              <div className="space-y-2">
                 {section.groups.map((group) => {
                   const Icon = group.icon;
                   const isGroupExpanded = !!expandedGroups[group.id];
@@ -338,7 +339,7 @@ export function Sidebar({
                       onMouseEnter={() => isCollapsed && setHoveredGroupId(group.id)}
                       onMouseLeave={() => isCollapsed && setHoveredGroupId(null)}
                     >
-                      {/* Item Principal: Indicador Lateral ┃ + Fundo Elevado + Glow Mínimo */}
+                      {/* Container Arredondado Individual do Item Principal */}
                       <button
                         type="button"
                         onClick={(e) => {
@@ -348,22 +349,22 @@ export function Sidebar({
                             selectTab(group.primaryTab, e);
                           }
                         }}
-                        className={`group relative flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-xs font-bold transition-all duration-200 cursor-pointer ${
+                        className={`group relative flex w-full items-center justify-between rounded-2xl px-3.5 py-3 text-xs font-bold transition-all duration-200 cursor-pointer border ${
                           isActive
-                            ? 'bg-[#121A24] text-[#F8FAFC] border border-white/[0.08] shadow-[0_0_12px_rgba(34,211,238,0.12)]'
-                            : 'text-[#94A3B8] hover:bg-[#0D121A] hover:text-[#F8FAFC]'
+                            ? 'bg-brand/15 text-brand border-brand/40 shadow-[0_0_16px_rgba(14,165,233,0.18)] font-extrabold'
+                            : 'bg-white/[0.04] border-white/[0.08] text-slate-300 hover:bg-white/[0.08] hover:border-brand/40 hover:text-white shadow-xs'
                         }`}
                       >
-                        {/* Indicador lateral elevado ┃ no estado ativo */}
+                        {/* Indicador lateral elevado no container ativo */}
                         {isActive && (
-                          <span className="absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-[#22D3EE] shadow-[0_0_8px_#22D3EE]" />
+                          <span className="absolute left-0 top-2.5 bottom-2.5 w-1 rounded-r-full bg-brand shadow-[0_0_10px_var(--brand)]" />
                         )}
 
                         <div className="flex items-center gap-3 min-w-0 pl-1">
                           <span
                             data-nav-icon
                             className={`flex h-6 w-6 shrink-0 items-center justify-center transition-colors ${
-                              isActive ? 'text-[#22D3EE]' : 'text-[#94A3B8] group-hover:text-[#F8FAFC]'
+                              isActive ? 'text-brand' : 'text-slate-400 group-hover:text-white'
                             }`}
                           >
                             <Icon size={18} />
@@ -379,7 +380,7 @@ export function Sidebar({
                         {!isCollapsed && hasSubItems && (
                           <span
                             className={`shrink-0 transition-transform duration-200 ${
-                              isActive ? 'text-[#22D3EE]' : 'text-[#94A3B8] group-hover:text-[#F8FAFC]'
+                              isActive ? 'text-brand' : 'text-slate-400 group-hover:text-white'
                             }`}
                           >
                             <ChevronDown
@@ -392,33 +393,32 @@ export function Sidebar({
                         )}
                       </button>
 
-                      {/* ÁRVORE DE HIERARQUIA DE INTELIGÊNCIA COM INDICADOR DE SELEÇÃO ◉ */}
+                      {/* Sub-itens: Cada um em seu próprio Container Arredondado Individual */}
                       {!isCollapsed && hasSubItems && isGroupExpanded && (
-                        <div className="relative ml-5 border-l border-white/[0.1] pl-3 py-1.5 my-1 space-y-1">
-                          {group.subItems?.map((subItem, idx) => {
+                        <div className="relative ml-4 border-l border-white/10 pl-3 py-1.5 my-1.5 space-y-1.5">
+                          {group.subItems?.map((subItem) => {
                             const isSubActive = subItem.tab === activeTab;
-                            const isLast = idx === (group.subItems?.length ?? 0) - 1;
 
                             return (
                               <button
                                 key={subItem.tab}
                                 type="button"
                                 onClick={(e) => selectTab(subItem.tab, e)}
-                                className={`group/sub relative flex w-full items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-xs font-medium transition-all duration-200 cursor-pointer ${
+                                className={`group/sub relative flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium transition-all duration-200 cursor-pointer border ${
                                   isSubActive
-                                    ? 'bg-[#121A24] text-[#22D3EE] font-bold border border-[#22D3EE]/30 shadow-[0_0_10px_rgba(34,211,238,0.1)]'
-                                    : 'text-[#94A3B8] hover:bg-[#0D121A] hover:text-[#F8FAFC]'
+                                    ? 'bg-brand/15 text-brand font-bold border-brand/40 shadow-[0_0_12px_rgba(14,165,233,0.15)]'
+                                    : 'bg-white/[0.02] border-white/[0.06] text-slate-300 hover:bg-white/[0.06] hover:border-brand/30 hover:text-white'
                                 }`}
                               >
                                 {/* Ramo conector da árvore */}
-                                <span className="absolute -left-3 top-1/2 h-px w-2.5 bg-white/[0.1] group-hover/sub:bg-[#22D3EE]/60" />
+                                <span className="absolute -left-3 top-1/2 h-px w-2.5 bg-white/10 group-hover/sub:bg-brand/60" />
 
-                                {/* Indicador ◉ no item selecionado para orientação espacial perfeita */}
+                                {/* Indicador ◉ no sub-item selecionado */}
                                 <span
                                   className={`h-2 w-2 rounded-full transition-all flex items-center justify-center shrink-0 ${
                                     isSubActive
-                                      ? 'bg-[#22D3EE] ring-2 ring-[#22D3EE]/40'
-                                      : 'bg-[#94A3B8]/40 group-hover/sub:bg-[#F8FAFC]'
+                                      ? 'bg-brand ring-2 ring-brand/40'
+                                      : 'bg-slate-500/40 group-hover/sub:bg-slate-300'
                                   }`}
                                 />
 
@@ -431,11 +431,11 @@ export function Sidebar({
 
                       {/* Card Popover no Hover (Modo Recolhido / Rail Mode) */}
                       {isCollapsed && hoveredGroupId === group.id && hasSubItems && (
-                        <div className="fixed left-20 z-50 min-w-[210px] rounded-2xl border border-white/[0.12] bg-[#0D121A]/98 p-3.5 shadow-2xl backdrop-blur-2xl animate-in fade-in slide-in-from-left-2 duration-200">
-                          <p className="mb-2 px-2 text-[10px] font-extrabold uppercase tracking-widest text-[#22D3EE] font-mono">
+                        <div className="fixed left-20 z-50 min-w-[210px] rounded-2xl border border-white/15 bg-[#0b132b]/98 p-3.5 shadow-2xl backdrop-blur-2xl animate-in fade-in slide-in-from-left-2 duration-200">
+                          <p className="mb-2 px-2 text-[10px] font-extrabold uppercase tracking-widest text-brand font-mono">
                             {group.label}
                           </p>
-                          <div className="space-y-1">
+                          <div className="space-y-1.5">
                             {group.subItems?.map((sub) => (
                               <button
                                 key={sub.tab}
@@ -444,13 +444,13 @@ export function Sidebar({
                                   selectTab(sub.tab, e);
                                   setHoveredGroupId(null);
                                 }}
-                                className={`flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-bold transition-all ${
+                                className={`flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-bold transition-all border ${
                                   sub.tab === activeTab
-                                    ? 'bg-[#121A24] text-[#22D3EE] border border-[#22D3EE]/30'
-                                    : 'text-[#94A3B8] hover:bg-[#121A24] hover:text-[#F8FAFC]'
+                                    ? 'bg-brand/15 text-brand border-brand/40'
+                                    : 'bg-white/[0.03] border-white/10 text-slate-300 hover:bg-white/[0.08] hover:text-white'
                                 }`}
                               >
-                                <span className="h-1.5 w-1.5 rounded-full bg-[#22D3EE]" />
+                                <span className="h-1.5 w-1.5 rounded-full bg-brand" />
                                 <span className="truncate">{sub.label}</span>
                               </button>
                             ))}
@@ -465,28 +465,28 @@ export function Sidebar({
           ))}
         </nav>
 
-        {/* ── Central de Comando (Card de Ação Distinto com Gradiente Exclusivo) ── */}
-        <div className="shrink-0 p-3 border-t border-white/[0.07] bg-[#070A0F]">
+        {/* ── Central de Comando em Container Arredondado ────────────────────── */}
+        <div className="shrink-0 p-3.5 border-t border-white/10 bg-[#0b132b]">
           {!isCollapsed ? (
-            <div className="rounded-2xl border border-white/[0.08] bg-[#0D121A] p-4 shadow-xl space-y-3">
+            <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 shadow-xl space-y-3">
               <div className="flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-[#22D3EE] animate-pulse" />
-                <h4 className="text-xs font-extrabold text-[#F8FAFC] uppercase tracking-wider font-mono">
+                <span className="h-2 w-2 rounded-full bg-brand animate-pulse shadow-[0_0_8px_var(--brand)]" />
+                <h4 className="text-xs font-extrabold text-white uppercase tracking-wider font-mono">
                   CENTRAL DE COMANDO
                 </h4>
               </div>
-              <p className="text-[11px] text-[#94A3B8] leading-relaxed">
+              <p className="text-[11px] text-slate-400 leading-relaxed">
                 Orquestre sua operação de Revenue em tempo real.
               </p>
               <button
                 type="button"
                 onClick={() => openTab('workspace')}
-                className="w-full flex items-center justify-between rounded-xl bg-gradient-to-r from-[#22D3EE] via-[#3B82F6] to-[#8B5CF6] p-0.5 text-xs font-extrabold text-slate-950 shadow-lg hover:brightness-110 active:scale-95 transition-all cursor-pointer group"
+                className="w-full flex items-center justify-between rounded-xl bg-gradient-to-r from-brand via-sky-400 to-iris p-0.5 text-xs font-extrabold text-slate-950 shadow-lg hover:brightness-110 active:scale-95 transition-all cursor-pointer group"
               >
-                <div className="w-full bg-gradient-to-r from-[#22D3EE] via-[#3B82F6] to-[#8B5CF6] py-2 px-3 rounded-[10px] flex items-center justify-between text-slate-950">
+                <div className="w-full bg-gradient-to-r from-brand via-sky-400 to-iris py-2 px-3 rounded-[10px] flex items-center justify-between text-slate-950 font-extrabold">
                   <div className="flex items-center gap-1.5">
                     <Plus size={15} strokeWidth={3} />
-                    <span className="font-extrabold">Orquestrar Pipeline</span>
+                    <span>Orquestrar Pipeline</span>
                   </div>
                   <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
                 </div>
@@ -496,7 +496,7 @@ export function Sidebar({
             <button
               type="button"
               onClick={() => openTab('workspace')}
-              className="flex h-11 w-11 mx-auto items-center justify-center rounded-2xl bg-gradient-to-r from-[#22D3EE] via-[#3B82F6] to-[#8B5CF6] text-slate-950 shadow-lg hover:scale-105 active:scale-95 transition-all cursor-pointer"
+              className="flex h-11 w-11 mx-auto items-center justify-center rounded-2xl bg-gradient-to-r from-brand via-sky-400 to-iris text-slate-950 shadow-lg hover:scale-105 active:scale-95 transition-all cursor-pointer"
               title="Orquestrar Pipeline"
             >
               <Plus size={20} strokeWidth={3} />

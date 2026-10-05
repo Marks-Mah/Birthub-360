@@ -104,7 +104,7 @@ describe('Sidebar — transição de abertura de módulo', () => {
   it('ignora cliques extras enquanto a transição está em andamento', async () => {
     renderSidebar();
     fireEvent.click(screen.getByRole('button', { name: 'Empresas' }));
-    fireEvent.click(screen.getByRole('button', { name: 'Analytics' }));
+    fireEvent.click(screen.getByRole('button', { name: /Analytics/ }));
 
     await waitFor(() => expect(screen.getByTestId('where')).toHaveTextContent('/app/companies'));
     expect(screen.getByTestId('where')).not.toHaveTextContent('/app/analytics');
