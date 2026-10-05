@@ -27,17 +27,24 @@ jobs:
       - run: npm run lint
       - run: npm run test:unit
 
+      - name: Check AWS Deployment Credentials
+        if: ${{ secrets.AWS_ROLE_TO_ASSUME == '' }}
+        run: echo "AWS_ROLE_TO_ASSUME is not configured; skipping AWS deployment steps."
+
       - name: Configure AWS Credentials (OIDC)
+        if: ${{ secrets.AWS_ROLE_TO_ASSUME != '' }}
         uses: aws-actions/configure-aws-credentials@ff717079ee2060e4bcee96c4779b553acc87447c # v4
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
           aws-region: ${{ vars.AWS_REGION || 'us-east-1' }}
 
       - name: Login to Amazon ECR
+        if: ${{ secrets.AWS_ROLE_TO_ASSUME != '' }}
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@03f1aad4c6c7ffd436567f42f9384779290529bd # v2
 
       - name: Build, tag, and push Docker image to ECR
+        if: ${{ secrets.AWS_ROLE_TO_ASSUME != '' }}
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           REPOSITORY: birthhub-api
@@ -48,16 +55,19 @@ jobs:
           docker push $REGISTRY/$REPOSITORY:latest
 
       - name: Build and Sync Frontend to S3
+        if: ${{ secrets.AWS_ROLE_TO_ASSUME != '' }}
         run: |
           npm run build
           aws s3 sync dist/ s3://${{ secrets.AWS_S3_FRONTEND_BUCKET }} --delete
           aws cloudfront create-invalidation --distribution-id ${{ secrets.AWS_CLOUDFRONT_DIST_ID }} --paths "/*"
 
       - name: Deploy to Amazon ECS
+        if: ${{ secrets.AWS_ROLE_TO_ASSUME != '' }}
         run: |
           aws ecs update-service --cluster birthhub-production --service birthhub-api-service --force-new-deployment
 
       - name: Smoke Test Gate (Blocking)
+        if: ${{ secrets.AWS_ROLE_TO_ASSUME != '' }}
         run: |
           echo "Aguardando estabilização do ECS..."
           aws ecs wait services-stable --cluster birthhub-production --services birthhub-api-service
