@@ -214,7 +214,7 @@ export const KanbanCard = React.memo(function KanbanCard({
           {isSelected ? (
             <CheckSquare className="w-4 h-4 text-brand fill-brand/20" />
           ) : (
-            <Square className="w-4 h-4 text-white/40" />
+            <Square className="w-4 h-4 text-ink-3" />
           )}
         </button>
       )}
@@ -245,12 +245,12 @@ export const KanbanCard = React.memo(function KanbanCard({
           {hasCompanyName ? (
             <h4
               title={companyName}
-              className="font-bold text-white/90 group-hover:text-[#1677FF] transition-colors text-sm line-clamp-2 leading-snug"
+              className="font-bold text-ink group-hover:text-brand transition-colors text-sm line-clamp-2 leading-snug"
             >
               {companyName}
             </h4>
           ) : (
-            <h4 className="font-medium italic text-white/30 text-sm">
+            <h4 className="font-medium italic text-ink-3 text-sm">
               Sem empresa <span className="not-italic">· dados incompletos</span>
             </h4>
           )}
@@ -315,16 +315,16 @@ export const KanbanCard = React.memo(function KanbanCard({
           )}
         </div>
 
-        <div className="space-y-1.5 mt-2 text-xs text-white/40">
+        <div className="space-y-1.5 mt-2 text-xs text-ink-2">
           {lead.contact && (
-            <div className="flex items-center gap-1.5 text-white/40">
-              <User className="w-3.5 h-3.5 text-white/30" />
+            <div className="flex items-center gap-1.5 text-ink-2">
+              <User className="w-3.5 h-3.5 text-ink-3" />
               <span className="truncate">{lead.contact.name}</span>
             </div>
           )}
           {lead.company?.segment && (
-            <div className="flex items-center gap-1.5 text-white/40">
-              <Building2 className="w-3.5 h-3.5 text-white/30" />
+            <div className="flex items-center gap-1.5 text-ink-2">
+              <Building2 className="w-3.5 h-3.5 text-ink-3" />
               <span className="truncate">{lead.company.segment}</span>
             </div>
           )}
@@ -345,11 +345,10 @@ export const KanbanCard = React.memo(function KanbanCard({
       </div>
 
       <div
-        className="flex items-center justify-between mx-4 mb-4 mt-3 pt-2.5"
-        style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}
+        className="flex items-center justify-between mx-4 mb-4 mt-3 pt-2.5 border-t border-line/60"
       >
-        <div className="flex items-center gap-1.5 text-[11px] text-white/40 min-w-0">
-          <Calendar className="w-3.5 h-3.5 shrink-0 text-white/30" />
+        <div className="flex items-center gap-1.5 text-[11px] text-ink-2 min-w-0">
+          <Calendar className="w-3.5 h-3.5 shrink-0 text-ink-3" />
           {new Date(lead.updatedAt || lead.createdAt || '').toLocaleDateString('pt-BR')}
           {lead.owner && (
             <span className="truncate">· {ownerNameById?.[lead.owner] ?? lead.owner}</span>

@@ -60,7 +60,7 @@ export function CommandCenterHeader({
         )}
         <div className="flex items-center gap-3 flex-wrap">
           {renderIcon()}
-          <h1 className="font-display text-2xl font-semibold leading-tight text-white truncate">
+          <h1 className="font-display text-2xl font-bold leading-tight text-ink truncate">
             {title}
           </h1>
           {state && <VisualState state={state} size="sm" />}

@@ -93,7 +93,7 @@ export function DailyTab({
           <button
             type="button"
             onClick={() => setActiveTab('emcadencia')}
-            className="w-full py-1.5 rounded-xl bg-critical text-white font-bold text-xs shadow-sm hover:brightness-110 transition-colors cursor-pointer"
+            className="w-full py-1.5 rounded-xl bg-critical text-slate-950 font-bold text-xs shadow-sm hover:brightness-110 transition-colors cursor-pointer"
           >
             Atacar Leads sem SLA agora
           </button>

@@ -1,59 +1,30 @@
 import { Bot, Layers, Sparkles } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import type {
-  Workspace,
-  WorkspaceAgentGroup,
-  WorkspaceCapabilityStatus,
-} from '../../features/workspace/workspace.api.js';
-import { cn } from '../../lib/utils.js';
-import { TAB_META, type TabType } from '../layout/tabMeta.js';
-import type { BadgeProps } from '../ui/Badge.js';
+import type { TabType } from '../layout/tabMeta.js';
+import { TAB_META } from '../layout/tabMeta.js';
 import { EmptyState } from '../ui/EmptyState.js';
 import { VisualState } from '../ui/VisualState.js';
+import { cn } from '../../lib/utils.js';
+import type { Workspace } from '../../types/workspace.js';
 
-// Vive fora de src/features/** de propósito: é reaproveitado por duas features (`workspace`, tela
-// dedicada em /app/workspace, e `dashboard`, seção da home unificada em /app e /app/dashboard) —
-// um import direto feature-a-feature violaria `no-cross-feature-imports`
-// (.dependency-cruiser.cjs). Um componente fora de src/features/ pode ser importado por qualquer
-// feature (mesma regra que já vale para src/components/ui/**), e pode importar tipos/serviços de
-// uma feature específica sem violar a regra (que só restringe o que SAI de dentro de
-// src/features/<x>/).
-
-// Rótulo/ícone de cada status de KPI — fonte única desta tela (nunca reinventa o vocabulário de
-// `TOOL_BINDINGS.reason`/`CapabilityDecisionReason` do backend, só traduz pra UI). Ver
-// `workspace.service.ts` (backend) para a origem de cada status.
-const KPI_STATUS_META: Record<
-  WorkspaceCapabilityStatus,
-  { label: string; badge: NonNullable<BadgeProps['variant']> }
-> = {
-  AVAILABLE: { label: 'Disponível', badge: 'success' },
-  APPROVAL_REQUIRED: { label: 'Requer aprovação', badge: 'warning' },
-  REQUEST: { label: 'Sob solicitação', badge: 'info' },
-  DISCOVER_ONLY: { label: 'Só descoberta', badge: 'outline' },
-  SOURCE_REQUIRED: { label: 'Fonte de dado ausente', badge: 'danger' },
-  FUTURE_TOOL: { label: 'Em construção', badge: 'neon' },
-  TOOL_UNAVAILABLE: { label: 'Indisponível', badge: 'outline' },
-  NOT_GRANTED: { label: 'Não concedido ao cargo', badge: 'outline' },
+const ACCESS_LEVEL_LABEL: Record<string, string> = {
+  EXECUTION: 'Execução Autônoma',
+  SUPERVISED: 'Supervisionado',
+  ADVISORY: 'Consultivo',
 };
 
-const ACCESS_LEVEL_LABEL: Record<WorkspaceAgentGroup['accessLevel'], string> = {
-  EXECUTE: 'Executa diretamente',
-  READ: 'Só leitura',
-  REQUEST: 'Sob solicitação',
-  DISCOVER: 'Só descoberta',
+const KPI_STATUS_META: Record<string, { label: string; tone: string }> = {
+  AVAILABLE: { label: 'Disponível', tone: 'text-success' },
+  STALE: { label: 'Desatualizado', tone: 'text-warning' },
+  ERROR: { label: 'Erro', tone: 'text-danger' },
+  DISABLED: { label: 'Desativado', tone: 'text-muted' },
 };
 
-function moduleMeta(moduleKey: string): { label: string; icon: typeof Layers } {
-  const meta = (TAB_META as Partial<Record<string, { label: string; icon: typeof Layers }>>)[
-    moduleKey
-  ];
+function moduleMeta(moduleKey: string) {
+  const meta = TAB_META[moduleKey as TabType];
   return meta ?? { label: moduleKey, icon: Layers };
 }
 
-/** Conteúdo por cargo (PROMPT 6) — 1 componente genérico, nunca 12 telas duplicadas: o que muda
- *  por cargo é só o payload de `GET /api/workspace/me` (`ROLE_WORKSPACE_DEFINITIONS` + grants
- *  reais no backend), nunca este arquivo. Consumido por `WorkspaceHome.tsx` (tela dedicada
- *  `/app/workspace`) e por `AdaptiveDashboard.tsx` (seção por cargo da home unificada). */
 export function WorkspaceReadySection({ workspace }: { workspace: Workspace }) {
   const navigate = useNavigate();
   const goToModule = (moduleKey: string) => navigate(`/app/${moduleKey}` as `/app/${TabType}`);
@@ -64,17 +35,17 @@ export function WorkspaceReadySection({ workspace }: { workspace: Workspace }) {
     <div className="w-full max-w-[92rem] space-y-12">
       {/* Header Minimalista */}
       {widgets.has('mission') && workspace.jobRole && (
-        <div className="flex flex-col gap-2 pb-6 border-b border-white/5">
+        <div className="flex flex-col gap-2 pb-6 border-b border-line">
           <div className="flex items-center gap-2">
-            <div className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" />
-            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/50">
+            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-ink-3 font-mono">
               {workspace.jobRole.department} ● LIVE
             </p>
           </div>
-          <h1 className="font-sans text-3xl font-light tracking-tight text-white md:text-4xl">
+          <h1 className="font-display text-3xl font-extrabold tracking-tight text-ink md:text-4xl">
             {workspace.jobRole.name}
           </h1>
-          <p className="mt-1 max-w-2xl text-sm font-light text-white/60">
+          <p className="mt-1 max-w-2xl text-sm text-ink-2 font-sans">
             {workspace.jobRole.description}
           </p>
         </div>
@@ -89,7 +60,7 @@ export function WorkspaceReadySection({ workspace }: { workspace: Workspace }) {
             <section aria-labelledby="workspace-kpis-heading" className="space-y-6">
               <h2
                 id="workspace-kpis-heading"
-                className="text-[11px] font-bold tracking-widest text-white/40 uppercase"
+                className="text-[11px] font-bold tracking-widest text-ink-3 uppercase font-mono"
               >
                 Indicadores Chave
               </h2>
@@ -110,13 +81,13 @@ export function WorkspaceReadySection({ workspace }: { workspace: Workspace }) {
                             state={kpi.status === 'AVAILABLE' ? 'LIVE' : 'NO_DATA'}
                             size="sm"
                           />
-                          <p className="text-[10px] font-bold uppercase tracking-wide text-white/50">
+                          <p className="text-[10px] font-bold uppercase tracking-wide text-ink-3 font-mono">
                             {kpi.domain || 'Métrica'}
                           </p>
                         </div>
-                        <p className="text-xl font-light tracking-tight text-white">{kpi.label}</p>
+                        <p className="text-xl font-bold tracking-tight text-ink font-display">{kpi.label}</p>
                         {kpi.description && (
-                          <p className="mt-2 text-xs font-light text-white/40">{kpi.description}</p>
+                          <p className="mt-2 text-xs text-ink-2 font-sans">{kpi.description}</p>
                         )}
                       </div>
                     );
@@ -131,7 +102,7 @@ export function WorkspaceReadySection({ workspace }: { workspace: Workspace }) {
             <section aria-labelledby="workspace-quick-actions-heading" className="space-y-6">
               <h2
                 id="workspace-quick-actions-heading"
-                className="text-[11px] font-bold tracking-widest text-white/40 uppercase"
+                className="text-[11px] font-bold tracking-widest text-ink-3 uppercase font-mono"
               >
                 Ações Rápidas
               </h2>
@@ -149,11 +120,11 @@ export function WorkspaceReadySection({ workspace }: { workspace: Workspace }) {
                       className={cn(
                         'group flex items-center gap-2 text-sm font-medium transition-colors',
                         !qa.locked
-                          ? 'text-white/70 hover:text-white cursor-pointer'
-                          : 'text-white/20 cursor-not-allowed',
+                          ? 'text-ink hover:text-brand cursor-pointer'
+                          : 'text-ink-3/40 cursor-not-allowed',
                       )}
                     >
-                      <Icon className="h-4 w-4 opacity-50 group-hover:opacity-100 transition-opacity" />
+                      <Icon className="h-4 w-4 text-ink-3 group-hover:text-brand transition-colors" />
                       <span>{displayLabel}</span>
                     </button>
                   );
@@ -170,7 +141,7 @@ export function WorkspaceReadySection({ workspace }: { workspace: Workspace }) {
             <section aria-labelledby="workspace-agents-heading" className="space-y-6">
               <h2
                 id="workspace-agents-heading"
-                className="text-[11px] font-bold tracking-widest text-white/40 uppercase"
+                className="text-[11px] font-bold tracking-widest text-ink-3 uppercase font-mono"
               >
                 Copilotos Ativos
               </h2>
@@ -184,16 +155,16 @@ export function WorkspaceReadySection({ workspace }: { workspace: Workspace }) {
                 <div className="space-y-6">
                   {workspace.agentGroups.map((group) => (
                     <div key={group.accessLevel} className="flex flex-col gap-3">
-                      <p className="text-[10px] font-bold uppercase tracking-wide text-white/30">
+                      <p className="text-[10px] font-bold uppercase tracking-wide text-ink-3 font-mono">
                         {ACCESS_LEVEL_LABEL[group.accessLevel]}
                       </p>
                       <div className="flex flex-col gap-2">
                         {group.agents.map((agent) => (
                           <div key={agent.code} className="flex items-center gap-2">
-                            <Bot className="h-4 w-4 text-brand/70" />
-                            <span className="text-sm text-white/80 font-medium">{agent.name}</span>
+                            <Bot className="h-4 w-4 text-brand" />
+                            <span className="text-sm text-ink font-medium">{agent.name}</span>
                             {agent.requiresApproval && (
-                              <span className="ml-auto text-[10px] text-amber-400/80 uppercase tracking-widest">
+                              <span className="ml-auto text-[10px] text-amber-600 dark:text-amber-400 uppercase tracking-widest font-mono">
                                 Aprovação
                               </span>
                             )}

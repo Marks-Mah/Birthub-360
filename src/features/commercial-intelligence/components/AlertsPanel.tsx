@@ -26,10 +26,12 @@ const SEVERITY_ORDER: Record<ExecutiveAlert['severity'], number> = {
 };
 
 /** Alertas executivos (seção 26) — sempre derivados de métricas já calculadas, nunca um texto fixo. */
-export function AlertsPanel({ alerts, loading }: { alerts: ExecutiveAlert[]; loading: boolean }) {
+export function AlertsPanel({ alerts = [], loading }: { alerts?: ExecutiveAlert[]; loading: boolean }) {
   if (loading) return null;
 
-  if (alerts.length === 0) {
+  const safeAlerts = Array.isArray(alerts) ? alerts : [];
+
+  if (safeAlerts.length === 0) {
     return (
       <Card padding="sm" className="border-success/20 bg-success/5">
         <p className="text-sm font-semibold text-success-active dark:text-success">
@@ -39,7 +41,7 @@ export function AlertsPanel({ alerts, loading }: { alerts: ExecutiveAlert[]; loa
     );
   }
 
-  const sorted = [...alerts].sort(
+  const sorted = [...safeAlerts].sort(
     (a, b) => SEVERITY_ORDER[a.severity] - SEVERITY_ORDER[b.severity],
   );
 

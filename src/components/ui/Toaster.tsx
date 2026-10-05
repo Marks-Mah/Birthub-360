@@ -10,17 +10,17 @@ const KIND_STYLES: Record<
   { bg: string; icon: typeof CheckCircle2; specular: string }
 > = {
   success: {
-    bg: 'bg-emerald-900/90 backdrop-blur-2xl border border-emerald-500/40 shadow-[0_10px_35px_rgba(16,185,129,0.25)]',
+    bg: 'bg-emerald-50 dark:bg-emerald-950/90 border border-emerald-300 dark:border-emerald-500/40 text-emerald-950 dark:text-emerald-100 shadow-xl',
     icon: CheckCircle2,
-    specular: 'from-emerald-400/60',
+    specular: 'from-emerald-500/60',
   },
   error: {
-    bg: 'bg-red-950/90 backdrop-blur-2xl border border-red-500/40 shadow-[0_10px_35px_rgba(239,68,68,0.25)]',
+    bg: 'bg-rose-50 dark:bg-rose-950/90 border border-rose-300 dark:border-rose-500/40 text-rose-950 dark:text-rose-100 shadow-xl',
     icon: AlertTriangle,
-    specular: 'from-red-400/60',
+    specular: 'from-rose-500/60',
   },
   info: {
-    bg: 'bg-slate-900/90 backdrop-blur-2xl border border-brand/35 shadow-[0_10px_35px_rgba(212,175,55,0.2)]',
+    bg: 'bg-surface border border-line text-ink shadow-xl',
     icon: Info,
     specular: 'from-brand/60',
   },
@@ -73,7 +73,7 @@ export function Toaster() {
               }}
               role={t.kind === 'error' ? 'alert' : 'status'}
               aria-live={t.kind === 'error' ? 'assertive' : 'polite'}
-              className={`${bg} relative overflow-hidden pointer-events-auto text-white px-4 py-3.5 rounded-2xl flex items-start gap-3 text-sm font-medium`}
+              className={`${bg} relative overflow-hidden pointer-events-auto px-4 py-3.5 rounded-2xl flex items-start gap-3 text-sm font-semibold`}
             >
               {/* Linha de reflexo especular 2026 */}
               <div

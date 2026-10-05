@@ -118,7 +118,7 @@ export function ExecutiveHeader({
             onClick={onToggleFullscreen}
             className={`px-2.5 py-1 text-[11px] font-medium rounded-lg border flex items-center gap-1 transition-colors shadow-sm ${
               isFullscreen
-                ? 'bg-warning-solid text-white border-warning-solid hover:brightness-110'
+                ? 'bg-warning-solid text-slate-950 font-bold border-warning-solid hover:brightness-110'
                 : 'bg-soft text-ink hover:bg-line border-line'
             }`}
             title={isFullscreen ? 'Sair do Modo Tela Cheia' : 'Modo Tela Cheia Imersivo'}

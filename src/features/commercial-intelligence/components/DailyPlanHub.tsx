@@ -322,7 +322,7 @@ export function DailyPlanHub() {
               title={item.completed ? 'Concluído' : 'Marcar como concluído'}
               className={`mt-0.5 shrink-0 w-6 h-6 rounded-lg border flex items-center justify-center transition-colors cursor-pointer ${
                 item.completed
-                  ? 'bg-emerald-500 border-emerald-500 text-white'
+                  ? 'bg-emerald-500 border-emerald-500 text-slate-950'
                   : 'border-line hover:border-emerald-500 hover:bg-emerald-50 text-transparent'
               }`}
             >
@@ -801,7 +801,7 @@ export function DailyPlanHub() {
                     <div
                       className={`mt-0.5 w-5 h-5 rounded-md border flex items-center justify-center ${
                         task.completed
-                          ? 'bg-emerald-500 border-emerald-500 text-white'
+                          ? 'bg-emerald-500 border-emerald-500 text-slate-950'
                           : 'border-line'
                       }`}
                     >

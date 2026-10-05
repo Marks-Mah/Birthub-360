@@ -11,9 +11,9 @@ const badgeVariants = cva(
           'border-transparent bg-gradient-to-r from-brand to-brand-2 text-on-brand shadow-glow-brand',
         secondary: 'border-brand/20 bg-surface-elevated text-ink shadow-glow-brand',
         destructive:
-          'border-transparent bg-gradient-to-r from-danger to-pulse text-white shadow-glow-pulse',
+          'border-transparent bg-gradient-to-r from-danger to-pulse text-slate-950 font-bold shadow-glow-pulse',
         danger:
-          'border-transparent bg-gradient-to-r from-danger to-pulse text-white shadow-glow-pulse',
+          'border-transparent bg-gradient-to-r from-danger to-pulse text-slate-950 font-bold shadow-glow-pulse',
         outline: 'text-ink border-brand/50 shadow-glow-brand',
         success: 'border-transparent bg-gradient-to-r from-ok/20 to-ok/20 text-ok shadow-glow-ok',
         warning:

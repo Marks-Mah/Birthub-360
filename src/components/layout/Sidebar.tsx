@@ -1,9 +1,8 @@
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import {
   ChevronDown,
-  ChevronRight,
   ChevronLeft,
-  ChevronRight as ChevronRightIcon,
+  ChevronRight,
   LogOut,
   Plus,
   Sparkles,
@@ -12,9 +11,9 @@ import {
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext.js';
+import { useTheme } from '../../contexts/ThemeContext.js';
 import { hasRequiredRole, MESA_TRATAMENTO_ROLES } from '../../lib/auth/authorization.js';
 import { SoundFX } from '../../lib/soundEffects.js';
-import { BirthHubLogo } from '../brand/BirthHubLogo.js';
 import { NavLaunchTransition, type NavLaunch } from './NavLaunchTransition.js';
 import { NAV_ACCENT_VAR, TAB_META, type TabType } from './tabMeta.js';
 
@@ -81,6 +80,7 @@ export function Sidebar({
 
   const { currentUser, isAdmin, canAccessCommercialIntelligence, canAccessCopilotoIa, logout } =
     useAuth();
+  const { theme } = useTheme();
   const navigate = useNavigate();
   const reduceMotion = useReducedMotion();
   const [hoveredGroupId, setHoveredGroupId] = useState<string | null>(null);
@@ -90,7 +90,7 @@ export function Sidebar({
   const canAccessMesaTratamento =
     !!currentUser && hasRequiredRole(currentUser.role, MESA_TRATAMENTO_ROLES);
 
-  // Controle de sanfona por grupo principal
+  // Estado dos grupos sanfona (expandidos por padrão para máxima usabilidade)
   const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({
     dashboard: true,
     crm: true,
@@ -147,7 +147,7 @@ export function Sidebar({
     });
   };
 
-  // Seções organizadas no estilo da Sidebar do vídeo de referência
+  // Seções organizadas no formato idêntico ao vídeo de referência
   const navSections: NavSection[] = [
     {
       title: 'MAIN',
@@ -252,34 +252,53 @@ export function Sidebar({
     },
   ];
 
-  const userRoleTitle = currentUser?.role === 'ADMIN' ? 'ADMINISTRADOR' : currentUser?.role || 'USUÁRIO';
+  const userRoleTitle =
+    currentUser?.role === 'ADMIN' ? 'ADMINISTRADOR' : currentUser?.role || 'USUÁRIO';
   const userName = currentUser?.name || 'Auditor do Sistema';
 
   return (
     <>
-
-      <NavLaunchTransition launch={launch} onFinished={finishLaunch} />
+      {launch && <NavLaunchTransition launch={launch} onFinish={finishLaunch} />}
 
       <aside
-        className={`relative z-30 flex flex-col my-2 ml-2 h-[calc(100vh-1rem)] rounded-[1.75rem] border border-white/10 bg-[#0B132B]/95 text-slate-100 shadow-2xl backdrop-blur-2xl transition-[width] duration-300 ${
-          isCollapsed ? 'w-20' : 'w-72'
-        } ${mobileOpen ? 'fixed inset-y-0 left-0 z-50 my-0 ml-0 h-full rounded-none w-72 translate-x-0' : 'hidden lg:flex'}`}
+        className={`relative z-30 flex flex-col my-2 ml-2 h-[calc(100vh-1rem)] rounded-[2.2rem] border transition-[width,background-color,border-color] duration-300 shadow-2xl backdrop-blur-2xl ${
+          theme === 'dark'
+            ? 'bg-[#181113]/95 border-white/10 text-slate-100'
+            : 'bg-[#EBD6CC]/95 border-amber-900/10 text-slate-800'
+        } ${isCollapsed ? 'w-20' : 'w-72'} ${
+          mobileOpen
+            ? 'fixed inset-y-0 left-0 z-50 my-0 ml-0 h-full rounded-none w-72 translate-x-0'
+            : 'hidden lg:flex'
+        }`}
         aria-label="Navegação Principal"
       >
-        {/* Botão flutuante proeminente de toggle (estilo do vídeo de referência) */}
+        {/* Botão flutuante proeminente de toggle circular (estilo exato do vídeo) */}
         <button
           type="button"
           onClick={toggleCollapse}
-          className="absolute -right-3.5 top-6 z-50 hidden lg:flex h-7 w-7 items-center justify-center rounded-full border border-white/15 bg-[#16234D] text-slate-300 shadow-xl transition-all duration-200 hover:scale-110 hover:bg-brand hover:border-brand hover:text-on-brand cursor-pointer"
+          className={`absolute -right-3.5 top-7 z-50 hidden lg:flex h-7 w-7 items-center justify-center rounded-full border shadow-xl transition-all duration-200 hover:scale-110 cursor-pointer ${
+            theme === 'dark'
+              ? 'bg-[#2A1D20] border-white/15 text-slate-200 hover:bg-brand hover:text-slate-950 hover:border-brand'
+              : 'bg-[#D6B5A6] border-amber-900/15 text-slate-800 hover:bg-amber-700 hover:text-slate-950'
+          }`}
           title={isCollapsed ? 'Expandir menu lateral' : 'Recolher menu lateral'}
         >
           <ChevronLeft
-            className={`h-4 w-4 transition-transform duration-300 ${isCollapsed ? 'rotate-180' : ''}`}
+            className={`h-4 w-4 transition-transform duration-300 ${
+              isCollapsed ? 'rotate-180' : ''
+            }`}
           />
         </button>
 
+        {/* ── Controles de Janela Mac (Red/Yellow/Green dots do vídeo) ────────── */}
+        <div className="flex items-center gap-1.5 px-5 pt-4 pb-2">
+          <span className="h-2.5 w-2.5 rounded-full bg-[#FF5F56] opacity-90 shadow-xs" />
+          <span className="h-2.5 w-2.5 rounded-full bg-[#FFBD2E] opacity-90 shadow-xs" />
+          <span className="h-2.5 w-2.5 rounded-full bg-[#27C93F] opacity-90 shadow-xs" />
+        </div>
+
         {/* ── Perfil do Usuário / Cabeçalho ────────────────────────────────────── */}
-        <div className="flex shrink-0 items-center justify-between border-b border-white/10 p-4">
+        <div className="flex shrink-0 items-center justify-between px-5 py-3 border-b border-black/5 dark:border-white/10">
           <div className="flex items-center gap-3 min-w-0">
             <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-brand/40 bg-gradient-to-tr from-brand/20 via-brand/10 to-indigo-500/20 text-brand shadow-md">
               {currentUser?.image ? (
@@ -291,31 +310,31 @@ export function Sidebar({
               ) : (
                 <User className="h-5 w-5 text-brand" />
               )}
-              <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-emerald-500 ring-2 ring-[#0B132B]" />
+              <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-emerald-500 ring-2 ring-[#181113]" />
             </div>
 
             {!isCollapsed && (
               <div className="min-w-0 leading-tight">
-                <span className="block text-[10px] font-extrabold tracking-widest text-brand uppercase font-mono truncate">
+                <span className="block text-[9px] font-extrabold tracking-widest text-brand uppercase font-mono truncate">
                   {userRoleTitle}
                 </span>
-                <h2 className="text-xs font-bold text-white truncate font-display">{userName}</h2>
+                <h2 className="text-xs font-bold truncate font-display">{userName}</h2>
               </div>
             )}
           </div>
         </div>
 
         {/* ── Navegação com árvore de ramos (estilo do vídeo) ───────────────── */}
-        <nav className="custom-scrollbar flex-1 overflow-y-auto px-3 py-4 space-y-5">
+        <nav className="custom-scrollbar flex-1 overflow-y-auto px-4 py-4 space-y-6">
           {navSections.map((section) => (
-            <div key={section.title} className="space-y-1.5">
+            <div key={section.title} className="space-y-2">
               {!isCollapsed && (
                 <h3 className="px-2 text-[10px] font-extrabold uppercase tracking-widest text-slate-400/80 font-mono">
                   {section.title}
                 </h3>
               )}
 
-              <div className="space-y-1">
+              <div className="space-y-1.5">
                 {section.groups.map((group) => {
                   const Icon = group.icon;
                   const isGroupExpanded = !!expandedGroups[group.id];
@@ -331,7 +350,7 @@ export function Sidebar({
                       onMouseEnter={() => isCollapsed && setHoveredGroupId(group.id)}
                       onMouseLeave={() => isCollapsed && setHoveredGroupId(null)}
                     >
-                      {/* Item Principal do Grupo */}
+                      {/* Container do Item Principal do Grupo */}
                       <button
                         type="button"
                         onClick={(e) => {
@@ -341,10 +360,10 @@ export function Sidebar({
                             selectTab(group.primaryTab, e);
                           }
                         }}
-                        className={`group flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-xs font-semibold transition-all duration-200 cursor-pointer ${
+                        className={`group flex w-full items-center justify-between rounded-2xl px-3.5 py-3 text-xs font-bold transition-all duration-200 cursor-pointer ${
                           isActive
-                            ? 'bg-white/10 text-white shadow-xs border border-white/10'
-                            : 'text-slate-300 hover:bg-white/[0.06] hover:text-white'
+                            ? 'bg-brand/10 text-brand shadow-sm border border-brand/20'
+                            : 'text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/60 hover:text-ink'
                         }`}
                       >
                         <div className="flex items-center gap-3 min-w-0">
@@ -353,19 +372,19 @@ export function Sidebar({
                             className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-lg transition-colors ${
                               isActive
                                 ? 'text-brand'
-                                : 'text-slate-400 group-hover:text-slate-200'
+                                : 'text-slate-500 group-hover:text-slate-800 dark:group-hover:text-slate-200'
                             }`}
                           >
                             <Icon size={18} />
                           </span>
 
                           {!isCollapsed && (
-                            <span className="truncate font-sans">{group.label}</span>
+                            <span className="truncate font-sans tracking-tight">{group.label}</span>
                           )}
                         </div>
 
                         {!isCollapsed && hasSubItems && (
-                          <span className="shrink-0 text-slate-400 transition-transform duration-200 group-hover:text-white">
+                          <span className="shrink-0 text-slate-500 transition-transform duration-200 group-hover:text-ink">
                             <ChevronDown
                               size={14}
                               className={`transition-transform duration-200 ${
@@ -376,29 +395,25 @@ export function Sidebar({
                         )}
                       </button>
 
-                      {/* Sub-itens com ÁRVORE DE RAMOS (Tree lines) quando expandido */}
+                      {/* ÁRVORE DE RAMOS (Tree Branch lines do vídeo de referência) */}
                       {!isCollapsed && hasSubItems && isGroupExpanded && (
-                        <div className="relative ml-5 border-l-2 border-slate-700/60 pl-3 py-1 my-1 space-y-1">
-                          {group.subItems?.map((subItem) => {
+                        <div className="relative ml-6 border-l-2 border-slate-500/30 dark:border-slate-700/60 pl-3.5 py-1.5 my-1 space-y-1">
+                          {group.subItems?.map((subItem, idx) => {
                             const isSubActive = subItem.tab === activeTab;
+                            const isLast = idx === (group.subItems?.length ?? 0) - 1;
                             return (
                               <button
                                 key={subItem.tab}
                                 type="button"
                                 onClick={(e) => selectTab(subItem.tab, e)}
-                                className={`group/sub relative flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-xs transition-all duration-200 cursor-pointer ${
+                                className={`group/sub relative flex w-full items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold transition-all duration-200 cursor-pointer ${
                                   isSubActive
-                                    ? 'bg-brand/15 text-brand font-bold shadow-xs border border-brand/25'
-                                    : 'text-slate-400 hover:bg-white/[0.05] hover:text-slate-100'
+                                    ? 'bg-brand/15 text-brand font-bold shadow-md border border-brand/25'
+                                    : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-ink'
                                 }`}
                               >
-                                {/* Ramo conector horizontal */}
-                                <span className="absolute -left-3 top-1/2 h-px w-2.5 bg-slate-700/60 group-hover/sub:bg-brand/60" />
-                                <span
-                                  className={`h-1.5 w-1.5 rounded-full transition-all ${
-                                    isSubActive ? 'bg-brand scale-125' : 'bg-slate-500 group-hover/sub:bg-slate-300'
-                                  }`}
-                                />
+                                {/* Ramo horizontal do conector da árvore */}
+                                <span className="absolute -left-3.5 top-1/2 h-px w-3 bg-slate-500/30 dark:bg-slate-700/60 group-hover/sub:bg-brand" />
                                 <span className="truncate">{subItem.label}</span>
                               </button>
                             );
@@ -406,10 +421,10 @@ export function Sidebar({
                         </div>
                       )}
 
-                      {/* Card de Popover em Hover no modo Recolhido (estilo do vídeo) */}
+                      {/* Card Popover no Hover (Modo Recolhido / Rail Mode) */}
                       {isCollapsed && hoveredGroupId === group.id && hasSubItems && (
-                        <div className="fixed left-20 z-50 min-w-[200px] rounded-2xl border border-white/15 bg-[#0D193A]/95 p-3 shadow-2xl backdrop-blur-xl animate-in fade-in slide-in-from-left-2 duration-200">
-                          <p className="mb-2 px-2 text-[10px] font-extrabold uppercase tracking-wider text-brand font-mono">
+                        <div className="fixed left-20 z-50 min-w-[210px] rounded-2xl border border-line bg-surface p-3.5 shadow-2xl backdrop-blur-xl animate-in fade-in slide-in-from-left-2 duration-200">
+                          <p className="mb-2 px-2 text-[10px] font-extrabold uppercase tracking-widest text-brand font-mono">
                             {group.label}
                           </p>
                           <div className="space-y-1">
@@ -421,14 +436,14 @@ export function Sidebar({
                                   selectTab(sub.tab, e);
                                   setHoveredGroupId(null);
                                 }}
-                                className={`flex w-full items-center gap-2 rounded-xl px-2.5 py-1.5 text-xs font-medium transition-all ${
+                                className={`flex w-full items-center gap-2 rounded-xl px-3 py-2 text-xs font-bold transition-all ${
                                   sub.tab === activeTab
-                                    ? 'bg-brand/20 text-brand font-bold'
-                                    : 'text-slate-300 hover:bg-white/10 hover:text-white'
+                                    ? 'bg-brand/20 text-brand'
+                                    : 'text-slate-800 dark:text-slate-200 hover:bg-surface-2 hover:text-ink'
                                 }`}
                               >
                                 <span className="h-1.5 w-1.5 rounded-full bg-brand" />
-                                <span>{sub.label}</span>
+                                <span className="truncate">{sub.label}</span>
                               </button>
                             ))}
                           </div>
@@ -442,25 +457,20 @@ export function Sidebar({
           ))}
         </nav>
 
-        {/* ── Banners / Card de Ação no Rodapé (estilo do vídeo) ───────────── */}
-        <div className="shrink-0 p-3 border-t border-white/10 bg-[#080E21]/60 rounded-b-[1.75rem]">
+        {/* ── Card de Ação no Rodapé (Let's start! / Add New Task no vídeo) ────── */}
+        <div className="shrink-0 p-4 border-t border-black/5 dark:border-white/10 bg-black/5 dark:bg-black/20 rounded-b-[2.2rem]">
           {!isCollapsed ? (
-            <div className="rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.07] to-white/[0.02] p-3 shadow-inner space-y-2">
-              <div className="flex items-center gap-2">
-                <div className="grid h-6 w-6 place-items-center rounded-lg bg-brand/20 text-brand">
-                  <Sparkles size={14} />
-                </div>
-                <p className="text-xs font-bold text-white">Central de Comando</p>
-              </div>
-              <p className="text-[11px] text-slate-400 leading-tight">
-                Orquestre pipelines & diagnósticos com IA em tempo real.
+            <div className="rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.08] to-white/[0.02] p-4 shadow-inner space-y-2.5 text-center">
+              <h4 className="text-xs font-bold">Central de Comando</h4>
+              <p className="text-[11px] text-slate-400 leading-relaxed">
+                Orquestre pipelines & diagnósticos de vendas em tempo real.
               </p>
               <button
                 type="button"
                 onClick={() => openTab('workspace')}
-                className="w-full flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-brand to-amber-500 py-2 px-3 text-xs font-bold text-on-brand shadow-md hover:brightness-110 active:scale-95 transition-all cursor-pointer"
+                className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-brand to-amber-500 py-2.5 px-3 text-xs font-extrabold text-slate-950 shadow-md hover:brightness-110 active:scale-95 transition-all cursor-pointer"
               >
-                <Plus size={14} />
+                <Plus size={16} />
                 <span>Orquestrar Pipeline</span>
               </button>
             </div>
@@ -468,10 +478,10 @@ export function Sidebar({
             <button
               type="button"
               onClick={() => openTab('workspace')}
-              className="flex h-10 w-10 mx-auto items-center justify-center rounded-2xl bg-gradient-to-r from-brand to-amber-500 text-on-brand shadow-lg hover:scale-105 active:scale-95 transition-all cursor-pointer"
+              className="flex h-11 w-11 mx-auto items-center justify-center rounded-2xl bg-gradient-to-r from-brand to-amber-500 text-slate-950 shadow-lg hover:scale-105 active:scale-95 transition-all cursor-pointer"
               title="Orquestrar Pipeline"
             >
-              <Plus size={18} />
+              <Plus size={20} />
             </button>
           )}
         </div>

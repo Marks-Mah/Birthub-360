@@ -115,8 +115,7 @@ export const KanbanColumn = React.memo(function KanbanColumn({
         </SortableContext>
         {leads.length === 0 && (
           <div
-            className="h-full min-h-[110px] rounded-lg flex flex-col items-center justify-center text-white/20 text-xs gap-1.5 transition-colors"
-            style={{ border: '1px dashed rgba(255,255,255,0.1)' }}
+            className="h-full min-h-[110px] rounded-lg flex flex-col items-center justify-center text-ink-3 text-xs gap-1.5 transition-colors border border-dashed border-line"
           >
             <span className="text-base" aria-hidden="true">
               📥
