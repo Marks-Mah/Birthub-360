@@ -122,15 +122,16 @@ export function PropostasList() {
   return (
     <div className="flex-1 overflow-y-auto bg-bg text-ink p-6 md:p-8 space-y-6">
       <div className="max-w-7xl mx-auto space-y-6">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-surface p-6 rounded-3xl border border-line">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-surface p-6 rounded-2xl border border-line shadow-card">
           <div>
-            <h1 className="text-3xl font-extrabold text-ink flex items-center gap-3 tracking-tight">
-              📄 Propostas & Documentos
-              <span className="text-xs bg-surface-2 text-brand-ink dark:text-brand border border-brand/30 px-3 py-1 rounded-full font-bold">
+            <h1 className="text-2xl font-black text-ink flex items-center gap-3 tracking-tight font-[family-name:var(--font-brand-display)]">
+              <FileText className="w-6 h-6 text-brand" />
+              Propostas & Documentos
+              <span className="text-xs bg-brand/10 text-brand border border-brand/20 px-3 py-1 rounded-full font-bold">
                 {documents.length}
               </span>
             </h1>
-            <p className="text-ink-2 text-sm mt-1">
+            <p className="text-ink-2 text-sm mt-1 font-[family-name:var(--font-brand-sans)]">
               Orçamentos, propostas, faturas e contratos — com versionamento e assinatura
               eletrônica.
             </p>
@@ -142,7 +143,7 @@ export function PropostasList() {
                 setEditingDocument(null);
                 setIsFormOpen(true);
               }}
-              className="flex items-center gap-2 bg-brand-active hover:brightness-110 text-on-brand px-5 py-2.5 rounded-2xl font-bold transition-colors shadow-lg shadow-brand/20 active:scale-95 cursor-pointer"
+              className="flex items-center gap-2 bg-brand hover:bg-brand/90 text-on-brand px-5 py-2.5 rounded-xl font-bold transition-colors shadow-card hover:shadow-card-hover active:scale-95 cursor-pointer"
             >
               <Plus className="w-5 h-5" />
               Novo Documento
@@ -214,9 +215,9 @@ export function PropostasList() {
                 onAction={
                   canWrite
                     ? () => {
-                        setEditingDocument(null);
-                        setIsFormOpen(true);
-                      }
+                      setEditingDocument(null);
+                      setIsFormOpen(true);
+                    }
                     : undefined
                 }
                 icon={<FileText className="w-10 h-10 text-brand" />}
