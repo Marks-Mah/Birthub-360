@@ -6,10 +6,11 @@ export class PgDncRepository implements DncRepository {
   constructor(private readonly prisma: PrismaClient) {}
 
   async isBlocked(phoneE164: string): Promise<boolean> {
-    const rows = await this.prisma.$executeRawUnsafe('SELECT 1 FROM dnc_list WHERE phone = $1', [
+    const rows = await this.prisma.$queryRawUnsafe<{ exists: number }[]>(
+      'SELECT 1 AS exists FROM dnc_list WHERE phone = $1',
       phoneE164,
-    ]);
-    return ((rows as any)?.length ?? rows ?? 0) > 0;
+    );
+    return rows.length > 0;
   }
 
   async add(phoneE164: string, reason: string): Promise<void> {
