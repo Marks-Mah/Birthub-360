@@ -1,0 +1,1542 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BirthHub 360 — Manual Completo da Plataforma</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', sans-serif; background: #0b132b; color: #f8fafc; line-height: 1.6; }
+    .container { max-width: 1400px; margin: 0 auto; padding: 40px; }
+    h1 { font-size: 32px; margin-bottom: 40px; color: #00e5ff; }
+    h2 { font-size: 24px; margin: 30px 0 20px; color: #3b82f6; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; }
+    h3 { font-size: 18px; margin: 20px 0 10px; color: #8b5cf6; }
+    .section { margin-bottom: 60px; }
+    .card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 20px; margin-bottom: 15px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+    table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+    th, td { padding: 12px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    th { background: rgba(0,229,255,0.1); color: #00e5ff; }
+    code { background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 4px; font-family: monospace; }
+    .color-swatch { display: inline-block; width: 24px; height: 24px; border-radius: 4px; margin-right: 10px; vertical-align: middle; border: 1px solid rgba(255,255,255,0.2); }
+    .badge { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 12px; background: rgba(0,229,255,0.2); color: #00e5ff; }
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 40px; }
+    .stat-card { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; text-align: center; }
+    .stat-value { font-size: 32px; font-weight: bold; color: #00e5ff; }
+    .stat-label { font-size: 14px; color: rgba(255,255,255,0.6); margin-top: 5px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>BirthHub 360 — Manual Completo da Plataforma</h1>
+    
+    <div class="stats">
+      <div class="stat-card">
+        <div class="stat-value">69</div>
+        <div class="stat-label">Rotas</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">5</div>
+        <div class="stat-label">Ícones Customizados</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">66</div>
+        <div class="stat-label">Componentes UI</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">113</div>
+        <div class="stat-label">Tokens de Cor</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>📁 Rotas da Aplicação</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Rota</th>
+            <th>Componente</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+            <tr>
+              <td><code>dashboard</code></td>
+              <td><code><AdaptiveDashboard /></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>workspace</code></td>
+              <td><code><WorkspaceHome /></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>prospect</code></td>
+              <td><code><ProspectingHub /></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>crm</code></td>
+              <td><code><CrmBoard /></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>crm360</code></td>
+              <td><code><CrmOverview onNavigate={handleCrmOverviewNavigate</code></td>
+            </tr>
+          
+            <tr>
+              <td><code>intelligence</code></td>
+              <td><code><IntelligenceHub /></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>intelligence/elite-agent</code></td>
+              <td><code><EliteCommercialAgentWorkspace /></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>companies</code></td>
+              <td><code><CompanyList /></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>contacts</code></td>
+              <td><code><ContactList /></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>activities</code></td>
+              <td><code><ActivityList /></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>voice-hub</code></td>
+              <td><code><VoiceStudioPage /></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>outbound/*</code></td>
+              <td><code><OutboundApp /></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>dialer</code></td>
+              <td><code><DialerFrontend /></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>cadence</code></td>
+              <td><code><CadenceHub /></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>playbooks</code></td>
+              <td><code><PlaybooksHub /></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>jornadas</code></td>
+              <td><code><JornadasComerciaisHub /></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>processos</code></td>
+              <td><code><ProcessosVendasHub /></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>roteiros</code></td>
+              <td><code><RoteirosHub /></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>chatbook</code></td>
+              <td><code><ChatbookHub /></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>roleplay</code></td>
+              <td><code><RoleplayHub /></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>qualification_matrix</code></td>
+              <td><code><QualificationMatrixPage /></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>objections_matrix</code></td>
+              <td><code><ObjectionsMatrixPage /></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>topic_training</code></td>
+              <td><code><TopicTrainingAcademy /></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>bitrix</code></td>
+              <td><code><BitrixGuideHub /></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>reports</code></td>
+              <td><code><ReportsHub /></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>integrations</code></td>
+              <td><code><Integrations /></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>knowledge</code></td>
+              <td><code><KnowledgeBase /></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>analytics</code></td>
+              <td><code><Analytics /></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>winloss</code></td>
+              <td><code><WinLossAnalysis /></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>market-intelligence</code></td>
+              <td><code><Ldr /></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>market-intelligence/hub</code></td>
+              <td><code><InteligenciaMercadoHub /></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>market-intelligence/accounts/:id</code></td>
+              <td><code><Account360 /></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>market-intelligence/deck</code></td>
+              <td><code><LeadApprovalDeck /></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>prospect/inteligente</code></td>
+              <td><code><ProspeccaoInteligenteHub /></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>propostas</code></td>
+              <td><code><PropostasList /></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>daily-plan</code></td>
+              <td><code><DailyPlanHub /></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>sdr-diagnostic</code></td>
+              <td><code><JoaoReisDiagnosticHub /></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>calendar</code></td>
+              <td><code><Calendar /></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>notifications</code></td>
+              <td><code><Notifications /></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>automations</code></td>
+              <td><code><Automations /></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>editor</code></td>
+              <td><code><DocumentEditor /></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>settings</code></td>
+              <td><code><Settings /></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>forecast</code></td>
+              <td><code><ForecastHub /></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>metas</code></td>
+              <td><code><MetasHub /></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>pipeline_ponderado</code></td>
+              <td><code><PipelinePonderadoHub /></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>settings_hub</code></td>
+              <td><code><PillarSettingsPlaceholder pillarName="Hub Comercial" /></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>settings_market</code></td>
+              <td><code><PillarSettingsPlaceholder pillarName="Inteligência de Mercado" /></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>settings_sales</code></td>
+              <td><code><PillarSettingsPlaceholder pillarName="Orquestração de Vendas" /></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>settings_performance</code></td>
+              <td><code><PillarSettingsPlaceholder pillarName="Performance Comercial" /></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>settings_predictability</code></td>
+              <td><code><PillarSettingsPlaceholder pillarName="Previsibilidade Comercial" /></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>settings_ai</code></td>
+              <td><code><PillarSettingsPlaceholder pillarName="Inteligência Artificial" /></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>settings_automation</code></td>
+              <td><code><PillarSettingsPlaceholder pillarName="Automação & Conectividade" /></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>settings_engagement</code></td>
+              <td><code><PillarSettingsPlaceholder pillarName="Engajamento Comercial" /></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>*</code></td>
+              <td><code><Navigate to="/app" replace /></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>/design-lab/command-language</code></td>
+              <td><code><ProtectedRoute>
+                            <DesignLabPage section="command-language" />
+                          </ProtectedRoute></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>/design-lab/components-v2</code></td>
+              <td><code><ProtectedRoute>
+                            <DesignLabPage section="components-v2" />
+                          </ProtectedRoute></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>/</code></td>
+              <td><code><WelcomeScreen /></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>/welcome</code></td>
+              <td><code><WelcomeScreen /></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>/landing-new</code></td>
+              <td><code><LandingInnovative /></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>/privacy</code></td>
+              <td><code><PrivacyPolicy /></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>/terms</code></td>
+              <td><code><TermsOfUse /></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>/select-brand</code></td>
+              <td><code><Navigate to="/welcome" replace /></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>/login</code></td>
+              <td><code><LoginScreen /></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>/reset-password</code></td>
+              <td><code><ResetPasswordScreen /></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>/book/:slug</code></td>
+              <td><code><PublicBookingPage /></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>/hub</code></td>
+              <td><code><Navigate to="/app" replace /></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>/social-selling</code></td>
+              <td><code><ProtectedRoute>
+                            <RequireModuleAccess moduleKey="social-selling">
+                              <SocialSellingHub />
+                            </RequireModuleAccess>
+                          </ProtectedRoute></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>/app/*</code></td>
+              <td><code><ProtectedRoute>
+                            <ErrorBoundary>
+                              <AppLayout />
+                            </ErrorBoundary>
+                          </ProtectedRoute></code></td>
+            </tr>
+          
+            <tr>
+              <td><code>*</code></td>
+              <td><code><Navigate to="/welcome" replace /></code></td>
+            </tr>
+          
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <h2>🎨 Design System — Cores</h2>
+      <div class="grid">
+        
+          <div class="card">
+            <div class="color-swatch" style="background: #f8fafc"></div>
+            <div>
+              <strong><code>--bg</code></strong><br>
+              <small>#f8fafc</small>
+            </div>
+          </div>
+        
+          <div class="card">
+            <div class="color-swatch" style="background: #ffffff"></div>
+            <div>
+              <strong><code>--surface</code></strong><br>
+              <small>#ffffff</small>
+            </div>
+          </div>
+        
+          <div class="card">
+            <div class="color-swatch" style="background: #f1f5f9"></div>
+            <div>
+              <strong><code>--surface-2</code></strong><br>
+              <small>#f1f5f9</small>
+            </div>
+          </div>
+        
+          <div class="card">
+            <div class="color-swatch" style="background: #e2e8f0"></div>
+            <div>
+              <strong><code>--surface-subtle</code></strong><br>
+              <small>#e2e8f0</small>
+            </div>
+          </div>
+        
+          <div class="card">
+            <div class="color-swatch" style="background: #ffffff"></div>
+            <div>
+              <strong><code>--surface-elevated</code></strong><br>
+              <small>#ffffff</small>
+            </div>
+          </div>
+        
+          <div class="card">
+            <div class="color-swatch" style="background: #f1f5f9"></div>
+            <div>
+              <strong><code>--surface-interactive</code></strong><br>
+              <small>#f1f5f9</small>
+            </div>
+          </div>
+        
+          <div class="card">
+            <div class="color-swatch" style="background: rgba(11, 19, 43, 0.52)"></div>
+            <div>
+              <strong><code>--overlay</code></strong><br>
+              <small>rgba(11, 19, 43, 0.52)</small>
+            </div>
+          </div>
+        
+          <div class="card">
+            <div class="color-swatch" style="background: #0b132b"></div>
+            <div>
+              <strong><code>--ink</code></strong><br>
+              <small>#0b132b</small>
+            </div>
+          </div>
+        
+          <div class="card">
+            <div class="color-swatch" style="background: #475569"></div>
+            <div>
+              <strong><code>--ink-2</code></strong><br>
+              <small>#475569</small>
+            </div>
+          </div>
+        
+          <div class="card">
+            <div class="color-swatch" style="background: rgba(11, 19, 43, 0.12)"></div>
+            <div>
+              <strong><code>--line</code></strong><br>
+              <small>rgba(11, 19, 43, 0.12)</small>
+            </div>
+          </div>
+        
+          <div class="card">
+            <div class="color-swatch" style="background: #0b132b"></div>
+            <div>
+              <strong><code>--midnight</code></strong><br>
+              <small>#0b132b</small>
+            </div>
+          </div>
+        
+          <div class="card">
+            <div class="color-swatch" style="background: #ef4444"></div>
+            <div>
+              <strong><code>--sunset</code></strong><br>
+              <small>#ef4444</small>
+            </div>
+          </div>
+        
+          <div class="card">
+            <div class="color-swatch" style="background: #8b5cf6"></div>
+            <div>
+              <strong><code>--red-violet</code></strong><br>
+              <small>#8b5cf6</small>
+            </div>
+          </div>
+        
+          <div class="card">
+            <div class="color-swatch" style="background: #d4af37"></div>
+            <div>
+              <strong><code>--gold</code></strong><br>
+              <small>#d4af37</small>
+            </div>
+          </div>
+        
+          <div class="card">
+            <div class="color-swatch" style="background: #ffffff"></div>
+            <div>
+              <strong><code>--white</code></strong><br>
+              <small>#ffffff</small>
+            </div>
+          </div>
+        
+          <div class="card">
+            <div class="color-swatch" style="background: #0ea5e9"></div>
+            <div>
+              <strong><code>--brand</code></strong><br>
+              <small>#0ea5e9</small>
+            </div>
+          </div>
+        
+          <div class="card">
+            <div class="color-swatch" style="background: #38bdf8"></div>
+            <div>
+              <strong><code>--brand-2</code></strong><br>
+              <small>#38bdf8</small>
+            </div>
+          </div>
+        
+          <div class="card">
+            <div class="color-swatch" style="background: #ffffff"></div>
+            <div>
+              <strong><code>--on-brand</code></strong><br>
+              <small>#ffffff</small>
+            </div>
+          </div>
+        
+          <div class="card">
+            <div class="color-swatch" style="background: #8b5cf6"></div>
+            <div>
+              <strong><code>--iris</code></strong><br>
+              <small>#8b5cf6</small>
+            </div>
+          </div>
+        
+          <div class="card">
+            <div class="color-swatch" style="background: #3b82f6"></div>
+            <div>
+              <strong><code>--orbit-blue</code></strong><br>
+              <small>#3b82f6</small>
+            </div>
+          </div>
+        
+          <div class="card">
+            <div class="color-swatch" style="background: #ef4444"></div>
+            <div>
+              <strong><code>--red</code></strong><br>
+              <small>#ef4444</small>
+            </div>
+          </div>
+        
+          <div class="card">
+            <div class="color-swatch" style="background: #8b5cf6"></div>
+            <div>
+              <strong><code>--pink</code></strong><br>
+              <small>#8b5cf6</small>
+            </div>
+          </div>
+        
+          <div class="card">
+            <div class="color-swatch" style="background: #f59e0b"></div>
+            <div>
+              <strong><code>--warn</code></strong><br>
+              <small>#f59e0b</small>
+            </div>
+          </div>
+        
+          <div class="card">
+            <div class="color-swatch" style="background: #22c55e"></div>
+            <div>
+              <strong><code>--ok</code></strong><br>
+              <small>#22c55e</small>
+            </div>
+          </div>
+        
+          <div class="card">
+            <div class="color-swatch" style="background: linear-gradient(135deg, #00e5ff 0%, #3b82f6 55%, #8b5cf6 100%)"></div>
+            <div>
+              <strong><code>--grad-brand</code></strong><br>
+              <small>linear-gradient(135deg, #00e5ff 0%, #3b82f6 55%, #8b5cf6 100%)</small>
+            </div>
+          </div>
+        
+          <div class="card">
+            <div class="color-swatch" style="background: 0 0 22px rgba(0, 229, 255, 0.35)"></div>
+            <div>
+              <strong><code>--glow-brand</code></strong><br>
+              <small>0 0 22px rgba(0, 229, 255, 0.35)</small>
+            </div>
+          </div>
+        
+          <div class="card">
+            <div class="color-swatch" style="background: 0 0 22px rgba(139, 92, 246, 0.3)"></div>
+            <div>
+              <strong><code>--glow-iris</code></strong><br>
+              <small>0 0 22px rgba(139, 92, 246, 0.3)</small>
+            </div>
+          </div>
+        
+          <div class="card">
+            <div class="color-swatch" style="background: ... }` perderia
+     pra `--color-info: #3b82f6` gerado pelo bloco `@theme` (que vem depois no arquivo e empata em
+     especificidade com `.dark`, então venceria por ordem de declaração). No claro é o hex cru
+     (--info-active já escurece pra badge "soft", ver comentário abaixo)"></div>
+            <div>
+              <strong><code>--color-info</code></strong><br>
+              <small>... }` perderia
+     pra `--color-info: #3b82f6` gerado pelo bloco `@theme` (que vem depois no arquivo e empata em
+     especificidade com `.dark`, então venceria por ordem de declaração). No claro é o hex cru
+     (--info-active já escurece pra badge "soft", ver comentário abaixo)</small>
+            </div>
+          </div>
+        
+          <div class="card">
+            <div class="color-swatch" style="background: #3b82f6"></div>
+            <div>
+              <strong><code>--info</code></strong><br>
+              <small>#3b82f6</small>
+            </div>
+          </div>
+        
+          <div class="card">
+            <div class="color-swatch" style="background: color-mix(in srgb, var(--brand) 72%, black)"></div>
+            <div>
+              <strong><code>--nav-c-gold</code></strong><br>
+              <small>color-mix(in srgb, var(--brand) 72%, black)</small>
+            </div>
+          </div>
+        
+          <div class="card">
+            <div class="color-swatch" style="background: color-mix(in srgb, var(--orbit-blue) 92%, black)"></div>
+            <div>
+              <strong><code>--nav-c-blue</code></strong><br>
+              <small>color-mix(in srgb, var(--orbit-blue) 92%, black)</small>
+            </div>
+          </div>
+        
+          <div class="card">
+            <div class="color-swatch" style="background: color-mix(in srgb, var(--red) 84%, black)"></div>
+            <div>
+              <strong><code>--nav-c-red</code></strong><br>
+              <small>color-mix(in srgb, var(--red) 84%, black)</small>
+            </div>
+          </div>
+        
+          <div class="card">
+            <div class="color-swatch" style="background: color-mix(in srgb, var(--ok) 90%, black)"></div>
+            <div>
+              <strong><code>--nav-c-green</code></strong><br>
+              <small>color-mix(in srgb, var(--ok) 90%, black)</small>
+            </div>
+          </div>
+        
+          <div class="card">
+            <div class="color-swatch" style="background: color-mix(in srgb, var(--iris) 45%, var(--orbit-blue))"></div>
+            <div>
+              <strong><code>--nav-c-violet</code></strong><br>
+              <small>color-mix(in srgb, var(--iris) 45%, var(--orbit-blue))</small>
+            </div>
+          </div>
+        
+          <div class="card">
+            <div class="color-swatch" style="background: color-mix(in srgb, var(--ok) 55%, var(--orbit-blue))"></div>
+            <div>
+              <strong><code>--nav-c-teal</code></strong><br>
+              <small>color-mix(in srgb, var(--ok) 55%, var(--orbit-blue))</small>
+            </div>
+          </div>
+        
+          <div class="card">
+            <div class="color-swatch" style="background: rgba(212, 175, 55, 0.12)"></div>
+            <div>
+              <strong><code>--soft</code></strong><br>
+              <small>rgba(212, 175, 55, 0.12)</small>
+            </div>
+          </div>
+        
+          <div class="card">
+            <div class="color-swatch" style="background: #c2255c"></div>
+            <div>
+              <strong><code>--pulse</code></strong><br>
+              <small>#c2255c</small>
+            </div>
+          </div>
+        
+          <div class="card">
+            <div class="color-swatch" style="background: 0 0 15px -3px
+    color-mix(in srgb, var(--accent-violet) 20%, transparent)"></div>
+            <div>
+              <strong><code>--shadow-glow-accent-violet-value</code></strong><br>
+              <small>0 0 15px -3px
+    color-mix(in srgb, var(--accent-violet) 20%, transparent)</small>
+            </div>
+          </div>
+        
+          <div class="card">
+            <div class="color-swatch" style="background: 0 0 15px -3px
+    color-mix(in srgb, var(--accent-cyan) 20%, transparent)"></div>
+            <div>
+              <strong><code>--shadow-glow-accent-cyan-value</code></strong><br>
+              <small>0 0 15px -3px
+    color-mix(in srgb, var(--accent-cyan) 20%, transparent)</small>
+            </div>
+          </div>
+        
+          <div class="card">
+            <div class="color-swatch" style="background: 0 0 15px -3px color-mix(in srgb, var(--pulse) 20%, transparent)"></div>
+            <div>
+              <strong><code>--shadow-glow-pulse-value</code></strong><br>
+              <small>0 0 15px -3px color-mix(in srgb, var(--pulse) 20%, transparent)</small>
+            </div>
+          </div>
+        
+          <div class="card">
+            <div class="color-swatch" style="background: color-mix(in srgb, #ef4444 90%, black)"></div>
+            <div>
+              <strong><code>--critical</code></strong><br>
+              <small>color-mix(in srgb, #ef4444 90%, black)</small>
+            </div>
+          </div>
+        
+          <div class="card">
+            <div class="color-swatch" style="background: color-mix(in srgb, var(--critical) 55%, black)"></div>
+            <div>
+              <strong><code>--critical-active</code></strong><br>
+              <small>color-mix(in srgb, var(--critical) 55%, black)</small>
+            </div>
+          </div>
+        
+          <div class="card">
+            <div class="color-swatch" style="background: color-mix(in srgb, var(--color-ok) 70%, black)"></div>
+            <div>
+              <strong><code>--ok-active</code></strong><br>
+              <small>color-mix(in srgb, var(--color-ok) 70%, black)</small>
+            </div>
+          </div>
+        
+          <div class="card">
+            <div class="color-swatch" style="background: color-mix(in srgb, var(--warn) 55%, black)"></div>
+            <div>
+              <strong><code>--warn-active</code></strong><br>
+              <small>color-mix(in srgb, var(--warn) 55%, black)</small>
+            </div>
+          </div>
+        
+          <div class="card">
+            <div class="color-swatch" style="background: color-mix(in srgb, var(--color-info) 65%, black)"></div>
+            <div>
+              <strong><code>--info-active</code></strong><br>
+              <small>color-mix(in srgb, var(--color-info) 65%, black)</small>
+            </div>
+          </div>
+        
+          <div class="card">
+            <div class="color-swatch" style="background: color-mix(in srgb, var(--color-success) 55%, black)"></div>
+            <div>
+              <strong><code>--success-active</code></strong><br>
+              <small>color-mix(in srgb, var(--color-success) 55%, black)</small>
+            </div>
+          </div>
+        
+          <div class="card">
+            <div class="color-swatch" style="background: color-mix(in srgb, var(--color-warning) 55%, black)"></div>
+            <div>
+              <strong><code>--warning-active</code></strong><br>
+              <small>color-mix(in srgb, var(--color-warning) 55%, black)</small>
+            </div>
+          </div>
+        
+          <div class="card">
+            <div class="color-swatch" style="background: color-mix(in srgb, var(--color-danger) 65%, black)"></div>
+            <div>
+              <strong><code>--danger-active</code></strong><br>
+              <small>color-mix(in srgb, var(--color-danger) 65%, black)</small>
+            </div>
+          </div>
+        
+          <div class="card">
+            <div class="color-swatch" style="background: 0 1px 2px rgba(0, 0, 0, 0.04), 0 10px 28px -16px rgba(0, 0, 0, 0.22)"></div>
+            <div>
+              <strong><code>--shadow-card-value</code></strong><br>
+              <small>0 1px 2px rgba(0, 0, 0, 0.04), 0 10px 28px -16px rgba(0, 0, 0, 0.22)</small>
+            </div>
+          </div>
+        
+          <div class="card">
+            <div class="color-swatch" style="background: 0 1px 3px rgba(0, 0, 0, 0.06), 0 18px 40px -18px rgba(0, 0, 0, 0.28)"></div>
+            <div>
+              <strong><code>--shadow-card-hover-value</code></strong><br>
+              <small>0 1px 3px rgba(0, 0, 0, 0.06), 0 18px 40px -18px rgba(0, 0, 0, 0.28)</small>
+            </div>
+          </div>
+        
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>🧭 Navegação — Tabs</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Key</th>
+            <th>Label</th>
+            <th>Ícone</th>
+            <th>Accent</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+            <tr>
+              <td><code>workspace</code></td>
+              <td>Meu Espaço</td>
+              <td><code>Briefcase</code></td>
+              <td><span class="badge">blue</span></td>
+            </tr>
+          
+            <tr>
+              <td><code>crm</code></td>
+              <td>Pipeline CRM</td>
+              <td><code>HubIcon as any</code></td>
+              <td><span class="badge">blue</span></td>
+            </tr>
+          
+            <tr>
+              <td><code>crm360</code></td>
+              <td>Gestão de Negócios</td>
+              <td><code>Gauge</code></td>
+              <td><span class="badge">violet</span></td>
+            </tr>
+          
+            <tr>
+              <td><code>propostas</code></td>
+              <td>Propostas</td>
+              <td><code>FileSignature</code></td>
+              <td><span class="badge">gold</span></td>
+            </tr>
+          
+            <tr>
+              <td><code>companies</code></td>
+              <td>Empresas</td>
+              <td><code>Building2</code></td>
+              <td><span class="badge">green</span></td>
+            </tr>
+          
+            <tr>
+              <td><code>contacts</code></td>
+              <td>Decisores</td>
+              <td><code>Users</code></td>
+              <td><span class="badge">iris</span></td>
+            </tr>
+          
+            <tr>
+              <td><code>settings_hub</code></td>
+              <td>Ajustes do Hub</td>
+              <td><code>SettingsIcon</code></td>
+              <td><span class="badge">slate</span></td>
+            </tr>
+          
+            <tr>
+              <td><code>prospect</code></td>
+              <td>Prospecção</td>
+              <td><code>IntelligenceIcon as any</code></td>
+              <td><span class="badge">teal</span></td>
+            </tr>
+          
+            <tr>
+              <td><code>settings_market</code></td>
+              <td>Ajustes de Mercado</td>
+              <td><code>SettingsIcon</code></td>
+              <td><span class="badge">slate</span></td>
+            </tr>
+          
+            <tr>
+              <td><code>playbooks</code></td>
+              <td>Playbooks Comerciais</td>
+              <td><code>BookOpen</code></td>
+              <td><span class="badge">blue</span></td>
+            </tr>
+          
+            <tr>
+              <td><code>cadence</code></td>
+              <td>Cadências</td>
+              <td><code>Repeat</code></td>
+              <td><span class="badge">green</span></td>
+            </tr>
+          
+            <tr>
+              <td><code>jornadas</code></td>
+              <td>Jornadas Comerciais</td>
+              <td><code>GitBranch</code></td>
+              <td><span class="badge">violet</span></td>
+            </tr>
+          
+            <tr>
+              <td><code>processos</code></td>
+              <td>Processos de Vendas</td>
+              <td><code>Network</code></td>
+              <td><span class="badge">teal</span></td>
+            </tr>
+          
+            <tr>
+              <td><code>roteiros</code></td>
+              <td>Roteiros de Abordagem</td>
+              <td><code>MessageSquareText</code></td>
+              <td><span class="badge">gold</span></td>
+            </tr>
+          
+            <tr>
+              <td><code>activities</code></td>
+              <td>Tarefas & Atividades</td>
+              <td><code>Activity</code></td>
+              <td><span class="badge">iris</span></td>
+            </tr>
+          
+            <tr>
+              <td><code>calendar</code></td>
+              <td>Calendário</td>
+              <td><code>CalendarDays</code></td>
+              <td><span class="badge">blue</span></td>
+            </tr>
+          
+            <tr>
+              <td><code>qualification_matrix</code></td>
+              <td>Matriz de Qualificação</td>
+              <td><code>ClipboardCheck</code></td>
+              <td><span class="badge">teal</span></td>
+            </tr>
+          
+            <tr>
+              <td><code>objections_matrix</code></td>
+              <td>Matriz de Objeções</td>
+              <td><code>Shield</code></td>
+              <td><span class="badge">violet</span></td>
+            </tr>
+          
+            <tr>
+              <td><code>roleplay</code></td>
+              <td>Roleplay</td>
+              <td><code>PhoneCall</code></td>
+              <td><span class="badge">red</span></td>
+            </tr>
+          
+            <tr>
+              <td><code>topic_training</code></td>
+              <td>Academy</td>
+              <td><code>BookOpen</code></td>
+              <td><span class="badge">gold</span></td>
+            </tr>
+          
+            <tr>
+              <td><code>chatbook</code></td>
+              <td>Chatbook</td>
+              <td><code>MessageSquare</code></td>
+              <td><span class="badge">blue</span></td>
+            </tr>
+          
+            <tr>
+              <td><code>editor</code></td>
+              <td>Editor de Documentos</td>
+              <td><code>FileText</code></td>
+              <td><span class="badge">slate</span></td>
+            </tr>
+          
+            <tr>
+              <td><code>settings_sales</code></td>
+              <td>Ajustes de Orquestração</td>
+              <td><code>SettingsIcon</code></td>
+              <td><span class="badge">slate</span></td>
+            </tr>
+          
+            <tr>
+              <td><code>dashboard</code></td>
+              <td>Command Center</td>
+              <td><code>PerformanceIcon as any</code></td>
+              <td><span class="badge">gold</span></td>
+            </tr>
+          
+            <tr>
+              <td><code>analytics</code></td>
+              <td>Analytics</td>
+              <td><code>BarChart3</code></td>
+              <td><span class="badge">blue</span></td>
+            </tr>
+          
+            <tr>
+              <td><code>winloss</code></td>
+              <td>Win/Loss</td>
+              <td><code>Target</code></td>
+              <td><span class="badge">red</span></td>
+            </tr>
+          
+            <tr>
+              <td><code>reports</code></td>
+              <td>Relatórios Avançados</td>
+              <td><code>FileBarChart</code></td>
+              <td><span class="badge">slate</span></td>
+            </tr>
+          
+            <tr>
+              <td><code>settings_performance</code></td>
+              <td>Ajustes de Performance</td>
+              <td><code>SettingsIcon</code></td>
+              <td><span class="badge">slate</span></td>
+            </tr>
+          
+            <tr>
+              <td><code>forecast</code></td>
+              <td>Forecast</td>
+              <td><code>LineChart</code></td>
+              <td><span class="badge">gold</span></td>
+            </tr>
+          
+            <tr>
+              <td><code>metas</code></td>
+              <td>Metas e Projeções</td>
+              <td><code>Target</code></td>
+              <td><span class="badge">blue</span></td>
+            </tr>
+          
+            <tr>
+              <td><code>pipeline_ponderado</code></td>
+              <td>Pipeline Ponderado</td>
+              <td><code>Layers</code></td>
+              <td><span class="badge">teal</span></td>
+            </tr>
+          
+            <tr>
+              <td><code>copiloto_ia</code></td>
+              <td>Copiloto IA</td>
+              <td><code>Mic</code></td>
+              <td><span class="badge">iris</span></td>
+            </tr>
+          
+            <tr>
+              <td><code>intelligence</code></td>
+              <td>Assistente de Vendas</td>
+              <td><code>Zap</code></td>
+              <td><span class="badge">gold</span></td>
+            </tr>
+          
+            <tr>
+              <td><code>knowledge</code></td>
+              <td>Base de Conhecimento</td>
+              <td><code>Database</code></td>
+              <td><span class="badge">green</span></td>
+            </tr>
+          
+            <tr>
+              <td><code>settings_ai</code></td>
+              <td>Ajustes de IA</td>
+              <td><code>SettingsIcon</code></td>
+              <td><span class="badge">slate</span></td>
+            </tr>
+          
+            <tr>
+              <td><code>automations</code></td>
+              <td>Automações</td>
+              <td><code>AutomationIcon as any</code></td>
+              <td><span class="badge">gold</span></td>
+            </tr>
+          
+            <tr>
+              <td><code>integrations</code></td>
+              <td>Integrações</td>
+              <td><code>Globe</code></td>
+              <td><span class="badge">blue</span></td>
+            </tr>
+          
+            <tr>
+              <td><code>bitrix</code></td>
+              <td>Guia Prático Bitrix24</td>
+              <td><code>Layers</code></td>
+              <td><span class="badge">teal</span></td>
+            </tr>
+          
+            <tr>
+              <td><code>settings_automation</code></td>
+              <td>Ajustes de Automação</td>
+              <td><code>SettingsIcon</code></td>
+              <td><span class="badge">slate</span></td>
+            </tr>
+          
+            <tr>
+              <td><code>outbound</code></td>
+              <td>Outbound AI</td>
+              <td><code>PhoneCall</code></td>
+              <td><span class="badge">red</span></td>
+            </tr>
+          
+            <tr>
+              <td><code>dialer</code></td>
+              <td>Discador 3CX</td>
+              <td><code>PhoneCall</code></td>
+              <td><span class="badge">teal</span></td>
+            </tr>
+          
+            <tr>
+              <td><code>settings_engagement</code></td>
+              <td>Ajustes de Engajamento</td>
+              <td><code>SettingsIcon</code></td>
+              <td><span class="badge">slate</span></td>
+            </tr>
+          
+            <tr>
+              <td><code>notifications</code></td>
+              <td>Notificações</td>
+              <td><code>Bell</code></td>
+              <td><span class="badge">gold</span></td>
+            </tr>
+          
+            <tr>
+              <td><code>usage</code></td>
+              <td>Consumo de IA</td>
+              <td><code>Wallet</code></td>
+              <td><span class="badge">violet</span></td>
+            </tr>
+          
+            <tr>
+              <td><code>team</code></td>
+              <td>Equipe</td>
+              <td><code>UserCog</code></td>
+              <td><span class="badge">blue</span></td>
+            </tr>
+          
+            <tr>
+              <td><code>settings</code></td>
+              <td>Ajustes Globais</td>
+              <td><code>SettingsIcon</code></td>
+              <td><span class="badge">slate</span></td>
+            </tr>
+          
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <h2>🎯 Ícones Customizados</h2>
+      <div class="grid">
+        
+          <div class="card">
+            <code>AnimatedIcon.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>GithubIcon.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>Isometric3DIcons.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>LinkedinIcon.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>YoutubeIcon.tsx</code>
+          </div>
+        
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>🧩 Componentes UI</h2>
+      <div class="grid">
+        
+          <div class="card">
+            <code>ActionPlanSteps.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>AIContextPopover.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>AIEmailGenerator.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>AiReasoningPipeline.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>AiReasoningVisualizer.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>Badge.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>BlockedState.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>BorderBeam.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>BottomSheet.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>BrandOrb.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>BugReportButton.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>Button.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>CalendarHeatmap.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>Card.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>Carousel.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>ChannelDonut.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>Checklist.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>ClickSpark.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>ClockCalendarWidget.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>CommandCenterHeader.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>CommandPalette.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>CompareBar.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>CompareTable.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>ConfirmDialog.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>ContextualTip.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>CopilotTrigger.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>CopyButton.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>CyberInput.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>DataFlowLines.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>DealsGrid.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>Dialog.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>Drawer.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>EmptyState.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>FindingsList.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>FunnelBars.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>GamificationWidget.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>Gamified3DOrb.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>HolographicCard.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>Input.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>KpiCard.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>Label.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>LiveStatsWidget.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>Magnetic.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>ModuleAgentWidget.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>ModulePlaceholder.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>PageHeader.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>Pagination.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>ParticleSystem.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>Select.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>sign-in-page.demo.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>sign-in-page.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>Skeleton.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>StyleShowcase.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>Table.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>TabNavCards.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>TechToolLogo.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>Textarea.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>ThemeSwitcher.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>TiltCard.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>Timeline.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>Toaster.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>Toggle.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>ToolTechPopover.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>VirtualTable.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>VisualState.tsx</code>
+          </div>
+        
+          <div class="card">
+            <code>VoiceCommandWidget.tsx</code>
+          </div>
+        
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>📚 Arquitetura</h2>
+      <div class="card">
+        <h3>Estrutura de Pastas</h3>
+        <ul>
+          <li><code>src/features/</code> — Módulos de negócio (CRM, Inteligência, etc)</li>
+          <li><code>src/components/ui/</code> — Componentes UI reutilizáveis</li>
+          <li><code>src/components/layout/</code> — Layout global (Sidebar, Header)</li>
+          <li><code>src/lib/</code> — Utilitários compartilhados</li>
+          <li><code>src/styles/</code> — Estilos globais e tokens</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>⚡ Tecnologias</h2>
+      <div class="card">
+        <ul>
+          <li><strong>Framework:</strong> React 19.3.0</li>
+          <li><strong>Build:</strong> Vite 6.2.3</li>
+          <li><strong>Estilização:</strong> Tailwind CSS 4.1.14</li>
+          <li><strong>Router:</strong> React Router DOM 7.18.1</li>
+          <li><strong>Estado:</strong> TanStack React Query 5.103.1</li>
+          <li><strong>Forms:</strong> React Hook Form 7.88.0</li>
+          <li><strong>Animações:</strong> Framer Motion 13.1.1</li>
+          <li><strong>Ícones:</strong> Lucide React 1.38.0</li>
+          <li><strong>Gráficos:</strong> Recharts 3.10.1</li>
+          <li><strong>Database:</strong> Prisma 7.10.0 + PostgreSQL</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>🔄 Animações</h2>
+      <div class="card">
+        <h3>Tokens de Duração</h3>
+        <ul>
+          <li><code>--duration-instant:</code> 100ms</li>
+          <li><code>--duration-fast:</code> 150ms</li>
+          <li><code>--duration-normal:</code> 250ms</li>
+          <li><code>--duration-slow:</code> 350ms</li>
+          <li><code>--duration-slowest:</code> 500ms</li>
+        </ul>
+        <h3>Easings</h3>
+        <ul>
+          <li><code>--ease-standard:</code> cubic-bezier(0.4, 0, 0.2, 1)</li>
+          <li><code>--ease-enter:</code> cubic-bezier(0.22, 1, 0.36, 1)</li>
+          <li><code>--ease-exit:</code> cubic-bezier(0.4, 0, 1, 1)</li>
+          <li><code>--ease-emphasized:</code> cubic-bezier(0.16, 1, 0.3, 1)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>📝 Metadados</h2>
+      <div class="card">
+        <p><strong>Data:</strong> 2026-10-05T15:27:00.277Z</p>
+        <p><strong>Projeto:</strong> BirthHub 360</p>
+        <p><strong>Versão:</strong> Extraído do código fonte</p>
+        <p><strong>Status:</strong> Documentação completa baseada em análise estática do código</p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
