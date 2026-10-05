@@ -136,11 +136,12 @@ export function HealthScoreCard({ filter }: { filter: CommercialFilter }) {
         </div>
       </Card>
     );
-  if (!data) return null;
+  if (!data || !Array.isArray(data.pillars)) return null;
 
   const overall = overallClassification(data.overallScore);
   const overallStyle = overall ? CLASSIFICATION_STYLE[overall] : null;
-  const availableCount = data.pillars.filter((p) => p.score != null).length;
+  const pillars = Array.isArray(data.pillars) ? data.pillars : [];
+  const availableCount = pillars.filter((p) => p.score != null).length;
 
   return (
     <Card padding="sm" accentBar spotlight>
@@ -187,7 +188,7 @@ export function HealthScoreCard({ filter }: { filter: CommercialFilter }) {
         className="mt-4 grid grid-cols-1 gap-2 md:grid-cols-2 xl:grid-cols-3"
         aria-label="Pilares do Health Score"
       >
-        {data.pillars.map((pillar) => (
+        {pillars.map((pillar) => (
           <PillarRow key={pillar.pillar} pillar={pillar} />
         ))}
       </ul>

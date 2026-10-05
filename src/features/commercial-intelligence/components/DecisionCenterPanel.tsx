@@ -41,7 +41,7 @@ export function DecisionCenterPanel({
     commercialIntelligenceApi
       .deals(filter, { sort: 'riskImpact', limit: MAX_ITEMS })
       .then((result) => {
-        if (!cancelled) setRows(result.rows);
+        if (!cancelled) setRows(Array.isArray(result?.rows) ? result.rows : []);
       })
       .catch((err) => {
         if (!cancelled) setError((err as Error).message);
@@ -56,6 +56,8 @@ export function DecisionCenterPanel({
 
   const riskValue = (row: DealDrillDownRow) =>
     row.amount * (1 - (row.weightedProbability ?? row.probability ?? 0) / 100);
+
+  const safeRows = Array.isArray(rows) ? rows : [];
 
   return (
     <Card padding="sm">
@@ -80,20 +82,20 @@ export function DecisionCenterPanel({
         </div>
       )}
 
-      {!loading && !error && rows.length === 0 && (
+      {!loading && !error && safeRows.length === 0 && (
         <p className="text-xs text-ink-2 py-2">
           Nenhum negócio aberto com valor em risco relevante no momento.
         </p>
       )}
 
-      {!loading && !error && rows.length > 0 && (
+      {!loading && !error && safeRows.length > 0 && (
         <motion.ul
           variants={reduceMotion ? undefined : staggerContainer(0.05)}
           initial={reduceMotion ? undefined : 'hidden'}
           animate={reduceMotion ? undefined : 'show'}
           className="space-y-2"
         >
-          {rows.map((row) => (
+          {safeRows.map((row) => (
             <motion.li
               key={row.id}
               variants={reduceMotion ? undefined : staggerItem}
