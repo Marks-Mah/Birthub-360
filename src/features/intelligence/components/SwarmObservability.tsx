@@ -10,7 +10,7 @@ export function SwarmObservability() {
       try {
         const [agentsRes, logsRes] = (await Promise.all([
           api.get('/api/intelligence/observability/agents'),
-          api.get('/api/intelligence/observability/logs'),
+          api.get('/api/intelligence/observability/logs')
         ])) as any[];
         setAgents(agentsRes.data?.data || []);
         setLogs(logsRes.data?.data || []);
@@ -28,30 +28,18 @@ export function SwarmObservability() {
       <div className="grid grid-cols-2 gap-4">
         <div className="border p-4 rounded">
           <h3 className="font-semibold mb-2">Active Agents</h3>
-          {agents.length === 0 ? (
-            <p className="text-sm opacity-60">No active agents</p>
-          ) : (
+          {agents.length === 0 ? <p className="text-sm opacity-60">No active agents</p> : (
             <ul className="text-sm space-y-1">
-              {agents.map((a) => (
-                <li key={a.id}>
-                  {a.name} - {a.status}
-                </li>
-              ))}
+              {agents.map(a => <li key={a.id}>{a.name} - {a.status}</li>)}
             </ul>
           )}
         </div>
 
         <div className="border p-4 rounded">
           <h3 className="font-semibold mb-2">Recent Logs</h3>
-          {logs.length === 0 ? (
-            <p className="text-sm opacity-60">No recent logs</p>
-          ) : (
+          {logs.length === 0 ? <p className="text-sm opacity-60">No recent logs</p> : (
             <ul className="text-sm space-y-1">
-              {logs.map((l) => (
-                <li key={l.id}>
-                  {l.timestamp} - {l.message}
-                </li>
-              ))}
+              {logs.map(l => <li key={l.id}>{l.timestamp} - {l.message}</li>)}
             </ul>
           )}
         </div>

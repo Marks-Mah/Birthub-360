@@ -62,7 +62,9 @@ export function redactSensitiveData(text: string): { text: string; redacted: boo
 }
 
 export class GuardrailsService {
-  constructor(private readonly repository: GuardrailRepository = prismaGuardrailRepository) {}
+  constructor(
+    private readonly repository: GuardrailRepository = prismaGuardrailRepository,
+  ) {}
 
   /**
    * Registra um evento de telemetria de guardrail (pii_redacted).
@@ -159,4 +161,8 @@ export function rehydratePii(text: string, applied: PiiToken[]): string {
   return result;
 }
 
-export { assertPiiExternalConsent, hasPiiExternalConsent, PiiConsentRequiredError };
+export {
+  assertPiiExternalConsent,
+  hasPiiExternalConsent,
+  PiiConsentRequiredError,
+};

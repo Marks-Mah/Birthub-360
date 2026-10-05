@@ -1,7 +1,7 @@
 import type React from 'react';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { BarChart2, TrendingUp, Target, Zap } from 'lucide-react';
+import { BarChart2, TrendingUp, Target, Users, Zap } from 'lucide-react';
 
 export function InteractiveAnalyticsSection(): React.ReactElement {
   const [activeRange, setActiveRange] = useState<'7d' | '30d' | '90d'>('30d');

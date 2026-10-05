@@ -121,9 +121,7 @@ export class PrismaRoleplayRepository implements RoleplayRepository {
     });
     if (!row) return null;
 
-    const messages = (Array.isArray(row.transcript)
-      ? row.transcript
-      : []) as unknown as RoleplayMessage[];
+    const messages = (Array.isArray(row.transcript) ? row.transcript : []) as unknown as RoleplayMessage[];
     const isCompleted = row.overallScore > 0 || Boolean(row.summary);
 
     return {
@@ -200,9 +198,7 @@ export class PrismaRoleplayRepository implements RoleplayRepository {
       userId: row.userId,
       personaId: row.personaId,
       status: row.overallScore > 0 || Boolean(row.summary) ? 'COMPLETED' : 'ACTIVE',
-      messages: (Array.isArray(row.transcript)
-        ? row.transcript
-        : []) as unknown as RoleplayMessage[],
+      messages: (Array.isArray(row.transcript) ? row.transcript : []) as unknown as RoleplayMessage[],
       createdAt: row.createdAt,
       updatedAt: row.createdAt,
     }));

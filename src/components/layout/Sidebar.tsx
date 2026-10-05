@@ -1,10 +1,10 @@
 import { AnimatePresence, useReducedMotion } from 'framer-motion';
-import { ChevronDown, LogOut, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
+import { LogOut, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { type CSSProperties, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext.js';
 import { hasRequiredRole, MESA_TRATAMENTO_ROLES } from '../../lib/auth/authorization.js';
-import { BirthHubLogo } from '../brand/BirthHubLogo.js';
+import { BrandEmblemBadge } from '../brand/BrandEmblemBadge.js';
 import { SoundFX } from '../../lib/soundEffects.js';
 import { NavLaunchTransition, type NavLaunch } from './NavLaunchTransition.js';
 import { NAV_ACCENT_VAR, TAB_META, type TabType } from './tabMeta.js';
@@ -28,16 +28,6 @@ interface NavGroupDefinition {
   items: TabType[];
 }
 
-function parsePillarHeader(title: string): { number: string; name: string } {
-  if (title.startsWith('PILAR ')) {
-    const match = title.match(/^PILAR\s+(\d+)\s*[-—]\s*(.+)$/i);
-    if (match) {
-      return { number: match[1], name: match[2].trim() };
-    }
-  }
-  return { number: '', name: title };
-}
-
 export function Sidebar({
   activeTab,
   mobileOpen = false,
@@ -52,29 +42,6 @@ export function Sidebar({
         window.localStorage.getItem(LEGACY_SIDEBAR_COLLAPSED_KEY)) === 'true'
     );
   });
-
-  const [collapsedPillars, setCollapsedPillars] = useState<Record<string, boolean>>(() => {
-    if (typeof window === 'undefined') return {};
-    try {
-      const raw = window.localStorage.getItem('@birthhub:collapsed-pillars');
-      return raw ? JSON.parse(raw) : {};
-    } catch {
-      return {};
-    }
-  });
-
-  const togglePillar = (pillarTitle: string) => {
-    SoundFX.play('focus');
-    setCollapsedPillars((prev) => {
-      const next = { ...prev, [pillarTitle]: !prev[pillarTitle] };
-      if (typeof window !== 'undefined') {
-        try {
-          window.localStorage.setItem('@birthhub:collapsed-pillars', JSON.stringify(next));
-        } catch {}
-      }
-      return next;
-    });
-  };
 
   const isCollapsed = externalCollapsed !== undefined ? externalCollapsed : internalCollapsed;
 
@@ -103,7 +70,7 @@ export function Sidebar({
   // SDR vê um menu enxuto centrado no Plano Diário e nas ferramentas de trabalho do dia
   // (prospecção, qualificação, cadência, treino), não os ~30 itens do menu completo. Aplica-se ao
   // papel como um todo (não a uma conta específica), então vale para qualquer futuro SDR contratado.
-  const _isRestrictedSdrProfile = currentUser?.role === 'SDR';
+  const isRestrictedSdrProfile = currentUser?.role === 'SDR';
 
   const reduceMotion = useReducedMotion();
   const [launch, setLaunch] = useState<(NavLaunch & { tab: TabType }) | null>(null);
@@ -154,7 +121,7 @@ export function Sidebar({
     });
   };
 
-  const _administrationItems: TabType[] = [
+  const administrationItems: TabType[] = [
     'notifications',
     'bitrix',
     ...(canManageOperations ? (['integrations', 'automations'] as TabType[]) : []),
@@ -193,17 +160,13 @@ export function Sidebar({
     {
       title: 'PILAR 03 — ORQUESTRAÇÃO DE VENDAS',
       items: [
-        'playbooks',
-        'cadence',
-        'jornadas',
-        'processos',
-        'roteiros',
         'daily-plan',
         'activities',
         'calendar',
+        'cadence',
+        'roleplay',
         'qualification_matrix',
         'objections_matrix',
-        'roleplay',
         'topic_training',
         'chatbook',
         'editor',
@@ -276,7 +239,8 @@ export function Sidebar({
     if (!meta) return null;
     const Icon = meta.icon;
     const isActive = activeTab === tab;
-    // NAV_ACCENT_VAR is still threaded through for NavLaunchTransition
+    // NAV_ACCENT_VAR is still threaded through for NavLaunchTransition; icon colors are
+    // simplified to brand-gold (active) / white-45% (inactive) per the new design spec.
     const accentStyle = { '--nav-accent': NAV_ACCENT_VAR[meta.accent] } as CSSProperties;
 
     return (
@@ -288,45 +252,51 @@ export function Sidebar({
         aria-label={meta.label}
         aria-current={isActive ? 'page' : undefined}
         style={accentStyle}
-        className={`group relative flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-left text-[13px] font-medium transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-1 focus-visible:ring-offset-surface cursor-pointer ${
+        className={`group relative flex w-full items-center gap-[10px] rounded-lg px-3 py-2.5 text-left text-[13px] transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-1 focus-visible:ring-offset-midnight cursor-pointer ${
           isActive
-            ? 'bg-brand/12 font-semibold text-brand shadow-xs'
-            : 'text-slate-400 hover:bg-white/[0.05] hover:text-slate-100'
+            ? 'bg-brand/10 font-semibold text-brand'
+            : 'font-medium text-white/45 hover:bg-white/6 hover:text-white/70'
         } ${isCollapsed ? 'lg:px-0 lg:justify-center' : ''}`}
       >
-        {/* Gold indicator bar for active state */}
+        {/* Gold left-accent bar for active state — absolute, flush left edge of the item */}
         {isActive && (
           <span
             aria-hidden="true"
-            className="absolute inset-y-1.5 left-0 w-1 rounded-r-md bg-brand shadow-[0_0_8px_rgba(212,175,55,0.4)]"
+            className="absolute inset-y-1.5 left-0 w-0.5 rounded-r-sm bg-brand"
           />
         )}
-        {/* Icon — 16px, crisp */}
+        {/* Icon — 16px, simplified colors: gold when active, white/45 when inactive */}
         <span
           data-nav-icon
           aria-hidden="true"
-          className={`grid h-4 w-4 shrink-0 place-items-center transition-colors ${
-            isActive ? 'text-brand' : 'text-slate-400 group-hover:text-slate-200'
+          className={`grid h-4 w-4 shrink-0 place-items-center ${
+            isActive ? 'text-brand' : 'text-white/45 group-hover:text-white/70'
           }`}
         >
           <Icon size={16} strokeWidth={1.75} />
         </span>
-        {/* Label */}
-        <span className={`truncate font-sans ${isCollapsed ? 'lg:hidden' : ''}`}>{meta.label}</span>
+        {/* Label — hidden in collapsed mode on desktop */}
+        <span
+          className={`truncate font-[family-name:var(--font-brand-sans)] ${
+            isCollapsed ? 'lg:hidden' : ''
+          }`}
+        >
+          {meta.label}
+        </span>
       </button>
     );
   };
 
   return (
     <aside
-      className={`fixed inset-y-0 left-0 z-40 flex h-full flex-col bg-surface border-r border-line transition-[width,transform] duration-300 lg:static lg:translate-x-0 ${
-        isCollapsed ? 'lg:w-16' : 'lg:w-64'
+      className={`fixed inset-y-0 left-0 z-40 flex h-full flex-col bg-midnight border-r border-white/8 transition-[width,transform] duration-300 lg:static lg:translate-x-0 ${
+        isCollapsed ? 'lg:w-16' : 'lg:w-[220px]'
       } ${mobileOpen ? 'translate-x-0' : '-translate-x-full'}`}
       aria-label="Navegação principal - Intelligent Business Command Center"
     >
       {/* ── Logo / wordmark area ────────────────────────────────────────────── */}
       <div
-        className={`flex h-14 shrink-0 items-center border-b border-line px-4 ${
+        className={`flex h-14 shrink-0 items-center border-b border-white/8 px-4 ${
           isCollapsed ? 'lg:justify-center lg:px-0' : 'justify-between'
         }`}
       >
@@ -335,20 +305,20 @@ export function Sidebar({
           <button
             type="button"
             onClick={toggleCollapse}
-            className="flex items-center justify-center rounded-lg p-1.5 text-slate-400 transition-colors hover:text-slate-100 hover:bg-white/[0.05] cursor-pointer"
+            className="flex items-center justify-center rounded-md p-1 text-white/35 transition-colors hover:text-white/65"
             title="Expandir menu lateral"
           >
-            <BirthHubLogo variant="mark" className="h-8 w-8" title="Birth Hub 360°" />
+            <BrandEmblemBadge className="h-8 w-8" title="Birth Hub 360°" />
           </button>
         ) : (
           <>
             <div className="flex items-center gap-2.5 min-w-0">
-              <BirthHubLogo variant="mark" className="h-8 w-8 shrink-0" title="Birth Hub 360°" />
+              <BrandEmblemBadge className="h-8 w-8 shrink-0" title="Birth Hub 360°" />
               <div className="leading-tight min-w-0">
-                <h1 className="text-sm font-bold tracking-tight text-white truncate font-display">
+                <h1 className="text-[13px] font-semibold tracking-tight text-white truncate font-[family-name:var(--font-brand-sans)]">
                   Birth Hub 360°
                 </h1>
-                <span className="text-[10px] font-semibold tracking-wider uppercase text-brand/90 truncate font-sans">
+                <span className="text-[10px] font-normal tracking-wide text-white/40 truncate font-[family-name:var(--font-brand-sans)]">
                   Command Center
                 </span>
               </div>
@@ -357,7 +327,7 @@ export function Sidebar({
             <button
               type="button"
               onClick={toggleCollapse}
-              className="hidden shrink-0 rounded-lg p-1.5 text-slate-400 transition-colors hover:text-slate-100 hover:bg-white/[0.06] cursor-pointer lg:block"
+              className="hidden shrink-0 rounded-md p-1.5 text-white/35 transition-colors hover:text-white/65 lg:block"
               title="Recolher menu"
             >
               <PanelLeftClose size={16} strokeWidth={1.75} />
@@ -369,74 +339,38 @@ export function Sidebar({
       {/* ── Navigation ──────────────────────────────────────────────────────── */}
       <nav
         aria-label="Navegação principal"
-        className="custom-scrollbar flex-1 overflow-y-auto px-2 py-3 space-y-1"
+        className="custom-scrollbar flex-1 overflow-y-auto px-2 py-3 space-y-0"
       >
-        {navGroups.map((group, groupIndex) => {
-          const pillarInfo = parsePillarHeader(group.title);
-          const hasActiveItem = group.items.includes(activeTab);
-          const isPillarCollapsed = !!collapsedPillars[group.title] && !hasActiveItem;
-
-          return (
-            <section key={group.title} className="space-y-0.5" aria-label={group.title}>
-              {/* Group label / collapsible header — hidden when collapsed */}
-              {!isCollapsed && (
-                <div className={`px-1 pb-1 ${groupIndex > 0 ? 'mt-4' : 'mt-0.5'}`}>
-                  <button
-                    type="button"
-                    onClick={() => togglePillar(group.title)}
-                    className="group/header flex w-full items-center justify-between px-2 py-1 text-left rounded-md transition-colors hover:bg-white/[0.04] cursor-pointer"
-                    aria-expanded={!isPillarCollapsed}
-                    title={isPillarCollapsed ? 'Expandir pilar' : 'Recolher pilar'}
-                  >
-                    <div className="flex items-center gap-1.5 min-w-0">
-                      {pillarInfo.number ? (
-                        <span className="flex h-4 min-w-4 px-1 shrink-0 items-center justify-center rounded text-[10px] font-semibold bg-white/[0.08] text-brand/90 font-mono">
-                          {pillarInfo.number}
-                        </span>
-                      ) : null}
-                      <span className="text-[11px] font-semibold tracking-wider text-slate-400 uppercase truncate group-hover/header:text-slate-200 font-sans">
-                        {pillarInfo.name}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-1.5 shrink-0">
-                      {hasActiveItem && isPillarCollapsed && (
-                        <span
-                          className="h-1.5 w-1.5 rounded-full bg-brand"
-                          title="Item ativo neste pilar"
-                        />
-                      )}
-                      <ChevronDown
-                        size={13}
-                        className={`text-slate-500 transition-transform duration-200 group-hover/header:text-slate-300 ${
-                          isPillarCollapsed ? '-rotate-90' : 'rotate-0'
-                        }`}
-                      />
-                    </div>
-                  </button>
-                </div>
-              )}
-
-              {/* Divider in collapsed mode */}
-              {isCollapsed && groupIndex > 0 && <div className="my-2 mx-2 h-px bg-white/8" />}
-
-              {/* Items: show if sidebar is collapsed (rail mode) OR pillar is not collapsed */}
-              {(isCollapsed || !isPillarCollapsed) && (
-                <div className="space-y-0.5">{group.items.map(renderNavItem)}</div>
-              )}
-            </section>
-          );
-        })}
+        {navGroups.map((group, groupIndex) => (
+          <section key={group.title} className="space-y-0.5" aria-label={group.title}>
+            {/* Group label — hidden when collapsed */}
+            <div
+              className={`px-3 pb-1 ${
+                groupIndex > 0 ? 'mt-5' : 'mt-1'
+              } ${isCollapsed ? 'lg:hidden' : ''}`}
+            >
+              <p className="text-[10px] font-normal uppercase tracking-[0.08em] text-white/30 font-[family-name:var(--font-brand-sans)]">
+                {group.title}
+              </p>
+            </div>
+            {/* Divider visible only in collapsed mode (replaces the group label) */}
+            {groupIndex > 0 && (
+              <div className={`my-2 mx-2 h-px bg-white/8 ${isCollapsed ? '' : 'lg:hidden'}`} />
+            )}
+            {group.items.map(renderNavItem)}
+          </section>
+        ))}
       </nav>
 
       {/* ── Bottom section: collapse toggle (expanded) + user area + logout ── */}
-      <div className="shrink-0 border-t border-line px-3 py-3 space-y-2 bg-surface/50">
+      <div className="shrink-0 border-t border-white/8 px-2 py-3 space-y-1">
         {/* Expand toggle — only shown when collapsed, centered */}
         {isCollapsed && (
-          <div className="hidden justify-center lg:flex mb-1">
+          <div className="hidden justify-center lg:flex mb-2">
             <button
               type="button"
               onClick={toggleCollapse}
-              className="rounded-lg p-1.5 text-slate-400 transition-colors hover:text-slate-100 hover:bg-white/[0.06] cursor-pointer"
+              className="rounded-md p-1.5 text-white/35 transition-colors hover:text-white/65"
               title="Expandir menu lateral"
             >
               <PanelLeftOpen size={16} strokeWidth={1.75} />
@@ -447,8 +381,8 @@ export function Sidebar({
         {/* User identity pill */}
         {currentUser && (
           <div
-            className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg bg-white/[0.03] border border-white/[0.06] ${
-              isCollapsed ? 'lg:justify-center lg:px-0 lg:bg-transparent lg:border-transparent' : ''
+            className={`flex items-center gap-2.5 px-2 py-2 ${
+              isCollapsed ? 'lg:justify-center lg:px-0' : ''
             }`}
             title={
               isCollapsed
@@ -457,15 +391,15 @@ export function Sidebar({
             }
           >
             {/* Avatar — initials, 28px, brand gold tint */}
-            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand/20 text-[11px] font-bold text-brand ring-1 ring-brand/30">
+            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand/30 text-[11px] font-semibold text-brand font-[family-name:var(--font-brand-sans)] ring-1 ring-brand/20">
               {currentUser.name?.charAt(0).toUpperCase() || 'U'}
             </div>
             {/* Name + role — hidden when collapsed */}
             <div className={`min-w-0 flex-1 ${isCollapsed ? 'lg:hidden' : ''}`}>
-              <p className="truncate text-xs font-semibold leading-tight text-slate-200 font-sans">
+              <p className="truncate text-[12px] font-semibold leading-tight text-white/80 font-[family-name:var(--font-brand-sans)]">
                 {currentUser.name}
               </p>
-              <p className="truncate text-[10px] font-medium leading-tight text-slate-400 font-sans">
+              <p className="truncate text-[10px] font-normal leading-tight text-white/40 font-[family-name:var(--font-brand-sans)]">
                 {currentUser.roleTitle || currentUser.role}
               </p>
             </div>
@@ -476,18 +410,22 @@ export function Sidebar({
         <button
           type="button"
           onClick={logout}
-          className={`group flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-left text-xs font-medium text-red-400/80 transition-colors duration-150 hover:bg-red-500/10 hover:text-red-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-1 focus-visible:ring-offset-surface ${
+          className={`group flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2 py-2 text-left text-[13px] font-medium text-red-400/60 transition-colors duration-150 hover:text-red-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-1 focus-visible:ring-offset-midnight ${
             isCollapsed ? 'lg:justify-center lg:px-0' : ''
           }`}
           title="Encerrar sessão e sair da conta"
           aria-label="Encerrar sessão e sair da conta"
         >
           <LogOut
-            size={15}
+            size={16}
             strokeWidth={1.75}
             className="shrink-0 transition-transform group-hover:-translate-x-0.5"
           />
-          <span className={`font-sans ${isCollapsed ? 'lg:hidden' : ''}`}>Sair da Conta</span>
+          <span
+            className={`font-[family-name:var(--font-brand-sans)] ${isCollapsed ? 'lg:hidden' : ''}`}
+          >
+            Sair da Conta
+          </span>
         </button>
       </div>
 

@@ -182,7 +182,7 @@ export function CandidateCard({
           aria-hidden="true"
           className="pointer-events-none absolute -inset-px rounded-[inherit] transition-opacity duration-300 z-10"
           style={{
-            background: `radial-gradient(240px circle at ${mousePos.x}px ${mousePos.y}px, rgba(0,229,255,0.1), transparent 70%)`,
+            background: `radial-gradient(240px circle at ${mousePos.x}px ${mousePos.y}px, rgba(212,175,55,0.1), transparent 70%)`,
           }}
         />
       )}
@@ -585,12 +585,12 @@ export function CandidateCard({
                   particleCount: 50,
                   spread: 60,
                   origin: { y: 0.7 },
-                  colors: ['#00E5FF', '#10B981', '#3B82F6'],
+                  colors: ['#D4AF37', '#10B981', '#3B82F6'],
                 });
                 onPromote();
               }}
               disabled={isPromoting || isRejecting}
-              className="relative overflow-hidden bg-gradient-to-r from-brand via-brand-2 to-brand text-on-brand px-5 py-2.5 rounded-xl font-bold text-xs hover:brightness-110 active:scale-95 transition-all flex items-center gap-2 shadow-[0_4px_16px_rgba(0,229,255,0.25)] hover:shadow-glow-brand hover:scale-[1.02] w-full sm:w-auto justify-center disabled:opacity-60 cursor-pointer"
+              className="relative overflow-hidden bg-gradient-to-r from-brand via-brand-2 to-brand text-on-brand px-5 py-2.5 rounded-xl font-bold text-xs hover:brightness-110 active:scale-95 transition-all flex items-center gap-2 shadow-[0_4px_16px_rgba(212,175,55,0.35)] hover:shadow-glow-brand hover:scale-[1.02] w-full sm:w-auto justify-center disabled:opacity-60 cursor-pointer"
             >
               <div
                 className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent -translate-x-full hover:translate-x-full transition-transform duration-1000 pointer-events-none"

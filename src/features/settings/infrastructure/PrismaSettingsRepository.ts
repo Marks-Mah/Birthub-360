@@ -4,7 +4,7 @@
  */
 
 import { prisma } from '../../../lib/prisma.js';
-import type { ISettingsRepository, OrganizationSettings } from '../domain/SettingsDomain.js';
+import { ISettingsRepository, OrganizationSettings } from '../domain/SettingsDomain.js';
 
 export class PrismaSettingsRepository implements ISettingsRepository {
   async findByOrganizationId(organizationId: string): Promise<OrganizationSettings | null> {

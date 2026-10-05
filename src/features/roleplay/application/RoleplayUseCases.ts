@@ -144,9 +144,7 @@ export class RoleplayUseCases {
       spinSellingScores: {
         situation: aiEvaluation.clarityScore,
         problem: aiEvaluation.objectionHandlingScore,
-        implication: Math.round(
-          (aiEvaluation.clarityScore + aiEvaluation.objectionHandlingScore) / 2,
-        ),
+        implication: Math.round((aiEvaluation.clarityScore + aiEvaluation.objectionHandlingScore) / 2),
         needPayoff: aiEvaluation.closingAttemptScore,
       },
       objectionHandlingScore: aiEvaluation.objectionHandlingScore,

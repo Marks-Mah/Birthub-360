@@ -67,7 +67,6 @@ export function applyRateLimiters(app: Express): void {
   // As rotas de agentes (Swarm/SDR) também disparam chamadas de LLM e ficavam de
   // fora de qualquer limitador dedicado de IA, cobertas só pelo apiLimiter genérico.
   app.use('/api/agent', authenticateToken, aiLimiter);
-  app.use('/api/prospecting/ocr', authenticateToken, aiLimiter);
 
   // A Base de Conhecimento gera embeddings a cada ingestão e a cada busca, então cai no mesmo
   // limite das rotas de IA — é o mesmo provedor e a mesma cota.

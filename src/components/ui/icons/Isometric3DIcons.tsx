@@ -21,10 +21,7 @@ export function Trophy3DIcon({ size = 40, className, animate = true, ...props }:
       viewBox="0 0 48 48"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className={cn(
-        'shrink-0 transition-all duration-300 hover:drop-shadow-[0_8px_16px_rgba(212,175,55,0.35)]',
-        className,
-      )}
+      className={cn('shrink-0 transition-all duration-300 hover:drop-shadow-[0_8px_16px_rgba(212,175,55,0.35)]', className)}
       whileHover={shouldAnimate ? { scale: 1.1, rotateY: 15 } : undefined}
       transition={{ type: 'spring', stiffness: 400, damping: 20 }}
       aria-hidden="true"
@@ -136,10 +133,7 @@ export function Gem3DIcon({ size = 40, className, animate = true, ...props }: Ic
       viewBox="0 0 48 48"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className={cn(
-        'shrink-0 transition-all duration-300 hover:drop-shadow-[0_8px_18px_rgba(22,119,255,0.4)]',
-        className,
-      )}
+      className={cn('shrink-0 transition-all duration-300 hover:drop-shadow-[0_8px_18px_rgba(22,119,255,0.4)]', className)}
       whileHover={shouldAnimate ? { scale: 1.12, rotate: 6 } : undefined}
       transition={{ type: 'spring', stiffness: 400, damping: 20 }}
       aria-hidden="true"
@@ -221,10 +215,7 @@ export function FlameStreakIcon({ size = 40, className, animate = true, ...props
       viewBox="0 0 48 48"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className={cn(
-        'shrink-0 transition-all duration-300 hover:drop-shadow-[0_8px_18px_rgba(255,88,65,0.45)]',
-        className,
-      )}
+      className={cn('shrink-0 transition-all duration-300 hover:drop-shadow-[0_8px_18px_rgba(255,88,65,0.45)]', className)}
       whileHover={shouldAnimate ? { scale: 1.15 } : undefined}
       aria-hidden="true"
       {...props}
@@ -296,10 +287,7 @@ export function ShieldSecurityIcon({
       viewBox="0 0 48 48"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className={cn(
-        'shrink-0 transition-all duration-300 hover:drop-shadow-[0_8px_16px_rgba(212,175,55,0.3)]',
-        className,
-      )}
+      className={cn('shrink-0 transition-all duration-300 hover:drop-shadow-[0_8px_16px_rgba(212,175,55,0.3)]', className)}
       whileHover={shouldAnimate ? { scale: 1.1 } : undefined}
       aria-hidden="true"
       {...props}

@@ -61,10 +61,6 @@ export interface AiUsageLogInput {
   promptId?: PromptId | (string & {});
   /** Papel do enxame autônomo (SDR/BDR/CLOSER/CRM/OPS) quando conhecido (Onda 44 / ACH-13-03). */
   agentRole?: string;
-  organizationId?: string | null;
-  userId?: string | null;
-  providerUsed?: string;
-  costInUsd?: number;
 }
 
 /** Nome lógico de cada adapter de provedor — usado como chave do circuit breaker, rótulo de

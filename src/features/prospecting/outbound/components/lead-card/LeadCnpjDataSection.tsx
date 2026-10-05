@@ -1,4 +1,4 @@
-import type React from 'react';
+import React from 'react';
 import { Shield, CheckCircle2, Check, Loader2, RefreshCw, Briefcase } from 'lucide-react';
 
 export interface LeadCnpjDataSectionProps {

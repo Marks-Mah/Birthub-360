@@ -1,50 +1,67 @@
-import { cleanup, fireEvent, render, screen } from '@testing-library/react';
-import '@testing-library/jest-dom/vitest';
-import React, { useState } from 'react';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { cleanup, render, screen } from '@testing-library/react';
+import React from 'react';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Dialog } from '../Dialog.js';
 
-afterEach(() => {
-  cleanup();
-});
-
-function DialogHarness({ onClose }: { onClose: () => void }) {
-  const [isOpen, setIsOpen] = useState(false);
-
-  return React.createElement(
-    React.Fragment,
-    null,
-    React.createElement('button', { onClick: () => setIsOpen(true) }, 'Abrir modal'),
-    React.createElement(
-      Dialog,
-      {
-        isOpen,
-        onClose: () => {
-          onClose();
-          setIsOpen(false);
-        },
-        title: 'Exemplo',
-      },
-      React.createElement('p', null, 'Conteúdo do modal'),
-    ),
-  );
-}
-
 describe('Dialog', () => {
-  it('abre como modal acessível e fecha pelo botão com callback', () => {
-    const onClose = vi.fn();
-    render(React.createElement(DialogHarness, { onClose }));
+  beforeEach(() => {
+    HTMLDialogElement.prototype.showModal = vi.fn(function (this: HTMLDialogElement) {
+      this.setAttribute('open', '');
+    });
+    HTMLDialogElement.prototype.close = vi.fn(function (this: HTMLDialogElement) {
+      this.removeAttribute('open');
+    });
+  });
 
-    fireEvent.click(screen.getByRole('button', { name: 'Abrir modal' }));
+  afterEach(() => {
+    cleanup();
+    document.body.style.overflow = '';
+    vi.restoreAllMocks();
+  });
 
-    const dialog = screen.getByRole('dialog');
-    expect(dialog).toHaveAttribute('aria-modal', 'true');
-    expect(screen.getByText('Exemplo')).toBeInTheDocument();
-    expect(screen.getByText('Conteúdo do modal')).toBeInTheDocument();
+  it('does not override the native hidden state while closed', () => {
+    const content = React.createElement('p', null, 'Dialog content');
+    // createElement's component overload requires the mandatory Dialog prop in this object.
+    render(
+      // React.createElement exige children como prop do objeto — o canônico do React aceita
+      // isso via argumento extra, não como chave do objeto, daí o aviso do linter aqui.
+      // eslint-disable-next-line react/no-children-prop -- ver comentário acima
+      React.createElement(Dialog, {
+        isOpen: false,
+        onClose: vi.fn(),
+        title: 'Example',
+        // biome-ignore lint/correctness/noChildrenProp: ver comentário acima
+        children: content,
+      }),
+    );
 
-    fireEvent.click(screen.getByRole('button', { name: 'Fechar modal' }));
+    const dialog = screen.getByRole('dialog', { hidden: true });
 
-    expect(onClose).toHaveBeenCalledOnce();
-    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    expect(dialog.hasAttribute('open')).toBe(false);
+    // O layout flex vive num <div> interno; o <dialog> em si nunca pode ganhar `display` fixo
+    // (nem `flex` incondicional), senão sobrescreve o `display: none` nativo de `dialog:not([open])`.
+    expect(dialog.classList.contains('flex')).toBe(false);
+    expect(dialog.classList.contains('flex-col')).toBe(false);
+    expect(HTMLDialogElement.prototype.showModal).not.toHaveBeenCalled();
+  });
+
+  it('uses the modal lifecycle when opening and closing', () => {
+    const props = {
+      isOpen: true,
+      onClose: vi.fn(),
+      title: 'Example',
+      children: React.createElement('p', null, 'Dialog content'),
+    };
+    const { rerender } = render(React.createElement(Dialog, props));
+
+    expect(HTMLDialogElement.prototype.showModal).toHaveBeenCalledOnce();
+    expect(screen.getByRole('dialog').hasAttribute('open')).toBe(true);
+    expect(document.body.style.overflow).toBe('hidden');
+
+    rerender(React.createElement(Dialog, { ...props, isOpen: false }));
+
+    expect(HTMLDialogElement.prototype.close).toHaveBeenCalledOnce();
+    expect(screen.getByRole('dialog', { hidden: true }).hasAttribute('open')).toBe(false);
+    expect(document.body.style.overflow).toBe('');
   });
 });

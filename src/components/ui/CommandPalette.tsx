@@ -67,14 +67,10 @@ const MODULE_ORDER: TabType[] = [
   'settings_market',
 
   // PILAR 03 — ORQUESTRAÇÃO DE VENDAS
-  'playbooks',
-  'cadence',
-  'jornadas',
-  'processos',
-  'roteiros',
   'daily-plan',
   'activities',
   'calendar',
+  'cadence',
   'roleplay',
   'qualification_matrix',
   'objections_matrix',

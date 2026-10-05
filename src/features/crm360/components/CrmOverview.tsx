@@ -149,14 +149,14 @@ export function CrmOverview({ onNavigate }: CrmOverviewProps) {
   const maxStage = Math.max(...data.stageCounts.map((stage) => stage.count), 1);
 
   return (
-    <div className="space-y-6 w-full px-4 sm:px-6 lg:px-8 py-6">
+    <div className="space-y-5 p-5 md:p-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="text-2xl font-black tracking-tight text-ink font-[family-name:var(--font-brand-display)]">
-            Cockpit Comercial
+          <h2 className="text-xl font-black tracking-tight text-ink">
+            Cockpit comercial em tempo real
           </h2>
-          <p className="text-sm text-ink-2 font-[family-name:var(--font-brand-sans)]">
-            Visão executiva do pipeline, receita e prioridades em tempo real.
+          <p className="text-sm text-ink-2">
+            Receita, conversão, atividades e prioridades em uma única visão.
           </p>
         </div>
         <Button

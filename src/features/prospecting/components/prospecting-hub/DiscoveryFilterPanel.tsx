@@ -81,7 +81,7 @@ export function DiscoveryFilterPanel({
         <div className="w-8 h-8 rounded-lg bg-brand/10 flex items-center justify-center text-brand-ink dark:text-brand">
           <Database size={18} />
         </div>
-        <h2 className="font-display font-bold text-xl text-ink">🗺️ Motor de Busca Turbo</h2>
+        <h2 className="font-black text-xl text-ink">🗺️ Motor de Busca Turbo</h2>
       </div>
       <p className="text-xs text-ink-2 mb-3 relative z-10">
         Busca real via Google Maps, OpenStreetMap e Apollo quando as integrações estão habilitadas.

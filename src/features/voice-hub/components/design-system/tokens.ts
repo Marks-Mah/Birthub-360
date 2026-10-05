@@ -5,7 +5,7 @@ export function hexToRgb(
   const clean = hex.trim().replace(/^#/, '');
   if (clean.length !== 6) return null;
   const num = parseInt(clean, 16);
-  if (Number.isNaN(num)) return null;
+  if (isNaN(num)) return null;
   return {
     r: (num >> 16) & 255,
     g: (num >> 8) & 255,
@@ -17,7 +17,7 @@ export function relativeLuminance(hex: string | null | undefined): number {
   const rgb = hexToRgb(hex);
   if (!rgb) return 0;
   const sRGB = [rgb.r / 255, rgb.g / 255, rgb.b / 255];
-  const linear = sRGB.map((c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4));
+  const linear = sRGB.map((c) => (c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4)));
   return 0.2126 * linear[0] + 0.7152 * linear[1] + 0.0722 * linear[2];
 }
 

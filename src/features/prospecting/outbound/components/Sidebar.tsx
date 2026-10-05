@@ -1,11 +1,22 @@
 import type React from 'react';
 import { useState } from 'react';
 import {
+  Settings,
   Database,
+  Link,
+  ChevronRight,
+  DatabaseZap,
+  Globe,
+  Briefcase,
+  Bot,
+  MessageSquare,
   ShieldCheck,
   Check,
+  X,
   History,
   Trash2,
+  Play,
+  UserCheck,
   ChevronUp,
   ChevronDown,
   Target,

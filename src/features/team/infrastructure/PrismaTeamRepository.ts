@@ -4,12 +4,7 @@
  */
 
 import { prisma } from '../../../lib/prisma.js';
-import {
-  type ITeamRepository,
-  type TeamMember,
-  TeamRole,
-  type MemberInvite,
-} from '../domain/TeamDomain.js';
+import { ITeamRepository, TeamMember, TeamRole, MemberInvite } from '../domain/TeamDomain.js';
 
 export class PrismaTeamRepository implements ITeamRepository {
   async findByOrganizationId(organizationId: string): Promise<TeamMember[]> {
@@ -52,7 +47,7 @@ export class PrismaTeamRepository implements ITeamRepository {
     return this.mapToDomain(created);
   }
 
-  async updateRole(id: string, _organizationId: string, role: TeamRole): Promise<TeamMember> {
+  async updateRole(id: string, organizationId: string, role: TeamRole): Promise<TeamMember> {
     const updated = await prisma.user.update({
       where: { id },
       data: { role: role as any },
@@ -64,7 +59,7 @@ export class PrismaTeamRepository implements ITeamRepository {
   async updateStatus(
     id: string,
     organizationId: string,
-    _status: TeamMember['status'],
+    status: TeamMember['status'],
   ): Promise<TeamMember> {
     const user = await prisma.user.findFirst({ where: { id, organizationId } });
     if (!user) throw new Error('Membro não encontrado');

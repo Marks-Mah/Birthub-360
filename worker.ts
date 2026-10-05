@@ -15,7 +15,6 @@ import { createEnrichmentWorker } from './src/lib/queue/enrichment.queue.js';
 import { createEnrichmentCascadeWorker } from './src/lib/queue/enrichmentCascade.worker.js';
 import { createSearchWorker } from './src/lib/queue/search.queue.js';
 import { createKnowledgeIngestionWorker } from './src/lib/queue/knowledgeIngestion.worker.js';
-import { createCheckpointerPruneWorker, scheduleCheckpointerPrune } from './src/lib/queue/checkpointerPrune.worker.js';
 import { initMeiliIndexes } from './src/lib/search/index.js';
 import {
   createColdCallWorker,
@@ -101,7 +100,6 @@ async function start() {
   const whatsappSignalWorker = createWhatsAppSignalWorker();
   const whatsappCommandWorker = createWhatsAppCommandWorker();
   const knowledgeIngestionWorker = createKnowledgeIngestionWorker();
-  const checkpointerPruneWorker = createCheckpointerPruneWorker();
   const bitrixSyncWorker = createBitrixSyncWorker();
   const followUpWorker = createFollowUpWorker();
   const execSummaryWorker = createExecutiveSummaryWorker();
@@ -148,7 +146,6 @@ async function start() {
     { name: 'whatsapp-conversation-signal', worker: whatsappSignalWorker },
     { name: 'whatsapp-command', worker: whatsappCommandWorker },
     { name: 'knowledge-ingestion-queue', worker: knowledgeIngestionWorker },
-    { name: 'checkpointer-prune', worker: checkpointerPruneWorker },
     { name: 'bitrix-sync', worker: bitrixSyncWorker },
     { name: 'whatsapp-followup-queue', worker: followUpWorker },
     { name: 'daily-executive-summary-queue', worker: execSummaryWorker },
@@ -186,7 +183,6 @@ async function start() {
       await scheduleAgentMemoryCleanupJob();
       await scheduleBitrixExtractionPurgeJob();
       await scheduleGlobalNewsScan();
-      await scheduleCheckpointerPrune();
       await scheduleAccountIntelligenceInsightsJob();
       await scheduleForecastSnapshotJob();
       await accountIntelligenceSchedulerQueue.upsertJobScheduler(

@@ -5,7 +5,7 @@
 
 import type { Request, Response, NextFunction } from 'express';
 import type { AuthRequest } from '../../../shared/middlewares/authenticateToken.js';
-import type { SettingsUseCases } from '../application/SettingsUseCases.js';
+import { SettingsUseCases } from '../application/SettingsUseCases.js';
 
 export class SettingsController {
   constructor(private readonly settingsUseCases: SettingsUseCases) {}

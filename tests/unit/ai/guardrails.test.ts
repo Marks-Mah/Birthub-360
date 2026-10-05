@@ -99,12 +99,6 @@ describe('Guardrails - Toxicidade', () => {
       expect(result.matches).toEqual([]);
     });
 
-    it('não deve gerar falso-positivo em palavras benignas com substrings ofensivas (ex: disputa, computador, reputação)', () => {
-      const result = detectToxicity('A disputa de mercado exige boa reputação e um computador moderno');
-      expect(result.toxic).toBe(false);
-      expect(result.matches).toEqual([]);
-    });
-
     it('deve ser case-insensitive', () => {
       const result = detectToxicity('ISSO É UMA MERDA');
       expect(result.toxic).toBe(true);

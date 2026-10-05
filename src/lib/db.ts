@@ -227,11 +227,7 @@ export const aiToolsStore = {
     return res.data;
   },
 
-  save: async (tool: {
-    name: string;
-    category: string;
-    prompt: string;
-  }): Promise<CustomAiToolRecord> => {
+  save: async (tool: { name: string; category: string; prompt: string }): Promise<CustomAiToolRecord> => {
     const res = await api.post<{ success: boolean; data: CustomAiToolRecord }>(
       '/api/intelligence/tools/custom',
       tool,

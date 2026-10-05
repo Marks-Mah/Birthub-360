@@ -337,7 +337,7 @@ function LandingInnovativeContent() {
                 { label: 'DATA', angle: 225, distance: 130, delay: 0.5 },
                 { label: 'INTEGRATIONS', angle: 270, distance: 160, delay: 0.6 },
                 { label: 'EXECUTION', angle: 315, distance: 130, delay: 0.7 },
-              ].map((node, _i) => {
+              ].map((node, i) => {
                 const angleRad = (node.angle - 90) * (Math.PI / 180);
                 const distancePct = (node.distance / 200) * 50;
                 const top = `${50 + Math.sin(angleRad) * distancePct}%`;

@@ -69,8 +69,8 @@ export function TestSimulatorModal({ onClose }: TestSimulatorModalProps) {
 
       canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
 
-      canvasCtx.lineWidth = 2.5;
-      canvasCtx.strokeStyle = '#00e5ff'; // Brand cyan for waveform stroke
+      canvasCtx.lineWidth = 3;
+      canvasCtx.strokeStyle = '#60a5fa'; // Blue 400 for glowing effect
       canvasCtx.beginPath();
 
       const sliceWidth = (canvas.width * 1.0) / dataArray.length;

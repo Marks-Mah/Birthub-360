@@ -3,7 +3,7 @@
  * UseCases for organization settings and preferences
  */
 
-import type { ISettingsRepository, OrganizationSettings } from '../domain/SettingsDomain.js';
+import { ISettingsRepository, OrganizationSettings } from '../domain/SettingsDomain.js';
 
 export class SettingsUseCases {
   constructor(private readonly settingsRepository: ISettingsRepository) {}

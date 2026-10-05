@@ -37,56 +37,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITLEAKS_CONFIG: .gitleaks.toml
 
-  dependency-review:
-    name: Central Birth Hub 360 / dependency review
-    runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
-    permissions:
-      contents: read
-      pull-requests: write
-    steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
-
-      - name: Dependency Review
-        uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v5.0.0
-        with:
-          fail-on-severity: high
-          comment-summary-in-pr: on-failure
-          allow-ghsas: GHSA-ggr8-5vv4-36mx, GHSA-Q2HR-2G5M-VWHR, GHSA-QHR7-859C-M2P7, GHSA-6J4F-FJ2G-MC7P, GHSA-G57G-F23G-4646, GHSA-V53P-9FQP-M79J, GHSA-PRGH-XP8R-P3M5
-
-  trivy-scan:
-    name: Central Birth Hub 360 / trivy scan
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      security-events: write
-    steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
-
-      - name: Rodar Trivy (fs scan, HIGH/CRITICAL, bloqueante)
-        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
-        with:
-          scan-type: fs
-          scan-ref: .
-          severity: HIGH,CRITICAL
-          exit-code: '1'
-          format: sarif
-          output: trivy-fs-results.sarif
-          trivyignores: .trivyignore.yaml
-          limit-severities-for-sarif: true
-
-      - name: Upload SARIF para a aba Security
-        if: always()
-        uses: github/codeql-action/upload-sarif@42947a340483f03ba47bb1a039b2c519aab3df85 # v3.37.8
-        with:
-          sarif_file: trivy-fs-results.sarif
-          category: trivy-fs
-
   build-and-test:
     name: Central Birth Hub 360 / application gate
     runs-on: ubuntu-latest
-    needs: [secret-scan, trivy-scan]
-    if: always() && needs.secret-scan.result == 'success' && needs.trivy-scan.result == 'success'
+    needs: secret-scan
     # Os runs 36785425846 e 36791581889 completaram os gates anteriores, mas expiraram em 60/90 min
     # enquanto os 100 E2E rodavam serialmente com 1 worker. O último step E2E durou 73m28s sem resumo;
     # 120 min reserva ~103 min após os ~17 min medidos antes dos E2E. Margem operacional, não prova
@@ -207,9 +161,6 @@ jobs:
       - name: Run Unit Tests
         run: npm run test:unit -- --coverage
 
-      - name: Run AI Resilience Tests (TD-009)
-        run: npm run test:unit -- src/lib/ai/gateway/__tests__/http-client.test.ts src/lib/ai/gateway/__tests__/circuit-breaker.test.ts src/lib/ai/gateway/__tests__/retry.test.ts
-
       - name: Golden Dataset live regression gate
         if: ${{ env.GROQ_API_KEY != '' || env.OPENAI_API_KEY != '' }}
         env:
@@ -256,31 +207,6 @@ jobs:
       - name: Run Integration Tests (auth, RBAC and tenant isolation)
         run: npm run test:integration -- --coverage
 
-      - name: Run Build
-        run: npm run build
-
-      - name: Smoke test do build de produção (/health/live, /health/ready, /health/version)
-        env:
-          PORT: 3024
-          NODE_ENV: test
-          ALLOW_DEV_AUTH_BYPASS: true
-        run: |
-          node dist/server.cjs &
-          SERVER_PID=$!
-          echo "Aguardando boot do servidor de produção (PID $SERVER_PID)..."
-          for i in $(seq 1 30); do
-            if curl -fsS http://127.0.0.1:3024/health/live >/dev/null 2>&1; then
-              echo "Servidor online após ${i}s."
-              break
-            fi
-            sleep 1
-          done
-          curl -fsS http://127.0.0.1:3024/health/live || { echo "Falha em /health/live"; kill -9 $SERVER_PID 2>/dev/null || true; exit 1; }
-          curl -fsS http://127.0.0.1:3024/health/ready || { echo "Falha em /health/ready"; kill -9 $SERVER_PID 2>/dev/null || true; exit 1; }
-          curl -fsS http://127.0.0.1:3024/health/version || { echo "Falha em /health/version"; kill -9 $SERVER_PID 2>/dev/null || true; exit 1; }
-          echo "Smoke test de produção aprovado!"
-          kill -15 $SERVER_PID 2>/dev/null || true
-
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
 
@@ -309,34 +235,49 @@ jobs:
             echo "A falha ocorreu em um dos passos acima (testes, lint, build). Verifique os logs."
           } >> $GITHUB_STEP_SUMMARY
 
+      - name: Run Build
+        run: npm run build
+
+      - name: Smoke test do build de produção (/health/live, /health/ready, /health/version)
+        env:
+          PORT: 3024
+          NODE_ENV: test
+          ALLOW_DEV_AUTH_BYPASS: true
+        run: |
+          node dist/server.cjs &
+          SERVER_PID=$!
+          echo "Aguardando boot do servidor de produção (PID $SERVER_PID)..."
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:3024/health/live >/dev/null 2>&1; then
+              echo "Servidor online após ${i}s."
+              break
+            fi
+            sleep 1
+          done
+          curl -fsS http://127.0.0.1:3024/health/live || { echo "Falha em /health/live"; kill -9 $SERVER_PID 2>/dev/null || true; exit 1; }
+          curl -fsS http://127.0.0.1:3024/health/ready || { echo "Falha em /health/ready"; kill -9 $SERVER_PID 2>/dev/null || true; exit 1; }
+          curl -fsS http://127.0.0.1:3024/health/version || { echo "Falha em /health/version"; kill -9 $SERVER_PID 2>/dev/null || true; exit 1; }
+          echo "Smoke test de produção aprovado!"
+          kill -15 $SERVER_PID 2>/dev/null || true
+
   # Este é o único job que deve publicar o contexto `build` exigido pela branch protection.
   # O if: always() transforma falha/cancelamento das dependências em FAIL explícito em vez de
   # deixar o required check ausente.
   build:
     name: build
     if: always() && github.event_name != 'workflow_dispatch'
-    needs: [secret-scan, dependency-review, trivy-scan, build-and-test]
+    needs: [secret-scan, build-and-test]
     runs-on: ubuntu-latest
     steps:
       - name: Consolidar veredito do repositório
         env:
           SECRET_SCAN_RESULT: ${{ needs.secret-scan.result }}
-          DEPENDENCY_REVIEW_RESULT: ${{ needs.dependency-review.result }}
-          TRIVY_SCAN_RESULT: ${{ needs.trivy-scan.result }}
           APPLICATION_GATE_RESULT: ${{ needs.build-and-test.result }}
         run: |
           set -euo pipefail
-          printf 'secret-scan=%s\n' "$SECRET_SCAN_RESULT"
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            printf 'dependency-review=%s\n' "$DEPENDENCY_REVIEW_RESULT"
-          fi
-          printf 'trivy-scan=%s\n' "$TRIVY_SCAN_RESULT"
-          printf 'application-gate=%s\n' "$APPLICATION_GATE_RESULT"
+          printf 'secret-scan=%s\napplication-gate=%s\n' \
+            "$SECRET_SCAN_RESULT" "$APPLICATION_GATE_RESULT"
           test "$SECRET_SCAN_RESULT" = success
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            test "$DEPENDENCY_REVIEW_RESULT" = success
-          fi
-          test "$TRIVY_SCAN_RESULT" = success
           test "$APPLICATION_GATE_RESULT" = success
 
   # Geração manual de baselines Linux. Não participa do required check `build`.

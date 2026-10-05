@@ -5,7 +5,7 @@
 
 import { Router, type Request, type Response, type NextFunction } from 'express';
 import { container } from '../../../shared/di/container.js';
-import type { SettingsController } from '../presentation/SettingsController.js';
+import { SettingsController } from '../presentation/SettingsController.js';
 import { requireRole } from '../../../shared/middlewares/requireRole.js';
 
 const router = Router();

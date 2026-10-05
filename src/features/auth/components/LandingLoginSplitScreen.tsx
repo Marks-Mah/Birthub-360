@@ -118,7 +118,7 @@ function DataFlowLines() {
           y2={l.y2}
           stroke="rgba(0,229,255,0.15)"
           strokeWidth="0.5"
-          strokeDasharray={i === 0 ? '2 2' : i === 1 ? '3 3' : '2 4'}
+          strokeDasharray={i === 0 ? "2 2" : i === 1 ? "3 3" : "2 4"}
           initial={{ pathLength: 0, opacity: 0 }}
           animate={{ pathLength: 1, opacity: 1 }}
           transition={{
@@ -222,7 +222,7 @@ function PillarStrip() {
 }
 
 // ─── Ticker de estado do sistema ──────────────────────────────────────────────
-function _SystemStatusBar({ dateLabel, timeLabel }: { dateLabel: string; timeLabel: string }) {
+function SystemStatusBar({ dateLabel, timeLabel }: { dateLabel: string; timeLabel: string }) {
   return (
     <div className="flex items-center justify-between w-full px-0 py-2">
       <div className="flex items-center gap-2">
@@ -293,12 +293,9 @@ export function LandingLoginSplitScreen() {
   useEffect(() => {
     const balloons = document.querySelectorAll('.balloon-item');
     balloons.forEach((balloon, index) => {
-      setTimeout(
-        () => {
-          balloon.classList.add('explode');
-        },
-        300 + index * 150,
-      );
+      setTimeout(() => {
+        balloon.classList.add('explode');
+      }, 300 + (index * 150));
     });
   }, []);
 
@@ -505,8 +502,7 @@ export function LandingLoginSplitScreen() {
               className="bg-clip-text text-transparent"
               style={{
                 backgroundImage: 'linear-gradient(90deg, #8B5CF6 0%, #3B82F6 55%, #00E5FF 100%)',
-                filter:
-                  'drop-shadow(0 0 20px rgba(139,92,246,.7)) drop-shadow(0 0 40px rgba(139,92,246,.4))',
+                filter: 'drop-shadow(0 0 20px rgba(139,92,246,.7)) drop-shadow(0 0 40px rgba(139,92,246,.4))',
               }}
             >
               Decide.
@@ -523,73 +519,29 @@ export function LandingLoginSplitScreen() {
           >
             Conecte CRM, dados, processos e IA em um único Lugar.
             <br />
-            Monitore sua operação comercial em tempo real, identifique gargalos e transforme dados
-            em ações executáveis
+            Monitore sua operação comercial em tempo real, identifique gargalos e transforme dados em ações executáveis
           </motion.p>
 
           {/* Explosive Balloon Section */}
           <motion.div variants={staggerItem} className="balloon-container my-4">
             <div className="flex flex-wrap gap-3 justify-center items-center">
-              <span
-                className="balloon-item font-mono text-xs font-bold text-white tracking-wider cursor-pointer transition-all duration-300"
-                style={{ color: '#00E5FF' }}
-              >
-                CRM
-              </span>
+              <span className="balloon-item font-mono text-xs font-bold text-white tracking-wider cursor-pointer transition-all duration-300" style={{ color: '#00E5FF' }}>CRM</span>
               <span className="text-white/30">·</span>
-              <span
-                className="balloon-item font-mono text-xs font-bold text-white tracking-wider cursor-pointer transition-all duration-300"
-                style={{ color: '#3B82F6' }}
-              >
-                Pipeline
-              </span>
+              <span className="balloon-item font-mono text-xs font-bold text-white tracking-wider cursor-pointer transition-all duration-300" style={{ color: '#3B82F6' }}>Pipeline</span>
               <span className="text-white/30">·</span>
-              <span
-                className="balloon-item font-mono text-xs font-bold text-white tracking-wider cursor-pointer transition-all duration-300"
-                style={{ color: '#8B5CF6' }}
-              >
-                Inteligência
-              </span>
+              <span className="balloon-item font-mono text-xs font-bold text-white tracking-wider cursor-pointer transition-all duration-300" style={{ color: '#8B5CF6' }}>Inteligência</span>
               <span className="text-white/30">·</span>
-              <span
-                className="balloon-item font-mono text-xs font-bold text-white tracking-wider cursor-pointer transition-all duration-300"
-                style={{ color: '#F59E0B' }}
-              >
-                Forecast
-              </span>
+              <span className="balloon-item font-mono text-xs font-bold text-white tracking-wider cursor-pointer transition-all duration-300" style={{ color: '#F59E0B' }}>Forecast</span>
               <span className="text-white/30">·</span>
-              <span
-                className="balloon-item font-mono text-xs font-bold text-white tracking-wider cursor-pointer transition-all duration-300"
-                style={{ color: '#22C55E' }}
-              >
-                Automação
-              </span>
+              <span className="balloon-item font-mono text-xs font-bold text-white tracking-wider cursor-pointer transition-all duration-300" style={{ color: '#22C55E' }}>Automação</span>
               <span className="text-white/30">·</span>
-              <span
-                className="balloon-item font-mono text-xs font-bold text-white tracking-wider cursor-pointer transition-all duration-300"
-                style={{ color: '#EF4444' }}
-              >
-                IA
-              </span>
+              <span className="balloon-item font-mono text-xs font-bold text-white tracking-wider cursor-pointer transition-all duration-300" style={{ color: '#EF4444' }}>IA</span>
               <span className="text-white/30">·</span>
-              <span
-                className="balloon-item font-mono text-xs font-bold text-white tracking-wider cursor-pointer transition-all duration-300"
-                style={{ color: '#33EBFF' }}
-              >
-                Voz
-              </span>
+              <span className="balloon-item font-mono text-xs font-bold text-white tracking-wider cursor-pointer transition-all duration-300" style={{ color: '#33EBFF' }}>Voz</span>
               <span className="text-white/30">·</span>
-              <span
-                className="balloon-item font-mono text-xs font-bold text-white tracking-wider cursor-pointer transition-all duration-300"
-                style={{ color: '#94A3B8' }}
-              >
-                Engajamento
-              </span>
+              <span className="balloon-item font-mono text-xs font-bold text-white tracking-wider cursor-pointer transition-all duration-300" style={{ color: '#94A3B8' }}>Engajamento</span>
             </div>
-            <p
-              className="balloon-item font-mono text-[10px] text-white/60 text-center mt-3 tracking-wide"
-              style={{ textShadow: '0 0 15px rgba(255,255,255,0.4)' }}
-            >
+            <p className="balloon-item font-mono text-[10px] text-white/60 text-center mt-3 tracking-wide" style={{ textShadow: '0 0 15px rgba(255,255,255,0.4)' }}>
               Oito pilares. Um sistema operacional comercial integrado.
             </p>
           </motion.div>

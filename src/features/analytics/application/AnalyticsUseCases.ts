@@ -185,14 +185,14 @@ export class AnalyticsUseCases {
     const wonCount = counts.get(WON) ?? 0;
     const wonAmount = amounts.get(WON) ?? 0;
 
-    const cumulativeCounts = orderedStages.map((_stage, index) => {
+    const cumulativeCounts = orderedStages.map((stage, index) => {
       const downstream = orderedStages
         .slice(index)
         .reduce((sum, s) => sum + (counts.get(s) ?? 0), 0);
       return downstream + wonCount;
     });
 
-    const cumulativeAmounts = orderedStages.map((_stage, index) => {
+    const cumulativeAmounts = orderedStages.map((stage, index) => {
       const downstream = orderedStages
         .slice(index)
         .reduce((sum, s) => sum + (amounts.get(s) ?? 0), 0);

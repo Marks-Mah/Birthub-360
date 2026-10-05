@@ -11,13 +11,13 @@
 import { useState } from 'react';
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import '@testing-library/jest-dom/vitest';
-import { render, screen, cleanup, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, cleanup, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Drawer } from '@/components/ui/Drawer';
 
 afterEach(() => {
   cleanup();
-  document.body.removeAttribute('data-scroll-locked');
+  document.body.style.overflow = '';
 });
 
 describe('Drawer', () => {
@@ -37,7 +37,7 @@ describe('Drawer', () => {
       </Drawer>,
     );
     const dialog = screen.getByRole('dialog');
-    expect(dialog).toHaveAttribute('data-state', 'open');
+    expect(dialog).toHaveAttribute('aria-modal', 'true');
     expect(screen.getByText('Detalhe do lead')).toBeInTheDocument();
     expect(screen.getByText('Atlas Transportes')).toBeInTheDocument();
     expect(screen.getByText('Conteúdo do formulário')).toBeInTheDocument();
@@ -52,8 +52,7 @@ describe('Drawer', () => {
     expect(screen.getByRole('button', { name: 'Fechar gaveta' })).toHaveFocus();
   });
 
-  it.skip('devolve o foco ao elemento que estava focado antes de abrir, quando fecha', async () => {
-    const user = userEvent.setup();
+  it('devolve o foco ao elemento que estava focado antes de abrir, quando fecha', () => {
     function Harness() {
       const [open, setOpen] = useState(false);
       return (
@@ -70,11 +69,11 @@ describe('Drawer', () => {
     trigger.focus();
     expect(trigger).toHaveFocus();
 
-    await user.click(trigger);
+    fireEvent.click(trigger);
     expect(screen.getByRole('button', { name: 'Fechar gaveta' })).toHaveFocus();
 
-    await user.click(screen.getByRole('button', { name: 'Fechar gaveta' }));
-    await waitFor(() => expect(trigger).toHaveFocus());
+    fireEvent.click(screen.getByRole('button', { name: 'Fechar gaveta' }));
+    expect(trigger).toHaveFocus();
   });
 
   it('chama onClose ao pressionar Escape', async () => {
@@ -104,7 +103,7 @@ describe('Drawer', () => {
   it('chama onClose ao clicar no backdrop e ao clicar no X', async () => {
     const onClose = vi.fn();
     const user = userEvent.setup();
-    render(
+    const { container } = render(
       <Drawer isOpen onClose={onClose} title="Detalhe">
         <p>conteúdo</p>
       </Drawer>,
@@ -113,37 +112,36 @@ describe('Drawer', () => {
     await user.click(screen.getByRole('button', { name: 'Fechar gaveta' }));
     expect(onClose).toHaveBeenCalledTimes(1);
 
-    const backdrop = document.querySelector('.fixed.inset-0.bg-black\\/60');
-    expect(backdrop).toBeInTheDocument();
-    if (!(backdrop instanceof HTMLElement)) throw new Error('Backdrop do Drawer não encontrado');
+    const backdrop = container.querySelector('.fixed.inset-0.bg-slate-950\\/70') as HTMLElement;
+    expect(backdrop).toBeTruthy();
     await user.click(backdrop);
     expect(onClose).toHaveBeenCalledTimes(2);
   });
 
-  it('trava o scroll via Radix enquanto aberto e restaura ao fechar/desmontar', () => {
+  it('trava o scroll do body enquanto aberto e restaura ao fechar/desmontar', () => {
     const { rerender, unmount } = render(
       <Drawer isOpen onClose={vi.fn()} title="Detalhe">
         <p>conteúdo</p>
       </Drawer>,
     );
-    expect(document.body).toHaveAttribute('data-scroll-locked');
+    expect(document.body.style.overflow).toBe('hidden');
 
     rerender(
       <Drawer isOpen={false} onClose={vi.fn()} title="Detalhe">
         <p>conteúdo</p>
       </Drawer>,
     );
-    expect(document.body).not.toHaveAttribute('data-scroll-locked');
+    expect(document.body.style.overflow).toBe('');
 
     rerender(
       <Drawer isOpen onClose={vi.fn()} title="Detalhe">
         <p>conteúdo</p>
       </Drawer>,
     );
-    expect(document.body).toHaveAttribute('data-scroll-locked');
+    expect(document.body.style.overflow).toBe('hidden');
 
     unmount();
-    expect(document.body).not.toHaveAttribute('data-scroll-locked');
+    expect(document.body.style.overflow).toBe('');
   });
 
   it('renderiza o painel do lado esquerdo quando side="left"', () => {
@@ -153,7 +151,7 @@ describe('Drawer', () => {
       </Drawer>,
     );
     const panel = screen.getByRole('dialog');
-    expect(panel.className).toContain('left-0');
+    expect(panel.className).toContain('mr-auto');
     expect(container).toBeTruthy();
   });
 });

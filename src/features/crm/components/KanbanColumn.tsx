@@ -40,34 +40,34 @@ export const KanbanColumn = React.memo(function KanbanColumn({
   return (
     <div
       ref={setNodeRef}
-      className={`relative flex flex-col rounded-xl min-w-[320px] max-w-[320px] max-h-full shrink-0 border transition-all duration-300 overflow-hidden before:absolute before:inset-x-0 before:top-0 before:h-[1px] before:bg-gradient-to-r before:from-transparent before:via-brand/20 before:to-transparent before:z-20 ${
+      className={`relative flex flex-col rounded-xl min-w-[320px] max-w-[320px] max-h-full shrink-0 border transition-all duration-300 overflow-hidden before:absolute before:inset-x-0 before:top-0 before:h-[1px] before:bg-gradient-to-r before:from-transparent before:via-[#1677FF]/20 before:to-transparent before:z-20 ${
         isOver
-          ? 'border-brand/50 shadow-[0_0_30px_rgba(0,229,255,0.15)] scale-[1.01]'
-          : 'border-line/40 hover:border-line/70'
+          ? 'border-[#1677FF]/50 shadow-[0_0_30px_rgba(22,119,255,0.15)] scale-[1.01]'
+          : 'border-white/8 hover:border-white/12'
       }`}
-      style={{ background: 'var(--surface)' }}
+      style={{ background: '#0B132B' }}
     >
       {/* Cabeçalho da coluna */}
       <div
-        className="px-4 pt-4 pb-3 sticky top-0 z-10 flex flex-col gap-1 backdrop-blur-md"
-        style={{ background: 'var(--surface)', borderBottom: '1px solid var(--line)' }}
+        className="px-4 pt-4 pb-3 sticky top-0 z-10 flex flex-col gap-1"
+        style={{ background: '#0B132B', borderBottom: '1px solid rgba(255,255,255,0.06)' }}
       >
         <div className="flex justify-between items-center gap-2">
-          <h3 className="font-mono text-[11px] font-semibold tracking-widest uppercase text-ink-2 flex items-center gap-1.5 min-w-0">
+          <h3 className="font-mono text-[11px] font-semibold tracking-widest uppercase text-white/40 flex items-center gap-1.5 min-w-0">
             <span className="shrink-0" aria-hidden="true">
               {STATUS_EMOJI[status] || '📌'}
             </span>
             <span className="line-clamp-2 leading-tight">{status}</span>
           </h3>
           {/* Badge de contagem minimalista: ponto pulsante + número, sem bg colorido */}
-          <span className="flex items-center gap-1.5 text-xs text-ink-2 font-semibold shrink-0">
+          <span className="flex items-center gap-1.5 text-xs text-white/60 font-semibold shrink-0">
             {leads.length > 0 && (
-              <span className="w-1.5 h-1.5 rounded-full bg-brand animate-pulse" />
+              <span className="w-1.5 h-1.5 rounded-full bg-[#1677FF] animate-pulse" />
             )}
             {leads.length}
           </span>
         </div>
-        <div className="text-xs text-brand/80 font-mono">
+        <div className="text-xs text-[#1677FF]/70 font-mono">
           Forecast:{' '}
           {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
             leads.reduce((acc, lead) => {
