@@ -19,6 +19,8 @@ skills-lock.json
 infrastructure/observability/prometheus.oci.generated.yml
 playwright-report/
 test-results/
+visual-audit-capture/
+visual-manual-output/
 .venv-opensource/
 reports/
 

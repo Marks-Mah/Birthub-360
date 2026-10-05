@@ -472,18 +472,14 @@ router.get(
       }
 
       const organizationId = (req as AuthRequest).user?.organizationId;
-      const userId = (req as AuthRequest).user?.id;
+      const startTime = Date.now();
       const results = await VectorSearchService.searchChunks(query, organizationId, limit);
 
       await logAiUsage({
         promptId: 'search_vector_query',
-        organizationId,
-        userId,
-        providerUsed: 'VectorSearch',
-        costInUsd: 0,
         model: 'VectorSearch',
         usage: { promptTokens: 0, completionTokens: 0, totalTokens: 0 },
-        latencyMs: 0,
+        latencyMs: Date.now() - startTime,
       });
 
       res.json({ results });

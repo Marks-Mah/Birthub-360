@@ -1,0 +1,11 @@
+{
+  "route": "/app/companies",
+  "name": "Companies List",
+  "title": "Birth Hub 360º | Central de Comando Inteligente",
+  "url": "http://localhost:3024/login",
+  "public": false,
+  "timestamp": "2026-10-05T03:55:22.720Z",
+  "accessible": false,
+  "screenshot": "C:\\Github\\Birthub-360\\visual-audit-capture\\companies-list.png",
+  "status": "success"
+}
