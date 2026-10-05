@@ -175,9 +175,9 @@ export function ContactList() {
     <motion.div
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
-      className="flex-1 overflow-y-auto bg-transparent p-6 md:p-8"
+      className="flex-1 overflow-y-auto bg-transparent p-4 sm:p-6 lg:p-8"
     >
-      <div className="max-w-7xl mx-auto space-y-6">
+      <div className="w-full space-y-6">
         {/* Header */}
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>

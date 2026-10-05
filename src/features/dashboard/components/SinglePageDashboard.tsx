@@ -8,23 +8,18 @@ import {
   Target,
   TrendingUp,
 } from 'lucide-react';
-import type React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GamificationWidget } from '../../../components/ui/GamificationWidget.js';
 import { Skeleton } from '../../../components/ui/Skeleton.js';
 import { useAuth } from '../../../contexts/AuthContext.js';
 import { useAnalyticsDashboard } from '../../../hooks/useDatabase.js';
 import {
-  ctaGlow,
   fadeInUp,
   metricReveal,
   metricsContainer,
-  shimmerBeam,
   staggerContainer,
   staggerItem,
-  useTilt,
 } from '../../../lib/motion.js';
-import { SoundFX } from '../../../lib/soundEffects.js';
 
 function greeting() {
   const hour = new Date().getHours();
@@ -37,10 +32,6 @@ export function SinglePageDashboard() {
   const navigate = useNavigate();
   const { currentUser } = useAuth();
   const { data: stats, loading } = useAnalyticsDashboard(6);
-  const tiltPipeline = useTilt(5);
-  const tiltWinRate = useTilt(5);
-  const tiltVelocity = useTilt(5);
-  const tiltMarket = useTilt(5);
 
   const overview = stats?.overview;
   const pipelineValue = overview?.pipelineValue ?? 0;
@@ -71,108 +62,81 @@ export function SinglePageDashboard() {
 
   return (
     <div className="flex-1 overflow-y-auto bg-bg text-ink relative">
-      {/* Subtle Data Flow Background */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden flex justify-center">
-        <div className="w-[120%] h-[1px] bg-gradient-to-r from-transparent via-line to-transparent absolute top-32 opacity-50" />
-        <div className="w-[1px] h-[100%] bg-gradient-to-b from-transparent via-line to-transparent absolute left-1/4 opacity-50" />
-      </div>
-
-      <div className="max-w-[92rem] mx-auto p-6 sm:p-8 lg:p-12 relative z-10">
-        {/* COMMAND CENTER HEADER — entrada orquestrada */}
+      <div className="w-full px-4 sm:px-6 lg:px-8 relative z-10 min-h-full flex flex-col">
+        {/* COMMAND CENTER HEADER */}
         <motion.header
-          className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12 border-b border-line/50 pb-8"
+          className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-6 border-b border-line pb-6"
           variants={staggerContainer(0.08, 0)}
           initial="hidden"
           animate="show"
         >
-          <motion.div className="space-y-4" variants={staggerItem}>
+          <motion.div className="space-y-3" variants={staggerItem}>
             <div className="flex items-center gap-3">
-              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-[0.2em] bg-surface-interactive text-ink-2">
-                <Radar className="w-3.5 h-3.5 text-brand" />
-                Revenue Command Center
+              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-[0.2em] bg-brand/10 text-brand">
+                <Radar className="w-3.5 h-3.5" />
+                Command Center
               </span>
               <span className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-ok">
                 <span className="h-2 w-2 rounded-full bg-ok motion-safe:animate-pulse" />
                 LIVE
               </span>
             </div>
-            <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-medium tracking-tight">
+            <h1 className="font-[family-name:var(--font-brand-display)] text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-ink">
               {greeting()}, {firstName}.
             </h1>
-            <p className="text-sm text-ink-2 max-w-xl leading-relaxed">
+            <p className="text-sm text-ink-2 max-w-xl leading-relaxed font-[family-name:var(--font-brand-sans)]">
               Sistema de inteligência operando. Os fluxos de dados estão sincronizados e o pipeline
               está pronto para orquestração.
             </p>
           </motion.div>
 
-          <motion.div className="flex items-center gap-4" variants={staggerItem}>
+          <motion.div className="flex items-center gap-3" variants={staggerItem}>
             <motion.button
               type="button"
-              onMouseEnter={() => SoundFX.play('hover')}
               onClick={() => {
-                SoundFX.play('click');
                 navigate('/app/prospect');
               }}
-              whileHover={{ scale: 1.04 }}
-              whileTap={{ scale: 0.96 }}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-none text-xs font-semibold hover:text-brand transition-colors cursor-pointer"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-line bg-surface hover:bg-surface-2 text-sm font-semibold transition-colors cursor-pointer"
             >
               <Search className="w-4 h-4" />
               <span>Prospecção</span>
             </motion.button>
 
-            {/* CTA primário com ctaGlow e shimmerBeam */}
             <motion.button
               type="button"
-              onMouseEnter={() => SoundFX.play('hover')}
               onClick={() => {
-                SoundFX.play('confirm');
                 navigate('/app/crm');
               }}
-              variants={ctaGlow}
-              initial="rest"
-              whileHover="glow"
-              whileTap={{ scale: 0.96 }}
-              className="relative inline-flex items-center gap-2 px-6 py-2.5 bg-ink text-bg text-xs font-bold overflow-hidden cursor-pointer transition-colors hover:bg-brand hover:text-on-brand shadow-lg"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-brand hover:bg-brand/90 text-on-brand text-sm font-bold transition-colors shadow-card hover:shadow-card-hover cursor-pointer"
             >
-              {/* Shimmer beam no hover */}
-              <motion.span
-                className="absolute inset-0 pointer-events-none"
-                variants={shimmerBeam}
-                initial="initial"
-                whileHover="hover"
-                aria-hidden="true"
-                style={{
-                  background:
-                    'linear-gradient(105deg, transparent 40%, rgba(0,229,255,0.22) 50%, transparent 60%)',
-                }}
-              />
-              <Activity className="w-4 h-4 relative z-10" />
-              <span className="relative z-10">Orquestrar Pipeline</span>
+              <Activity className="w-4 h-4" />
+              <span>Orquestrar Pipeline</span>
             </motion.button>
           </motion.div>
         </motion.header>
 
-        {/* METRICS FLOW — entrada com perspectiva 3D + tilt por bloco */}
+        {/* METRICS CARDS */}
         <motion.div
-          className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6"
           variants={metricsContainer}
           initial="hidden"
           animate="show"
         >
           {/* Pipeline */}
           <motion.div
-            ref={tiltPipeline.ref as React.RefObject<HTMLDivElement>}
-            style={{ ...tiltPipeline.style, transformStyle: 'preserve-3d' as const }}
-            onPointerMove={tiltPipeline.onPointerMove as React.PointerEventHandler<HTMLDivElement>}
-            onPointerLeave={tiltPipeline.onPointerLeave}
             variants={metricReveal}
-            className="space-y-3 cursor-default"
+            className="bg-surface p-4 rounded-xl border border-line shadow-card hover:shadow-card-hover transition-shadow"
           >
-            <h3 className="text-[10px] font-display font-bold uppercase tracking-[0.15em] text-ink-2 flex items-center gap-2">
-              <Target className="w-3.5 h-3.5" /> Forecast (Pipeline)
-            </h3>
-            <p className="text-4xl lg:text-5xl font-mono text-ink tracking-tight font-medium">
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="text-[10px] font-bold uppercase tracking-[0.15em] text-ink-2 flex items-center gap-2 font-[family-name:var(--font-brand-sans)]">
+                <Target className="w-3.5 h-3.5 text-brand" /> Pipeline
+              </h3>
+            </div>
+            <p className="text-2xl font-bold text-ink font-[family-name:var(--font-brand-sans)]">
               {pipelineValue > 0
                 ? new Intl.NumberFormat('pt-BR', {
                     style: 'currency',
@@ -181,67 +145,69 @@ export function SinglePageDashboard() {
                   }).format(pipelineValue)
                 : 'R$ 0'}
             </p>
-            <p className="text-xs text-ink-2 font-mono">{totalLeads} oportunidades sob gestão</p>
+            <p className="text-xs text-ink-2 mt-1 font-[family-name:var(--font-brand-sans)]">
+              {totalLeads} oportunidades
+            </p>
           </motion.div>
 
           {/* Win Rate */}
           <motion.div
-            ref={tiltWinRate.ref as React.RefObject<HTMLDivElement>}
-            style={{ ...tiltWinRate.style, transformStyle: 'preserve-3d' as const }}
-            onPointerMove={tiltWinRate.onPointerMove as React.PointerEventHandler<HTMLDivElement>}
-            onPointerLeave={tiltWinRate.onPointerLeave}
             variants={metricReveal}
-            className="space-y-3 cursor-default"
+            className="bg-surface p-4 rounded-xl border border-line shadow-card hover:shadow-card-hover transition-shadow"
           >
-            <h3 className="text-[10px] font-display font-bold uppercase tracking-[0.15em] text-ink-2 flex items-center gap-2">
-              <TrendingUp className="w-3.5 h-3.5" /> Win Rate
-            </h3>
-            <p className="text-4xl lg:text-5xl font-mono text-ink tracking-tight font-medium">
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="text-[10px] font-bold uppercase tracking-[0.15em] text-ink-2 flex items-center gap-2 font-[family-name:var(--font-brand-sans)]">
+                <TrendingUp className="w-3.5 h-3.5 text-ok" /> Win Rate
+              </h3>
+            </div>
+            <p className="text-2xl font-bold text-ink font-[family-name:var(--font-brand-sans)]">
               {winRate}%
             </p>
-            <p className="text-xs text-ink-2 font-mono">{closedThisMonth} negócios fechados</p>
+            <p className="text-xs text-ink-2 mt-1 font-[family-name:var(--font-brand-sans)]">
+              {closedThisMonth} fechados
+            </p>
           </motion.div>
 
           {/* Velocity */}
           <motion.div
-            ref={tiltVelocity.ref as React.RefObject<HTMLDivElement>}
-            style={{ ...tiltVelocity.style, transformStyle: 'preserve-3d' as const }}
-            onPointerMove={tiltVelocity.onPointerMove as React.PointerEventHandler<HTMLDivElement>}
-            onPointerLeave={tiltVelocity.onPointerLeave}
             variants={metricReveal}
-            className="space-y-3 cursor-default"
+            className="bg-surface p-4 rounded-xl border border-line shadow-card hover:shadow-card-hover transition-shadow"
           >
-            <h3 className="text-[10px] font-display font-bold uppercase tracking-[0.15em] text-ink-2 flex items-center gap-2">
-              <Activity className="w-3.5 h-3.5" /> Velocity (Atividades)
-            </h3>
-            <p className="text-4xl lg:text-5xl font-mono text-ink tracking-tight font-medium">
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="text-[10px] font-bold uppercase tracking-[0.15em] text-ink-2 flex items-center gap-2 font-[family-name:var(--font-brand-sans)]">
+                <Activity className="w-3.5 h-3.5 text-brand" /> Atividades
+              </h3>
+            </div>
+            <p className="text-2xl font-bold text-ink font-[family-name:var(--font-brand-sans)]">
               {pendingActivities}
             </p>
-            <p className="text-xs text-ink-2 font-mono">ações pendentes no fluxo</p>
+            <p className="text-xs text-ink-2 mt-1 font-[family-name:var(--font-brand-sans)]">
+              pendentes
+            </p>
           </motion.div>
 
           {/* Market */}
           <motion.div
-            ref={tiltMarket.ref as React.RefObject<HTMLDivElement>}
-            style={{ ...tiltMarket.style, transformStyle: 'preserve-3d' as const }}
-            onPointerMove={tiltMarket.onPointerMove as React.PointerEventHandler<HTMLDivElement>}
-            onPointerLeave={tiltMarket.onPointerLeave}
             variants={metricReveal}
-            className="space-y-3 cursor-default"
+            className="bg-surface p-4 rounded-xl border border-line shadow-card hover:shadow-card-hover transition-shadow"
           >
-            <h3 className="text-[10px] font-display font-bold uppercase tracking-[0.15em] text-ink-2 flex items-center gap-2">
-              <Search className="w-3.5 h-3.5" /> Market (Empresas)
-            </h3>
-            <p className="text-4xl lg:text-5xl font-mono text-ink tracking-tight font-medium">
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="text-[10px] font-bold uppercase tracking-[0.15em] text-ink-2 flex items-center gap-2 font-[family-name:var(--font-brand-sans)]">
+                <Search className="w-3.5 h-3.5 text-iris" /> Empresas
+              </h3>
+            </div>
+            <p className="text-2xl font-bold text-ink font-[family-name:var(--font-brand-sans)]">
               {totalCompanies}
             </p>
-            <p className="text-xs text-ink-2 font-mono">{totalCompanies} contas ativas na base</p>
+            <p className="text-xs text-ink-2 mt-1 font-[family-name:var(--font-brand-sans)]">
+              contas ativas
+            </p>
           </motion.div>
         </motion.div>
 
         {/* AI LAYER & GAMIFICATION */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 pt-8 border-t border-line/30">
-          {/* AI Orchestration Language — rows com stagger delay */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 pt-6 border-t border-line/30 flex-1">
+          {/* AI Orchestration */}
           <div className="space-y-6">
             <motion.div
               className="flex items-center gap-3 mb-6"
@@ -249,10 +215,10 @@ export function SinglePageDashboard() {
               initial="hidden"
               animate="show"
             >
-              <span className="p-2 bg-iris/10 text-iris">
+              <span className="p-2 bg-iris/10 text-iris rounded-lg">
                 <BrainCircuit className="w-5 h-5" />
               </span>
-              <span className="text-xs font-bold uppercase tracking-widest text-iris">
+              <span className="text-xs font-bold uppercase tracking-widest text-iris font-[family-name:var(--font-brand-sans)]">
                 AI Orchestration
               </span>
             </motion.div>
@@ -265,7 +231,7 @@ export function SinglePageDashboard() {
             >
               <motion.div
                 variants={staggerItem}
-                className="flex items-center gap-4 text-sm font-mono border-l-2 border-line pl-4 text-ink-2"
+                className="flex items-center gap-4 text-sm font-[family-name:var(--font-brand-sans)] border-l-2 border-line pl-4 text-ink-2"
               >
                 <span className="w-24 text-[10px] uppercase tracking-widest font-bold text-ink-3">
                   Context
@@ -274,7 +240,7 @@ export function SinglePageDashboard() {
               </motion.div>
               <motion.div
                 variants={staggerItem}
-                className="flex items-center gap-4 text-sm font-mono border-l-2 border-line pl-4 text-ink-2"
+                className="flex items-center gap-4 text-sm font-[family-name:var(--font-brand-sans)] border-l-2 border-line pl-4 text-ink-2"
               >
                 <span className="w-24 text-[10px] uppercase tracking-widest font-bold text-ink-3">
                   Analysis
@@ -283,7 +249,7 @@ export function SinglePageDashboard() {
               </motion.div>
               <motion.div
                 variants={staggerItem}
-                className="flex items-center gap-4 text-sm font-mono border-l-2 border-brand pl-4 text-ink"
+                className="flex items-center gap-4 text-sm font-[family-name:var(--font-brand-sans)] border-l-2 border-brand pl-4 text-ink"
               >
                 <span className="w-24 text-[10px] uppercase tracking-widest font-bold text-brand">
                   Action Req.
@@ -295,15 +261,15 @@ export function SinglePageDashboard() {
             <button
               type="button"
               onClick={() => navigate('/app/intelligence')}
-              className="mt-4 inline-flex items-center gap-2 text-xs font-bold text-iris hover:text-ink transition-colors cursor-pointer group"
+              className="mt-4 inline-flex items-center gap-2 text-xs font-bold text-iris hover:text-ink transition-colors cursor-pointer group font-[family-name:var(--font-brand-sans)]"
             >
               <span>Acessar Copiloto IA</span>
               <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
             </button>
           </div>
 
-          {/* Gamification clean integration */}
-          <div className="bg-surface-interactive/30 p-8 rounded-card border border-line/40">
+          {/* Gamification */}
+          <div className="bg-surface-interactive/30 p-8 rounded-xl border border-line/40">
             <GamificationWidget
               initialXp={Math.max(350, totalLeads * 50 + closedThisMonth * 200)}
               level={Math.max(1, Math.floor((totalLeads * 50 + closedThisMonth * 200) / 1000) + 1)}

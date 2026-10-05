@@ -120,8 +120,8 @@ export function PropostasList() {
   }
 
   return (
-    <div className="flex-1 overflow-y-auto bg-bg text-ink p-6 md:p-8 space-y-6">
-      <div className="max-w-7xl mx-auto space-y-6">
+    <div className="flex-1 overflow-y-auto bg-bg text-ink p-4 sm:p-6 lg:p-8 space-y-6">
+      <div className="w-full space-y-6">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-surface p-6 rounded-2xl border border-line shadow-card">
           <div>
             <h1 className="text-2xl font-black text-ink flex items-center gap-3 tracking-tight font-[family-name:var(--font-brand-display)]">
@@ -215,9 +215,9 @@ export function PropostasList() {
                 onAction={
                   canWrite
                     ? () => {
-                      setEditingDocument(null);
-                      setIsFormOpen(true);
-                    }
+                        setEditingDocument(null);
+                        setIsFormOpen(true);
+                      }
                     : undefined
                 }
                 icon={<FileText className="w-10 h-10 text-brand" />}

@@ -20,6 +20,7 @@ infrastructure/observability/prometheus.oci.generated.yml
 playwright-report/
 test-results/
 visual-audit-capture/
+visual-audit-authenticated/
 visual-manual-output/
 .venv-opensource/
 reports/

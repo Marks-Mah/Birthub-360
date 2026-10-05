@@ -299,10 +299,11 @@ export function CompanyList() {
       width: 100,
       render: (company) => (
         <span
-          className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold border ${company.status === 'Ativo'
+          className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold border ${
+            company.status === 'Ativo'
               ? 'bg-success/10 text-emerald-700 dark:text-success border-success/20'
               : 'bg-surface-2 text-ink/70 dark:text-ink-2 border-line'
-            }`}
+          }`}
         >
           {company.status}
         </span>
@@ -371,7 +372,7 @@ export function CompanyList() {
   }
 
   return (
-    <div className="flex-1 overflow-y-auto bg-bg text-ink p-6 md:p-8 space-y-6">
+    <div className="flex-1 overflow-y-auto bg-bg text-ink p-4 sm:p-6 lg:p-8 space-y-6">
       {/* Popover de Tecnologia */}
       <ToolTechPopover
         info={activeToolPopover}
@@ -382,7 +383,7 @@ export function CompanyList() {
         }}
       />
 
-      <div className="max-w-7xl mx-auto space-y-6">
+      <div className="w-full space-y-6">
         {/* Banner de Dica Contextual */}
         <ContextualTip
           id="tip-companies-tech"
@@ -567,10 +568,11 @@ export function CompanyList() {
                       </div>
 
                       <span
-                        className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border ${company.status === 'Ativo'
+                        className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border ${
+                          company.status === 'Ativo'
                             ? 'bg-success/10 text-emerald-700 dark:text-success border-success/20'
                             : 'bg-surface-2 text-ink/70 dark:text-ink-2 border-line'
-                          }`}
+                        }`}
                       >
                         {/* Indicador estático — status é campo persistido, não presença em tempo real; o
                                                     pulso infinito (`animate-ping`) não comunicava nenhum estado a mais que o texto

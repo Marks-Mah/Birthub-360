@@ -1,4 +1,4 @@
-import type React from 'react';
+import type { ReactNode } from 'react';
 import { Sidebar } from './Sidebar';
 import { AppTopbar } from './AppTopbar';
 import { OfflineBanner } from './OfflineBanner';
@@ -9,7 +9,7 @@ import { MobileNavDrawer } from './MobileNavDrawer';
 import type { TabType } from './tabMeta';
 
 interface MainLayoutProps {
-  children: React.ReactNode;
+  children: ReactNode;
   activeTab?: string;
 }
 
@@ -34,7 +34,7 @@ export function MainLayout({ children, activeTab }: MainLayoutProps) {
       <div className="flex flex-1 flex-col min-w-0">
         <AppTopbar onOpenMobileNav={toggleMobileNav} activeTab={activeTab as TabType} />
 
-        <main className="relative flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
+        <main className="relative flex-1 overflow-y-auto">
           <DataFlowLines />
           {children}
         </main>

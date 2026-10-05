@@ -31,13 +31,20 @@ import confetti from 'canvas-confetti';
 
 export default function App() {
   const { currentUser } = useAuth();
-  
-  const user: User | null = currentUser ? {
-    id: currentUser.id,
-    email: currentUser.email,
-    name: currentUser.name,
-    role: currentUser.role === 'ADMIN' ? 'admin' : currentUser.role === 'GESTOR' ? 'gestor' : 'user'
-  } : null;
+
+  const user: User | null = currentUser
+    ? {
+        id: currentUser.id,
+        email: currentUser.email,
+        name: currentUser.name,
+        role:
+          currentUser.role === 'ADMIN'
+            ? 'admin'
+            : currentUser.role === 'GESTOR'
+              ? 'gestor'
+              : 'user',
+      }
+    : null;
 
   const handleLogin = (u: User) => {};
   const handleLogout = () => {};
@@ -673,4 +680,3 @@ export default function App() {
     </div>
   );
 }
-

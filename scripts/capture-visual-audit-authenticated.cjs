@@ -67,38 +67,37 @@ async function captureScreenshots() {
   const results = [];
 
   try {
-    // Tentar fazer login
-    console.log('Attempting to login...');
+    // Usar credenciais do usuário temporário criado
+    const email = 'audit-temp-1791213079215@birthhub360.internal';
+    const password = 'AuditTemp123!';
+
+    console.log('Attempting to login with temp user...');
     await page.goto(`${BASE_URL}/login`, { waitUntil: 'networkidle', timeout: 30000 });
     await page.waitForTimeout(2000);
 
     // Verificar se já está logado ou precisa fazer login
     const currentUrl = page.url();
     if (currentUrl.includes('/login')) {
-      console.log('On login page, attempting to sign up...');
-      
-      // Tentar fazer signup
+      console.log('On login page, attempting to login...');
+
+      // Fazer login com credenciais existentes
       try {
-        const email = `audit-${Date.now()}@test.internal`;
-        const password = 'Test123456!';
-        
         await page.fill('input[type="email"]', email);
         await page.fill('input[type="password"]', password);
-        await page.fill('input[name="name"]', 'Audit User');
-        
+
         await page.click('button[type="submit"]');
         await page.waitForTimeout(5000);
-        
-        console.log('Signup attempted');
+
+        console.log('Login attempted');
       } catch (e) {
-        console.log('Signup failed, trying direct login with test credentials...');
+        console.log('Login failed:', e.message);
       }
     }
 
     // Verificar se login foi bem-sucedido
     await page.waitForTimeout(3000);
     const loginUrl = page.url();
-    
+
     if (loginUrl.includes('/login')) {
       console.log('Still on login page - database may not be available');
       console.log('Will capture screens that redirect to login (previous approach)');

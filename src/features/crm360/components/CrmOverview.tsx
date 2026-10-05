@@ -149,7 +149,7 @@ export function CrmOverview({ onNavigate }: CrmOverviewProps) {
   const maxStage = Math.max(...data.stageCounts.map((stage) => stage.count), 1);
 
   return (
-    <div className="space-y-6 p-6 md:p-8">
+    <div className="space-y-6 w-full px-4 sm:px-6 lg:px-8 py-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 className="text-2xl font-black tracking-tight text-ink font-[family-name:var(--font-brand-display)]">
