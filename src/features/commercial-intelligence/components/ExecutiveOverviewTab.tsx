@@ -496,15 +496,17 @@ export function ExecutiveOverviewTab({ filter }: ExecutiveOverviewTabProps) {
           />
           <KpiTile
             label="Oportunidades Abertas"
-            value={performance?.opportunities.open.toString() || '-'}
+            value={performance?.opportunities?.open?.toString() || '-'}
             hint={
-              performance ? `${performance.opportunities.createdInPeriod} novas no mês` : undefined
+              performance?.opportunities?.createdInPeriod
+                ? `${performance.opportunities.createdInPeriod} novas no mês`
+                : undefined
             }
           />
           <KpiTile
             label="Ticket Médio (Aberto)"
             value={
-              performance?.averageTicket.open
+              performance?.averageTicket?.open
                 ? formatCurrency(performance.averageTicket.open, currency)
                 : '-'
             }
@@ -513,24 +515,32 @@ export function ExecutiveOverviewTab({ filter }: ExecutiveOverviewTabProps) {
             label="Win Rate"
             value={performance?.winRate != null ? formatPercent(performance.winRate) : '-'}
             hint={
-              performance
-                ? `${performance.wonCount} ganho(s) / ${performance.lostCount} perdido(s)`
+              performance && performance.wonCount != null
+                ? `${performance.wonCount} ganho(s) / ${performance.lostCount ?? 0} perdido(s)`
                 : undefined
             }
           />
           <KpiTile
             label="Sales Cycle (Médio)"
             value={
-              performance?.salesCycle.meanDays != null
+              performance?.salesCycle?.meanDays != null
                 ? `${Math.round(performance.salesCycle.meanDays)} dias`
                 : '-'
             }
-            hint={performance ? `Mediana: ${performance.salesCycle.medianDays} dias` : undefined}
+            hint={
+              performance?.salesCycle?.medianDays != null
+                ? `Mediana: ${performance.salesCycle.medianDays} dias`
+                : undefined
+            }
           />
           <KpiTile
             label="Oportunidades Estagnadas"
-            value={performance?.opportunities.stalled.toString() || '-'}
-            tone={performance && performance.opportunities.stalled > 0 ? 'critical' : 'good'}
+            value={performance?.opportunities?.stalled?.toString() || '-'}
+            tone={
+              performance?.opportunities?.stalled && performance.opportunities.stalled > 0
+                ? 'critical'
+                : 'good'
+            }
             hint={performance ? `> limite de tempo na etapa` : undefined}
           />
         </div>
