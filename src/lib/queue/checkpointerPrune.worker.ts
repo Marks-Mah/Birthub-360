@@ -51,7 +51,7 @@ export function createCheckpointerPruneWorker(): Worker | null {
               }
             }
           }
-          
+
           logger.info(`Pruned ${deletedCount} old LangGraph threads.`);
         } finally {
           client.release();

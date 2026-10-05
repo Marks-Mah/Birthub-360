@@ -1,4 +1,4 @@
-import React from 'react';
+import type { ReactNode } from 'react';
 import { Sidebar } from './Sidebar';
 import { AppTopbar } from './AppTopbar';
 import { OfflineBanner } from './OfflineBanner';
@@ -9,7 +9,7 @@ import { MobileNavDrawer } from './MobileNavDrawer';
 import type { TabType } from './tabMeta';
 
 interface MainLayoutProps {
-  children: React.ReactNode;
+  children: ReactNode;
   activeTab?: string;
 }
 
@@ -20,24 +20,21 @@ export function MainLayout({ children, activeTab }: MainLayoutProps) {
     <div className="relative flex min-h-screen bg-background text-foreground antialiased selection:bg-brand selection:text-on-brand">
       <OfflineBanner />
 
-      {/* Sidebar Desktop Estática */}
-      <aside className="hidden lg:flex lg:w-64 lg:flex-col lg:fixed lg:inset-y-0 z-30 border-r border-border-subtle bg-surface">
-        <Sidebar activeTab={activeTab as TabType} />
-      </aside>
+      {/* Sidebar Desktop gerencia o proprio fixed e collapse */}
+      <Sidebar activeTab={activeTab as TabType} />
 
       {/* Drawer Mobile Desacoplado */}
       <MobileNavDrawer
         isOpen={mobileNavOpen}
         onClose={closeMobileNav}
         activeTab={activeTab as TabType}
-        
       />
 
-      {/* Conteúdo Principal */}
-      <div className="flex flex-1 flex-col lg:pl-64">
+      {/* Conteudo Principal */}
+      <div className="flex flex-1 flex-col min-w-0">
         <AppTopbar onOpenMobileNav={toggleMobileNav} activeTab={activeTab as TabType} />
 
-        <main className="relative flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
+        <main className="relative flex-1 overflow-y-auto">
           <DataFlowLines />
           {children}
         </main>

@@ -1,16 +1,13 @@
-import { ArrowRight, Bot, Layers, Sparkles } from 'lucide-react';
+import { Bot, Layers, Sparkles } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import type {
   Workspace,
   WorkspaceAgentGroup,
   WorkspaceCapabilityStatus,
-  WorkspaceKpi,
-  WorkspaceModule,
-  WorkspaceQuickAction,
 } from '../../features/workspace/workspace.api.js';
 import { cn } from '../../lib/utils.js';
 import { TAB_META, type TabType } from '../layout/tabMeta.js';
-import { Badge, type BadgeProps } from '../ui/Badge.js';
+import type { BadgeProps } from '../ui/Badge.js';
 import { EmptyState } from '../ui/EmptyState.js';
 import { VisualState } from '../ui/VisualState.js';
 
@@ -105,7 +102,7 @@ export function WorkspaceReadySection({ workspace }: { workspace: Workspace }) {
               ) : (
                 <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
                   {workspace.kpis.map((kpi) => {
-                    const statusMeta = KPI_STATUS_META[kpi.status];
+                    const _statusMeta = KPI_STATUS_META[kpi.status];
                     return (
                       <div key={kpi.capabilityCode} className="flex flex-col">
                         <div className="flex items-center gap-2 mb-2">

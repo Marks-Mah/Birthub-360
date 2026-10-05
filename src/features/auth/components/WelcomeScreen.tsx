@@ -1,5 +1,4 @@
-import { OrbitalSystem } from './OrbitalSystem.js';
-import { NewLoginScreen } from './NewLoginScreen.js';
+import { NewLoginScreen } from './NewLoginScreen';
 
 export function WelcomeScreen() {
   return <NewLoginScreen />;

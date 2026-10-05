@@ -1,0 +1,11 @@
+{
+  "route": "/app/usage",
+  "name": "Usage (Admin)",
+  "title": "Birth Hub 360º | Central de Comando Inteligente",
+  "url": "http://localhost:3024/login",
+  "public": false,
+  "timestamp": "2026-10-05T03:56:55.863Z",
+  "accessible": false,
+  "screenshot": "C:\\Github\\Birthub-360\\visual-audit-capture\\usage--admin-.png",
+  "status": "success"
+}

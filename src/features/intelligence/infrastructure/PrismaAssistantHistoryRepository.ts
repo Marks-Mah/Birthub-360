@@ -64,12 +64,15 @@ export class PrismaAssistantHistoryRepository implements AssistantHistoryReposit
         }),
       ]);
     } catch (err: any) {
-      logger.error({
-        organizationId,
-        userId,
-        brand,
-        err,
-      }, 'Failed to persist assistant history turn');
+      logger.error(
+        {
+          organizationId,
+          userId,
+          brand,
+          err,
+        },
+        'Failed to persist assistant history turn',
+      );
     }
   }
 }

@@ -122,9 +122,9 @@
   --white: #ffffff;
 
   /* BirthHub 360 - Destaque (7 colors) - atualizado para cores do HTML */
-  --brand: #00e5ff;
-  --brand-2: #33ebff;
-  --on-brand: #0b132b;
+  --brand: #0ea5e9;
+  --brand-2: #38bdf8;
+  --on-brand: #ffffff;
   --iris: #8b5cf6;
   --orbit-blue: #3b82f6;
   --red: #ef4444;
@@ -133,9 +133,9 @@
   --ok: #22c55e;
 
   /* Gradientes e glows para landing/login */
-  --grad-brand: linear-gradient(135deg, #00E5FF 0%, #3B82F6 55%, #8B5CF6 100%);
+  --grad-brand: linear-gradient(135deg, #00e5ff 0%, #3b82f6 55%, #8b5cf6 100%);
   --glow-brand: 0 0 22px rgba(0, 229, 255, 0.35);
-  --glow-iris: 0 0 22px rgba(139, 92, 246, 0.30);
+  --glow-iris: 0 0 22px rgba(139, 92, 246, 0.3);
   /* Indireção pro --color-info do @theme poder ser sobrescrito por tema (mesmo padrão de
      --warn/--ok acima e --critical mais abaixo) — sem isso, `.dark { --color-info: ... }` perderia
      pra `--color-info: #3b82f6` gerado pelo bloco `@theme` (que vem depois no arquivo e empata em
@@ -170,8 +170,10 @@
   --pulse: #c2255c;
   /* Glow discreto no claro — "neon só no escuro" (regra do brief). Mesma fórmula de
      --shadow-glow-brand acima (20%, blur 15px), só trocando a cor de base. */
-  --shadow-glow-accent-violet-value: 0 0 15px -3px color-mix(in srgb, var(--accent-violet) 20%, transparent);
-  --shadow-glow-accent-cyan-value: 0 0 15px -3px color-mix(in srgb, var(--accent-cyan) 20%, transparent);
+  --shadow-glow-accent-violet-value: 0 0 15px -3px
+    color-mix(in srgb, var(--accent-violet) 20%, transparent);
+  --shadow-glow-accent-cyan-value: 0 0 15px -3px
+    color-mix(in srgb, var(--accent-cyan) 20%, transparent);
   --shadow-glow-pulse-value: 0 0 15px -3px color-mix(in srgb, var(--pulse) 20%, transparent);
   /* Vermelho de estado crítico/risco (Comercial Inteligente: Centro de Decisão, Alertas, drill-down
      de negócios) — precisa ser redefinido por tema porque nenhum hex único passa 4.5:1 (WCAG AA)
@@ -232,9 +234,9 @@
   --shadow-nav-value: 12px 0 34px -28px rgba(26, 21, 19, 0.45);
   --shadow-nav-active-value: 0 10px 26px -14px color-mix(in srgb, var(--brand) 52%, black);
   --radius-nav-item-value: 12px;
-  --font-brand-sans: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
-  --font-brand-display: "Sora", ui-sans-serif, system-ui, sans-serif;
-  --font-brand-serif: "Georgia", serif;
+  --font-brand-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-brand-display: "Sora", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-brand-serif: "Playfair Display", "Georgia", serif;
 
   /* Motion system tokens — durations e easings canônicos (Design Language v2.0, seção 8).
      Referenciados por .bh-interactive, Framer Motion variants e qualquer transition CSS
@@ -260,7 +262,9 @@
 }
 
 .glow-text {
-  text-shadow: 0 0 20px rgba(0, 229, 255, 0.6), 0 0 40px rgba(0, 229, 255, 0.3);
+  text-shadow:
+    0 0 20px rgba(0, 229, 255, 0.6),
+    0 0 40px rgba(0, 229, 255, 0.3);
 }
 
 .grad-text.glow-text {
@@ -281,12 +285,16 @@
     opacity: 1;
     transform: scale(1.5) rotate(10deg);
     filter: blur(0px);
-    box-shadow: 0 0 40px currentColor, 0 0 80px currentColor;
+    box-shadow:
+      0 0 40px currentColor,
+      0 0 80px currentColor;
   }
 
   60% {
     transform: scale(0.85) rotate(-5deg);
-    box-shadow: 0 0 30px currentColor, 0 0 60px currentColor;
+    box-shadow:
+      0 0 30px currentColor,
+      0 0 60px currentColor;
   }
 
   80% {
@@ -297,7 +305,9 @@
     opacity: 1;
     transform: scale(1) rotate(0deg);
     filter: blur(0px);
-    box-shadow: 0 0 25px currentColor, 0 0 50px currentColor;
+    box-shadow:
+      0 0 25px currentColor,
+      0 0 50px currentColor;
   }
 }
 
@@ -320,38 +330,37 @@
 
 .balloon-item:hover {
   transform: scale(1.15) !important;
-  box-shadow: 0 0 35px currentColor, 0 0 70px currentColor !important;
+  box-shadow:
+    0 0 35px currentColor,
+    0 0 70px currentColor !important;
   border-color: rgba(255, 255, 255, 0.3);
 }
 
 .dark {
-  /* Obsidian — Âncora oficial do tema escuro neutro */
-  --bg: #09090b;
-  --surface: #18181b;
-  --surface-2: #27272a;
-  --surface-subtle: #141417;
-  --surface-elevated: #27272a;
-  --surface-interactive: #3f3f46;
-  --overlay: rgba(9, 9, 11, 0.78);
-  --ink: #fafafa;
-  --ink-2: #a1a1aa;
-  --line: rgba(255, 255, 255, 0.1);
+  /* Dark theme mais leve e moderno — base azul-marinho com melhor contraste */
+  --bg: #0f172a;
+  --surface: #1e293b;
+  --surface-2: #334155;
+  --surface-subtle: #1e293b;
+  --surface-elevated: #334155;
+  --surface-interactive: #475569;
+  --overlay: rgba(15, 23, 42, 0.85);
+  --ink: #f1f5f9;
+  --ink-2: #cbd5e1;
+  --line: rgba(255, 255, 255, 0.08);
   --soft: rgba(212, 175, 55, 0.16);
   /* Error and AI / Purple */
   --red: #ef4444;
   --pink: #8b5cf6;
-  /* Acentos de ícone da Sidebar, lado escuro: sobre --surface-elevated escura os matizes clareiam
-     em direção ao branco (o ouro volta ao --brand puro, que aqui já passa de 3:1). */
-  --nav-c-gold: var(--brand);
-  --nav-c-iris: color-mix(in srgb, var(--iris) 72%, white);
-  --nav-c-blue: color-mix(in srgb, var(--orbit-blue) 75%, white);
-  --nav-c-red: color-mix(in srgb, var(--red) 88%, white);
-  --nav-c-green: color-mix(in srgb, var(--ok) 70%, white);
-  --nav-c-violet: color-mix(in srgb,
-      color-mix(in srgb, var(--iris) 45%, var(--orbit-blue)) 72%,
-      white);
-  --nav-c-teal: color-mix(in srgb, color-mix(in srgb, var(--ok) 55%, var(--orbit-blue)) 72%, white);
-  --nav-c-slate: var(--ink-2);
+  /* Acentos de ícone da Sidebar, lado escuro: matizes mais vibrantes e legíveis */
+  --nav-c-gold: #fbbf24;
+  --nav-c-iris: #a78bfa;
+  --nav-c-blue: #60a5fa;
+  --nav-c-red: #f87171;
+  --nav-c-green: #4ade80;
+  --nav-c-violet: #c4b5fd;
+  --nav-c-teal: #2dd4bf;
+  --nav-c-slate: #94a3b8;
   /* --ok cru (#0f9d64) sobre --surface-elevated escura mede 4.44:1 como texto de 12px, abaixo do
      mínimo AA de 4.5:1 (axe-core, "Volume de Leads" no Pipeline CRM). Clareado em ~14% rumo ao
      branco: 5.3:1. Mesmo padrão de --critical em .dark (hex cru + color-mix; o token do claro
@@ -448,7 +457,8 @@
     0 0 8px -1px color-mix(in srgb, var(--accent-cyan) 40%, transparent);
   --shadow-glow-pulse-value:
     0 0 20px -2px color-mix(in srgb, var(--pulse) 55%, transparent),
-    0 0 8px -1px color-mix(in srgb, var(--pulse) 40%, transparent);}
+    0 0 8px -1px color-mix(in srgb, var(--pulse) 40%, transparent);
+}
 
 @theme {
   --font-sans: var(--font-brand-sans);
@@ -660,7 +670,6 @@
   --animate-pulse-slow: pulse-slow 8s ease-in-out infinite;
   --animate-fade-in: fade-in 300ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
 
-
   @keyframes border-beam {
     0% {
       offset-distance: 0%;
@@ -684,7 +693,6 @@
   }
 
   @keyframes float {
-
     0%,
     100% {
       transform: translateY(0);
@@ -696,7 +704,6 @@
   }
 
   @keyframes pulse-glow {
-
     0%,
     100% {
       filter: drop-shadow(0 0 12px color-mix(in srgb, var(--brand) 25%, transparent));
@@ -708,7 +715,6 @@
   }
 
   @keyframes gradient-xy {
-
     0%,
     100% {
       background-position: 0% 50%;
@@ -756,7 +762,6 @@
   }
 
   @keyframes pulse-slow {
-
     0%,
     100% {
       opacity: 0.6;
@@ -778,8 +783,6 @@
       opacity: 1;
     }
   }
-
-
 }
 
 @layer base {
@@ -788,12 +791,16 @@
     font-family: var(--font-sans);
     background-color: var(--bg);
     background-image:
-      radial-gradient(at 0% 0%,
+      radial-gradient(
+        at 0% 0%,
         color-mix(in srgb, var(--brand) 10%, transparent) 0px,
-        transparent 50%),
-      radial-gradient(at 100% 100%,
+        transparent 50%
+      ),
+      radial-gradient(
+        at 100% 100%,
         color-mix(in srgb, var(--brand-2) 10%, transparent) 0px,
-        transparent 50%);
+        transparent 50%
+      );
     background-attachment: fixed;
     color: var(--ink);
   }
@@ -1078,18 +1085,19 @@
 }
 
 @layer utilities {
-
   /* Órbita 360º de assinatura (dourado → vermelho → rosa → íris → azul) — atualização 09/2026 da
      órbita de 3 cores (dourado → íris → azul) para as 5 cores da nova direção. Reservada a
      halo/borda/hero por regra da marca (CLAUDE.md, seção 4, regra #3): nunca fundo de superfície
      com texto em cima, no máximo uma por composição. */
   .bg-gradient-orbit5 {
-    background-image: linear-gradient(100deg,
-        var(--brand) 0%,
-        var(--red) 26%,
-        var(--pink) 48%,
-        var(--iris) 70%,
-        var(--orbit-blue) 100%);
+    background-image: linear-gradient(
+      100deg,
+      var(--brand) 0%,
+      var(--red) 26%,
+      var(--pink) 48%,
+      var(--iris) 70%,
+      var(--orbit-blue) 100%
+    );
   }
 
   .text-gradient-brand {
@@ -1099,10 +1107,12 @@
   }
 
   .shimmer-bg {
-    background: linear-gradient(90deg,
-        rgba(255, 255, 255, 0) 0%,
-        rgba(255, 255, 255, 0.08) 50%,
-        rgba(255, 255, 255, 0) 100%);
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.08) 50%,
+      rgba(255, 255, 255, 0) 100%
+    );
     background-size: 200% 100%;
     animation: shimmer 2.5s infinite linear;
   }
@@ -1170,32 +1180,40 @@
 
   /* Shimmer dos skeletons */
   .bh-skeleton-shimmer {
-    background: linear-gradient(90deg,
-        color-mix(in srgb, var(--surface-2) 100%, transparent) 0%,
-        color-mix(in srgb, var(--surface-2) 60%, var(--surface)) 50%,
-        color-mix(in srgb, var(--surface-2) 100%, transparent) 100%);
+    background: linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--surface-2) 100%, transparent) 0%,
+      color-mix(in srgb, var(--surface-2) 60%, var(--surface)) 50%,
+      color-mix(in srgb, var(--surface-2) 100%, transparent) 100%
+    );
     background-size: 200% 100%;
     animation: shimmer 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
 
   /* Padrões geométricos de atmosfera (60°) */
   .bh-pattern-diagonal-60 {
-    background-image: repeating-linear-gradient(60deg,
-        transparent,
-        transparent 28px,
-        color-mix(in srgb, var(--brand) 4%, transparent) 28px,
-        color-mix(in srgb, var(--brand) 4%, transparent) 29px);
+    background-image: repeating-linear-gradient(
+      60deg,
+      transparent,
+      transparent 28px,
+      color-mix(in srgb, var(--brand) 4%, transparent) 28px,
+      color-mix(in srgb, var(--brand) 4%, transparent) 29px
+    );
   }
 
   .bh-pattern-grid {
     background-size: 32px 32px;
     background-image:
-      linear-gradient(to right,
+      linear-gradient(
+        to right,
         color-mix(in srgb, var(--line) 40%, transparent) 1px,
-        transparent 1px),
-      linear-gradient(to bottom,
+        transparent 1px
+      ),
+      linear-gradient(
+        to bottom,
         color-mix(in srgb, var(--line) 40%, transparent) 1px,
-        transparent 1px);
+        transparent 1px
+      );
   }
 }
 
@@ -1208,7 +1226,6 @@
    árvore de rotas. Verificado na Onda 8: comentário anterior citava isso como backlog pendente,
    mas o MotionConfig já estava implementado — só o comentário estava desatualizado. */
 @media (prefers-reduced-motion: reduce) {
-
   *,
   *::before,
   *::after {

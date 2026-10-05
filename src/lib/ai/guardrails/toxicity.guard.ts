@@ -40,13 +40,23 @@ export interface ToxicityResult {
   matches: string[];
 }
 
+function escapeRegex(s: string): string {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function getWordRegex(word: string): RegExp {
+  return new RegExp(`(^|[^\\p{L}\\p{N}_])${escapeRegex(word)}(?=[^\\p{L}\\p{N}_]|$)`, 'gui');
+}
+
 export function detectToxicity(text: string): ToxicityResult {
-  const lowerText = text.toLowerCase();
   const matches: string[] = [];
 
   for (const word of TOXIC_WORDS_PT) {
-    if (lowerText.includes(word)) {
-      matches.push(word);
+    const regex = getWordRegex(word);
+    if (regex.test(text)) {
+      if (!matches.includes(word)) {
+        matches.push(word);
+      }
     }
   }
 
@@ -65,15 +75,16 @@ export function detectToxicity(text: string): ToxicityResult {
 }
 
 export function redactToxicity(text: string): { redacted: string; matches: string[] } {
-  const lowerText = text.toLowerCase();
   const matches: string[] = [];
   let redacted = text;
 
   for (const word of TOXIC_WORDS_PT) {
-    if (lowerText.includes(word)) {
-      matches.push(word);
-      const regex = new RegExp(word, 'gi');
-      redacted = redacted.replace(regex, '[REDACTED]');
+    const regex = getWordRegex(word);
+    if (regex.test(redacted)) {
+      if (!matches.includes(word)) {
+        matches.push(word);
+      }
+      redacted = redacted.replace(regex, '$1[REDACTED]');
     }
   }
 

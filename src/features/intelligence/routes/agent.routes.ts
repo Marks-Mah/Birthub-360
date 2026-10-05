@@ -16,11 +16,22 @@ const ttsRequestSchema = z.object({
 
 router.post(
   '/tts',
+  writeRoles,
   validateRequest(ttsRequestSchema),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { text } = req.body as z.infer<typeof ttsRequestSchema>;
+      const startTime = Date.now();
       const audio = await synthesizeSpeech(text);
+
+      const { logAiUsage } = await import('../../../lib/ai/gateway.js');
+      await logAiUsage({
+        promptId: 'tts_generate',
+        model: 'Voicebox',
+        usage: { promptTokens: 0, completionTokens: 0, totalTokens: 0 },
+        latencyMs: Date.now() - startTime,
+      });
+
       res.setHeader('Content-Type', 'audio/wav');
       res.send(audio);
     } catch (error: any) {

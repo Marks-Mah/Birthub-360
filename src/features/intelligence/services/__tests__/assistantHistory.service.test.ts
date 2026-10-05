@@ -57,7 +57,13 @@ describe('AssistantHistoryService with Repository', () => {
     const repo = new FakeAssistantHistoryRepository();
     const service = new AssistantHistoryService(repo);
 
-    await service.appendAssistantTurn(org, user, brand, 'Qual a meta do trimestre?', 'A meta é 200k.');
+    await service.appendAssistantTurn(
+      org,
+      user,
+      brand,
+      'Qual a meta do trimestre?',
+      'A meta é 200k.',
+    );
 
     expect(repo.appendCalls).toHaveLength(1);
     expect(repo.messages).toHaveLength(2);

@@ -156,6 +156,91 @@ security:
   - sessionCookie: []
 
 paths:
+  /commercial-agent/workspace:
+    get:
+      tags: [Commercial Agent]
+      summary: Workspace do Agente Comercial
+      responses:
+        '200':
+          description: OK
+
+  /commercial-agent/mission/{id}/trace:
+    get:
+      tags: [Commercial Agent]
+      summary: Retorna o trace de execução do Agent Center da Tríade
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: Trace de execução da missão
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  data: { type: object }
+
+  /commercial-agent/nba/{id}/execute:
+    post:
+      tags: [Commercial Agent]
+      summary: Registra a execução de uma Next Best Action sugerida
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                actionType: { type: string }
+                accountName: { type: string }
+      responses:
+        '200':
+          description: Ação executada com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+
+  /commercial-agent/nba/{id}/feedback:
+    post:
+      tags: [Commercial Agent]
+      summary: Registra o feedback sobre uma Next Best Action sugerida
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                feedbackType: { type: string }
+                reason: { type: string }
+      responses:
+        '200':
+          description: Feedback registrado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+
   /market-intelligence/companies:
     get:
       tags: [Market Intelligence]
@@ -2505,6 +2590,111 @@ paths:
         '400':
           description: Função desconhecida ou aridade de argumentos incorreta
 
+  /intelligence/tools/custom:
+    get:
+      tags: [Intelligence]
+      summary: Lista as ferramentas personalizadas de IA cadastradas na organização
+      responses:
+        '200':
+          description: Lista de ferramentas customizadas
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean, example: true }
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id: { type: string }
+                        name: { type: string }
+                        category: { type: string }
+                        prompt: { type: string }
+                        createdAt: { type: string, format: date-time }
+    post:
+      tags: [Intelligence]
+      summary: Cadastra uma nova ferramenta personalizada de IA na organização
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, category, prompt]
+              properties:
+                name: { type: string }
+                category: { type: string }
+                prompt: { type: string }
+      responses:
+        '200':
+          description: Ferramenta customizada criada com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean, example: true }
+                  data: { type: object }
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /intelligence/tools/custom/{id}:
+    delete:
+      tags: [Intelligence]
+      summary: Remove uma ferramenta personalizada de IA pelo ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: Ferramenta removida com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean, example: true }
+
+  /intelligence/observability/agents:
+    get:
+      tags: [Intelligence]
+      summary: Retorna métricas de observabilidade e consumo de tokens por agente/célula
+      responses:
+        '200':
+          description: Lista de agentes com status e volume de tokens
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean, example: true }
+                  data:
+                    type: array
+                    items:
+                      type: object
+
+  /intelligence/observability/logs:
+    get:
+      tags: [Intelligence]
+      summary: Retorna os logs recentes de execução e inferência do enxame de agentes
+      responses:
+        '200':
+          description: Logs recentes de inferência
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean, example: true }
+                  data:
+                    type: array
+                    items:
+                      type: object
+
   # ─────────────────── Intelligence Suite (catálogo de 16 ações de IA) ───────────────────
   # Montado em intelligence.routes.ts (`router.use('/suite', aiSuiteRouter)`), restrito a
   # ADMIN/GESTOR/CLOSER/SDR (ver src/features/intelligence/routes/ai-suite.routes.ts). A maioria
@@ -3381,6 +3571,21 @@ paths:
               schema:
                 $ref: '#/components/schemas/DataEnvelope'
 
+  /analytics/sales-summary:
+    get:
+      tags: [Analytics]
+      summary: Resumo agregado de vendas e desempenho comercial
+      responses:
+        '200':
+          description: Métricas agregadas de vendas
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean, example: true }
+                  data: { type: object }
+
   /analytics/cohort:
     get:
       tags: [Analytics]
@@ -4015,6 +4220,51 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DataEnvelope'
+
+  /gamification/leaderboard:
+    get:
+      tags: [Gamification]
+      summary: Retorna o ranking da equipe comercial e pontuação de gamificação
+      responses:
+        '200':
+          description: Leaderboard dos vendedores da organização
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  data: { type: array, items: { type: object } }
+
+  /gamification/profile:
+    get:
+      tags: [Gamification]
+      summary: Retorna o perfil de gamificação (nível, XP, badges) do usuário autenticado
+      responses:
+        '200':
+          description: Perfil de gamificação do usuário
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  data: { type: object }
+
+  /gamification/coaching:
+    get:
+      tags: [Gamification]
+      summary: Retorna as recomendações atuais de coaching do vendedor autenticado
+      responses:
+        '200':
+          description: Recomendações de coaching
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  data: { type: object }
 
   /gamification/coaching/weekly:
     post:
@@ -5924,6 +6174,60 @@ paths:
           $ref: '#/components/responses/BadRequest'
         '403':
           $ref: '#/components/responses/Forbidden'
+
+  /team/invite:
+    post:
+      tags: [Equipe]
+      summary: Envia convite para novo membro da equipe
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, role]
+              properties:
+                email: { type: string, format: email }
+                role: { type: string }
+      responses:
+        '201':
+          description: Convite criado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  data: { type: object }
+
+  /team/{memberId}/role:
+    put:
+      tags: [Equipe]
+      summary: Atualiza o papel de um membro da equipe
+      parameters:
+        - in: path
+          name: memberId
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [role]
+              properties:
+                role: { type: string }
+      responses:
+        '200':
+          description: Papel atualizado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  data: { type: object }
 
   /team/{id}/reset-password:
     parameters:

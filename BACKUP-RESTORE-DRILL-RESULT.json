@@ -1,0 +1,105 @@
+{
+  "timestamp": "2026-10-03T17:47:58.962Z",
+  "backup": {
+    "filePath": "C:\\Github\\Birthub-360\\backups\\drill_backup_2026-10-03T17-47-49-679Z.sql",
+    "sizeBytes": 526276,
+    "sizeKb": 513.94,
+    "durationMs": 374,
+    "sha256": "af01fa0512618544e7a89f55171bf61b9c0edf518b3e1b0e1971bb84de569a73"
+  },
+  "retention": {
+    "policyDays": 14,
+    "scannedFiles": 2,
+    "purgedFiles": 0
+  },
+  "drillDatabase": {
+    "name": "prospectordb_drill_1791049669680",
+    "provisionDurationMs": 73,
+    "restoreDurationMs": 5403
+  },
+  "verification": {
+    "prismaMigrateStatus": "Datasource \"db\": PostgreSQL database \"prospectordb_drill_1791049669680\", schema \"public\" at \"localhost:5434\"\n\n136 migrations found in prisma/migrations\n\nDatabase schema is up to date!",
+    "tableCounts": [
+      {
+        "table": "Organization",
+        "original": 1,
+        "restored": 1,
+        "match": true
+      },
+      {
+        "table": "Company",
+        "original": 0,
+        "restored": 0,
+        "match": true
+      },
+      {
+        "table": "Contact",
+        "original": 0,
+        "restored": 0,
+        "match": true
+      },
+      {
+        "table": "Lead",
+        "original": 0,
+        "restored": 0,
+        "match": true
+      },
+      {
+        "table": "Activity",
+        "original": 0,
+        "restored": 0,
+        "match": true
+      },
+      {
+        "table": "AuditLog",
+        "original": 0,
+        "restored": 0,
+        "match": true
+      },
+      {
+        "table": "TimelineEvent",
+        "original": 0,
+        "restored": 0,
+        "match": true
+      },
+      {
+        "table": "ConversationSignal",
+        "original": 0,
+        "restored": 0,
+        "match": true
+      },
+      {
+        "table": "CopilotoConversation",
+        "original": 0,
+        "restored": 0,
+        "match": true
+      },
+      {
+        "table": "BitrixSyncLog",
+        "original": 0,
+        "restored": 0,
+        "match": true
+      },
+      {
+        "table": "_prisma_migrations",
+        "original": 136,
+        "restored": 136,
+        "match": true
+      }
+    ],
+    "invalidIndexes": 0,
+    "orphanContacts": 0,
+    "orphanLeads": 0,
+    "tenancyCheckPassed": true
+  },
+  "failureSimulation": {
+    "missingFileDetected": true,
+    "corruptSqlDetected": true
+  },
+  "sla": {
+    "rpoAchieved": "<= 24 horas (rotina de backup diário snapshot) / <= 1h incremental",
+    "rtoMeasuredSec": 5.4,
+    "rtoTargetSec": 900,
+    "pass": true
+  }
+}

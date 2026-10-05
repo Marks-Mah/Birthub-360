@@ -148,7 +148,9 @@ export const EliteCommercialAgentWorkspace: React.FC = () => {
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="max-w-md p-6 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-200 text-center space-y-4">
           <AlertCircle className="w-10 h-10 text-rose-400 mx-auto" />
-          <h3 className="font-semibold text-lg text-rose-100">Falha ao carregar Workspace Comercial</h3>
+          <h3 className="font-semibold text-lg text-rose-100">
+            Falha ao carregar Workspace Comercial
+          </h3>
           <p className="text-sm text-rose-300/80">{error || 'Dados indisponíveis no momento.'}</p>
           <button
             type="button"
@@ -803,4 +805,3 @@ export const EliteCommercialAgentWorkspace: React.FC = () => {
     </div>
   );
 };
-

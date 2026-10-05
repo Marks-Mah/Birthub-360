@@ -72,11 +72,10 @@ export default function PlaygroundPage() {
       canvasCtx.fillStyle = '#f8fafc'; // Matches bg-slate-50
       canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
 
-      canvasCtx.lineWidth = 3;
-      // Get --brand-color or default to fallback blue-600
+      canvasCtx.lineWidth = 2.5;
+      // Get --brand or default to canonical cyan #00e5ff
       const brandColor =
-        getComputedStyle(document.documentElement).getPropertyValue('--brand-color').trim() ||
-        '#2563eb';
+        getComputedStyle(document.documentElement).getPropertyValue('--brand').trim() || '#00e5ff';
       canvasCtx.strokeStyle = brandColor;
 
       canvasCtx.beginPath();

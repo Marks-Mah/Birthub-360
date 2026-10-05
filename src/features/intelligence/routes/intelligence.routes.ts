@@ -453,29 +453,42 @@ router.get(
 
 import { VectorSearchService } from '../services/vector-search.service.js';
 
-router.get('/search', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  try {
-    const query = typeof req.query.q === 'string' ? req.query.q.trim() : '';
-    const requestedLimit = Number.parseInt(String(req.query.limit || '5'), 10);
-    const limit = Number.isFinite(requestedLimit) ? Math.max(1, Math.min(20, requestedLimit)) : 5;
+router.get(
+  '/search',
+  requireRole(['ADMIN', 'GESTOR', 'CLOSER', 'SDR']),
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const query = typeof req.query.q === 'string' ? req.query.q.trim() : '';
+      const requestedLimit = Number.parseInt(String(req.query.limit || '5'), 10);
+      const limit = Number.isFinite(requestedLimit) ? Math.max(1, Math.min(20, requestedLimit)) : 5;
 
-    if (!query) {
-      res.status(400).json({ error: 'Search query (q) is required' });
-      return;
-    }
-    if (query.length > 2_000) {
-      res.status(400).json({ error: 'Search query is too long' });
-      return;
-    }
+      if (!query) {
+        res.status(400).json({ error: 'Search query (q) is required' });
+        return;
+      }
+      if (query.length > 2_000) {
+        res.status(400).json({ error: 'Search query is too long' });
+        return;
+      }
 
-    const organizationId = (req as AuthRequest).user.organizationId;
-    const results = await VectorSearchService.searchChunks(query, organizationId, limit);
-    res.json({ results });
-  } catch (error: any) {
-    logger.error({ err: error }, 'Error performing vector search');
-    next(error);
-  }
-});
+      const organizationId = (req as AuthRequest).user?.organizationId;
+      const startTime = Date.now();
+      const results = await VectorSearchService.searchChunks(query, organizationId, limit);
+
+      await logAiUsage({
+        promptId: 'search_vector_query',
+        model: 'VectorSearch',
+        usage: { promptTokens: 0, completionTokens: 0, totalTokens: 0 },
+        latencyMs: Date.now() - startTime,
+      });
+
+      res.json({ results });
+    } catch (error: any) {
+      logger.error({ err: error }, 'Error performing vector search');
+      next(error);
+    }
+  },
+);
 
 // Rotas para AIPendingActions
 router.get('/pending', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
@@ -900,6 +913,7 @@ function normalizePiiValues(raw: unknown): PiiValue[] {
 
 router.post(
   '/toolkit/execute',
+  requireRole(['ADMIN', 'GESTOR', 'CLOSER', 'SDR']),
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const { functionName, args, piiValues } = req.body as {
@@ -1027,4 +1041,3 @@ router.get(
 router.use('/observability', swarmObservabilityRoutes);
 
 export const intelligenceRoutes = router;
-

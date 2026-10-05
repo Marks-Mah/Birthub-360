@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useAuth } from '../../../contexts/AuthContext.js';
 import { Sidebar } from './components/Sidebar.js';
 import { Header } from './components/Header.js';
 import { ProspectorTab } from './components/ProspectorTab.js';
@@ -29,28 +30,24 @@ import { resolveBitrixWebhook } from './utils/bitrix.js';
 import confetti from 'canvas-confetti';
 
 export default function App() {
-  // Auth state
-  const [user, setUser] = useState<User | null>(() => {
-    const saved = localStorage.getItem('atlas_user');
-    return saved ? JSON.parse(saved) : null;
-  });
+  const { currentUser } = useAuth();
 
-  const handleLogin = (loggedUser: User) => {
-    setUser(loggedUser);
-    localStorage.setItem('atlas_user', JSON.stringify(loggedUser));
-  };
+  const user: User | null = currentUser
+    ? {
+        id: currentUser.id,
+        email: currentUser.email,
+        name: currentUser.name,
+        role:
+          currentUser.role === 'ADMIN'
+            ? 'admin'
+            : currentUser.role === 'GESTOR'
+              ? 'gestor'
+              : 'user',
+      }
+    : null;
 
-  // Auth & RBAC (CPI follow-up): o cookie de sessão (httpOnly, o front nunca o lê
-  // diretamente) é quem de fato autoriza cada chamada à API a partir de agora — o
-  // objeto em localStorage é só para a UI lembrar "quem estava logado" ao recarregar
-  // a página, sem precisar pedir email/senha de novo. Por isso o logout precisa
-  // avisar o servidor para invalidar o cookie, não só limpar o estado local; nunca
-  // deve travar o botão de sair, mesmo se a chamada falhar (ex: já sem sessão).
-  const handleLogout = () => {
-    setUser(null);
-    localStorage.removeItem('atlas_user');
-    fetch('/api/auth/logout', { method: 'POST', credentials: 'include' }).catch(() => {});
-  };
+  const handleLogin = (u: User) => {};
+  const handleLogout = () => {};
 
   // Auth & RBAC (CPI follow-up): a sessão restaurada de localStorage no mount (acima)
   // é só a lembrança visual de "quem estava logado" - o cookie httpOnly que de fato

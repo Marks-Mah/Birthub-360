@@ -1,0 +1,11 @@
+{
+  "route": "/app/settings",
+  "name": "Settings",
+  "title": "Birth Hub 360º | Central de Comando Inteligente",
+  "url": "http://localhost:3024/login",
+  "public": false,
+  "timestamp": "2026-10-05T03:57:08.587Z",
+  "accessible": false,
+  "screenshot": "C:\\Github\\Birthub-360\\visual-audit-capture\\settings.png",
+  "status": "success"
+}

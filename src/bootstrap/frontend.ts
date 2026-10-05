@@ -1,3 +1,4 @@
+import fs from 'node:fs';
 import path from 'node:path';
 import type { Express } from 'express';
 import express from 'express';
@@ -35,14 +36,22 @@ const toolsLimiter = rateLimit({
 });
 
 /**
- * Serve o frontend: em desenvolvimento, monta o middleware do Vite (HMR, SPA fallback) em modo
- * middleware embutido no mesmo processo Express; em produção, serve os estáticos já buildados em
+ * Serve o frontend: em desenvolvimento (ou em testes quando não houver build), monta o middleware
+ * do Vite (HMR, SPA fallback) em modo middleware embutido no mesmo processo Express; em produção
+ * (ou em testes quando `dist/index.html` estiver compilado), serve os estáticos já buildados em
  * `dist/` e devolve `index.html` para qualquer rota não estática (SPA client-side routing).
  * Assíncrono porque `createViteServer` é assíncrono — precisa ser aguardado antes do error
  * handler e do restante do boot em server.ts.
  */
 export async function mountFrontend(app: Express): Promise<void> {
-  if (env.NODE_ENV !== 'production') {
+  const distPath = path.join(process.cwd(), 'dist');
+  const hasDist = fs.existsSync(path.join(distPath, 'index.html'));
+  const useStaticDist =
+    env.NODE_ENV === 'production' ||
+    process.env.SERVE_STATIC_DIST === 'true' ||
+    (env.NODE_ENV === 'test' && hasDist);
+
+  if (!useStaticDist) {
     // FRONTEND-001: Serve estáticos do /tools protegido por autenticação para evitar
     // acesso desprotegido a ferramentas e materiais de capacitação comercial
     app.use(

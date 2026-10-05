@@ -1,5 +1,4 @@
 import type React from 'react';
-import { motion } from 'framer-motion';
 import { Check, X, Sparkles } from 'lucide-react';
 
 interface ComparisonRow {

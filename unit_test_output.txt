@@ -1,0 +1,3236 @@
+
+> react-example@0.0.1 test:unit
+> vitest run -c vitest.unit.config.ts --no-file-parallelism
+
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/app[39m
+
+ [31m❯[39m tests/unit/components/ui/ConfirmDialog.test.tsx [2m([22m[2m6 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[33m 1035[2mms[22m[39m
+     [32m✓[39m não renderiza nenhum diálogo antes de confirm() ser chamado[32m 43[2mms[22m[39m
+     [33m[2m✓[22m[39m abre o diálogo com título/descrição/rótulo custom ao chamar confirm() [33m 389[2mms[22m[39m
+     [32m✓[39m resolve true e fecha o diálogo ao clicar no botão de confirmação[32m 157[2mms[22m[39m
+     [32m✓[39m resolve false e fecha o diálogo ao clicar em Cancelar[32m 140[2mms[22m[39m
+[31m     [31m×[31m resolve false ao fechar pelo X (mesmo comportamento de cancelar)[39m[32m 182[2mms[22m[39m
+     [32m✓[39m usa rótulos default ("Cancelar"/"Confirmar") quando não especificados[32m 119[2mms[22m[39m
+ [31m❯[39m tests/unit/components/ui/Drawer.test.tsx [2m([22m[2m9 tests[22m[2m | [22m[31m6 failed[39m[2m)[22m[33m 1002[2mms[22m[39m
+     [32m✓[39m não renderiza o painel quando isOpen é false[32m 49[2mms[22m[39m
+[31m     [31m×[31m renderiza título, subtítulo e conteúdo quando aberto, com role="dialog" e aria-modal[39m[32m 211[2mms[22m[39m
+[31m     [31m×[31m move o foco para o botão de fechar ao abrir[39m[32m 207[2mms[22m[39m
+[31m     [31m×[31m devolve o foco ao elemento que estava focado antes de abrir, quando fecha[39m[32m 177[2mms[22m[39m
+     [32m✓[39m chama onClose ao pressionar Escape[32m 61[2mms[22m[39m
+     [32m✓[39m não reage a Escape quando fechado (listener não fica registrado)[32m 8[2mms[22m[39m
+[31m     [31m×[31m chama onClose ao clicar no backdrop e ao clicar no X[39m[32m 182[2mms[22m[39m
+[31m     [31m×[31m trava o scroll do body enquanto aberto e restaura ao fechar/desmontar[39m[32m 47[2mms[22m[39m
+[31m     [31m×[31m renderiza o painel do lado esquerdo quando side="left"[39m[32m 53[2mms[22m[39m
+ [31m❯[39m tests/unit/features/prospecting/components/SavedSearchesModal.test.tsx [2m([22m[2m3 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[33m 579[2mms[22m[39m
+     [33m[2m✓[22m[39m repassa os candidatos já encontrados pela API, sem exigir uma segunda busca [33m 354[2mms[22m[39m
+     [32m✓[39m não quebra quando a API não devolve candidatos (compatibilidade)[32m 150[2mms[22m[39m
+[31m     [31m×[31m Escape fecha o modal (comportamento herdado de ui/Dialog, antes ausente aqui)[39m[32m 70[2mms[22m[39m
+ [31m❯[39m src/components/ui/__tests__/Dialog.test.ts [2m([22m[2m2 tests[22m[2m | [22m[31m2 failed[39m[2m)[22m[32m 231[2mms[22m[39m
+[31m     [31m×[31m does not override the native hidden state while closed[39m[32m 80[2mms[22m[39m
+[31m     [31m×[31m uses the modal lifecycle when opening and closing[39m[32m 147[2mms[22m[39m
+ [31m❯[39m tests/unit/shared/diWiringConsistency.test.ts [2m([22m[2m4 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[32m 21[2mms[22m[39m
+[31m     [31m×[31m todo Controller de presentation/ é resolvido por pelo menos uma rota da mesma feature (repositório real)[39m[32m 15[2mms[22m[39m
+     [32m✓[39m FALHA (reporta wired: false) quando uma rota não resolve o Controller registrado para a feature[32m 1[2mms[22m[39m
+     [32m✓[39m reporta wired: true quando a rota resolve o Controller via container[32m 0[2mms[22m[39m
+     [32m✓[39m ignora feature sem pasta routes/ (nenhum resultado, sem falso positivo)[32m 1[2mms[22m[39m
+ [32m✓[39m tests/unit/features/automations-ui.test.tsx [2m([22m[2m15 tests[22m[2m)[22m[33m 4311[2mms[22m[39m
+     [33m[2m✓[22m[39m mostra estado vazio com convite para criar [33m 340[2mms[22m[39m
+     [33m[2m✓[22m[39m cria uma regra com condição de etapa [33m 811[2mms[22m[39m
+     [33m[2m✓[22m[39m cria uma regra de estagnação (dias parado) como operador numérico nas condições [33m 818[2mms[22m[39m
+     [33m[2m✓[22m[39m canal de e-mail: exige destinatário antes de enviar, e manda channel/to no actionConfig [33m 1008[2mms[22m[39m
+ [32m✓[39m src/features/integrations/bitrix/service/__tests__/client.test.ts [2m([22m[2m17 tests[22m[2m)[22m[33m 4393[2mms[22m[39m
+     [33m[2m✓[22m[39m reintenta em HTTP 5xx e se recupera antes do teto de tentativas [33m 540[2mms[22m[39m
+     [33m[2m✓[22m[39m reintenta em QUERY_LIMIT_EXCEEDED (rate limit "soft" no corpo, não no HTTP status) [33m 543[2mms[22m[39m
+     [33m[2m✓[22m[39m esgota as tentativas em falha persistente de 5xx e lança AppError sanitizado (sem vazar webhook/token) [33m 1166[2mms[22m[39m
+     [33m[2m✓[22m[39m trata falha do tipo AbortError (timeout/cancelamento da requisição) como recuperável e reintenta [33m 542[2mms[22m[39m
+     [33m[2m✓[22m[39m trata falha de rede (fetch rejeita) como recuperável e reintenta [33m 612[2mms[22m[39m
+     [33m[2m✓[22m[39m propaga IDs de correlação estáveis entre tentativas da mesma chamada (rastreabilidade) [33m 560[2mms[22m[39m
+ [32m✓[39m tests/unit/components/layout/SidebarLaunch.test.tsx [2m([22m[2m6 tests[22m[2m)[22m[33m 3761[2mms[22m[39m
+     [33m[2m✓[22m[39m mostra a transição ao clicar e navega para o módulo escolhido quando ela termina [33m 1121[2mms[22m[39m
+     [33m[2m✓[22m[39m Ctrl/⌘ + clique vai direto ao módulo, sem transição [33m 432[2mms[22m[39m
+     [33m[2m✓[22m[39m com movimento reduzido (prefers-reduced-motion) navega direto, sem transição [33m 421[2mms[22m[39m
+     [33m[2m✓[22m[39m clicar no módulo já ativo não dispara a transição [33m 402[2mms[22m[39m
+     [33m[2m✓[22m[39m Escape encurta a transição e abre o módulo na hora [33m 463[2mms[22m[39m
+     [33m[2m✓[22m[39m ignora cliques extras enquanto a transição está em andamento [33m 918[2mms[22m[39m
+ [32m✓[39m tests/unit/features/cadence/components/CadenceHub.test.tsx [2m([22m[2m12 tests[22m[2m)[22m[33m 3542[2mms[22m[39m
+     [33m[2m✓[22m[39m renderiza o título da tela e busca as três seções ao montar [33m 388[2mms[22m[39m
+     [33m[2m✓[22m[39m alternar o filtro de status refaz a busca de runs com a query certa [33m 452[2mms[22m[39m
+     [33m[2m✓[22m[39m expande o histórico de tentativas de um run ao clicar na linha [33m 494[2mms[22m[39m
+       [33m[2m✓[22m[39m mostra o botão "Encerrar sequência" para um papel com permissão de escrita (ADMIN) [33m 327[2mms[22m[39m
+       [33m[2m✓[22m[39m encerra a sequência ao confirmar, chama a rota certa e recarrega a lista [33m 600[2mms[22m[39m
+       [33m[2m✓[22m[39m não chama a rota de encerrar quando o usuário cancela a confirmação [33m 538[2mms[22m[39m
+[2026-10-02 18:54:32.748 +0000] [33mWARN[39m: [36menrich-cascade: Redis configurado mas inacessível dentro do timeout; caindo para execução síncrona[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mcompanyId[39m: "company-1"
+    [35morganizationId[39m: "org-1"
+[2026-10-02 18:54:32.769 +0000] [33mWARN[39m: [36menrich-cascade: Redis configurado mas inacessível dentro do timeout; caindo para execução síncrona[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mcompanyId[39m: "company-1"
+    [35morganizationId[39m: "org-1"
+ [32m✓[39m src/features/prospecting/routes/__tests__/prospecting.enrich-cascade.routes.test.ts [2m([22m[2m4 tests[22m[2m)[22m[33m 3126[2mms[22m[39m
+     [33m[2m✓[22m[39m cai para o caminho síncrono, sem travar a requisição, quando REDIS_URL está configurado mas o Redis está inatingível (ping nunca resolve) [33m 3019[2mms[22m[39m
+ [32m✓[39m src/features/automations/__tests__/automation.engine.retry-idempotency.test.ts [2m([22m[2m6 tests[22m[2m)[22m[33m 3026[2mms[22m[39m
+     [33m[2m✓[22m[39m ação transitória falha 2 vezes e sucede na 3ª tentativa: histórico registra sucesso com retryCount=2, sem duplicar o efeito colateral já bem-sucedido [33m 1511[2mms[22m[39m
+     [33m[2m✓[22m[39m ação transitória falha em todas as tentativas: histórico registra failed com retryCount = tentativas-1, automação não é marcada como executada [33m 1506[2mms[22m[39m
+ [32m✓[39m tests/unit/features/knowledge-base.test.tsx [2m([22m[2m9 tests[22m[2m)[22m[33m 2683[2mms[22m[39m
+     [33m[2m✓[22m[39m busca e renderiza os trechos encontrados com a origem do match [33m 493[2mms[22m[39m
+     [33m[2m✓[22m[39m indexa texto colado e recarrega a lista [33m 388[2mms[22m[39m
+     [33m[2m✓[22m[39m remove documento apenas após confirmação [33m 662[2mms[22m[39m
+ [32m✓[39m tests/unit/features/calendar.test.tsx [2m([22m[2m9 tests[22m[2m)[22m[33m 2556[2mms[22m[39m
+     [33m[2m✓[22m[39m conclui a atividade e envia o novo status [33m 390[2mms[22m[39m
+     [33m[2m✓[22m[39m reverte o status na tela quando a API recusa [33m 533[2mms[22m[39m
+     [33m[2m✓[22m[39m VISUALIZADOR não vê Cancelar/Concluir nem consegue arrastar atividades (achado do Piloto 020) [33m 301[2mms[22m[39m
+ [32m✓[39m tests/unit/components/layout/Sidebar.test.tsx [2m([22m[2m3 tests[22m[2m)[22m[33m 2584[2mms[22m[39m
+     [33m[2m✓[22m[39m GESTOR vê Automações e Integrações (permissão real de gerenciar, per backend), mas não Equipe/Consumo de IA [33m 1286[2mms[22m[39m
+     [33m[2m✓[22m[39m ADMIN vê os quatro itens administrativos [33m 725[2mms[22m[39m
+     [33m[2m✓[22m[39m CLOSER não vê nenhum dos quatro itens administrativos [33m 568[2mms[22m[39m
+ [32m✓[39m tests/unit/features/settings/Settings.test.tsx [2m([22m[2m5 tests[22m[2m)[22m[33m 1896[2mms[22m[39m
+     [33m[2m✓[22m[39m clicar em "Modo Escuro" enquanto já está escuro NÃO troca para claro (achado real do Piloto 025) [33m 780[2mms[22m[39m
+     [33m[2m✓[22m[39m clicar em "Modo Claro" enquanto está escuro troca para claro [33m 461[2mms[22m[39m
+ [32m✓[39m tests/unit/features/intelligence/components/ReportsHub.test.tsx [2m([22m[2m10 tests[22m[2m)[22m[33m 1835[2mms[22m[39m
+     [33m[2m✓[22m[39m gera o relatório de IA a partir das métricas carregadas (streaming) [33m 338[2mms[22m[39m
+ [32m✓[39m tests/unit/features/integrations/components/Integrations.test.tsx [2m([22m[2m6 tests[22m[2m)[22m[33m 1641[2mms[22m[39m
+     [33m[2m✓[22m[39m renderiza as 4 abas sem lançar erro (WhatsApp, Google, Bitrix24, 3CX) [33m 544[2mms[22m[39m
+     [33m[2m✓[22m[39m declara maturidade real por integração — escrita real no Google Calendar (CYC-004) com prova, sem prometer 3CX 24h sem prova [33m 459[2mms[22m[39m
+ [32m✓[39m tests/unit/features/automation-sdr-voz.test.ts [2m([22m[2m5 tests[22m[2m)[22m[33m 1527[2mms[22m[39m
+     [33m[2m✓[22m[39m isola a falha da ligação sem impedir as outras automações do mesmo gatilho [33m 1507[2mms[22m[39m
+ [32m✓[39m tests/unit/features/team/Team.test.tsx [2m([22m[2m5 tests[22m[2m)[22m[33m 1267[2mms[22m[39m
+     [33m[2m✓[22m[39m cria um novo usuário e mostra a senha temporária [33m 640[2mms[22m[39m
+ [32m✓[39m tests/unit/features/prospecting/services/hunter.service.test.ts [2m([22m[2m5 tests[22m[2m)[22m[33m 899[2mms[22m[39m
+     [33m[2m✓[22m[39m achado corrigido: falha de rede/timeout também preenche `.error` [33m 391[2mms[22m[39m
+     [33m[2m✓[22m[39m preenche `.error` numa resposta não-ok, mesmo padrão agora replicado em findEmailViaHunter [33m 489[2mms[22m[39m
+[90mstderr[2m | tests/unit/features/analytics.test.tsx[2m > [22m[2mAnalytics[2m > [22m[2mrecarrega ao trocar o período
+[22m[39mError: Não foi possível conectar ao servidor.
+    at apiFetch [90m(/app/[39msrc/lib/api.ts:56:11[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:103:5)[39m
+Error: Não foi possível conectar ao servidor.
+    at apiFetch [90m(/app/[39msrc/lib/api.ts:56:11[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:103:5)[39m
+
+[90mstderr[2m | tests/unit/features/analytics.test.tsx[2m > [22m[2mAnalytics[2m > [22m[2mrecarrega ao trocar o período
+[22m[39mError: Não foi possível conectar ao servidor.
+    at apiFetch [90m(/app/[39msrc/lib/api.ts:56:11[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:103:5)[39m
+
+[90mstderr[2m | tests/unit/features/analytics.test.tsx[2m > [22m[2mAnalytics[2m > [22m[2moferece a tabela-gêmea para não depender só do gráfico
+[22m[39mError: Não foi possível conectar ao servidor.
+    at apiFetch [90m(/app/[39msrc/lib/api.ts:56:11[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:103:5)[39m
+
+ [32m✓[39m tests/unit/features/analytics.test.tsx [2m([22m[2m8 tests[22m[2m)[22m[33m 1455[2mms[22m[39m
+     [33m[2m✓[22m[39m recarrega ao trocar o período [33m 553[2mms[22m[39m
+ [32m✓[39m tests/unit/features/document-editor.test.tsx [2m([22m[2m5 tests[22m[2m)[22m[33m 895[2mms[22m[39m
+     [33m[2m✓[22m[39m edita e salva — chama PUT com title/content e mostra o resultado da reindexação [33m 515[2mms[22m[39m
+ [32m✓[39m tests/unit/features/prospecting/services/places.service.test.ts [2m([22m[2m5 tests[22m[2m)[22m[33m 677[2mms[22m[39m
+     [33m[2m✓[22m[39m achado corrigido: falha de rede também preenche `.error` [33m 378[2mms[22m[39m
+ [32m✓[39m tests/unit/features/companies/components/CompanyForm.test.tsx [2m([22m[2m3 tests[22m[2m)[22m[33m 1266[2mms[22m[39m
+     [33m[2m✓[22m[39m shows required-field errors instead of submitting when Razão Social/Nome Fantasia are empty [33m 390[2mms[22m[39m
+     [33m[2m✓[22m[39m shows a CNPJ inválido error and blocks submit when the checksum is wrong [33m 490[2mms[22m[39m
+     [33m[2m✓[22m[39m submits via companiesDB.create with a valid CNPJ [33m 382[2mms[22m[39m
+ [32m✓[39m tests/unit/features/contacts/components/ContactForm.test.tsx [2m([22m[2m3 tests[22m[2m)[22m[33m 1098[2mms[22m[39m
+     [33m[2m✓[22m[39m shows required-field errors instead of submitting when Nome/Empresa are empty [33m 388[2mms[22m[39m
+     [33m[2m✓[22m[39m shows an e-mail inválido error and blocks submit [33m 434[2mms[22m[39m
+[2026-10-02 18:55:26.671 +0000] [33mWARN[39m: [36m[search] MEILI_MASTER_KEY não configurada — usando chave fixa de desenvolvimento local. NUNCA use isso em produção (a trava acima impede a subida sem a variável real).[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+ [32m✓[39m src/features/intelligence/agents/__tests__/base.agent.budget.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 1517[2mms[22m[39m
+     [33m[2m✓[22m[39m bloqueia antes de montar qualquer modelo de IA quando o orçamento mensal foi excedido [33m 1513[2mms[22m[39m
+[2026-10-02 18:55:26.815 +0000] [31mERROR[39m: [36mAgent run (with tools) failed[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35msessionId[39m: "session-budget-test"
+    [35magentType[39m: "BDR"
+    err: {
+      "type": "Error",
+      "message": "Orçamento mensal de IA excedido (teste)",
+      "stack":
+          Error: Orçamento mensal de IA excedido (teste)
+              at /app/src/features/intelligence/agents/__tests__/base.agent.budget.test.ts:33:7
+              at file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
+    }
+[2026-10-02 18:55:27.956 +0000] [32mINFO[39m: [36mToque de cadência enviado.[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-1"
+    [35mrunId[39m: "run-1"
+    [35mleadId[39m: "lead-1"
+    [35mtouchOrder[39m: 1
+    [35mchannel[39m: "email"
+    [35mresult[39m: "sent"
+[2026-10-02 18:55:27.963 +0000] [32mINFO[39m: [36mToque de cadência falhou.[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-1"
+    [35mrunId[39m: "run-1"
+    [35mleadId[39m: "lead-1"
+    [35mtouchOrder[39m: 1
+    [35mchannel[39m: "email"
+    [35mresult[39m: "failed"
+[2026-10-02 18:55:27.965 +0000] [32mINFO[39m: [36mOpt-out registrado.[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-1"
+    [35mscope[39m: "global"
+    [35moriginChannel[39m: "whatsapp"
+    [35mleadId[39m: "lead-1"
+    [35mhasEmail[39m: true
+    [35mhasPhone[39m: false
+[2026-10-02 18:55:27.966 +0000] [32mINFO[39m: [36mCadência encerrada.[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-1"
+    [35mrunId[39m: "run-1"
+    [35mleadId[39m: "lead-1"
+    [35mreason[39m: "opt-out"
+    [35mstatus[39m: "stopped"
+[2026-10-02 18:55:27.969 +0000] [32mINFO[39m: [36mCadência encerrada.[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-1"
+    [35mrunId[39m: "run-1"
+    [35mleadId[39m: "lead-1"
+    [35mreason[39m: "lead-reply"
+    [35mstatus[39m: "stopped"
+[2026-10-02 18:55:28.225 +0000] [32mINFO[39m: [36mToque de cadência enviado.[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-1"
+    [35mrunId[39m: "run-1"
+    [35mleadId[39m: "lead-1"
+    [35mtouchOrder[39m: 1
+    [35mchannel[39m: "email"
+    [35mresult[39m: "sent"
+ [32m✓[39m src/features/cadence/__tests__/cadenceService.test.ts [2m([22m[2m8 tests[22m[2m)[22m[33m 1037[2mms[22m[39m
+     [33m[2m✓[22m[39m falha persistente na gravação (excede o retry) propaga o erro em vez de fingir sucesso [33m 758[2mms[22m[39m
+[2026-10-02 18:55:28.979 +0000] [31mERROR[39m: [36mToque de cadência despachado ao canal real, mas não foi possível persistir o resultado após retry — risco de reenvio duplicado no próximo ciclo. Requer verificação manual.[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-1"
+    [35mrunId[39m: "run-1"
+    [35mleadId[39m: "lead-1"
+    [35mtouchOrder[39m: 1
+    [35mchannel[39m: "email"
+    [35mdispatchResult[39m: "sent"
+    err: {
+      "type": "Error",
+      "message": "Postgres indisponível momentaneamente",
+      "stack":
+          Error: Postgres indisponível momentaneamente
+              at Object.save (/app/src/features/cadence/__tests__/cadenceService.test.ts:309:17)
+              at saveWithRetry (/app/src/features/cadence/application/cadenceService.ts:117:21)
+              at advanceCadenceRun (/app/src/features/cadence/application/cadenceService.ts:278:7)
+              at /app/src/features/cadence/__tests__/cadenceService.test.ts:366:5
+              at file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
+    }
+ [32m✓[39m tests/unit/features/notifications.test.tsx [2m([22m[2m12 tests[22m[2m)[22m[33m 923[2mms[22m[39m
+ [32m✓[39m tests/unit/features/billing/components/Billing.test.tsx [2m([22m[2m7 tests[22m[2m)[22m[33m 701[2mms[22m[39m
+Error: Not implemented: window.scrollTo
+    at module.exports (/app/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at /app/node_modules/jsdom/lib/jsdom/browser/Window.js:898:7
+    at file:///app/node_modules/motion-dom/dist/es/animation/keyframes/KeyframesResolver.mjs:56:24
+    at Array.forEach (<anonymous>)
+    at measureAllKeyframes (file:///app/node_modules/motion-dom/dist/es/animation/keyframes/KeyframesResolver.mjs:54:28)
+    at triggerCallback (file:///app/node_modules/motion-dom/dist/es/frameloop/render-step.mjs:31:9)
+    at Set.forEach (<anonymous>)
+    at Object.process (file:///app/node_modules/motion-dom/dist/es/frameloop/render-step.mjs:72:23)
+    at processBatch (file:///app/node_modules/motion-dom/dist/es/frameloop/batcher.mjs:36:26)
+    at invokeTheCallbackFunction (/app/node_modules/jsdom/lib/jsdom/living/generated/Function.js:19:26) undefined
+Error: Not implemented: window.scrollTo
+    at module.exports (/app/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at /app/node_modules/jsdom/lib/jsdom/browser/Window.js:898:7
+    at file:///app/node_modules/motion-dom/dist/es/animation/keyframes/KeyframesResolver.mjs:56:24
+    at Array.forEach (<anonymous>)
+    at measureAllKeyframes (file:///app/node_modules/motion-dom/dist/es/animation/keyframes/KeyframesResolver.mjs:54:28)
+    at triggerCallback (file:///app/node_modules/motion-dom/dist/es/frameloop/render-step.mjs:31:9)
+    at Set.forEach (<anonymous>)
+    at Object.process (file:///app/node_modules/motion-dom/dist/es/frameloop/render-step.mjs:72:23)
+    at processBatch (file:///app/node_modules/motion-dom/dist/es/frameloop/batcher.mjs:36:26)
+    at invokeTheCallbackFunction (/app/node_modules/jsdom/lib/jsdom/living/generated/Function.js:19:26) undefined
+ [32m✓[39m tests/unit/components/layout/OfflineBanner.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[33m 532[2mms[22m[39m
+ [32m✓[39m tests/unit/components/ui/Pagination.test.tsx [2m([22m[2m6 tests[22m[2m)[22m[33m 466[2mms[22m[39m
+ [32m✓[39m tests/unit/market-intelligence/ldrIntegrityGuard.test.ts [2m([22m[2m8 tests[22m[2m)[22m[33m 446[2mms[22m[39m
+[2026-10-02 18:55:40.900 +0000] [33mWARN[39m: [36m[search] MEILI_MASTER_KEY não configurada — usando chave fixa de desenvolvimento local. NUNCA use isso em produção (a trava acima impede a subida sem a variável real).[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+[2026-10-02 18:55:41.185 +0000] [31mERROR[39m: [36mGlobal error handler[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mstatus[39m: 404
+    err: {
+      "type": "AppError",
+      "message": "Conta não encontrada.",
+      "stack":
+          Error: Conta não encontrada.
+              at /app/tests/unit/features/market-intelligence/server/accountIntelligence.routes.contract.test.ts:167:51
+              at file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
+              at file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
+              at file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
+              at new Promise (<anonymous>)
+              at runWithCancel (file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)
+              at file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
+              at new Promise (<anonymous>)
+              at runWithTimeout (file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)
+              at file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:2956:64
+      "statusCode": 404
+    }
+[2026-10-02 18:55:41.200 +0000] [31mERROR[39m: [36mGlobal error handler[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mstatus[39m: 404
+    err: {
+      "type": "AppError",
+      "message": "Conta não encontrada.",
+      "stack":
+          Error: Conta não encontrada.
+              at /app/tests/unit/features/market-intelligence/server/accountIntelligence.routes.contract.test.ts:188:51
+              at file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
+              at file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
+              at file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
+              at new Promise (<anonymous>)
+              at runWithCancel (file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)
+              at file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
+              at new Promise (<anonymous>)
+              at runWithTimeout (file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)
+              at file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:2956:64
+      "statusCode": 404
+    }
+[2026-10-02 18:55:41.329 +0000] [31mERROR[39m: [36mGlobal error handler[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mstatus[39m: 400
+    err: {
+      "type": "AppError",
+      "message": "Parâmetros inválidos.",
+      "stack":
+          Error: Parâmetros inválidos.
+              at parse (/app/src/features/market-intelligence/server/accountIntelligence.routes.ts:30:11)
+              at /app/src/features/market-intelligence/server/accountIntelligence.routes.ts:92:21
+              at /app/src/features/market-intelligence/server/accountIntelligence.routes.ts:37:5
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at next (/app/node_modules/router/lib/route.js:157:13)
+              at Route.dispatch (/app/node_modules/router/lib/route.js:117:3)
+              at handle (/app/node_modules/router/index.js:435:11)
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at /app/node_modules/router/index.js:295:15
+              at param (/app/node_modules/router/index.js:600:14)
+      "statusCode": 400,
+      "details": [
+        {
+          "origin": "number",
+          "code": "too_small",
+          "minimum": 1,
+          "inclusive": true,
+          "path": [
+            "page"
+          ],
+          "message": "Too small: expected number to be >=1"
+        }
+      ]
+    }
+[2026-10-02 18:55:41.338 +0000] [31mERROR[39m: [36mGlobal error handler[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mstatus[39m: 400
+    err: {
+      "type": "AppError",
+      "message": "Parâmetros inválidos.",
+      "stack":
+          Error: Parâmetros inválidos.
+              at parse (/app/src/features/market-intelligence/server/accountIntelligence.routes.ts:30:11)
+              at /app/src/features/market-intelligence/server/accountIntelligence.routes.ts:102:21
+              at /app/src/features/market-intelligence/server/accountIntelligence.routes.ts:37:5
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at next (/app/node_modules/router/lib/route.js:157:13)
+              at Route.dispatch (/app/node_modules/router/lib/route.js:117:3)
+              at handle (/app/node_modules/router/index.js:435:11)
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at /app/node_modules/router/index.js:295:15
+              at param (/app/node_modules/router/index.js:600:14)
+      "statusCode": 400,
+      "details": [
+        {
+          "origin": "number",
+          "code": "too_small",
+          "minimum": 1,
+          "inclusive": true,
+          "path": [
+            "page"
+          ],
+          "message": "Too small: expected number to be >=1"
+        }
+      ]
+    }
+[2026-10-02 18:55:41.346 +0000] [31mERROR[39m: [36mGlobal error handler[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mstatus[39m: 400
+    err: {
+      "type": "AppError",
+      "message": "Parâmetros inválidos.",
+      "stack":
+          Error: Parâmetros inválidos.
+              at parse (/app/src/features/market-intelligence/server/accountIntelligence.routes.ts:30:11)
+              at /app/src/features/market-intelligence/server/accountIntelligence.routes.ts:112:21
+              at /app/src/features/market-intelligence/server/accountIntelligence.routes.ts:37:5
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at next (/app/node_modules/router/lib/route.js:157:13)
+              at Route.dispatch (/app/node_modules/router/lib/route.js:117:3)
+              at handle (/app/node_modules/router/index.js:435:11)
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at /app/node_modules/router/index.js:295:15
+              at param (/app/node_modules/router/index.js:600:14)
+      "statusCode": 400,
+      "details": [
+        {
+          "origin": "number",
+          "code": "too_small",
+          "minimum": 1,
+          "inclusive": true,
+          "path": [
+            "page"
+          ],
+          "message": "Too small: expected number to be >=1"
+        }
+      ]
+    }
+[2026-10-02 18:55:41.354 +0000] [31mERROR[39m: [36mGlobal error handler[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mstatus[39m: 400
+    err: {
+      "type": "AppError",
+      "message": "Parâmetros inválidos.",
+      "stack":
+          Error: Parâmetros inválidos.
+              at parse (/app/src/features/market-intelligence/server/accountIntelligence.routes.ts:30:11)
+              at /app/src/features/market-intelligence/server/accountIntelligence.routes.ts:122:21
+              at /app/src/features/market-intelligence/server/accountIntelligence.routes.ts:37:5
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at next (/app/node_modules/router/lib/route.js:157:13)
+              at Route.dispatch (/app/node_modules/router/lib/route.js:117:3)
+              at handle (/app/node_modules/router/index.js:435:11)
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at /app/node_modules/router/index.js:295:15
+              at param (/app/node_modules/router/index.js:600:14)
+      "statusCode": 400,
+      "details": [
+        {
+          "origin": "number",
+          "code": "too_small",
+          "minimum": 1,
+          "inclusive": true,
+          "path": [
+            "page"
+          ],
+          "message": "Too small: expected number to be >=1"
+        }
+      ]
+    }
+[2026-10-02 18:55:41.362 +0000] [31mERROR[39m: [36mGlobal error handler[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mstatus[39m: 400
+    err: {
+      "type": "AppError",
+      "message": "Parâmetros inválidos.",
+      "stack":
+          Error: Parâmetros inválidos.
+              at parse (/app/src/features/market-intelligence/server/accountIntelligence.routes.ts:30:11)
+              at /app/src/features/market-intelligence/server/accountIntelligence.routes.ts:132:21
+              at /app/src/features/market-intelligence/server/accountIntelligence.routes.ts:37:5
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at next (/app/node_modules/router/lib/route.js:157:13)
+              at Route.dispatch (/app/node_modules/router/lib/route.js:117:3)
+              at handle (/app/node_modules/router/index.js:435:11)
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at /app/node_modules/router/index.js:295:15
+              at param (/app/node_modules/router/index.js:600:14)
+      "statusCode": 400,
+      "details": [
+        {
+          "origin": "number",
+          "code": "too_small",
+          "minimum": 1,
+          "inclusive": true,
+          "path": [
+            "page"
+          ],
+          "message": "Too small: expected number to be >=1"
+        }
+      ]
+    }
+[2026-10-02 18:55:41.370 +0000] [31mERROR[39m: [36mGlobal error handler[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mstatus[39m: 400
+    err: {
+      "type": "AppError",
+      "message": "Parâmetros inválidos.",
+      "stack":
+          Error: Parâmetros inválidos.
+              at parse (/app/src/features/market-intelligence/server/accountIntelligence.routes.ts:30:11)
+              at /app/src/features/market-intelligence/server/accountIntelligence.routes.ts:92:21
+              at /app/src/features/market-intelligence/server/accountIntelligence.routes.ts:37:5
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at next (/app/node_modules/router/lib/route.js:157:13)
+              at Route.dispatch (/app/node_modules/router/lib/route.js:117:3)
+              at handle (/app/node_modules/router/index.js:435:11)
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at /app/node_modules/router/index.js:295:15
+              at param (/app/node_modules/router/index.js:600:14)
+      "statusCode": 400,
+      "details": [
+        {
+          "origin": "number",
+          "code": "too_big",
+          "maximum": 100,
+          "inclusive": true,
+          "path": [
+            "limit"
+          ],
+          "message": "Too big: expected number to be <=100"
+        }
+      ]
+    }
+[2026-10-02 18:55:41.378 +0000] [31mERROR[39m: [36mGlobal error handler[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mstatus[39m: 400
+    err: {
+      "type": "AppError",
+      "message": "Parâmetros inválidos.",
+      "stack":
+          Error: Parâmetros inválidos.
+              at parse (/app/src/features/market-intelligence/server/accountIntelligence.routes.ts:30:11)
+              at /app/src/features/market-intelligence/server/accountIntelligence.routes.ts:102:21
+              at /app/src/features/market-intelligence/server/accountIntelligence.routes.ts:37:5
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at next (/app/node_modules/router/lib/route.js:157:13)
+              at Route.dispatch (/app/node_modules/router/lib/route.js:117:3)
+              at handle (/app/node_modules/router/index.js:435:11)
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at /app/node_modules/router/index.js:295:15
+              at param (/app/node_modules/router/index.js:600:14)
+      "statusCode": 400,
+      "details": [
+        {
+          "origin": "number",
+          "code": "too_big",
+          "maximum": 100,
+          "inclusive": true,
+          "path": [
+            "limit"
+          ],
+          "message": "Too big: expected number to be <=100"
+        }
+      ]
+    }
+[2026-10-02 18:55:41.389 +0000] [31mERROR[39m: [36mGlobal error handler[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mstatus[39m: 400
+    err: {
+      "type": "AppError",
+      "message": "Parâmetros inválidos.",
+      "stack":
+          Error: Parâmetros inválidos.
+              at parse (/app/src/features/market-intelligence/server/accountIntelligence.routes.ts:30:11)
+              at /app/src/features/market-intelligence/server/accountIntelligence.routes.ts:112:21
+              at /app/src/features/market-intelligence/server/accountIntelligence.routes.ts:37:5
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at next (/app/node_modules/router/lib/route.js:157:13)
+              at Route.dispatch (/app/node_modules/router/lib/route.js:117:3)
+              at handle (/app/node_modules/router/index.js:435:11)
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at /app/node_modules/router/index.js:295:15
+              at param (/app/node_modules/router/index.js:600:14)
+      "statusCode": 400,
+      "details": [
+        {
+          "origin": "number",
+          "code": "too_big",
+          "maximum": 100,
+          "inclusive": true,
+          "path": [
+            "limit"
+          ],
+          "message": "Too big: expected number to be <=100"
+        }
+      ]
+    }
+[2026-10-02 18:55:41.397 +0000] [31mERROR[39m: [36mGlobal error handler[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mstatus[39m: 400
+    err: {
+      "type": "AppError",
+      "message": "Parâmetros inválidos.",
+      "stack":
+          Error: Parâmetros inválidos.
+              at parse (/app/src/features/market-intelligence/server/accountIntelligence.routes.ts:30:11)
+              at /app/src/features/market-intelligence/server/accountIntelligence.routes.ts:122:21
+              at /app/src/features/market-intelligence/server/accountIntelligence.routes.ts:37:5
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at next (/app/node_modules/router/lib/route.js:157:13)
+              at Route.dispatch (/app/node_modules/router/lib/route.js:117:3)
+              at handle (/app/node_modules/router/index.js:435:11)
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at /app/node_modules/router/index.js:295:15
+              at param (/app/node_modules/router/index.js:600:14)
+      "statusCode": 400,
+      "details": [
+        {
+          "origin": "number",
+          "code": "too_big",
+          "maximum": 100,
+          "inclusive": true,
+          "path": [
+            "limit"
+          ],
+          "message": "Too big: expected number to be <=100"
+        }
+      ]
+    }
+[2026-10-02 18:55:41.404 +0000] [31mERROR[39m: [36mGlobal error handler[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mstatus[39m: 400
+    err: {
+      "type": "AppError",
+      "message": "Parâmetros inválidos.",
+      "stack":
+          Error: Parâmetros inválidos.
+              at parse (/app/src/features/market-intelligence/server/accountIntelligence.routes.ts:30:11)
+              at /app/src/features/market-intelligence/server/accountIntelligence.routes.ts:132:21
+              at /app/src/features/market-intelligence/server/accountIntelligence.routes.ts:37:5
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at next (/app/node_modules/router/lib/route.js:157:13)
+              at Route.dispatch (/app/node_modules/router/lib/route.js:117:3)
+              at handle (/app/node_modules/router/index.js:435:11)
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at /app/node_modules/router/index.js:295:15
+              at param (/app/node_modules/router/index.js:600:14)
+      "statusCode": 400,
+      "details": [
+        {
+          "origin": "number",
+          "code": "too_big",
+          "maximum": 100,
+          "inclusive": true,
+          "path": [
+            "limit"
+          ],
+          "message": "Too big: expected number to be <=100"
+        }
+      ]
+    }
+[2026-10-02 18:55:41.412 +0000] [31mERROR[39m: [36mGlobal error handler[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mstatus[39m: 400
+    err: {
+      "type": "AppError",
+      "message": "Parâmetros inválidos.",
+      "stack":
+          Error: Parâmetros inválidos.
+              at parse (/app/src/features/market-intelligence/server/accountIntelligence.routes.ts:30:11)
+              at /app/src/features/market-intelligence/server/accountIntelligence.routes.ts:92:21
+              at /app/src/features/market-intelligence/server/accountIntelligence.routes.ts:37:5
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at next (/app/node_modules/router/lib/route.js:157:13)
+              at Route.dispatch (/app/node_modules/router/lib/route.js:117:3)
+              at handle (/app/node_modules/router/index.js:435:11)
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at /app/node_modules/router/index.js:295:15
+              at param (/app/node_modules/router/index.js:600:14)
+      "statusCode": 400,
+      "details": [
+        {
+          "expected": "number",
+          "code": "invalid_type",
+          "received": "NaN",
+          "path": [
+            "page"
+          ],
+          "message": "Invalid input: expected number, received NaN"
+        },
+        {
+          "expected": "number",
+          "code": "invalid_type",
+          "received": "NaN",
+          "path": [
+            "limit"
+          ],
+          "message": "Invalid input: expected number, received NaN"
+        }
+      ]
+    }
+[2026-10-02 18:55:41.420 +0000] [31mERROR[39m: [36mGlobal error handler[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mstatus[39m: 400
+    err: {
+      "type": "AppError",
+      "message": "Parâmetros inválidos.",
+      "stack":
+          Error: Parâmetros inválidos.
+              at parse (/app/src/features/market-intelligence/server/accountIntelligence.routes.ts:30:11)
+              at /app/src/features/market-intelligence/server/accountIntelligence.routes.ts:102:21
+              at /app/src/features/market-intelligence/server/accountIntelligence.routes.ts:37:5
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at next (/app/node_modules/router/lib/route.js:157:13)
+              at Route.dispatch (/app/node_modules/router/lib/route.js:117:3)
+              at handle (/app/node_modules/router/index.js:435:11)
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at /app/node_modules/router/index.js:295:15
+              at param (/app/node_modules/router/index.js:600:14)
+      "statusCode": 400,
+      "details": [
+        {
+          "expected": "number",
+          "code": "invalid_type",
+          "received": "NaN",
+          "path": [
+            "page"
+          ],
+          "message": "Invalid input: expected number, received NaN"
+        },
+        {
+          "expected": "number",
+          "code": "invalid_type",
+          "received": "NaN",
+          "path": [
+            "limit"
+          ],
+          "message": "Invalid input: expected number, received NaN"
+        }
+      ]
+    }
+[2026-10-02 18:55:41.427 +0000] [31mERROR[39m: [36mGlobal error handler[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mstatus[39m: 400
+    err: {
+      "type": "AppError",
+      "message": "Parâmetros inválidos.",
+      "stack":
+          Error: Parâmetros inválidos.
+              at parse (/app/src/features/market-intelligence/server/accountIntelligence.routes.ts:30:11)
+              at /app/src/features/market-intelligence/server/accountIntelligence.routes.ts:112:21
+              at /app/src/features/market-intelligence/server/accountIntelligence.routes.ts:37:5
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at next (/app/node_modules/router/lib/route.js:157:13)
+              at Route.dispatch (/app/node_modules/router/lib/route.js:117:3)
+              at handle (/app/node_modules/router/index.js:435:11)
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at /app/node_modules/router/index.js:295:15
+              at param (/app/node_modules/router/index.js:600:14)
+      "statusCode": 400,
+      "details": [
+        {
+          "expected": "number",
+          "code": "invalid_type",
+          "received": "NaN",
+          "path": [
+            "page"
+          ],
+          "message": "Invalid input: expected number, received NaN"
+        },
+        {
+          "expected": "number",
+          "code": "invalid_type",
+          "received": "NaN",
+          "path": [
+            "limit"
+          ],
+          "message": "Invalid input: expected number, received NaN"
+        }
+      ]
+    }
+[2026-10-02 18:55:41.435 +0000] [31mERROR[39m: [36mGlobal error handler[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mstatus[39m: 400
+    err: {
+      "type": "AppError",
+      "message": "Parâmetros inválidos.",
+      "stack":
+          Error: Parâmetros inválidos.
+              at parse (/app/src/features/market-intelligence/server/accountIntelligence.routes.ts:30:11)
+              at /app/src/features/market-intelligence/server/accountIntelligence.routes.ts:122:21
+              at /app/src/features/market-intelligence/server/accountIntelligence.routes.ts:37:5
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at next (/app/node_modules/router/lib/route.js:157:13)
+              at Route.dispatch (/app/node_modules/router/lib/route.js:117:3)
+              at handle (/app/node_modules/router/index.js:435:11)
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at /app/node_modules/router/index.js:295:15
+              at param (/app/node_modules/router/index.js:600:14)
+      "statusCode": 400,
+      "details": [
+        {
+          "expected": "number",
+          "code": "invalid_type",
+          "received": "NaN",
+          "path": [
+            "page"
+          ],
+          "message": "Invalid input: expected number, received NaN"
+        },
+        {
+          "expected": "number",
+          "code": "invalid_type",
+          "received": "NaN",
+          "path": [
+            "limit"
+          ],
+          "message": "Invalid input: expected number, received NaN"
+        }
+      ]
+    }
+[2026-10-02 18:55:41.442 +0000] [31mERROR[39m: [36mGlobal error handler[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mstatus[39m: 400
+    err: {
+      "type": "AppError",
+      "message": "Parâmetros inválidos.",
+      "stack":
+          Error: Parâmetros inválidos.
+              at parse (/app/src/features/market-intelligence/server/accountIntelligence.routes.ts:30:11)
+              at /app/src/features/market-intelligence/server/accountIntelligence.routes.ts:132:21
+              at /app/src/features/market-intelligence/server/accountIntelligence.routes.ts:37:5
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at next (/app/node_modules/router/lib/route.js:157:13)
+              at Route.dispatch (/app/node_modules/router/lib/route.js:117:3)
+              at handle (/app/node_modules/router/index.js:435:11)
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at /app/node_modules/router/index.js:295:15
+              at param (/app/node_modules/router/index.js:600:14)
+      "statusCode": 400,
+      "details": [
+        {
+          "expected": "number",
+          "code": "invalid_type",
+          "received": "NaN",
+          "path": [
+            "page"
+          ],
+          "message": "Invalid input: expected number, received NaN"
+        },
+        {
+          "expected": "number",
+          "code": "invalid_type",
+          "received": "NaN",
+          "path": [
+            "limit"
+          ],
+          "message": "Invalid input: expected number, received NaN"
+        }
+      ]
+    }
+[2026-10-02 18:55:41.482 +0000] [31mERROR[39m: [36mGlobal error handler[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mstatus[39m: 422
+    err: {
+      "type": "AppError",
+      "message": "Fontes insuficientes para atualizar a conta.",
+      "stack":
+          Error: Fontes insuficientes para atualizar a conta.
+              at /app/tests/unit/features/market-intelligence/server/accountIntelligence.routes.contract.test.ts:345:7
+              at file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
+              at file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
+              at file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
+              at new Promise (<anonymous>)
+              at runWithCancel (file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)
+              at file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
+              at new Promise (<anonymous>)
+              at runWithTimeout (file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)
+              at file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:2956:64
+      "statusCode": 422
+    }
+ [32m✓[39m tests/unit/features/market-intelligence/server/accountIntelligence.routes.contract.test.ts [2m([22m[2m40 tests[22m[2m)[22m[33m 462[2mms[22m[39m
+ [32m✓[39m tests/unit/components/ui/onda1.test.tsx [2m([22m[2m8 tests[22m[2m)[22m[33m 435[2mms[22m[39m
+ [32m✓[39m tests/unit/features/crm360/components/PropostasList.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[33m 397[2mms[22m[39m
+ [32m✓[39m tests/unit/scripts/reset-passwords.test.ts [2m([22m[2m9 tests[22m[2m)[22m[33m 407[2mms[22m[39m
+ [32m✓[39m src/features/integrations/bitrix/service/__tests__/ownershipGuard.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 200[2mms[22m[39m
+ [32m✓[39m tests/unit/lib/ai/budget.test.ts [2m([22m[2m10 tests[22m[2m)[22m[33m 376[2mms[22m[39m
+ [32m✓[39m tests/unit/features/analytics/components/WinLossAnalysis.test.tsx [2m([22m[2m3 tests[22m[2m)[22m[33m 401[2mms[22m[39m
+ [32m✓[39m tests/unit/components/ui/Toaster.test.tsx [2m([22m[2m6 tests[22m[2m)[22m[33m 401[2mms[22m[39m
+ [32m✓[39m tests/unit/components/ui/KpiCard.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[33m 363[2mms[22m[39m
+ [32m✓[39m tests/unit/features/dashboard/RealtimeFeed.test.tsx [2m([22m[2m3 tests[22m[2m)[22m[33m 385[2mms[22m[39m
+     [33m[2m✓[22m[39m mostra estado de erro visível (não só console) quando a conexão SSE falha, com ação de retry [33m 347[2mms[22m[39m
+ [32m✓[39m tests/unit/components/ui/onda2.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[33m 378[2mms[22m[39m
+ [32m✓[39m src/features/intelligence/agents/__tests__/base.agent.consent.test.ts [2m([22m[2m4 tests[22m[2m)[22m[33m 397[2mms[22m[39m
+     [33m[2m✓[22m[39m BDRAgent.run (caminho runWithTools) bloqueia sem base legal registrada, sem montar nenhum modelo de IA [33m 331[2mms[22m[39m
+ [32m✓[39m tests/unit/features/lgpd/AuditLogs.test.tsx [2m([22m[2m3 tests[22m[2m)[22m[33m 352[2mms[22m[39m
+ [32m✓[39m src/lib/ai/__tests__/gateway.test.ts [2m([22m[2m14 tests[22m[2m)[22m[33m 350[2mms[22m[39m
+     [33m[2m✓[22m[39m reexecuta a mesma perna após uma falha 5xx transitória antes de desistir [33m 304[2mms[22m[39m
+ [32m✓[39m src/features/integrations/whatsapp/components/__tests__/WhatsAppChatPanel.test.ts [2m([22m[2m3 tests[22m[2m)[22m[33m 344[2mms[22m[39m
+ [32m✓[39m tests/unit/components/ui/TechToolLogo.test.tsx [2m([22m[2m6 tests[22m[2m)[22m[33m 364[2mms[22m[39m
+ [32m✓[39m tests/unit/features/dashboard-smoke.test.tsx [2m([22m[2m9 tests[22m[2m)[22m[33m 351[2mms[22m[39m
+[2026-10-02 18:56:11.457 +0000] [31mERROR[39m: [36mFailed to load call logs for admin dashboard[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+[2026-10-02 18:56:11.457 +0000] [31mERROR[39m: [36mFailed to load agent count for admin dashboard[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+[2026-10-02 18:56:13.131 +0000] [33mWARN[39m: [36m[search] MEILI_MASTER_KEY não configurada — usando chave fixa de desenvolvimento local. NUNCA use isso em produção (a trava acima impede a subida sem a variável real).[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+[2026-10-02 18:56:13.305 +0000] [31mERROR[39m: [36mGlobal error handler[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    err: {
+      "type": "ZodError",
+      "message": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"contacts\",\n      0,\n      \"name\"\n    ],\n    \"message\": \"Invalid input: expected string, received undefined\"\n  }\n]",
+      "stack":
+          ZodError: [
+            {
+              "expected": "string",
+              "code": "invalid_type",
+              "path": [
+                "contacts",
+                0,
+                "name"
+              ],
+              "message": "Invalid input: expected string, received undefined"
+            }
+          ]
+              at /app/src/shared/middlewares/validateRequest.ts:7:31
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at next (/app/node_modules/router/lib/route.js:157:13)
+              at Route.dispatch (/app/node_modules/router/lib/route.js:117:3)
+              at handle (/app/node_modules/router/index.js:435:11)
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at /app/node_modules/router/index.js:295:15
+              at processParams (/app/node_modules/router/index.js:582:12)
+              at next (/app/node_modules/router/index.js:291:5)
+              at /app/src/features/intelligence/routes/ai-suite.routes.ts:40:5
+      "name": "ZodError"
+    }
+[2026-10-02 18:56:13.341 +0000] [31mERROR[39m: [36mGlobal error handler[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    err: {
+      "type": "ZodError",
+      "message": "[\n  {\n    \"origin\": \"string\",\n    \"code\": \"too_big\",\n    \"maximum\": 2000,\n    \"inclusive\": true,\n    \"path\": [\n      \"companyContext\"\n    ],\n    \"message\": \"Too big: expected string to have <=2000 characters\"\n  }\n]",
+      "stack":
+          ZodError: [
+            {
+              "origin": "string",
+              "code": "too_big",
+              "maximum": 2000,
+              "inclusive": true,
+              "path": [
+                "companyContext"
+              ],
+              "message": "Too big: expected string to have <=2000 characters"
+            }
+          ]
+              at /app/src/shared/middlewares/validateRequest.ts:7:31
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at next (/app/node_modules/router/lib/route.js:157:13)
+              at Route.dispatch (/app/node_modules/router/lib/route.js:117:3)
+              at handle (/app/node_modules/router/index.js:435:11)
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at /app/node_modules/router/index.js:295:15
+              at processParams (/app/node_modules/router/index.js:582:12)
+              at next (/app/node_modules/router/index.js:291:5)
+              at /app/src/features/intelligence/routes/ai-suite.routes.ts:40:5
+      "name": "ZodError"
+    }
+[2026-10-02 18:56:13.367 +0000] [31mERROR[39m: [36mGlobal error handler[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    err: {
+      "type": "ZodError",
+      "message": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"companyName\"\n    ],\n    \"message\": \"Invalid input: expected string, received undefined\"\n  }\n]",
+      "stack":
+          ZodError: [
+            {
+              "expected": "string",
+              "code": "invalid_type",
+              "path": [
+                "companyName"
+              ],
+              "message": "Invalid input: expected string, received undefined"
+            }
+          ]
+              at /app/src/shared/middlewares/validateRequest.ts:7:31
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at next (/app/node_modules/router/lib/route.js:157:13)
+              at Route.dispatch (/app/node_modules/router/lib/route.js:117:3)
+              at handle (/app/node_modules/router/index.js:435:11)
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at /app/node_modules/router/index.js:295:15
+              at processParams (/app/node_modules/router/index.js:582:12)
+              at next (/app/node_modules/router/index.js:291:5)
+              at /app/src/features/intelligence/routes/ai-suite.routes.ts:40:5
+      "name": "ZodError"
+    }
+[2026-10-02 18:56:13.378 +0000] [31mERROR[39m: [36mGlobal error handler[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    err: {
+      "type": "ZodError",
+      "message": "[\n  {\n    \"origin\": \"string\",\n    \"code\": \"too_big\",\n    \"maximum\": 2000,\n    \"inclusive\": true,\n    \"path\": [\n      \"rawNotes\"\n    ],\n    \"message\": \"Too big: expected string to have <=2000 characters\"\n  }\n]",
+      "stack":
+          ZodError: [
+            {
+              "origin": "string",
+              "code": "too_big",
+              "maximum": 2000,
+              "inclusive": true,
+              "path": [
+                "rawNotes"
+              ],
+              "message": "Too big: expected string to have <=2000 characters"
+            }
+          ]
+              at /app/src/shared/middlewares/validateRequest.ts:7:31
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at next (/app/node_modules/router/lib/route.js:157:13)
+              at Route.dispatch (/app/node_modules/router/lib/route.js:117:3)
+              at handle (/app/node_modules/router/index.js:435:11)
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at /app/node_modules/router/index.js:295:15
+              at processParams (/app/node_modules/router/index.js:582:12)
+              at next (/app/node_modules/router/index.js:291:5)
+              at /app/src/features/intelligence/routes/ai-suite.routes.ts:40:5
+      "name": "ZodError"
+    }
+[2026-10-02 18:56:13.396 +0000] [31mERROR[39m: [36mGlobal error handler[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    err: {
+      "type": "ZodError",
+      "message": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"telemetryDataSummary\"\n    ],\n    \"message\": \"Invalid input: expected string, received undefined\"\n  }\n]",
+      "stack":
+          ZodError: [
+            {
+              "expected": "string",
+              "code": "invalid_type",
+              "path": [
+                "telemetryDataSummary"
+              ],
+              "message": "Invalid input: expected string, received undefined"
+            }
+          ]
+              at /app/src/shared/middlewares/validateRequest.ts:7:31
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at next (/app/node_modules/router/lib/route.js:157:13)
+              at Route.dispatch (/app/node_modules/router/lib/route.js:117:3)
+              at handle (/app/node_modules/router/index.js:435:11)
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at /app/node_modules/router/index.js:295:15
+              at processParams (/app/node_modules/router/index.js:582:12)
+              at next (/app/node_modules/router/index.js:291:5)
+              at /app/src/features/intelligence/routes/ai-suite.routes.ts:40:5
+      "name": "ZodError"
+    }
+[2026-10-02 18:56:13.406 +0000] [31mERROR[39m: [36mGlobal error handler[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    err: {
+      "type": "ZodError",
+      "message": "[\n  {\n    \"origin\": \"string\",\n    \"code\": \"too_big\",\n    \"maximum\": 2000,\n    \"inclusive\": true,\n    \"path\": [\n      \"telemetryDataSummary\"\n    ],\n    \"message\": \"Too big: expected string to have <=2000 characters\"\n  }\n]",
+      "stack":
+          ZodError: [
+            {
+              "origin": "string",
+              "code": "too_big",
+              "maximum": 2000,
+              "inclusive": true,
+              "path": [
+                "telemetryDataSummary"
+              ],
+              "message": "Too big: expected string to have <=2000 characters"
+            }
+          ]
+              at /app/src/shared/middlewares/validateRequest.ts:7:31
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at next (/app/node_modules/router/lib/route.js:157:13)
+              at Route.dispatch (/app/node_modules/router/lib/route.js:117:3)
+              at handle (/app/node_modules/router/index.js:435:11)
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at /app/node_modules/router/index.js:295:15
+              at processParams (/app/node_modules/router/index.js:582:12)
+              at next (/app/node_modules/router/index.js:291:5)
+              at /app/src/features/intelligence/routes/ai-suite.routes.ts:40:5
+      "name": "ZodError"
+    }
+[2026-10-02 18:56:13.428 +0000] [31mERROR[39m: [36mGlobal error handler[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    err: {
+      "type": "ZodError",
+      "message": "[\n  {\n    \"code\": \"invalid_value\",\n    \"values\": [\n      \"estrito\",\n      \"moderado\"\n    ],\n    \"path\": [\n      \"maskLevel\"\n    ],\n    \"message\": \"Invalid option: expected one of \\\"estrito\\\"|\\\"moderado\\\"\"\n  }\n]",
+      "stack":
+          ZodError: [
+            {
+              "code": "invalid_value",
+              "values": [
+                "estrito",
+                "moderado"
+              ],
+              "path": [
+                "maskLevel"
+              ],
+              "message": "Invalid option: expected one of \"estrito\"|\"moderado\""
+            }
+          ]
+              at /app/src/shared/middlewares/validateRequest.ts:7:31
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at next (/app/node_modules/router/lib/route.js:157:13)
+              at Route.dispatch (/app/node_modules/router/lib/route.js:117:3)
+              at handle (/app/node_modules/router/index.js:435:11)
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at /app/node_modules/router/index.js:295:15
+              at processParams (/app/node_modules/router/index.js:582:12)
+              at next (/app/node_modules/router/index.js:291:5)
+              at /app/src/features/intelligence/routes/ai-suite.routes.ts:40:5
+      "name": "ZodError"
+    }
+[2026-10-02 18:56:13.437 +0000] [31mERROR[39m: [36mGlobal error handler[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    err: {
+      "type": "ZodError",
+      "message": "[\n  {\n    \"origin\": \"string\",\n    \"code\": \"too_big\",\n    \"maximum\": 2000,\n    \"inclusive\": true,\n    \"path\": [\n      \"rawText\"\n    ],\n    \"message\": \"Too big: expected string to have <=2000 characters\"\n  }\n]",
+      "stack":
+          ZodError: [
+            {
+              "origin": "string",
+              "code": "too_big",
+              "maximum": 2000,
+              "inclusive": true,
+              "path": [
+                "rawText"
+              ],
+              "message": "Too big: expected string to have <=2000 characters"
+            }
+          ]
+              at /app/src/shared/middlewares/validateRequest.ts:7:31
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at next (/app/node_modules/router/lib/route.js:157:13)
+              at Route.dispatch (/app/node_modules/router/lib/route.js:117:3)
+              at handle (/app/node_modules/router/index.js:435:11)
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at /app/node_modules/router/index.js:295:15
+              at processParams (/app/node_modules/router/index.js:582:12)
+              at next (/app/node_modules/router/index.js:291:5)
+              at /app/src/features/intelligence/routes/ai-suite.routes.ts:40:5
+      "name": "ZodError"
+    }
+[2026-10-02 18:56:13.452 +0000] [31mERROR[39m: [36mGlobal error handler[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    err: {
+      "type": "ZodError",
+      "message": "[\n  {\n    \"code\": \"invalid_value\",\n    \"values\": [\n      \"email\",\n      \"whatsapp\",\n      \"call\",\n      \"linkedin\"\n    ],\n    \"path\": [\n      \"channel\"\n    ],\n    \"message\": \"Invalid option: expected one of \\\"email\\\"|\\\"whatsapp\\\"|\\\"call\\\"|\\\"linkedin\\\"\"\n  }\n]",
+      "stack":
+          ZodError: [
+            {
+              "code": "invalid_value",
+              "values": [
+                "email",
+                "whatsapp",
+                "call",
+                "linkedin"
+              ],
+              "path": [
+                "channel"
+              ],
+              "message": "Invalid option: expected one of \"email\"|\"whatsapp\"|\"call\"|\"linkedin\""
+            }
+          ]
+              at /app/src/shared/middlewares/validateRequest.ts:7:31
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at next (/app/node_modules/router/lib/route.js:157:13)
+              at Route.dispatch (/app/node_modules/router/lib/route.js:117:3)
+              at handle (/app/node_modules/router/index.js:435:11)
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at /app/node_modules/router/index.js:295:15
+              at processParams (/app/node_modules/router/index.js:582:12)
+              at next (/app/node_modules/router/index.js:291:5)
+              at /app/src/features/intelligence/routes/ai-suite.routes.ts:40:5
+      "name": "ZodError"
+    }
+[2026-10-02 18:56:13.471 +0000] [31mERROR[39m: [36mGlobal error handler[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    err: {
+      "type": "ZodError",
+      "message": "[\n  {\n    \"code\": \"invalid_value\",\n    \"values\": [\n      \"Fácil\",\n      \"Médio\",\n      \"Difícil\",\n      \"Extremo\"\n    ],\n    \"path\": [\n      \"persona\",\n      \"difficulty\"\n    ],\n    \"message\": \"Invalid option: expected one of \\\"Fácil\\\"|\\\"Médio\\\"|\\\"Difícil\\\"|\\\"Extremo\\\"\"\n  }\n]",
+      "stack":
+          ZodError: [
+            {
+              "code": "invalid_value",
+              "values": [
+                "Fácil",
+                "Médio",
+                "Difícil",
+                "Extremo"
+              ],
+              "path": [
+                "persona",
+                "difficulty"
+              ],
+              "message": "Invalid option: expected one of \"Fácil\"|\"Médio\"|\"Difícil\"|\"Extremo\""
+            }
+          ]
+              at /app/src/shared/middlewares/validateRequest.ts:7:31
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at next (/app/node_modules/router/lib/route.js:157:13)
+              at Route.dispatch (/app/node_modules/router/lib/route.js:117:3)
+              at handle (/app/node_modules/router/index.js:435:11)
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at /app/node_modules/router/index.js:295:15
+              at processParams (/app/node_modules/router/index.js:582:12)
+              at next (/app/node_modules/router/index.js:291:5)
+              at /app/src/features/intelligence/routes/ai-suite.routes.ts:40:5
+      "name": "ZodError"
+    }
+[2026-10-02 18:56:13.478 +0000] [31mERROR[39m: [36mGlobal error handler[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    err: {
+      "type": "ZodError",
+      "message": "[\n  {\n    \"origin\": \"string\",\n    \"code\": \"too_small\",\n    \"minimum\": 1,\n    \"inclusive\": true,\n    \"path\": [\n      \"userMessage\"\n    ],\n    \"message\": \"Too small: expected string to have >=1 characters\"\n  }\n]",
+      "stack":
+          ZodError: [
+            {
+              "origin": "string",
+              "code": "too_small",
+              "minimum": 1,
+              "inclusive": true,
+              "path": [
+                "userMessage"
+              ],
+              "message": "Too small: expected string to have >=1 characters"
+            }
+          ]
+              at /app/src/shared/middlewares/validateRequest.ts:7:31
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at next (/app/node_modules/router/lib/route.js:157:13)
+              at Route.dispatch (/app/node_modules/router/lib/route.js:117:3)
+              at handle (/app/node_modules/router/index.js:435:11)
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at /app/node_modules/router/index.js:295:15
+              at processParams (/app/node_modules/router/index.js:582:12)
+              at next (/app/node_modules/router/index.js:291:5)
+              at /app/src/features/intelligence/routes/ai-suite.routes.ts:40:5
+      "name": "ZodError"
+    }
+[2026-10-02 18:56:13.493 +0000] [31mERROR[39m: [36mGlobal error handler[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    err: {
+      "type": "ZodError",
+      "message": "[\n  {\n    \"expected\": \"array\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"diagnosedPains\"\n    ],\n    \"message\": \"Invalid input: expected array, received undefined\"\n  },\n  {\n    \"expected\": \"array\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"proposedModules\"\n    ],\n    \"message\": \"Invalid input: expected array, received undefined\"\n  }\n]",
+      "stack":
+          ZodError: [
+            {
+              "expected": "array",
+              "code": "invalid_type",
+              "path": [
+                "diagnosedPains"
+              ],
+              "message": "Invalid input: expected array, received undefined"
+            },
+            {
+              "expected": "array",
+              "code": "invalid_type",
+              "path": [
+                "proposedModules"
+              ],
+              "message": "Invalid input: expected array, received undefined"
+            }
+          ]
+              at /app/src/shared/middlewares/validateRequest.ts:7:31
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at next (/app/node_modules/router/lib/route.js:157:13)
+              at Route.dispatch (/app/node_modules/router/lib/route.js:117:3)
+              at handle (/app/node_modules/router/index.js:435:11)
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at /app/node_modules/router/index.js:295:15
+              at processParams (/app/node_modules/router/index.js:582:12)
+              at next (/app/node_modules/router/index.js:291:5)
+              at /app/src/features/intelligence/routes/ai-suite.routes.ts:40:5
+      "name": "ZodError"
+    }
+[2026-10-02 18:56:13.506 +0000] [31mERROR[39m: [36mGlobal error handler[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    err: {
+      "type": "ZodError",
+      "message": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"rawNote\"\n    ],\n    \"message\": \"Invalid input: expected string, received undefined\"\n  }\n]",
+      "stack":
+          ZodError: [
+            {
+              "expected": "string",
+              "code": "invalid_type",
+              "path": [
+                "rawNote"
+              ],
+              "message": "Invalid input: expected string, received undefined"
+            }
+          ]
+              at /app/src/shared/middlewares/validateRequest.ts:7:31
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at next (/app/node_modules/router/lib/route.js:157:13)
+              at Route.dispatch (/app/node_modules/router/lib/route.js:117:3)
+              at handle (/app/node_modules/router/index.js:435:11)
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at /app/node_modules/router/index.js:295:15
+              at processParams (/app/node_modules/router/index.js:582:12)
+              at next (/app/node_modules/router/index.js:291:5)
+              at /app/src/features/intelligence/routes/ai-suite.routes.ts:40:5
+      "name": "ZodError"
+    }
+[2026-10-02 18:56:13.520 +0000] [31mERROR[39m: [36mGlobal error handler[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    err: {
+      "type": "ZodError",
+      "message": "[\n  {\n    \"expected\": \"number\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"contractAgeMonths\"\n    ],\n    \"message\": \"Invalid input: expected number, received undefined\"\n  },\n  {\n    \"expected\": \"number\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"monthlyRecurringRevenue\"\n    ],\n    \"message\": \"Invalid input: expected number, received undefined\"\n  },\n  {\n    \"expected\": \"number\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"openSupportTickets\"\n    ],\n    \"message\": \"Invalid input: expected number, received undefined\"\n  },\n  {\n    \"expected\": \"number\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"unresolvedComplaints\"\n    ],\n    \"message\": \"Invalid input: expected number, received undefined\"\n  },\n  {\n    \"expected\": \"number\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"paymentDelaysLast90Days\"\n    ],\n    \"message\": \"Invalid input: expected number, received undefined\"\n  },\n  {\n    \"expected\": \"number\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"platformUsageDropPercentage\"\n    ],\n    \"message\": \"Invalid input: expected number, received undefined\"\n  }\n]",
+      "stack":
+          ZodError: [
+            {
+              "expected": "number",
+              "code": "invalid_type",
+              "path": [
+                "contractAgeMonths"
+              ],
+              "message": "Invalid input: expected number, received undefined"
+            },
+            {
+              "expected": "number",
+              "code": "invalid_type",
+              "path": [
+                "monthlyRecurringRevenue"
+              ],
+              "message": "Invalid input: expected number, received undefined"
+            },
+            {
+              "expected": "number",
+              "code": "invalid_type",
+              "path": [
+                "openSupportTickets"
+              ],
+              "message": "Invalid input: expected number, received undefined"
+            },
+            {
+              "expected": "number",
+              "code": "invalid_type",
+              "path": [
+                "unresolvedComplaints"
+              ],
+              "message": "Invalid input: expected number, received undefined"
+            },
+            {
+              "expected": "number",
+              "code": "invalid_type",
+              "path": [
+                "paymentDelaysLast90Days"
+              ],
+              "message": "Invalid input: expected number, received undefined"
+            },
+            {
+              "expected": "number",
+              "code": "invalid_type",
+              "path": [
+                "platformUsageDropPercentage"
+              ],
+              "message": "Invalid input: expected number, received undefined"
+            }
+          ]
+              at /app/src/shared/middlewares/validateRequest.ts:7:31
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at next (/app/node_modules/router/lib/route.js:157:13)
+              at Route.dispatch (/app/node_modules/router/lib/route.js:117:3)
+              at handle (/app/node_modules/router/index.js:435:11)
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at /app/node_modules/router/index.js:295:15
+              at processParams (/app/node_modules/router/index.js:582:12)
+              at next (/app/node_modules/router/index.js:291:5)
+              at /app/src/features/intelligence/routes/ai-suite.routes.ts:40:5
+      "name": "ZodError"
+    }
+[2026-10-02 18:56:13.533 +0000] [31mERROR[39m: [36mGlobal error handler[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    err: {
+      "type": "ZodError",
+      "message": "[\n  {\n    \"code\": \"invalid_value\",\n    \"values\": [\n      \"Alta\",\n      \"Média\",\n      \"Baixa\"\n    ],\n    \"path\": [\n      \"lead\",\n      \"urgency\"\n    ],\n    \"message\": \"Invalid option: expected one of \\\"Alta\\\"|\\\"Média\\\"|\\\"Baixa\\\"\"\n  }\n]",
+      "stack":
+          ZodError: [
+            {
+              "code": "invalid_value",
+              "values": [
+                "Alta",
+                "Média",
+                "Baixa"
+              ],
+              "path": [
+                "lead",
+                "urgency"
+              ],
+              "message": "Invalid option: expected one of \"Alta\"|\"Média\"|\"Baixa\""
+            }
+          ]
+              at /app/src/shared/middlewares/validateRequest.ts:7:31
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at next (/app/node_modules/router/lib/route.js:157:13)
+              at Route.dispatch (/app/node_modules/router/lib/route.js:117:3)
+              at handle (/app/node_modules/router/index.js:435:11)
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at /app/node_modules/router/index.js:295:15
+              at processParams (/app/node_modules/router/index.js:582:12)
+              at next (/app/node_modules/router/index.js:291:5)
+              at /app/src/features/intelligence/routes/ai-suite.routes.ts:40:5
+      "name": "ZodError"
+    }
+[2026-10-02 18:56:13.547 +0000] [31mERROR[39m: [36mGlobal error handler[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    err: {
+      "type": "ZodError",
+      "message": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"rawTranscript\"\n    ],\n    \"message\": \"Invalid input: expected string, received undefined\"\n  }\n]",
+      "stack":
+          ZodError: [
+            {
+              "expected": "string",
+              "code": "invalid_type",
+              "path": [
+                "rawTranscript"
+              ],
+              "message": "Invalid input: expected string, received undefined"
+            }
+          ]
+              at /app/src/shared/middlewares/validateRequest.ts:7:31
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at next (/app/node_modules/router/lib/route.js:157:13)
+              at Route.dispatch (/app/node_modules/router/lib/route.js:117:3)
+              at handle (/app/node_modules/router/index.js:435:11)
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at /app/node_modules/router/index.js:295:15
+              at processParams (/app/node_modules/router/index.js:582:12)
+              at next (/app/node_modules/router/index.js:291:5)
+              at /app/src/features/intelligence/routes/ai-suite.routes.ts:40:5
+      "name": "ZodError"
+    }
+[2026-10-02 18:56:13.560 +0000] [31mERROR[39m: [36mGlobal error handler[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    err: {
+      "type": "ZodError",
+      "message": "[\n  {\n    \"expected\": \"number\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"callsMade\"\n    ],\n    \"message\": \"Invalid input: expected number, received undefined\"\n  },\n  {\n    \"expected\": \"number\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"meetingsScheduled\"\n    ],\n    \"message\": \"Invalid input: expected number, received undefined\"\n  },\n  {\n    \"expected\": \"number\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"dealsClosed\"\n    ],\n    \"message\": \"Invalid input: expected number, received undefined\"\n  },\n  {\n    \"expected\": \"number\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"conversionRatePercent\"\n    ],\n    \"message\": \"Invalid input: expected number, received undefined\"\n  },\n  {\n    \"expected\": \"number\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"avgTicket\"\n    ],\n    \"message\": \"Invalid input: expected number, received undefined\"\n  }\n]",
+      "stack":
+          ZodError: [
+            {
+              "expected": "number",
+              "code": "invalid_type",
+              "path": [
+                "callsMade"
+              ],
+              "message": "Invalid input: expected number, received undefined"
+            },
+            {
+              "expected": "number",
+              "code": "invalid_type",
+              "path": [
+                "meetingsScheduled"
+              ],
+              "message": "Invalid input: expected number, received undefined"
+            },
+            {
+              "expected": "number",
+              "code": "invalid_type",
+              "path": [
+                "dealsClosed"
+              ],
+              "message": "Invalid input: expected number, received undefined"
+            },
+            {
+              "expected": "number",
+              "code": "invalid_type",
+              "path": [
+                "conversionRatePercent"
+              ],
+              "message": "Invalid input: expected number, received undefined"
+            },
+            {
+              "expected": "number",
+              "code": "invalid_type",
+              "path": [
+                "avgTicket"
+              ],
+              "message": "Invalid input: expected number, received undefined"
+            }
+          ]
+              at /app/src/shared/middlewares/validateRequest.ts:7:31
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at next (/app/node_modules/router/lib/route.js:157:13)
+              at Route.dispatch (/app/node_modules/router/lib/route.js:117:3)
+              at handle (/app/node_modules/router/index.js:435:11)
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at /app/node_modules/router/index.js:295:15
+              at processParams (/app/node_modules/router/index.js:582:12)
+              at next (/app/node_modules/router/index.js:291:5)
+              at /app/src/features/intelligence/routes/ai-suite.routes.ts:40:5
+      "name": "ZodError"
+    }
+[2026-10-02 18:56:13.575 +0000] [31mERROR[39m: [36mGlobal error handler[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    err: {
+      "type": "ZodError",
+      "message": "[\n  {\n    \"code\": \"invalid_value\",\n    \"values\": [\n      \"SDR\",\n      \"Closer\",\n      \"Onboarding\",\n      \"CS\"\n    ],\n    \"path\": [\n      \"targetAudience\"\n    ],\n    \"message\": \"Invalid option: expected one of \\\"SDR\\\"|\\\"Closer\\\"|\\\"Onboarding\\\"|\\\"CS\\\"\"\n  }\n]",
+      "stack":
+          ZodError: [
+            {
+              "code": "invalid_value",
+              "values": [
+                "SDR",
+                "Closer",
+                "Onboarding",
+                "CS"
+              ],
+              "path": [
+                "targetAudience"
+              ],
+              "message": "Invalid option: expected one of \"SDR\"|\"Closer\"|\"Onboarding\"|\"CS\""
+            }
+          ]
+              at /app/src/shared/middlewares/validateRequest.ts:7:31
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at next (/app/node_modules/router/lib/route.js:157:13)
+              at Route.dispatch (/app/node_modules/router/lib/route.js:117:3)
+              at handle (/app/node_modules/router/index.js:435:11)
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at /app/node_modules/router/index.js:295:15
+              at processParams (/app/node_modules/router/index.js:582:12)
+              at next (/app/node_modules/router/index.js:291:5)
+              at /app/src/features/intelligence/routes/ai-suite.routes.ts:40:5
+      "name": "ZodError"
+    }
+[2026-10-02 18:56:13.588 +0000] [31mERROR[39m: [36mGlobal error handler[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    err: {
+      "type": "ZodError",
+      "message": "[\n  {\n    \"origin\": \"string\",\n    \"code\": \"too_small\",\n    \"minimum\": 3,\n    \"inclusive\": true,\n    \"path\": [\n      \"question\"\n    ],\n    \"message\": \"Descreva a dúvida técnica com pelo menos 3 caracteres\"\n  }\n]",
+      "stack":
+          ZodError: [
+            {
+              "origin": "string",
+              "code": "too_small",
+              "minimum": 3,
+              "inclusive": true,
+              "path": [
+                "question"
+              ],
+              "message": "Descreva a dúvida técnica com pelo menos 3 caracteres"
+            }
+          ]
+              at /app/src/shared/middlewares/validateRequest.ts:7:31
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at next (/app/node_modules/router/lib/route.js:157:13)
+              at Route.dispatch (/app/node_modules/router/lib/route.js:117:3)
+              at handle (/app/node_modules/router/index.js:435:11)
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at /app/node_modules/router/index.js:295:15
+              at processParams (/app/node_modules/router/index.js:582:12)
+              at next (/app/node_modules/router/index.js:291:5)
+              at /app/src/features/intelligence/routes/ai-suite.routes.ts:40:5
+      "name": "ZodError"
+    }
+ [32m✓[39m src/features/intelligence/routes/__tests__/ai-suite.routes.validation.test.ts [2m([22m[2m32 tests[22m[2m)[22m[33m 351[2mms[22m[39m
+[2026-10-02 18:56:16.116 +0000] [33mWARN[39m: [36m[search] MEILI_MASTER_KEY não configurada — usando chave fixa de desenvolvimento local. NUNCA use isso em produção (a trava acima impede a subida sem a variável real).[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+ [32m✓[39m tests/unit/features/smoke.test.tsx [2m([22m[2m5 tests[22m[2m)[22m[33m 313[2mms[22m[39m
+ [32m✓[39m tests/unit/features/prospecting/services/apollo/organizationSearch.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 251[2mms[22m[39m
+ [32m✓[39m tests/unit/shared/openapiRouteInventory.test.ts [2m([22m[2m7 tests[22m[2m)[22m[33m 326[2mms[22m[39m
+     [33m[2m✓[22m[39m não encontra deriva estrutural no repositório real (composition root vs docs/openapi.yaml) [33m 318[2mms[22m[39m
+[2026-10-02 18:56:21.439 +0000] [33mWARN[39m: [36m[search] MEILI_MASTER_KEY não configurada — usando chave fixa de desenvolvimento local. NUNCA use isso em produção (a trava acima impede a subida sem a variável real).[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+ [32m✓[39m src/features/intelligence/agents/__tests__/closer.no-win-path.test.ts [2m([22m[2m3 tests[22m[2m)[22m[33m 323[2mms[22m[39m
+     [33m[2m✓[22m[39m CloserAgent não tem acesso a nenhuma ferramenta que escreva status de Lead [33m 315[2mms[22m[39m
+ [32m✓[39m tests/unit/bootstrap/security.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 295[2mms[22m[39m
+ [32m✓[39m tests/unit/features/ui.test.tsx [2m([22m[2m2 tests[22m[2m)[22m[32m 291[2mms[22m[39m
+[2026-10-02 18:56:28.245 +0000] [32mINFO[39m: [36mAI action approved[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mactionId[39m: "pending-1"
+    [35msent[39m: true
+[2026-10-02 18:56:28.271 +0000] [32mINFO[39m: [36mAI action approved[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mactionId[39m: "pending-1"
+    [35msent[39m: true
+[2026-10-02 18:56:28.282 +0000] [32mINFO[39m: [36mAI action approved[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mactionId[39m: "pending-1"
+    [35msent[39m: true
+[2026-10-02 18:56:28.293 +0000] [32mINFO[39m: [36mAI action approved[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mactionId[39m: "pending-1"
+    [35msent[39m: true
+[2026-10-02 18:56:28.465 +0000] [32mINFO[39m: [36m[WinLoss] Análise manual disparada e persistida com sucesso[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "test-org-id"
+    [35mleadsAnalyzed[39m: 5
+    [35mtool[39m: "win-loss-analysis"
+ [32m✓[39m tests/unit/features/intelligence/routes/intelligence.routes.test.ts [2m([22m[2m28 tests[22m[2m)[22m[32m 299[2mms[22m[39m
+ [32m✓[39m tests/unit/shared/security/urlGuard.test.ts [2m([22m[2m21 tests[22m[2m)[22m[32m 286[2mms[22m[39m
+ [32m✓[39m tests/unit/components/ui/FunnelBars.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[32m 266[2mms[22m[39m
+ [32m✓[39m src/features/integrations/threecx/__tests__/threecx.service.test.ts [2m([22m[2m22 tests[22m[2m)[22m[32m 254[2mms[22m[39m
+ [32m✓[39m src/features/integrations/bitrix/service/__tests__/extractionFiles.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 254[2mms[22m[39m
+ [32m✓[39m tests/unit/features/prospecting/components/CnpjResultCard.test.tsx [2m([22m[2m3 tests[22m[2m)[22m[32m 248[2mms[22m[39m
+ [32m✓[39m src/features/integrations/bitrix/service/__tests__/connections.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 234[2mms[22m[39m
+ [32m✓[39m tests/unit/features/integrations/birth-voice/birthVoice.webhook.test.ts [2m([22m[2m22 tests[22m[2m)[22m[32m 242[2mms[22m[39m
+ [32m✓[39m tests/unit/features/integrations/birth-voice/voiceResult.webhook.test.ts [2m([22m[2m19 tests[22m[2m)[22m[33m 525[2mms[22m[39m
+[2026-10-02 18:56:42.748 +0000] [31mERROR[39m: [36mGlobal error handler[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    err: {
+      "type": "ZodError",
+      "message": "[\n  {\n    \"origin\": \"string\",\n    \"code\": \"too_small\",\n    \"minimum\": 2,\n    \"inclusive\": true,\n    \"path\": [\n      \"query\"\n    ],\n    \"message\": \"Informe ao menos 2 caracteres para buscar\"\n  }\n]",
+      "stack":
+          ZodError: [
+            {
+              "origin": "string",
+              "code": "too_small",
+              "minimum": 2,
+              "inclusive": true,
+              "path": [
+                "query"
+              ],
+              "message": "Informe ao menos 2 caracteres para buscar"
+            }
+          ]
+              at /app/src/shared/middlewares/validateRequest.ts:7:31
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at next (/app/node_modules/router/lib/route.js:157:13)
+              at Route.dispatch (/app/node_modules/router/lib/route.js:117:3)
+              at handle (/app/node_modules/router/index.js:435:11)
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at /app/node_modules/router/index.js:295:15
+              at processParams (/app/node_modules/router/index.js:582:12)
+              at next (/app/node_modules/router/index.js:291:5)
+              at Function.handle (/app/node_modules/router/index.js:186:3)
+      "name": "ZodError"
+    }
+[2026-10-02 18:56:42.774 +0000] [31mERROR[39m: [36mGlobal error handler[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    err: {
+      "type": "ZodError",
+      "message": "[\n  {\n    \"origin\": \"string\",\n    \"code\": \"invalid_format\",\n    \"format\": \"regex\",\n    \"pattern\": \"/^[A-Za-z0-9-]+$/\",\n    \"path\": [\n      \"login\"\n    ],\n    \"message\": \"Login do GitHub inválido\"\n  }\n]",
+      "stack":
+          ZodError: [
+            {
+              "origin": "string",
+              "code": "invalid_format",
+              "format": "regex",
+              "pattern": "/^[A-Za-z0-9-]+$/",
+              "path": [
+                "login"
+              ],
+              "message": "Login do GitHub inválido"
+            }
+          ]
+              at /app/src/shared/middlewares/validateRequest.ts:7:31
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at next (/app/node_modules/router/lib/route.js:157:13)
+              at Route.dispatch (/app/node_modules/router/lib/route.js:117:3)
+              at handle (/app/node_modules/router/index.js:435:11)
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at /app/node_modules/router/index.js:295:15
+              at processParams (/app/node_modules/router/index.js:582:12)
+              at next (/app/node_modules/router/index.js:291:5)
+              at Function.handle (/app/node_modules/router/index.js:186:3)
+      "name": "ZodError"
+    }
+[2026-10-02 18:56:42.797 +0000] [31mERROR[39m: [36mGlobal error handler[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    err: {
+      "type": "ZodError",
+      "message": "[\n  {\n    \"origin\": \"string\",\n    \"code\": \"too_small\",\n    \"minimum\": 3,\n    \"inclusive\": true,\n    \"path\": [\n      \"companyName\"\n    ],\n    \"message\": \"Informe o nome da empresa (mín. 3 caracteres)\"\n  }\n]",
+      "stack":
+          ZodError: [
+            {
+              "origin": "string",
+              "code": "too_small",
+              "minimum": 3,
+              "inclusive": true,
+              "path": [
+                "companyName"
+              ],
+              "message": "Informe o nome da empresa (mín. 3 caracteres)"
+            }
+          ]
+              at /app/src/shared/middlewares/validateRequest.ts:7:31
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at next (/app/node_modules/router/lib/route.js:157:13)
+              at Route.dispatch (/app/node_modules/router/lib/route.js:117:3)
+              at handle (/app/node_modules/router/index.js:435:11)
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at /app/node_modules/router/index.js:295:15
+              at processParams (/app/node_modules/router/index.js:582:12)
+              at next (/app/node_modules/router/index.js:291:5)
+              at Function.handle (/app/node_modules/router/index.js:186:3)
+      "name": "ZodError"
+    }
+[2026-10-02 18:56:42.816 +0000] [31mERROR[39m: [36mGlobal error handler[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    err: {
+      "type": "ZodError",
+      "message": "[\n  {\n    \"code\": \"invalid_format\",\n    \"format\": \"url\",\n    \"path\": [\n      \"url\"\n    ],\n    \"message\": \"URL inválida\"\n  }\n]",
+      "stack":
+          ZodError: [
+            {
+              "code": "invalid_format",
+              "format": "url",
+              "path": [
+                "url"
+              ],
+              "message": "URL inválida"
+            }
+          ]
+              at /app/src/shared/middlewares/validateRequest.ts:7:31
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at next (/app/node_modules/router/lib/route.js:157:13)
+              at Route.dispatch (/app/node_modules/router/lib/route.js:117:3)
+              at handle (/app/node_modules/router/index.js:435:11)
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at /app/node_modules/router/index.js:295:15
+              at processParams (/app/node_modules/router/index.js:582:12)
+              at next (/app/node_modules/router/index.js:291:5)
+              at Function.handle (/app/node_modules/router/index.js:186:3)
+      "name": "ZodError"
+    }
+ [32m✓[39m src/features/prospecting/routes/__tests__/prospecting-tools.routes.test.ts [2m([22m[2m19 tests[22m[2m)[22m[32m 247[2mms[22m[39m
+[2026-10-02 18:56:44.497 +0000] [31mERROR[39m: [36mGlobal error handler[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    err: {
+      "type": "ZodError",
+      "message": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"accountId\"\n    ],\n    \"message\": \"Invalid input: expected string, received undefined\"\n  }\n]",
+      "stack":
+          ZodError: [
+            {
+              "expected": "string",
+              "code": "invalid_type",
+              "path": [
+                "accountId"
+              ],
+              "message": "Invalid input: expected string, received undefined"
+            }
+          ]
+              at /app/src/shared/middlewares/validateRequest.ts:7:31
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at next (/app/node_modules/router/lib/route.js:157:13)
+              at /app/src/shared/middlewares/requireRole.ts:37:5
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at next (/app/node_modules/router/lib/route.js:157:13)
+              at Route.dispatch (/app/node_modules/router/lib/route.js:117:3)
+              at handle (/app/node_modules/router/index.js:435:11)
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at /app/node_modules/router/index.js:295:15
+      "name": "ZodError"
+    }
+[2026-10-02 18:56:44.519 +0000] [31mERROR[39m: [36mGlobal error handler[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    err: {
+      "type": "ZodError",
+      "message": "[\n  {\n    \"origin\": \"string\",\n    \"code\": \"invalid_format\",\n    \"format\": \"regex\",\n    \"pattern\": \"/^\\\\d{4}-\\\\d{2}$/\",\n    \"path\": [\n      \"month\"\n    ],\n    \"message\": \"Use o formato YYYY-MM\"\n  }\n]",
+      "stack":
+          ZodError: [
+            {
+              "origin": "string",
+              "code": "invalid_format",
+              "format": "regex",
+              "pattern": "/^\\d{4}-\\d{2}$/",
+              "path": [
+                "month"
+              ],
+              "message": "Use o formato YYYY-MM"
+            }
+          ]
+              at /app/src/shared/middlewares/validateRequest.ts:7:31
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at next (/app/node_modules/router/lib/route.js:157:13)
+              at /app/src/shared/middlewares/requireRole.ts:37:5
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at next (/app/node_modules/router/lib/route.js:157:13)
+              at Route.dispatch (/app/node_modules/router/lib/route.js:117:3)
+              at handle (/app/node_modules/router/index.js:435:11)
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at /app/node_modules/router/index.js:295:15
+      "name": "ZodError"
+    }
+ [32m✓[39m tests/unit/features/intelligence/routes/agent.routes.commercial-cell.test.ts [2m([22m[2m17 tests[22m[2m)[22m[32m 216[2mms[22m[39m
+ [32m✓[39m src/features/integrations/bitrix/service/__tests__/leads.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 273[2mms[22m[39m
+ [32m✓[39m src/features/integrations/bitrix/service/__tests__/extraction.test.ts [2m([22m[2m35 tests[22m[2m)[22m[32m 102[2mms[22m[39m
+ [32m✓[39m tests/unit/features/coldCallStatusCard.test.tsx [2m([22m[2m3 tests[22m[2m)[22m[32m 210[2mms[22m[39m
+[2026-10-02 18:56:50.328 +0000] [31mERROR[39m: [36mGlobal error handler[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mstatus[39m: 403
+    err: {
+      "type": "AppError",
+      "message": "Este Lead não é seu.",
+      "stack":
+          Error: Este Lead não é seu.
+              at /app/src/features/mesa-tratamento/routes/mesaTratamento.routes.ts:272:15
+              at processTicksAndRejections (node:internal/process/task_queues:103:5)
+      "statusCode": 403
+    }
+[2026-10-02 18:56:50.371 +0000] [31mERROR[39m: [36mGlobal error handler[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mstatus[39m: 400
+    err: {
+      "type": "AppError",
+      "message": "Selecione o novo responsável.",
+      "stack":
+          Error: Selecione o novo responsável.
+              at /app/src/features/mesa-tratamento/routes/mesaTratamento.routes.ts:457:45
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at next (/app/node_modules/router/lib/route.js:157:13)
+              at /app/src/shared/middlewares/requireRole.ts:37:5
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at next (/app/node_modules/router/lib/route.js:157:13)
+              at Route.dispatch (/app/node_modules/router/lib/route.js:117:3)
+              at handle (/app/node_modules/router/index.js:435:11)
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at /app/node_modules/router/index.js:295:15
+      "statusCode": 400
+    }
+[2026-10-02 18:56:50.397 +0000] [31mERROR[39m: [36mGlobal error handler[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mstatus[39m: 400
+    err: {
+      "type": "AppError",
+      "message": "Escreva um comentário.",
+      "stack":
+          Error: Escreva um comentário.
+              at /app/src/features/mesa-tratamento/routes/mesaTratamento.routes.ts:517:40
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at next (/app/node_modules/router/lib/route.js:157:13)
+              at /app/src/shared/middlewares/requireRole.ts:37:5
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at next (/app/node_modules/router/lib/route.js:157:13)
+              at Route.dispatch (/app/node_modules/router/lib/route.js:117:3)
+              at handle (/app/node_modules/router/index.js:435:11)
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at /app/node_modules/router/index.js:295:15
+      "statusCode": 400
+    }
+ [32m✓[39m tests/unit/features/mesa-tratamento/mesaTratamento.routes.test.ts [2m([22m[2m15 tests[22m[2m)[22m[32m 225[2mms[22m[39m
+ [32m✓[39m src/features/integrations/bitrix/service/__tests__/syncRules.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 238[2mms[22m[39m
+[2026-10-02 18:56:53.573 +0000] [31mERROR[39m: [36mLink de agendamento aponta para usuário/organização inexistente[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mslug[39m: "joao-vendas"
+    [35mlinkId[39m: "link-1"
+[2026-10-02 18:56:53.603 +0000] [31mERROR[39m: [36mFalha ao criar evento no Google Calendar ou enviar confirmação de agendamento público.[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mlinkId[39m: "link-1"
+    [35mbookingId[39m: "activity-1"
+    err: {
+      "type": "Error",
+      "message": "Dependency GoogleCalendarService not found in container",
+      "stack":
+          Error: Dependency GoogleCalendarService not found in container
+              at Container.resolve (/app/src/shared/di/container.ts:11:13)
+              at /app/src/features/calendar/routes/booking.routes.ts:472:21
+              at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    }
+[2026-10-02 18:56:53.607 +0000] [33mWARN[39m: [36m[ACH-17-04] Falha ao verificar/encerrar CadenceRun ativo no agendamento público.[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mlinkId[39m: "link-1"
+    [35mleadId[39m: "lead-1"
+    err: {
+      "type": "TypeError",
+      "message": "Cannot read properties of undefined (reading 'findFirst')",
+      "stack":
+          TypeError: Cannot read properties of undefined (reading 'findFirst')
+              at /app/src/features/calendar/routes/booking.routes.ts:528:53
+              at /app/src/lib/async-context.ts:65:22
+              at TenantAwareAsyncLocalStorage.run (node:internal/async_local_storage/async_hooks:91:14)
+              at TenantAwareAsyncLocalStorage.run (/app/src/lib/async-context.ts:64:18)
+              at /app/src/features/calendar/routes/booking.routes.ts:527:30
+              at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    }
+[2026-10-02 18:56:53.621 +0000] [31mERROR[39m: [36mFalha ao criar evento no Google Calendar ou enviar confirmação de agendamento público.[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mlinkId[39m: "link-1"
+    [35mbookingId[39m: "activity-1"
+    err: {
+      "type": "Error",
+      "message": "Dependency GoogleCalendarService not found in container",
+      "stack":
+          Error: Dependency GoogleCalendarService not found in container
+              at Container.resolve (/app/src/shared/di/container.ts:11:13)
+              at /app/src/features/calendar/routes/booking.routes.ts:472:21
+              at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    }
+[2026-10-02 18:56:53.621 +0000] [33mWARN[39m: [36m[ACH-17-04] Falha ao verificar/encerrar CadenceRun ativo no agendamento público.[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mlinkId[39m: "link-1"
+    [35mleadId[39m: "lead-1"
+    err: {
+      "type": "TypeError",
+      "message": "Cannot read properties of undefined (reading 'findFirst')",
+      "stack":
+          TypeError: Cannot read properties of undefined (reading 'findFirst')
+              at /app/src/features/calendar/routes/booking.routes.ts:528:53
+              at /app/src/lib/async-context.ts:65:22
+              at TenantAwareAsyncLocalStorage.run (node:internal/async_local_storage/async_hooks:91:14)
+              at TenantAwareAsyncLocalStorage.run (/app/src/lib/async-context.ts:64:18)
+              at /app/src/features/calendar/routes/booking.routes.ts:527:30
+              at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    }
+[2026-10-02 18:56:53.631 +0000] [31mERROR[39m: [36mFalha ao criar evento no Google Calendar ou enviar confirmação de agendamento público.[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mlinkId[39m: "link-1"
+    [35mbookingId[39m: "activity-1"
+    err: {
+      "type": "Error",
+      "message": "Dependency GoogleCalendarService not found in container",
+      "stack":
+          Error: Dependency GoogleCalendarService not found in container
+              at Container.resolve (/app/src/shared/di/container.ts:11:13)
+              at /app/src/features/calendar/routes/booking.routes.ts:472:21
+              at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    }
+[2026-10-02 18:56:53.632 +0000] [33mWARN[39m: [36m[ACH-17-04] Falha ao verificar/encerrar CadenceRun ativo no agendamento público.[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mlinkId[39m: "link-1"
+    [35mleadId[39m: "lead-1"
+    err: {
+      "type": "TypeError",
+      "message": "Cannot read properties of undefined (reading 'findFirst')",
+      "stack":
+          TypeError: Cannot read properties of undefined (reading 'findFirst')
+              at /app/src/features/calendar/routes/booking.routes.ts:528:53
+              at /app/src/lib/async-context.ts:65:22
+              at TenantAwareAsyncLocalStorage.run (node:internal/async_local_storage/async_hooks:91:14)
+              at TenantAwareAsyncLocalStorage.run (/app/src/lib/async-context.ts:64:18)
+              at /app/src/features/calendar/routes/booking.routes.ts:527:30
+              at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    }
+[2026-10-02 18:56:53.642 +0000] [31mERROR[39m: [36mFalha ao criar evento no Google Calendar ou enviar confirmação de agendamento público.[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mlinkId[39m: "link-1"
+    [35mbookingId[39m: "activity-1"
+    err: {
+      "type": "Error",
+      "message": "Dependency GoogleCalendarService not found in container",
+      "stack":
+          Error: Dependency GoogleCalendarService not found in container
+              at Container.resolve (/app/src/shared/di/container.ts:11:13)
+              at /app/src/features/calendar/routes/booking.routes.ts:472:21
+              at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    }
+[2026-10-02 18:56:53.642 +0000] [33mWARN[39m: [36m[ACH-17-04] Falha ao verificar/encerrar CadenceRun ativo no agendamento público.[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mlinkId[39m: "link-1"
+    [35mleadId[39m: "lead-1"
+    err: {
+      "type": "TypeError",
+      "message": "Cannot read properties of undefined (reading 'findFirst')",
+      "stack":
+          TypeError: Cannot read properties of undefined (reading 'findFirst')
+              at /app/src/features/calendar/routes/booking.routes.ts:528:53
+              at /app/src/lib/async-context.ts:65:22
+              at TenantAwareAsyncLocalStorage.run (node:internal/async_local_storage/async_hooks:91:14)
+              at TenantAwareAsyncLocalStorage.run (/app/src/lib/async-context.ts:64:18)
+              at /app/src/features/calendar/routes/booking.routes.ts:527:30
+              at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    }
+[2026-10-02 18:56:53.653 +0000] [31mERROR[39m: [36mFalha ao criar contato via agendamento público[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mslug[39m: "joao-vendas"
+    err: {
+      "type": "Error",
+      "message": "violates foreign key constraint",
+      "stack":
+          Error: violates foreign key constraint
+              at /app/tests/unit/features/calendar/booking.routes.test.ts:194:37
+              at file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
+              at file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
+              at file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
+              at new Promise (<anonymous>)
+              at runWithCancel (file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)
+              at file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
+              at new Promise (<anonymous>)
+              at runWithTimeout (file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)
+              at file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:2956:64
+    }
+[2026-10-02 18:56:53.654 +0000] [31mERROR[39m: [36mFalha ao criar evento no Google Calendar ou enviar confirmação de agendamento público.[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mlinkId[39m: "link-1"
+    [35mbookingId[39m: "activity-1"
+    err: {
+      "type": "Error",
+      "message": "Dependency GoogleCalendarService not found in container",
+      "stack":
+          Error: Dependency GoogleCalendarService not found in container
+              at Container.resolve (/app/src/shared/di/container.ts:11:13)
+              at /app/src/features/calendar/routes/booking.routes.ts:472:21
+              at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    }
+[2026-10-02 18:56:53.654 +0000] [33mWARN[39m: [36m[ACH-17-04] Falha ao verificar/encerrar CadenceRun ativo no agendamento público.[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mlinkId[39m: "link-1"
+    [35mleadId[39m: "lead-1"
+    err: {
+      "type": "TypeError",
+      "message": "Cannot read properties of undefined (reading 'findFirst')",
+      "stack":
+          TypeError: Cannot read properties of undefined (reading 'findFirst')
+              at /app/src/features/calendar/routes/booking.routes.ts:528:53
+              at /app/src/lib/async-context.ts:65:22
+              at TenantAwareAsyncLocalStorage.run (node:internal/async_local_storage/async_hooks:91:14)
+              at TenantAwareAsyncLocalStorage.run (/app/src/lib/async-context.ts:64:18)
+              at /app/src/features/calendar/routes/booking.routes.ts:527:30
+              at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    }
+[2026-10-02 18:56:53.666 +0000] [31mERROR[39m: [36mFalha ao criar evento no Google Calendar ou enviar confirmação de agendamento público.[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mlinkId[39m: "link-1"
+    [35mbookingId[39m: "activity-1"
+    err: {
+      "type": "Error",
+      "message": "Dependency GoogleCalendarService not found in container",
+      "stack":
+          Error: Dependency GoogleCalendarService not found in container
+              at Container.resolve (/app/src/shared/di/container.ts:11:13)
+              at /app/src/features/calendar/routes/booking.routes.ts:472:21
+              at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    }
+[2026-10-02 18:56:53.667 +0000] [33mWARN[39m: [36m[ACH-17-04] Falha ao verificar/encerrar CadenceRun ativo no agendamento público.[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mlinkId[39m: "link-1"
+    [35mleadId[39m: "lead-1"
+    err: {
+      "type": "TypeError",
+      "message": "Cannot read properties of undefined (reading 'findFirst')",
+      "stack":
+          TypeError: Cannot read properties of undefined (reading 'findFirst')
+              at /app/src/features/calendar/routes/booking.routes.ts:528:53
+              at /app/src/lib/async-context.ts:65:22
+              at TenantAwareAsyncLocalStorage.run (node:internal/async_local_storage/async_hooks:91:14)
+              at TenantAwareAsyncLocalStorage.run (/app/src/lib/async-context.ts:64:18)
+              at /app/src/features/calendar/routes/booking.routes.ts:527:30
+              at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    }
+[2026-10-02 18:56:53.686 +0000] [33mWARN[39m: [36m[ACH-17-04] Falha ao verificar/encerrar CadenceRun ativo no agendamento público.[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mlinkId[39m: "link-1"
+    [35mleadId[39m: "lead-1"
+    err: {
+      "type": "TypeError",
+      "message": "Cannot read properties of undefined (reading 'findFirst')",
+      "stack":
+          TypeError: Cannot read properties of undefined (reading 'findFirst')
+              at /app/src/features/calendar/routes/booking.routes.ts:528:53
+              at /app/src/lib/async-context.ts:65:22
+              at TenantAwareAsyncLocalStorage.run (node:internal/async_local_storage/async_hooks:91:14)
+              at TenantAwareAsyncLocalStorage.run (/app/src/lib/async-context.ts:64:18)
+              at /app/src/features/calendar/routes/booking.routes.ts:527:30
+              at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    }
+[2026-10-02 18:56:53.699 +0000] [31mERROR[39m: [36mFalha ao criar evento no Google Calendar ou enviar confirmação de agendamento público.[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mlinkId[39m: "link-1"
+    [35mbookingId[39m: "activity-1"
+    err: {
+      "type": "Error",
+      "message": "Google indisponível",
+      "stack":
+          Error: Google indisponível
+              at /app/tests/unit/features/calendar/booking.routes.test.ts:261:47
+              at file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
+              at file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
+              at file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
+              at new Promise (<anonymous>)
+              at runWithCancel (file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)
+              at file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
+              at new Promise (<anonymous>)
+              at runWithTimeout (file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)
+              at file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:2956:64
+    }
+[2026-10-02 18:56:53.699 +0000] [33mWARN[39m: [36m[ACH-17-04] Falha ao verificar/encerrar CadenceRun ativo no agendamento público.[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mlinkId[39m: "link-1"
+    [35mleadId[39m: "lead-1"
+    err: {
+      "type": "TypeError",
+      "message": "Cannot read properties of undefined (reading 'findFirst')",
+      "stack":
+          TypeError: Cannot read properties of undefined (reading 'findFirst')
+              at /app/src/features/calendar/routes/booking.routes.ts:528:53
+              at /app/src/lib/async-context.ts:65:22
+              at TenantAwareAsyncLocalStorage.run (node:internal/async_local_storage/async_hooks:91:14)
+              at TenantAwareAsyncLocalStorage.run (/app/src/lib/async-context.ts:64:18)
+              at /app/src/features/calendar/routes/booking.routes.ts:527:30
+              at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    }
+[2026-10-02 18:56:53.711 +0000] [33mWARN[39m: [36m[ACH-17-04] Falha ao verificar/encerrar CadenceRun ativo no agendamento público.[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mlinkId[39m: "link-1"
+    [35mleadId[39m: "lead-1"
+    err: {
+      "type": "TypeError",
+      "message": "Cannot read properties of undefined (reading 'findFirst')",
+      "stack":
+          TypeError: Cannot read properties of undefined (reading 'findFirst')
+              at /app/src/features/calendar/routes/booking.routes.ts:528:53
+              at /app/src/lib/async-context.ts:65:22
+              at TenantAwareAsyncLocalStorage.run (node:internal/async_local_storage/async_hooks:91:14)
+              at TenantAwareAsyncLocalStorage.run (/app/src/lib/async-context.ts:64:18)
+              at /app/src/features/calendar/routes/booking.routes.ts:527:30
+              at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    }
+ [32m✓[39m tests/unit/features/calendar/booking.routes.test.ts [2m([22m[2m12 tests[22m[2m)[22m[32m 237[2mms[22m[39m
+ [32m✓[39m src/features/intelligence/agents/__tests__/sdrQualification.agent.consent.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 206[2mms[22m[39m
+ [32m✓[39m tests/unit/commercial-intelligence.test.tsx [2m([22m[2m1 test[22m[2m)[22m[32m 201[2mms[22m[39m
+ [32m✓[39m src/features/integrations/bitrix/__tests__/bitrix.webhook.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 208[2mms[22m[39m
+ [32m✓[39m tests/unit/lib/security/auditLog.middleware.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 83[2mms[22m[39m
+ [32m✓[39m src/features/integrations/bitrix/service/__tests__/outboundSync.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 217[2mms[22m[39m
+ [32m✓[39m src/features/integrations/google/__tests__/google.service.test.ts [2m([22m[2m17 tests[22m[2m)[22m[32m 191[2mms[22m[39m
+ [32m✓[39m src/features/integrations/bitrix/service/__tests__/deals.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 208[2mms[22m[39m
+ [32m✓[39m tests/unit/config/env.test.ts [2m([22m[2m15 tests[22m[2m)[22m[32m 203[2mms[22m[39m
+ [32m✓[39m tests/unit/components/ui/DealsGrid.test.tsx [2m([22m[2m5 tests[22m[2m)[22m[32m 178[2mms[22m[39m
+ [32m✓[39m src/features/integrations/birth-voice/__tests__/birthVoice.webhook.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 168[2mms[22m[39m
+ [32m✓[39m tests/unit/features/lgpd/lgpd.routes.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 137[2mms[22m[39m
+[2026-10-02 18:57:12.703 +0000] [33mWARN[39m: [36m[search] MEILI_MASTER_KEY não configurada — usando chave fixa de desenvolvimento local. NUNCA use isso em produção (a trava acima impede a subida sem a variável real).[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+[2026-10-02 18:57:12.896 +0000] [31mERROR[39m: [36mGlobal error handler[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    err: {
+      "type": "Error",
+      "message": "boom",
+      "stack":
+          Error: boom
+              at /app/src/features/integrations/google/__tests__/google.routes.test.ts:110:13
+              at Mock (file:///app/node_modules/@vitest/spy/dist/index.js:332:34)
+              at getGoogleAuthUrl (/app/src/features/integrations/google/__tests__/google.routes.test.ts:44:47)
+              at /app/src/features/integrations/google/google.routes.ts:21:17
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at next (/app/node_modules/router/lib/route.js:157:13)
+              at Route.dispatch (/app/node_modules/router/lib/route.js:117:3)
+              at handle (/app/node_modules/router/index.js:435:11)
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at /app/node_modules/router/index.js:295:15
+    }
+[2026-10-02 18:57:12.988 +0000] [31mERROR[39m: [36mGlobal error handler[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    err: {
+      "type": "TypeError",
+      "message": "Cannot destructure property 'organizationId' of 'req.user' as it is undefined.",
+      "stack":
+          TypeError: Cannot destructure property 'organizationId' of 'req.user' as it is undefined.
+              at /app/src/features/integrations/google/google.routes.ts:65:13
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at next (/app/node_modules/router/lib/route.js:157:13)
+              at Route.dispatch (/app/node_modules/router/lib/route.js:117:3)
+              at handle (/app/node_modules/router/index.js:435:11)
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at /app/node_modules/router/index.js:295:15
+              at processParams (/app/node_modules/router/index.js:582:12)
+              at next (/app/node_modules/router/index.js:291:5)
+              at Function.handle (/app/node_modules/router/index.js:186:3)
+    }
+ [32m✓[39m src/features/integrations/google/__tests__/google.routes.test.ts [2m([22m[2m12 tests[22m[2m)[22m[32m 187[2mms[22m[39m
+ [32m✓[39m tests/unit/runtime-db-preload.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 211[2mms[22m[39m
+ [32m✓[39m tests/unit/features/integrations/signature/signatureStatus.webhook.test.ts [2m([22m[2m12 tests[22m[2m)[22m[32m 179[2mms[22m[39m
+[2026-10-02 18:57:17.409 +0000] [33mWARN[39m: [36m[search] MEILI_MASTER_KEY não configurada — usando chave fixa de desenvolvimento local. NUNCA use isso em produção (a trava acima impede a subida sem a variável real).[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+[2026-10-02 18:57:17.608 +0000] [31mERROR[39m: [36mGlobal error handler[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mstatus[39m: 404
+    err: {
+      "type": "AppError",
+      "message": "CNPJ não encontrado no catálogo de inteligência do LDR (snapshot atual). Confira o número ou tente outra empresa do catálogo.",
+      "stack":
+          Error: CNPJ não encontrado no catálogo de inteligência do LDR (snapshot atual). Confira o número ou tente outra empresa do catálogo.
+              at /app/src/features/market-intelligence/server/marketIntelligenceCompany.routes.ts:69:15
+              at processTicksAndRejections (node:internal/process/task_queues:103:5)
+      "statusCode": 404
+    }
+[2026-10-02 18:57:17.628 +0000] [31mERROR[39m: [36mGlobal error handler[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mstatus[39m: 400
+    err: {
+      "type": "AppError",
+      "message": "CNPJ inválido para o catálogo empresarial.",
+      "stack":
+          Error: CNPJ inválido para o catálogo empresarial.
+              at toAppError (/app/src/features/market-intelligence/server/marketIntelligenceCompany.routes.ts:39:11)
+              at /app/src/features/market-intelligence/server/marketIntelligenceCompany.routes.ts:76:7
+              at processTicksAndRejections (node:internal/process/task_queues:103:5)
+      "statusCode": 400
+    }
+ [32m✓[39m tests/unit/features/market-intelligence/server/marketIntelligenceCompany.routes.contract.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 177[2mms[22m[39m
+[2026-10-02 18:57:19.486 +0000] [33mWARN[39m: [36m[search] MEILI_MASTER_KEY não configurada — usando chave fixa de desenvolvimento local. NUNCA use isso em produção (a trava acima impede a subida sem a variável real).[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+ [32m✓[39m src/features/intelligence/evaluation/__tests__/goldenDataset.service.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 194[2mms[22m[39m
+ [32m✓[39m tests/unit/features/integrations/email/emailReply.webhook.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 170[2mms[22m[39m
+ [32m✓[39m tests/unit/features/integrations/stripe/stripe.webhook.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 162[2mms[22m[39m
+[2026-10-02 18:57:24.325 +0000] [33mWARN[39m: [36m[search] MEILI_MASTER_KEY não configurada — usando chave fixa de desenvolvimento local. NUNCA use isso em produção (a trava acima impede a subida sem a variável real).[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+ [32m✓[39m src/features/intelligence/routes/__tests__/ai-suite.routes.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 156[2mms[22m[39m
+ [32m✓[39m src/features/intelligence/agents/__tests__/churnRetention.agent.consent.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 166[2mms[22m[39m
+ [32m✓[39m tests/unit/components/ui/VoiceCommandWidget.test.tsx [2m([22m[2m3 tests[22m[2m)[22m[32m 171[2mms[22m[39m
+ [32m✓[39m src/features/prospecting/routes/__tests__/prospecting.routes.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 158[2mms[22m[39m
+[90mstdout[2m | tests/unit/features/knowledge/knowledge.routes.extractText.fixtures.test.ts[2m > [22m[2mextractText — fixtures reais (sem mock de parser)[2m > [22m[2mextrai texto real de tests/fixtures/knowledge/sample.pdf via pdf-parse de verdade
+[22m[39mWarning: Indexing all PDF objects
+
+ [32m✓[39m tests/unit/features/knowledge/knowledge.routes.extractText.fixtures.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 162[2mms[22m[39m
+[2026-10-02 18:57:33.385 +0000] [31mERROR[39m: [36mGlobal error handler[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mstatus[39m: 404
+    err: {
+      "type": "AppError",
+      "message": "Link de agendamento não encontrado ou você não tem permissão para alterá-lo.",
+      "stack":
+          Error: Link de agendamento não encontrado ou você não tem permissão para alterá-lo.
+              at setBookingLinkActive (/app/src/features/calendar/routes/booking.routes.ts:72:11)
+              at processTicksAndRejections (node:internal/process/task_queues:103:5)
+              at /app/src/features/calendar/routes/booking.routes.ts:157:20
+      "statusCode": 404
+    }
+[2026-10-02 18:57:33.425 +0000] [31mERROR[39m: [36mGlobal error handler[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mstatus[39m: 404
+    err: {
+      "type": "AppError",
+      "message": "Link de agendamento não encontrado ou você não tem permissão para alterá-lo.",
+      "stack":
+          Error: Link de agendamento não encontrado ou você não tem permissão para alterá-lo.
+              at setBookingLinkActive (/app/src/features/calendar/routes/booking.routes.ts:72:11)
+              at processTicksAndRejections (node:internal/process/task_queues:103:5)
+              at /app/src/features/calendar/routes/booking.routes.ts:157:20
+      "statusCode": 404
+    }
+[2026-10-02 18:57:33.434 +0000] [31mERROR[39m: [36mGlobal error handler[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    err: {
+      "type": "ZodError",
+      "message": "[\n  {\n    \"expected\": \"boolean\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"active\"\n    ],\n    \"message\": \"Invalid input: expected boolean, received string\"\n  }\n]",
+      "stack":
+          ZodError: [
+            {
+              "expected": "boolean",
+              "code": "invalid_type",
+              "path": [
+                "active"
+              ],
+              "message": "Invalid input: expected boolean, received string"
+            }
+          ]
+              at /app/src/features/calendar/routes/booking.routes.ts:156:50
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at next (/app/node_modules/router/lib/route.js:157:13)
+              at Route.dispatch (/app/node_modules/router/lib/route.js:117:3)
+              at handle (/app/node_modules/router/index.js:435:11)
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at /app/node_modules/router/index.js:295:15
+              at param (/app/node_modules/router/index.js:600:14)
+              at param (/app/node_modules/router/index.js:610:14)
+              at processParams (/app/node_modules/router/index.js:664:3)
+      "name": "ZodError"
+    }
+ [32m✓[39m tests/unit/features/calendar/booking.routes.private.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 138[2mms[22m[39m
+ [32m✓[39m tests/unit/features/integrations/threecx/threecx.routes.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 140[2mms[22m[39m
+[2026-10-02 18:57:36.947 +0000] [33mWARN[39m: [36m[search] MEILI_MASTER_KEY não configurada — usando chave fixa de desenvolvimento local. NUNCA use isso em produção (a trava acima impede a subida sem a variável real).[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+[2026-10-02 18:57:37.211 +0000] [31mERROR[39m: [36mGlobal error handler[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    err: {
+      "type": "ZodError",
+      "message": "[\n  {\n    \"origin\": \"number\",\n    \"code\": \"too_small\",\n    \"minimum\": 1,\n    \"inclusive\": true,\n    \"path\": [\n      \"targetVersion\"\n    ],\n    \"message\": \"Too small: expected number to be >=1\"\n  }\n]",
+      "stack":
+          ZodError: [
+            {
+              "origin": "number",
+              "code": "too_small",
+              "minimum": 1,
+              "inclusive": true,
+              "path": [
+                "targetVersion"
+              ],
+              "message": "Too small: expected number to be >=1"
+            }
+          ]
+              at /app/src/shared/middlewares/validateRequest.ts:7:31
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at next (/app/node_modules/router/lib/route.js:157:13)
+              at Route.dispatch (/app/node_modules/router/lib/route.js:117:3)
+              at handle (/app/node_modules/router/index.js:435:11)
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at /app/node_modules/router/index.js:295:15
+              at processParams (/app/node_modules/router/index.js:582:12)
+              at next (/app/node_modules/router/index.js:291:5)
+              at /app/node_modules/router/index.js:688:15
+      "name": "ZodError"
+    }
+ [32m✓[39m tests/unit/features/intelligence/routes/agent.routes.learning-profile.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 132[2mms[22m[39m
+[2026-10-02 18:57:38.733 +0000] [31mERROR[39m: [36mGlobal error handler[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    err: {
+      "type": "ZodError",
+      "message": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"legalName\"\n    ],\n    \"message\": \"Invalid input: expected string, received undefined\"\n  }\n]",
+      "stack":
+          ZodError: [
+            {
+              "expected": "string",
+              "code": "invalid_type",
+              "path": [
+                "legalName"
+              ],
+              "message": "Invalid input: expected string, received undefined"
+            }
+          ]
+              at /app/src/shared/middlewares/validateRequest.ts:7:31
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at next (/app/node_modules/router/lib/route.js:157:13)
+              at /app/src/shared/middlewares/requireRole.ts:37:5
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at next (/app/node_modules/router/lib/route.js:157:13)
+              at Route.dispatch (/app/node_modules/router/lib/route.js:117:3)
+              at handle (/app/node_modules/router/index.js:435:11)
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at /app/node_modules/router/index.js:295:15
+      "name": "ZodError"
+    }
+ [32m✓[39m tests/unit/features/companies/routes/company.routes.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 133[2mms[22m[39m
+[2026-10-02 18:57:40.622 +0000] [33mWARN[39m: [36m[search] MEILI_MASTER_KEY não configurada — usando chave fixa de desenvolvimento local. NUNCA use isso em produção (a trava acima impede a subida sem a variável real).[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+ [32m✓[39m tests/unit/features/intelligence/routes/intelligence.routes.tenant-forgery.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 131[2mms[22m[39m
+ [32m✓[39m tests/unit/features/integrations/birth-voice/birthVoice.routes.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 130[2mms[22m[39m
+ [32m✓[39m tests/unit/bootstrap/healthchecks.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 127[2mms[22m[39m
+ [32m✓[39m tests/unit/components/ui/CompareBar.test.tsx [2m([22m[2m7 tests[22m[2m)[22m[32m 128[2mms[22m[39m
+ [32m✓[39m tests/unit/hooks/useNavigationBusBridge.test.tsx [2m([22m[2m3 tests[22m[2m)[22m[32m 68[2mms[22m[39m
+[2026-10-02 18:57:49.017 +0000] [33mWARN[39m: [36m[search] MEILI_MASTER_KEY não configurada — usando chave fixa de desenvolvimento local. NUNCA use isso em produção (a trava acima impede a subida sem a variável real).[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+ [32m✓[39m tests/unit/features/intelligence/routes/intelligence-qualify.route.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 138[2mms[22m[39m
+ [32m✓[39m tests/unit/features/gamification/gamification.routes.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 122[2mms[22m[39m
+[2026-10-02 18:57:51.821 +0000] [31mERROR[39m: [36mGlobal error handler[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    err: {
+      "type": "Error",
+      "message": "Banco indisponível",
+      "stack":
+          Error: Banco indisponível
+              at /app/tests/unit/features/gamification/gamification.routes.test.ts:121:35
+              at file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
+              at file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
+              at file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
+              at new Promise (<anonymous>)
+              at runWithCancel (file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)
+              at file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
+              at new Promise (<anonymous>)
+              at runWithTimeout (file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)
+              at file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:2956:64
+    }
+[2026-10-02 18:57:53.733 +0000] [33mWARN[39m: [36m[search] MEILI_MASTER_KEY não configurada — usando chave fixa de desenvolvimento local. NUNCA use isso em produção (a trava acima impede a subida sem a variável real).[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+[2026-10-02 18:57:54.063 +0000] [31mERROR[39m: [36mGlobal error handler[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    err: {
+      "type": "ZodError",
+      "message": "[\n  {\n    \"origin\": \"string\",\n    \"code\": \"too_small\",\n    \"minimum\": 3,\n    \"inclusive\": true,\n    \"path\": [\n      \"question\"\n    ],\n    \"message\": \"Descreva a dúvida técnica com pelo menos 3 caracteres\"\n  }\n]",
+      "stack":
+          ZodError: [
+            {
+              "origin": "string",
+              "code": "too_small",
+              "minimum": 3,
+              "inclusive": true,
+              "path": [
+                "question"
+              ],
+              "message": "Descreva a dúvida técnica com pelo menos 3 caracteres"
+            }
+          ]
+              at /app/src/shared/middlewares/validateRequest.ts:7:31
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at next (/app/node_modules/router/lib/route.js:157:13)
+              at Route.dispatch (/app/node_modules/router/lib/route.js:117:3)
+              at handle (/app/node_modules/router/index.js:435:11)
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at /app/node_modules/router/index.js:295:15
+              at processParams (/app/node_modules/router/index.js:582:12)
+              at next (/app/node_modules/router/index.js:291:5)
+              at /app/src/features/intelligence/routes/ai-suite.routes.ts:40:5
+      "name": "ZodError"
+    }
+ [32m✓[39m tests/unit/features/intelligence/routes/ai-suite.knowledge-copilot.routes.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 117[2mms[22m[39m
+ [32m✓[39m tests/unit/components/ui/ChannelDonut.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[32m 131[2mms[22m[39m
+ [32m✓[39m src/features/commercial-intelligence/__tests__/CommercialIntelligenceUseCases.unit.test.ts [2m([22m[2m68 tests[22m[2m)[22m[32m 71[2mms[22m[39m
+ [32m✓[39m tests/unit/features/billing/routes/usage.routes.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 112[2mms[22m[39m
+[2026-10-02 18:57:58.659 +0000] [31mERROR[39m: [36mGlobal error handler[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    err: {
+      "type": "Error",
+      "message": "Banco indisponível",
+      "stack":
+          Error: Banco indisponível
+              at /app/tests/unit/features/billing/routes/usage.routes.test.ts:95:35
+              at file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
+              at file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
+              at file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
+              at new Promise (<anonymous>)
+              at runWithCancel (file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)
+              at file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
+              at new Promise (<anonymous>)
+              at runWithTimeout (file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)
+              at file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:2956:64
+    }
+ [32m✓[39m tests/unit/features/integrations/whatsapp/whatsapp.routes.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 93[2mms[22m[39m
+[2026-10-02 18:58:02.355 +0000] [33mWARN[39m: [36m[search] MEILI_MASTER_KEY não configurada — usando chave fixa de desenvolvimento local. NUNCA use isso em produção (a trava acima impede a subida sem a variável real).[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+ [32m✓[39m tests/unit/features/intelligence/routes/agent.routes.slo.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 102[2mms[22m[39m
+ [32m✓[39m tests/unit/features/prospecting/services/providerCostMetrics.callsites.test.ts [2m([22m[2m4 tests[22m[2m)[22m[33m 339[2mms[22m[39m
+     [33m[2m✓[22m[39m NÃO incrementa quando a chamada falha (Apollo respondeu erro) [33m 319[2mms[22m[39m
+[2026-10-02 18:58:06.759 +0000] [33mWARN[39m: [36m[search] MEILI_MASTER_KEY não configurada — usando chave fixa de desenvolvimento local. NUNCA use isso em produção (a trava acima impede a subida sem a variável real).[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+ [32m✓[39m tests/unit/features/intelligence/routes/agent.routes.evaluation-metrics.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 99[2mms[22m[39m
+ [32m✓[39m src/features/integrations/whatsapp/__tests__/useRedisAuthState.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 145[2mms[22m[39m
+ [32m✓[39m tests/unit/features/commercial-intelligence/TrendChartCard.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[32m 85[2mms[22m[39m
+ [32m✓[39m tests/unit/components/layout/RequireRole.test.tsx [2m([22m[2m3 tests[22m[2m)[22m[32m 79[2mms[22m[39m
+[2026-10-02 18:58:14.136 +0000] [33mWARN[39m: [36m[search] MEILI_MASTER_KEY não configurada — usando chave fixa de desenvolvimento local. NUNCA use isso em produção (a trava acima impede a subida sem a variável real).[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+[2026-10-02 18:58:14.322 +0000] [31mERROR[39m: [36mGlobal error handler[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    err: {
+      "type": "Error",
+      "message": "Dataset malformado",
+      "stack":
+          Error: Dataset malformado
+              at /app/tests/unit/features/intelligence/routes/agent.routes.golden-dataset.test.ts:83:13
+              at Mock (file:///app/node_modules/@vitest/spy/dist/index.js:332:34)
+              at getDatasetSummary (/app/tests/unit/features/intelligence/routes/agent.routes.golden-dataset.test.ts:13:46)
+              at /app/src/features/intelligence/routes/agent.routes.ts:155:21
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at next (/app/node_modules/router/lib/route.js:157:13)
+              at Route.dispatch (/app/node_modules/router/lib/route.js:117:3)
+              at handle (/app/node_modules/router/index.js:435:11)
+              at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+              at /app/node_modules/router/index.js:295:15
+    }
+ [32m✓[39m tests/unit/features/intelligence/routes/agent.routes.golden-dataset.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 84[2mms[22m[39m
+ [32m✓[39m tests/unit/hooks/useOnlineStatus.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[32m 63[2mms[22m[39m
+ [32m✓[39m src/features/copiloto-ia/application/__tests__/CopilotoIaUseCases.unit.test.ts [2m([22m[2m38 tests[22m[2m)[22m[32m 35[2mms[22m[39m
+ [32m✓[39m tests/unit/lib/api.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 50[2mms[22m[39m
+[2026-10-02 18:58:19.787 +0000] [33mWARN[39m: [36m[search] MEILI_MASTER_KEY não configurada — usando chave fixa de desenvolvimento local. NUNCA use isso em produção (a trava acima impede a subida sem a variável real).[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+ [32m✓[39m src/features/intelligence/services/__tests__/CentralAISuiteService.test.ts [2m([22m[2m15 tests[22m[2m)[22m[32m 29[2mms[22m[39m
+ [32m✓[39m src/features/intelligence/agents/__tests__/ops.agent.consent.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 51[2mms[22m[39m
+ [32m✓[39m tests/unit/features/prospecting/services/searchExecution.service.test.ts [2m([22m[2m14 tests[22m[2m)[22m[32m 50[2mms[22m[39m
+ [32m✓[39m tests/unit/features/prospecting/services/news.service.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 44[2mms[22m[39m
+ [32m✓[39m tests/unit/features/prospecting/services/prospecting.service.searchExecution.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 45[2mms[22m[39m
+ [32m✓[39m src/lib/storage/__tests__/storage.unit.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 53[2mms[22m[39m
+ [32m✓[39m src/lib/ai/__tests__/budget.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 23[2mms[22m[39m
+[2026-10-02 18:58:29.701 +0000] [32mINFO[39m: [36m[stripe] Conexão Stripe cadastrada com sucesso[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-stripe-test"
+    [35mconnectionId[39m: "stripe-1"
+[2026-10-02 18:58:29.705 +0000] [32mINFO[39m: [36m[stripe] Conexão Stripe cadastrada com sucesso[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-stripe-test"
+    [35mconnectionId[39m: "stripe-1"
+[2026-10-02 18:58:29.708 +0000] [32mINFO[39m: [36m[stripe] Conexão Stripe cadastrada com sucesso[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-stripe-test"
+    [35mconnectionId[39m: "stripe-1"
+[2026-10-02 18:58:29.708 +0000] [32mINFO[39m: [36m[stripe] Segredo do webhook de entrada configurado[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-stripe-test"
+    [35mconnectionId[39m: "stripe-1"
+[2026-10-02 18:58:29.711 +0000] [32mINFO[39m: [36m[stripe] Conexão Stripe cadastrada com sucesso[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-stripe-test"
+    [35mconnectionId[39m: "stripe-1"
+[2026-10-02 18:58:29.711 +0000] [32mINFO[39m: [36m[stripe] PaymentIntent criado[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-stripe-test"
+    [35mconnectionId[39m: "stripe-1"
+    [35mpaymentId[39m: "pi_123"
+    [35mstatus[39m: "requires_payment_method"
+[2026-10-02 18:58:29.712 +0000] [32mINFO[39m: [36m[stripe] Conexão Stripe cadastrada com sucesso[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-stripe-test"
+    [35mconnectionId[39m: "stripe-1"
+[2026-10-02 18:58:29.712 +0000] [33mWARN[39m: [36m[stripe] Falha ao criar cobrança[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-stripe-test"
+    [35mconnectionId[39m: "stripe-1"
+    [35mmessage[39m: "Your card was declined."
+[2026-10-02 18:58:29.713 +0000] [32mINFO[39m: [36m[stripe] Conexão Stripe cadastrada com sucesso[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-stripe-test"
+    [35mconnectionId[39m: "stripe-1"
+[2026-10-02 18:58:29.714 +0000] [32mINFO[39m: [36m[stripe] Conexão Stripe cadastrada com sucesso[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-stripe-test"
+    [35mconnectionId[39m: "stripe-1"
+[2026-10-02 18:58:29.715 +0000] [32mINFO[39m: [36m[stripe] Conexão Stripe cadastrada com sucesso[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-stripe-test"
+    [35mconnectionId[39m: "stripe-1"
+[2026-10-02 18:58:29.716 +0000] [32mINFO[39m: [36m[stripe] Conexão Stripe cadastrada com sucesso[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-stripe-test"
+    [35mconnectionId[39m: "stripe-1"
+[2026-10-02 18:58:29.716 +0000] [32mINFO[39m: [36m[stripe] PaymentIntent criado[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-stripe-test"
+    [35mconnectionId[39m: "stripe-1"
+    [35mpaymentId[39m: "pi_abc"
+    [35mstatus[39m: "requires_payment_method"
+[2026-10-02 18:58:29.717 +0000] [32mINFO[39m: [36m[stripe] Conexão Stripe cadastrada com sucesso[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-stripe-test"
+    [35mconnectionId[39m: "stripe-1"
+[2026-10-02 18:58:29.717 +0000] [32mINFO[39m: [36m[stripe] PaymentIntent criado[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-stripe-test"
+    [35mconnectionId[39m: "stripe-1"
+    [35mpaymentId[39m: "pi_retry"
+    [35mstatus[39m: "requires_payment_method"
+[2026-10-02 18:58:29.717 +0000] [32mINFO[39m: [36m[stripe] PaymentIntent criado[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-stripe-test"
+    [35mconnectionId[39m: "stripe-1"
+    [35mpaymentId[39m: "pi_retry"
+    [35mstatus[39m: "requires_payment_method"
+[2026-10-02 18:58:29.718 +0000] [32mINFO[39m: [36m[stripe] Conexão Stripe cadastrada com sucesso[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-stripe-test"
+    [35mconnectionId[39m: "stripe-1"
+[2026-10-02 18:58:29.718 +0000] [32mINFO[39m: [36m[stripe] PaymentIntent criado[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-stripe-test"
+    [35mconnectionId[39m: "stripe-1"
+    [35mpaymentId[39m: "pi_x"
+    [35mstatus[39m: "requires_payment_method"
+[2026-10-02 18:58:29.719 +0000] [32mINFO[39m: [36m[stripe] PaymentIntent criado[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-stripe-test"
+    [35mconnectionId[39m: "stripe-1"
+    [35mpaymentId[39m: "pi_x"
+    [35mstatus[39m: "requires_payment_method"
+[2026-10-02 18:58:29.721 +0000] [32mINFO[39m: [36m[stripe] Conexão Stripe cadastrada com sucesso[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-stripe-test"
+    [35mconnectionId[39m: "stripe-1"
+[2026-10-02 18:58:29.721 +0000] [33mWARN[39m: [36m[stripe] Falha recuperável — retentando[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mlabel[39m: "stripe"
+    [35mattempt[39m: 1
+    [35mmaxAttempts[39m: 4
+    [35mstatusCode[39m: 500
+[2026-10-02 18:58:30.244 +0000] [33mWARN[39m: [36m[stripe] Falha recuperável — retentando[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mlabel[39m: "stripe"
+    [35mattempt[39m: 2
+    [35mmaxAttempts[39m: 4
+    [35mstatusCode[39m: 500
+[2026-10-02 18:58:31.432 +0000] [33mWARN[39m: [36m[stripe] Falha recuperável — retentando[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mlabel[39m: "stripe"
+    [35mattempt[39m: 3
+    [35mmaxAttempts[39m: 4
+    [35mstatusCode[39m: 500
+[2026-10-02 18:58:33.802 +0000] [33mWARN[39m: [36m[stripe] Falha recuperável — tentativas esgotadas[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mlabel[39m: "stripe"
+    [35mattempt[39m: 4
+    [35mmaxAttempts[39m: 4
+    [35mstatusCode[39m: 500
+[2026-10-02 18:58:33.802 +0000] [33mWARN[39m: [36m[stripe] Falha ao testar comunicação[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-stripe-test"
+    [35mconnectionId[39m: "stripe-1"
+    err: {
+      "type": "TransientHttpError",
+      "message": "Stripe respondeu com erro de servidor (HTTP 500).",
+      "stack":
+          TransientHttpError: Stripe respondeu com erro de servidor (HTTP 500).
+              at res.label (/app/src/features/integrations/stripe/stripe.service.ts:128:15)
+              at retryWithBackoff (/app/src/shared/http/retryWithBackoff.ts:77:14)
+              at stripeRequest (/app/src/features/integrations/stripe/stripe.service.ts:73:15)
+              at Module.testStripeConnection (/app/src/features/integrations/stripe/stripe.service.ts:259:19)
+      "statusCode": 500,
+      "name": "TransientHttpError"
+    }
+[2026-10-02 18:58:29.729 +0000] [32mINFO[39m: [36m[stripe] Conexão Stripe cadastrada com sucesso[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-stripe-test"
+    [35mconnectionId[39m: "stripe-1"
+[2026-10-02 18:58:29.729 +0000] [33mWARN[39m: [36m[stripe] Falha recuperável — retentando[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mlabel[39m: "stripe"
+    [35mattempt[39m: 1
+    [35mmaxAttempts[39m: 4
+[2026-10-02 18:58:30.347 +0000] [32mINFO[39m: [36m[stripe] PaymentIntent criado[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-stripe-test"
+    [35mconnectionId[39m: "stripe-1"
+    [35mpaymentId[39m: "pi_after_retry"
+    [35mstatus[39m: "requires_payment_method"
+[2026-10-02 18:58:29.731 +0000] [32mINFO[39m: [36m[stripe] Conexão Stripe cadastrada com sucesso[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-stripe-test"
+    [35mconnectionId[39m: "stripe-1"
+[2026-10-02 18:58:29.731 +0000] [33mWARN[39m: [36m[stripe] Falha recuperável — retentando[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mlabel[39m: "stripe"
+    [35mattempt[39m: 1
+    [35mmaxAttempts[39m: 4
+    [35mstatusCode[39m: 503
+[2026-10-02 18:58:30.318 +0000] [33mWARN[39m: [36m[stripe] Falha recuperável — retentando[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mlabel[39m: "stripe"
+    [35mattempt[39m: 2
+    [35mmaxAttempts[39m: 4
+    [35mstatusCode[39m: 503
+[2026-10-02 18:58:31.415 +0000] [33mWARN[39m: [36m[stripe] Falha recuperável — retentando[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mlabel[39m: "stripe"
+    [35mattempt[39m: 3
+    [35mmaxAttempts[39m: 4
+    [35mstatusCode[39m: 503
+[2026-10-02 18:58:33.571 +0000] [33mWARN[39m: [36m[stripe] Falha recuperável — tentativas esgotadas[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mlabel[39m: "stripe"
+    [35mattempt[39m: 4
+    [35mmaxAttempts[39m: 4
+    [35mstatusCode[39m: 503
+ [32m✓[39m tests/unit/features/integrations/stripe/stripe.service.test.ts [2m([22m[2m17 tests[22m[2m)[22m[32m 43[2mms[22m[39m
+[2026-10-02 18:58:29.733 +0000] [32mINFO[39m: [36m[stripe] Conexão Stripe cadastrada com sucesso[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-stripe-test"
+    [35mconnectionId[39m: "stripe-1"
+[2026-10-02 18:58:29.733 +0000] [33mWARN[39m: [36m[stripe] Falha ao criar cobrança[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-stripe-test"
+    [35mconnectionId[39m: "stripe-1"
+    [35mmessage[39m: "Invalid API Key provided"
+ [32m✓[39m tests/unit/lib/ai/gateway/pricing.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 44[2mms[22m[39m
+ [32m✓[39m tests/unit/features/prospecting/services/prospecting.service.query-planning.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 40[2mms[22m[39m
+ [32m✓[39m tests/unit/features/prospecting/services/nominatim.service.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 40[2mms[22m[39m
+[2026-10-02 18:58:35.067 +0000] [33mWARN[39m: [36m[search] MEILI_MASTER_KEY não configurada — usando chave fixa de desenvolvimento local. NUNCA use isso em produção (a trava acima impede a subida sem a variável real).[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+ [32m✓[39m src/features/commercial-intelligence/__tests__/closeDateAndJourney.unit.test.ts [2m([22m[2m18 tests[22m[2m)[22m[32m 38[2mms[22m[39m
+ [32m✓[39m tests/unit/features/automation-engine-run.test.ts [2m([22m[2m20 tests[22m[2m)[22m[32m 39[2mms[22m[39m
+ [32m✓[39m src/features/integrations/bitrix/service/__tests__/customFields.test.ts [2m([22m[2m17 tests[22m[2m)[22m[32m 28[2mms[22m[39m
+ [32m✓[39m src/features/integrations/birth-voice/__tests__/coldCall.service.test.ts [2m([22m[2m16 tests[22m[2m)[22m[32m 38[2mms[22m[39m
+ [32m✓[39m src/features/cadence/__tests__/optOut.test.ts [2m([22m[2m18 tests[22m[2m)[22m[32m 22[2mms[22m[39m
+ [32m✓[39m tests/unit/security/trivy-pr-gate.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 38[2mms[22m[39m
+ [32m✓[39m src/lib/ai/gateway/__tests__/providers.golden.test.ts [2m([22m[2m13 tests[22m[2m)[22m[32m 37[2mms[22m[39m
+ [32m✓[39m tests/unit/features/integrations/bitrix/jobs/bitrixExtractionPurge.worker.test.ts [2m([22m[2m13 tests[22m[2m)[22m[32m 77[2mms[22m[39m
+[2026-10-02 18:58:44.451 +0000] [32mINFO[39m: [36m[bitrix] Expurgo de BitrixExtractionRun DESLIGADO (BITRIX_EXTRACTION_PURGE_ENABLED=false) — nenhuma linha consultada nem alterada.[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mretentionDays[39m: 45
+[2026-10-02 18:58:46.181 +0000] [32mINFO[39m: [36m[slack] Conexão Slack cadastrada com sucesso[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-slack-test"
+    [35mconnectionId[39m: "slack-1"
+[2026-10-02 18:58:46.184 +0000] [32mINFO[39m: [36m[slack] Conexão Slack cadastrada com sucesso[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-slack-test"
+    [35mconnectionId[39m: "slack-1"
+[2026-10-02 18:58:46.185 +0000] [32mINFO[39m: [36m[slack] Mensagem enviada via Incoming Webhook[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-slack-test"
+    [35mconnectionId[39m: "slack-1"
+[2026-10-02 18:58:46.188 +0000] [32mINFO[39m: [36m[slack] Conexão Slack cadastrada com sucesso[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-slack-test"
+    [35mconnectionId[39m: "slack-1"
+[2026-10-02 18:58:46.188 +0000] [33mWARN[39m: [36m[slack] Falha recuperável — retentando[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mlabel[39m: "slack"
+    [35mattempt[39m: 1
+    [35mmaxAttempts[39m: 4
+    [35mstatusCode[39m: 500
+[2026-10-02 18:58:46.809 +0000] [33mWARN[39m: [36m[slack] Falha recuperável — retentando[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mlabel[39m: "slack"
+    [35mattempt[39m: 2
+    [35mmaxAttempts[39m: 4
+    [35mstatusCode[39m: 500
+[2026-10-02 18:58:47.993 +0000] [33mWARN[39m: [36m[slack] Falha recuperável — retentando[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mlabel[39m: "slack"
+    [35mattempt[39m: 3
+    [35mmaxAttempts[39m: 4
+    [35mstatusCode[39m: 500
+[2026-10-02 18:58:50.441 +0000] [33mWARN[39m: [36m[slack] Falha recuperável — tentativas esgotadas[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mlabel[39m: "slack"
+    [35mattempt[39m: 4
+    [35mmaxAttempts[39m: 4
+    [35mstatusCode[39m: 500
+[2026-10-02 18:58:46.194 +0000] [32mINFO[39m: [36m[slack] Conexão Slack cadastrada com sucesso[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-slack-test"
+    [35mconnectionId[39m: "slack-1"
+[2026-10-02 18:58:46.195 +0000] [32mINFO[39m: [36m[slack] Conexão Slack cadastrada com sucesso[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-slack-test"
+    [35mconnectionId[39m: "slack-1"
+[2026-10-02 18:58:46.197 +0000] [32mINFO[39m: [36m[slack] Conexão Slack cadastrada com sucesso[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-slack-test"
+    [35mconnectionId[39m: "slack-1"
+[2026-10-02 18:58:46.197 +0000] [33mWARN[39m: [36m[slack] Falha recuperável — retentando[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mlabel[39m: "slack"
+    [35mattempt[39m: 1
+    [35mmaxAttempts[39m: 4
+[2026-10-02 18:58:46.780 +0000] [32mINFO[39m: [36m[slack] Mensagem enviada via Incoming Webhook[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-slack-test"
+    [35mconnectionId[39m: "slack-1"
+[2026-10-02 18:58:46.198 +0000] [32mINFO[39m: [36m[slack] Conexão Slack cadastrada com sucesso[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-slack-test"
+    [35mconnectionId[39m: "slack-1"
+[2026-10-02 18:58:46.200 +0000] [32mINFO[39m: [36m[slack] Conexão Slack cadastrada com sucesso[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-slack-test"
+    [35mconnectionId[39m: "slack-1"
+[2026-10-02 18:58:46.200 +0000] [33mWARN[39m: [36m[slack] Falha recuperável — retentando[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mlabel[39m: "slack"
+    [35mattempt[39m: 1
+    [35mmaxAttempts[39m: 4
+[2026-10-02 18:58:46.755 +0000] [32mINFO[39m: [36m[slack] Mensagem enviada via Bot Token[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-slack-test"
+    [35mconnectionId[39m: "slack-1"
+[2026-10-02 18:58:46.203 +0000] [32mINFO[39m: [36m[slack] Conexão Slack cadastrada com sucesso[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-slack-test"
+    [35mconnectionId[39m: "slack-1"
+[2026-10-02 18:58:46.203 +0000] [33mWARN[39m: [36m[slack] Falha recuperável — retentando[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mlabel[39m: "slack"
+    [35mattempt[39m: 1
+    [35mmaxAttempts[39m: 4
+    [35mstatusCode[39m: 503
+[2026-10-02 18:58:46.753 +0000] [33mWARN[39m: [36m[slack] Falha recuperável — retentando[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mlabel[39m: "slack"
+    [35mattempt[39m: 2
+    [35mmaxAttempts[39m: 4
+    [35mstatusCode[39m: 503
+[2026-10-02 18:58:47.861 +0000] [33mWARN[39m: [36m[slack] Falha recuperável — retentando[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mlabel[39m: "slack"
+    [35mattempt[39m: 3
+    [35mmaxAttempts[39m: 4
+    [35mstatusCode[39m: 503
+[2026-10-02 18:58:49.872 +0000] [33mWARN[39m: [36m[slack] Falha recuperável — tentativas esgotadas[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mlabel[39m: "slack"
+    [35mattempt[39m: 4
+    [35mmaxAttempts[39m: 4
+    [35mstatusCode[39m: 503
+[2026-10-02 18:58:46.205 +0000] [32mINFO[39m: [36m[slack] Conexão Slack cadastrada com sucesso[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-slack-test"
+    [35mconnectionId[39m: "slack-1"
+ [32m✓[39m tests/unit/features/integrations/slack/slack.service.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 34[2mms[22m[39m
+[2026-10-02 18:58:46.205 +0000] [33mWARN[39m: [36m[slack] chat.postMessage respondeu erro[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-slack-test"
+    [35mconnectionId[39m: "slack-1"
+    error: "channel_not_found"
+ [32m✓[39m src/features/intelligence/services/__tests__/guardrails.service.test.ts [2m([22m[2m33 tests[22m[2m)[22m[32m 24[2mms[22m[39m
+ [32m✓[39m tests/unit/features/integrations/whatsapp/whatsapp.service.test.ts [2m([22m[2m12 tests[22m[2m)[22m[32m 35[2mms[22m[39m
+[2026-10-02 18:58:50.859 +0000] [33mWARN[39m: [36m[search] MEILI_MASTER_KEY não configurada — usando chave fixa de desenvolvimento local. NUNCA use isso em produção (a trava acima impede a subida sem a variável real).[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+ [32m✓[39m tests/unit/features/market-intelligence/server/accountIntelligence.service.contract.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 34[2mms[22m[39m
+ [32m✓[39m src/features/intelligence/evaluation/__tests__/goldenDataset.scoring.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 33[2mms[22m[39m
+ [32m✓[39m src/features/playbook/living-playbook/application/__tests__/livingPlaybook.service.test.ts [2m([22m[2m12 tests[22m[2m)[22m[32m 26[2mms[22m[39m
+ [32m✓[39m tests/unit/lib/enrichment/providerFetch.test.ts [2m([22m[2m20 tests[22m[2m)[22m[32m 33[2mms[22m[39m
+ [32m✓[39m tests/unit/shared/middlewares/errorHandler.test.ts [2m([22m[2m19 tests[22m[2m)[22m[32m 32[2mms[22m[39m
+ [32m✓[39m src/features/prospecting/services/apollo/__tests__/client.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 18[2mms[22m[39m
+ [32m✓[39m tests/unit/shared/security/csrfGuard.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 19[2mms[22m[39m
+ [32m✓[39m tests/unit/lib/queue/leadsWorker.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 31[2mms[22m[39m
+ [32m✓[39m src/features/playbook/objection-matrix/application/__tests__/objectionGenerator.service.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 23[2mms[22m[39m
+ [32m✓[39m src/features/crm/presentation/__tests__/LeadController.test.ts [2m([22m[2m19 tests[22m[2m)[22m[32m 31[2mms[22m[39m
+ [32m✓[39m src/features/automations/application/__tests__/AutomationUseCases.test.ts [2m([22m[2m13 tests[22m[2m)[22m[32m 41[2mms[22m[39m
+ [32m✓[39m src/features/intelligence/tools/__tests__/opsTools.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 30[2mms[22m[39m
+ [32m✓[39m src/features/intelligence/agents/__tests__/opsPendingActions.tool.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 31[2mms[22m[39m
+ [32m✓[39m src/features/prospecting/services/__tests__/providerBudget.test.ts [2m([22m[2m12 tests[22m[2m)[22m[32m 29[2mms[22m[39m
+ [32m✓[39m tests/unit/features/crm/weeklyPdfReport.worker.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 28[2mms[22m[39m
+ [32m✓[39m src/features/intelligence/services/studio/__tests__/shared.test.ts [2m([22m[2m19 tests[22m[2m)[22m[32m 38[2mms[22m[39m
+ [32m✓[39m src/features/intelligence/agents/__tests__/sdrOutboundDraft.agent.test.ts [2m([22m[2m17 tests[22m[2m)[22m[32m 29[2mms[22m[39m
+ [32m✓[39m tests/unit/features/prospecting/services/prospecting.service.dedupe.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 29[2mms[22m[39m
+[2026-10-02 18:59:13.621 +0000] [33mWARN[39m: [36m[search] MEILI_MASTER_KEY não configurada — usando chave fixa de desenvolvimento local. NUNCA use isso em produção (a trava acima impede a subida sem a variável real).[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+ [32m✓[39m src/features/intelligence/tools/__tests__/marketResearchTool.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 28[2mms[22m[39m
+[2026-10-02 18:59:13.809 +0000] [32mINFO[39m: [36mIniciando pesquisa de mercado inteligente (Multi-Engine)[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mquery[39m: "Loggi tecnologia logística"
+[2026-10-02 18:59:13.815 +0000] [32mINFO[39m: [36mIniciando pesquisa de mercado inteligente (Multi-Engine)[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mquery[39m: "FedEx Brasil"
+[2026-10-02 18:59:13.819 +0000] [32mINFO[39m: [36mIniciando pesquisa de mercado inteligente (Multi-Engine)[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mquery[39m: "termo_super_estranho_123456"
+[2026-10-02 18:59:13.820 +0000] [32mINFO[39m: [36mIniciando pesquisa de mercado inteligente (Multi-Engine)[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mquery[39m: "empresa concorrente"
+ [32m✓[39m src/lib/email/__tests__/mailer.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 27[2mms[22m[39m
+ [32m✓[39m tests/unit/features/automations/automation-dry-run.service.test.ts [2m([22m[2m27 tests[22m[2m)[22m[32m 29[2mms[22m[39m
+[2026-10-02 18:59:17.518 +0000] [33mWARN[39m: [36m[search] MEILI_MASTER_KEY não configurada — usando chave fixa de desenvolvimento local. NUNCA use isso em produção (a trava acima impede a subida sem a variável real).[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+ [32m✓[39m src/features/crm/services/__tests__/savedView.service.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 13[2mms[22m[39m
+[2026-10-02 18:59:19.092 +0000] [33mWARN[39m: [36m[search] MEILI_MASTER_KEY não configurada — usando chave fixa de desenvolvimento local. NUNCA use isso em produção (a trava acima impede a subida sem a variável real).[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+ [32m✓[39m src/features/prospecting/services/apollo/__tests__/people.test.ts [2m([22m[2m20 tests[22m[2m)[22m[32m 26[2mms[22m[39m
+ [32m✓[39m tests/unit/features/integrations/threecx/threecx.service.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 26[2mms[22m[39m
+[2026-10-02 18:59:20.479 +0000] [32mINFO[39m: [36m[3cx] PABX 3CX conectado com sucesso[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-3cx-test"
+    [35mconnectionId[39m: "3cx-1790967560478-49807732"
+    [35mpbxUrl[39m: "https://pbx.example.com"
+    [35mextension[39m: "101"
+[2026-10-02 18:59:20.480 +0000] [32mINFO[39m: [36m[3cx] Chamada disparada via 3CX PABX[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-3cx-test"
+    [35mconnectionId[39m: "3cx-1790967560478-49807732"
+    [35mextension[39m: "101"
+    [35mdestinationNumber[39m: "11987654321"
+    [35mcallId[39m: "3cx-call-1790967560480"
+[2026-10-02 18:59:20.486 +0000] [32mINFO[39m: [36m[3cx] PABX 3CX conectado com sucesso[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-3cx-test"
+    [35mconnectionId[39m: "3cx-1790967560486-2f66c3f2"
+    [35mpbxUrl[39m: "https://pbx.example.com"
+    [35mextension[39m: "101"
+[2026-10-02 18:59:20.487 +0000] [33mWARN[39m: [36m[3cx] Chamada NÃO foi disparada[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-3cx-test"
+    [35mconnectionId[39m: "3cx-1790967560486-2f66c3f2"
+    [35mextension[39m: "101"
+    [35mdestinationNumber[39m: "11987654321"
+    [35mcallId[39m: "3cx-call-1790967560487"
+    [35mfailureReason[39m: "PABX respondeu HTTP 503"
+[2026-10-02 18:59:20.490 +0000] [32mINFO[39m: [36m[3cx] PABX 3CX conectado com sucesso[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-3cx-test"
+    [35mconnectionId[39m: "3cx-1790967560490-ebb9f069"
+    [35mpbxUrl[39m: "https://pbx.example.com"
+    [35mextension[39m: "101"
+[2026-10-02 18:59:20.491 +0000] [33mWARN[39m: [36m[3cx] Falha ao disparar chamada real[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-3cx-test"
+    [35mconnectionId[39m: "3cx-1790967560490-ebb9f069"
+    err: {
+      "type": "Error",
+      "message": "ECONNREFUSED",
+      "stack":
+          Error: ECONNREFUSED
+              at /app/tests/unit/features/integrations/threecx/threecx.service.test.ts:127:54
+              at file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
+    }
+[2026-10-02 18:59:20.492 +0000] [33mWARN[39m: [36m[3cx] Chamada NÃO foi disparada[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-3cx-test"
+    [35mconnectionId[39m: "3cx-1790967560490-ebb9f069"
+    [35mextension[39m: "101"
+    [35mdestinationNumber[39m: "11987654321"
+    [35mcallId[39m: "3cx-call-1790967560490"
+    [35mfailureReason[39m: "falha de rede ao comunicar com o PABX"
+[2026-10-02 18:59:20.493 +0000] [32mINFO[39m: [36m[3cx] PABX 3CX conectado com sucesso[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-3cx-test"
+    [35mconnectionId[39m: "3cx-1790967560493-ed32eed2"
+    [35mpbxUrl[39m: "https://pbx.example.com"
+    [35mextension[39m: "101"
+[2026-10-02 18:59:20.494 +0000] [32mINFO[39m: [36m[3cx] PABX 3CX conectado com sucesso[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-3cx-test"
+    [35mconnectionId[39m: "3cx-1790967560494-3fd908a8"
+    [35mpbxUrl[39m: "https://pbx.example.com"
+    [35mextension[39m: "101"
+[2026-10-02 18:59:20.496 +0000] [32mINFO[39m: [36m[3cx] PABX 3CX conectado com sucesso[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-3cx-test"
+    [35mconnectionId[39m: "3cx-1790967560496-b9a80dc3"
+    [35mpbxUrl[39m: "https://pbx.example.com"
+    [35mextension[39m: "101"
+[2026-10-02 18:59:20.497 +0000] [32mINFO[39m: [36m[3cx] PABX 3CX conectado com sucesso[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-3cx-test"
+    [35mconnectionId[39m: "3cx-1790967560497-c62e9793"
+    [35mpbxUrl[39m: "https://pbx.example.com"
+    [35mextension[39m: "101"
+ [32m✓[39m tests/unit/features/crm/dailyExecutiveSummary.worker.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 27[2mms[22m[39m
+ [32m✓[39m tests/unit/features/analytics/AnalyticsUseCases.dashboard.test.ts [2m([22m[2m15 tests[22m[2m)[22m[32m 26[2mms[22m[39m
+ [32m✓[39m tests/unit/ai/structured.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 25[2mms[22m[39m
+ [32m✓[39m src/features/integrations/birth-voice/__tests__/birthVoice.service.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 25[2mms[22m[39m
+[2026-10-02 18:59:26.676 +0000] [32mINFO[39m: [36m[omie] Conexão Omie cadastrada com sucesso[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-omie-test"
+    [35mconnectionId[39m: "omie-1"
+ [32m✓[39m tests/unit/features/integrations/omie/omie.service.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 28[2mms[22m[39m
+[2026-10-02 18:59:26.680 +0000] [32mINFO[39m: [36m[omie] Conexão Omie cadastrada com sucesso[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-omie-test"
+    [35mconnectionId[39m: "omie-1"
+[2026-10-02 18:59:26.680 +0000] [33mWARN[39m: [36m[omie] Falha ao cadastrar cliente[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-omie-test"
+    [35mconnectionId[39m: "omie-1"
+    [35mfaultstring[39m: "CNPJ já cadastrado"
+[2026-10-02 18:59:26.681 +0000] [32mINFO[39m: [36m[omie] Conexão Omie cadastrada com sucesso[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-omie-test"
+    [35mconnectionId[39m: "omie-1"
+[2026-10-02 18:59:26.682 +0000] [32mINFO[39m: [36m[omie] Cliente cadastrado com sucesso[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-omie-test"
+    [35mconnectionId[39m: "omie-1"
+    [35mcustomerId[39m: 89012
+[2026-10-02 18:59:26.682 +0000] [32mINFO[39m: [36m[omie] Conexão Omie cadastrada com sucesso[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-omie-test"
+    [35mconnectionId[39m: "omie-1"
+[2026-10-02 18:59:26.685 +0000] [32mINFO[39m: [36m[omie] Conexão Omie cadastrada com sucesso[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-omie-test"
+    [35mconnectionId[39m: "omie-1"
+[2026-10-02 18:59:26.685 +0000] [33mWARN[39m: [36m[omie] Falha recuperável — retentando[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mlabel[39m: "omie"
+    [35mattempt[39m: 1
+    [35mmaxAttempts[39m: 4
+[2026-10-02 18:59:27.203 +0000] [32mINFO[39m: [36m[omie] Cliente cadastrado com sucesso[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-omie-test"
+    [35mconnectionId[39m: "omie-1"
+    [35mcustomerId[39m: 111
+[2026-10-02 18:59:26.690 +0000] [32mINFO[39m: [36m[omie] Conexão Omie cadastrada com sucesso[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-omie-test"
+    [35mconnectionId[39m: "omie-1"
+[2026-10-02 18:59:26.690 +0000] [33mWARN[39m: [36m[omie] Falha recuperável — retentando[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mlabel[39m: "omie"
+    [35mattempt[39m: 1
+    [35mmaxAttempts[39m: 4
+    [35mstatusCode[39m: 502
+[2026-10-02 18:59:27.290 +0000] [33mWARN[39m: [36m[omie] Falha recuperável — retentando[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mlabel[39m: "omie"
+    [35mattempt[39m: 2
+    [35mmaxAttempts[39m: 4
+    [35mstatusCode[39m: 502
+[2026-10-02 18:59:28.418 +0000] [33mWARN[39m: [36m[omie] Falha recuperável — retentando[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mlabel[39m: "omie"
+    [35mattempt[39m: 3
+    [35mmaxAttempts[39m: 4
+    [35mstatusCode[39m: 502
+[2026-10-02 18:59:30.854 +0000] [33mWARN[39m: [36m[omie] Falha recuperável — tentativas esgotadas[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35mlabel[39m: "omie"
+    [35mattempt[39m: 4
+    [35mmaxAttempts[39m: 4
+    [35mstatusCode[39m: 502
+[2026-10-02 18:59:26.693 +0000] [32mINFO[39m: [36m[omie] Conexão Omie cadastrada com sucesso[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    [35morganizationId[39m: "org-omie-test"
+    [35mconnectionId[39m: "omie-1"
+ [32m✓[39m src/features/crm/application/__tests__/CompanyDeduplicationService.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 26[2mms[22m[39m
+ [32m✓[39m src/shared/services/__tests__/dataSubjectErasure.unit.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 26[2mms[22m[39m
+ [32m✓[39m tests/unit/lib/queue/metrics.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 26[2mms[22m[39m
+ [32m✓[39m tests/unit/features/prospecting/services/enrichment.service.test.ts [2m([22m[2m14 tests[22m[2m)[22m[32m 26[2mms[22m[39m
+ [32m✓[39m tests/unit/features/activities/services/activity.service.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 25[2mms[22m[39m
+ [32m✓[39m tests/unit/features/crm360/infra/PrismaCrm360Repository.reconciliation.test.ts [2m([22m[2m14 tests[22m[2m)[22m[32m 26[2mms[22m[39m
+ [32m✓[39m src/features/intelligence/services/__tests__/aiPendingAction.service.test.ts [2m([22m[2m19 tests[22m[2m)[22m[32m 26[2mms[22m[39m
+ [32m✓[39m tests/unit/lib/ai/metrics.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 25[2mms[22m[39m
+ [32m✓[39m src/features/intelligence/agents/__tests__/agentMemory.store.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 25[2mms[22m[39m
+ [32m✓[39m src/features/intelligence/tools/__tests__/playbookTool.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 20[2mms[22m[39m
+[2026-10-02 18:59:39.963 +0000] [33mWARN[39m: [36m[search] MEILI_MASTER_KEY não configurada — usando chave fixa de desenvolvimento local. NUNCA use isso em produção (a trava acima impede a subida sem a variável real).[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+ [32m✓[39m src/features/automations/presentation/__tests__/AutomationController.test.ts [2m([22m[2m15 tests[22m[2m)[22m[32m 25[2mms[22m[39m
+ [32m✓[39m tests/unit/features/cadence/infra/PrismaCalendarSchedulerPort.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 25[2mms[22m[39m
+ [32m✓[39m tests/unit/features/crm/application/dealClosureGate.test.ts [2m([22m[2m12 tests[22m[2m)[22m[32m 31[2mms[22m[39m
+ [32m✓[39m tests/unit/bootstrap/integrationsHealthCheck.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 27[2mms[22m[39m
+ [32m✓[39m src/features/cadence/__tests__/cadence.test.ts [2m([22m[2m38 tests[22m[2m)[22m[32m 26[2mms[22m[39m
+ [32m✓[39m src/features/crm/application/__tests__/LeadUseCases.createLead.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 25[2mms[22m[39m
+ [32m✓[39m src/features/crm/application/__tests__/LeadDeduplicationService.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 26[2mms[22m[39m
+[2026-10-02 18:59:49.396 +0000] [33mWARN[39m: [36m[search] MEILI_MASTER_KEY não configurada — usando chave fixa de desenvolvimento local. NUNCA use isso em produção (a trava acima impede a subida sem a variável real).[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+ [32m✓[39m src/features/knowledge/services/__tests__/reranker.service.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 24[2mms[22m[39m
+[2026-10-02 18:59:49.584 +0000] [33mWARN[39m: [36mReranking da Base de Conhecimento falhou; mantendo a ordem do RRF sem reranking[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    err: {
+      "type": "Error",
+      "message": "provedor indisponível",
+      "stack":
+          Error: provedor indisponível
+              at /app/src/features/knowledge/services/__tests__/reranker.service.test.ts:101:38
+              at file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
+              at file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
+              at file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
+              at new Promise (<anonymous>)
+              at runWithCancel (file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)
+              at file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
+              at new Promise (<anonymous>)
+              at runWithTimeout (file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)
+              at file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:2956:64
+    }
+[2026-10-02 18:59:49.588 +0000] [33mWARN[39m: [36mReranking da Base de Conhecimento falhou; mantendo a ordem do RRF sem reranking[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    err: {
+      "type": "Error",
+      "message": "Falha ao decodificar JSON gerado pela IA: Unexpected token 'd', \"desculpe, \"... is not valid JSON. Conteúdo original: desculpe, não posso ajudar...: Unexpected token 'd', \"desculpe, \"... is not valid JSON",
+      "stack":
+          Error: Falha ao decodificar JSON gerado pela IA: Unexpected token 'd', "desculpe, "... is not valid JSON. Conteúdo original: desculpe, não posso ajudar...
+              at cleanAndParseJson (/app/src/lib/ai/gateway/parsing.ts:106:11)
+              at RerankerService.rerank (/app/src/features/knowledge/services/reranker.service.ts:73:19)
+              at /app/src/features/knowledge/services/__tests__/reranker.service.test.ts:116:20
+              at file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
+          caused by: SyntaxError: Unexpected token 'd', "desculpe, "... is not valid JSON
+              at JSON.parse (<anonymous>)
+              at cleanAndParseJson (/app/src/lib/ai/gateway/parsing.ts:104:17)
+              at RerankerService.rerank (/app/src/features/knowledge/services/reranker.service.ts:73:19)
+              at /app/src/features/knowledge/services/__tests__/reranker.service.test.ts:116:20
+              at file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
+    }
+ [32m✓[39m src/features/intelligence/agents/__tests__/learning.agent.versioning.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 24[2mms[22m[39m
+ [32m✓[39m src/features/integrations/birth-voice/__tests__/voiceHubConnection.service.test.ts [2m([22m[2m14 tests[22m[2m)[22m[32m 25[2mms[22m[39m
+ [32m✓[39m src/features/cadence/__tests__/rateLimitService.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 23[2mms[22m[39m
+ [32m✓[39m tests/unit/features/intelligence/services/swarmScheduler.service.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 23[2mms[22m[39m
+ [32m✓[39m tests/unit/features/prospecting/services/youtube.service.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 16[2mms[22m[39m
+ [32m✓[39m src/features/integrations/whatsapp/__tests__/whatsappMessage.service.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 24[2mms[22m[39m
+ [32m✓[39m src/lib/crypto/__tests__/piiFields.unit.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 23[2mms[22m[39m
+ [32m✓[39m src/features/crm/application/__tests__/LeadUseCases.updateLead.test.ts [2m([22m[2m13 tests[22m[2m)[22m[32m 25[2mms[22m[39m
+ [32m✓[39m tests/unit/features/integrations/bitrix/service/hubTasks.service.test.ts [2m([22m[2m14 tests[22m[2m)[22m[32m 24[2mms[22m[39m
+ [32m✓[39m src/features/integrations/birth-voice/__tests__/birthVoice.helpers.test.ts [2m([22m[2m36 tests[22m[2m)[22m[32m 24[2mms[22m[39m
+ [32m✓[39m src/features/integrations/birth-voice/__tests__/callSuppression.service.test.ts [2m([22m[2m14 tests[22m[2m)[22m[32m 26[2mms[22m[39m
+ [32m✓[39m src/features/copiloto-ia/application/__tests__/CopilotoBitrixWritebackUseCases.unit.test.ts [2m([22m[2m12 tests[22m[2m)[22m[32m 20[2mms[22m[39m
+ [32m✓[39m tests/unit/lib/voiceCommandBus.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 13[2mms[22m[39m
+ [32m✓[39m tests/unit/features/automations/application/stagnation-scanner.service.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 26[2mms[22m[39m
+ [32m✓[39m tests/unit/features/cadence/infra/PrismaSignatureRequestRepository.test.ts [2m([22m[2m16 tests[22m[2m)[22m[32m 22[2mms[22m[39m
+ [32m✓[39m tests/unit/features/prospecting/services/enrichment/fitScoreCalibration.test.ts [2m([22m[2m15 tests[22m[2m)[22m[32m 23[2mms[22m[39m
+ [32m✓[39m src/features/prospecting/services/__tests__/hunter.service.test.ts [2m([22m[2m16 tests[22m[2m)[22m[32m 22[2mms[22m[39m
+ [32m✓[39m tests/unit/features/cadence/PrismaCadenceRunRepository.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 22[2mms[22m[39m
+ [32m✓[39m src/features/prospecting/__tests__/enrichmentCascade.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 23[2mms[22m[39m
+ [32m✓[39m tests/unit/features/prospecting/services/github.service.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 22[2mms[22m[39m
+ [32m✓[39m src/features/integrations/bitrix/service/__tests__/syncLogs.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 23[2mms[22m[39m
+[2026-10-02 19:00:18.708 +0000] [33mWARN[39m: [36m[search] MEILI_MASTER_KEY não configurada — usando chave fixa de desenvolvimento local. NUNCA use isso em produção (a trava acima impede a subida sem a variável real).[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+ [32m✓[39m src/features/knowledge/services/__tests__/knowledge-copilot.service.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 21[2mms[22m[39m
+[2026-10-02 19:00:18.898 +0000] [31mERROR[39m: [36mErro no Copiloto de Conhecimento[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+    err: {
+      "type": "Error",
+      "message": "provedor indisponível",
+      "stack":
+          Error: provedor indisponível
+              at /app/src/features/knowledge/services/__tests__/knowledge-copilot.service.test.ts:174:38
+              at file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11
+              at file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26
+              at file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20
+              at new Promise (<anonymous>)
+              at runWithCancel (file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)
+              at file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20
+              at new Promise (<anonymous>)
+              at runWithTimeout (file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)
+              at file:///app/node_modules/@vitest/runner/dist/chunk-artifact.js:2956:64
+    }
+ [32m✓[39m tests/unit/features/intelligence/services/winLossAnalysis.worker.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 21[2mms[22m[39m
+ [32m✓[39m src/lib/crypto/__tests__/piiIndex.unit.test.ts [2m([22m[2m14 tests[22m[2m)[22m[32m 22[2mms[22m[39m
+ [32m✓[39m src/lib/ai/gateway/__tests__/retry.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 21[2mms[22m[39m
+ [32m✓[39m tests/unit/features/billing/application/UsageUseCases.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 21[2mms[22m[39m
+ [32m✓[39m tests/unit/features/integrations/whatsapp/conversation-intelligence.service.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 21[2mms[22m[39m
+ [32m✓[39m src/features/knowledge/__tests__/chunking.test.ts [2m([22m[2m12 tests[22m[2m)[22m[32m 21[2mms[22m[39m
+ [32m✓[39m tests/unit/features/commercial-intelligence/forecastSnapshotWeekly.worker.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 21[2mms[22m[39m
+ [32m✓[39m tests/unit/features/intelligence/jobs/agentMemoryCleanup.worker.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 22[2mms[22m[39m
+ [32m✓[39m src/features/crm/application/__tests__/dealClosureGate.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 19[2mms[22m[39m
+[2026-10-02 19:00:31.572 +0000] [33mWARN[39m: [36m[search] MEILI_MASTER_KEY não configurada — usando chave fixa de desenvolvimento local. NUNCA use isso em produção (a trava acima impede a subida sem a variável real).[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+ [32m✓[39m src/features/prospecting/domain/__tests__/queryPlanner.test.ts [2m([22m[2m29 tests[22m[2m)[22m[32m 21[2mms[22m[39m
+[2026-10-02 19:00:33.156 +0000] [33mWARN[39m: [36m[search] MEILI_MASTER_KEY não configurada — usando chave fixa de desenvolvimento local. NUNCA use isso em produção (a trava acima impede a subida sem a variável real).[39m
+    [35menv[39m: "test"
+    [35mservice[39m: "birthhub360-api"
+ [32m✓[39m tests/unit/features/crm/application/LeadUseCases.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 21[2mms[22m[39m
+ [32m✓[39m src/features/integrations/whatsapp/__tests__/whatsapp.service.lock.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 21[2mms[22m[39m
+ [32m✓[39m src/features/commercial-intelligence/__tests__/metricsDictionary.unit.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 18[2mms[22m[39m
+ [32m✓[39m tests/unit/features/cadence/application/documentSignature.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 24[2mms[22m[39m

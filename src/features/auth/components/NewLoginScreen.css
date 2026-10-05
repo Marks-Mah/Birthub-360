@@ -1,15 +1,15 @@
 /* Estilos da Landing Completa e Tela de Login — Birth Hub 360° (Light Mode Exclusivo) */
 
 :root {
-  --bg-light: #F8FAFC;
-  --surface-light: #FFFFFF;
-  --surface-2-light: #F1F5F9;
-  --surface-3-light: #E2E8F0;
-  --ink-light: #0F172A;
+  --bg-light: #f8fafc;
+  --surface-light: #ffffff;
+  --surface-2-light: #f1f5f9;
+  --surface-3-light: #e2e8f0;
+  --ink-light: #0f172a;
   --ink-2-light: #334155;
-  --ink-3-light: #64748B;
-  --line-light: #E2E8F0;
-  --line-subtle: #F1F5F9;
+  --ink-3-light: #64748b;
+  --line-light: #e2e8f0;
+  --line-subtle: #f1f5f9;
 }
 
 html {
@@ -31,7 +31,7 @@ html {
 /* CARDS COLORIDOS DOS 8 PILARES */
 .pillar-card {
   position: relative;
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   border-radius: 1.25rem;
   transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   will-change: transform, box-shadow;
@@ -46,20 +46,20 @@ html {
 }
 
 .pillar-card-active {
-  background-color: #FFFFFF !important;
+  background-color: #ffffff !important;
 }
 
 /* CARDS DE SEÇÃO COM SUPERFÍCIE ELEVADA */
 .section-card {
-  background-color: #FFFFFF;
-  border: 1px solid #E2E8F0;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
   border-radius: 1.25rem;
   box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .section-card:hover {
-  border-color: #CBD5E1;
+  border-color: #cbd5e1;
   box-shadow: 0 10px 30px -4px rgba(15, 23, 42, 0.08);
 }
 
@@ -74,14 +74,14 @@ html {
 
 /* STEP CARD NO FLUXO OPERACIONAL */
 .flow-step-card {
-  background-color: #FFFFFF;
-  border: 1.5px solid #E2E8F0;
+  background-color: #ffffff;
+  border: 1.5px solid #e2e8f0;
   border-radius: 1rem;
   transition: all 0.3s ease;
 }
 
 .flow-step-card:hover {
-  border-color: #0284C7;
+  border-color: #0284c7;
   transform: translateY(-3px);
   box-shadow: 0 8px 24px -4px rgba(2, 132, 199, 0.12);
 }
@@ -91,44 +91,50 @@ html {
   width: 100%;
   height: 52px;
   border-radius: 12px;
-  border: 1.5px solid #CBD5E1;
-  background-color: #FFFFFF;
-  color: #0F172A;
-  font-family: 'IBM Plex Mono', monospace;
+  border: 1.5px solid #cbd5e1;
+  background-color: #ffffff;
+  color: #0f172a;
+  font-family: "IBM Plex Mono", monospace;
   font-size: 0.95rem;
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .app-input-pro::placeholder {
-  color: #94A3B8;
+  color: #94a3b8;
   opacity: 0.8;
 }
 
 .app-input-pro:focus {
   outline: none;
-  border-color: #0284C7;
-  background-color: #FFFFFF;
-  box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.12), 0 4px 15px rgba(2, 132, 199, 0.08);
+  border-color: #0284c7;
+  background-color: #ffffff;
+  box-shadow:
+    0 0 0 4px rgba(2, 132, 199, 0.12),
+    0 4px 15px rgba(2, 132, 199, 0.08);
   transform: translateY(-1px);
 }
 
 /* CARD CENTRAL DE LOGIN */
 .card-glow-light {
-  border: 1.5px solid #E2E8F0;
-  background: #FFFFFF;
-  box-shadow: 0 20px 45px -10px rgba(15, 23, 42, 0.08), 0 4px 15px rgba(2, 132, 199, 0.04);
+  border: 1.5px solid #e2e8f0;
+  background: #ffffff;
+  box-shadow:
+    0 20px 45px -10px rgba(15, 23, 42, 0.08),
+    0 4px 15px rgba(2, 132, 199, 0.04);
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
 }
 
 .card-glow-light:hover {
-  box-shadow: 0 25px 55px -10px rgba(15, 23, 42, 0.1), 0 6px 20px rgba(2, 132, 199, 0.06);
+  box-shadow:
+    0 25px 55px -10px rgba(15, 23, 42, 0.1),
+    0 6px 20px rgba(2, 132, 199, 0.06);
 }
 
 /* TAB SWITCHER */
 .tab-segmented-container-light {
-  background: #F1F5F9;
-  border: 1px solid #E2E8F0;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
   padding: 4px;
   border-radius: 12px;
 }
@@ -137,31 +143,35 @@ html {
   position: relative;
   border-radius: 9px;
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  color: #64748B;
+  color: #64748b;
   font-weight: 600;
   font-size: 0.8rem;
 }
 
 .tab-segmented-btn-light.active {
-  background: #FFFFFF;
-  color: #0284C7;
+  background: #ffffff;
+  color: #0284c7;
   box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
 }
 
 /* BOTÃO CTA DE ALTA ENERGIA */
 .btn-cta-light {
-  color: #FFFFFF;
-  background-image: linear-gradient(110deg, #0284C7 0%, #2563EB 50%, #7C3AED 100%);
+  color: #ffffff;
+  background-image: linear-gradient(110deg, #0284c7 0%, #2563eb 50%, #7c3aed 100%);
   background-size: 200% 100%;
   background-position: 0% 50%;
-  box-shadow: 0 10px 25px -4px rgba(2, 132, 199, 0.35), 0 4px 12px rgba(124, 58, 237, 0.2);
+  box-shadow:
+    0 10px 25px -4px rgba(2, 132, 199, 0.35),
+    0 4px 12px rgba(124, 58, 237, 0.2);
   transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .btn-cta-light:hover {
   background-position: 100% 50%;
   transform: translateY(-2px);
-  box-shadow: 0 14px 32px -4px rgba(2, 132, 199, 0.45), 0 6px 18px rgba(124, 58, 237, 0.3);
+  box-shadow:
+    0 14px 32px -4px rgba(2, 132, 199, 0.45),
+    0 6px 18px rgba(124, 58, 237, 0.3);
 }
 
 .btn-cta-light:active {
@@ -170,63 +180,63 @@ html {
 
 /* BOTÃO SOCIAL */
 .btn-social-light {
-  border: 1px solid #E2E8F0;
-  background: #FFFFFF;
-  color: #1E293B;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  color: #1e293b;
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .btn-social-light:hover {
   transform: translateY(-2px);
-  border-color: #CBD5E1;
+  border-color: #cbd5e1;
   box-shadow: 0 6px 16px -2px rgba(15, 23, 42, 0.08);
 }
 
 /* TRUST BADGES */
 .trust-badge-light {
-  border: 1px solid #E2E8F0;
-  background: #F8FAFC;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .trust-badge-light:hover {
   transform: translateY(-2px);
-  background: #FFFFFF;
-  border-color: #CBD5E1;
+  background: #ffffff;
+  border-color: #cbd5e1;
   box-shadow: 0 4px 12px -2px rgba(15, 23, 42, 0.06);
 }
 
 /* GRADIENTES DE TEXTO PARA MODO LIGHT */
 .grad-text-blue {
-  background-image: linear-gradient(135deg, #0284C7 0%, #2563EB 100%);
+  background-image: linear-gradient(135deg, #0284c7 0%, #2563eb 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 
 .grad-text-purple {
-  background-image: linear-gradient(135deg, #7C3AED 0%, #2563EB 100%);
+  background-image: linear-gradient(135deg, #7c3aed 0%, #2563eb 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 
 .grad-text-cyan {
-  background-image: linear-gradient(135deg, #00B4D8 0%, #0284C7 100%);
+  background-image: linear-gradient(135deg, #00b4d8 0%, #0284c7 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 
 .grad-text-emerald {
-  background-image: linear-gradient(135deg, #059669 0%, #16A34A 100%);
+  background-image: linear-gradient(135deg, #059669 0%, #16a34a 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 
 .grad-text-amber {
-  background-image: linear-gradient(135deg, #D97706 0%, #EA580C 100%);
+  background-image: linear-gradient(135deg, #d97706 0%, #ea580c 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -235,7 +245,7 @@ html {
 /* LINHAS DE STATUS E SEPARADORES */
 .status-line-light {
   height: 1px;
-  background: linear-gradient(90deg, transparent 0%, #E2E8F0 25%, #E2E8F0 75%, transparent 100%);
+  background: linear-gradient(90deg, transparent 0%, #e2e8f0 25%, #e2e8f0 75%, transparent 100%);
 }
 
 .logo-glow-light {

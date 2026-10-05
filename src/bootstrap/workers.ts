@@ -89,7 +89,10 @@ import {
   createNewsMonitorWorker,
   scheduleGlobalNewsScan,
 } from '../lib/queue/newsMonitor.worker.js';
-import { createCheckpointerPruneWorker, scheduleCheckpointerPrune } from '../lib/queue/checkpointerPrune.worker.js';
+import {
+  createCheckpointerPruneWorker,
+  scheduleCheckpointerPrune,
+} from '../lib/queue/checkpointerPrune.worker.js';
 import { createWhatsAppCommandWorker } from '../lib/queue/whatsappCommand.worker.js';
 
 // `unknown` não serve aqui: os workers reais guardados neste handle têm DataType/ResultType todos
@@ -255,7 +258,9 @@ export function startEmbeddedWorkers(): EmbeddedWorkersHandle {
     scheduleGlobalNewsScan().catch((err) =>
       logger.error({ err }, 'Falha ao agendar o job de monitoramento de noticias'),
     );
-    scheduleCheckpointerPrune().catch((err) => logger.error({ err }, 'Falha ao agendar checkpointer prune'));
+    scheduleCheckpointerPrune().catch((err) =>
+      logger.error({ err }, 'Falha ao agendar checkpointer prune'),
+    );
   }
 
   handle.searchWorker = embeddedWorkersEnabled && env.ENABLE_SEARCH ? createSearchWorker() : null;
@@ -292,6 +297,3 @@ export function startEmbeddedWorkers(): EmbeddedWorkersHandle {
 
   return handle;
 }
-
-
-
