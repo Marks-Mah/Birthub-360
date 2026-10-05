@@ -6,8 +6,8 @@
 import type { Request, Response, NextFunction } from 'express';
 import type { AuthRequest } from '../../../shared/middlewares/authenticateToken.js';
 import { ASSIGNABLE_ROLES } from '../services/team.service.js';
-import { TeamUseCases } from '../application/TeamUseCases.js';
-import { TeamRole } from '../domain/TeamDomain.js';
+import type { TeamUseCases } from '../application/TeamUseCases.js';
+import type { TeamRole } from '../domain/TeamDomain.js';
 
 export class TeamController {
   constructor(private readonly teamUseCases: TeamUseCases) {}

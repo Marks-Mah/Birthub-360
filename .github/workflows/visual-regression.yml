@@ -11,7 +11,7 @@ permissions:
 jobs:
   visual-regression:
     name: Visual Regression
-    timeout-minutes: 90
+    timeout-minutes: 15
     runs-on: ubuntu-latest
 
     services:
@@ -91,6 +91,9 @@ jobs:
         AUTH_RATE_LIMIT_MAX=$AUTH_RATE_LIMIT_MAX
         PLATFORM_OPERATOR_TOKEN=$PLATFORM_OPERATOR_TOKEN
         EOF
+
+    - name: Apply database migrations
+      run: npx dotenv-cli -e .env.test -- npx prisma migrate deploy
 
     - name: Run Visual Tests
       run: npm run test:visual

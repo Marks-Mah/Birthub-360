@@ -1,8 +1,8 @@
-import {
-  type GamificationRepository,
-  type LeaderboardPeriod,
-  type LeaderboardRanking,
-  type SellerScore,
+import type {
+  GamificationRepository,
+  LeaderboardPeriod,
+  LeaderboardRanking,
+  SellerScore,
 } from '../domain/Gamification.js';
 import { prismaGamificationRepository } from '../infra/PrismaGamificationRepository.js';
 

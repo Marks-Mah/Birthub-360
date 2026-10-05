@@ -81,7 +81,7 @@ export function DiscoveryResultsPanel({
   return (
     <div className="xl:col-span-8 flex flex-col h-full">
       <div className="flex items-center justify-between mb-4 gap-4 flex-wrap">
-        <h2 className="font-black text-2xl text-ink">✨ Resultados</h2>
+        <h2 className="font-display font-bold text-2xl text-ink">✨ Resultados</h2>
         {candidates.length > 0 && (
           <div className="flex items-center gap-3">
             <button
@@ -91,7 +91,7 @@ export function DiscoveryResultsPanel({
                 onSaveAll();
               }}
               disabled={isSavingBatch}
-              className="bg-brand text-on-brand px-4 py-2 rounded-xl text-xs font-bold hover:brightness-110 active:scale-95 transition-all shadow-[0_2px_10px_rgba(212,175,55,0.3)] flex items-center gap-2 disabled:opacity-50 cursor-pointer"
+              className="bg-brand text-on-brand px-4 py-2 rounded-xl text-xs font-bold hover:brightness-110 active:scale-95 transition-all shadow-[0_2px_10px_rgba(0,229,255,0.3)] hover:shadow-glow-brand flex items-center gap-2 disabled:opacity-50 cursor-pointer"
             >
               <UserPlus size={14} /> {isSavingBatch ? 'Salvando Lista...' : 'Salvar Lista de Leads'}
             </button>

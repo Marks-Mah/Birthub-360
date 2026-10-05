@@ -1,4 +1,4 @@
-import React from 'react';
+import type React from 'react';
 import { Newspaper, CheckCircle2 } from 'lucide-react';
 
 export interface LeadNewsDossierSectionProps {

@@ -56,7 +56,9 @@ function buildExhaustedProvidersError(errorsByProvider: Map<string, unknown>): E
   const vllmMessage = sanitizeProviderMessage(describeError(errorsByProvider.get('vllm')));
   const groqMessage = sanitizeProviderMessage(describeError(errorsByProvider.get('groq')));
   const openaiMessage = sanitizeProviderMessage(describeError(errorsByProvider.get('openai')));
-  const openrouterMessage = sanitizeProviderMessage(describeError(errorsByProvider.get('openrouter')));
+  const openrouterMessage = sanitizeProviderMessage(
+    describeError(errorsByProvider.get('openrouter')),
+  );
   const litellmMessage = sanitizeProviderMessage(describeError(errorsByProvider.get('litellm')));
   return new Error(
     `Os motores de IA estão indisponíveis (${configured}). vLLM: ${vllmMessage}. Groq: ${groqMessage}. OpenAI: ${openaiMessage}. OpenRouter: ${openrouterMessage}. LiteLLM: ${litellmMessage}`,
@@ -82,7 +84,9 @@ async function callWithFallback(
   const _startTime = Date.now();
   const errorsByProvider = new Map<string, unknown>();
 
-  const chain = resolvedModel.startsWith('openrouter/') ? [openrouterProvider, litellmProvider] : PROVIDER_CHAIN;
+  const chain = resolvedModel.startsWith('openrouter/')
+    ? [openrouterProvider, litellmProvider]
+    : PROVIDER_CHAIN;
   for (const provider of chain) {
     if (!provider.isConfigured()) continue;
     try {

@@ -5,7 +5,6 @@ import {
   PerformanceIcon,
   AIIcon,
   AutomationIcon,
-  EngagementIcon,
 } from '../brand/PillarIcons.js';
 import {
   Activity,
@@ -14,27 +13,25 @@ import {
   BookOpen,
   Briefcase,
   Building2,
-  CalendarCheck,
   CalendarDays,
   ClipboardCheck,
-  Cpu,
   Database,
   FileBarChart,
   FileSignature,
   FileText,
   Gauge,
+  GitBranch,
   Globe,
   Headset,
-  Home,
   Layers,
-  LayoutTemplate,
   LineChart,
   MessageSquare,
+  MessageSquareText,
   Mic,
+  Network,
   PhoneCall,
   Radar,
   Repeat,
-  Search,
   Settings as SettingsIcon,
   Shield,
   ShieldCheck,
@@ -116,6 +113,10 @@ export type TabType =
   | 'forecast'
   | 'metas'
   | 'pipeline_ponderado'
+  | 'playbooks'
+  | 'jornadas'
+  | 'processos'
+  | 'roteiros'
   | 'settings_hub'
   | 'settings_market'
   | 'settings_sales'
@@ -162,13 +163,17 @@ export const TAB_META: Record<TabType, { label: string; icon: any; accent: NavAc
   settings_market: { label: 'Ajustes de Mercado', icon: SettingsIcon, accent: 'slate' },
 
   // PILAR 03 — ORQUESTRAÇÃO DE VENDAS
+  playbooks: { label: 'Playbooks Comerciais', icon: BookOpen, accent: 'blue' },
+  cadence: { label: 'Cadências', icon: Repeat, accent: 'green' },
+  jornadas: { label: 'Jornadas Comerciais', icon: GitBranch, accent: 'violet' },
+  processos: { label: 'Processos de Vendas', icon: Network, accent: 'teal' },
+  roteiros: { label: 'Roteiros de Abordagem', icon: MessageSquareText, accent: 'gold' },
   'daily-plan': { label: 'Plano Diário', icon: OrchestrationIcon as any, accent: 'green' },
-  activities: { label: 'Agenda', icon: Activity, accent: 'iris' },
+  activities: { label: 'Tarefas & Atividades', icon: Activity, accent: 'iris' },
   calendar: { label: 'Calendário', icon: CalendarDays, accent: 'blue' },
-  cadence: { label: 'Cadência', icon: Repeat, accent: 'green' },
-  roleplay: { label: 'Roleplay', icon: PhoneCall, accent: 'red' },
   qualification_matrix: { label: 'Matriz de Qualificação', icon: ClipboardCheck, accent: 'teal' },
   objections_matrix: { label: 'Matriz de Objeções', icon: Shield, accent: 'violet' },
+  roleplay: { label: 'Roleplay', icon: PhoneCall, accent: 'red' },
   topic_training: { label: 'Academy', icon: BookOpen, accent: 'gold' },
   chatbook: { label: 'Chatbook', icon: MessageSquare, accent: 'blue' },
   editor: { label: 'Editor de Documentos', icon: FileText, accent: 'slate' },

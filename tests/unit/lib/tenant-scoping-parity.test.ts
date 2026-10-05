@@ -90,6 +90,8 @@ const KNOWN_RLS_ONLY_MODELS = [
   'CopilotoTranscriptSegment',
   'CrmCommercialDocumentVersion',
   'CrmDocumentSignatureRequest',
+  // Ferramentas customizadas de IA por organização: acessadas via req.db com tenant e RLS
+  'CustomAiTool',
   'DailyPlanClosing',
   'DealClosureEvent',
   'DecisionMaker',

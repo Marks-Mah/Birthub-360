@@ -12,6 +12,7 @@ import {
   Sparkles,
   Trash2,
   User,
+  Users,
   WifiOff,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -174,14 +175,17 @@ export function ContactList() {
     <motion.div
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
-      className="flex-1 overflow-y-auto bg-transparent p-6 md:p-8"
+      className="flex-1 overflow-y-auto bg-transparent p-4 sm:p-6 lg:p-8"
     >
-      <div className="max-w-7xl mx-auto space-y-6">
+      <div className="w-full space-y-6">
         {/* Header */}
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-black text-ink tracking-tight">👤 Contatos & Decisores</h1>
-            <p className="text-xs text-ink-2 mt-0.5 font-medium">
+            <h1 className="text-2xl font-black text-ink tracking-tight font-[family-name:var(--font-brand-display)] flex items-center gap-3">
+              <Users className="w-6 h-6 text-brand" />
+              Contatos & Decisores
+            </h1>
+            <p className="text-xs text-ink-2 mt-0.5 font-medium font-[family-name:var(--font-brand-sans)]">
               {loading
                 ? 'Carregando...'
                 : `${meta?.total ?? contacts.length} contato${(meta?.total ?? contacts.length) !== 1 ? 's' : ''} no banco de dados`}

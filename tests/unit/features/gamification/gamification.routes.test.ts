@@ -18,11 +18,9 @@ vi.mock('@/features/gamification/services/sellerPerformanceAggregator.service', 
   sellerPerformanceAggregator: { compute: (...args: unknown[]) => computeMock(...args) },
 }));
 
-vi.mock('@/features/intelligence/services/CentralAISuiteService', () => ({
-  aiSuite: {
-    sellerCoaching: {
-      generateCoachingReport: (...args: unknown[]) => generateCoachingReportMock(...args),
-    },
+vi.mock('@/features/gamification/services/seller-coaching.service', () => ({
+  sellerCoachingService: {
+    generateCoachingReport: (...args: unknown[]) => generateCoachingReportMock(...args),
   },
 }));
 

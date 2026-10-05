@@ -4,11 +4,10 @@
  */
 
 import {
-  ITeamRepository,
-  TeamMember,
+  type ITeamRepository,
+  type TeamMember,
   TeamRole,
-  Permission,
-  MemberInvite,
+  type MemberInvite,
 } from '../domain/TeamDomain.js';
 
 export class TeamUseCases {

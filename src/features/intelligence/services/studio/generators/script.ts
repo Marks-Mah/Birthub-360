@@ -18,7 +18,9 @@ de saída verificável. Retorne SOMENTE o artefato, sem bloco Markdown.`;
   const content = stripCodeFence(await invokeText(prompt, 'studio:script', 0.25));
   const safety = TerminalSafetyService.analyzeCommand(content);
   if (safety.isBlocked) {
-    throw new Error(`Artefato gerado rejeitado pela política de segurança de terminal: ${safety.reason}`);
+    throw new Error(
+      `Artefato gerado rejeitado pela política de segurança de terminal: ${safety.reason}`,
+    );
   }
   return { content };
 }

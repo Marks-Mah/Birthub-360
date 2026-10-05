@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from 'express';
 import type { AuthRequest } from '../../../shared/middlewares/authenticateToken.js';
-import { AnalyticsUseCases, buildCohortCsv } from '../application/AnalyticsUseCases.js';
+import { type AnalyticsUseCases, buildCohortCsv } from '../application/AnalyticsUseCases.js';
 
 const MIN_MONTHS = 1;
 const MAX_MONTHS = 24;

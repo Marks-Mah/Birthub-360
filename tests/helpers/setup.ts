@@ -46,4 +46,7 @@ vi.mock('bullmq', async (importOriginal) => {
 vi.mock('canvas-confetti', () => ({
   default: vi.fn(),
 }));
-delete process.env.PII_BLIND_INDEX_KEY;
+if (!process.env.PII_BLIND_INDEX_KEY || process.env.PII_BLIND_INDEX_KEY.includes('replace-with')) {
+  process.env.PII_BLIND_INDEX_KEY = Buffer.alloc(32, 1).toString('base64');
+}
+

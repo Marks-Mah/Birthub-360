@@ -1,4 +1,4 @@
-﻿import React, { Suspense, lazy } from 'react';
+﻿import { Suspense, lazy } from 'react';
 import { useAuthForm } from '../hooks/useAuthForm';
 import { LoginFormCard } from './LoginFormCard';
 

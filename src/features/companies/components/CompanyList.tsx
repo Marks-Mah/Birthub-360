@@ -372,7 +372,7 @@ export function CompanyList() {
   }
 
   return (
-    <div className="flex-1 overflow-y-auto bg-bg text-ink p-6 md:p-8 space-y-6">
+    <div className="flex-1 overflow-y-auto bg-bg text-ink p-4 sm:p-6 lg:p-8 space-y-6">
       {/* Popover de Tecnologia */}
       <ToolTechPopover
         info={activeToolPopover}
@@ -383,7 +383,7 @@ export function CompanyList() {
         }}
       />
 
-      <div className="max-w-7xl mx-auto space-y-6">
+      <div className="w-full space-y-6">
         {/* Banner de Dica Contextual */}
         <ContextualTip
           id="tip-companies-tech"
@@ -398,45 +398,26 @@ export function CompanyList() {
         />
 
         {/* Top Header */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-surface p-6 rounded-3xl border border-line backdrop-blur-xl">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-surface p-6 rounded-2xl border border-line shadow-card">
           <div>
-            <h1 className="text-3xl font-extrabold text-ink flex items-center gap-3 tracking-tight">
-              🏢 Empresas & Carteira
-              {/* text-brand puro falha contraste real (axe-core): ~2.9:1 no Birth Hub 360
-                                claro (laranja vívido sobre fundo claro) e ~1.9:1 no Birth Hub 360
-                                escuro (azul-marinho sobre fundo escuro) — as duas marcas de então falhavam,
-                                cada uma no tema oposto, porque a cor primária de uma é clara
-                                (Birth Hub 360) e da outra é escura (Birth Hub 360). brand-active escurece
-                                (resolve claro em qualquer marca) e brand-2 é o tom vívido de cada
-                                marca (resolve escuro nas duas). Fundo é bg-surface-2 (neutro), não
-                                bg-soft: no Birth Hub 360 escuro --soft já é um tingimento ciano, e
-                                texto ciano (brand-2) sobre fundo ciano ainda fica em 4.32:1 — perto
-                                mas abaixo do mínimo. Combinação final verificada via axe-core nas 4
-                                combinações antes de fixar. */}
-              <span className="text-xs bg-surface-2 text-brand-ink dark:text-brand border border-brand/30 px-3 py-1 rounded-full font-bold">
+            <h1 className="text-2xl font-black text-ink flex items-center gap-3 tracking-tight font-[family-name:var(--font-brand-display)]">
+              <Building2 className="w-6 h-6 text-brand" />
+              Empresas & Carteira
+              <span className="text-xs bg-brand/10 text-brand border border-brand/20 px-3 py-1 rounded-full font-bold">
                 {companies.length} Mapeadas
               </span>
             </h1>
-            <p className="text-ink-2 text-sm mt-1">
+            <p className="text-ink-2 text-sm mt-1 font-[family-name:var(--font-brand-sans)]">
               Gerencie prospects com visibilidade total do ecossistema de software e inteligência
             </p>
           </div>
           <div className="flex items-center gap-3">
             {/* Layout Mode Toggle */}
-            {/* text-ink-2 sobre bg-surface-2 falha contraste em light mode (4.24:1,
-                            precisa 4.5:1) — o par de tokens em si, não algo exclusivo desta tela.
-                            Correção local (sem tocar --ink-2/--surface-2 globais): text-ink/70
-                            no lugar de text-ink-2 só no tema claro (dark: mantém o token original,
-                            que já passa) — usa --ink existente com opacidade, não um token novo,
-                            e fica visivelmente mais claro que o texto primário (6.34:1 vs ~16:1),
-                            preservando a hierarquia secundária. Mesmo tratamento em todo o arquivo
-                            onde text-ink-2 senta sobre bg-surface-2 (toggle, chips, badge inativo,
-                            "+N" de ferramentas, "Limpar busca", cabeçalho da tabela). */}
-            <div className="bg-surface-2 p-1 rounded-2xl border border-line flex items-center gap-1">
+            <div className="bg-surface-2 p-1 rounded-xl border border-line flex items-center gap-1">
               <button
                 type="button"
                 onClick={() => setLayoutMode('grid')}
-                className={`p-2 rounded-xl transition-colors flex items-center gap-1 text-xs font-semibold ${layoutMode === 'grid' ? 'bg-brand-active text-on-brand shadow-md' : 'text-ink/70 dark:text-ink-2 hover:text-ink'}`}
+                className={`p-2 rounded-lg transition-colors flex items-center gap-1 text-xs font-semibold ${layoutMode === 'grid' ? 'bg-brand text-on-brand shadow-sm' : 'text-ink-2 hover:text-ink'}`}
                 title="Visão em Cards com Logos de Ferramentas"
                 aria-label="Visão em Cards com Logos de Ferramentas"
               >
@@ -446,7 +427,7 @@ export function CompanyList() {
               <button
                 type="button"
                 onClick={() => setLayoutMode('table')}
-                className={`p-2 rounded-xl transition-colors flex items-center gap-1 text-xs font-semibold ${layoutMode === 'table' ? 'bg-brand-active text-on-brand shadow-md' : 'text-ink/70 dark:text-ink-2 hover:text-ink'}`}
+                className={`p-2 rounded-lg transition-colors flex items-center gap-1 text-xs font-semibold ${layoutMode === 'table' ? 'bg-brand text-on-brand shadow-sm' : 'text-ink-2 hover:text-ink'}`}
                 title="Visão em Tabela Compacta"
                 aria-label="Visão em Tabela Compacta"
               >
@@ -461,7 +442,7 @@ export function CompanyList() {
                 setSelectedCompany(null);
                 setIsFormOpen(true);
               }}
-              className="flex items-center gap-2 bg-brand-active hover:brightness-110 text-on-brand px-5 py-2.5 rounded-2xl font-bold transition-colors shadow-lg shadow-brand/20 active:scale-95 cursor-pointer"
+              className="flex items-center gap-2 bg-brand hover:bg-brand/90 text-on-brand px-5 py-2.5 rounded-xl font-bold transition-colors shadow-card hover:shadow-card-hover active:scale-95 cursor-pointer"
             >
               <Plus className="w-5 h-5" />
               Nova Empresa

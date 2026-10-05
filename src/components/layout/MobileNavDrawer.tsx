@@ -1,6 +1,5 @@
-import React from 'react';
-import { Sidebar } from './Sidebar.js';
-import type { TabType } from './tabMeta.js';
+import { Sidebar } from './Sidebar';
+import type { TabType } from './tabMeta';
 
 interface MobileNavDrawerProps {
   isOpen: boolean;
@@ -27,11 +26,7 @@ export function MobileNavDrawer({ isOpen, onClose, activeTab }: MobileNavDrawerP
         aria-label="Navegação móvel"
         className="relative z-50 flex h-full w-72 max-w-[80vw] flex-col bg-surface border-r border-border-subtle shadow-2xl animate-slide-in-left"
       >
-        <Sidebar
-          activeTab={activeTab as TabType}
-          onCloseMobile={onClose}
-          mobileOpen={isOpen}
-        />
+        <Sidebar activeTab={activeTab as TabType} onCloseMobile={onClose} mobileOpen={isOpen} />
       </aside>
     </div>
   );
