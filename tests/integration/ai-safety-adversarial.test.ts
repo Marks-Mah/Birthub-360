@@ -115,12 +115,35 @@ describe('AI Safety - Adversarial Tests', () => {
       expect(result.matches).toContain('idiota');
     });
 
-    it('não deve bloquear conteúdo benigno', () => {
-      const benignContent = 'O sistema de CRM está funcionando bem';
-      const result = detectToxicity(benignContent);
+    it('deve bloquear variações de gênero, plurais e palavras sem acento', () => {
+      const variations = [
+        { text: 'Você é muito estúpida', expected: 'estúpido' },
+        { text: 'Que garota burra', expected: 'burro' },
+        { text: 'São pessoas retardadas', expected: 'retardado' },
+        { text: 'Ele é estupido', expected: 'estúpido' },
+        { text: 'Eles são idiotas e burros', expected: 'idiota' },
+      ];
 
-      expect(result.toxic).toBe(false);
-      expect(result.matches).toEqual([]);
+      for (const item of variations) {
+        const result = detectToxicity(item.text);
+        expect(result.toxic).toBe(true);
+        expect(result.matches).toContain(item.expected);
+      }
+    });
+
+    it('não deve bloquear palavras benignas com radicais similares (falsos positivos)', () => {
+      const safeWords = [
+        'A idiossincrasia do modelo é conhecida',
+        'O recurso foi recorrido ontem',
+        'Vamos fazer um churrasco de celebração',
+        'O sistema de CRM está funcionando bem',
+      ];
+
+      for (const safe of safeWords) {
+        const result = detectToxicity(safe);
+        expect(result.toxic).toBe(false);
+        expect(result.matches).toEqual([]);
+      }
     });
   });
 

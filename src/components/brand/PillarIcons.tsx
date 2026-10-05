@@ -13,7 +13,7 @@ export function HubIcon({ isActive, className = '', ...props }: PillarIconProps)
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={className}
-      {...(props as any)}
+      {...props}
     >
       <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5" />
       <motion.circle
@@ -36,7 +36,7 @@ export function IntelligenceIcon({ isActive, className = '', ...props }: PillarI
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={className}
-      {...(props as any)}
+      {...props}
     >
       <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5" />
       <motion.circle
@@ -63,7 +63,7 @@ export function OrchestrationIcon({ isActive, className = '', ...props }: Pillar
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={className}
-      {...(props as any)}
+      {...props}
     >
       <path
         d="M4 12H20M20 12L14 6M20 12L14 18"
@@ -94,7 +94,7 @@ export function PerformanceIcon({ isActive, className = '', ...props }: PillarIc
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={className}
-      {...(props as any)}
+      {...props}
     >
       <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" strokeWidth="1.5" />
       <path
@@ -126,7 +126,7 @@ export function ForecastIcon({ isActive, className = '', ...props }: PillarIconP
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={className}
-      {...(props as any)}
+      {...props}
     >
       <path
         d="M4 14L10 14L12 4L14 14L20 14"
@@ -157,7 +157,7 @@ export function AIIcon({ isActive, className = '', ...props }: PillarIconProps) 
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={className}
-      {...(props as any)}
+      {...props}
     >
       <motion.path
         d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z"
@@ -181,7 +181,7 @@ export function AutomationIcon({ isActive, className = '', ...props }: PillarIco
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={className}
-      {...(props as any)}
+      {...props}
     >
       <path
         d="M12 3L21 12L12 21L3 12L12 3Z"
@@ -213,7 +213,7 @@ export function EngagementIcon({ isActive, className = '', ...props }: PillarIco
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={className}
-      {...(props as any)}
+      {...props}
     >
       <circle
         cx="12"
