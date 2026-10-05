@@ -6,6 +6,7 @@
 const TOXIC_WORDS_PT = [
   // Palavras ofensivas comuns em português
   'idiota',
+  'idiotas',
   'estúpido',
   'burro',
   'retardado',

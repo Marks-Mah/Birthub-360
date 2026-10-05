@@ -112,7 +112,7 @@ describe('AI Safety - Adversarial Tests', () => {
       const result = detectToxicity(hateContent);
 
       expect(result.toxic).toBe(true);
-      expect(result.matches).toContain('idiota');
+      expect(result.matches).toContain('idiotas');
     });
 
     it('não deve bloquear conteúdo benigno', () => {
