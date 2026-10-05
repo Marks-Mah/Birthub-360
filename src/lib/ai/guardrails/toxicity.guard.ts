@@ -45,7 +45,7 @@ function escapeRegex(s: string): string {
 }
 
 function getWordRegex(word: string): RegExp {
-  return new RegExp(`(^|[^\\p{L}\\p{N}_])${escapeRegex(word)}(?=[^\\p{L}\\p{N}_]|$)`, 'gui');
+  return new RegExp(`(^|[^\\p{L}\\p{N}_])${escapeRegex(word)}s?(?=[^\\p{L}\\p{N}_]|$)`, 'gui');
 }
 
 export function detectToxicity(text: string): ToxicityResult {
