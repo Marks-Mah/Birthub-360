@@ -35,18 +35,19 @@ function FilterSelect({
   id,
   label,
   value,
-  options,
+  options = [],
   allLabel,
   onChange,
 }: {
   id: string;
   label: string;
   value: string;
-  options: string[];
+  options?: string[];
   allLabel: string;
   onChange: (next: string) => void;
 }) {
-  const withCurrent = value && !options.includes(value) ? [value, ...options] : options;
+  const safeOptions = Array.isArray(options) ? options : [];
+  const withCurrent = value && !safeOptions.includes(value) ? [value, ...safeOptions] : safeOptions;
   return (
     <>
       <label className="sr-only" htmlFor={id}>
@@ -83,7 +84,17 @@ export function CommercialIntelligenceHub() {
     let cancelled = false;
     commercialIntelligenceApi
       .filterOptions()
-      .then((data) => !cancelled && setFilterOptions(data))
+      .then((data) => {
+        if (!cancelled && data && typeof data === 'object') {
+          setFilterOptions({
+            owners: Array.isArray(data.owners) ? data.owners : [],
+            products: Array.isArray(data.products) ? data.products : [],
+            sources: Array.isArray(data.sources) ? data.sources : [],
+            icps: Array.isArray(data.icps) ? data.icps : [],
+            companies: Array.isArray(data.companies) ? data.companies : [],
+          });
+        }
+      })
       .catch(() => {});
     return () => {
       cancelled = true;

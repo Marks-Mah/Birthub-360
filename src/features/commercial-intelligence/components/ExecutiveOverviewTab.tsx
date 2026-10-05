@@ -233,9 +233,7 @@ export function ExecutiveOverviewTab({ filter }: ExecutiveOverviewTabProps) {
     );
   }
 
-  if (!overview) return null;
-
-  if (overview.isEmpty) {
+  if (!overview || Array.isArray(overview) || overview.isEmpty) {
     return (
       <EmptyState
         title="Nenhum negócio no funil Negócio ainda"
@@ -420,9 +418,9 @@ export function ExecutiveOverviewTab({ filter }: ExecutiveOverviewTabProps) {
         />
         <KpiTile
           label="Coverage do mês"
-          value={formatMultiple(overview.coverageMonth.coverage)}
+          value={formatMultiple(overview.coverageMonth?.coverage)}
           hint={
-            overview.coverageMonth.coverageRecommended != null
+            overview.coverageMonth?.coverageRecommended != null
               ? `Recomendado: ${formatMultiple(overview.coverageMonth.coverageRecommended)}`
               : undefined
           }
@@ -430,9 +428,9 @@ export function ExecutiveOverviewTab({ filter }: ExecutiveOverviewTabProps) {
         />
         <KpiTile
           label="Coverage 90 dias"
-          value={formatMultiple(overview.coverage90.coverage)}
+          value={formatMultiple(overview.coverage90?.coverage)}
           hint={
-            overview.coverage90.coverageRecommended != null
+            overview.coverage90?.coverageRecommended != null
               ? `Recomendado: ${formatMultiple(overview.coverage90.coverageRecommended)}`
               : undefined
           }
@@ -440,18 +438,18 @@ export function ExecutiveOverviewTab({ filter }: ExecutiveOverviewTabProps) {
         />
         <KpiTile
           label="Forecast Confidence"
-          value={formatPercent(overview.forecastConfidence.score)}
+          value={formatPercent(overview.forecastConfidence?.score)}
           tone={
-            overview.forecastConfidence.classification === 'saudavel'
+            overview.forecastConfidence?.classification === 'saudavel'
               ? 'good'
-              : overview.forecastConfidence.classification === 'critico'
+              : overview.forecastConfidence?.classification === 'critico'
                 ? 'critical'
                 : undefined
           }
           hint={
-            overview.forecastConfidence.sampleSizePenaltyApplied
-              ? `Amostra pequena (${overview.forecastConfidence.sampleSize} negócio(s)) reduz a confiança`
-              : `Amostra: ${overview.forecastConfidence.sampleSize} negócio(s) aberto(s)`
+            overview.forecastConfidence?.sampleSizePenaltyApplied
+              ? `Amostra pequena (${overview.forecastConfidence?.sampleSize ?? 0} negócio(s)) reduz a confiança`
+              : `Amostra: ${overview.forecastConfidence?.sampleSize ?? 0} negócio(s) aberto(s)`
           }
           metricKey="forecast_confidence"
         />
@@ -464,7 +462,9 @@ export function ExecutiveOverviewTab({ filter }: ExecutiveOverviewTabProps) {
         />
       )}
 
-      <CoverageProtectionTable entries={overview.coverageProtection} />
+      {overview.coverageProtection && overview.coverageProtection.length > 0 && (
+        <CoverageProtectionTable entries={overview.coverageProtection} />
+      )}
 
       {performance && <PipelineByStageCard funnel={performance.funnel} currency={currency} />}
 

@@ -11,7 +11,7 @@ export function DataFlowLines({ className }: { className?: string }) {
     <svg
       viewBox="0 0 100 100"
       preserveAspectRatio="none"
-      className={`w-full h-full ${className ?? ''}`}
+      className={`pointer-events-none absolute inset-0 w-full h-full ${className ?? ''}`}
       aria-hidden="true"
     >
       {lines.map((l, i) => (

@@ -56,17 +56,9 @@ export class PgLeadRepository implements LeadRepository {
     if (leads.length === 0) {
       return;
     }
-    // TODO: Use Prisma transaction
-    const client = null as any;
-    try {
-      // await client.query("BEGIN");
-      for (let offset = 0; offset < leads.length; offset += BULK_UPSERT_CHUNK_SIZE) {
-        const chunk = leads.slice(offset, offset + BULK_UPSERT_CHUNK_SIZE);
-        await this.upsertMany(chunk, client);
-      }
-      // await client.query("COMMIT");
-    } finally {
-      // client.release();
+    for (let offset = 0; offset < leads.length; offset += BULK_UPSERT_CHUNK_SIZE) {
+      const chunk = leads.slice(offset, offset + BULK_UPSERT_CHUNK_SIZE);
+      await this.upsertMany(chunk);
     }
   }
 
@@ -113,11 +105,12 @@ export class PgLeadRepository implements LeadRepository {
   }
 
   async existsByCampaignAndPhone(campaignId: string, phoneE164: string): Promise<boolean> {
-    const rows = await this.prisma.$executeRawUnsafe(
-      'SELECT 1 FROM leads WHERE campaign_id = $1 AND phone = $2 LIMIT 1',
-      [campaignId, phoneE164],
+    const rows = await this.prisma.$queryRawUnsafe<{ exists: number }[]>(
+      'SELECT 1 AS exists FROM leads WHERE campaign_id = $1 AND phone = $2 LIMIT 1',
+      campaignId,
+      phoneE164,
     );
-    return ((rows as any)?.length ?? rows ?? 0) > 0;
+    return rows.length > 0;
   }
 
   async getCampaignStats(campaignId: string): Promise<{
@@ -180,7 +173,8 @@ export class PgLeadRepository implements LeadRepository {
     };
   }
 
-  private async upsertMany(leads: readonly Lead[], executor: any = this.prisma): Promise<void> {
+  private async upsertMany(leads: readonly Lead[]): Promise<void> {
+    if (leads.length === 0) return;
     const columnsPerRow = 9;
     const placeholderRows: string[] = [];
     const values: unknown[] = [];
@@ -206,7 +200,7 @@ export class PgLeadRepository implements LeadRepository {
       );
     });
 
-    await executor.query(
+    await this.prisma.$executeRawUnsafe(
       `INSERT INTO leads (id, campaign_id, name, phone, status, attempts, next_attempt_at, created_at, updated_at)
        VALUES ${placeholderRows.join(', ')}
        ON CONFLICT (id) DO UPDATE SET
@@ -214,7 +208,7 @@ export class PgLeadRepository implements LeadRepository {
          attempts = EXCLUDED.attempts,
          next_attempt_at = EXCLUDED.next_attempt_at,
          updated_at = EXCLUDED.updated_at`,
-      values,
+      ...values,
     );
   }
 }
