@@ -5,7 +5,7 @@ import { TAB_META } from '../layout/tabMeta.js';
 import { EmptyState } from '../ui/EmptyState.js';
 import { VisualState } from '../ui/VisualState.js';
 import { cn } from '../../lib/utils.js';
-import type { Workspace } from '../../types/workspace.js';
+import type { Workspace } from '../../features/workspace/workspace.api.js';
 
 const ACCESS_LEVEL_LABEL: Record<string, string> = {
   EXECUTION: 'Execução Autônoma',
@@ -72,7 +72,7 @@ export function WorkspaceReadySection({ workspace }: { workspace: Workspace }) {
                 />
               ) : (
                 <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-                  {workspace.kpis.map((kpi) => {
+                  {workspace.kpis.map((kpi: any) => {
                     const _statusMeta = KPI_STATUS_META[kpi.status];
                     return (
                       <div key={kpi.capabilityCode} className="flex flex-col">
@@ -107,7 +107,7 @@ export function WorkspaceReadySection({ workspace }: { workspace: Workspace }) {
                 Ações Rápidas
               </h2>
               <div className="flex flex-wrap gap-x-8 gap-y-4">
-                {workspace.quickActions.map((qa) => {
+                {workspace.quickActions.map((qa: any) => {
                   const { label, icon: Icon } = moduleMeta(qa.moduleKey);
                   const displayLabel = 'label' in qa ? qa.label : label;
                   return (
@@ -153,13 +153,13 @@ export function WorkspaceReadySection({ workspace }: { workspace: Workspace }) {
                 />
               ) : (
                 <div className="space-y-6">
-                  {workspace.agentGroups.map((group) => (
+                  {workspace.agentGroups.map((group: any) => (
                     <div key={group.accessLevel} className="flex flex-col gap-3">
                       <p className="text-[10px] font-bold uppercase tracking-wide text-ink-3 font-mono">
                         {ACCESS_LEVEL_LABEL[group.accessLevel]}
                       </p>
                       <div className="flex flex-col gap-2">
-                        {group.agents.map((agent) => (
+                        {group.agents.map((agent: any) => (
                           <div key={agent.code} className="flex items-center gap-2">
                             <Bot className="h-4 w-4 text-brand" />
                             <span className="text-sm text-ink font-medium">{agent.name}</span>

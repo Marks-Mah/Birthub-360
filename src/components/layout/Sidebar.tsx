@@ -7,11 +7,12 @@ import {
   Plus,
   Sparkles,
   User,
+  ArrowRight,
+  Shield,
 } from 'lucide-react';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext.js';
-import { useTheme } from '../../contexts/ThemeContext.js';
 import { hasRequiredRole, MESA_TRATAMENTO_ROLES } from '../../lib/auth/authorization.js';
 import { SoundFX } from '../../lib/soundEffects.js';
 import { NavLaunchTransition, type NavLaunch } from './NavLaunchTransition.js';
@@ -39,6 +40,7 @@ interface NavGroupItem {
   icon: React.ComponentType<{ size?: number; className?: string }>;
   primaryTab?: TabType;
   subItems?: NavSubItem[];
+  accentColor?: string;
 }
 
 interface NavSection {
@@ -80,17 +82,14 @@ export function Sidebar({
 
   const { currentUser, isAdmin, canAccessCommercialIntelligence, canAccessCopilotoIa, logout } =
     useAuth();
-  const { theme } = useTheme();
   const navigate = useNavigate();
   const reduceMotion = useReducedMotion();
   const [hoveredGroupId, setHoveredGroupId] = useState<string | null>(null);
 
   const canManageOperations =
     !!currentUser && hasRequiredRole(currentUser.role, ['ADMIN', 'GESTOR']);
-  const canAccessMesaTratamento =
-    !!currentUser && hasRequiredRole(currentUser.role, MESA_TRATAMENTO_ROLES);
 
-  // Estado dos grupos sanfona (expandidos por padrão para máxima usabilidade)
+  // Grupos sanfona com inteligência de expansão
   const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({
     dashboard: true,
     crm: true,
@@ -147,7 +146,7 @@ export function Sidebar({
     });
   };
 
-  // Seções organizadas no formato idêntico ao vídeo de referência
+  // Seções organizadas no formato enterprise refinado
   const navSections: NavSection[] = [
     {
       title: 'MAIN',
@@ -254,33 +253,27 @@ export function Sidebar({
 
   const userRoleTitle =
     currentUser?.role === 'ADMIN' ? 'ADMINISTRADOR' : currentUser?.role || 'USUÁRIO';
-  const userName = currentUser?.name || 'Auditor do Sistema';
+  const userName = currentUser?.name || 'Marcelin Mark';
 
   return (
     <>
       {launch && <NavLaunchTransition launch={launch} onFinish={finishLaunch} />}
 
       <aside
-        className={`relative z-30 flex flex-col my-2 ml-2 h-[calc(100vh-1rem)] rounded-[2.2rem] border transition-[width,background-color,border-color] duration-300 shadow-2xl backdrop-blur-2xl ${
-          theme === 'dark'
-            ? 'bg-[#181113]/95 border-white/10 text-slate-100'
-            : 'bg-[#EBD6CC]/95 border-amber-900/10 text-slate-800'
-        } ${isCollapsed ? 'w-20' : 'w-72'} ${
+        className={`relative z-30 flex flex-col h-full border-r bg-[#070A0F] border-white/[0.07] text-[#F8FAFC] transition-[width] duration-300 ${
+          isCollapsed ? 'w-20' : 'w-72'
+        } ${
           mobileOpen
-            ? 'fixed inset-y-0 left-0 z-50 my-0 ml-0 h-full rounded-none w-72 translate-x-0'
+            ? 'fixed inset-y-0 left-0 z-50 h-full w-72 translate-x-0 bg-[#070A0F]'
             : 'hidden lg:flex'
         }`}
         aria-label="Navegação Principal"
       >
-        {/* Botão flutuante proeminente de toggle circular (estilo exato do vídeo) */}
+        {/* Botão flutuante proeminente de toggle com borda de precisão */}
         <button
           type="button"
           onClick={toggleCollapse}
-          className={`absolute -right-3.5 top-7 z-50 hidden lg:flex h-7 w-7 items-center justify-center rounded-full border shadow-xl transition-all duration-200 hover:scale-110 cursor-pointer ${
-            theme === 'dark'
-              ? 'bg-[#2A1D20] border-white/15 text-slate-200 hover:bg-brand hover:text-slate-950 hover:border-brand'
-              : 'bg-[#D6B5A6] border-amber-900/15 text-slate-800 hover:bg-amber-700 hover:text-slate-950'
-          }`}
+          className="absolute -right-3.5 top-6 z-50 hidden lg:flex h-7 w-7 items-center justify-center rounded-full border border-white/[0.12] bg-[#0D121A] text-[#94A3B8] shadow-xl transition-all duration-200 hover:scale-110 hover:border-[#22D3EE] hover:text-[#22D3EE] cursor-pointer"
           title={isCollapsed ? 'Expandir menu lateral' : 'Recolher menu lateral'}
         >
           <ChevronLeft
@@ -290,51 +283,46 @@ export function Sidebar({
           />
         </button>
 
-        {/* ── Controles de Janela Mac (Red/Yellow/Green dots do vídeo) ────────── */}
-        <div className="flex items-center gap-1.5 px-5 pt-4 pb-2">
-          <span className="h-2.5 w-2.5 rounded-full bg-[#FF5F56] opacity-90 shadow-xs" />
-          <span className="h-2.5 w-2.5 rounded-full bg-[#FFBD2E] opacity-90 shadow-xs" />
-          <span className="h-2.5 w-2.5 rounded-full bg-[#27C93F] opacity-90 shadow-xs" />
-        </div>
-
-        {/* ── Perfil do Usuário / Cabeçalho ────────────────────────────────────── */}
-        <div className="flex shrink-0 items-center justify-between px-5 py-3 border-b border-black/5 dark:border-white/10">
-          <div className="flex items-center gap-3 min-w-0">
-            <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-brand/40 bg-gradient-to-tr from-brand/20 via-brand/10 to-indigo-500/20 text-brand shadow-md">
+        {/* ── Perfil do Usuário Premium com Microinteração no Hover ────────────── */}
+        <div className="shrink-0 p-4 border-b border-white/[0.07]">
+          <div className="group flex items-center gap-3.5 p-2 rounded-2xl transition-all duration-200 hover:bg-[#0D121A] cursor-pointer">
+            <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-[#121A24] border border-white/[0.1] text-[#22D3EE] shadow-md group-hover:border-[#22D3EE]/40 transition-colors">
               {currentUser?.image ? (
                 <img
                   src={currentUser.image}
                   alt={userName}
-                  className="h-full w-full rounded-full object-cover"
+                  className="h-full w-full rounded-2xl object-cover"
                 />
               ) : (
-                <User className="h-5 w-5 text-brand" />
+                <User className="h-5 w-5 text-[#22D3EE]" />
               )}
-              <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-emerald-500 ring-2 ring-[#181113]" />
+              <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-emerald-400 ring-2 ring-[#070A0F]" />
             </div>
 
             {!isCollapsed && (
               <div className="min-w-0 leading-tight">
-                <span className="block text-[9px] font-extrabold tracking-widest text-brand uppercase font-mono truncate">
+                <span className="block text-[9px] font-extrabold tracking-widest text-[#22D3EE] uppercase font-mono truncate">
                   {userRoleTitle}
                 </span>
-                <h2 className="text-xs font-bold truncate font-display">{userName}</h2>
+                <h2 className="text-xs font-bold text-[#F8FAFC] truncate font-display group-hover:text-white transition-colors">
+                  {userName}
+                </h2>
               </div>
             )}
           </div>
         </div>
 
-        {/* ── Navegação com árvore de ramos (estilo do vídeo) ───────────────── */}
-        <nav className="custom-scrollbar flex-1 overflow-y-auto px-4 py-4 space-y-6">
+        {/* ── Navegação Operating System Level ──────────────────────────────────── */}
+        <nav className="custom-scrollbar flex-1 overflow-y-auto px-3 py-4 space-y-6">
           {navSections.map((section) => (
             <div key={section.title} className="space-y-2">
               {!isCollapsed && (
-                <h3 className="px-2 text-[10px] font-extrabold uppercase tracking-widest text-slate-400/80 font-mono">
+                <h3 className="px-3 text-[10px] font-extrabold uppercase tracking-widest text-[#94A3B8]/70 font-mono">
                   {section.title}
                 </h3>
               )}
 
-              <div className="space-y-1.5">
+              <div className="space-y-1">
                 {section.groups.map((group) => {
                   const Icon = group.icon;
                   const isGroupExpanded = !!expandedGroups[group.id];
@@ -350,7 +338,7 @@ export function Sidebar({
                       onMouseEnter={() => isCollapsed && setHoveredGroupId(group.id)}
                       onMouseLeave={() => isCollapsed && setHoveredGroupId(null)}
                     >
-                      {/* Container do Item Principal do Grupo */}
+                      {/* Item Principal: Indicador Lateral ┃ + Fundo Elevado + Glow Mínimo */}
                       <button
                         type="button"
                         onClick={(e) => {
@@ -360,33 +348,42 @@ export function Sidebar({
                             selectTab(group.primaryTab, e);
                           }
                         }}
-                        className={`group flex w-full items-center justify-between rounded-2xl px-3.5 py-3 text-xs font-bold transition-all duration-200 cursor-pointer ${
+                        className={`group relative flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-xs font-bold transition-all duration-200 cursor-pointer ${
                           isActive
-                            ? 'bg-brand/10 text-brand shadow-sm border border-brand/20'
-                            : 'text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/60 hover:text-ink'
+                            ? 'bg-[#121A24] text-[#F8FAFC] border border-white/[0.08] shadow-[0_0_12px_rgba(34,211,238,0.12)]'
+                            : 'text-[#94A3B8] hover:bg-[#0D121A] hover:text-[#F8FAFC]'
                         }`}
                       >
-                        <div className="flex items-center gap-3 min-w-0">
+                        {/* Indicador lateral elevado ┃ no estado ativo */}
+                        {isActive && (
+                          <span className="absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-[#22D3EE] shadow-[0_0_8px_#22D3EE]" />
+                        )}
+
+                        <div className="flex items-center gap-3 min-w-0 pl-1">
                           <span
                             data-nav-icon
-                            className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-lg transition-colors ${
-                              isActive
-                                ? 'text-brand'
-                                : 'text-slate-500 group-hover:text-slate-800 dark:group-hover:text-slate-200'
+                            className={`flex h-6 w-6 shrink-0 items-center justify-center transition-colors ${
+                              isActive ? 'text-[#22D3EE]' : 'text-[#94A3B8] group-hover:text-[#F8FAFC]'
                             }`}
                           >
                             <Icon size={18} />
                           </span>
 
                           {!isCollapsed && (
-                            <span className="truncate font-sans tracking-tight">{group.label}</span>
+                            <span className="truncate font-sans font-bold text-xs tracking-tight">
+                              {group.label}
+                            </span>
                           )}
                         </div>
 
                         {!isCollapsed && hasSubItems && (
-                          <span className="shrink-0 text-slate-500 transition-transform duration-200 group-hover:text-ink">
+                          <span
+                            className={`shrink-0 transition-transform duration-200 ${
+                              isActive ? 'text-[#22D3EE]' : 'text-[#94A3B8] group-hover:text-[#F8FAFC]'
+                            }`}
+                          >
                             <ChevronDown
-                              size={14}
+                              size={15}
                               className={`transition-transform duration-200 ${
                                 isGroupExpanded ? 'rotate-180' : ''
                               }`}
@@ -395,25 +392,36 @@ export function Sidebar({
                         )}
                       </button>
 
-                      {/* ÁRVORE DE RAMOS (Tree Branch lines do vídeo de referência) */}
+                      {/* ÁRVORE DE HIERARQUIA DE INTELIGÊNCIA COM INDICADOR DE SELEÇÃO ◉ */}
                       {!isCollapsed && hasSubItems && isGroupExpanded && (
-                        <div className="relative ml-6 border-l-2 border-slate-500/30 dark:border-slate-700/60 pl-3.5 py-1.5 my-1 space-y-1">
+                        <div className="relative ml-5 border-l border-white/[0.1] pl-3 py-1.5 my-1 space-y-1">
                           {group.subItems?.map((subItem, idx) => {
                             const isSubActive = subItem.tab === activeTab;
                             const isLast = idx === (group.subItems?.length ?? 0) - 1;
+
                             return (
                               <button
                                 key={subItem.tab}
                                 type="button"
                                 onClick={(e) => selectTab(subItem.tab, e)}
-                                className={`group/sub relative flex w-full items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold transition-all duration-200 cursor-pointer ${
+                                className={`group/sub relative flex w-full items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-xs font-medium transition-all duration-200 cursor-pointer ${
                                   isSubActive
-                                    ? 'bg-brand/15 text-brand font-bold shadow-md border border-brand/25'
-                                    : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-ink'
+                                    ? 'bg-[#121A24] text-[#22D3EE] font-bold border border-[#22D3EE]/30 shadow-[0_0_10px_rgba(34,211,238,0.1)]'
+                                    : 'text-[#94A3B8] hover:bg-[#0D121A] hover:text-[#F8FAFC]'
                                 }`}
                               >
-                                {/* Ramo horizontal do conector da árvore */}
-                                <span className="absolute -left-3.5 top-1/2 h-px w-3 bg-slate-500/30 dark:bg-slate-700/60 group-hover/sub:bg-brand" />
+                                {/* Ramo conector da árvore */}
+                                <span className="absolute -left-3 top-1/2 h-px w-2.5 bg-white/[0.1] group-hover/sub:bg-[#22D3EE]/60" />
+
+                                {/* Indicador ◉ no item selecionado para orientação espacial perfeita */}
+                                <span
+                                  className={`h-2 w-2 rounded-full transition-all flex items-center justify-center shrink-0 ${
+                                    isSubActive
+                                      ? 'bg-[#22D3EE] ring-2 ring-[#22D3EE]/40'
+                                      : 'bg-[#94A3B8]/40 group-hover/sub:bg-[#F8FAFC]'
+                                  }`}
+                                />
+
                                 <span className="truncate">{subItem.label}</span>
                               </button>
                             );
@@ -423,8 +431,8 @@ export function Sidebar({
 
                       {/* Card Popover no Hover (Modo Recolhido / Rail Mode) */}
                       {isCollapsed && hoveredGroupId === group.id && hasSubItems && (
-                        <div className="fixed left-20 z-50 min-w-[210px] rounded-2xl border border-line bg-surface p-3.5 shadow-2xl backdrop-blur-xl animate-in fade-in slide-in-from-left-2 duration-200">
-                          <p className="mb-2 px-2 text-[10px] font-extrabold uppercase tracking-widest text-brand font-mono">
+                        <div className="fixed left-20 z-50 min-w-[210px] rounded-2xl border border-white/[0.12] bg-[#0D121A]/98 p-3.5 shadow-2xl backdrop-blur-2xl animate-in fade-in slide-in-from-left-2 duration-200">
+                          <p className="mb-2 px-2 text-[10px] font-extrabold uppercase tracking-widest text-[#22D3EE] font-mono">
                             {group.label}
                           </p>
                           <div className="space-y-1">
@@ -436,13 +444,13 @@ export function Sidebar({
                                   selectTab(sub.tab, e);
                                   setHoveredGroupId(null);
                                 }}
-                                className={`flex w-full items-center gap-2 rounded-xl px-3 py-2 text-xs font-bold transition-all ${
+                                className={`flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-bold transition-all ${
                                   sub.tab === activeTab
-                                    ? 'bg-brand/20 text-brand'
-                                    : 'text-slate-800 dark:text-slate-200 hover:bg-surface-2 hover:text-ink'
+                                    ? 'bg-[#121A24] text-[#22D3EE] border border-[#22D3EE]/30'
+                                    : 'text-[#94A3B8] hover:bg-[#121A24] hover:text-[#F8FAFC]'
                                 }`}
                               >
-                                <span className="h-1.5 w-1.5 rounded-full bg-brand" />
+                                <span className="h-1.5 w-1.5 rounded-full bg-[#22D3EE]" />
                                 <span className="truncate">{sub.label}</span>
                               </button>
                             ))}
@@ -457,31 +465,41 @@ export function Sidebar({
           ))}
         </nav>
 
-        {/* ── Card de Ação no Rodapé (Let's start! / Add New Task no vídeo) ────── */}
-        <div className="shrink-0 p-4 border-t border-black/5 dark:border-white/10 bg-black/5 dark:bg-black/20 rounded-b-[2.2rem]">
+        {/* ── Central de Comando (Card de Ação Distinto com Gradiente Exclusivo) ── */}
+        <div className="shrink-0 p-3 border-t border-white/[0.07] bg-[#070A0F]">
           {!isCollapsed ? (
-            <div className="rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.08] to-white/[0.02] p-4 shadow-inner space-y-2.5 text-center">
-              <h4 className="text-xs font-bold">Central de Comando</h4>
-              <p className="text-[11px] text-slate-400 leading-relaxed">
-                Orquestre pipelines & diagnósticos de vendas em tempo real.
+            <div className="rounded-2xl border border-white/[0.08] bg-[#0D121A] p-4 shadow-xl space-y-3">
+              <div className="flex items-center gap-2">
+                <span className="h-2 w-2 rounded-full bg-[#22D3EE] animate-pulse" />
+                <h4 className="text-xs font-extrabold text-[#F8FAFC] uppercase tracking-wider font-mono">
+                  CENTRAL DE COMANDO
+                </h4>
+              </div>
+              <p className="text-[11px] text-[#94A3B8] leading-relaxed">
+                Orquestre sua operação de Revenue em tempo real.
               </p>
               <button
                 type="button"
                 onClick={() => openTab('workspace')}
-                className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-brand to-amber-500 py-2.5 px-3 text-xs font-extrabold text-slate-950 shadow-md hover:brightness-110 active:scale-95 transition-all cursor-pointer"
+                className="w-full flex items-center justify-between rounded-xl bg-gradient-to-r from-[#22D3EE] via-[#3B82F6] to-[#8B5CF6] p-0.5 text-xs font-extrabold text-slate-950 shadow-lg hover:brightness-110 active:scale-95 transition-all cursor-pointer group"
               >
-                <Plus size={16} />
-                <span>Orquestrar Pipeline</span>
+                <div className="w-full bg-gradient-to-r from-[#22D3EE] via-[#3B82F6] to-[#8B5CF6] py-2 px-3 rounded-[10px] flex items-center justify-between text-slate-950">
+                  <div className="flex items-center gap-1.5">
+                    <Plus size={15} strokeWidth={3} />
+                    <span className="font-extrabold">Orquestrar Pipeline</span>
+                  </div>
+                  <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
+                </div>
               </button>
             </div>
           ) : (
             <button
               type="button"
               onClick={() => openTab('workspace')}
-              className="flex h-11 w-11 mx-auto items-center justify-center rounded-2xl bg-gradient-to-r from-brand to-amber-500 text-slate-950 shadow-lg hover:scale-105 active:scale-95 transition-all cursor-pointer"
+              className="flex h-11 w-11 mx-auto items-center justify-center rounded-2xl bg-gradient-to-r from-[#22D3EE] via-[#3B82F6] to-[#8B5CF6] text-slate-950 shadow-lg hover:scale-105 active:scale-95 transition-all cursor-pointer"
               title="Orquestrar Pipeline"
             >
-              <Plus size={20} />
+              <Plus size={20} strokeWidth={3} />
             </button>
           )}
         </div>
