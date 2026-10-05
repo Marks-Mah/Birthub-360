@@ -1,0 +1,11 @@
+{
+  "route": "/app/bitrix",
+  "name": "Bitrix Guide Hub",
+  "title": "Birth Hub 360º | Central de Comando Inteligente",
+  "url": "http://localhost:3024/login",
+  "public": false,
+  "timestamp": "2026-10-05T03:56:07.189Z",
+  "accessible": false,
+  "screenshot": "C:\\Github\\Birthub-360\\visual-audit-capture\\bitrix-guide-hub.png",
+  "status": "success"
+}

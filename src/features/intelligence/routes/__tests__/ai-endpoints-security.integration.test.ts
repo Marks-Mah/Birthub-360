@@ -97,9 +97,8 @@ describe('Testes de Segurança - Endpoints de IA (TD-001)', () => {
       expect(logAiUsageMock).toHaveBeenCalledWith(
         expect.objectContaining({
           promptId: 'search_vector_query',
-          organizationId: 'org-tenant-a',
-          userId: 'user-sdr',
-          providerUsed: 'VectorSearch',
+          model: 'VectorSearch',
+          usage: { promptTokens: 0, completionTokens: 0, totalTokens: 0 },
         }),
       );
     });
@@ -174,9 +173,8 @@ describe('Testes de Segurança - Endpoints de IA (TD-001)', () => {
       expect(logAiUsageMock).toHaveBeenCalledWith(
         expect.objectContaining({
           promptId: 'tts_generate',
-          organizationId: 'org-closer',
-          userId: 'user-closer',
-          providerUsed: 'Voicebox',
+          model: 'Voicebox',
+          usage: { promptTokens: 0, completionTokens: 0, totalTokens: 0 },
         }),
       );
     });

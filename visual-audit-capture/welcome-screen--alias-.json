@@ -1,0 +1,11 @@
+{
+  "route": "/welcome",
+  "name": "Welcome Screen (alias)",
+  "title": "Birth Hub 360º | Central de Comando Inteligente",
+  "url": "http://localhost:3024/welcome",
+  "public": true,
+  "timestamp": "2026-10-05T03:54:43.281Z",
+  "accessible": false,
+  "screenshot": "C:\\Github\\Birthub-360\\visual-audit-capture\\welcome-screen--alias-.png",
+  "status": "success"
+}

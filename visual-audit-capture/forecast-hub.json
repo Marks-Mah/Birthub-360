@@ -1,0 +1,11 @@
+{
+  "route": "/app/forecast",
+  "name": "Forecast Hub",
+  "title": "Birth Hub 360º | Central de Comando Inteligente",
+  "url": "http://localhost:3024/login",
+  "public": false,
+  "timestamp": "2026-10-05T03:57:11.721Z",
+  "accessible": false,
+  "screenshot": "C:\\Github\\Birthub-360\\visual-audit-capture\\forecast-hub.png",
+  "status": "success"
+}

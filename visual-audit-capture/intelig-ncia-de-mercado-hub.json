@@ -1,0 +1,11 @@
+{
+  "route": "/app/market-intelligence/hub",
+  "name": "Inteligência de Mercado Hub",
+  "title": "Birth Hub 360º | Central de Comando Inteligente",
+  "url": "http://localhost:3024/login",
+  "public": false,
+  "timestamp": "2026-10-05T03:56:29.286Z",
+  "accessible": false,
+  "screenshot": "C:\\Github\\Birthub-360\\visual-audit-capture\\intelig-ncia-de-mercado-hub.png",
+  "status": "success"
+}

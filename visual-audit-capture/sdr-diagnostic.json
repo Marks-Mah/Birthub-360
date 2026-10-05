@@ -1,0 +1,11 @@
+{
+  "route": "/app/sdr-diagnostic",
+  "name": "SDR Diagnostic",
+  "title": "Birth Hub 360º | Central de Comando Inteligente",
+  "url": "http://localhost:3024/login",
+  "public": false,
+  "timestamp": "2026-10-05T03:56:42.719Z",
+  "accessible": false,
+  "screenshot": "C:\\Github\\Birthub-360\\visual-audit-capture\\sdr-diagnostic.png",
+  "status": "success"
+}

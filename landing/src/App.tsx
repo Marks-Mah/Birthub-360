@@ -7,10 +7,8 @@ import {
   LineChart,
   Moon,
   Play,
-  ShieldCheck,
   Sun,
   Workflow,
-  Zap,
 } from 'lucide-react';
 import { type ReactNode, useEffect, useId, useRef, useState } from 'react';
 import { BRAND, LOGIN_URL } from './brand.js';
