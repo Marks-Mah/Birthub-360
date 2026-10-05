@@ -20,7 +20,7 @@ export default defineConfig({
   // rodar em série evita duas rotinas de signup/CRUD pisando uma na outra na mesma tabela.
   fullyParallel: false,
   workers: 1,
-  retries: process.env.CI ? 2 : 0,
+  retries: process.env.CI ? 1 : 0,
   // Default do Playwright (30s) não sobra folga pro signUp() de helpers.ts (que já usa até 30s
   // pra navegar pro app sob carga do runner  // (ver tests/e2e/helpers.ts). Aumentado de 30s para 45s (e agora 60s) para absorver o load total
   // sem esconder um hang de verdade - signUp() estoura o timeout dele primeiro nesse caso.
@@ -43,9 +43,12 @@ export default defineConfig({
       name: 'chromium',
       use: {
         ...devices['Desktop Chrome'],
-        ...(chromiumExecutablePath
-          ? { launchOptions: { executablePath: chromiumExecutablePath } }
-          : {}),
+        launchOptions: {
+          args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
+          ...(chromiumExecutablePath
+            ? { executablePath: chromiumExecutablePath }
+            : {}),
+        },
       },
     },
   ],
