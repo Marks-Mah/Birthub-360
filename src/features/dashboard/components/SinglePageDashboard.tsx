@@ -131,84 +131,86 @@ export function SinglePageDashboard() {
             variants={metricReveal}
             className="bg-surface p-4 rounded-xl border border-line shadow-card hover:shadow-card-hover transition-shadow"
           >
+<<<<<<< Updated upstream
             <div className="flex items-center justify-between mb-2">
               <h3 className="text-[10px] font-bold uppercase tracking-[0.15em] text-ink-2 flex items-center gap-2 font-[family-name:var(--font-brand-sans)]">
                 <Target className="w-3.5 h-3.5 text-brand" /> Pipeline
               </h3>
             </div>
             <p className="text-2xl font-bold text-ink font-[family-name:var(--font-brand-sans)]">
-              {pipelineValue > 0
-                ? new Intl.NumberFormat('pt-BR', {
-                    style: 'currency',
-                    currency: 'BRL',
-                    maximumFractionDigits: 0,
-                  }).format(pipelineValue)
-                : 'R$ 0'}
-            </p>
-            <p className="text-xs text-ink-2 mt-1 font-[family-name:var(--font-brand-sans)]">
-              {totalLeads} oportunidades
-            </p>
-          </motion.div>
+        {pipelineValue > 0
+          ? new Intl.NumberFormat('pt-BR', {
+            style: 'currency',
+            currency: 'BRL',
+            maximumFractionDigits: 0,
+          }).format(pipelineValue)
+          : 'R$ 0'}
+      </p>
+      <p className="text-xs text-ink-2 mt-1 font-[family-name:var(--font-brand-sans)]">
+        {totalLeads} oportunidades
+      </p>
+    </motion.div >
 
-          {/* Win Rate */}
-          <motion.div
-            variants={metricReveal}
-            className="bg-surface p-4 rounded-xl border border-line shadow-card hover:shadow-card-hover transition-shadow"
-          >
+    {/* Win Rate */ }
+    < motion.div
+  variants = { metricReveal }
+  className = "bg-surface p-4 rounded-xl border border-line shadow-card hover:shadow-card-hover transition-shadow"
+    >
+<<<<<<< Updated upstream
             <div className="flex items-center justify-between mb-2">
               <h3 className="text-[10px] font-bold uppercase tracking-[0.15em] text-ink-2 flex items-center gap-2 font-[family-name:var(--font-brand-sans)]">
                 <TrendingUp className="w-3.5 h-3.5 text-ok" /> Win Rate
               </h3>
             </div>
             <p className="text-2xl font-bold text-ink font-[family-name:var(--font-brand-sans)]">
-              {winRate}%
-            </p>
-            <p className="text-xs text-ink-2 mt-1 font-[family-name:var(--font-brand-sans)]">
-              {closedThisMonth} fechados
-            </p>
-          </motion.div>
+        {winRate}%
+      </p>
+      <p className="text-xs text-ink-2 mt-1 font-[family-name:var(--font-brand-sans)]">
+        {closedThisMonth} fechados
+      </p>
+    </motion.div >
 
-          {/* Velocity */}
-          <motion.div
-            variants={metricReveal}
-            className="bg-surface p-4 rounded-xl border border-line shadow-card hover:shadow-card-hover transition-shadow"
-          >
+    {/* Velocity */ }
+    < motion.div
+  variants = { metricReveal }
+  className = "bg-surface p-4 rounded-xl border border-line shadow-card hover:shadow-card-hover transition-shadow"
+    >
             <div className="flex items-center justify-between mb-2">
               <h3 className="text-[10px] font-bold uppercase tracking-[0.15em] text-ink-2 flex items-center gap-2 font-[family-name:var(--font-brand-sans)]">
                 <Activity className="w-3.5 h-3.5 text-brand" /> Atividades
               </h3>
             </div>
             <p className="text-2xl font-bold text-ink font-[family-name:var(--font-brand-sans)]">
-              {pendingActivities}
-            </p>
-            <p className="text-xs text-ink-2 mt-1 font-[family-name:var(--font-brand-sans)]">
-              pendentes
-            </p>
-          </motion.div>
+        {pendingActivities}
+      </p>
+      <p className="text-xs text-ink-2 mt-1 font-[family-name:var(--font-brand-sans)]">
+        pendentes
+      </p>
+    </motion.div >
 
-          {/* Market */}
-          <motion.div
-            variants={metricReveal}
-            className="bg-surface p-4 rounded-xl border border-line shadow-card hover:shadow-card-hover transition-shadow"
-          >
+    {/* Market */ }
+    < motion.div
+  variants = { metricReveal }
+  className = "bg-surface p-4 rounded-xl border border-line shadow-card hover:shadow-card-hover transition-shadow"
+    >
             <div className="flex items-center justify-between mb-2">
               <h3 className="text-[10px] font-bold uppercase tracking-[0.15em] text-ink-2 flex items-center gap-2 font-[family-name:var(--font-brand-sans)]">
                 <Search className="w-3.5 h-3.5 text-iris" /> Empresas
               </h3>
             </div>
             <p className="text-2xl font-bold text-ink font-[family-name:var(--font-brand-sans)]">
-              {totalCompanies}
-            </p>
-            <p className="text-xs text-ink-2 mt-1 font-[family-name:var(--font-brand-sans)]">
-              contas ativas
-            </p>
-          </motion.div>
-        </motion.div>
+        {totalCompanies}
+      </p>
+      <p className="text-xs text-ink-2 mt-1 font-[family-name:var(--font-brand-sans)]">
+        contas ativas
+      </p>
+    </motion.div >
+        </motion.div >
 
-        {/* AI LAYER & GAMIFICATION */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 pt-6 border-t border-line/30 flex-1">
-          {/* AI Orchestration */}
-          <div className="space-y-6">
+    {/* AI LAYER & GAMIFICATION */ }
+    < div className = "grid grid-cols-1 lg:grid-cols-2 gap-8 pt-6 border-t border-line/30 flex-1" >
+      {/* AI Orchestration */ }
+      < div className = "space-y-6" >
             <motion.div
               className="flex items-center gap-3 mb-6"
               variants={fadeInUp}
@@ -266,19 +268,20 @@ export function SinglePageDashboard() {
               <span>Acessar Copiloto IA</span>
               <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
             </button>
-          </div>
+          </div >
 
-          {/* Gamification */}
-          <div className="bg-surface-interactive/30 p-8 rounded-xl border border-line/40">
-            <GamificationWidget
-              initialXp={Math.max(350, totalLeads * 50 + closedThisMonth * 200)}
-              level={Math.max(1, Math.floor((totalLeads * 50 + closedThisMonth * 200) / 1000) + 1)}
-              streakDays={closedThisMonth > 0 ? 5 : 2}
-              show3DCore={false}
-            />
-          </div>
-        </div>
-      </div>
-    </div>
+<<<<<<< Updated upstream
+    {/* Gamification */ }
+    < div className = "bg-surface-interactive/30 p-8 rounded-xl border border-line/40" >
+      <GamificationWidget
+        initialXp={Math.max(350, totalLeads * 50 + closedThisMonth * 200)}
+        level={Math.max(1, Math.floor((totalLeads * 50 + closedThisMonth * 200) / 1000) + 1)}
+        streakDays={closedThisMonth > 0 ? 5 : 2}
+        show3DCore={false}
+      />
+          </div >
+        </div >
+      </div >
+    </div >
   );
 }

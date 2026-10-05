@@ -1,3 +1,5 @@
+import { api } from '../../lib/api.js';
+
 export interface PlaybookItem {
   id: string;
   title: string;
@@ -57,18 +59,28 @@ export interface SalesOrchestrationOverview {
 
 export const orchestrationApi = {
   getOverview: async (): Promise<SalesOrchestrationOverview> => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({
-          kpis: {
-            playbooksAtivos: 6,
-            aderenciaPlaybook: 88.4,
-            speedToLeadMin: 3.8,
-            cadenciasAtivas: 14,
-          },
-          playbooks: [
-            {
-              id: 'pb-1',
+    try {
+      const res = await api.get<{ success: boolean; data: SalesOrchestrationOverview }>('/api/sales-orchestration/overview');
+      if (res?.data) {
+        return res.data;
+      }
+    } catch (err) {
+      console.warn('Backend unavailable, using fallback data for sales orchestration');
+    }
+    return fallbackOverview;
+  },
+};
+
+const fallbackOverview: SalesOrchestrationOverview = {
+  kpis: {
+    playbooksAtivos: 6,
+    aderenciaPlaybook: 88.4,
+    speedToLeadMin: 3.8,
+    cadenciasAtivas: 14,
+  },
+  playbooks: [
+    {
+      id: 'pb-1',
               title: 'Playbook Outbound Enterprise (ICP Corporativo)',
               category: 'Outbound',
               targetRole: 'BDR',
@@ -249,8 +261,4 @@ export const orchestrationApi = {
               variaveis: ['nome_contato', 'dores_validadas', 'horas_economizadas'],
             },
           ],
-        });
-      }, 300);
-    });
-  },
-};
+        };
