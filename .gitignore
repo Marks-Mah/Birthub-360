@@ -103,3 +103,11 @@ nul
 
 # Backups temporarios gerados pelos gates locais
 .gate-backups/
+
+# Artefatos de auditoria visual e manuais gerados
+visual-audit-capture/
+visual-audit-authenticated/
+visual-manual-output/
+BirthHub360_Manual_Completo.html
+BirthHub360_Manual_Visual_da_Plataforma.html
+

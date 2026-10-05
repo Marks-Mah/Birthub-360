@@ -19,7 +19,11 @@ export const openrouterProvider: ProviderAdapter = {
       requestChatCompletion(
         targetUrl,
         apiKey,
-        (params.resolvedModel === 'qwen-coder' ? 'qwen/qwen-2.5-coder-32b-instruct' : params.resolvedModel === 'deepseek-coder' ? 'deepseek/deepseek-coder' : params.resolvedModel),
+        params.resolvedModel === 'qwen-coder'
+          ? 'qwen/qwen-2.5-coder-32b-instruct'
+          : params.resolvedModel === 'deepseek-coder'
+            ? 'deepseek/deepseek-coder'
+            : params.resolvedModel,
         params.messages,
         params.temperature,
         params.agentContext,

@@ -13,18 +13,20 @@ router.get('/agents', async (req: Request, res: Response, next: NextFunction): P
       by: ['agentRole'],
       where: { organizationId, agentRole: { not: null } },
       _sum: { tokens: true },
-      _max: { createdAt: true }
+      _max: { createdAt: true },
     });
 
-    const agents = logs.map(log => {
-      const isWorking = log._max.createdAt ? (Date.now() - log._max.createdAt.getTime() < 5 * 60 * 1000) : false;
+    const agents = logs.map((log) => {
+      const isWorking = log._max.createdAt
+        ? Date.now() - log._max.createdAt.getTime() < 5 * 60 * 1000
+        : false;
       return {
         id: log.agentRole || 'unknown',
         name: log.agentRole,
         role: `Clula ${log.agentRole}`,
         status: isWorking ? 'WORKING' : 'IDLE',
         tokensUsed: log._sum.tokens ?? 0,
-        lastActive: log._max.createdAt ? log._max.createdAt.toISOString() : 'N/A'
+        lastActive: log._max.createdAt ? log._max.createdAt.toISOString() : 'N/A',
       };
     });
 
@@ -40,15 +42,15 @@ router.get('/logs', async (req: Request, res: Response, next: NextFunction): Pro
     const recentLogs = await prisma.aILog.findMany({
       where: { organizationId, agentRole: { not: null } },
       orderBy: { createdAt: 'desc' },
-      take: 50
+      take: 50,
     });
 
-    const logs = recentLogs.map(log => ({
+    const logs = recentLogs.map((log) => ({
       id: log.id,
       timestamp: log.createdAt.toLocaleTimeString('pt-BR'),
       agent: log.agentRole,
       action: `Inferncia com ${log.model} (${log.tokens} tokens, ${log.latencyMs}ms)`,
-      level: 'info'
+      level: 'info',
     }));
 
     res.json({ success: true, data: logs });

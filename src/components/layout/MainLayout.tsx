@@ -30,7 +30,6 @@ export function MainLayout({ children, activeTab }: MainLayoutProps) {
         isOpen={mobileNavOpen}
         onClose={closeMobileNav}
         activeTab={activeTab as TabType}
-
       />
 
       {/* Conteúdo Principal */}
