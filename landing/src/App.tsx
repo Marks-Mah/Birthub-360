@@ -17,6 +17,45 @@ import { type ReactNode, useEffect, useId, useRef, useState } from 'react';
 import { BRAND, LOGIN_URL } from './brand.js';
 
 /* -------------------------------------------------------------------------- */
+/* Logo Component (Official Vector Logo)                                       */
+/* -------------------------------------------------------------------------- */
+
+function Logo() {
+  return (
+    <svg className="w-9 h-9" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="logo-g0" x1="127" y1="46" x2="199" y2="87">
+          <stop offset="0" stopColor="#D4AF37" />
+          <stop offset="1" stopColor="#C53678" />
+        </linearGradient>
+        <linearGradient id="logo-g1" x1="198" y1="86" x2="198" y2="169">
+          <stop offset="0" stopColor="#C53678" />
+          <stop offset="1" stopColor="#1677FF" />
+        </linearGradient>
+        <linearGradient id="logo-g2" x1="199" y1="168" x2="127" y2="210">
+          <stop offset="0" stopColor="#1677FF" />
+          <stop offset="1" stopColor="#0F9D64" />
+        </linearGradient>
+        <linearGradient id="logo-g3" x1="128" y1="210" x2="56" y2="168">
+          <stop offset="0" stopColor="#0F9D64" />
+          <stop offset="1" stopColor="#D4AF37" />
+        </linearGradient>
+      </defs>
+      <circle cx="128" cy="128" r="118" fill="none" stroke="#D4AF37" strokeWidth="8" opacity="0.4" strokeDasharray="2 10" />
+      <g fill="none" strokeWidth="14">
+        <path stroke="url(#logo-g0)" d="M127.14 46.00 A82.0 82.0 0 0 1 199.44 87.75" />
+        <path stroke="url(#logo-g1)" d="M198.58 86.26 A82.0 82.0 0 0 1 198.58 169.74" />
+        <path stroke="url(#logo-g2)" d="M199.44 168.25 A82.0 82.0 0 0 1 127.14 210.00" />
+        <path stroke="url(#logo-g3)" d="M128.86 210.00 A82.0 82.0 0 0 1 56.56 168.25" />
+      </g>
+      <circle cx="128" cy="128" r="74" fill="#0B132B" />
+      <circle cx="128" cy="128" r="62" fill="none" stroke="#D4AF37" strokeWidth="3" />
+      <path fill="#F8FAFC" transform="matrix(0.074 0 0 -0.074 104 154)" d="M450.4 707Q574.2 707 627.9 670.8Q681.6 634.6 681.6 573.4Q681.6 520.8 646.8 476.7Q612 432.6 547 404.5Q482 376.4 391 370.8Q511 369.4 573.8 326.1Q636.6 282.8 636.6 218.2Q636.6 165.8 612.2 125.1Q587.8 84.4 543.2 56.4Q498.6 28.4 436 14.2Q373.4 0 297 0Q267.8 0 227.6 1.5Q187.4 3 121 3Q94.8 3 63.8 2.5Q32.8 2 3.7 1.5Q-25.4 1 -45 0L-41 20Q-7 22 12 28Q31 34 42 52Q53 70 62 106L194 602Q201.8 632.8 202.4 651.3Q203 669.8 188.5 678.5Q174 687.2 135 688L140 708Q159.6 707 188.2 706.5Q216.8 706 247.7 705.5Q278.6 705 303 705Q353.2 705 385.7 706Q418.2 707 450.4 707ZM266 359 270 376H339.2Q393.8 376 430.6 407.9Q467.4 439.8 486.2 490.8Q505 541.8 505 596.8Q505 636.6 491.5 662.3Q478 688 438.6 688Q413 688 401 674.1Q389 660.2 378 617L243 106Q238.2 86.4 235.7 67.1Q233.2 47.8 242.2 35.4Q251.2 23 278.8 23Q331.6 23 368.9 53.4Q406.2 83.8 426.6 132.9Q447 182 447 237.2Q447 270.4 437.2 297.9Q427.4 325.4 404.3 342.2Q381.2 359 341.6 359Z" />
+    </svg>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
 /* Motion tokens (espelhados da plataforma para manter harmonia)              */
 /* -------------------------------------------------------------------------- */
 
@@ -188,11 +227,10 @@ function OrbitHub() {
                 key={node.id}
                 type="button"
                 onClick={() => setActiveNode(node.id)}
-                className={`group relative flex flex-col items-start rounded-xl border p-4 text-left transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand ${
-                  isActive
+                className={`group relative flex flex-col items-start rounded-xl border p-4 text-left transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand ${isActive
                     ? 'border-brand/60 bg-surface-2 shadow-sm'
                     : 'border-line bg-surface hover:border-line-strong hover:bg-surface-2/60'
-                }`}
+                  }`}
               >
                 <div className="flex w-full items-center justify-between">
                   <span
@@ -240,45 +278,6 @@ function OrbitHub() {
         </div>
       </div>
     </div>
-  );
-}
-
-/* -------------------------------------------------------------------------- */
-/* Logo Component (Official Vector Logo)                                       */
-/* -------------------------------------------------------------------------- */
-
-function Logo() {
-  return (
-    <svg className="w-9 h-9" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="logo-g0" x1="127" y1="46" x2="199" y2="87">
-          <stop offset="0" stopColor="#D4AF37"/>
-          <stop offset="1" stopColor="#C53678"/>
-        </linearGradient>
-        <linearGradient id="logo-g1" x1="198" y1="86" x2="198" y2="169">
-          <stop offset="0" stopColor="#C53678"/>
-          <stop offset="1" stopColor="#1677FF"/>
-        </linearGradient>
-        <linearGradient id="logo-g2" x1="199" y1="168" x2="127" y2="210">
-          <stop offset="0" stopColor="#1677FF"/>
-          <stop offset="1" stopColor="#0F9D64"/>
-        </linearGradient>
-        <linearGradient id="logo-g3" x1="128" y1="210" x2="56" y2="168">
-          <stop offset="0" stopColor="#0F9D64"/>
-          <stop offset="1" stopColor="#D4AF37"/>
-        </linearGradient>
-      </defs>
-      <circle cx="128" cy="128" r="118" fill="none" stroke="#D4AF37" strokeWidth="8" opacity="0.4" strokeDasharray="2 10" />
-      <g fill="none" strokeWidth="14">
-        <path stroke="url(#logo-g0)" d="M127.14 46.00 A82.0 82.0 0 0 1 199.44 87.75"/>
-        <path stroke="url(#logo-g1)" d="M198.58 86.26 A82.0 82.0 0 0 1 198.58 169.74"/>
-        <path stroke="url(#logo-g2)" d="M199.44 168.25 A82.0 82.0 0 0 1 127.14 210.00"/>
-        <path stroke="url(#logo-g3)" d="M128.86 210.00 A82.0 82.0 0 0 1 56.56 168.25"/>
-      </g>
-      <circle cx="128" cy="128" r="74" fill="#0B132B"/>
-      <circle cx="128" cy="128" r="62" fill="none" stroke="#D4AF37" strokeWidth="3"/>
-      <path fill="#F8FAFC" transform="matrix(0.074 0 0 -0.074 104 154)" d="M450.4 707Q574.2 707 627.9 670.8Q681.6 634.6 681.6 573.4Q681.6 520.8 646.8 476.7Q612 432.6 547 404.5Q482 376.4 391 370.8Q511 369.4 573.8 326.1Q636.6 282.8 636.6 218.2Q636.6 165.8 612.2 125.1Q587.8 84.4 543.2 56.4Q498.6 28.4 436 14.2Q373.4 0 297 0Q267.8 0 227.6 1.5Q187.4 3 121 3Q94.8 3 63.8 2.5Q32.8 2 3.7 1.5Q-25.4 1 -45 0L-41 20Q-7 22 12 28Q31 34 42 52Q53 70 62 106L194 602Q201.8 632.8 202.4 651.3Q203 669.8 188.5 678.5Q174 687.2 135 688L140 708Q159.6 707 188.2 706.5Q216.8 706 247.7 705.5Q278.6 705 303 705Q353.2 705 385.7 706Q418.2 707 450.4 707ZM266 359 270 376H339.2Q393.8 376 430.6 407.9Q467.4 439.8 486.2 490.8Q505 541.8 505 596.8Q505 636.6 491.5 662.3Q478 688 438.6 688Q413 688 401 674.1Q389 660.2 378 617L243 106Q238.2 86.4 235.7 67.1Q233.2 47.8 242.2 35.4Q251.2 23 278.8 23Q331.6 23 368.9 53.4Q406.2 83.8 426.6 132.9Q447 182 447 237.2Q447 270.4 437.2 297.9Q427.4 325.4 404.3 342.2Q381.2 359 341.6 359Z"/>
-    </svg>
   );
 }
 
@@ -975,11 +974,10 @@ function CommandCenterSection() {
                 key={tab.id}
                 type="button"
                 onClick={() => setActiveTab(tab.id)}
-                className={`px-4 py-2 rounded-lg font-mono text-xs font-semibold transition-all ${
-                  activeTab === tab.id
+                className={`px-4 py-2 rounded-lg font-mono text-xs font-semibold transition-all ${activeTab === tab.id
                     ? 'bg-brand text-on-brand'
                     : 'bg-surface text-ink-2 hover:bg-surface-2'
-                }`}
+                  }`}
               >
                 {tab.label}
               </button>

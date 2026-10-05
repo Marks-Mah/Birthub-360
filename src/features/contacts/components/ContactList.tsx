@@ -12,6 +12,7 @@ import {
   Sparkles,
   Trash2,
   User,
+  Users,
   WifiOff,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -180,8 +181,11 @@ export function ContactList() {
         {/* Header */}
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-black text-ink tracking-tight">👤 Contatos & Decisores</h1>
-            <p className="text-xs text-ink-2 mt-0.5 font-medium">
+            <h1 className="text-2xl font-black text-ink tracking-tight font-[family-name:var(--font-brand-display)] flex items-center gap-3">
+              <Users className="w-6 h-6 text-brand" />
+              Contatos & Decisores
+            </h1>
+            <p className="text-xs text-ink-2 mt-0.5 font-medium font-[family-name:var(--font-brand-sans)]">
               {loading
                 ? 'Carregando...'
                 : `${meta?.total ?? contacts.length} contato${(meta?.total ?? contacts.length) !== 1 ? 's' : ''} no banco de dados`}

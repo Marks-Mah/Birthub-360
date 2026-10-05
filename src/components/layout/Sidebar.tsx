@@ -234,8 +234,8 @@ export function Sidebar({
   const roleOrder = GROUP_ORDER_BY_ROLE[currentUser?.role ?? ''];
   const navGroups = roleOrder
     ? [...navGroupsByJourney].sort(
-        (a, b) => roleOrder.indexOf(a.title) - roleOrder.indexOf(b.title),
-      )
+      (a, b) => roleOrder.indexOf(a.title) - roleOrder.indexOf(b.title),
+    )
     : navGroupsByJourney;
 
   const renderNavItem = (tab: TabType) => {
@@ -256,11 +256,10 @@ export function Sidebar({
         aria-label={meta.label}
         aria-current={isActive ? 'page' : undefined}
         style={accentStyle}
-        className={`group relative flex w-full items-center gap-[10px] rounded-lg px-3 py-2.5 text-left text-[13px] transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-1 focus-visible:ring-offset-midnight cursor-pointer ${
-          isActive
-            ? 'bg-brand/10 font-semibold text-brand'
-            : 'font-medium text-white/45 hover:bg-white/6 hover:text-white/70'
-        } ${isCollapsed ? 'lg:px-0 lg:justify-center' : ''}`}
+        className={`group relative flex w-full items-center gap-[10px] rounded-lg px-3 py-2.5 text-left text-[13px] transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-1 focus-visible:ring-offset-surface cursor-pointer ${isActive
+          ? 'bg-brand/10 font-semibold text-brand'
+          : 'font-medium text-ink-2 hover:bg-surface-2 hover:text-ink'
+          } ${isCollapsed ? 'lg:px-0 lg:justify-center' : ''}`}
       >
         {/* Gold left-accent bar for active state — absolute, flush left edge of the item */}
         {isActive && (
@@ -269,21 +268,19 @@ export function Sidebar({
             className="absolute inset-y-1.5 left-0 w-0.5 rounded-r-sm bg-brand"
           />
         )}
-        {/* Icon — 16px, simplified colors: gold when active, white/45 when inactive */}
+        {/* Icon — 16px, simplified colors: gold when active, ink-2 when inactive */}
         <span
           data-nav-icon
           aria-hidden="true"
-          className={`grid h-4 w-4 shrink-0 place-items-center ${
-            isActive ? 'text-brand' : 'text-white/45 group-hover:text-white/70'
-          }`}
+          className={`grid h-4 w-4 shrink-0 place-items-center ${isActive ? 'text-brand' : 'text-ink-2 group-hover:text-ink'
+            }`}
         >
           <Icon size={16} strokeWidth={1.75} />
         </span>
         {/* Label — hidden in collapsed mode on desktop */}
         <span
-          className={`truncate font-[family-name:var(--font-brand-sans)] ${
-            isCollapsed ? 'lg:hidden' : ''
-          }`}
+          className={`truncate font-[family-name:var(--font-brand-sans)] ${isCollapsed ? 'lg:hidden' : ''
+            }`}
         >
           {meta.label}
         </span>
@@ -293,16 +290,14 @@ export function Sidebar({
 
   return (
     <aside
-      className={`fixed inset-y-0 left-0 z-40 flex h-full flex-col bg-midnight border-r border-white/8 transition-[width,transform] duration-300 lg:static lg:translate-x-0 ${
-        isCollapsed ? 'lg:w-16' : 'lg:w-[220px]'
-      } ${mobileOpen ? 'translate-x-0' : '-translate-x-full'}`}
+      className={`fixed inset-y-0 left-0 z-40 flex h-full flex-col bg-surface border-r border-line transition-[width,transform] duration-300 lg:static lg:translate-x-0 ${isCollapsed ? 'lg:w-16' : 'lg:w-[220px]'
+        } ${mobileOpen ? 'translate-x-0' : '-translate-x-full'}`}
       aria-label="Navegação principal - Intelligent Business Command Center"
     >
       {/* ── Logo / wordmark area ────────────────────────────────────────────── */}
       <div
-        className={`flex h-14 shrink-0 items-center border-b border-white/8 px-4 ${
-          isCollapsed ? 'lg:justify-center lg:px-0' : 'justify-between'
-        }`}
+        className={`flex h-14 shrink-0 items-center border-b border-line px-4 ${isCollapsed ? 'lg:justify-center lg:px-0' : 'justify-between'
+          }`}
       >
         {isCollapsed ? (
           /* Collapsed: emblem only, click to expand */
@@ -349,9 +344,8 @@ export function Sidebar({
           <section key={group.title} className="space-y-0.5" aria-label={group.title}>
             {/* Group label — hidden when collapsed */}
             <div
-              className={`px-3 pb-1 ${
-                groupIndex > 0 ? 'mt-5' : 'mt-1'
-              } ${isCollapsed ? 'lg:hidden' : ''}`}
+              className={`px-3 pb-1 ${groupIndex > 0 ? 'mt-5' : 'mt-1'
+                } ${isCollapsed ? 'lg:hidden' : ''}`}
             >
               <p className="text-[10px] font-normal uppercase tracking-[0.08em] text-white/30 font-[family-name:var(--font-brand-sans)]">
                 {group.title}
@@ -385,9 +379,8 @@ export function Sidebar({
         {/* User identity pill */}
         {currentUser && (
           <div
-            className={`flex items-center gap-2.5 px-2 py-2 ${
-              isCollapsed ? 'lg:justify-center lg:px-0' : ''
-            }`}
+            className={`flex items-center gap-2.5 px-2 py-2 ${isCollapsed ? 'lg:justify-center lg:px-0' : ''
+              }`}
             title={
               isCollapsed
                 ? `${currentUser.name} (${currentUser.roleTitle || currentUser.role})`
@@ -400,10 +393,10 @@ export function Sidebar({
             </div>
             {/* Name + role — hidden when collapsed */}
             <div className={`min-w-0 flex-1 ${isCollapsed ? 'lg:hidden' : ''}`}>
-              <p className="truncate text-[12px] font-semibold leading-tight text-white/80 font-[family-name:var(--font-brand-sans)]">
+              <p className="truncate text-[12px] font-semibold leading-tight text-ink font-[family-name:var(--font-brand-sans)]">
                 {currentUser.name}
               </p>
-              <p className="truncate text-[10px] font-normal leading-tight text-white/40 font-[family-name:var(--font-brand-sans)]">
+              <p className="truncate text-[10px] font-normal leading-tight text-ink-2 font-[family-name:var(--font-brand-sans)]">
                 {currentUser.roleTitle || currentUser.role}
               </p>
             </div>
@@ -414,9 +407,8 @@ export function Sidebar({
         <button
           type="button"
           onClick={logout}
-          className={`group flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2 py-2 text-left text-[13px] font-medium text-red-400/60 transition-colors duration-150 hover:text-red-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-1 focus-visible:ring-offset-midnight ${
-            isCollapsed ? 'lg:justify-center lg:px-0' : ''
-          }`}
+          className={`group flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2 py-2 text-left text-[13px] font-medium text-red-400/60 transition-colors duration-150 hover:text-red-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-1 focus-visible:ring-offset-midnight ${isCollapsed ? 'lg:justify-center lg:px-0' : ''
+            }`}
           title="Encerrar sessão e sair da conta"
           aria-label="Encerrar sessão e sair da conta"
         >
