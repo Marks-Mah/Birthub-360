@@ -32,7 +32,7 @@ jobs:
           fetch-depth: 0
 
       - name: Gitleaks (varredura de segredo versionado)
-        uses: gitleaks/gitleaks-action@ff98106e4c7b2bc287b24eaf42907196329070c7 # v2
+        uses: gitleaks/gitleaks-action@289f64bfcc4a8dbff8bbf7b9a5e8df0b5d989f61 # v2.3.4
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITLEAKS_CONFIG: .gitleaks.toml

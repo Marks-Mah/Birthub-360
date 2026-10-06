@@ -47,7 +47,7 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
 
       - name: Rodar Trivy (fs scan, HIGH/CRITICAL, bloqueante)
-        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        uses: aquasecurity/trivy-action@18f2510ee396b240042f153a749eb3683cd7353f # v0.28.0
         with:
           scan-type: fs
           scan-ref: .
@@ -65,7 +65,7 @@ jobs:
 
       - name: Upload SARIF para a aba Security
         if: always()
-        uses: github/codeql-action/upload-sarif@42947a340483f03ba47bb1a039b2c519aab3df85 # v3.37.8
+        uses: github/codeql-action/upload-sarif@f09c1c0a94de965c15400f5634aa42fac8fb8f88 # v3.27.5
         with:
           sarif_file: trivy-fs-results.sarif
           category: trivy-fs
