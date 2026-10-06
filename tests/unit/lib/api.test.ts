@@ -18,7 +18,7 @@ describe('API Client', () => {
       }),
     );
 
-    const result = await api.get('*/api/test');
+    const result = await api.get('/api/test');
     expect(seenMethod).toBe('GET');
     expect(result).toEqual(mockData);
   });
@@ -35,7 +35,7 @@ describe('API Client', () => {
       }),
     );
 
-    const result = await api.post('*/api/test', { name: 'Test' });
+    const result = await api.post('/api/test', { name: 'Test' });
     expect(seenMethod).toBe('POST');
     expect(seenBody).toEqual({ name: 'Test' });
     expect(result).toEqual({ id: 1 });
@@ -46,7 +46,7 @@ describe('API Client', () => {
       http.get('*/api/test', () => HttpResponse.json({ error: 'Bad Request' }, { status: 400 })),
     );
 
-    await expect(api.get('*/api/test')).rejects.toThrow('Bad Request');
+    await expect(api.get('/api/test')).rejects.toThrow('Bad Request');
   });
 
   it('should throw error when success wrapper returns false', async () => {
