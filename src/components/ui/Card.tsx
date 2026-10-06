@@ -54,6 +54,8 @@ const cardVariants = cva('relative overflow-hidden rounded-card text-ink', {
       /** @deprecated Kept for backward compatibility but should not be used in new code. */
       specular:
         'bg-surface/75 backdrop-blur-2xl border border-brand/40 shadow-card hover:border-brand hover:shadow-glow-brand-strong hover:-translate-y-1 transition-all duration-300',
+      vancouver:
+        'vancouver-card bg-surface-elevated/90 backdrop-blur-xl border border-line hover:border-brand/50 shadow-card hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1 hover:scale-[1.006]',
     },
     padding: {
       default: 'p-6',

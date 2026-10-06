@@ -35,6 +35,8 @@ const buttonVariants = cva(
         link: 'text-brand-ink dark:text-brand underline-offset-4 hover:underline hover:text-brand hover:drop-shadow-[0_0_8px_rgba(0,229,255,0.8)]',
         cosmic:
           'bg-gradient-to-r from-brand to-brand-2 text-on-brand shadow-glow-brand hover:shadow-glow-brand-strong hover:scale-[1.02] hover:-translate-y-0.5 active:scale-[0.98]',
+        vancouver:
+          'vancouver-btn-gradient rounded-full text-white shadow-glow-brand hover:scale-[1.02] hover:-translate-y-0.5 active:scale-[0.98]',
       },
       size: {
         default: 'h-9 px-4 py-2',

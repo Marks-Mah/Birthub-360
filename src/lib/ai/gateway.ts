@@ -56,4 +56,5 @@ export type {
   AiUsageLogInput,
   ChatCompletionMessage,
 } from './gateway/types.js';
+export { litellmProvider } from './gateway/providers/litellm.provider.js';
 export { logAiUsage } from './usage-log.js';
