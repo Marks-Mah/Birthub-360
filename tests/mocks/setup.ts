@@ -61,8 +61,14 @@ beforeEach(() => {
 
 afterEach(async () => {
   server.resetHandlers();
-  const { invalidateInFlightGetCache } = await import('../../src/lib/api');
-  invalidateInFlightGetCache();
+  try {
+    const apiModule = await import('../../src/lib/api');
+    if (typeof apiModule?.invalidateInFlightGetCache === 'function') {
+      apiModule.invalidateInFlightGetCache();
+    }
+  } catch {
+    // Safe fallback if @/lib/api is mocked in current test context
+  }
 });
 afterAll(() => server.close());
 
