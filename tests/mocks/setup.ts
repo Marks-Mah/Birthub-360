@@ -11,7 +11,7 @@ if (!process.env.PII_BLIND_INDEX_KEY || process.env.PII_BLIND_INDEX_KEY.includes
 // (`global.fetch = vi.fn()` / `vi.spyOn(globalThis, 'fetch')` / `vi.mock` da camada de API),
 // espalhado por vários testes. Agora todos usam os handlers em `tests/mocks/handlers/` e
 // sobrescrevem pontualmente com `server.use(...)` quando precisam de uma resposta diferente.
-import { afterAll, afterEach, beforeAll } from 'vitest';
+import { afterAll, afterEach, beforeAll, vi } from 'vitest';
 import { server } from './server';
 
 // jsdom não implementa HTMLDialogElement.showModal()/close() (usado pelo componente Dialog
@@ -47,25 +47,20 @@ class IntersectionObserverStub implements IntersectionObserver {
     }
 }
 
-function ensureIntersectionObserver() {
-    if (typeof globalThis !== 'undefined' && typeof globalThis.IntersectionObserver !== 'function') {
-        globalThis.IntersectionObserver = IntersectionObserverStub as unknown as typeof IntersectionObserver;
-    }
-    if (typeof window !== 'undefined' && typeof window.IntersectionObserver !== 'function') {
-        window.IntersectionObserver = IntersectionObserverStub as unknown as typeof IntersectionObserver;
-    }
-    if (typeof global !== 'undefined' && typeof (global as any).IntersectionObserver !== 'function') {
-        (global as any).IntersectionObserver = IntersectionObserverStub as unknown as typeof IntersectionObserver;
-    }
+if (typeof globalThis !== 'undefined') {
+    (globalThis as any).IntersectionObserver = IntersectionObserverStub;
 }
-
-ensureIntersectionObserver();
+if (typeof global !== 'undefined') {
+    (global as any).IntersectionObserver = IntersectionObserverStub;
+}
+if (typeof window !== 'undefined') {
+    (window as any).IntersectionObserver = IntersectionObserverStub;
+}
 
 server.listen({ onUnhandledRequest: 'bypass' });
 import { beforeEach } from 'vitest';
 
 beforeEach(() => {
-  ensureIntersectionObserver();
   if (typeof window !== 'undefined') {
     window.fetch = globalThis.fetch;
   }
@@ -74,9 +69,14 @@ beforeEach(() => {
 afterEach(async () => {
   server.resetHandlers();
   try {
-    const apiModule = await import('../../src/lib/api');
-    if (apiModule && 'invalidateInFlightGetCache' in apiModule && typeof (apiModule as any).invalidateInFlightGetCache === 'function') {
-      (apiModule as any).invalidateInFlightGetCache();
+    const apiModule = (await import('../../src/lib/api')) as Record<string, unknown>;
+    try {
+      const fn = apiModule?.invalidateInFlightGetCache;
+      if (typeof fn === 'function') {
+        (fn as () => void)();
+      }
+    } catch {
+      // Safe fallback if property access on a Vitest mock proxy throws
     }
   } catch {
     // Safe fallback if @/lib/api is mocked in current test context

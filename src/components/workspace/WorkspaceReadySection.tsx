@@ -42,8 +42,8 @@ export function WorkspaceReadySection({ workspace }: { workspace: Workspace }) {
               {workspace.jobRole.department} ● LIVE
             </p>
           </div>
-          <h1 className="font-display text-3xl font-extrabold tracking-tight text-ink md:text-4xl">
-            {workspace.jobRole.name}
+          <h1 className="font-display text-3xl font-extrabold tracking-tight md:text-4xl">
+            <span className="vancouver-gradient-text">{workspace.jobRole.name}</span>
           </h1>
           <p className="mt-1 max-w-2xl text-sm text-ink-2 font-sans">
             {workspace.jobRole.description}

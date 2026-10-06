@@ -181,8 +181,8 @@ Anotações/Histórico: ${params.recentNotes || 'Sem anotações recentes.'}`;
     ] as any);
 
     await logAiUsage({
-      model: response.response_metadata.model,
-      usage: response.response_metadata.tokenUsage,
+      model: response.response_metadata?.model ?? 'local-llama3-fast',
+      usage: response.response_metadata?.tokenUsage ?? { promptTokens: 0, completionTokens: 0, totalTokens: 0 },
       latencyMs: Date.now() - startTime,
       promptId: 'predictive-nba',
     });

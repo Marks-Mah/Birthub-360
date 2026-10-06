@@ -13,6 +13,26 @@ if (typeof HTMLDialogElement !== 'undefined' && !HTMLDialogElement.prototype.sho
     this.open = false;
     this.dispatchEvent(new Event('close'));
   };
+class IntersectionObserverStub implements IntersectionObserver {
+  readonly root: Element | Document | null = null;
+  readonly rootMargin: string = '';
+  readonly thresholds: ReadonlyArray<number> = [];
+  observe(): void {}
+  unobserve(): void {}
+  disconnect(): void {}
+  takeRecords(): IntersectionObserverEntry[] {
+    return [];
+  }
+}
+
+if (typeof globalThis !== 'undefined') {
+  (globalThis as any).IntersectionObserver = IntersectionObserverStub;
+}
+if (typeof global !== 'undefined') {
+  (global as any).IntersectionObserver = IntersectionObserverStub;
+}
+if (typeof window !== 'undefined') {
+  (window as any).IntersectionObserver = IntersectionObserverStub;
 }
 
 // Mock do BullMQ para que testes unitários não tentem conectar no Redis real (evitando warnings "searchQueue offline")
