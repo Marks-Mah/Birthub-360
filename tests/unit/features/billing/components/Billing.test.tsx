@@ -13,6 +13,7 @@ const getMock = vi.fn();
 
 vi.mock('@/lib/api', () => ({
   api: { get: (...args: unknown[]) => getMock(...args) },
+  invalidateInFlightGetCache: vi.fn(),
 }));
 
 import { Billing } from '@/features/billing/components/Billing';

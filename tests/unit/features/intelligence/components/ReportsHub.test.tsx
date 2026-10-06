@@ -23,6 +23,7 @@ vi.mock('@/lib/api', () => ({
     post: (...args: unknown[]) => postMock(...args),
     get: (...args: unknown[]) => getMock(...args),
   },
+  invalidateInFlightGetCache: vi.fn(),
 }));
 
 /** Monta um `Response` cujo `body` entrega os frames SSE dados, um por `read()`, como readSseStream espera. */
