@@ -1,34 +1,12 @@
-/**
- * Guardrails para toxicidade
- * Detecta e redige palavras ofensivas em português com suporte a variações de gênero, plurais e normalização de diacríticos.
- */
-
-const TOXIC_WORDS_PT = [
-  // Palavras e expressões ofensivas comuns em português
-  'idiota',
-  'idiotas',
-  'estúpido',
-  'burro',
-  'retardado',
-  'imbecil',
-  'otário',
-  'besta',
-  'inútil',
+export const TOXIC_WORDS_PT = [
+  'palavrão',
+  'ofensa',
+  'discriminacao',
+  'preconceito',
+  'violencia',
   'merda',
-  'caralho',
-  'porra',
-  'puta',
-  'desgraça',
-  'maldito',
-  'foda-se',
-  'se foder',
-  'arrombado',
-  'bando de merda',
-  'filho da puta',
-  'vai pra puta que pariu',
-  'vai se foder',
-  'cú',
-  'boceta',
+  'idiota',
+  'estupido',
 ];
 
 export interface ToxicityResult {
@@ -52,7 +30,6 @@ const CHAR_MAP: Record<string, string> = {
 };
 
 function getWordRegex(word: string): RegExp {
-  // Para expressões compostas (com espaços ou hífens)
   if (word.includes(' ') || word.includes('-')) {
     return new RegExp(`(^|[^\\p{L}\\p{N}_])${escapeRegex(word)}(?=[^\\p{L}\\p{N}_]|$)`, 'gui');
   }
@@ -81,9 +58,7 @@ export function detectToxicity(text: string): ToxicityResult {
   for (const word of TOXIC_WORDS_PT) {
     const regex = getWordRegex(word);
     if (regex.test(text)) {
-      if (!matches.includes(word)) {
-        matches.push(word);
-      }
+      matches.push(word);
     }
   }
 

@@ -196,7 +196,7 @@ jobs:
           fi
 
       - name: Run Type Check
-        run: npx tsc --noEmit
+        run: npm run typecheck
 
       - name: Architecture tests (fronteiras de dependência e hotspots)
         run: npm run test:architecture

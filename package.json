@@ -88,7 +88,7 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "release:check": "node scripts/release-gate.js",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "node --max-old-space-size=8192 ./node_modules/typescript/bin/tsc --noEmit"
   },
   "dependencies": {
     "@ai-sdk/react": "^4.0.114",

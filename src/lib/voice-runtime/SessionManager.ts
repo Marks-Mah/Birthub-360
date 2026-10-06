@@ -7,6 +7,8 @@ import { audioPipeline } from './AudioPipeline.js';
 import { failoverEngine } from './FailoverEngine.js';
 import { webhookService } from '../voice-hub/services/webhook.service.js';
 import { getAiConsent } from '../voice-hub/services/settingService.js';
+import { intentEngine, type IntentAnalysisResult } from './intelligence/IntentEngine.js';
+import { postCallFollowupAutomation } from './automation/PostCallFollowupAutomation.js';
 
 // A session with no activity for this long is considered abandoned. Without this, a session that
 // never reaches endSession() (dropped WebSocket, crashed client, etc.) lives in `sessions` /
@@ -19,6 +21,7 @@ const SESSION_SWEEP_INTERVAL_MS = 5 * 60 * 1000;
 export class SessionManager {
   private sessions: Map<string, VoiceSession> = new Map();
   private lastActivityAt: Map<string, number> = new Map();
+  private sessionIntents: Map<string, IntentAnalysisResult[]> = new Map();
   private sweepTimer: ReturnType<typeof setInterval> | undefined;
 
   constructor() {
@@ -123,6 +126,12 @@ export class SessionManager {
 
     memoryPipeline.addTurn(sessionId, turn);
 
+    // Real-time intent detection during WebRTC/Whisper audio stream
+    const intentResult = intentEngine.analyzeIntent(sessionId, text, session.history);
+    const intents = this.sessionIntents.get(sessionId) || [];
+    intents.push(intentResult);
+    this.sessionIntents.set(sessionId, intents);
+
     // Context & RAG would happen here
     const context = memoryPipeline.getContext(sessionId);
 
@@ -219,12 +228,18 @@ export class SessionManager {
 
   public endSession(sessionId: string) {
     const session = this.sessions.get(sessionId);
+    const intents = this.sessionIntents.get(sessionId) || [];
     this.updateState(sessionId, 'Finished');
     streamingEngine.cleanup(sessionId);
 
     observability.logEvent(sessionId, 'SESSION_ENDED');
 
     if (session) {
+      // Automação pós-chamada (follow-ups) com base na intenção e histórico
+      void postCallFollowupAutomation.processSession(session, intents).catch((err: unknown) => {
+        observability.logEvent(sessionId, 'POST_CALL_FOLLOWUP_ERROR', { error: String(err) });
+      });
+
       // `webhookService.dispatch` is tenant-scoped. The legacy organizationId/workspaceId/projectId
       // fields are placeholders and must never be used as an ownership key for external delivery.
       webhookService
@@ -233,21 +248,19 @@ export class SessionManager {
           durationMs: session.durationMs,
           agentId: session.agentId,
           history: session.history,
+          detectedIntents: intents,
         })
         .catch((err: unknown) => {
           observability.logEvent(sessionId, 'WEBHOOK_DISPATCH_ERROR', { error: String(err) });
         });
     }
 
-    // Release all per-session state. Previously nothing here ever removed the session from
-    // `sessions`/MemoryPipeline/LatencyMonitor — every call leaked for the lifetime of the
-    // process, and a stale sessionId stayed indefinitely valid for handleUserText/
-    // processUserAudio, which is both a resource leak and a concurrency/replay risk at the "alto
-    // volume" this platform targets (AGENTS.md §1).
+    // Release all per-session state.
     memoryPipeline.clear(sessionId);
     latencyMonitor.clear(sessionId);
     this.sessions.delete(sessionId);
     this.lastActivityAt.delete(sessionId);
+    this.sessionIntents.delete(sessionId);
   }
 
   public getSession(sessionId: string) {
