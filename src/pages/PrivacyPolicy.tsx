@@ -1,24 +1,26 @@
 export default function PrivacyPolicy() {
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-3xl mx-auto bg-white p-8 shadow rounded">
-        <h1 className="text-3xl font-bold mb-6">Política de Privacidade</h1>
-        <p className="mb-4">
+    <div className="min-h-screen bg-bg py-12 px-4 sm:px-6 lg:px-8 font-sans text-ink">
+      <div className="max-w-3xl mx-auto vancouver-card p-8 md:p-10 shadow-vancouver">
+        <h1 className="text-3xl font-bold mb-6 font-display">
+          <span className="vancouver-gradient-text">Política de Privacidade</span>
+        </h1>
+        <p className="mb-6 text-sm text-ink-2">
           <strong>Última atualização:</strong> 25 de Setembro de 2026
         </p>
 
-        <section className="mb-6">
-          <h2 className="text-xl font-semibold mb-2">1. Categorias de Dados e Finalidade</h2>
-          <p>
+        <section className="mb-6 space-y-2">
+          <h2 className="text-xl font-semibold font-display text-ink">1. Categorias de Dados e Finalidade</h2>
+          <p className="text-sm text-ink-2 leading-relaxed">
             O Birth Hub 360 processa dados pessoais de leads, contatos e clientes, que podem incluir
             nome, e-mail, telefone, cargo e dados corporativos, com a finalidade exclusiva de gestão
             comercial, prospecção e relacionamento (CRM) para Birthub 360º.
           </p>
         </section>
 
-        <section className="mb-6">
-          <h2 className="text-xl font-semibold mb-2">2. Base Legal (LGPD)</h2>
-          <p>
+        <section className="mb-6 space-y-2">
+          <h2 className="text-xl font-semibold font-display text-ink">2. Base Legal (LGPD)</h2>
+          <p className="text-sm text-ink-2 leading-relaxed">
             O tratamento de dados pessoais é realizado com fundamento no legítimo interesse (Art.
             7º, IX) para prospecção B2B corporativa, no consentimento (Art. 7º, I) para contatos
             opt-in, e na execução de contrato (Art. 7º, V) para clientes ativos, nos termos da Lei
@@ -26,9 +28,9 @@ export default function PrivacyPolicy() {
           </p>
         </section>
 
-        <section className="mb-6">
-          <h2 className="text-xl font-semibold mb-2">3. Retenção e Exclusão</h2>
-          <p>
+        <section className="mb-6 space-y-2">
+          <h2 className="text-xl font-semibold font-display text-ink">3. Retenção e Exclusão</h2>
+          <p className="text-sm text-ink-2 leading-relaxed">
             Os dados serão retidos apenas pelo tempo necessário para cumprir sua finalidade
             comercial. Solicitações de exclusão e anonimização podem ser feitas através dos canais
             de contato. Contatos que realizem opt-out são bloqueados imediatamente nas campanhas
@@ -36,9 +38,9 @@ export default function PrivacyPolicy() {
           </p>
         </section>
 
-        <section className="mb-6">
-          <h2 className="text-xl font-semibold mb-2">4. Compartilhamento e Subprocessadores</h2>
-          <p>
+        <section className="mb-6 space-y-2">
+          <h2 className="text-xl font-semibold font-display text-ink">4. Compartilhamento e Subprocessadores</h2>
+          <p className="text-sm text-ink-2 leading-relaxed">
             Não vendemos dados pessoais. Compartilhamos dados apenas com provedores estritamente
             necessários (nuvem, IA, provedores de comunicação corporativa), resguardados por
             cláusulas de sigilo e adequação legal. Inclui serviços de Inteligência Artificial para
@@ -47,18 +49,18 @@ export default function PrivacyPolicy() {
           </p>
         </section>
 
-        <section className="mb-6">
-          <h2 className="text-xl font-semibold mb-2">5. Direitos do Titular</h2>
-          <p>
+        <section className="mb-6 space-y-2">
+          <h2 className="text-xl font-semibold font-display text-ink">5. Direitos do Titular</h2>
+          <p className="text-sm text-ink-2 leading-relaxed">
             O titular possui direito a acesso, correção, anonimização, bloqueio ou eliminação de
             dados desnecessários ou tratados em desconformidade, além de portabilidade e revogação
             de consentimento.
           </p>
         </section>
 
-        <section className="mb-6">
-          <h2 className="text-xl font-semibold mb-2">6. Contato (DPO)</h2>
-          <p>
+        <section className="mb-6 space-y-2">
+          <h2 className="text-xl font-semibold font-display text-ink">6. Contato (DPO)</h2>
+          <p className="text-sm text-ink-2 leading-relaxed">
             Dúvidas sobre proteção de dados ou solicitações do titular devem ser direcionadas ao
             nosso Encarregado de Dados (DPO): marcelo.nascimento@birthub360.com.
           </p>

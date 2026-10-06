@@ -5,6 +5,7 @@ import { requireRole } from '../../../shared/middlewares/requireRole.js';
 import { validateRequest } from '../../../shared/middlewares/validateRequest.js';
 import { searchService } from '../../knowledge/search.service.js';
 import { aiSuite } from '../services/CentralAISuiteService.js';
+import { predictiveScoringNbaService } from '../services/PredictiveScoringNbaService.js';
 import {
   assertPiiExternalConsent,
   PiiConsentRequiredError,
@@ -462,6 +463,55 @@ aiSuiteRouter.post(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const result = await aiSuite.lgpdSanitizer.sanitizeText(req.body);
+      res.json({ success: true, data: result });
+    } catch (err: any) {
+      next(err);
+    }
+  },
+);
+
+const predictiveLeadScoreSchema = z.object({
+  leadId: z.string().trim().min(1).max(200),
+});
+
+const predictiveNbaSchema = z.object({
+  leadId: z.string().trim().min(1).max(200),
+  leadName: z.string().trim().min(1).max(200),
+  companyName: z.string().trim().max(200).optional(),
+  stage: z.string().trim().min(1).max(100),
+  recentNotes: z.string().trim().max(2000).optional(),
+  lastInteractionDaysAgo: z.number().int().min(0).max(3650).optional(),
+});
+
+// #21 Predictive Lead Scoring (Qdrant + pgvector)
+aiSuiteRouter.post(
+  '/predictive/lead-score',
+  validateRequest(predictiveLeadScoreSchema),
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const organizationId = (req as AuthRequest).user.organizationId;
+      const result = await predictiveScoringNbaService.computePredictiveScore(
+        req.body.leadId,
+        organizationId,
+      );
+      res.json({ success: true, data: result });
+    } catch (err: any) {
+      next(err);
+    }
+  },
+);
+
+// #22 Predictive Next Best Action (LiteLLM + RevOps context)
+aiSuiteRouter.post(
+  '/predictive/next-best-action',
+  validateRequest(predictiveNbaSchema),
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const organizationId = (req as AuthRequest).user.organizationId;
+      const result = await predictiveScoringNbaService.generateNextBestAction({
+        ...req.body,
+        organizationId,
+      });
       res.json({ success: true, data: result });
     } catch (err: any) {
       next(err);

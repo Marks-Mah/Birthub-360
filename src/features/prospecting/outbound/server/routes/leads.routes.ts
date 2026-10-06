@@ -46,13 +46,25 @@ import {
   enrichLeadWithApollo,
   resolveCnpjWithResilience,
   cleanDomainForCache,
-  buildCnpjCacheKey,
 } from '../services/leadSearch.service.js';
+import { z } from 'zod';
 
 const heavyAiLimiter = rateLimit({
   windowMs: 60_000,
   max: 20,
   message: 'Muitas chamadas de IA/enriquecimento em 1 minuto. Aguarde um instante.',
+});
+
+const updateStageSchema = z.object({
+  stage: z.string().min(1, 'Stage é obrigatório'),
+  userId: z.string().optional(),
+  lossReason: z.string().optional(),
+  winReason: z.string().optional(),
+});
+
+const updateTagsSchema = z.object({
+  tags: z.array(z.string()),
+  userId: z.string().optional(),
 });
 
 export const leadsRouter = Router();
@@ -61,10 +73,11 @@ export const leadsRouter = Router();
 leadsRouter.put('/leads/:id/stage', requireAuth, async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const { stage, userId, lossReason, winReason } = req.body;
-    if (!stage) {
-      return res.status(400).json({ error: 'Stage é obrigatório' });
+    const parsed = updateStageSchema.safeParse(req.body);
+    if (!parsed.success) {
+      return res.status(400).json({ error: parsed.error.issues[0]?.message || 'Stage é obrigatório' });
     }
+    const { stage, userId, lossReason, winReason } = parsed.data;
     const db = await getDatabase();
     const beforeRes = await db.exec(`SELECT stage FROM leads WHERE id = ?`, [id]);
     const previousStage = beforeRes[0]?.values[0]?.[0] ?? null;

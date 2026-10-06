@@ -40,7 +40,7 @@ export async function apiFetch<T>(endpoint: string, options?: ApiRequestOptions)
       endpoint.startsWith('http://') || endpoint.startsWith('https://')
         ? endpoint
         : `${baseUrl}${endpoint.startsWith('/') ? '' : '/'}${endpoint}`;
-    response = await fetch(targetUrl, {
+    response = await (globalThis.fetch || fetch)(targetUrl, {
       ...requestOptions,
       signal,
       credentials: 'include',
