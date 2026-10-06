@@ -12,13 +12,13 @@ describe('API Client', () => {
     const mockData = { id: 1, name: 'Test' };
     let seenMethod: string | undefined;
     server.use(
-      http.get('/api/test', ({ request }) => {
+      http.get('*/api/test', ({ request }) => {
         seenMethod = request.method;
         return HttpResponse.json(mockData);
       }),
     );
 
-    const result = await api.get('/api/test');
+    const result = await api.get('*/api/test');
     expect(seenMethod).toBe('GET');
     expect(result).toEqual(mockData);
   });
@@ -28,14 +28,14 @@ describe('API Client', () => {
     let seenMethod: string | undefined;
     let seenBody: unknown;
     server.use(
-      http.post('/api/test', async ({ request }) => {
+      http.post('*/api/test', async ({ request }) => {
         seenMethod = request.method;
         seenBody = await request.json();
         return HttpResponse.json(mockResponse);
       }),
     );
 
-    const result = await api.post('/api/test', { name: 'Test' });
+    const result = await api.post('*/api/test', { name: 'Test' });
     expect(seenMethod).toBe('POST');
     expect(seenBody).toEqual({ name: 'Test' });
     expect(result).toEqual({ id: 1 });
@@ -43,15 +43,15 @@ describe('API Client', () => {
 
   it('should throw error when response is not ok', async () => {
     server.use(
-      http.get('/api/test', () => HttpResponse.json({ error: 'Bad Request' }, { status: 400 })),
+      http.get('*/api/test', () => HttpResponse.json({ error: 'Bad Request' }, { status: 400 })),
     );
 
-    await expect(api.get('/api/test')).rejects.toThrow('Bad Request');
+    await expect(api.get('*/api/test')).rejects.toThrow('Bad Request');
   });
 
   it('should throw error when success wrapper returns false', async () => {
     server.use(
-      http.get('/api/test', () => HttpResponse.json({ success: false, error: 'Logic Error' })),
+      http.get('*/api/test', () => HttpResponse.json({ success: false, error: 'Logic Error' })),
     );
 
     await expect(api.get('/api/test')).rejects.toThrow('Logic Error');

@@ -22,6 +22,7 @@ vi.mock('@/lib/api', () => ({
     get: (...args: unknown[]) => getMock(...args),
     post: (...args: unknown[]) => postMock(...args),
   },
+  invalidateInFlightGetCache: vi.fn(),
 }));
 
 let authMockUser: { role: string } | null = { role: 'ADMIN' };
