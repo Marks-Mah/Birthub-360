@@ -35,8 +35,8 @@ export function BentoHero({
             {badge}
           </span>
         )}
-        <h2 className="text-xl md:text-2xl font-bold tracking-tight text-ink font-display">
-          {title}
+        <h2 className="text-xl md:text-2xl font-bold tracking-tight font-display">
+          <span className="vancouver-gradient-text">{title}</span>
         </h2>
         {description && <p className="text-sm text-ink-2 leading-relaxed">{description}</p>}
       </div>

@@ -79,7 +79,8 @@ export function AppTopbar({ activeTab, onOpenMobileNav }: AppTopbarProps) {
   };
 
   return (
-    <header className="sticky top-0 z-20 flex h-14 shrink-0 items-center gap-2.5 border-b border-line bg-surface-elevated/96 px-3 shadow-xs backdrop-blur-xl sm:px-5">
+    <header className="relative sticky top-0 z-20 flex h-14 shrink-0 items-center gap-2.5 border-b border-line bg-surface-elevated/96 px-3 shadow-xs backdrop-blur-xl sm:px-5">
+      <div className="absolute bottom-0 left-0 right-0 h-[1.5px] bg-gradient-to-r from-transparent via-brand/40 to-transparent pointer-events-none" />
       <button
         type="button"
         onClick={onOpenMobileNav}
