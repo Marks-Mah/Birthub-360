@@ -14,7 +14,7 @@ function DialogHarness({ onClose }: { onClose: () => void }) {
   return React.createElement(
     React.Fragment,
     null,
-    React.createElement('button', { onClick: () => setIsOpen(true) }, 'Abrir modal'),
+    React.createElement('button', { type: 'button', onClick: () => setIsOpen(true) }, 'Abrir modal'),
     React.createElement(
       Dialog,
       {
