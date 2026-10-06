@@ -111,4 +111,9 @@ visual-manual-output/
 BirthHub360_Manual_Completo.html
 BirthHub360_Manual_Visual_da_Plataforma.html
 
+
 audit-screenshots/
+
+# Configuração local MCP com token Modulify
+.vscode/mcp.json
+

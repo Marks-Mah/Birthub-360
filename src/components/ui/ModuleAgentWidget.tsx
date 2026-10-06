@@ -309,6 +309,7 @@ export function ModuleAgentWidget({ activeTab }: ModuleAgentWidgetProps) {
                 </div>
               </div>
               <button
+                type="button"
                 onClick={() => {
                   SoundFX.play('click');
                   setIsExpanded(false);
@@ -345,6 +346,7 @@ export function ModuleAgentWidget({ activeTab }: ModuleAgentWidgetProps) {
                   className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 pr-12 text-sm text-white placeholder-white/30 focus:outline-none focus:border-brand/50 focus:ring-1 focus:ring-brand/50 resize-none h-16"
                 />
                 <button
+                  type="button"
                   onClick={handleSend}
                   disabled={!inputText.trim()}
                   className="absolute right-2 bottom-2 p-2 rounded-lg bg-brand text-white hover:bg-brand-hover disabled:opacity-50 disabled:hover:bg-brand transition-colors"

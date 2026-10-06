@@ -1,4 +1,4 @@
-import { callBitrix, type BitrixCallOptions } from './client.js';
+import { callBitrix } from './client.js';
 import { logger } from '../../../../lib/logger.js';
 import { AppError } from '../../../../shared/middlewares/errorHandler.js';
 import { bitrixSyncFailuresTotal } from './metrics.js';

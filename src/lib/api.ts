@@ -123,7 +123,7 @@ const inFlightRequests = new Map<string, Promise<unknown>>();
 // disparado logo após a mutação podia reaproveitar uma Promise antiga já em voo (resposta
 // pré-mutação) em vez de buscar o estado atualizado — ver useCrmBoardController.handleConvert
 // (post seguido de fetchLeads na mesma URL).
-function invalidateInFlightGetCache(): void {
+export function invalidateInFlightGetCache(): void {
   inFlightRequests.clear();
 }
 

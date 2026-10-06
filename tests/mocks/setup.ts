@@ -51,11 +51,20 @@ if (typeof globalThis.IntersectionObserver === 'undefined') {
 }
 
 server.listen({ onUnhandledRequest: 'bypass' });
-if (typeof window !== 'undefined') {
-  window.fetch = globalThis.fetch;
-}
+import { beforeEach } from 'vitest';
 
-afterEach(() => server.resetHandlers());
+beforeEach(() => {
+  if (typeof window !== 'undefined') {
+    window.fetch = globalThis.fetch;
+  }
+});
+
+import { invalidateInFlightGetCache } from '../../src/lib/api';
+
+afterEach(() => {
+  server.resetHandlers();
+  invalidateInFlightGetCache();
+});
 afterAll(() => server.close());
 
 // Mock DATABASE_URL para os testes passarem na validação do Zod

@@ -1,5 +1,5 @@
 import { observability } from '../Observability.js';
-import type { VoiceSession, ConversationTurn } from '../types.js';
+import type { VoiceSession } from '../types.js';
 import type { IntentAnalysisResult } from '../intelligence/IntentEngine.js';
 import { logger } from '../../logger.js';
 
@@ -36,7 +36,6 @@ export class PostCallFollowupAutomation {
     });
 
     const userTurns = session.history.filter((t) => t.role === 'user');
-    const assistantTurns = session.history.filter((t) => t.role === 'assistant');
 
     // Determina a intenção predominante
     const latestIntent = detectedIntents.length > 0

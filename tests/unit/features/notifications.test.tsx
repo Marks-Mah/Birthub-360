@@ -17,7 +17,7 @@ import { Notifications } from '@/features/notifications/components/Notifications
 import { relativeTime } from '@/features/notifications/notifications.api';
 import { BrandProvider } from '@/contexts/BrandContext';
 
-const LIST_URL = '/api/notifications';
+const LIST_URL = /\/api\/notifications/;
 
 function render(ui: React.ReactElement) {
   return rtlRender(<BrandProvider>{ui}</BrandProvider>);
