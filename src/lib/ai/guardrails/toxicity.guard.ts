@@ -6,6 +6,7 @@ export const TOXIC_WORDS_PT = [
   'violencia',
   'merda',
   'idiota',
+  'idiotas',
   'estúpido',
   'burro',
   'retardado',
