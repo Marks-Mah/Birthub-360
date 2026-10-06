@@ -290,7 +290,7 @@ importers:
         specifier: ^1.5.4
         version: 1.5.4
       rate-limit-redis:
-        specifier: ^6.0.0
+        specifier: ^6.0.1
         version: 6.0.1(express-rate-limit@8.7.0(express@5.2.1(supports-color@7.2.0))(supports-color@7.2.0))
       react:
         specifier: ^19.3.0
