@@ -35,19 +35,25 @@ if (typeof HTMLDialogElement !== 'undefined' && !HTMLDialogElement.prototype.sho
 // ReportsHub.test.tsx, que só renderiza o GlowChart de passagem). Stub mínimo: nunca dispara
 // callback (equivalente a "nunca visível" em jsdom, que não tem layout real de qualquer forma),
 // só evita o crash.
-if (typeof globalThis.IntersectionObserver === 'undefined') {
-    class IntersectionObserverStub implements IntersectionObserver {
-        readonly root: Element | Document | null = null;
-        readonly rootMargin: string = '';
-        readonly thresholds: ReadonlyArray<number> = [];
-        observe(): void {}
-        unobserve(): void {}
-        disconnect(): void {}
-        takeRecords(): IntersectionObserverEntry[] {
-            return [];
-        }
+class IntersectionObserverStub implements IntersectionObserver {
+    readonly root: Element | Document | null = null;
+    readonly rootMargin: string = '';
+    readonly thresholds: ReadonlyArray<number> = [];
+    observe(): void {}
+    unobserve(): void {}
+    disconnect(): void {}
+    takeRecords(): IntersectionObserverEntry[] {
+        return [];
     }
+}
+if (typeof globalThis.IntersectionObserver !== 'function') {
     globalThis.IntersectionObserver = IntersectionObserverStub as unknown as typeof IntersectionObserver;
+}
+if (typeof window !== 'undefined' && typeof window.IntersectionObserver !== 'function') {
+    window.IntersectionObserver = IntersectionObserverStub as unknown as typeof IntersectionObserver;
+}
+if (typeof global !== 'undefined' && typeof (global as any).IntersectionObserver !== 'function') {
+    (global as any).IntersectionObserver = IntersectionObserverStub as unknown as typeof IntersectionObserver;
 }
 
 server.listen({ onUnhandledRequest: 'bypass' });
@@ -63,8 +69,8 @@ afterEach(async () => {
   server.resetHandlers();
   try {
     const apiModule = await import('../../src/lib/api');
-    if (typeof apiModule?.invalidateInFlightGetCache === 'function') {
-      apiModule.invalidateInFlightGetCache();
+    if (apiModule && 'invalidateInFlightGetCache' in apiModule && typeof (apiModule as any).invalidateInFlightGetCache === 'function') {
+      (apiModule as any).invalidateInFlightGetCache();
     }
   } catch {
     // Safe fallback if @/lib/api is mocked in current test context
