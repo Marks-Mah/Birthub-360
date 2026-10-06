@@ -31,7 +31,9 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 Write-Host "Updating application on server..." -ForegroundColor Yellow
-$remoteCommands = "cd /home/ubuntu/birthhub-360 && if [ -d dist ]; then mv dist dist-backup-$(date +%Y%m%d-%H%M%S); fi && mv dist-new dist && docker restart birthhub-app && docker ps | grep birthhub-app"
+$remoteCommands = @'
+cd /home/ubuntu/birthhub-360 && if [ -d dist ]; then mv dist dist-backup-$(date +%Y%m%d-%H%M%S); fi && mv dist-new dist && docker restart birthhub-app && docker ps | grep birthhub-app
+'@
 
 ssh -i $KeyPath "$($EC2User)@$($EC2Host)" $remoteCommands
 
