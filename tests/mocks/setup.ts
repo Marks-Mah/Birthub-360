@@ -46,20 +46,26 @@ class IntersectionObserverStub implements IntersectionObserver {
         return [];
     }
 }
-if (typeof globalThis.IntersectionObserver !== 'function') {
-    globalThis.IntersectionObserver = IntersectionObserverStub as unknown as typeof IntersectionObserver;
+
+function ensureIntersectionObserver() {
+    if (typeof globalThis !== 'undefined' && typeof globalThis.IntersectionObserver !== 'function') {
+        globalThis.IntersectionObserver = IntersectionObserverStub as unknown as typeof IntersectionObserver;
+    }
+    if (typeof window !== 'undefined' && typeof window.IntersectionObserver !== 'function') {
+        window.IntersectionObserver = IntersectionObserverStub as unknown as typeof IntersectionObserver;
+    }
+    if (typeof global !== 'undefined' && typeof (global as any).IntersectionObserver !== 'function') {
+        (global as any).IntersectionObserver = IntersectionObserverStub as unknown as typeof IntersectionObserver;
+    }
 }
-if (typeof window !== 'undefined' && typeof window.IntersectionObserver !== 'function') {
-    window.IntersectionObserver = IntersectionObserverStub as unknown as typeof IntersectionObserver;
-}
-if (typeof global !== 'undefined' && typeof (global as any).IntersectionObserver !== 'function') {
-    (global as any).IntersectionObserver = IntersectionObserverStub as unknown as typeof IntersectionObserver;
-}
+
+ensureIntersectionObserver();
 
 server.listen({ onUnhandledRequest: 'bypass' });
 import { beforeEach } from 'vitest';
 
 beforeEach(() => {
+  ensureIntersectionObserver();
   if (typeof window !== 'undefined') {
     window.fetch = globalThis.fetch;
   }
