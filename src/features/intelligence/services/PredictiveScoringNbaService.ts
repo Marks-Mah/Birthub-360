@@ -1,5 +1,4 @@
-import { cleanAndParseJson, generateEmbedding, getAiModel, logAiUsage } from '../../../lib/ai/gateway.js';
-import { litellmProvider } from '../../../lib/ai/gateway/providers/litellm.provider.js';
+import { cleanAndParseJson, generateEmbedding, getAiModel, litellmProvider, logAiUsage } from '../../../lib/ai/gateway.js';
 import { logger } from '../../../lib/logger.js';
 import { prisma } from '../../../lib/prisma.js';
 import { searchSimilarWonDealsInQdrant, VECTOR_DIMENSION } from '../../../lib/qdrant/funnelVectorStore.ts';
