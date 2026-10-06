@@ -46,6 +46,7 @@ import {
   enrichLeadWithApollo,
   resolveCnpjWithResilience,
   cleanDomainForCache,
+  buildCnpjCacheKey,
 } from '../services/leadSearch.service.js';
 import { z } from 'zod';
 
