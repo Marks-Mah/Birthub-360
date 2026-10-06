@@ -44,6 +44,8 @@ jobs:
       # seta isso pro job build-and-test; este workflow ficou de fora dessa correção.
       NODE_ENV: test
       DATABASE_URL: postgresql://prospector_app:ci_app_test_pass@localhost:5434/prospectordb_test?schema=public
+      JWT_SECRET: ci-test-jwt-secret-not-for-production
+      BETTER_AUTH_SECRET: ci-e2e-test-only-secret-not-for-production
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
         with:

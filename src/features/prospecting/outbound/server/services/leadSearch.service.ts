@@ -15,16 +15,16 @@ import type { Lead, DecisionMaker } from '../../types.js';
 export function cleanDomain(url: string): string {
   if (!url) return '';
   return url
-    .replace(/^https?:\/\//, '')
-    .replace(/^www\./, '')
+    .replace(/^https?:\/\//i, '')
+    .replace(/^www\./i, '')
     .split('/')[0];
 }
 
 export function cleanDomainForCache(url?: string): string {
   if (!url) return '';
   return url
-    .replace(/^https?:\/\//, '')
-    .replace(/^www\./, '')
+    .replace(/^https?:\/\//i, '')
+    .replace(/^www\./i, '')
     .split('/')[0]
     .toLowerCase();
 }
