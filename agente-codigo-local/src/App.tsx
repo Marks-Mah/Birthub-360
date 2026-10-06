@@ -46,8 +46,8 @@ import { ExecutionBeam } from './components/ExecutionBeam';
 import { UnitTestGeneratorModal } from './components/UnitTestGeneratorModal';
 import { CodeAnalysisModal } from './components/CodeAnalysisModal';
 import { AIStudioModal } from './components/AIStudioModal';
-import { FirebaseAuthModal } from './components/FirebaseAuthModal';
 import { GitControlModal } from './components/GitControlModal';
+import { IdeModalsManager } from './components/IdeModalsManager';
 import { GitService } from './services/gitService';
 import { generateAICommitMessages } from './services/gitCommitAI';
 import { calculateCyclomaticComplexity } from './services/codeAnalysis';
@@ -1495,148 +1495,60 @@ ${context.promptSuggestion || 'Explique o funcionamento deste trecho de código 
         }}
       />
 
-      {/* Checkpoints & Rollback Modal (Item 3) */}
-      <CheckpointsModal
-        isOpen={checkpointsOpen}
-        onClose={() => setCheckpointsOpen(false)}
+      {/* IDE Modals Manager */}
+      <IdeModalsManager
+        checkpointsOpen={checkpointsOpen}
+        setCheckpointsOpen={setCheckpointsOpen}
         checkpoints={checkpoints}
-        onRestoreCheckpoint={handleRestoreCheckpoint}
-        onCreateCheckpoint={handleCreateSnapshot}
-        onDeleteCheckpoint={handleDeleteCheckpoint}
-      />
-
-      {/* GitHub Direct Export Modal (Item 7) */}
-      <GitHubExportModal
-        isOpen={githubModalOpen}
-        onClose={() => setGithubModalOpen(false)}
-        files={allFiles}
-        defaultRepoName={
-          localFolderName ? localFolderName.toLowerCase().replace(/[^a-z0-9_-]/g, '-') : 'meu-projeto-agente'
-        }
-      />
-
-      {/* Token Usage & Cost Analytics Modal (Item 9) */}
-      <TokenStatsModal
-        isOpen={tokenStatsOpen}
-        onClose={() => setTokenStatsOpen(false)}
-        stats={tokenStats}
-        onResetStats={handleResetTokenStats}
-        currentProvider={config.provider}
-        currentModel={config.model}
-      />
-
-      {/* Settings Modal */}
-      <SettingsModal
-        isOpen={settingsOpen}
-        onClose={() => setSettingsOpen(false)}
+        handleRestoreCheckpoint={handleRestoreCheckpoint}
+        handleCreateSnapshot={handleCreateSnapshot}
+        handleDeleteCheckpoint={handleDeleteCheckpoint}
+        githubModalOpen={githubModalOpen}
+        setGithubModalOpen={setGithubModalOpen}
+        allFiles={allFiles}
+        localFolderName={localFolderName}
+        tokenStatsOpen={tokenStatsOpen}
+        setTokenStatsOpen={setTokenStatsOpen}
+        tokenStats={tokenStats}
+        handleResetTokenStats={handleResetTokenStats}
+        settingsOpen={settingsOpen}
+        setSettingsOpen={setSettingsOpen}
         config={config}
-        onSaveConfig={handleSaveConfig}
+        handleSaveConfig={handleSaveConfig}
         hasEnvGemini={hasEnvGemini}
-        onSaveEslintToWorkspace={async (eslintrcContent: string) => {
-          await fsManager.writeFile('.eslintrc.json', eslintrcContent);
-          await refreshWorkspace();
-        }}
-      />
-
-      {/* Standalone CLI Script Modal */}
-      <CliExportModal
-        isOpen={cliModalOpen}
-        onClose={() => setCliModalOpen(false)}
-      />
-
-      {/* Global Workspace Search Modal */}
-      <SearchModal
-        isOpen={searchModalOpen}
-        onClose={() => setSearchModalOpen(false)}
-        files={allFiles}
-        onOpenFile={(path) => {
-          handleSelectFile(path);
-          setActiveCenterTab('editor');
-        }}
-      />
-
-      {/* Unit Test Generator Modal */}
-      <UnitTestGeneratorModal
-        isOpen={unitTestModalOpen}
-        onClose={() => setUnitTestModalOpen(false)}
-        filePath={selectedPath}
+        fsManager={fsManager}
+        refreshWorkspace={refreshWorkspace}
+        cliModalOpen={cliModalOpen}
+        setCliModalOpen={setCliModalOpen}
+        searchModalOpen={searchModalOpen}
+        setSearchModalOpen={setSearchModalOpen}
+        handleSelectFile={handleSelectFile}
+        setActiveCenterTab={setActiveCenterTab}
+        unitTestModalOpen={unitTestModalOpen}
+        setUnitTestModalOpen={setUnitTestModalOpen}
+        selectedPath={selectedPath}
         fileContent={fileContent}
-        config={config}
-        onCreateTestFile={handleCreateTestFile}
-        onRunInTerminal={(cmd) => {
-          setTerminalOpen(true);
-          setTerminalExternalCmd({ cmd, timestamp: Date.now() });
-        }}
-      />
-
-      {/* Cyclomatic Complexity & Performance Optimization Modal */}
-      <CodeAnalysisModal
-        isOpen={codeAnalysisModalOpen}
-        onClose={() => setCodeAnalysisModalOpen(false)}
-        filePath={selectedPath}
-        codeToAnalyze={selectedCodeContext?.code || fileContent}
-        selectionContext={selectedCodeContext}
-        config={config}
-        onApplyRefactoredCode={handleApplyRefactoredCode}
-        onJumpToLine={() => {
-          setCodeAnalysisModalOpen(false);
-        }}
-      />
-
-      {/* Multimodal AI Studio Modal */}
-      <AIStudioModal
-        isOpen={aiStudioOpen}
-        onClose={() => setAiStudioOpen(false)}
-        defaultTab={aiStudioDefaultTab}
-        onInsertCode={(code) => {
-          if (selectedPath) {
-            handleSaveEditorContent(fileContent + '\n\n' + code);
-          }
-        }}
-        onNotify={(msg, type) => {
-          setAppToast({ message: msg, type });
-          setTimeout(() => setAppToast(null), 4000);
-        }}
-      />
-
-      {/* Firebase Auth & Firestore Modal */}
-      <FirebaseAuthModal
-        isOpen={firebaseAuthOpen}
-        onClose={() => setFirebaseAuthOpen(false)}
-        files={allFiles}
-        onNotify={(msg, type) => {
-          setAppToast({ message: msg, type });
-          setTimeout(() => setAppToast(null), 4000);
-        }}
-      />
-
-      {/* Git Source Control & Commit History Modal */}
-      <GitControlModal
-        isOpen={gitModalOpen}
-        onClose={() => {
-          setGitModalOpen(false);
-          updateGitStatus();
-        }}
-        files={allFiles}
-        workspaceId={storageMode === 'local' ? (localFolderName || 'local') : 'virtual'}
-        initialTab={gitDefaultTab}
-        onFilesUpdated={handleUpdateAllFilesFromGit}
-        onNotify={(msg, type) => {
-          setAppToast({ message: msg, type });
-          setTimeout(() => setAppToast(null), 4000);
-          updateGitStatus();
-        }}
-        onOpenDiffTab={(path, oldContent, newContent) => {
-          setDiffInfo({
-            path,
-            oldContent,
-            newContent,
-            timestamp: Date.now()
-          });
-          setActiveCenterTab('diff');
-        }}
-        userEmail={auth.currentUser?.email || undefined}
-        customGeminiKey={config.geminiKey}
+        handleCreateTestFile={handleCreateTestFile}
+        setTerminalOpen={setTerminalOpen}
+        setTerminalExternalCmd={setTerminalExternalCmd}
+        codeAnalysisModalOpen={codeAnalysisModalOpen}
+        setCodeAnalysisModalOpen={setCodeAnalysisModalOpen}
+        selectedCodeContext={selectedCodeContext}
+        handleApplyRefactoredCode={handleApplyRefactoredCode}
+        aiStudioOpen={aiStudioOpen}
+        setAiStudioOpen={setAiStudioOpen}
+        aiStudioDefaultTab={aiStudioDefaultTab}
+        handleSaveEditorContent={handleSaveEditorContent}
+        setAppToast={setAppToast}
+        firebaseAuthOpen={firebaseAuthOpen}
+        setFirebaseAuthOpen={setFirebaseAuthOpen}
+        gitModalOpen={gitModalOpen}
+        setGitModalOpen={setGitModalOpen}
+        updateGitStatus={updateGitStatus}
+        storageMode={storageMode}
+        gitDefaultTab={gitDefaultTab}
+        handleUpdateAllFilesFromGit={handleUpdateAllFilesFromGit}
+        setDiffInfo={setDiffInfo}
       />
 
       {/* Toast notifications */}
