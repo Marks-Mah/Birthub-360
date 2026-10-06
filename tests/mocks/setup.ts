@@ -59,10 +59,9 @@ beforeEach(() => {
   }
 });
 
-import { invalidateInFlightGetCache } from '../../src/lib/api';
-
-afterEach(() => {
+afterEach(async () => {
   server.resetHandlers();
+  const { invalidateInFlightGetCache } = await import('../../src/lib/api');
   invalidateInFlightGetCache();
 });
 afterAll(() => server.close());
