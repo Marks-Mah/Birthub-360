@@ -6,7 +6,9 @@ export const TOXIC_WORDS_PT = [
   'violencia',
   'merda',
   'idiota',
-  'estupido',
+  'estúpido',
+  'burro',
+  'retardado',
 ];
 
 export interface ToxicityResult {
@@ -53,14 +55,21 @@ function getWordRegex(word: string): RegExp {
 }
 
 export function detectToxicity(text: string): ToxicityResult {
-  const matches: string[] = [];
+  const matchesSet = new Set<string>();
 
   for (const word of TOXIC_WORDS_PT) {
     const regex = getWordRegex(word);
-    if (regex.test(text)) {
-      matches.push(word);
+    const found = text.match(regex);
+    if (found) {
+      matchesSet.add(word);
+      for (const rawMatch of found) {
+        const clean = rawMatch.replace(/^[^\p{L}\p{N}_]+|[^\p{L}\p{N}_]+$/gu, '').toLowerCase();
+        if (clean) matchesSet.add(clean);
+      }
     }
   }
+
+  const matches = Array.from(matchesSet);
 
   if (matches.length > 0) {
     return {
@@ -77,18 +86,21 @@ export function detectToxicity(text: string): ToxicityResult {
 }
 
 export function redactToxicity(text: string): { redacted: string; matches: string[] } {
-  const matches: string[] = [];
+  const matchesSet = new Set<string>();
   let redacted = text;
 
   for (const word of TOXIC_WORDS_PT) {
     const regex = getWordRegex(word);
-    if (regex.test(redacted)) {
-      if (!matches.includes(word)) {
-        matches.push(word);
+    const found = redacted.match(regex);
+    if (found) {
+      matchesSet.add(word);
+      for (const rawMatch of found) {
+        const clean = rawMatch.replace(/^[^\p{L}\p{N}_]+|[^\p{L}\p{N}_]+$/gu, '').toLowerCase();
+        if (clean) matchesSet.add(clean);
       }
-      redacted = redacted.replace(getWordRegex(word), '$1[REDACTED]');
+      redacted = redacted.replace(regex, '$1[REDACTED]');
     }
   }
 
-  return { redacted, matches };
+  return { redacted, matches: Array.from(matchesSet) };
 }

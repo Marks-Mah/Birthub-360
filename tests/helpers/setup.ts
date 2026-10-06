@@ -13,6 +13,8 @@ if (typeof HTMLDialogElement !== 'undefined' && !HTMLDialogElement.prototype.sho
     this.open = false;
     this.dispatchEvent(new Event('close'));
   };
+}
+
 class IntersectionObserverStub implements IntersectionObserver {
   readonly root: Element | Document | null = null;
   readonly rootMargin: string = '';
