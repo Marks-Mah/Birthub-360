@@ -22,15 +22,9 @@ export function AppTopbar({ activeTab, onOpenMobileNav }: AppTopbarProps) {
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
-  // Home real do CRM — não faz sentido oferecer "Voltar" aqui. Qualquer outro módulo mostra o
-  // botão: cobre as ~46 rotas de /app/* com uma única fonte (nenhuma tela precisa reimplementar
-  // seu próprio botão de voltar, ver duplicação ad-hoc em CompanyDetail/ProspectingToolsHub/etc.).
   const isHome = location.pathname === '/app' || location.pathname === '/app/dashboard';
   const handleBack = () => {
     SoundFX.play('navigate');
-    // `location.key === 'default'` = primeira entrada desta sessão do router (deep link direto,
-    // sem histórico interno para voltar) — nesse caso `navigate(-1)` sairia do app para o que
-    // veio antes no histórico do navegador. Cai pro dashboard, que é sempre um "voltar" seguro.
     if (location.key !== 'default') navigate(-1);
     else navigate('/app');
   };
@@ -38,11 +32,6 @@ export function AppTopbar({ activeTab, onOpenMobileNav }: AppTopbarProps) {
   const Icon = meta.icon;
   const [soundEnabled, setSoundEnabled] = useState(() => SoundFX.isEnabled());
 
-  // Contagem real de não lidas — GET /api/notifications?unread=1 (mesmo endpoint usado pela
-  // tela de Notificações). Sem isso o sino era cenográfico: nenhum clique navegava e o ponto
-  // vermelho aparecia sempre, mesmo com a caixa zerada. Recarrega ao montar e ao focar a aba
-  // (sem polling contínuo — este produto evita loop/timer sem necessidade comprovada, ver
-  // CLAUDE.md seção 8/11) para refletir notificações lidas/criadas em outra aba ou sessão.
   const [unreadCount, setUnreadCount] = useState(0);
   useEffect(() => {
     let cancelled = false;
@@ -51,8 +40,6 @@ export function AppTopbar({ activeTab, onOpenMobileNav }: AppTopbarProps) {
         const { unread } = await notificationsApi.list(true);
         if (!cancelled) setUnreadCount(unread);
       } catch {
-        // Falha ao consultar não derruba o topbar — o sino continua navegando de verdade,
-        // só fica sem o indicador até a próxima tentativa bem-sucedida.
         if (!cancelled) setUnreadCount(0);
       }
     };
@@ -79,140 +66,94 @@ export function AppTopbar({ activeTab, onOpenMobileNav }: AppTopbarProps) {
   };
 
   return (
-    <header className="relative sticky top-0 z-20 flex h-14 shrink-0 items-center gap-2.5 border-b border-line bg-gradient-to-r from-surface-elevated/96 to-surface/96 px-3 shadow-xs backdrop-blur-xl sm:px-5">
-      <div className="absolute bottom-0 left-0 right-0 h-[1.5px] bg-gradient-to-r from-transparent via-brand/30 to-transparent pointer-events-none" />
+    <header className="relative sticky top-0 z-20 flex h-[72px] shrink-0 items-center gap-4 bg-[#15151A] px-4 sm:px-8 border-b border-white/5">
       <button
         type="button"
         onClick={onOpenMobileNav}
-        className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-control text-ink-2 transition-colors hover:bg-surface-interactive hover:text-ink lg:hidden"
+        className="flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl text-slate-400 transition-colors hover:bg-white/5 hover:text-white lg:hidden"
         aria-label="Abrir menu de navegação"
       >
-        <Menu className="h-4 w-4" />
+        <Menu className="h-5 w-5" />
       </button>
 
       {!isHome && (
         <button
           type="button"
           onClick={handleBack}
-          className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-control text-ink-2 transition-colors hover:bg-surface-interactive hover:text-ink"
+          className="flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl text-slate-400 transition-colors hover:bg-white/5 hover:text-white"
           aria-label="Voltar"
           title="Voltar"
         >
-          <ArrowLeft className="h-4 w-4" />
+          <ArrowLeft className="h-5 w-5" />
         </button>
       )}
 
-      <div className="flex min-w-0 items-center gap-2">
-        <div className="grid h-8 w-8 place-items-center rounded-control border border-brand/15 bg-brand/8">
-          <Icon className="h-4 w-4 shrink-0 text-brand-ink dark:text-brand" />
-        </div>
-        <h1 className="truncate font-display text-sm font-semibold text-ink">{meta.label}</h1>
-      </div>
-
+      {/* Global Search Bar */}
       <button
         type="button"
         onClick={() => {
           SoundFX.play('focus');
           window.dispatchEvent(new Event(OPEN_COMMAND_PALETTE_EVENT));
         }}
-        className="group ml-3 hidden max-w-md flex-1 items-center gap-2 rounded-control border border-line bg-surface-subtle/50 px-3 py-2 text-ink-2 transition-all hover:border-brand/40 hover:bg-surface-subtle hover:text-ink hover:shadow-[inset_0_2px_10px_rgba(0,0,0,0.02)] lg:flex"
+        className="group hidden max-w-lg flex-1 items-center gap-3 rounded-xl bg-[#1C1D24] px-4 py-2.5 text-slate-400 transition-all hover:bg-[#22232B] lg:flex ml-2"
       >
-        <Search className="h-3.5 w-3.5 shrink-0 transition-transform duration-200 group-hover:scale-110 group-hover:text-brand" />
-        <span className="text-xs">Buscar empresa, decisor ou comando…</span>
-        <kbd className="ml-auto rounded-md border border-line bg-surface px-1.5 py-0.5 text-[9px] font-semibold text-ink-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] transition-colors group-hover:border-brand/30">
+        <Search className="h-4 w-4 shrink-0 transition-colors group-hover:text-white" />
+        <span className="text-sm">Search here...</span>
+        <kbd className="ml-auto rounded-lg border border-white/10 bg-[#13151A] px-2 py-1 text-[10px] font-semibold text-slate-400 shadow-sm transition-colors group-hover:border-white/20">
           ⌘K
         </kbd>
       </button>
 
-      <div className="ml-auto flex items-center gap-1.5 sm:gap-3">
-        <div className="hidden text-right leading-tight sm:block">
-          <p className="text-[10px] font-medium uppercase tracking-wider text-ink-2">{dateLabel}</p>
-          <p className="text-sm font-bold text-ink [font-variant-numeric:tabular-nums]">
-            {timeLabel}
-          </p>
-        </div>
-
+      {/* Right Actions */}
+      <div className="ml-auto flex items-center gap-2 sm:gap-4">
         <motion.button
           type="button"
-          whileHover={{ scale: 1.08 }}
-          whileTap={{ scale: 0.92 }}
-          transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-          onClick={() => {
-            SoundFX.play('navigate');
-            toggleTheme();
-          }}
-          className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-transparent text-ink-2 transition-all duration-300 hover:border-line hover:bg-gradient-to-br hover:from-surface-2 hover:to-surface hover:text-ink hover:shadow-md"
-          aria-label="Alternar tema"
-          title={`Mudar para modo ${theme === 'dark' ? 'claro' : 'escuro'}`}
-        >
-          {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-        </motion.button>
-
-        <motion.button
-          type="button"
-          whileHover={{ scale: 1.08 }}
-          whileTap={{ scale: 0.92 }}
-          transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-          onClick={toggleSound}
-          className={`flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-lg border transition-all duration-300 hover:shadow-md ${
-            soundEnabled
-              ? 'border-brand/15 bg-gradient-to-br from-brand/8 to-brand/5 text-brand-ink dark:text-brand hover:border-brand/30'
-              : 'border-transparent text-ink-2 hover:border-line hover:bg-gradient-to-br hover:from-surface-2 hover:to-surface hover:text-ink'
-          }`}
-          aria-pressed={soundEnabled}
-          aria-label={soundEnabled ? 'Desativar sons da interface' : 'Ativar sons da interface'}
-          title={soundEnabled ? 'Sons da interface ligados' : 'Sons da interface desligados'}
-        >
-          {soundEnabled ? <Volume2 className="h-5 w-5" /> : <VolumeX className="h-5 w-5" />}
-        </motion.button>
-
-        <motion.button
-          type="button"
-          whileHover={{ scale: 1.08 }}
-          whileTap={{ scale: 0.92 }}
-          transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
           onClick={() => {
             SoundFX.play('navigate');
             navigate('/app/notifications');
           }}
-          className="relative flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-transparent text-ink-2 transition-all duration-300 hover:border-line hover:bg-gradient-to-br hover:from-surface-2 hover:to-surface hover:text-brand hover:shadow-md"
+          className="relative flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-full text-slate-400 transition-colors hover:bg-white/5 hover:text-white"
           aria-label={
             unreadCount > 0
               ? `Notificações — ${unreadCount} não lida${unreadCount === 1 ? '' : 's'}`
               : 'Notificações'
           }
         >
-          <Bell className="h-5 w-5 transition-transform duration-300" />
+          <Bell className="h-[18px] w-[18px]" />
           {unreadCount > 0 && (
             <span
-              className="absolute right-[9px] top-[9px] h-1.5 w-1.5 rounded-full bg-brand shadow-[0_0_0_3px_var(--surface)] motion-safe:animate-pulse"
+              className="absolute right-2 top-2 h-2 w-2 rounded-full bg-[#EF4444] shadow-[0_0_0_2px_#15151A]"
               aria-hidden="true"
             />
           )}
         </motion.button>
 
         <motion.div
-          whileHover={{ scale: 1.08 }}
+          whileHover={{ scale: 1.05 }}
           transition={{ type: 'spring', stiffness: 400, damping: 25 }}
           role="img"
           aria-label={`Avatar de ${currentUser?.name || 'Usuário'}`}
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-brand to-brand-2 text-sm font-bold text-on-brand shadow-md ring-1 ring-white/10 cursor-pointer"
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#8B7DFF] to-[#6D5CE6] text-sm font-bold text-white shadow-md ring-2 ring-white/10 cursor-pointer overflow-hidden"
           title={`${currentUser?.name || 'Usuário'} (${currentUser?.roleTitle || currentUser?.role || ''})`}
         >
-          {userInitial}
+          {currentUser?.avatarUrl ? (
+             <img src={currentUser.avatarUrl} alt="avatar" className="h-full w-full object-cover" />
+          ) : (
+             userInitial
+          )}
         </motion.div>
 
         <motion.button
           type="button"
-          whileHover={{ scale: 1.08 }}
-          whileTap={{ scale: 0.92 }}
-          transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
           onClick={logout}
-          className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-transparent text-ink-2 transition-all duration-300 hover:border-critical/20 hover:bg-gradient-to-br hover:from-critical/10 hover:to-critical/5 hover:text-critical hover:shadow-md"
-          aria-label="Sair da conta"
-          title="Sair da conta"
+          className="flex h-6 w-6 shrink-0 cursor-pointer items-center justify-center rounded-md text-slate-500 transition-colors hover:text-slate-300 ml-1"
+          aria-label="Sair"
         >
-          <LogOut className="h-5 w-5" />
+          <LogOut className="h-4 w-4" />
         </motion.button>
       </div>
     </header>
