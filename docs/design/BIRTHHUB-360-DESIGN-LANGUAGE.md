@@ -41,16 +41,25 @@
 ### Primary Palette
 ```
 Navy       #0B132B  — Foundation: authority, depth, command
-Gold       #D4AF37  — Signal: action, value, focus, signature
+Gold       #FFBE0B  — Signal: action, value, focus, signature (Coolors Amber Gold)
 Off-White  #F8FAFC  — Clarity: space, readability, contrast
+```
+
+### Coolors Palette (2026 - Vancouver Plus Integration)
+```
+Amber Gold  #FFBE0B  — Primary accent, warnings, highlights
+Blaze Orange #FB5607  — Energy, urgency, call-to-action
+Neon Pink   #FF006E  — AI/Intelligence, critical states, attention
+Blue Violet #8338EC  — Secondary accent, depth, sophistication
+Azure Blue  #3A86FF  — Primary brand color, navigation, active states
 ```
 
 ### Semantic Palette
 ```
-Intelligence  var(--orbit-blue)  #1677FF  — Data connections, insights
-Execution     var(--ok)          #0F9D64  — Success, completion, green states  
-Decision      var(--critical)             — Risk, alerts, attention required
-Signal        var(--warn)        #FFC500  — Warning, pending, caution
+Intelligence  var(--coolors-purple)  #8338EC  — Data connections, insights
+Execution     var(--ok)              #22C55E  — Success, completion, green states
+Decision      var(--critical)                 — Risk, alerts, attention required
+Signal        var(--coolors-yellow)  #FFBE0B  — Warning, pending, caution
 ```
 
 ### Usage Rules

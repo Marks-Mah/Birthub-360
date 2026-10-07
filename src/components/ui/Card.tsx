@@ -56,6 +56,12 @@ const cardVariants = cva('relative overflow-hidden rounded-card text-ink', {
         'bg-surface/75 backdrop-blur-2xl border border-brand/40 shadow-card hover:border-brand hover:shadow-glow-brand-strong hover:-translate-y-1 transition-all duration-300',
       vancouver:
         'vancouver-card bg-gradient-to-br from-surface-elevated/95 to-surface/90 backdrop-blur-xl border border-line hover:border-brand/40 shadow-card hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1 hover:scale-[1.005]',
+      vancouverGradient:
+        'bg-gradient-to-br from-coolors-blue to-coolors-purple text-white border-white/20 shadow-lg hover:shadow-xl hover:-translate-y-1 hover:scale-[1.005] transition-all duration-300',
+      vancouverGold:
+        'bg-gradient-to-br from-coolors-yellow to-coolors-orange text-white border-white/20 shadow-lg hover:shadow-xl hover:-translate-y-1 hover:scale-[1.005] transition-all duration-300',
+      vancouverPink:
+        'bg-gradient-to-br from-coolors-pink to-coolors-purple text-white border-white/20 shadow-lg hover:shadow-xl hover:-translate-y-1 hover:scale-[1.005] transition-all duration-300',
     },
     padding: {
       default: 'p-6',

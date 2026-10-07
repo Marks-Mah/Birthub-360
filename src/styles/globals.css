@@ -143,36 +143,28 @@
      (--info-active já escurece pra badge "soft", ver comentário abaixo); no escuro é sobrescrito
      com uma versão clareada — ver o comentário em `.dark` abaixo pro porquê. */
   --info: #3b82f6;
-  /* --- Acentos de ícone da navegação lateral (Sidebar) ---
+  /* --- Acentos de ícone da navegação lateral (Sidebar) - Paleta Coolors ---
      Um matiz por "tipo" de módulo, sempre derivado dos tokens de marca/semântica (nenhum hex novo):
-     ouro, íris, azul-órbita, vermelho, verde, violeta, turquesa e neutro. Calibrados como GRÁFICO
-     (mínimo 3:1 contra a superfície, WCAG 1.4.11) — não como texto. O ouro puro mede 2.10:1 no claro,
-     então aqui vai escurecido (mesma lógica de --color-brand-ink, um pouco mais vivo). */
-  --nav-c-gold: color-mix(in srgb, var(--brand) 72%, black);
-  --nav-c-iris: var(--iris);
-  --nav-c-blue: color-mix(in srgb, var(--orbit-blue) 92%, black);
-  --nav-c-red: color-mix(in srgb, var(--red) 84%, black);
+     amarelo, laranja, rosa, roxo, azul, verde e neutro. Calibrados como GRÁFICO
+     (mínimo 3:1 contra a superfície, WCAG 1.4.11) — não como texto. */
+  --nav-c-gold: color-mix(in srgb, var(--coolors-yellow) 75%, black);
+  --nav-c-iris: var(--coolors-purple);
+  --nav-c-blue: color-mix(in srgb, var(--coolors-blue) 90%, black);
+  --nav-c-red: color-mix(in srgb, var(--coolors-pink) 85%, black);
   --nav-c-green: color-mix(in srgb, var(--ok) 90%, black);
-  --nav-c-violet: color-mix(in srgb, var(--iris) 45%, var(--orbit-blue));
-  --nav-c-teal: color-mix(in srgb, var(--ok) 55%, var(--orbit-blue));
+  --nav-c-violet: color-mix(in srgb, var(--coolors-purple) 80%, var(--coolors-blue));
+  --nav-c-teal: color-mix(in srgb, var(--ok) 60%, var(--coolors-blue));
   --nav-c-slate: var(--ink-2);
-  --soft: rgba(212, 175, 55, 0.12);
-  /* --- Acentos de interação (proposta "Neon Tokyo × Cosmic Gold", catálogo visual) ---
-     --accent-violet/--accent-cyan são NOVOS tokens dedicados a acentos de botão/interação — não
-     são um alias de --iris/--orbit-blue. No claro valem literalmente o mesmo hex (reaproveita o
-     par já auditado, sem inventar cor nova); no escuro (.dark abaixo) divergem para uma versão mais
-     vívida, pensada pra glow. --iris/--orbit-blue continuam INTOCADOS em todo o resto do produto
-     (RevenueSignalOrb, LiveStatsWidget, BrandOrb, HubScreen, WelcomeScreen, ResetPasswordScreen,
-     MainLayout) — mudar o valor deles quebraria esses halos sem revisão visual. --pulse é o 5º
-     acento, novo em ambos os temas: indicadores "ao vivo"/urgência, nunca substituto do ouro. */
-  --accent-violet: var(--iris);
-  --accent-cyan: var(--orbit-blue);
-  --pulse: #c2255c;
+  --soft: rgba(255, 190, 11, 0.12);
+  /* --- Acentos de interação - Paleta Coolors --- */
+  --accent-violet: var(--coolors-purple);
+  --accent-cyan: var(--coolors-blue);
+  --pulse: var(--coolors-pink);
   /* Glow discreto no claro — "neon só no escuro" (regra do brief). Mesma fórmula de
      --shadow-glow-brand acima (20%, blur 15px), só trocando a cor de base. */
-  --shadow-glow-accent-violet-value: 0 0 15px -3px color-mix(in srgb, var(--accent-violet) 20%, transparent);
-  --shadow-glow-accent-cyan-value: 0 0 15px -3px color-mix(in srgb, var(--accent-cyan) 20%, transparent);
-  --shadow-glow-pulse-value: 0 0 15px -3px color-mix(in srgb, var(--pulse) 20%, transparent);
+  --shadow-glow-accent-violet-value: 0 0 15px -3px color-mix(in srgb, var(--coolors-purple) 20%, transparent);
+  --shadow-glow-accent-cyan-value: 0 0 15px -3px color-mix(in srgb, var(--coolors-blue) 20%, transparent);
+  --shadow-glow-pulse-value: 0 0 15px -3px color-mix(in srgb, var(--coolors-pink) 20%, transparent);
   /* Vermelho de estado crítico/risco (Comercial Inteligente: Centro de Decisão, Alertas, drill-down
      de negócios) — precisa ser redefinido por tema porque nenhum hex único passa 4.5:1 (WCAG AA)
      contra --surface nos dois temas ao mesmo tempo. Achado real via QA em navegador (contraste
@@ -251,9 +243,9 @@
   --ease-emphasized: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Vancouver Plus Button Gradient */
+/* Vancouver Plus Button Gradient - Paleta Coolors */
 .vancouver-btn-gradient {
-  background: linear-gradient(135deg, var(--brand) 0%, var(--brand-2) 100%);
+  background: linear-gradient(135deg, var(--coolors-blue) 0%, var(--coolors-purple) 100%);
 }
 
 /* Vancouver Plus Card Styles */
@@ -263,6 +255,81 @@
 
 .dark .vancouver-card {
   background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.9) 100%);
+}
+
+/* Vancouver Plus Badge Styles */
+.badge-coolors {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.badge-coolors-yellow {
+  background: linear-gradient(135deg, rgba(255, 190, 11, 0.15), rgba(255, 190, 11, 0.05));
+  color: var(--coolors-yellow);
+  border: 1px solid rgba(255, 190, 11, 0.3);
+}
+
+.badge-coolors-orange {
+  background: linear-gradient(135deg, rgba(251, 86, 7, 0.15), rgba(251, 86, 7, 0.05));
+  color: var(--coolors-orange);
+  border: 1px solid rgba(251, 86, 7, 0.3);
+}
+
+.badge-coolors-pink {
+  background: linear-gradient(135deg, rgba(255, 0, 110, 0.15), rgba(255, 0, 110, 0.05));
+  color: var(--coolors-pink);
+  border: 1px solid rgba(255, 0, 110, 0.3);
+}
+
+.badge-coolors-purple {
+  background: linear-gradient(135deg, rgba(131, 56, 236, 0.15), rgba(131, 56, 236, 0.05));
+  color: var(--coolors-purple);
+  border: 1px solid rgba(131, 56, 236, 0.3);
+}
+
+.badge-coolors-blue {
+  background: linear-gradient(135deg, rgba(58, 134, 255, 0.15), rgba(58, 134, 255, 0.05));
+  color: var(--coolors-blue);
+  border: 1px solid rgba(58, 134, 255, 0.3);
+}
+
+/* Vancouver Plus Gradient Text */
+.text-gradient-coolors {
+  background: linear-gradient(135deg, var(--coolors-blue), var(--coolors-purple), var(--coolors-pink));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.text-gradient-coolors-warm {
+  background: linear-gradient(135deg, var(--coolors-yellow), var(--coolors-orange), var(--coolors-pink));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Vancouver Plus Glow Effects */
+.glow-coolors-blue {
+  box-shadow: 0 0 20px rgba(58, 134, 255, 0.3);
+}
+
+.glow-coolors-purple {
+  box-shadow: 0 0 20px rgba(131, 56, 236, 0.3);
+}
+
+.glow-coolors-pink {
+  box-shadow: 0 0 20px rgba(255, 0, 110, 0.3);
+}
+
+.glow-coolors-yellow {
+  box-shadow: 0 0 20px rgba(255, 190, 11, 0.3);
 }
 
 /* Landing/Login Screen Visual Effects */
@@ -360,15 +427,27 @@
   --ink: #f1f5f9;
   --ink-2: #cbd5e1;
   --line: rgba(255, 255, 255, 0.08);
-  --soft: rgba(212, 175, 55, 0.16);
-  /* Error and AI / Purple */
-  --red: #ef4444;
-  --pink: #8b5cf6;
-  /* Acentos de ícone da Sidebar, lado escuro: matizes mais vibrantes e legíveis */
-  --nav-c-gold: #fbbf24;
-  --nav-c-iris: #a78bfa;
-  --nav-c-blue: #60a5fa;
-  --nav-c-red: #f87171;
+  --soft: rgba(255, 190, 11, 0.16);
+  /* Paleta Coolors - Dark mode versions */
+  --coolors-yellow: #ffd166;
+  --coolors-orange: #ff6b35;
+  --coolors-pink: #ff3399;
+  --coolors-purple: #9d4edd;
+  --coolors-blue: #4da6ff;
+  /* Atualização de tokens para usar Coolors */
+  --brand: #4da6ff;
+  --brand-2: #9d4edd;
+  --iris: #9d4edd;
+  --orbit-blue: #4da6ff;
+  --red: #ff3399;
+  --pink: #ff3399;
+  --warn: #ffd166;
+  --gold: #ffd166;
+  /* Acentos de ícone da Sidebar, lado escuro: matizes mais vibrantes e legíveis - Coolors */
+  --nav-c-gold: #ffd166;
+  --nav-c-iris: #9d4edd;
+  --nav-c-blue: #4da6ff;
+  --nav-c-red: #ff6b6b;
   --nav-c-green: #4ade80;
   --nav-c-violet: #c4b5fd;
   --nav-c-teal: #2dd4bf;

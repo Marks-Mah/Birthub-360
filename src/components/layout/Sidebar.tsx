@@ -350,19 +350,19 @@ export function Sidebar({
                           }
                         }}
                         className={`group relative flex w-full items-center justify-between rounded-xl px-4 py-3 text-xs font-bold transition-all duration-300 cursor-pointer border shadow-sm ${isActive
-                          ? 'bg-gradient-to-r from-brand/20 to-brand/10 text-brand border-brand/50 shadow-[0_0_20px_rgba(14,165,233,0.15)] font-extrabold'
-                          : 'bg-gradient-to-br from-[#121A24] to-[#0f172a] border-white/10 text-slate-200 hover:bg-gradient-to-br hover:from-[#182330] hover:to-[#121A24] hover:border-brand/30 hover:text-white hover:shadow-md'
+                          ? 'bg-gradient-to-r from-coolors-blue/20 to-coolors-purple/10 text-coolors-blue border-coolors-blue/50 shadow-[0_0_20px_rgba(58,134,255,0.15)] font-extrabold'
+                          : 'bg-gradient-to-br from-[#121A24] to-[#0f172a] border-white/10 text-slate-200 hover:bg-gradient-to-br hover:from-[#182330] hover:to-[#121A24] hover:border-coolors-blue/30 hover:text-white hover:shadow-md'
                           }`}
                       >
                         {/* Indicador lateral elevado no container ativo */}
                         {isActive && (
-                          <span className="absolute left-0 top-2.5 bottom-2.5 w-1 rounded-r-full bg-brand shadow-[0_0_8px_var(--brand)]" />
+                          <span className="absolute left-0 top-2.5 bottom-2.5 w-1 rounded-r-full bg-coolors-blue shadow-[0_0_8px_var(--coolors-blue)]" />
                         )}
 
                         <div className="flex items-center gap-3 min-w-0 pl-1">
                           <span
                             data-nav-icon
-                            className={`flex h-6 w-6 shrink-0 items-center justify-center transition-colors ${isActive ? 'text-brand' : 'text-slate-400 group-hover:text-brand'
+                            className={`flex h-6 w-6 shrink-0 items-center justify-center transition-colors ${isActive ? 'text-coolors-blue' : 'text-slate-400 group-hover:text-coolors-blue'
                               }`}
                           >
                             <Icon size={18} />
@@ -391,7 +391,7 @@ export function Sidebar({
 
                       {/* Sub-itens: CADA UM em seu próprio Container Arredondado Individual Sólido */}
                       {!isCollapsed && hasSubItems && isGroupExpanded && (
-                        <div className="relative ml-4 border-l-2 border-brand/30 pl-3 py-1.5 my-2 space-y-2">
+                        <div className="relative ml-4 border-l-2 border-coolors-blue/30 pl-3 py-1.5 my-2 space-y-2">
                           {group.subItems?.map((subItem) => {
                             const isSubActive = subItem.tab === activeTab;
 
@@ -401,18 +401,18 @@ export function Sidebar({
                                 type="button"
                                 onClick={(e) => selectTab(subItem.tab, e)}
                                 className={`group/sub relative flex w-full items-center gap-3 rounded-lg px-3.5 py-2.5 text-xs font-medium transition-all duration-300 cursor-pointer border shadow-xs ${isSubActive
-                                  ? 'bg-gradient-to-r from-brand/15 to-brand/5 text-brand font-extrabold border-brand/40 shadow-[0_0_18px_rgba(14,165,233,0.12)]'
-                                  : 'bg-gradient-to-br from-[#16202C] to-[#121A24] border-white/10 text-slate-200 hover:bg-gradient-to-br hover:from-[#1E2C3D] hover:to-[#16202C] hover:border-brand/30 hover:text-white hover:shadow-sm'
+                                  ? 'bg-gradient-to-r from-coolors-blue/15 to-coolors-purple/5 text-coolors-blue font-extrabold border-coolors-blue/40 shadow-[0_0_18px_rgba(58,134,255,0.12)]'
+                                  : 'bg-gradient-to-br from-[#16202C] to-[#121A24] border-white/10 text-slate-200 hover:bg-gradient-to-br hover:from-[#1E2C3D] hover:to-[#16202C] hover:border-coolors-blue/30 hover:text-white hover:shadow-sm'
                                   }`}
                               >
                                 {/* Ramo conector da árvore */}
-                                <span className="absolute -left-3.5 top-1/2 h-px w-3 bg-brand/40 group-hover/sub:bg-brand" />
+                                <span className="absolute -left-3.5 top-1/2 h-px w-3 bg-coolors-blue/40 group-hover/sub:bg-coolors-blue" />
 
                                 {/* Indicador ◉ no sub-item selecionado */}
                                 <span
                                   className={`h-2 w-2 rounded-full transition-all flex items-center justify-center shrink-0 ${isSubActive
-                                    ? 'bg-brand ring-2 ring-brand/40'
-                                    : 'bg-slate-500/40 group-hover/sub:bg-brand'
+                                    ? 'bg-coolors-blue ring-2 ring-coolors-blue/40'
+                                    : 'bg-slate-500/40 group-hover/sub:bg-coolors-blue'
                                     }`}
                                 />
 
@@ -426,7 +426,7 @@ export function Sidebar({
                       {/* Card Popover no Hover (Modo Recolhido / Rail Mode) - Vancouver Plus style */}
                       {isCollapsed && hoveredGroupId === group.id && hasSubItems && (
                         <div className="fixed left-20 z-50 min-w-[210px] rounded-xl border border-white/15 bg-gradient-to-br from-[#0b132b]/98 to-[#0f172a]/98 p-3.5 shadow-2xl backdrop-blur-2xl animate-in fade-in slide-in-from-left-2 duration-300">
-                          <p className="mb-2 px-2 text-[10px] font-extrabold uppercase tracking-widest text-brand font-mono">
+                          <p className="mb-2 px-2 text-[10px] font-extrabold uppercase tracking-widest text-coolors-blue font-mono">
                             {group.label}
                           </p>
                           <div className="space-y-2">
@@ -439,11 +439,11 @@ export function Sidebar({
                                   setHoveredGroupId(null);
                                 }}
                                 className={`flex w-full items-center gap-2.5 rounded-lg px-3.5 py-2.5 text-xs font-bold transition-all duration-300 border ${sub.tab === activeTab
-                                  ? 'bg-gradient-to-r from-brand/20 to-brand/10 text-brand border-brand/50'
-                                  : 'bg-gradient-to-br from-[#16202C] to-[#121A24] border-white/10 text-slate-200 hover:bg-gradient-to-br hover:from-[#1E2C3D] hover:to-[#16202C] hover:border-brand/30 hover:text-white'
+                                  ? 'bg-gradient-to-r from-coolors-blue/20 to-coolors-purple/10 text-coolors-blue border-coolors-blue/50'
+                                  : 'bg-gradient-to-br from-[#16202C] to-[#121A24] border-white/10 text-slate-200 hover:bg-gradient-to-br hover:from-[#1E2C3D] hover:to-[#16202C] hover:border-coolors-blue/30 hover:text-white'
                                   }`}
                               >
-                                <span className="h-1.5 w-1.5 rounded-full bg-brand" />
+                                <span className="h-1.5 w-1.5 rounded-full bg-coolors-blue" />
                                 <span className="truncate">{sub.label}</span>
                               </button>
                             ))}
