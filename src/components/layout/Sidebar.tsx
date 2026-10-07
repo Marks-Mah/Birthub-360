@@ -240,9 +240,9 @@ export function Sidebar({
             { tab: 'bitrix', label: 'Integração Bitrix24' },
             ...(canManageOperations
               ? [
-                  { tab: 'integrations' as TabType, label: 'Integrações' },
-                  { tab: 'automations' as TabType, label: 'Automações' },
-                ]
+                { tab: 'integrations' as TabType, label: 'Integrações' },
+                { tab: 'automations' as TabType, label: 'Automações' },
+              ]
               : []),
             ...(isAdmin ? [{ tab: 'team' as TabType, label: 'Gestão de Time' }] : []),
             { tab: 'settings', label: 'Configurações' },
@@ -261,14 +261,15 @@ export function Sidebar({
       {launch && <NavLaunchTransition launch={launch} onFinish={finishLaunch} />}
 
       <aside
-        className={`relative z-30 flex flex-col h-full border-r bg-[#0b132b] border-white/10 text-slate-100 transition-[width] duration-300 ${
-          isCollapsed ? 'w-20' : 'w-72'
-        } ${
-          mobileOpen
+        className={`relative z-30 flex flex-col h-full border-r bg-[#0b132b] border-white/10 text-slate-100 transition-[width] duration-300 ${isCollapsed ? 'w-20' : 'w-72'
+          } ${mobileOpen
             ? 'fixed inset-y-0 left-0 z-50 h-full w-72 translate-x-0 bg-[#0b132b]'
             : 'hidden lg:flex'
-        }`}
+          }`}
         aria-label="Navegação Principal"
+        style={{
+          background: 'linear-gradient(180deg, #0b132b 0%, #0f172a 100%)',
+        }}
       >
         {/* Botão flutuante proeminente de toggle com borda de precisão */}
         <button
@@ -278,21 +279,20 @@ export function Sidebar({
           title={isCollapsed ? 'Expandir menu lateral' : 'Recolher menu lateral'}
         >
           <ChevronLeft
-            className={`h-4 w-4 transition-transform duration-300 ${
-              isCollapsed ? 'rotate-180' : ''
-            }`}
+            className={`h-4 w-4 transition-transform duration-300 ${isCollapsed ? 'rotate-180' : ''
+              }`}
           />
         </button>
 
-        {/* ── Perfil do Usuário em Container Arredondado ────────────── */}
-        <div className="shrink-0 p-3.5 border-b border-white/10">
-          <div className="group flex items-center gap-3.5 p-3 rounded-2xl bg-[#121A24] border border-white/10 shadow-sm transition-all duration-200 hover:bg-[#182330] hover:border-brand/40 cursor-pointer">
-            <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand/20 border border-brand/40 text-brand shadow-md group-hover:border-brand/70 transition-colors">
+        {/* ── Perfil do Usuário em Container Arredondado (Vancouver Plus style) ────────────── */}
+        <div className="shrink-0 p-4 border-b border-white/10">
+          <div className="group flex items-center gap-3 p-3 rounded-xl bg-gradient-to-br from-[#121A24] to-[#0f172a] border border-white/10 shadow-sm transition-all duration-300 hover:bg-gradient-to-br hover:from-[#182330] hover:to-[#121A24] hover:border-brand/30 hover:shadow-lg cursor-pointer">
+            <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-brand/15 border border-brand/30 text-brand shadow-md group-hover:border-brand/50 group-hover:bg-brand/20 transition-all duration-300">
               {currentUser?.image ? (
                 <img
                   src={currentUser.image}
                   alt={userName}
-                  className="h-full w-full rounded-xl object-cover"
+                  className="h-full w-full rounded-lg object-cover"
                 />
               ) : (
                 <User className="h-5 w-5 text-brand" />
@@ -349,11 +349,10 @@ export function Sidebar({
                             selectTab(group.primaryTab, e);
                           }
                         }}
-                        className={`group relative flex w-full items-center justify-between rounded-2xl px-4 py-3 text-xs font-bold transition-all duration-200 cursor-pointer border shadow-sm ${
-                          isActive
-                            ? 'bg-brand/20 text-brand border-brand/60 shadow-[0_0_16px_rgba(14,165,233,0.25)] font-extrabold'
-                            : 'bg-[#121A24] border-white/10 text-slate-200 hover:bg-[#182330] hover:border-brand/40 hover:text-white'
-                        }`}
+                        className={`group relative flex w-full items-center justify-between rounded-xl px-4 py-3 text-xs font-bold transition-all duration-300 cursor-pointer border shadow-sm ${isActive
+                          ? 'bg-gradient-to-r from-brand/20 to-brand/10 text-brand border-brand/50 shadow-[0_0_20px_rgba(14,165,233,0.15)] font-extrabold'
+                          : 'bg-gradient-to-br from-[#121A24] to-[#0f172a] border-white/10 text-slate-200 hover:bg-gradient-to-br hover:from-[#182330] hover:to-[#121A24] hover:border-brand/30 hover:text-white hover:shadow-md'
+                          }`}
                       >
                         {/* Indicador lateral elevado no container ativo */}
                         {isActive && (
@@ -363,9 +362,8 @@ export function Sidebar({
                         <div className="flex items-center gap-3 min-w-0 pl-1">
                           <span
                             data-nav-icon
-                            className={`flex h-6 w-6 shrink-0 items-center justify-center transition-colors ${
-                              isActive ? 'text-brand' : 'text-slate-400 group-hover:text-brand'
-                            }`}
+                            className={`flex h-6 w-6 shrink-0 items-center justify-center transition-colors ${isActive ? 'text-brand' : 'text-slate-400 group-hover:text-brand'
+                              }`}
                           >
                             <Icon size={18} />
                           </span>
@@ -379,15 +377,13 @@ export function Sidebar({
 
                         {!isCollapsed && hasSubItems && (
                           <span
-                            className={`shrink-0 transition-transform duration-200 ${
-                              isActive ? 'text-brand' : 'text-slate-400 group-hover:text-brand'
-                            }`}
+                            className={`shrink-0 transition-transform duration-200 ${isActive ? 'text-brand' : 'text-slate-400 group-hover:text-brand'
+                              }`}
                           >
                             <ChevronDown
                               size={15}
-                              className={`transition-transform duration-200 ${
-                                isGroupExpanded ? 'rotate-180' : ''
-                              }`}
+                              className={`transition-transform duration-200 ${isGroupExpanded ? 'rotate-180' : ''
+                                }`}
                             />
                           </span>
                         )}
@@ -404,22 +400,20 @@ export function Sidebar({
                                 key={subItem.tab}
                                 type="button"
                                 onClick={(e) => selectTab(subItem.tab, e)}
-                                className={`group/sub relative flex w-full items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-medium transition-all duration-200 cursor-pointer border shadow-xs ${
-                                  isSubActive
-                                    ? 'bg-brand/20 text-brand font-extrabold border-brand/60 shadow-[0_0_14px_rgba(14,165,233,0.2)]'
-                                    : 'bg-[#16202C] border-white/10 text-slate-200 hover:bg-[#1E2C3D] hover:border-brand/40 hover:text-white'
-                                }`}
+                                className={`group/sub relative flex w-full items-center gap-3 rounded-lg px-3.5 py-2.5 text-xs font-medium transition-all duration-300 cursor-pointer border shadow-xs ${isSubActive
+                                  ? 'bg-gradient-to-r from-brand/15 to-brand/5 text-brand font-extrabold border-brand/40 shadow-[0_0_18px_rgba(14,165,233,0.12)]'
+                                  : 'bg-gradient-to-br from-[#16202C] to-[#121A24] border-white/10 text-slate-200 hover:bg-gradient-to-br hover:from-[#1E2C3D] hover:to-[#16202C] hover:border-brand/30 hover:text-white hover:shadow-sm'
+                                  }`}
                               >
                                 {/* Ramo conector da árvore */}
                                 <span className="absolute -left-3.5 top-1/2 h-px w-3 bg-brand/40 group-hover/sub:bg-brand" />
 
                                 {/* Indicador ◉ no sub-item selecionado */}
                                 <span
-                                  className={`h-2 w-2 rounded-full transition-all flex items-center justify-center shrink-0 ${
-                                    isSubActive
-                                      ? 'bg-brand ring-2 ring-brand/40'
-                                      : 'bg-slate-500/40 group-hover/sub:bg-brand'
-                                  }`}
+                                  className={`h-2 w-2 rounded-full transition-all flex items-center justify-center shrink-0 ${isSubActive
+                                    ? 'bg-brand ring-2 ring-brand/40'
+                                    : 'bg-slate-500/40 group-hover/sub:bg-brand'
+                                    }`}
                                 />
 
                                 <span className="truncate">{subItem.label}</span>
@@ -429,9 +423,9 @@ export function Sidebar({
                         </div>
                       )}
 
-                      {/* Card Popover no Hover (Modo Recolhido / Rail Mode) */}
+                      {/* Card Popover no Hover (Modo Recolhido / Rail Mode) - Vancouver Plus style */}
                       {isCollapsed && hoveredGroupId === group.id && hasSubItems && (
-                        <div className="fixed left-20 z-50 min-w-[210px] rounded-2xl border border-white/15 bg-[#0b132b]/98 p-3.5 shadow-2xl backdrop-blur-2xl animate-in fade-in slide-in-from-left-2 duration-200">
+                        <div className="fixed left-20 z-50 min-w-[210px] rounded-xl border border-white/15 bg-gradient-to-br from-[#0b132b]/98 to-[#0f172a]/98 p-3.5 shadow-2xl backdrop-blur-2xl animate-in fade-in slide-in-from-left-2 duration-300">
                           <p className="mb-2 px-2 text-[10px] font-extrabold uppercase tracking-widest text-brand font-mono">
                             {group.label}
                           </p>
@@ -444,11 +438,10 @@ export function Sidebar({
                                   selectTab(sub.tab, e);
                                   setHoveredGroupId(null);
                                 }}
-                                className={`flex w-full items-center gap-2.5 rounded-xl px-3.5 py-2.5 text-xs font-bold transition-all border ${
-                                  sub.tab === activeTab
-                                    ? 'bg-brand/20 text-brand border-brand/60'
-                                    : 'bg-[#16202C] border-white/10 text-slate-200 hover:bg-[#1E2C3D] hover:text-white'
-                                }`}
+                                className={`flex w-full items-center gap-2.5 rounded-lg px-3.5 py-2.5 text-xs font-bold transition-all duration-300 border ${sub.tab === activeTab
+                                  ? 'bg-gradient-to-r from-brand/20 to-brand/10 text-brand border-brand/50'
+                                  : 'bg-gradient-to-br from-[#16202C] to-[#121A24] border-white/10 text-slate-200 hover:bg-gradient-to-br hover:from-[#1E2C3D] hover:to-[#16202C] hover:border-brand/30 hover:text-white'
+                                  }`}
                               >
                                 <span className="h-1.5 w-1.5 rounded-full bg-brand" />
                                 <span className="truncate">{sub.label}</span>
@@ -465,10 +458,10 @@ export function Sidebar({
           ))}
         </nav>
 
-        {/* ── Central de Comando em Container Arredondado ────────────────────── */}
-        <div className="shrink-0 p-3.5 border-t border-white/10 bg-[#0b132b]">
+        {/* ── Central de Comando em Container Arredondado (Vancouver Plus style) ────────────────────── */}
+        <div className="shrink-0 p-4 border-t border-white/10 bg-[#0b132b]">
           {!isCollapsed ? (
-            <div className="rounded-2xl border border-white/10 bg-[#121A24] p-4 shadow-xl space-y-3">
+            <div className="rounded-xl border border-white/10 bg-gradient-to-br from-[#121A24] to-[#0f172a] p-4 shadow-xl space-y-3">
               <div className="flex items-center gap-2">
                 <span className="h-2.5 w-2.5 rounded-full bg-brand animate-pulse shadow-[0_0_8px_var(--brand)]" />
                 <h4 className="text-xs font-extrabold text-white uppercase tracking-wider font-mono">
@@ -481,7 +474,7 @@ export function Sidebar({
               <button
                 type="button"
                 onClick={() => openTab('workspace')}
-                className="w-full flex items-center justify-between rounded-xl bg-gradient-to-r from-brand via-sky-400 to-iris p-0.5 text-xs font-extrabold text-slate-950 shadow-lg hover:brightness-110 active:scale-95 transition-all cursor-pointer group"
+                className="w-full flex items-center justify-between rounded-lg bg-gradient-to-r from-brand via-sky-400 to-iris p-0.5 text-xs font-extrabold text-slate-950 shadow-lg hover:brightness-110 hover:shadow-xl active:scale-95 transition-all duration-300 cursor-pointer group"
               >
                 <div className="w-full bg-gradient-to-r from-brand via-sky-400 to-iris py-2.5 px-3.5 rounded-[10px] flex items-center justify-between text-slate-950 font-extrabold">
                   <div className="flex items-center gap-2">
@@ -496,7 +489,7 @@ export function Sidebar({
             <button
               type="button"
               onClick={() => openTab('workspace')}
-              className="flex h-11 w-11 mx-auto items-center justify-center rounded-2xl bg-gradient-to-r from-brand via-sky-400 to-iris text-slate-950 shadow-lg hover:scale-105 active:scale-95 transition-all cursor-pointer"
+              className="flex h-11 w-11 mx-auto items-center justify-center rounded-lg bg-gradient-to-r from-brand via-sky-400 to-iris text-slate-950 shadow-lg hover:scale-105 hover:shadow-xl active:scale-95 transition-all duration-300 cursor-pointer"
               title="Orquestrar Pipeline"
             >
               <Plus size={20} strokeWidth={3} />

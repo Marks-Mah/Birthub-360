@@ -79,8 +79,8 @@ export function AppTopbar({ activeTab, onOpenMobileNav }: AppTopbarProps) {
   };
 
   return (
-    <header className="relative sticky top-0 z-20 flex h-14 shrink-0 items-center gap-2.5 border-b border-line bg-surface-elevated/96 px-3 shadow-xs backdrop-blur-xl sm:px-5">
-      <div className="absolute bottom-0 left-0 right-0 h-[1.5px] bg-gradient-to-r from-transparent via-brand/40 to-transparent pointer-events-none" />
+    <header className="relative sticky top-0 z-20 flex h-14 shrink-0 items-center gap-2.5 border-b border-line bg-gradient-to-r from-surface-elevated/96 to-surface/96 px-3 shadow-xs backdrop-blur-xl sm:px-5">
+      <div className="absolute bottom-0 left-0 right-0 h-[1.5px] bg-gradient-to-r from-transparent via-brand/30 to-transparent pointer-events-none" />
       <button
         type="button"
         onClick={onOpenMobileNav}
@@ -141,7 +141,7 @@ export function AppTopbar({ activeTab, onOpenMobileNav }: AppTopbarProps) {
             SoundFX.play('navigate');
             toggleTheme();
           }}
-          className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-xl border border-transparent text-ink-2 transition-colors duration-200 hover:border-line hover:bg-surface-2 hover:text-ink hover:shadow-sm"
+          className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-transparent text-ink-2 transition-all duration-300 hover:border-line hover:bg-gradient-to-br hover:from-surface-2 hover:to-surface hover:text-ink hover:shadow-md"
           aria-label="Alternar tema"
           title={`Mudar para modo ${theme === 'dark' ? 'claro' : 'escuro'}`}
         >
@@ -154,11 +154,10 @@ export function AppTopbar({ activeTab, onOpenMobileNav }: AppTopbarProps) {
           whileTap={{ scale: 0.92 }}
           transition={{ type: 'spring', stiffness: 400, damping: 25 }}
           onClick={toggleSound}
-          className={`flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-xl border transition-colors duration-200 hover:shadow-sm ${
-            soundEnabled
-              ? 'border-brand/15 bg-brand/8 text-brand-ink dark:text-brand hover:border-brand/30'
-              : 'border-transparent text-ink-2 hover:border-line hover:bg-surface-2 hover:text-ink'
-          }`}
+          className={`flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-lg border transition-all duration-300 hover:shadow-md ${soundEnabled
+            ? 'border-brand/15 bg-gradient-to-br from-brand/8 to-brand/5 text-brand-ink dark:text-brand hover:border-brand/30'
+            : 'border-transparent text-ink-2 hover:border-line hover:bg-gradient-to-br hover:from-surface-2 hover:to-surface hover:text-ink'
+            }`}
           aria-pressed={soundEnabled}
           aria-label={soundEnabled ? 'Desativar sons da interface' : 'Ativar sons da interface'}
           title={soundEnabled ? 'Sons da interface ligados' : 'Sons da interface desligados'}
@@ -175,7 +174,7 @@ export function AppTopbar({ activeTab, onOpenMobileNav }: AppTopbarProps) {
             SoundFX.play('navigate');
             navigate('/app/notifications');
           }}
-          className="relative flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-xl border border-transparent text-ink-2 transition-colors duration-200 hover:border-line hover:bg-surface-2 hover:text-brand hover:shadow-sm"
+          className="relative flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-transparent text-ink-2 transition-all duration-300 hover:border-line hover:bg-gradient-to-br hover:from-surface-2 hover:to-surface hover:text-brand hover:shadow-md"
           aria-label={
             unreadCount > 0
               ? `Notificações — ${unreadCount} não lida${unreadCount === 1 ? '' : 's'}`
@@ -196,7 +195,7 @@ export function AppTopbar({ activeTab, onOpenMobileNav }: AppTopbarProps) {
           transition={{ type: 'spring', stiffness: 400, damping: 25 }}
           role="img"
           aria-label={`Avatar de ${currentUser?.name || 'Usuário'}`}
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-brand to-brand-2 text-sm font-bold text-on-brand shadow-sm ring-1 ring-white/10 cursor-pointer"
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-brand to-brand-2 text-sm font-bold text-on-brand shadow-md ring-1 ring-white/10 cursor-pointer"
           title={`${currentUser?.name || 'Usuário'} (${currentUser?.roleTitle || currentUser?.role || ''})`}
         >
           {userInitial}
@@ -208,7 +207,7 @@ export function AppTopbar({ activeTab, onOpenMobileNav }: AppTopbarProps) {
           whileTap={{ scale: 0.92 }}
           transition={{ type: 'spring', stiffness: 400, damping: 25 }}
           onClick={logout}
-          className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-xl border border-transparent text-ink-2 transition-colors duration-200 hover:border-critical/20 hover:bg-critical/10 hover:text-critical hover:shadow-sm"
+          className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-transparent text-ink-2 transition-all duration-300 hover:border-critical/20 hover:bg-gradient-to-br hover:from-critical/10 hover:to-critical/5 hover:text-critical hover:shadow-md"
           aria-label="Sair da conta"
           title="Sair da conta"
         >

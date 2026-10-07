@@ -17,7 +17,7 @@ export function MainLayout({ children, activeTab }: MainLayoutProps) {
   const { mobileNavOpen, toggleMobileNav, closeMobileNav } = useNavigationState();
 
   return (
-    <div className="relative flex h-screen h-[100dvh] w-full overflow-hidden bg-background text-foreground antialiased selection:bg-brand selection:text-on-brand">
+    <div className="relative flex h-screen h-[100dvh] w-full overflow-hidden bg-gradient-to-br from-background to-surface-2 text-foreground antialiased selection:bg-brand selection:text-on-brand">
       <OfflineBanner />
 
       {/* Sidebar Desktop gerencia o proprio fixed e collapse */}

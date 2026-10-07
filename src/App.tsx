@@ -372,6 +372,7 @@ function AppLayout() {
             />
             <Route path="intelligence" element={<IntelligenceHub />} />
             <Route path="intelligence/elite-agent" element={<EliteCommercialAgentWorkspace />} />
+            <Route path="copiloto_ia" element={<EliteCommercialAgentWorkspace />} />
             <Route path="companies" element={<CompanyList />} />
             <Route path="contacts" element={<ContactList />} />
             <Route path="activities" element={<ActivityList />} />

@@ -21,6 +21,8 @@ const inputVariants = cva(
           'bg-transparent border-transparent hover:bg-surface-subtle hover:shadow-glow-brand focus-visible:bg-surface-subtle focus-visible:border-brand/50 focus-visible:shadow-glow-brand-strong',
         cosmic:
           'bg-gradient-to-br from-surface-elevated/80 to-brand/5 border-brand/40 shadow-glow-brand hover:border-brand hover:shadow-glow-brand-strong focus-visible:border-brand focus-visible:ring-2 focus-visible:ring-brand/40 focus-visible:shadow-glow-brand-strong',
+        vancouver:
+          'bg-gradient-to-br from-surface-elevated/80 to-surface/70 border-line hover:border-brand/30 focus-visible:border-brand focus-visible:ring-2 focus-visible:ring-brand/30 focus-visible:shadow-glow-brand',
       },
     },
     defaultVariants: {
@@ -32,7 +34,7 @@ const inputVariants = cva(
 
 export interface InputProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'>,
-    VariantProps<typeof inputVariants> {
+  VariantProps<typeof inputVariants> {
   error?: boolean;
 }
 
@@ -44,7 +46,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         className={cn(
           inputVariants({ variant, inputSize }),
           error &&
-            'border-danger focus-visible:ring-danger focus-visible:shadow-[0_0_15px_rgba(239,68,68,0.4)]',
+          'border-danger focus-visible:ring-danger focus-visible:shadow-[0_0_15px_rgba(239,68,68,0.4)]',
           className,
         )}
         ref={ref}

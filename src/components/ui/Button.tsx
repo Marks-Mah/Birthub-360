@@ -36,7 +36,7 @@ const buttonVariants = cva(
         cosmic:
           'bg-gradient-to-r from-brand to-brand-2 text-on-brand shadow-glow-brand hover:shadow-glow-brand-strong hover:scale-[1.02] hover:-translate-y-0.5 active:scale-[0.98]',
         vancouver:
-          'vancouver-btn-gradient rounded-full text-white shadow-glow-brand hover:scale-[1.02] hover:-translate-y-0.5 active:scale-[0.98]',
+          'vancouver-btn-gradient rounded-lg text-white shadow-glow-brand hover:scale-[1.02] hover:-translate-y-0.5 hover:shadow-lg active:scale-[0.98]',
       },
       size: {
         default: 'h-9 px-4 py-2',
@@ -56,7 +56,7 @@ const buttonVariants = cva(
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
+  VariantProps<typeof buttonVariants> {
   asChild?: boolean;
   loading?: boolean;
   soundClick?: boolean;

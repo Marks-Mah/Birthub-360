@@ -55,7 +55,7 @@ const cardVariants = cva('relative overflow-hidden rounded-card text-ink', {
       specular:
         'bg-surface/75 backdrop-blur-2xl border border-brand/40 shadow-card hover:border-brand hover:shadow-glow-brand-strong hover:-translate-y-1 transition-all duration-300',
       vancouver:
-        'vancouver-card bg-surface-elevated/90 backdrop-blur-xl border border-line hover:border-brand/50 shadow-card hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1 hover:scale-[1.006]',
+        'vancouver-card bg-gradient-to-br from-surface-elevated/95 to-surface/90 backdrop-blur-xl border border-line hover:border-brand/40 shadow-card hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1 hover:scale-[1.005]',
     },
     padding: {
       default: 'p-6',
@@ -72,7 +72,7 @@ const cardVariants = cva('relative overflow-hidden rounded-card text-ink', {
 
 export interface CardProps
   extends React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof cardVariants> {
+  VariantProps<typeof cardVariants> {
   /** Faixa de destaque no topo do card — usa os tokens de marca (`--brand`/`--brand-2`). */
   accentBar?: boolean;
   /** Ativa o efeito de borda em órbita contínua durante carregamento. */
@@ -163,16 +163,16 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
         onMouseLeave={handleMouseLeave}
         {...(onClick
           ? {
-              role: 'button',
-              tabIndex: 0,
-              onKeyDown: (e: React.KeyboardEvent<HTMLDivElement>) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  onClick?.(e as unknown as React.MouseEvent<HTMLDivElement>);
-                }
-              },
-              onClick: handleClick,
-            }
+            role: 'button',
+            tabIndex: 0,
+            onKeyDown: (e: React.KeyboardEvent<HTMLDivElement>) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                onClick?.(e as unknown as React.MouseEvent<HTMLDivElement>);
+              }
+            },
+            onClick: handleClick,
+          }
           : {})}
         {...props}
       >
