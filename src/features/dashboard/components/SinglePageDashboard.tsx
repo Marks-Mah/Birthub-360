@@ -163,7 +163,10 @@ export function SinglePageDashboard() {
             </p>
             <div className="flex items-center justify-between mt-3 pt-3 border-t border-line/40 text-xs text-ink-2">
               <span>{totalLeads} oportunidades ativas</span>
-              <span className="text-brand font-semibold cursor-pointer hover:underline" onClick={() => navigate('/app/crm')}>
+              <span
+                className="text-brand font-semibold cursor-pointer hover:underline"
+                onClick={() => navigate('/app/crm')}
+              >
                 Ver kanban &rarr;
               </span>
             </div>
@@ -188,7 +191,10 @@ export function SinglePageDashboard() {
             </p>
             <div className="flex items-center justify-between mt-3 pt-3 border-t border-line/40 text-xs text-ink-2">
               <span>{closedThisMonth} fechados no período</span>
-              <span className="text-emerald-600 dark:text-emerald-400 font-semibold cursor-pointer hover:underline" onClick={() => navigate('/app/analytics')}>
+              <span
+                className="text-emerald-600 dark:text-emerald-400 font-semibold cursor-pointer hover:underline"
+                onClick={() => navigate('/app/analytics')}
+              >
                 Métricas &rarr;
               </span>
             </div>
@@ -213,7 +219,10 @@ export function SinglePageDashboard() {
             </p>
             <div className="flex items-center justify-between mt-3 pt-3 border-t border-line/40 text-xs text-ink-2">
               <span>Ações na cadência</span>
-              <span className="text-iris font-semibold cursor-pointer hover:underline" onClick={() => navigate('/app/calendar')}>
+              <span
+                className="text-iris font-semibold cursor-pointer hover:underline"
+                onClick={() => navigate('/app/calendar')}
+              >
                 Agenda &rarr;
               </span>
             </div>
@@ -238,7 +247,10 @@ export function SinglePageDashboard() {
             </p>
             <div className="flex items-center justify-between mt-3 pt-3 border-t border-line/40 text-xs text-ink-2">
               <span>Organizações no radar</span>
-              <span className="text-amber-600 dark:text-amber-400 font-semibold cursor-pointer hover:underline" onClick={() => navigate('/app/companies')}>
+              <span
+                className="text-amber-600 dark:text-amber-400 font-semibold cursor-pointer hover:underline"
+                onClick={() => navigate('/app/companies')}
+              >
                 Ver empresas &rarr;
               </span>
             </div>
@@ -275,7 +287,8 @@ export function SinglePageDashboard() {
                 </div>
                 <h4 className="text-sm font-semibold text-ink">Nenhum dado de funil registrado</h4>
                 <p className="text-xs text-ink-2 max-w-sm mx-auto">
-                  Inicie o fluxo cadastrando ou importando novos leads através do módulo de prospecção.
+                  Inicie o fluxo cadastrando ou importando novos leads através do módulo de
+                  prospecção.
                 </p>
                 <button
                   type="button"
@@ -356,8 +369,8 @@ export function SinglePageDashboard() {
                     const colorBadge = isHot
                       ? 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20'
                       : isWarm
-                      ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20'
-                      : 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20';
+                        ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20'
+                        : 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20';
 
                     return (
                       <div
@@ -455,7 +468,8 @@ export function SinglePageDashboard() {
                   Gestão Comercial 360°
                 </h3>
                 <p className="text-xs text-ink-2 leading-relaxed font-sans">
-                  Kanban ágil de oportunidades, controle de propostas e avanço de estágios de negociação.
+                  Kanban ágil de oportunidades, controle de propostas e avanço de estágios de
+                  negociação.
                 </p>
               </div>
               <div className="mt-4 pt-3 border-t border-line/40 flex items-center justify-between text-xs font-semibold text-emerald-600 dark:text-emerald-400">
@@ -479,7 +493,8 @@ export function SinglePageDashboard() {
                   Cadência & Multicanal
                 </h3>
                 <p className="text-xs text-ink-2 leading-relaxed font-sans">
-                  Regras automatizadas de follow-up, disparos via WhatsApp, e-mail e ligações inteligentes.
+                  Regras automatizadas de follow-up, disparos via WhatsApp, e-mail e ligações
+                  inteligentes.
                 </p>
               </div>
               <div className="mt-4 pt-3 border-t border-line/40 flex items-center justify-between text-xs font-semibold text-iris">
@@ -503,7 +518,8 @@ export function SinglePageDashboard() {
                   Inteligência & Copiloto IA
                 </h3>
                 <p className="text-xs text-ink-2 leading-relaxed font-sans">
-                  Diagnósticos preditivos de fechamento, análise de objeções e relatórios executivos.
+                  Diagnósticos preditivos de fechamento, análise de objeções e relatórios
+                  executivos.
                 </p>
               </div>
               <div className="mt-4 pt-3 border-t border-line/40 flex items-center justify-between text-xs font-semibold text-amber-600 dark:text-amber-400">

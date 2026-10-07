@@ -162,8 +162,10 @@
   --pulse: var(--coolors-pink);
   /* Glow discreto no claro — "neon só no escuro" (regra do brief). Mesma fórmula de
      --shadow-glow-brand acima (20%, blur 15px), só trocando a cor de base. */
-  --shadow-glow-accent-violet-value: 0 0 15px -3px color-mix(in srgb, var(--coolors-purple) 20%, transparent);
-  --shadow-glow-accent-cyan-value: 0 0 15px -3px color-mix(in srgb, var(--coolors-blue) 20%, transparent);
+  --shadow-glow-accent-violet-value: 0 0 15px -3px
+    color-mix(in srgb, var(--coolors-purple) 20%, transparent);
+  --shadow-glow-accent-cyan-value: 0 0 15px -3px
+    color-mix(in srgb, var(--coolors-blue) 20%, transparent);
   --shadow-glow-pulse-value: 0 0 15px -3px color-mix(in srgb, var(--coolors-pink) 20%, transparent);
   /* Vermelho de estado crítico/risco (Comercial Inteligente: Centro de Decisão, Alertas, drill-down
      de negócios) — precisa ser redefinido por tema porque nenhum hex único passa 4.5:1 (WCAG AA)
@@ -302,14 +304,24 @@
 
 /* Vancouver Plus Gradient Text */
 .text-gradient-coolors {
-  background: linear-gradient(135deg, var(--coolors-blue), var(--coolors-purple), var(--coolors-pink));
+  background: linear-gradient(
+    135deg,
+    var(--coolors-blue),
+    var(--coolors-purple),
+    var(--coolors-pink)
+  );
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 
 .text-gradient-coolors-warm {
-  background: linear-gradient(135deg, var(--coolors-yellow), var(--coolors-orange), var(--coolors-pink));
+  background: linear-gradient(
+    135deg,
+    var(--coolors-yellow),
+    var(--coolors-orange),
+    var(--coolors-pink)
+  );
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -784,7 +796,6 @@
   }
 
   @keyframes float {
-
     0%,
     100% {
       transform: translateY(0);
@@ -796,7 +807,6 @@
   }
 
   @keyframes pulse-glow {
-
     0%,
     100% {
       filter: drop-shadow(0 0 12px color-mix(in srgb, var(--brand) 25%, transparent));
@@ -808,7 +818,6 @@
   }
 
   @keyframes gradient-xy {
-
     0%,
     100% {
       background-position: 0% 50%;
@@ -856,7 +865,6 @@
   }
 
   @keyframes pulse-slow {
-
     0%,
     100% {
       opacity: 0.6;
@@ -886,12 +894,16 @@
     font-family: var(--font-sans);
     background-color: var(--bg);
     background-image:
-      radial-gradient(at 0% 0%,
+      radial-gradient(
+        at 0% 0%,
         color-mix(in srgb, var(--brand) 10%, transparent) 0px,
-        transparent 50%),
-      radial-gradient(at 100% 100%,
+        transparent 50%
+      ),
+      radial-gradient(
+        at 100% 100%,
         color-mix(in srgb, var(--brand-2) 10%, transparent) 0px,
-        transparent 50%);
+        transparent 50%
+      );
     background-attachment: fixed;
     color: var(--ink);
   }
@@ -1176,18 +1188,19 @@
 }
 
 @layer utilities {
-
   /* Órbita 360º de assinatura (dourado → vermelho → rosa → íris → azul) — atualização 09/2026 da
      órbita de 3 cores (dourado → íris → azul) para as 5 cores da nova direção. Reservada a
      halo/borda/hero por regra da marca (CLAUDE.md, seção 4, regra #3): nunca fundo de superfície
      com texto em cima, no máximo uma por composição. */
   .bg-gradient-orbit5 {
-    background-image: linear-gradient(100deg,
-        var(--brand) 0%,
-        var(--red) 26%,
-        var(--pink) 48%,
-        var(--iris) 70%,
-        var(--orbit-blue) 100%);
+    background-image: linear-gradient(
+      100deg,
+      var(--brand) 0%,
+      var(--red) 26%,
+      var(--pink) 48%,
+      var(--iris) 70%,
+      var(--orbit-blue) 100%
+    );
   }
 
   .text-gradient-brand {
@@ -1197,10 +1210,12 @@
   }
 
   .shimmer-bg {
-    background: linear-gradient(90deg,
-        rgba(255, 255, 255, 0) 0%,
-        rgba(255, 255, 255, 0.08) 50%,
-        rgba(255, 255, 255, 0) 100%);
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.08) 50%,
+      rgba(255, 255, 255, 0) 100%
+    );
     background-size: 200% 100%;
     animation: shimmer 2.5s infinite linear;
   }
@@ -1268,32 +1283,40 @@
 
   /* Shimmer dos skeletons */
   .bh-skeleton-shimmer {
-    background: linear-gradient(90deg,
-        color-mix(in srgb, var(--surface-2) 100%, transparent) 0%,
-        color-mix(in srgb, var(--surface-2) 60%, var(--surface)) 50%,
-        color-mix(in srgb, var(--surface-2) 100%, transparent) 100%);
+    background: linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--surface-2) 100%, transparent) 0%,
+      color-mix(in srgb, var(--surface-2) 60%, var(--surface)) 50%,
+      color-mix(in srgb, var(--surface-2) 100%, transparent) 100%
+    );
     background-size: 200% 100%;
     animation: shimmer 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
 
   /* Padrões geométricos de atmosfera (60°) */
   .bh-pattern-diagonal-60 {
-    background-image: repeating-linear-gradient(60deg,
-        transparent,
-        transparent 28px,
-        color-mix(in srgb, var(--brand) 4%, transparent) 28px,
-        color-mix(in srgb, var(--brand) 4%, transparent) 29px);
+    background-image: repeating-linear-gradient(
+      60deg,
+      transparent,
+      transparent 28px,
+      color-mix(in srgb, var(--brand) 4%, transparent) 28px,
+      color-mix(in srgb, var(--brand) 4%, transparent) 29px
+    );
   }
 
   .bh-pattern-grid {
     background-size: 32px 32px;
     background-image:
-      linear-gradient(to right,
+      linear-gradient(
+        to right,
         color-mix(in srgb, var(--line) 40%, transparent) 1px,
-        transparent 1px),
-      linear-gradient(to bottom,
+        transparent 1px
+      ),
+      linear-gradient(
+        to bottom,
         color-mix(in srgb, var(--line) 40%, transparent) 1px,
-        transparent 1px);
+        transparent 1px
+      );
   }
 }
 
@@ -1306,7 +1329,6 @@
    árvore de rotas. Verificado na Onda 8: comentário anterior citava isso como backlog pendente,
    mas o MotionConfig já estava implementado — só o comentário estava desatualizado. */
 @media (prefers-reduced-motion: reduce) {
-
   *,
   *::before,
   *::after {
@@ -1399,7 +1421,12 @@
 /* Vancouver Plus Typography & Text Gradient */
 .vancouver-gradient-text,
 .gradient-text {
-  background-image: linear-gradient(135deg, var(--brand) 0%, var(--iris) 50%, var(--orbit-blue) 100%);
+  background-image: linear-gradient(
+    135deg,
+    var(--brand) 0%,
+    var(--iris) 50%,
+    var(--orbit-blue) 100%
+  );
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -1413,14 +1440,18 @@
   backdrop-filter: blur(16px);
   border: 1px solid color-mix(in srgb, var(--line) 80%, transparent);
   border-radius: 1.25rem;
-  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 12px 32px -8px rgba(0, 0, 0, 0.08);
+  box-shadow:
+    0 4px 20px -2px rgba(0, 0, 0, 0.05),
+    0 12px 32px -8px rgba(0, 0, 0, 0.08);
   transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .vancouver-card:hover {
   transform: translateY(-3px);
   border-color: color-mix(in srgb, var(--brand) 45%, transparent);
-  box-shadow: 0 8px 30px -4px color-mix(in srgb, var(--brand) 25%, transparent), 0 20px 45px -10px rgba(0, 0, 0, 0.12);
+  box-shadow:
+    0 8px 30px -4px color-mix(in srgb, var(--brand) 25%, transparent),
+    0 20px 45px -10px rgba(0, 0, 0, 0.12);
 }
 
 /* Vancouver Glass Container */
@@ -1541,7 +1572,8 @@
 :root:not(.dark) {
   --vancouver-card-bg: rgba(255, 255, 255, 0.88);
   --vancouver-card-border: rgba(11, 19, 43, 0.1);
-  --vancouver-card-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05), 0 20px 40px -15px rgba(11, 19, 43, 0.06);
+  --vancouver-card-shadow:
+    0 10px 30px -5px rgba(0, 0, 0, 0.05), 0 20px 40px -15px rgba(11, 19, 43, 0.06);
   --vancouver-glass-bg: rgba(255, 255, 255, 0.78);
 }
 
@@ -1554,7 +1586,9 @@
 
 :root:not(.dark) .vancouver-card:hover {
   border-color: color-mix(in srgb, var(--brand) 40%, transparent);
-  box-shadow: 0 12px 35px -6px color-mix(in srgb, var(--brand) 18%, transparent), 0 24px 50px -12px rgba(11, 19, 43, 0.1);
+  box-shadow:
+    0 12px 35px -6px color-mix(in srgb, var(--brand) 18%, transparent),
+    0 24px 50px -12px rgba(11, 19, 43, 0.1);
 }
 
 :root:not(.dark) .vancouver-glass {

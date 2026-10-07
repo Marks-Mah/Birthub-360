@@ -85,7 +85,9 @@ export function WorkspaceReadySection({ workspace }: { workspace: Workspace }) {
                             {kpi.domain || 'Métrica'}
                           </p>
                         </div>
-                        <p className="text-xl font-bold tracking-tight text-ink font-display">{kpi.label}</p>
+                        <p className="text-xl font-bold tracking-tight text-ink font-display">
+                          {kpi.label}
+                        </p>
                         {kpi.description && (
                           <p className="mt-2 text-xs text-ink-2 font-sans">{kpi.description}</p>
                         )}

@@ -37,7 +37,10 @@ function getWordRegex(word: string): RegExp {
     return new RegExp(`(^|[^\\p{L}\\p{N}_])${escapeRegex(word)}(?=[^\\p{L}\\p{N}_]|$)`, 'gui');
   }
 
-  let norm = word.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  let norm = word
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase();
   let ending = 's?';
 
   if (norm.endsWith('o')) {
@@ -51,7 +54,10 @@ function getWordRegex(word: string): RegExp {
     ending = 'i[ls]';
   }
 
-  const body = norm.split('').map((c) => CHAR_MAP[c] || escapeRegex(c)).join('');
+  const body = norm
+    .split('')
+    .map((c) => CHAR_MAP[c] || escapeRegex(c))
+    .join('');
   return new RegExp(`(^|[^\\p{L}\\p{N}_])${body}${ending}(?=[^\\p{L}\\p{N}_]|$)`, 'gui');
 }
 

@@ -4,7 +4,11 @@ import { AppError } from '../../../../shared/middlewares/errorHandler.js';
 import { bitrixSyncFailuresTotal } from './metrics.js';
 
 export class BitrixPaginationError extends AppError {
-  constructor(message: string, public readonly method: string, public readonly pageStart: number) {
+  constructor(
+    message: string,
+    public readonly method: string,
+    public readonly pageStart: number,
+  ) {
     super(message, 502);
   }
 }

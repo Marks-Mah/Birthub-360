@@ -76,7 +76,9 @@ leadsRouter.put('/leads/:id/stage', requireAuth, async (req: Request, res: Respo
     const { id } = req.params;
     const parsed = updateStageSchema.safeParse(req.body);
     if (!parsed.success) {
-      return res.status(400).json({ error: parsed.error.issues[0]?.message || 'Stage é obrigatório' });
+      return res
+        .status(400)
+        .json({ error: parsed.error.issues[0]?.message || 'Stage é obrigatório' });
     }
     const { stage, userId, lossReason, winReason } = parsed.data;
     const db = await getDatabase();
@@ -797,7 +799,9 @@ leadsRouter.post('/prospect', heavyAiLimiter, requireAuth, async (req: Request, 
     } = req.body;
 
     const company =
-      (req as any).outboundUser && (req as any).outboundUser.role !== 'admin' && (req as any).outboundUser.company
+      (req as any).outboundUser &&
+      (req as any).outboundUser.role !== 'admin' &&
+      (req as any).outboundUser.company
         ? (req as any).outboundUser.company
         : bodyCompany;
 

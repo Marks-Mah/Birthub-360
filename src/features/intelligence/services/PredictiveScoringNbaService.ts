@@ -1,8 +1,20 @@
-import { cleanAndParseJson, generateEmbedding, getAiModel, litellmProvider, logAiUsage } from '../../../lib/ai/gateway.js';
+import {
+  cleanAndParseJson,
+  generateEmbedding,
+  getAiModel,
+  litellmProvider,
+  logAiUsage,
+} from '../../../lib/ai/gateway.js';
 import { logger } from '../../../lib/logger.js';
 import { prisma } from '../../../lib/prisma.js';
-import { searchSimilarWonDealsInQdrant, VECTOR_DIMENSION } from '../../../lib/qdrant/funnelVectorStore.ts';
-import { computeLookalikeScore, type LookalikeScoreResult } from '../../prospecting/services/lookalike-scoring.service.js';
+import {
+  searchSimilarWonDealsInQdrant,
+  VECTOR_DIMENSION,
+} from '../../../lib/qdrant/funnelVectorStore.ts';
+import {
+  computeLookalikeScore,
+  type LookalikeScoreResult,
+} from '../../prospecting/services/lookalike-scoring.service.js';
 import type { NextBestActionResult } from '../../activities/services/next-best-action.service.js';
 
 export interface PredictiveLeadScoreResult {
@@ -99,9 +111,8 @@ export class PredictiveScoringNbaService {
     const finalVectorScore = vectorWeight > 0 ? vectorContribution / vectorWeight : null;
 
     // Score final: 50% Fit firmográfico determinístico + 50% Similaridade Vetorial (Qdrant/pgvector)
-    const predictiveScore = finalVectorScore !== null
-      ? Math.round(fitScore * 0.5 + finalVectorScore * 0.5)
-      : fitScore;
+    const predictiveScore =
+      finalVectorScore !== null ? Math.round(fitScore * 0.5 + finalVectorScore * 0.5) : fitScore;
 
     const confidence = finalVectorScore !== null ? 0.9 : 0.6;
 
@@ -169,7 +180,10 @@ Anotações/Histórico: ${params.recentNotes || 'Sem anotações recentes.'}`;
           return cleanAndParseJson<NextBestActionResult>(textContent);
         }
       } catch (err: any) {
-        logger.warn({ err }, '[PredictiveNba] LiteLLM indisponível, recorrendo ao AI Gateway padrão.');
+        logger.warn(
+          { err },
+          '[PredictiveNba] LiteLLM indisponível, recorrendo ao AI Gateway padrão.',
+        );
       }
     }
 
@@ -182,7 +196,11 @@ Anotações/Histórico: ${params.recentNotes || 'Sem anotações recentes.'}`;
 
     await logAiUsage({
       model: response.response_metadata?.model ?? 'local-llama3-fast',
-      usage: response.response_metadata?.tokenUsage ?? { promptTokens: 0, completionTokens: 0, totalTokens: 0 },
+      usage: response.response_metadata?.tokenUsage ?? {
+        promptTokens: 0,
+        completionTokens: 0,
+        totalTokens: 0,
+      },
       latencyMs: Date.now() - startTime,
       promptId: 'predictive-nba',
     });

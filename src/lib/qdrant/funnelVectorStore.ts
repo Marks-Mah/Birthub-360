@@ -108,7 +108,10 @@ export async function searchSimilarWonDealsInQdrant(
       payload: (r.payload as Record<string, unknown>) || {},
     }));
   } catch (err: any) {
-    logger.warn({ err, organizationId }, '[qdrant] Falha na busca vetorial por negócios semelhantes.');
+    logger.warn(
+      { err, organizationId },
+      '[qdrant] Falha na busca vetorial por negócios semelhantes.',
+    );
     return [];
   }
 }

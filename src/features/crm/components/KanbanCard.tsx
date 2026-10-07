@@ -344,9 +344,7 @@ export const KanbanCard = React.memo(function KanbanCard({
         </div>
       </div>
 
-      <div
-        className="flex items-center justify-between mx-4 mb-4 mt-3 pt-2.5 border-t border-line/60"
-      >
+      <div className="flex items-center justify-between mx-4 mb-4 mt-3 pt-2.5 border-t border-line/60">
         <div className="flex items-center gap-1.5 text-[11px] text-ink-2 min-w-0">
           <Calendar className="w-3.5 h-3.5 shrink-0 text-ink-3" />
           {new Date(lead.updatedAt || lead.createdAt || '').toLocaleDateString('pt-BR')}

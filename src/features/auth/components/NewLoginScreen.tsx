@@ -302,37 +302,55 @@ export function NewLoginScreen({ initialScreen }: { initialScreen?: string } = {
           {/* Links de navegação Vancouver com sublinhado suave */}
           <nav className="hidden lg:flex items-center gap-8">
             <div className="nav-link-holder relative cursor-pointer py-1">
-              <a href="#recursos" className="text-sm font-semibold text-[#475569] hover:text-[#0b132b] transition-colors">
+              <a
+                href="#recursos"
+                className="text-sm font-semibold text-[#475569] hover:text-[#0b132b] transition-colors"
+              >
                 Recursos
               </a>
               <div className="link-block-underline" />
             </div>
             <div className="nav-link-holder relative cursor-pointer py-1">
-              <a href="#pilares" className="text-sm font-semibold text-[#475569] hover:text-[#0b132b] transition-colors">
+              <a
+                href="#pilares"
+                className="text-sm font-semibold text-[#475569] hover:text-[#0b132b] transition-colors"
+              >
                 8 Pilares
               </a>
               <div className="link-block-underline" />
             </div>
             <div className="nav-link-holder relative cursor-pointer py-1">
-              <a href="#plataforma" className="text-sm font-semibold text-[#475569] hover:text-[#0b132b] transition-colors">
+              <a
+                href="#plataforma"
+                className="text-sm font-semibold text-[#475569] hover:text-[#0b132b] transition-colors"
+              >
                 Plataforma
               </a>
               <div className="link-block-underline" />
             </div>
             <div className="nav-link-holder relative cursor-pointer py-1">
-              <a href="#precos" className="text-sm font-semibold text-[#475569] hover:text-[#0b132b] transition-colors">
+              <a
+                href="#precos"
+                className="text-sm font-semibold text-[#475569] hover:text-[#0b132b] transition-colors"
+              >
                 Planos
               </a>
               <div className="link-block-underline" />
             </div>
             <div className="nav-link-holder relative cursor-pointer py-1">
-              <a href="#ecossistema" className="text-sm font-semibold text-[#475569] hover:text-[#0b132b] transition-colors">
+              <a
+                href="#ecossistema"
+                className="text-sm font-semibold text-[#475569] hover:text-[#0b132b] transition-colors"
+              >
                 Ecossistema
               </a>
               <div className="link-block-underline" />
             </div>
             <div className="nav-link-holder relative cursor-pointer py-1">
-              <a href="#contato" className="text-sm font-semibold text-[#475569] hover:text-[#0b132b] transition-colors">
+              <a
+                href="#contato"
+                className="text-sm font-semibold text-[#475569] hover:text-[#0b132b] transition-colors"
+              >
                 Suporte
               </a>
               <div className="link-block-underline" />
@@ -383,12 +401,15 @@ export function NewLoginScreen({ initialScreen }: { initialScreen?: string } = {
 
           {/* Título Principal Vancouver Plus com Texto em Gradiente */}
           <h1 className="font-display text-4xl sm:text-6xl font-extrabold tracking-tight text-[#0b132b] leading-[1.12]">
-            <span className="vancouver-gradient-text">Personalizado</span> para Gerenciar Toda sua Operação Comercial
+            <span className="vancouver-gradient-text">Personalizado</span> para Gerenciar Toda sua
+            Operação Comercial
           </h1>
 
           {/* Subtítulo */}
           <p className="max-w-3xl mx-auto text-base sm:text-lg text-[#475569] leading-relaxed font-sans">
-            Opere com previsibilidade, segurança e inteligência artificial em um dashboard intuitivo e integrado de ponta a ponta. Projetado para transformar dados brutos em decisões que fecham negócios.
+            Opere com previsibilidade, segurança e inteligência artificial em um dashboard intuitivo
+            e integrado de ponta a ponta. Projetado para transformar dados brutos em decisões que
+            fecham negócios.
           </p>
 
           {/* Botões de Chamada */}
@@ -406,10 +427,7 @@ export function NewLoginScreen({ initialScreen }: { initialScreen?: string } = {
               <ArrowRight className="w-4 h-4 ml-1" />
             </button>
 
-            <a
-              href="#plataforma"
-              className="vancouver-btn-outline text-base"
-            >
+            <a href="#plataforma" className="vancouver-btn-outline text-base">
               Conhecer a Plataforma
             </a>
           </div>
@@ -426,8 +444,12 @@ export function NewLoginScreen({ initialScreen }: { initialScreen?: string } = {
                 <TrendingUp className="w-5 h-5" />
               </div>
               <div>
-                <p className="text-[11px] font-bold uppercase tracking-wider text-[#64748b]">Pipeline Previsto</p>
-                <p className="text-base font-bold text-[#0b132b]">R$ 4.280.000 <span className="text-xs text-emerald-600 font-bold">+28.4%</span></p>
+                <p className="text-[11px] font-bold uppercase tracking-wider text-[#64748b]">
+                  Pipeline Previsto
+                </p>
+                <p className="text-base font-bold text-[#0b132b]">
+                  R$ 4.280.000 <span className="text-xs text-emerald-600 font-bold">+28.4%</span>
+                </p>
               </div>
             </div>
           </div>
@@ -439,8 +461,12 @@ export function NewLoginScreen({ initialScreen }: { initialScreen?: string } = {
                 <Sparkles className="w-5 h-5" />
               </div>
               <div>
-                <p className="text-[11px] font-bold uppercase tracking-wider text-[#64748b]">Inteligência Artificial</p>
-                <p className="text-sm font-bold text-[#0b132b]">Taxa de Conversão: <span className="text-[#8b5cf6]">42.8%</span></p>
+                <p className="text-[11px] font-bold uppercase tracking-wider text-[#64748b]">
+                  Inteligência Artificial
+                </p>
+                <p className="text-sm font-bold text-[#0b132b]">
+                  Taxa de Conversão: <span className="text-[#8b5cf6]">42.8%</span>
+                </p>
               </div>
             </div>
           </div>
@@ -469,19 +495,27 @@ export function NewLoginScreen({ initialScreen }: { initialScreen?: string } = {
               {/* KPIs de Destaque */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="p-4 rounded-xl bg-[#f8fafc] border border-slate-200">
-                  <p className="text-xs text-slate-500 font-semibold uppercase">Oportunidades Ativas</p>
+                  <p className="text-xs text-slate-500 font-semibold uppercase">
+                    Oportunidades Ativas
+                  </p>
                   <p className="text-2xl font-bold text-[#0b132b] mt-1">1.240</p>
-                  <span className="text-[10px] text-emerald-600 font-bold">↑ 14% vs mês anterior</span>
+                  <span className="text-[10px] text-emerald-600 font-bold">
+                    ↑ 14% vs mês anterior
+                  </span>
                 </div>
                 <div className="p-4 rounded-xl bg-[#f8fafc] border border-slate-200">
-                  <p className="text-xs text-slate-500 font-semibold uppercase">Pipeline Ponderado</p>
+                  <p className="text-xs text-slate-500 font-semibold uppercase">
+                    Pipeline Ponderado
+                  </p>
                   <p className="text-2xl font-bold text-[#0ea5e9] mt-1">R$ 8.940.000</p>
                   <span className="text-[10px] text-sky-600 font-bold">Probabilidade 82%</span>
                 </div>
                 <div className="p-4 rounded-xl bg-[#f8fafc] border border-slate-200">
                   <p className="text-xs text-slate-500 font-semibold uppercase">Sinais de Compra</p>
                   <p className="text-2xl font-bold text-[#8b5cf6] mt-1">348</p>
-                  <span className="text-[10px] text-purple-600 font-bold">14 prioritários hoje</span>
+                  <span className="text-[10px] text-purple-600 font-bold">
+                    14 prioritários hoje
+                  </span>
                 </div>
                 <div className="p-4 rounded-xl bg-[#f8fafc] border border-slate-200">
                   <p className="text-xs text-slate-500 font-semibold uppercase">Eficiência SDR</p>
@@ -494,33 +528,49 @@ export function NewLoginScreen({ initialScreen }: { initialScreen?: string } = {
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div className="lg:col-span-2 p-5 rounded-2xl border border-slate-200 bg-[#f8fafc] space-y-4">
                   <div className="flex items-center justify-between">
-                    <h3 className="font-display text-sm font-bold text-[#0b132b]">Fluxo de Negociação Unificado (CRM)</h3>
+                    <h3 className="font-display text-sm font-bold text-[#0b132b]">
+                      Fluxo de Negociação Unificado (CRM)
+                    </h3>
                     <span className="text-xs text-[#0ea5e9] font-bold">Tempo Real</span>
                   </div>
                   <div className="grid grid-cols-3 gap-3">
                     <div className="bg-white p-3 rounded-xl border border-slate-200 space-y-2">
-                      <div className="text-[10px] font-bold text-slate-400 uppercase">Qualificação (42)</div>
+                      <div className="text-[10px] font-bold text-slate-400 uppercase">
+                        Qualificação (42)
+                      </div>
                       <div className="p-2 rounded-lg bg-sky-50 border border-sky-100 text-xs font-bold text-sky-900">
                         Vibra Energia S/A
-                        <span className="block text-[10px] text-slate-500 font-normal">R$ 350.000 · Decisor Validado</span>
+                        <span className="block text-[10px] text-slate-500 font-normal">
+                          R$ 350.000 · Decisor Validado
+                        </span>
                       </div>
                       <div className="p-2 rounded-lg bg-slate-50 border border-slate-200 text-xs font-bold text-slate-800">
                         Ambev Logística
-                        <span className="block text-[10px] text-slate-500 font-normal">R$ 180.000 · Em contato</span>
+                        <span className="block text-[10px] text-slate-500 font-normal">
+                          R$ 180.000 · Em contato
+                        </span>
                       </div>
                     </div>
                     <div className="bg-white p-3 rounded-xl border border-slate-200 space-y-2">
-                      <div className="text-[10px] font-bold text-slate-400 uppercase">Proposta (18)</div>
+                      <div className="text-[10px] font-bold text-slate-400 uppercase">
+                        Proposta (18)
+                      </div>
                       <div className="p-2 rounded-lg bg-purple-50 border border-purple-100 text-xs font-bold text-purple-900">
                         Suzano Papel & Celulose
-                        <span className="block text-[10px] text-slate-500 font-normal">R$ 820.000 · Apresentada</span>
+                        <span className="block text-[10px] text-slate-500 font-normal">
+                          R$ 820.000 · Apresentada
+                        </span>
                       </div>
                     </div>
                     <div className="bg-white p-3 rounded-xl border border-slate-200 space-y-2">
-                      <div className="text-[10px] font-bold text-slate-400 uppercase">Fechamento (12)</div>
+                      <div className="text-[10px] font-bold text-slate-400 uppercase">
+                        Fechamento (12)
+                      </div>
                       <div className="p-2 rounded-lg bg-emerald-50 border border-emerald-100 text-xs font-bold text-emerald-900">
                         Gerdau Aços
-                        <span className="block text-[10px] text-slate-500 font-normal">R$ 1.200.000 · Minuta Pronta</span>
+                        <span className="block text-[10px] text-slate-500 font-normal">
+                          R$ 1.200.000 · Minuta Pronta
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -532,11 +582,14 @@ export function NewLoginScreen({ initialScreen }: { initialScreen?: string } = {
                     <h3 className="font-display text-sm font-bold">Motor IA & Diagnóstico</h3>
                   </div>
                   <p className="text-xs text-slate-600 leading-relaxed">
-                    Sinal preditivo detectou aumento de 3.2x no engajamento de decisores em 12 contas estratégicas no Bitrix24.
+                    Sinal preditivo detectou aumento de 3.2x no engajamento de decisores em 12
+                    contas estratégicas no Bitrix24.
                   </p>
                   <div className="p-3 bg-white rounded-xl border border-purple-100 text-xs space-y-1">
                     <span className="font-bold text-[#0b132b] block">Ação Recomendada:</span>
-                    <span className="text-slate-600 block">Disparar cadência multicanal via WhatsApp e agendar demonstração técnica.</span>
+                    <span className="text-slate-600 block">
+                      Disparar cadência multicanal via WhatsApp e agendar demonstração técnica.
+                    </span>
                   </div>
                 </div>
               </div>
@@ -565,14 +618,18 @@ export function NewLoginScreen({ initialScreen }: { initialScreen?: string } = {
       {/* ════════════════════════════════════════════════════════════════════
           3. SEÇÃO: GESTÃO DE PONTA A PONTA (ESTILO VANCOUVER PLUS)
       ════════════════════════════════════════════════════════════════════ */}
-      <section id="recursos" className="py-24 px-6 sm:px-12 bg-white border-t border-b border-slate-200">
+      <section
+        id="recursos"
+        className="py-24 px-6 sm:px-12 bg-white border-t border-b border-slate-200"
+      >
         <div className="max-w-6xl mx-auto space-y-20">
           <div className="text-center max-w-3xl mx-auto space-y-4">
             <h2 className="font-display text-3xl sm:text-4xl font-extrabold text-[#0b132b]">
               Ajudamos você a gerenciar de ponta a ponta, todas as camadas da sua receita.
             </h2>
             <p className="text-base text-[#475569]">
-              Da inteligência de mercado à orquestração de cadências e previsão probabilística de fechamento.
+              Da inteligência de mercado à orquestração de cadências e previsão probabilística de
+              fechamento.
             </p>
           </div>
 
@@ -583,7 +640,8 @@ export function NewLoginScreen({ initialScreen }: { initialScreen?: string } = {
                 Gestão Estratégica para Visão Holística da Receita
               </h3>
               <p className="text-sm text-[#475569] leading-relaxed">
-                Centralize o pipeline e acompanhe em tempo real onde estão as melhores oportunidades, eliminando planilhas fragmentadas e dados desatualizados.
+                Centralize o pipeline e acompanhe em tempo real onde estão as melhores
+                oportunidades, eliminando planilhas fragmentadas e dados desatualizados.
               </p>
               <ul className="space-y-3 font-sans text-sm text-[#0b132b]">
                 <li className="flex items-center gap-3">
@@ -616,8 +674,12 @@ export function NewLoginScreen({ initialScreen }: { initialScreen?: string } = {
             <div className="vancouver-card p-6 bg-[#f8fafc] border border-slate-200">
               <div className="space-y-4">
                 <div className="flex items-center justify-between pb-3 border-b border-slate-200">
-                  <span className="font-mono text-xs font-bold text-slate-500 uppercase">TELEMETRIA DE RECEITA</span>
-                  <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold">ATIVO</span>
+                  <span className="font-mono text-xs font-bold text-slate-500 uppercase">
+                    TELEMETRIA DE RECEITA
+                  </span>
+                  <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold">
+                    ATIVO
+                  </span>
                 </div>
                 <div className="space-y-2">
                   <div className="flex justify-between text-xs font-bold text-slate-700">
@@ -625,7 +687,10 @@ export function NewLoginScreen({ initialScreen }: { initialScreen?: string } = {
                     <span>78.4%</span>
                   </div>
                   <div className="w-full h-2.5 rounded-full bg-slate-200 overflow-hidden">
-                    <div className="h-full bg-gradient-to-r from-[#0ea5e9] to-[#8b5cf6]" style={{ width: '78.4%' }} />
+                    <div
+                      className="h-full bg-gradient-to-r from-[#0ea5e9] to-[#8b5cf6]"
+                      style={{ width: '78.4%' }}
+                    />
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-3 pt-2">
@@ -648,15 +713,23 @@ export function NewLoginScreen({ initialScreen }: { initialScreen?: string } = {
               <div className="space-y-4">
                 <div className="flex items-center gap-2">
                   <BrainCircuit className="w-5 h-5 text-[#8b5cf6]" />
-                  <span className="font-display text-sm font-bold text-[#0b132b]">Triagem & Qualificação Preditiva</span>
+                  <span className="font-display text-sm font-bold text-[#0b132b]">
+                    Triagem & Qualificação Preditiva
+                  </span>
                 </div>
                 <div className="p-3 bg-white rounded-xl border border-slate-200 text-xs space-y-1">
-                  <p className="font-bold text-slate-800">Decisor: Marcelo Nascimento (Diretor Comercial)</p>
-                  <p className="text-slate-500">Telefone verificado, e-mail corporativo ativo, perfil decisor estratégico.</p>
+                  <p className="font-bold text-slate-800">
+                    Decisor: Marcelo Nascimento (Diretor Comercial)
+                  </p>
+                  <p className="text-slate-500">
+                    Telefone verificado, e-mail corporativo ativo, perfil decisor estratégico.
+                  </p>
                 </div>
                 <div className="p-3 bg-white rounded-xl border border-slate-200 text-xs space-y-1">
                   <p className="font-bold text-slate-800">Sincronização Bitrix24</p>
-                  <p className="text-slate-500">Idempotência garantida: 0 duplicidades geradas nos últimos 90 dias.</p>
+                  <p className="text-slate-500">
+                    Idempotência garantida: 0 duplicidades geradas nos últimos 90 dias.
+                  </p>
                 </div>
               </div>
             </div>
@@ -666,7 +739,8 @@ export function NewLoginScreen({ initialScreen }: { initialScreen?: string } = {
                 Microgestão de Cada Dado Sem Gargalos Operacionais
               </h3>
               <p className="text-sm text-[#475569] leading-relaxed">
-                Elimine o trabalho manual e o atrito na passagem de bastão entre pré-vendas (SDR), vendas e pós-vendas com automações precisas e inteligência contextual.
+                Elimine o trabalho manual e o atrito na passagem de bastão entre pré-vendas (SDR),
+                vendas e pós-vendas com automações precisas e inteligência contextual.
               </p>
               <ul className="space-y-3 font-sans text-sm text-[#0b132b]">
                 <li className="flex items-center gap-3">
@@ -706,7 +780,8 @@ export function NewLoginScreen({ initialScreen }: { initialScreen?: string } = {
               Os 8 Pilares Oficiais do Birth Hub 360°
             </h2>
             <p className="text-base text-[#475569]">
-              Uma arquitetura modular robusta desenvolvida para governança, velocidade e previsibilidade na receita B2B.
+              Uma arquitetura modular robusta desenvolvida para governança, velocidade e
+              previsibilidade na receita B2B.
             </p>
           </div>
 
@@ -714,31 +789,44 @@ export function NewLoginScreen({ initialScreen }: { initialScreen?: string } = {
             {OFFICIAL_PILLARS.map((p) => {
               const Icon = p.icon;
               return (
-                <div key={p.id} className="vancouver-card p-6 flex flex-col justify-between space-y-4">
+                <div
+                  key={p.id}
+                  className="vancouver-card p-6 flex flex-col justify-between space-y-4"
+                >
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <div
                         className="w-10 h-10 rounded-xl flex items-center justify-center border"
-                        style={{ backgroundColor: `${p.color}15`, borderColor: `${p.color}30`, color: p.color }}
+                        style={{
+                          backgroundColor: `${p.color}15`,
+                          borderColor: `${p.color}30`,
+                          color: p.color,
+                        }}
                       >
                         <Icon className="w-5 h-5" />
                       </div>
-                      <span className="font-mono text-xs font-bold text-slate-400">PILAR {p.id}</span>
+                      <span className="font-mono text-xs font-bold text-slate-400">
+                        PILAR {p.id}
+                      </span>
                     </div>
 
                     <div>
                       <h3 className="font-display text-base font-bold text-[#0b132b]">{p.name}</h3>
-                      <span className="inline-block px-2 py-0.5 rounded-full text-[10px] font-bold mt-1" style={{ backgroundColor: `${p.color}15`, color: p.color }}>
+                      <span
+                        className="inline-block px-2 py-0.5 rounded-full text-[10px] font-bold mt-1"
+                        style={{ backgroundColor: `${p.color}15`, color: p.color }}
+                      >
                         {p.tag}
                       </span>
                     </div>
 
-                    <p className="text-xs text-[#475569] leading-relaxed">
-                      {p.desc}
-                    </p>
+                    <p className="text-xs text-[#475569] leading-relaxed">{p.desc}</p>
                   </div>
 
-                  <div className="pt-2 border-t border-slate-100 flex items-center text-xs font-bold" style={{ color: p.color }}>
+                  <div
+                    className="pt-2 border-t border-slate-100 flex items-center text-xs font-bold"
+                    style={{ color: p.color }}
+                  >
                     <span>Explorar Pilar</span>
                     <ChevronRight className="w-3.5 h-3.5 ml-1" />
                   </div>
@@ -752,14 +840,18 @@ export function NewLoginScreen({ initialScreen }: { initialScreen?: string } = {
       {/* ════════════════════════════════════════════════════════════════════
           5. SEÇÃO: PLATAFORMA & STICKY SHOWCASE (VANCOUVER PLUS)
       ════════════════════════════════════════════════════════════════════ */}
-      <section id="plataforma" className="py-24 px-6 sm:px-12 bg-white border-t border-b border-slate-200">
+      <section
+        id="plataforma"
+        className="py-24 px-6 sm:px-12 bg-white border-t border-b border-slate-200"
+      >
         <div className="max-w-6xl mx-auto space-y-16">
           <div className="text-center max-w-3xl mx-auto space-y-4">
             <h2 className="font-display text-3xl sm:text-4xl font-extrabold text-[#0b132b]">
               Tudo em uma única plataforma: do mobile ao desktop tudo o que você precisa está aqui
             </h2>
             <p className="text-base text-[#475569]">
-              Alternância perfeita entre interfaces ricas para gestores e execução ágil na ponta para vendedores.
+              Alternância perfeita entre interfaces ricas para gestores e execução ágil na ponta
+              para vendedores.
             </p>
 
             {/* Tab Switcher Vancouver Plus */}
@@ -797,16 +889,26 @@ export function NewLoginScreen({ initialScreen }: { initialScreen?: string } = {
                     Painel Central com Visão 360° do Negócio
                   </h3>
                   <p className="text-sm text-[#475569] leading-relaxed">
-                    Acompanhe cada conta, contato e estágio de negociação com telemetria unificada. O Kanban interativo reage em tempo real com regras de validação que impedem perdas no funil.
+                    Acompanhe cada conta, contato e estágio de negociação com telemetria unificada.
+                    O Kanban interativo reage em tempo real com regras de validação que impedem
+                    perdas no funil.
                   </p>
                   <div className="space-y-2 text-xs font-mono text-slate-600">
-                    <p className="flex items-center gap-2">✔ Visão tabular e em colunas por estágio de venda</p>
-                    <p className="flex items-center gap-2">✔ Histórico de alterações e auditoria de cada negócio</p>
-                    <p className="flex items-center gap-2">✔ Integração com WhatsApp e telefonia em 1 clique</p>
+                    <p className="flex items-center gap-2">
+                      ✔ Visão tabular e em colunas por estágio de venda
+                    </p>
+                    <p className="flex items-center gap-2">
+                      ✔ Histórico de alterações e auditoria de cada negócio
+                    </p>
+                    <p className="flex items-center gap-2">
+                      ✔ Integração com WhatsApp e telefonia em 1 clique
+                    </p>
                   </div>
                 </div>
                 <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
-                  <span className="text-xs font-bold text-slate-400 uppercase font-mono">MÉTRICAS DO CRM 360°</span>
+                  <span className="text-xs font-bold text-slate-400 uppercase font-mono">
+                    MÉTRICAS DO CRM 360°
+                  </span>
                   <div className="flex justify-between items-center py-2 border-b border-slate-100">
                     <span className="text-sm font-semibold text-slate-700">Contas Ativas</span>
                     <span className="text-sm font-bold text-[#0ea5e9]">1.420 empresas</span>
@@ -816,8 +918,12 @@ export function NewLoginScreen({ initialScreen }: { initialScreen?: string } = {
                     <span className="text-sm font-bold text-[#8b5cf6]">R$ 14.850.000,00</span>
                   </div>
                   <div className="flex justify-between items-center py-2">
-                    <span className="text-sm font-semibold text-slate-700">Tempo Médio de Fechamento</span>
-                    <span className="text-sm font-bold text-emerald-600">18 dias (34% mais rápido)</span>
+                    <span className="text-sm font-semibold text-slate-700">
+                      Tempo Médio de Fechamento
+                    </span>
+                    <span className="text-sm font-bold text-emerald-600">
+                      18 dias (34% mais rápido)
+                    </span>
                   </div>
                 </div>
               </div>
@@ -830,23 +936,40 @@ export function NewLoginScreen({ initialScreen }: { initialScreen?: string } = {
                     Enriquecimento de Decisores & Sinais B2B
                   </h3>
                   <p className="text-sm text-[#475569] leading-relaxed">
-                    Identifique decisores reais (C-Level, Diretores e Gerentes), e-mails corporativos válidos e telefones diretos antes de iniciar o contato comercial.
+                    Identifique decisores reais (C-Level, Diretores e Gerentes), e-mails
+                    corporativos válidos e telefones diretos antes de iniciar o contato comercial.
                   </p>
                   <div className="space-y-2 text-xs font-mono text-slate-600">
-                    <p className="flex items-center gap-2">✔ Pesquisa de mercado analítica por CNAE e região</p>
-                    <p className="flex items-center gap-2">✔ Pontuação preditiva de propensão de compra</p>
-                    <p className="flex items-center gap-2">✔ Qualificação automática contra o seu Perfil Ideal (ICP)</p>
+                    <p className="flex items-center gap-2">
+                      ✔ Pesquisa de mercado analítica por CNAE e região
+                    </p>
+                    <p className="flex items-center gap-2">
+                      ✔ Pontuação preditiva de propensão de compra
+                    </p>
+                    <p className="flex items-center gap-2">
+                      ✔ Qualificação automática contra o seu Perfil Ideal (ICP)
+                    </p>
                   </div>
                 </div>
                 <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
-                  <span className="text-xs font-bold text-slate-400 uppercase font-mono">SINAIS RECENTES</span>
+                  <span className="text-xs font-bold text-slate-400 uppercase font-mono">
+                    SINAIS RECENTES
+                  </span>
                   <div className="p-3 bg-sky-50 rounded-xl border border-sky-100 text-xs">
-                    <span className="font-bold text-sky-900 block">Sinal de Expansão · Petrobras Logística</span>
-                    <span className="text-slate-600 block">Novas vagas abertas para compras corporativas detectadas.</span>
+                    <span className="font-bold text-sky-900 block">
+                      Sinal de Expansão · Petrobras Logística
+                    </span>
+                    <span className="text-slate-600 block">
+                      Novas vagas abertas para compras corporativas detectadas.
+                    </span>
                   </div>
                   <div className="p-3 bg-purple-50 rounded-xl border border-purple-100 text-xs">
-                    <span className="font-bold text-purple-900 block">Sinal Tecnológico · Vale S.A.</span>
-                    <span className="text-slate-600 block">Migração de infraestrutura para nuvem concluída.</span>
+                    <span className="font-bold text-purple-900 block">
+                      Sinal Tecnológico · Vale S.A.
+                    </span>
+                    <span className="text-slate-600 block">
+                      Migração de infraestrutura para nuvem concluída.
+                    </span>
                   </div>
                 </div>
               </div>
@@ -859,19 +982,32 @@ export function NewLoginScreen({ initialScreen }: { initialScreen?: string } = {
                     Copiloto de Voz & Transcrição Inteligente
                   </h3>
                   <p className="text-sm text-[#475569] leading-relaxed">
-                    Grave e transcreva chamadas comerciais com separação de interlocutores, extração imediata de pontos de dor, objeções e preenchimento automático no Bitrix24.
+                    Grave e transcreva chamadas comerciais com separação de interlocutores, extração
+                    imediata de pontos de dor, objeções e preenchimento automático no Bitrix24.
                   </p>
                   <div className="space-y-2 text-xs font-mono text-slate-600">
-                    <p className="flex items-center gap-2">✔ Resumo executivo da reunião gerado em segundos</p>
-                    <p className="flex items-center gap-2">✔ Identificação automática de próximas ações acordadas</p>
-                    <p className="flex items-center gap-2">✔ Análise de sentimento e índice de engajamento</p>
+                    <p className="flex items-center gap-2">
+                      ✔ Resumo executivo da reunião gerado em segundos
+                    </p>
+                    <p className="flex items-center gap-2">
+                      ✔ Identificação automática de próximas ações acordadas
+                    </p>
+                    <p className="flex items-center gap-2">
+                      ✔ Análise de sentimento e índice de engajamento
+                    </p>
                   </div>
                 </div>
                 <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
-                  <span className="text-xs font-bold text-slate-400 uppercase font-mono">DIAGNÓSTICO DA ÚLTIMA CHAMADA</span>
+                  <span className="text-xs font-bold text-slate-400 uppercase font-mono">
+                    DIAGNÓSTICO DA ÚLTIMA CHAMADA
+                  </span>
                   <div className="p-3 bg-emerald-50 rounded-xl border border-emerald-100 text-xs space-y-1">
-                    <span className="font-bold text-emerald-900 block">Duração: 24m 12s · Sentimento: Muito Positivo</span>
-                    <span className="text-slate-600 block">Cliente solicitou minuta contratual para 50 licenças da plataforma.</span>
+                    <span className="font-bold text-emerald-900 block">
+                      Duração: 24m 12s · Sentimento: Muito Positivo
+                    </span>
+                    <span className="text-slate-600 block">
+                      Cliente solicitou minuta contratual para 50 licenças da plataforma.
+                    </span>
                   </div>
                 </div>
               </div>
@@ -922,7 +1058,9 @@ export function NewLoginScreen({ initialScreen }: { initialScreen?: string } = {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
               <div className="space-y-4">
-                <span className="font-display text-xl font-bold text-[#0b132b] block">Plano Enterprise Hub</span>
+                <span className="font-display text-xl font-bold text-[#0b132b] block">
+                  Plano Enterprise Hub
+                </span>
                 <div className="flex items-baseline gap-1">
                   <span className="text-sm font-bold text-slate-500">R$</span>
                   <span className="text-5xl font-extrabold text-[#0b132b] tracking-tight">
@@ -931,7 +1069,9 @@ export function NewLoginScreen({ initialScreen }: { initialScreen?: string } = {
                   <span className="text-xs text-slate-500 font-semibold">/ usuário / mês</span>
                 </div>
                 <p className="text-xs text-slate-500">
-                  {annualBilling ? 'Faturado anualmente com 2 meses gratuitos.' : 'Faturamento mensal sem fidelidade.'}
+                  {annualBilling
+                    ? 'Faturado anualmente com 2 meses gratuitos.'
+                    : 'Faturamento mensal sem fidelidade.'}
                 </p>
 
                 <div className="pt-4 space-y-2">
@@ -956,7 +1096,9 @@ export function NewLoginScreen({ initialScreen }: { initialScreen?: string } = {
               </div>
 
               <div className="space-y-3 border-t md:border-t-0 md:border-l border-slate-200 pt-6 md:pt-0 md:pl-8">
-                <span className="text-xs font-bold uppercase tracking-wider text-slate-500 block">O QUE ESTÁ INCLUSO:</span>
+                <span className="text-xs font-bold uppercase tracking-wider text-slate-500 block">
+                  O QUE ESTÁ INCLUSO:
+                </span>
                 <ul className="space-y-2.5 text-xs text-[#0b132b]">
                   <li className="flex items-center gap-2">
                     <Check className="w-4 h-4 text-emerald-600" />
@@ -992,7 +1134,10 @@ export function NewLoginScreen({ initialScreen }: { initialScreen?: string } = {
       {/* ════════════════════════════════════════════════════════════════════
           7. SEÇÃO: ECOSSISTEMA & CONEXÕES (VANCOUVER PLUS)
       ════════════════════════════════════════════════════════════════════ */}
-      <section id="ecossistema" className="py-24 px-6 sm:px-12 bg-white border-t border-b border-slate-200">
+      <section
+        id="ecossistema"
+        className="py-24 px-6 sm:px-12 bg-white border-t border-b border-slate-200"
+      >
         <div className="max-w-5xl mx-auto text-center space-y-12">
           <div className="space-y-4">
             <h2 className="font-display text-3xl sm:text-4xl font-extrabold text-[#0b132b]">
@@ -1049,7 +1194,9 @@ export function NewLoginScreen({ initialScreen }: { initialScreen?: string } = {
             >
               <div>
                 <h3 className="font-display text-xl font-bold text-[#0b132b]">Ajuda</h3>
-                <p className="text-xs text-slate-500 mt-2">Documentação técnica, manuais de uso e suporte aos pilares.</p>
+                <p className="text-xs text-slate-500 mt-2">
+                  Documentação técnica, manuais de uso e suporte aos pilares.
+                </p>
               </div>
               <div className="flex justify-end pt-4">
                 <div className="vancouver-arrow-icon">
@@ -1069,7 +1216,9 @@ export function NewLoginScreen({ initialScreen }: { initialScreen?: string } = {
               <div>
                 <h3 className="font-display text-xl font-bold text-[#0b132b]">Contato</h3>
                 <p className="text-xs text-slate-500 mt-2">comercial@birthhub360.com</p>
-                <p className="text-xs text-slate-500 mt-1">Fale diretamente com nossa diretoria comercial.</p>
+                <p className="text-xs text-slate-500 mt-1">
+                  Fale diretamente com nossa diretoria comercial.
+                </p>
               </div>
               <div className="flex justify-end pt-4">
                 <div className="vancouver-arrow-icon">
@@ -1082,7 +1231,9 @@ export function NewLoginScreen({ initialScreen }: { initialScreen?: string } = {
             <div className="vancouver-quick-card">
               <div>
                 <h3 className="font-display text-xl font-bold text-[#0b132b]">Novidades</h3>
-                <p className="text-xs text-slate-500 mt-2">Receba insights semanais sobre IA aplicada a vendas B2B.</p>
+                <p className="text-xs text-slate-500 mt-2">
+                  Receba insights semanais sobre IA aplicada a vendas B2B.
+                </p>
               </div>
               <div className="pt-4">
                 <input
@@ -1103,7 +1254,9 @@ export function NewLoginScreen({ initialScreen }: { initialScreen?: string } = {
             >
               <div>
                 <h3 className="font-display text-xl font-bold text-[#0b132b]">Segurança</h3>
-                <p className="text-xs text-slate-500 mt-2">Auditorias de segurança, RLS multi-tenant e conformidade LGPD.</p>
+                <p className="text-xs text-slate-500 mt-2">
+                  Auditorias de segurança, RLS multi-tenant e conformidade LGPD.
+                </p>
               </div>
               <div className="flex justify-end pt-4">
                 <div className="vancouver-arrow-icon">
@@ -1126,7 +1279,8 @@ export function NewLoginScreen({ initialScreen }: { initialScreen?: string } = {
                 Pronto para estruturar sua operação comercial com rigor e inteligência?
               </h3>
               <p className="text-sm text-slate-500">
-                Conheça a única plataforma desenhada especificamente para conectar dados a fechamentos reais.
+                Conheça a única plataforma desenhada especificamente para conectar dados a
+                fechamentos reais.
               </p>
             </div>
             <div className="flex justify-start md:justify-end">
@@ -1158,9 +1312,15 @@ export function NewLoginScreen({ initialScreen }: { initialScreen?: string } = {
             </p>
 
             <div className="flex items-center gap-6 text-xs text-slate-500 font-medium">
-              <a href="/privacy" className="hover:text-[#0ea5e9]">Privacidade</a>
-              <a href="/terms" className="hover:text-[#0ea5e9]">Termos de Uso</a>
-              <a href="#contato" className="hover:text-[#0ea5e9]">Contato</a>
+              <a href="/privacy" className="hover:text-[#0ea5e9]">
+                Privacidade
+              </a>
+              <a href="/terms" className="hover:text-[#0ea5e9]">
+                Termos de Uso
+              </a>
+              <a href="#contato" className="hover:text-[#0ea5e9]">
+                Contato
+              </a>
             </div>
           </div>
         </div>
@@ -1216,7 +1376,9 @@ export function NewLoginScreen({ initialScreen }: { initialScreen?: string } = {
             <form onSubmit={handleAuthSubmit} className="space-y-4">
               {authMode === 'signup' && (
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Nome Completo</label>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    Nome Completo
+                  </label>
                   <input
                     type="text"
                     required
@@ -1229,7 +1391,9 @@ export function NewLoginScreen({ initialScreen }: { initialScreen?: string } = {
               )}
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">E-mail Corporativo</label>
+                <label className="block text-xs font-bold text-slate-700 mb-1">
+                  E-mail Corporativo
+                </label>
                 <div className="relative">
                   <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
                   <input

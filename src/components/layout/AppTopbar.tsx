@@ -154,10 +154,11 @@ export function AppTopbar({ activeTab, onOpenMobileNav }: AppTopbarProps) {
           whileTap={{ scale: 0.92 }}
           transition={{ type: 'spring', stiffness: 400, damping: 25 }}
           onClick={toggleSound}
-          className={`flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-lg border transition-all duration-300 hover:shadow-md ${soundEnabled
-            ? 'border-brand/15 bg-gradient-to-br from-brand/8 to-brand/5 text-brand-ink dark:text-brand hover:border-brand/30'
-            : 'border-transparent text-ink-2 hover:border-line hover:bg-gradient-to-br hover:from-surface-2 hover:to-surface hover:text-ink'
-            }`}
+          className={`flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-lg border transition-all duration-300 hover:shadow-md ${
+            soundEnabled
+              ? 'border-brand/15 bg-gradient-to-br from-brand/8 to-brand/5 text-brand-ink dark:text-brand hover:border-brand/30'
+              : 'border-transparent text-ink-2 hover:border-line hover:bg-gradient-to-br hover:from-surface-2 hover:to-surface hover:text-ink'
+          }`}
           aria-pressed={soundEnabled}
           aria-label={soundEnabled ? 'Desativar sons da interface' : 'Ativar sons da interface'}
           title={soundEnabled ? 'Sons da interface ligados' : 'Sons da interface desligados'}

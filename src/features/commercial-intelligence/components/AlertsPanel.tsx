@@ -26,7 +26,13 @@ const SEVERITY_ORDER: Record<ExecutiveAlert['severity'], number> = {
 };
 
 /** Alertas executivos (seção 26) — sempre derivados de métricas já calculadas, nunca um texto fixo. */
-export function AlertsPanel({ alerts = [], loading }: { alerts?: ExecutiveAlert[]; loading: boolean }) {
+export function AlertsPanel({
+  alerts = [],
+  loading,
+}: {
+  alerts?: ExecutiveAlert[];
+  loading: boolean;
+}) {
   if (loading) return null;
 
   const safeAlerts = Array.isArray(alerts) ? alerts : [];

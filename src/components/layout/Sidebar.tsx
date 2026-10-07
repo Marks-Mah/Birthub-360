@@ -1,11 +1,5 @@
 import { useReducedMotion } from 'framer-motion';
-import {
-  ArrowRight,
-  ChevronDown,
-  ChevronLeft,
-  Shield,
-  X,
-} from 'lucide-react';
+import { ArrowRight, ChevronDown, ChevronLeft, Shield, X } from 'lucide-react';
 import type React from 'react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -79,8 +73,7 @@ export function Sidebar({
     }
   };
 
-  const { currentUser, isAdmin, canAccessCommercialIntelligence, canAccessCopilotoIa } =
-    useAuth();
+  const { currentUser, isAdmin, canAccessCommercialIntelligence, canAccessCopilotoIa } = useAuth();
   const navigate = useNavigate();
   const reduceMotion = useReducedMotion();
   const [hoveredGroupId, setHoveredGroupId] = useState<string | null>(null);

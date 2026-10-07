@@ -38,9 +38,10 @@ export class PostCallFollowupAutomation {
     const userTurns = session.history.filter((t) => t.role === 'user');
 
     // Determina a intenção predominante
-    const latestIntent = detectedIntents.length > 0
-      ? detectedIntents[detectedIntents.length - 1].primaryIntent
-      : 'Outro';
+    const latestIntent =
+      detectedIntents.length > 0
+        ? detectedIntents[detectedIntents.length - 1].primaryIntent
+        : 'Outro';
 
     let recommendedAction = 'Fazer acompanhamento de rotina sobre a chamada.';
     let priority: 'Alta' | 'Média' | 'Baixa' = 'Média';
@@ -70,7 +71,10 @@ export class PostCallFollowupAutomation {
       dueDateDays = 60;
     }
 
-    const transcriptExcerpt = userTurns.map((t) => t.content).join(' | ').slice(0, 300);
+    const transcriptExcerpt = userTurns
+      .map((t) => t.content)
+      .join(' | ')
+      .slice(0, 300);
 
     const taskSuggested = {
       title: `Follow-up Pós-Chamada [${session.callerId || 'Lead'}]: ${latestIntent}`,

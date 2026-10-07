@@ -67,7 +67,9 @@ export class IntentEngine {
     }
 
     // Extração simples de entidades
-    const dateMatch = cleanText.match(/(?:^|\s)(\d{1,2}\/\d{1,2}|hoje|amanhã|amanha|segunda|terça|terca|quarta|quinta|sexta)(?:\s|$|[.,!?])/i);
+    const dateMatch = cleanText.match(
+      /(?:^|\s)(\d{1,2}\/\d{1,2}|hoje|amanhã|amanha|segunda|terça|terca|quarta|quinta|sexta)(?:\s|$|[.,!?])/i,
+    );
     if (dateMatch) {
       entities.dataMencionada = dateMatch[1];
     }

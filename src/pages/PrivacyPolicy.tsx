@@ -10,7 +10,9 @@ export default function PrivacyPolicy() {
         </p>
 
         <section className="mb-6 space-y-2">
-          <h2 className="text-xl font-semibold font-display text-ink">1. Categorias de Dados e Finalidade</h2>
+          <h2 className="text-xl font-semibold font-display text-ink">
+            1. Categorias de Dados e Finalidade
+          </h2>
           <p className="text-sm text-ink-2 leading-relaxed">
             O Birth Hub 360 processa dados pessoais de leads, contatos e clientes, que podem incluir
             nome, e-mail, telefone, cargo e dados corporativos, com a finalidade exclusiva de gestão
@@ -39,7 +41,9 @@ export default function PrivacyPolicy() {
         </section>
 
         <section className="mb-6 space-y-2">
-          <h2 className="text-xl font-semibold font-display text-ink">4. Compartilhamento e Subprocessadores</h2>
+          <h2 className="text-xl font-semibold font-display text-ink">
+            4. Compartilhamento e Subprocessadores
+          </h2>
           <p className="text-sm text-ink-2 leading-relaxed">
             Não vendemos dados pessoais. Compartilhamos dados apenas com provedores estritamente
             necessários (nuvem, IA, provedores de comunicação corporativa), resguardados por

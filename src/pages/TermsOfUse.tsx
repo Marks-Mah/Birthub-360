@@ -35,7 +35,9 @@ export default function TermsOfUse() {
         </section>
 
         <section className="mb-6 space-y-2">
-          <h2 className="text-xl font-semibold font-display text-ink">4. Propriedade Intelectual</h2>
+          <h2 className="text-xl font-semibold font-display text-ink">
+            4. Propriedade Intelectual
+          </h2>
           <p className="text-sm text-ink-2 leading-relaxed">
             Todos os direitos sobre a plataforma, software, marcas, logotipos e conteúdos
             proprietários pertencem à Birthub 360º e seus licenciadores.

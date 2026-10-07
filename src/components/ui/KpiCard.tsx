@@ -144,7 +144,7 @@ export function KpiCard({
   const sharedClassName = cn(
     'group relative w-full overflow-hidden rounded-card border border-line bg-gradient-to-br from-surface-elevated/90 to-surface/85 backdrop-blur-xl p-4 text-left shadow-card transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]',
     onSelect &&
-    'cursor-pointer active:scale-[0.98] hover:-translate-y-1 hover:border-brand/40 hover:shadow-card-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 focus-visible:ring-offset-2 focus-visible:ring-offset-bg',
+      'cursor-pointer active:scale-[0.98] hover:-translate-y-1 hover:border-brand/40 hover:shadow-card-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 focus-visible:ring-offset-2 focus-visible:ring-offset-bg',
     active && 'border-brand/60 shadow-[0_0_0_2px_color-mix(in_srgb,var(--brand)_28%,transparent)]',
     className,
   );
