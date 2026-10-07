@@ -1,19 +1,30 @@
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import {
+  ArrowRight,
+  BarChart3,
+  Building2,
   ChevronDown,
   ChevronLeft,
   ChevronRight,
-  LogOut,
-  Plus,
-  Sparkles,
-  User,
-  ArrowRight,
+  GitBranch,
+  Globe,
+  LineChart,
+  Mic,
+  PhoneCall,
+  Radar,
+  Repeat,
+  Settings as SettingsIcon,
   Shield,
+  Target,
+  UserCog,
+  Users,
+  X,
+  Zap,
 } from 'lucide-react';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext.js';
-import { hasRequiredRole, MESA_TRATAMENTO_ROLES } from '../../lib/auth/authorization.js';
+import { hasRequiredRole } from '../../lib/auth/authorization.js';
 import { SoundFX } from '../../lib/soundEffects.js';
 import { NavLaunchTransition, type NavLaunch } from './NavLaunchTransition.js';
 import { NAV_ACCENT_VAR, TAB_META, type TabType } from './tabMeta.js';
@@ -37,6 +48,8 @@ interface NavSubItem {
 interface NavGroupItem {
   id: string;
   label: string;
+  sublabel?: string;
+  ariaLabel?: string;
   icon: React.ComponentType<{ size?: number; className?: string }>;
   primaryTab?: TabType;
   subItems?: NavSubItem[];
@@ -80,7 +93,7 @@ export function Sidebar({
     }
   };
 
-  const { currentUser, isAdmin, canAccessCommercialIntelligence, canAccessCopilotoIa, logout } =
+  const { currentUser, isAdmin, canAccessCommercialIntelligence, canAccessCopilotoIa } =
     useAuth();
   const navigate = useNavigate();
   const reduceMotion = useReducedMotion();
@@ -89,13 +102,9 @@ export function Sidebar({
   const canManageOperations =
     !!currentUser && hasRequiredRole(currentUser.role, ['ADMIN', 'GESTOR']);
 
-  // Grupos sanfona com inteligência de expansão
+  // Grupos sanfona com inteligência de expansão da console de operações
   const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({
-    dashboard: true,
-    crm: true,
-    intelligence: true,
-    orchestration: true,
-    governance: true,
+    revenue_tree: true,
   });
 
   const toggleGroupExpand = (groupId: string, e: React.MouseEvent) => {
@@ -142,188 +151,272 @@ export function Sidebar({
       tab,
       label: meta.label,
       Icon: meta.icon,
-      accent: NAV_ACCENT_VAR[meta.accent],
+      accent: NAV_ACCENT_VAR[meta.accent] || 'var(--nav-c-blue)',
       from: { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 },
     });
   };
 
-  // Seções organizadas no formato enterprise refinado
+  // Seções organizadas no paradigma Console de Operações do BirthHub 360
   const navSections: NavSection[] = [
     {
-      title: 'MAIN',
+      title: 'COMMAND CENTER',
       groups: [
         {
           id: 'dashboard',
-          label: 'Cockpit & Visão Geral',
+          label: 'Visão Geral',
+          sublabel: 'Visão executiva e operacional',
           icon: TAB_META.dashboard.icon,
           primaryTab: 'dashboard',
-          subItems: [
-            { tab: 'dashboard', label: 'Command Center' },
-            { tab: 'workspace', label: 'Meu Espaço' },
-          ],
         },
+      ],
+    },
+    {
+      title: 'RECEITA',
+      groups: [
         {
-          id: 'crm',
+          id: 'revenue_tree',
           label: 'Pipeline & CRM',
           icon: TAB_META.crm.icon,
           primaryTab: 'crm',
           subItems: [
-            { tab: 'crm', label: 'Gestão de Pipeline' },
-            { tab: 'crm360', label: 'Gestão de Negócios 360' },
-            { tab: 'companies', label: 'Empresas' },
-            { tab: 'contacts', label: 'Decisores & Contatos' },
-            { tab: 'propostas', label: 'Propostas Comerciais' },
+            { tab: 'crm', label: 'Pipeline' },
+            { tab: 'crm360', label: 'Negócios' },
+            { tab: 'propostas', label: 'Propostas' },
+            { tab: 'forecast', label: 'Forecast' },
           ],
         },
       ],
     },
     {
-      title: 'INTELIGÊNCIA',
+      title: 'INTELLIGENCE',
       groups: [
         {
-          id: 'intelligence',
+          id: 'market-intelligence',
           label: 'Inteligência de Mercado',
           icon: TAB_META['market-intelligence'].icon,
+          primaryTab: 'market-intelligence',
+        },
+        ...(canAccessCommercialIntelligence
+          ? [
+              {
+                id: 'commercial_intelligence',
+                label: 'Revenue Intelligence',
+                icon: TAB_META.commercial_intelligence.icon,
+                primaryTab: 'commercial_intelligence' as TabType,
+              },
+            ]
+          : []),
+        {
+          id: 'signals-risks',
+          label: 'Sinais & Riscos',
+          icon: TAB_META.intelligence.icon,
+          primaryTab: 'intelligence',
+        },
+        ...(canAccessCopilotoIa
+          ? [
+              {
+                id: 'copilot',
+                label: 'Copilot',
+                icon: TAB_META.copiloto_ia.icon,
+                primaryTab: 'copiloto_ia' as TabType,
+              },
+            ]
+          : []),
+      ],
+    },
+    {
+      title: 'EXECUTION',
+      groups: [
+        {
+          id: 'prospecting',
+          label: 'Prospecção',
+          icon: TAB_META.prospect.icon,
           primaryTab: 'prospect',
-          subItems: [
-            { tab: 'prospect', label: 'Prospecção ICP' },
-            { tab: 'market-intelligence', label: 'Pesquisa de Mercado' },
-            ...(canAccessCommercialIntelligence
-              ? [{ tab: 'commercial_intelligence' as TabType, label: 'Comercial Inteligente' }]
-              : []),
-            ...(canAccessCopilotoIa
-              ? [{ tab: 'copiloto_ia' as TabType, label: 'Copiloto Comercial IA' }]
-              : []),
-            { tab: 'intelligence', label: 'Hub de Inteligência' },
-          ],
+        },
+        {
+          id: 'cadences',
+          label: 'Cadências',
+          icon: TAB_META.cadence.icon,
+          primaryTab: 'cadence',
+        },
+        {
+          id: 'workflows',
+          label: 'Workflows',
+          icon: TAB_META.jornadas.icon,
+          primaryTab: 'jornadas',
+        },
+        ...(canManageOperations
+          ? [
+              {
+                id: 'automations',
+                label: 'Automações',
+                icon: TAB_META.automations.icon,
+                primaryTab: 'automations' as TabType,
+              },
+            ]
+          : []),
+      ],
+    },
+    {
+      title: 'RELATIONSHIPS',
+      groups: [
+        {
+          id: 'companies',
+          label: 'Empresas',
+          icon: TAB_META.companies.icon,
+          primaryTab: 'companies',
+        },
+        {
+          id: 'contacts',
+          label: 'Contatos',
+          icon: TAB_META.contacts.icon,
+          primaryTab: 'contacts',
+        },
+        {
+          id: 'decisores',
+          label: 'Decisores',
+          icon: Shield,
+          primaryTab: 'contacts',
         },
       ],
     },
     {
-      title: 'ORQUESTRAÇÃO',
+      title: 'PERFORMANCE',
       groups: [
         {
-          id: 'orchestration',
-          label: 'Orquestração de Vendas',
-          icon: TAB_META.playbooks.icon,
-          primaryTab: 'playbooks',
-          subItems: [
-            { tab: 'playbooks', label: 'Playbooks Comerciais' },
-            { tab: 'cadence', label: 'Cadências Multicanal' },
-            { tab: 'jornadas', label: 'Jornadas Comerciais' },
-            { tab: 'processos', label: 'Processos de Vendas' },
-            { tab: 'roteiros', label: 'Roteiros de Abordagem' },
-            { tab: 'daily-plan', label: 'Plano Diário' },
-            { tab: 'activities', label: 'Tarefas & Atividades' },
-            { tab: 'calendar', label: 'Calendário Comercial' },
-            { tab: 'qualification_matrix', label: 'Matriz de Qualificação' },
-            { tab: 'objections_matrix', label: 'Matriz de Objeções' },
-            { tab: 'roleplay', label: 'Roleplay IA' },
-            { tab: 'topic_training', label: 'Treinamentos' },
-          ],
+          id: 'performance',
+          label: 'Performance Comercial',
+          ariaLabel: 'Performance Comercial Analytics',
+          icon: TAB_META.analytics.icon,
+          primaryTab: 'analytics',
+        },
+        {
+          id: 'metas',
+          label: 'Metas',
+          icon: TAB_META.metas.icon,
+          primaryTab: 'metas',
+        },
+        {
+          id: 'gamification',
+          label: 'Gamificação',
+          icon: TAB_META.roleplay.icon,
+          primaryTab: 'roleplay',
         },
       ],
     },
-    {
-      title: 'GOVERNANÇA',
-      groups: [
-        {
-          id: 'governance',
-          label: 'Administração & Ajustes',
-          icon: TAB_META.settings.icon,
-          primaryTab: 'settings',
-          subItems: [
-            { tab: 'reports', label: 'Relatórios Executivos' },
-            { tab: 'analytics', label: 'Analytics & KPIs' },
-            { tab: 'winloss', label: 'Análise Win/Loss' },
-            { tab: 'notifications', label: 'Notificações' },
-            { tab: 'bitrix', label: 'Integração Bitrix24' },
-            ...(canManageOperations
-              ? [
-                { tab: 'integrations' as TabType, label: 'Integrações' },
-                { tab: 'automations' as TabType, label: 'Automações' },
-              ]
-              : []),
-            ...(isAdmin ? [{ tab: 'team' as TabType, label: 'Gestão de Time' }] : []),
-            { tab: 'settings', label: 'Configurações' },
-          ],
-        },
-      ],
-    },
+    ...(canManageOperations || isAdmin
+      ? [
+          {
+            title: 'GOVERNANÇA',
+            groups: [
+              ...(canManageOperations
+                ? [
+                    {
+                      id: 'integrations',
+                      label: 'Integrações',
+                      icon: TAB_META.integrations.icon,
+                      primaryTab: 'integrations' as TabType,
+                    },
+                  ]
+                : []),
+              ...(isAdmin
+                ? [
+                    {
+                      id: 'team',
+                      label: 'Gestão de Time',
+                      icon: TAB_META.team.icon,
+                      primaryTab: 'team' as TabType,
+                    },
+                  ]
+                : []),
+              {
+                id: 'settings',
+                label: 'Configurações',
+                icon: TAB_META.settings.icon,
+                primaryTab: 'settings' as TabType,
+              },
+            ],
+          },
+        ]
+      : []),
   ];
-
-  const userRoleTitle =
-    currentUser?.role === 'ADMIN' ? 'ADMINISTRADOR' : currentUser?.role || 'USUÁRIO';
-  const userName = currentUser?.name || 'Marcelin Mark';
 
   return (
     <>
       {launch && <NavLaunchTransition launch={launch} onFinish={finishLaunch} />}
 
       <aside
-        className={`relative z-30 flex flex-col h-full border-r bg-[#0b132b] border-white/10 text-slate-100 transition-[width] duration-300 ${isCollapsed ? 'w-20' : 'w-72'
-          } ${mobileOpen
-            ? 'fixed inset-y-0 left-0 z-50 h-full w-72 translate-x-0 bg-[#0b132b]'
-            : 'hidden lg:flex'
-          }`}
+        className={`relative z-30 flex flex-col h-full bg-[#0B132B] text-slate-200 select-none ${
+          mobileOpen
+            ? 'w-full'
+            : `border-r border-white/10 transition-[width] duration-200 hidden lg:flex ${
+                isCollapsed ? 'w-16' : 'w-64'
+              }`
+        }`}
         aria-label="Navegação Principal"
-        style={{
-          background: 'linear-gradient(180deg, #0b132b 0%, #0f172a 100%)',
-        }}
       >
-        {/* Botão flutuante proeminente de toggle com borda de precisão */}
-        <button
-          type="button"
-          onClick={toggleCollapse}
-          className="absolute -right-3.5 top-6 z-50 hidden lg:flex h-7 w-7 items-center justify-center rounded-full border border-white/15 bg-[#0b132b] text-slate-400 shadow-xl transition-all duration-200 hover:scale-110 hover:border-brand hover:text-brand cursor-pointer"
-          title={isCollapsed ? 'Expandir menu lateral' : 'Recolher menu lateral'}
-        >
-          <ChevronLeft
-            className={`h-4 w-4 transition-transform duration-300 ${isCollapsed ? 'rotate-180' : ''
-              }`}
-          />
-        </button>
-
-        {/* ── Perfil do Usuário em Container Arredondado (Vancouver Plus style) ────────────── */}
-        <div className="shrink-0 p-4 border-b border-white/10">
-          <div className="group flex items-center gap-3 p-3 rounded-xl bg-gradient-to-br from-[#121A24] to-[#0f172a] border border-white/10 shadow-sm transition-all duration-300 hover:bg-gradient-to-br hover:from-[#182330] hover:to-[#121A24] hover:border-brand/30 hover:shadow-lg cursor-pointer">
-            <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-brand/15 border border-brand/30 text-brand shadow-md group-hover:border-brand/50 group-hover:bg-brand/20 transition-all duration-300">
-              {currentUser?.image ? (
-                <img
-                  src={currentUser.image}
-                  alt={userName}
-                  className="h-full w-full rounded-lg object-cover"
-                />
-              ) : (
-                <User className="h-5 w-5 text-brand" />
-              )}
-              <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-emerald-400 ring-2 ring-[#0b132b]" />
-            </div>
-
+        {/* ── Console Header: Brand & Status ────────────────────────── */}
+        <div className="shrink-0 px-3.5 py-3.5 border-b border-white/10 flex items-center justify-between">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <span className="relative flex h-2.5 w-2.5 shrink-0" title="Engine Operacional Ativo">
+              <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 animate-ping" />
+              <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
+            </span>
             {!isCollapsed && (
               <div className="min-w-0 leading-tight">
-                <span className="block text-[9px] font-extrabold tracking-widest text-brand uppercase font-mono truncate">
-                  {userRoleTitle}
-                </span>
-                <h2 className="text-xs font-bold text-slate-100 truncate font-display group-hover:text-white transition-colors">
-                  {userName}
-                </h2>
+                <div className="flex items-center gap-1.5">
+                  <span className="font-display font-extrabold text-xs tracking-tight text-white">
+                    BIRTHHUB
+                  </span>
+                  <span className="text-[9px] font-mono px-1 py-0.2 rounded bg-brand/20 text-brand border border-brand/30">
+                    360°
+                  </span>
+                </div>
+                <p className="text-[10px] font-mono tracking-wider text-slate-400 uppercase truncate mt-0.5">
+                  360° Revenue Intelligence
+                </p>
               </div>
             )}
           </div>
+
+          {mobileOpen ? (
+            <button
+              type="button"
+              onClick={onCloseMobile}
+              className="flex lg:hidden h-7 w-7 items-center justify-center rounded text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+              title="Fechar navegação"
+              aria-label="Fechar navegação"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={toggleCollapse}
+              className="hidden lg:flex h-6 w-6 items-center justify-center rounded text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+              title={isCollapsed ? 'Expandir menu lateral' : 'Recolher menu lateral'}
+              aria-label={isCollapsed ? 'Expandir menu lateral' : 'Recolher menu lateral'}
+            >
+              <ChevronLeft
+                className={`h-4 w-4 transition-transform duration-200 ${
+                  isCollapsed ? 'rotate-180' : ''
+                }`}
+              />
+            </button>
+          )}
         </div>
 
-        {/* ── Navegação com Containers Arredondados Individuais por Item ────────────────── */}
-        <nav className="custom-scrollbar flex-1 overflow-y-auto px-3.5 py-4 space-y-6">
+        {/* ── Navegação Console de Operações ─────────────────────────── */}
+        <nav className="custom-scrollbar flex-1 overflow-y-auto px-2 py-3 space-y-4">
           {navSections.map((section) => (
-            <div key={section.title} className="space-y-3">
+            <div key={section.title} className="space-y-1">
               {!isCollapsed && (
-                <h3 className="px-3 text-[10px] font-extrabold uppercase tracking-widest text-slate-400 font-mono">
+                <h3 className="px-2 text-[10px] font-mono font-bold uppercase tracking-widest text-slate-400 py-1">
                   {section.title}
                 </h3>
               )}
 
-              <div className="space-y-2.5">
+              <div className="space-y-0.5">
                 {section.groups.map((group) => {
                   const Icon = group.icon;
                   const isGroupExpanded = !!expandedGroups[group.id];
@@ -339,7 +432,7 @@ export function Sidebar({
                       onMouseEnter={() => isCollapsed && setHoveredGroupId(group.id)}
                       onMouseLeave={() => isCollapsed && setHoveredGroupId(null)}
                     >
-                      {/* Container Arredondado Individual Solido do Item Principal */}
+                      {/* Item Principal */}
                       <button
                         type="button"
                         onClick={(e) => {
@@ -349,71 +442,82 @@ export function Sidebar({
                             selectTab(group.primaryTab, e);
                           }
                         }}
-                        className={`group relative flex w-full items-center justify-between rounded-xl px-4 py-3 text-xs font-bold transition-all duration-300 cursor-pointer border shadow-sm ${isActive
-                          ? 'bg-gradient-to-r from-coolors-blue/20 to-coolors-purple/10 text-coolors-blue border-coolors-blue/50 shadow-[0_0_20px_rgba(58,134,255,0.15)] font-extrabold'
-                          : 'bg-gradient-to-br from-[#121A24] to-[#0f172a] border-white/10 text-slate-200 hover:bg-gradient-to-br hover:from-[#182330] hover:to-[#121A24] hover:border-coolors-blue/30 hover:text-white hover:shadow-md'
-                          }`}
+                        className={`group relative flex w-full items-center justify-between rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors cursor-pointer border-l-2 ${
+                          isActive
+                            ? 'bg-brand/15 text-white font-semibold border-brand'
+                            : 'text-slate-300 hover:bg-white/5 hover:text-white border-transparent'
+                        }`}
+                        aria-label={group.ariaLabel || group.label}
+                        title={isCollapsed ? group.label : undefined}
                       >
-                        {/* Indicador lateral elevado no container ativo */}
-                        {isActive && (
-                          <span className="absolute left-0 top-2.5 bottom-2.5 w-1 rounded-r-full bg-coolors-blue shadow-[0_0_8px_var(--coolors-blue)]" />
-                        )}
-
-                        <div className="flex items-center gap-3 min-w-0 pl-1">
+                        <div className="flex items-center gap-2.5 min-w-0">
                           <span
                             data-nav-icon
-                            className={`flex h-6 w-6 shrink-0 items-center justify-center transition-colors ${isActive ? 'text-coolors-blue' : 'text-slate-400 group-hover:text-coolors-blue'
-                              }`}
+                            className={`flex h-4 w-4 shrink-0 items-center justify-center transition-colors ${
+                              isActive ? 'text-brand' : 'text-slate-400 group-hover:text-slate-200'
+                            }`}
                           >
-                            <Icon size={18} />
+                            <Icon size={15} />
                           </span>
 
                           {!isCollapsed && (
-                            <span className="truncate font-sans font-bold text-xs tracking-tight">
-                              {group.label}
-                            </span>
+                            <div className="flex items-center gap-1.5 min-w-0">
+                              <span
+                                className={`text-[9px] shrink-0 font-mono transition-colors ${
+                                  isActive
+                                    ? 'text-brand'
+                                    : 'text-slate-500 group-hover:text-slate-400'
+                                }`}
+                                aria-hidden="true"
+                              >
+                                ◉
+                              </span>
+                              <span className="truncate">{group.label}</span>
+                            </div>
                           )}
                         </div>
 
                         {!isCollapsed && hasSubItems && (
-                          <span
-                            className={`shrink-0 transition-transform duration-200 ${isActive ? 'text-brand' : 'text-slate-400 group-hover:text-brand'
-                              }`}
-                          >
-                            <ChevronDown
-                              size={15}
-                              className={`transition-transform duration-200 ${isGroupExpanded ? 'rotate-180' : ''
-                                }`}
-                            />
-                          </span>
+                          <ChevronDown
+                            size={13}
+                            className={`shrink-0 text-slate-400 transition-transform duration-200 ${
+                              isGroupExpanded ? 'rotate-180' : ''
+                            }`}
+                          />
                         )}
                       </button>
 
-                      {/* Sub-itens: CADA UM em seu próprio Container Arredondado Individual Sólido */}
+                      {/* Árvore Hierárquica da Console (Sub-itens com conectores ├ e └) */}
                       {!isCollapsed && hasSubItems && isGroupExpanded && (
-                        <div className="relative ml-4 border-l-2 border-coolors-blue/30 pl-3 py-1.5 my-2 space-y-2">
-                          {group.subItems?.map((subItem) => {
+                        <div className="ml-3 pl-2.5 border-l border-white/10 space-y-0.5 my-1">
+                          {group.subItems?.map((subItem, idx) => {
+                            const isLast = idx === (group.subItems?.length ?? 1) - 1;
                             const isSubActive = subItem.tab === activeTab;
 
                             return (
                               <button
-                                key={subItem.tab}
+                                key={subItem.tab + subItem.label}
                                 type="button"
                                 onClick={(e) => selectTab(subItem.tab, e)}
-                                className={`group/sub relative flex w-full items-center gap-3 rounded-lg px-3.5 py-2.5 text-xs font-medium transition-all duration-300 cursor-pointer border shadow-xs ${isSubActive
-                                  ? 'bg-gradient-to-r from-coolors-blue/15 to-coolors-purple/5 text-coolors-blue font-extrabold border-coolors-blue/40 shadow-[0_0_18px_rgba(58,134,255,0.12)]'
-                                  : 'bg-gradient-to-br from-[#16202C] to-[#121A24] border-white/10 text-slate-200 hover:bg-gradient-to-br hover:from-[#1E2C3D] hover:to-[#16202C] hover:border-coolors-blue/30 hover:text-white hover:shadow-sm'
-                                  }`}
+                                className={`group/sub relative flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-xs transition-colors cursor-pointer text-left ${
+                                  isSubActive
+                                    ? 'bg-brand/15 text-white font-semibold text-brand'
+                                    : 'text-slate-400 hover:bg-white/5 hover:text-slate-200'
+                                }`}
                               >
-                                {/* Ramo conector da árvore */}
-                                <span className="absolute -left-3.5 top-1/2 h-px w-3 bg-coolors-blue/40 group-hover/sub:bg-coolors-blue" />
-
-                                {/* Indicador ◉ no sub-item selecionado */}
                                 <span
-                                  className={`h-2 w-2 rounded-full transition-all flex items-center justify-center shrink-0 ${isSubActive
-                                    ? 'bg-coolors-blue ring-2 ring-coolors-blue/40'
-                                    : 'bg-slate-500/40 group-hover/sub:bg-coolors-blue'
-                                    }`}
+                                  data-nav-icon
+                                  className="font-mono text-slate-500 text-[11px] shrink-0 select-none group-hover/sub:text-slate-300"
+                                >
+                                  {isLast ? '└' : '├'}
+                                </span>
+
+                                <span
+                                  className={`h-1.5 w-1.5 rounded-full shrink-0 transition-colors ${
+                                    isSubActive
+                                      ? 'bg-brand'
+                                      : 'bg-slate-600 group-hover/sub:bg-slate-400'
+                                  }`}
                                 />
 
                                 <span className="truncate">{subItem.label}</span>
@@ -423,31 +527,49 @@ export function Sidebar({
                         </div>
                       )}
 
-                      {/* Card Popover no Hover (Modo Recolhido / Rail Mode) - Vancouver Plus style */}
-                      {isCollapsed && hoveredGroupId === group.id && hasSubItems && (
-                        <div className="fixed left-20 z-50 min-w-[210px] rounded-xl border border-white/15 bg-gradient-to-br from-[#0b132b]/98 to-[#0f172a]/98 p-3.5 shadow-2xl backdrop-blur-2xl animate-in fade-in slide-in-from-left-2 duration-300">
-                          <p className="mb-2 px-2 text-[10px] font-extrabold uppercase tracking-widest text-coolors-blue font-mono">
+                      {/* Popover em Modo Rail (Recolhido) */}
+                      {isCollapsed && hoveredGroupId === group.id && (
+                        <div className="fixed left-16 z-50 min-w-[200px] rounded-lg border border-white/15 bg-[#080D1A]/95 p-3 shadow-2xl backdrop-blur-md">
+                          <p className="mb-2 text-[10px] font-mono font-bold uppercase tracking-wider text-brand">
                             {group.label}
                           </p>
-                          <div className="space-y-2">
-                            {group.subItems?.map((sub) => (
+                          {hasSubItems ? (
+                            <div className="space-y-1">
+                              {group.subItems?.map((sub, idx) => (
+                                <button
+                                  key={sub.tab + sub.label}
+                                  type="button"
+                                  onClick={(e) => {
+                                    selectTab(sub.tab, e);
+                                    setHoveredGroupId(null);
+                                  }}
+                                  className={`flex w-full items-center gap-2 rounded px-2.5 py-1.5 text-xs transition-colors ${
+                                    sub.tab === activeTab
+                                      ? 'bg-brand/20 text-brand font-semibold'
+                                      : 'text-slate-300 hover:bg-white/10 hover:text-white'
+                                  }`}
+                                >
+                                  <span className="font-mono text-slate-500 text-[10px]">
+                                    {idx === (group.subItems?.length ?? 1) - 1 ? '└' : '├'}
+                                  </span>
+                                  <span className="truncate">{sub.label}</span>
+                                </button>
+                              ))}
+                            </div>
+                          ) : (
+                            group.primaryTab && (
                               <button
-                                key={sub.tab}
                                 type="button"
                                 onClick={(e) => {
-                                  selectTab(sub.tab, e);
+                                  selectTab(group.primaryTab!, e);
                                   setHoveredGroupId(null);
                                 }}
-                                className={`flex w-full items-center gap-2.5 rounded-lg px-3.5 py-2.5 text-xs font-bold transition-all duration-300 border ${sub.tab === activeTab
-                                  ? 'bg-gradient-to-r from-coolors-blue/20 to-coolors-purple/10 text-coolors-blue border-coolors-blue/50'
-                                  : 'bg-gradient-to-br from-[#16202C] to-[#121A24] border-white/10 text-slate-200 hover:bg-gradient-to-br hover:from-[#1E2C3D] hover:to-[#16202C] hover:border-coolors-blue/30 hover:text-white'
-                                  }`}
+                                className="flex w-full items-center gap-2 rounded px-2.5 py-1.5 text-xs text-slate-300 hover:bg-white/10 hover:text-white"
                               >
-                                <span className="h-1.5 w-1.5 rounded-full bg-coolors-blue" />
-                                <span className="truncate">{sub.label}</span>
+                                <span>Abrir {group.label}</span>
                               </button>
-                            ))}
-                          </div>
+                            )
+                          )}
                         </div>
                       )}
                     </div>
@@ -458,41 +580,45 @@ export function Sidebar({
           ))}
         </nav>
 
-        {/* ── Central de Comando em Container Arredondado (Vancouver Plus style) ────────────────────── */}
-        <div className="shrink-0 p-4 border-t border-white/10 bg-[#0b132b]">
+        {/* ── Console Footer: Birth Intelligence Widget ──────────────── */}
+        <div className="shrink-0 p-3 border-t border-white/10 bg-[#080D1A]">
           {!isCollapsed ? (
-            <div className="rounded-xl border border-white/10 bg-gradient-to-br from-[#121A24] to-[#0f172a] p-4 shadow-xl space-y-3">
-              <div className="flex items-center gap-2">
-                <span className="h-2.5 w-2.5 rounded-full bg-brand animate-pulse shadow-[0_0_8px_var(--brand)]" />
-                <h4 className="text-xs font-extrabold text-white uppercase tracking-wider font-mono">
-                  CENTRAL DE COMANDO
-                </h4>
+            <div className="rounded-lg border border-amber-500/25 bg-amber-500/5 p-3 space-y-2">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="text-amber-400 text-sm font-bold animate-pulse">⚡</span>
+                  <span className="text-[10px] font-extrabold uppercase tracking-wider text-amber-300 font-mono">
+                    BIRTH INTELLIGENCE
+                  </span>
+                </div>
+                <span className="flex h-1.5 w-1.5 rounded-full bg-amber-400 shadow-[0_0_6px_rgba(251,191,36,0.8)]" />
               </div>
-              <p className="text-[11px] text-slate-300 leading-relaxed">
-                Orquestre sua operação de Revenue em tempo real.
+              <p className="text-xs text-slate-300 font-medium leading-tight">
+                7 sinais requerem atenção
               </p>
               <button
                 type="button"
-                onClick={() => openTab('workspace')}
-                className="w-full flex items-center justify-between rounded-lg bg-gradient-to-r from-brand via-sky-400 to-iris p-0.5 text-xs font-extrabold text-slate-950 shadow-lg hover:brightness-110 hover:shadow-xl active:scale-95 transition-all duration-300 cursor-pointer group"
+                onClick={() => openTab('intelligence')}
+                className="group flex items-center gap-1.5 text-xs font-semibold text-amber-400 hover:text-amber-300 transition-colors cursor-pointer pt-0.5"
               >
-                <div className="w-full bg-gradient-to-r from-brand via-sky-400 to-iris py-2.5 px-3.5 rounded-[10px] flex items-center justify-between text-slate-950 font-extrabold">
-                  <div className="flex items-center gap-2">
-                    <Plus size={16} strokeWidth={3} />
-                    <span>Orquestrar Pipeline</span>
-                  </div>
-                  <ArrowRight size={15} className="group-hover:translate-x-0.5 transition-transform" />
-                </div>
+                <span>Ver inteligência</span>
+                <ArrowRight
+                  size={13}
+                  className="transition-transform group-hover:translate-x-0.5"
+                />
               </button>
             </div>
           ) : (
             <button
               type="button"
-              onClick={() => openTab('workspace')}
-              className="flex h-11 w-11 mx-auto items-center justify-center rounded-lg bg-gradient-to-r from-brand via-sky-400 to-iris text-slate-950 shadow-lg hover:scale-105 hover:shadow-xl active:scale-95 transition-all duration-300 cursor-pointer"
-              title="Orquestrar Pipeline"
+              onClick={() => openTab('intelligence')}
+              className="relative flex h-10 w-10 mx-auto items-center justify-center rounded-lg border border-amber-500/30 bg-amber-500/10 text-amber-400 hover:bg-amber-500/20 transition-all cursor-pointer"
+              title="Birth Intelligence: 7 sinais requerem atenção"
             >
-              <Plus size={20} strokeWidth={3} />
+              <span className="text-sm font-bold">⚡</span>
+              <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-amber-500 text-[9px] font-black text-slate-950 font-mono">
+                7
+              </span>
             </button>
           )}
         </div>
