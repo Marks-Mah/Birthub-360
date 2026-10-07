@@ -1,27 +1,13 @@
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { useReducedMotion } from 'framer-motion';
 import {
   ArrowRight,
-  BarChart3,
-  Building2,
   ChevronDown,
   ChevronLeft,
-  ChevronRight,
-  GitBranch,
-  Globe,
-  LineChart,
-  Mic,
-  PhoneCall,
-  Radar,
-  Repeat,
-  Settings as SettingsIcon,
   Shield,
-  Target,
-  UserCog,
-  Users,
   X,
-  Zap,
 } from 'lucide-react';
-import React, { useState } from 'react';
+import type React from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext.js';
 import { hasRequiredRole } from '../../lib/auth/authorization.js';
@@ -426,8 +412,9 @@ export function Sidebar({
                   const isActive = isPrimaryActive || isSubItemActive;
 
                   return (
-                    <div
+                    <section
                       key={group.id}
+                      aria-label={group.label}
                       className="relative"
                       onMouseEnter={() => isCollapsed && setHoveredGroupId(group.id)}
                       onMouseLeave={() => isCollapsed && setHoveredGroupId(null)}
@@ -561,8 +548,10 @@ export function Sidebar({
                               <button
                                 type="button"
                                 onClick={(e) => {
-                                  selectTab(group.primaryTab!, e);
-                                  setHoveredGroupId(null);
+                                  if (group.primaryTab) {
+                                    selectTab(group.primaryTab, e);
+                                    setHoveredGroupId(null);
+                                  }
                                 }}
                                 className="flex w-full items-center gap-2 rounded px-2.5 py-1.5 text-xs text-slate-300 hover:bg-white/10 hover:text-white"
                               >
@@ -572,7 +561,7 @@ export function Sidebar({
                           )}
                         </div>
                       )}
-                    </div>
+                    </section>
                   );
                 })}
               </div>
