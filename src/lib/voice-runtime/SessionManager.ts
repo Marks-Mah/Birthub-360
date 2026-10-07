@@ -266,6 +266,10 @@ export class SessionManager {
   public getSession(sessionId: string) {
     return this.sessions.get(sessionId);
   }
+
+  public getSessionIntents(sessionId: string): IntentAnalysisResult[] {
+    return this.sessionIntents.get(sessionId) || [];
+  }
 }
 
 export const sessionManager = new SessionManager();

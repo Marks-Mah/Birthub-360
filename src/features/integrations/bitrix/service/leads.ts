@@ -10,6 +10,7 @@ import { applyInboundCustomFields, resolveEnumMaps } from './customFields.js';
 import { type BitrixDealStage, getBitrixUsers } from './deals.js';
 import { findOwnershipConflict, notifyOwnershipConflict } from './ownershipGuard.js';
 import { resolveBirthubUserIdByEmail } from './userMapping.js';
+import { acquireBitrixSyncLock, releaseBitrixSyncLock } from './idempotentSync.js';
 
 const LEAD_UF_CRM_CODES = BITRIX_FIELD_MAP.map((m) => m.leadCode).filter((c): c is string =>
   Boolean(c),
@@ -248,6 +249,12 @@ export async function importSelectedBitrixLeads(
   const importedLeadIds: string[] = [];
 
   for (const bitrixLeadId of bitrixLeadIds) {
+    const lockAcquired = acquireBitrixSyncLock(organizationId, 'lead', bitrixLeadId);
+    if (!lockAcquired) {
+      skipped++;
+      continue;
+    }
+
     // Todo o corpo por item vive dentro deste try/catch externo: antes, uma exceção não-P2002
     // (ex.: callBitrix esgotando retries, timeout de rede, erro de DB) propagava pra fora do loop
     // inteiro e derrubava a importação completa, descartando os contadores já coletados — o
@@ -389,6 +396,8 @@ export async function importSelectedBitrixLeads(
         { err, organizationId, bitrixLeadId },
         '[bitrix] Falha ao importar item — contabilizado como falha, importação continua para os demais',
       );
+    } finally {
+      releaseBitrixSyncLock(organizationId, 'lead', bitrixLeadId);
     }
   }
 

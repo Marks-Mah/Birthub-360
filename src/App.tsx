@@ -248,6 +248,7 @@ const OnboardingTour = lazy(() =>
 );
 const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy.js'));
 const TermsOfUse = lazy(() => import('./pages/TermsOfUse.js'));
+const Landing360 = lazy(() => import('./features/landing/pages/Landing360.js').then((m) => ({ default: m.Landing360 })));
 const WelcomeScreen = lazy(() =>
   import('./features/auth/components/WelcomeScreen.js').then((m) => ({ default: m.WelcomeScreen })),
 );
@@ -548,7 +549,7 @@ export default function App() {
                           </ProtectedRoute>
                         }
                       />
-                      <Route path="/" element={<WelcomeScreen />} />
+                      <Route path="/" element={<Landing360 />} />
                       <Route path="/welcome" element={<WelcomeScreen />} />
                       <Route path="/landing-new" element={<LandingInnovative />} />
                       <Route path="/privacy" element={<PrivacyPolicy />} />

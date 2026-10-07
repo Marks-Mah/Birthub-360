@@ -41,6 +41,7 @@ import { PlaybookAiService } from '../../playbook/services/playbook-ai.service.j
 import { RoleplayAiService } from '../../roleplay/services/roleplay-ai.service.js';
 import { CommercialAIService } from './CommercialAIService.js';
 import { IcebreakerService } from './IcebreakerService.js';
+import { predictiveScoringNbaService } from './PredictiveScoringNbaService.js';
 
 export class CentralAISuiteService {
   // #1 Icebreaker
@@ -51,6 +52,9 @@ export class CentralAISuiteService {
 
   // #3 WhatsApp Intelligence
   public readonly conversationIntelligence = new ConversationIntelligenceService();
+
+  // #5 Lead Scoring Preditivo & Qdrant RAG
+  public readonly predictiveScoring = predictiveScoringNbaService;
 
   // #6 Comitê de Compra
   public readonly decisionCommittee = new DecisionCommitteeService();
