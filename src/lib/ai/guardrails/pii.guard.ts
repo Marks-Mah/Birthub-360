@@ -30,7 +30,10 @@ export function detectPII(text: string): GuardrailResult {
   if (phoneMatches) matches.push(...phoneMatches);
 
   const emailMatches = text.match(EMAIL_PATTERN);
-  if (emailMatches) matches.push(...emailMatches);
+  if (emailMatches) {
+    const validEmails = emailMatches.filter(e => !e.endsWith('@birthhub360.com') && !e.endsWith('@example.com'));
+    if (validEmails.length > 0) matches.push(...validEmails);
+  }
 
   const creditCardMatches = text.match(CREDIT_CARD_PATTERN);
   if (creditCardMatches) matches.push(...creditCardMatches);
