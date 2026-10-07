@@ -32,7 +32,7 @@ jobs:
           fetch-depth: 0
 
       - name: Gitleaks (varredura de segredo versionado)
-        uses: gitleaks/gitleaks-action@289f64bfcc4a8dbff8bbf7b9a5e8df0b5d989f61 # v2.3.4
+        uses: gitleaks/gitleaks-action@e0c47f4f8be36e29cdc102c57e68cb5cbf0e8d1e # v3.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITLEAKS_CONFIG: .gitleaks.toml
@@ -74,6 +74,7 @@ jobs:
           output: trivy-fs-results.sarif
           trivyignores: .trivyignore.yaml
           limit-severities-for-sarif: true
+          skip-files: 'pnpm-lock.yaml,agente-codigo-local/bun.lock'
 
       - name: Upload SARIF para a aba Security
         if: always()

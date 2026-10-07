@@ -106,11 +106,11 @@ propósito por estar fora de "## Exceções ativas"):
 - **Reavaliar até:** 2026-11-30 (mesmo checkpoint dos demais itens desta lista)
 
 
-### `src/features/prospecting/outbound/server/routes.ts`
+### `src/features/prospecting/outbound/server/routes/leads.routes.ts`
 
 - **Limite excepcional:** 1500 linhas
 - **Dono:** Agente 05 — Prospecção
-- **Motivo:** Modularizado na campanha techdebt-2026-09-29 (extraídos leadSearch.service, formatLead, e sub-routers auth, campaigns, tasks, chat, system, integrations), reduzindo de 3614 para 1409 linhas.
+- **Motivo:** Modularizado na campanha techdebt-2026-09-29 (extraídos leadSearch.service, formatLead, e sub-routers auth, campaigns, tasks, chat, system, integrations), reduzindo de 3614 para 1368 linhas.
 - **Registrado em:** 2026-09-29
 - **Reavaliar até:** 2026-11-30
 

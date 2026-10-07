@@ -3004,6 +3004,53 @@ paths:
               schema:
                 $ref: '#/components/schemas/DataEnvelope'
 
+  /intelligence/suite/predictive/lead-score:
+    post:
+      tags: [Intelligence]
+      summary: '#21 Predictive Lead Scoring (Qdrant + pgvector)'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [leadId]
+              properties:
+                leadId: { type: string }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataEnvelope'
+
+  /intelligence/suite/predictive/next-best-action:
+    post:
+      tags: [Intelligence]
+      summary: '#22 Predictive Next Best Action (LiteLLM + RevOps context)'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [leadId, leadName, stage]
+              properties:
+                leadId: { type: string }
+                leadName: { type: string }
+                companyName: { type: string }
+                stage: { type: string }
+                recentNotes: { type: string }
+                lastInteractionDaysAgo: { type: integer }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataEnvelope'
+
   # ───────────────────────────── Agent (copiloto/voz/swarm) ─────────────────────────────
   /agent/chat:
     post:

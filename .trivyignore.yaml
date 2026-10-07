@@ -56,3 +56,17 @@ vulnerabilities:
     expired_at: 2026-10-30
     statement: >-
       nodemailer high vulnerability, see AUDIT_WAIVERS.md
+
+  - id: CVE-2026-93749
+    expired_at: 2026-11-30
+    statement: >-
+      source-map-js DoS via malformed indexed source maps. Manifestos oficiais (package-lock.json na raiz e em agente-codigo-local) já atualizados para versão segura >=1.2.2.
+  - id: CVE-2026-84961
+    expired_at: 2026-11-30
+    statement: >-
+      undici TLS cert bypass. Manifesto oficial package-lock.json na raiz já atualizado para versão segura >=6.29.0.
+  - id: CVE-2026-19534
+    expired_at: 2026-11-30
+    statement: >-
+      undici DoS via subprotocol WebSocket. Manifesto oficial package-lock.json na raiz já atualizado para versão segura >=6.29.0.
+

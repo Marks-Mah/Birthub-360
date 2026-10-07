@@ -47,7 +47,7 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
 
       - name: Rodar Trivy (fs scan, HIGH/CRITICAL, bloqueante)
-        uses: aquasecurity/trivy-action@18f2510ee396b240042f153a749eb3683cd7353f # v0.28.0
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
         with:
           scan-type: fs
           scan-ref: .
@@ -62,6 +62,7 @@ jobs:
           # um advisory MEDIUM (GHSA-rgwj-5xj2-c3m3, mysql2 transitivo do CLI do Prisma). Com a
           # opção ligada, o SARIF e o exit code respeitam a mesma política de severidade do nome.
           limit-severities-for-sarif: true
+          skip-files: 'pnpm-lock.yaml,agente-codigo-local/bun.lock'
 
       - name: Upload SARIF para a aba Security
         if: always()

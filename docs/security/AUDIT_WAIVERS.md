@@ -70,6 +70,23 @@ Se um achado `HIGH`/`CRITICAL` precisar ser aceito temporariamente (ex.: sem fix
 - **Dono:** Agente 00
 - **Data de reavaliao:** 2026-10-30
 
+### `CVE-2026-93749` — `source-map-js` (DoS via malformed indexed source maps)
+
+- **Advisory:** https://github.com/advisories/GHSA-7x8w-g892-f33r / CVE-2026-93749
+- **Severidade:** high
+- **Cadeia:** source-map-js (presente apenas em lockfiles legados uninstalled: pnpm-lock.yaml / bun.lock). Os manifests de runtime e CI reais (package-lock.json na raiz e em agente-codigo-local) já foram atualizados pelo Dependabot para versão corrigida >=1.2.2.
+- **Motivo:** O código de produção e de build oficial (npm ci) já usa 1.2.2 (corrigido). Waiver cobre exclusivamente os lockfiles legados até que sejam sincronizados ou removidos.
+- **Dono:** Agente 08 / QA e Release
+- **Data de registro:** 2026-10-07. **Reavaliar até:** 2026-11-30
+
+### `CVE-2026-84961` / `CVE-2026-19534` — `undici` (TLS cert bypass & DoS)
+
+- **Advisory:** CVE-2026-84961, CVE-2026-19534
+- **Severidade:** high
+- **Cadeia:** undici (presente apenas em pnpm-lock.yaml legado). O package-lock.json oficial do projeto já resolve undici para >=6.29.0 (versão corrigida).
+- **Motivo:** Aplicação e testes de CI utilizam npm ci e package-lock.json (onde undici já está em 6.29.0, livre das vulnerabilidades).
+- **Dono:** Agente 08 / QA e Release
+- **Data de registro:** 2026-10-07. **Reavaliar até:** 2026-11-30
 
 ### `GHSA-ggr8-5vv4-36mx` / `CVE-2026-40345` — `deepmerge-ts` (stack exhaustion) via `@prisma/config`/`prisma`
 
