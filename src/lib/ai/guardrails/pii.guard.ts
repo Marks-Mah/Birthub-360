@@ -30,7 +30,10 @@ export function detectPII(text: string): GuardrailResult {
   if (phoneMatches) matches.push(...phoneMatches);
 
   const emailMatches = text.match(EMAIL_PATTERN);
-  if (emailMatches) matches.push(...emailMatches);
+  if (emailMatches) {
+    const externalEmails = emailMatches.filter(e => !e.endsWith('@birthhub360.com'));
+    if (externalEmails.length > 0) matches.push(...externalEmails);
+  }
 
   const creditCardMatches = text.match(CREDIT_CARD_PATTERN);
   if (creditCardMatches) matches.push(...creditCardMatches);
@@ -73,8 +76,13 @@ export function redactPII(text: string): { redacted: string; matches: string[] }
 
   const emailMatches = text.match(EMAIL_PATTERN);
   if (emailMatches) {
-    matches.push(...emailMatches);
-    redacted = redacted.replace(EMAIL_PATTERN, '[EMAIL_REDACTED]');
+    const externalEmails = emailMatches.filter(e => !e.endsWith('@birthhub360.com'));
+    if (externalEmails.length > 0) {
+      matches.push(...externalEmails);
+      externalEmails.forEach(e => {
+        redacted = redacted.replace(e, '[EMAIL_REDACTED]');
+      });
+    }
   }
 
   const creditCardMatches = text.match(CREDIT_CARD_PATTERN);
