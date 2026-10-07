@@ -325,35 +325,28 @@ export function Sidebar({
       {launch && <NavLaunchTransition launch={launch} onFinish={finishLaunch} />}
 
       <aside
-        className={`relative z-30 flex flex-col h-full bg-[#0B132B] text-slate-200 select-none ${
+        className={`relative z-30 flex flex-col h-full bg-[#13151A] text-slate-200 select-none ${
           mobileOpen
             ? 'w-full'
-            : `border-r border-white/10 transition-[width] duration-200 hidden lg:flex ${
-                isCollapsed ? 'w-16' : 'w-64'
+            : `border-r border-white/5 transition-[width] duration-200 hidden lg:flex ${
+                isCollapsed ? 'w-20' : 'w-[260px]'
               }`
         }`}
         aria-label="Navegação Principal"
       >
         {/* ── Console Header: Brand & Status ────────────────────────── */}
-        <div className="shrink-0 px-3.5 py-3.5 border-b border-white/10 flex items-center justify-between">
-          <div className="flex items-center gap-2.5 min-w-0">
-            <span className="relative flex h-2.5 w-2.5 shrink-0" title="Engine Operacional Ativo">
-              <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 animate-ping" />
-              <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
-            </span>
+        <div className="shrink-0 px-6 py-6 flex items-center justify-between">
+          <div className="flex items-center gap-2 min-w-0">
+            <div className="flex gap-1.5" title="Mac OS Controls">
+              <span className="h-3 w-3 rounded-full bg-[#EF4444]" />
+              <span className="h-3 w-3 rounded-full bg-[#F59E0B]" />
+              <span className="h-3 w-3 rounded-full bg-[#8B5CF6]" />
+            </div>
             {!isCollapsed && (
-              <div className="min-w-0 leading-tight">
-                <div className="flex items-center gap-1.5">
-                  <span className="font-display font-extrabold text-xs tracking-tight text-white">
-                    BIRTHHUB
-                  </span>
-                  <span className="text-[9px] font-mono px-1 py-0.2 rounded bg-brand/20 text-brand border border-brand/30">
-                    360°
-                  </span>
-                </div>
-                <p className="text-[10px] font-mono tracking-wider text-slate-400 uppercase truncate mt-0.5">
-                  360° Revenue Intelligence
-                </p>
+              <div className="min-w-0 leading-tight ml-3">
+                <span className="font-display font-bold text-sm tracking-tight text-white">
+                  BIRTHHUB<span className="text-brand">360°</span>
+                </span>
               </div>
             )}
           </div>
@@ -386,16 +379,12 @@ export function Sidebar({
         </div>
 
         {/* ── Navegação Console de Operações ─────────────────────────── */}
-        <nav className="custom-scrollbar flex-1 overflow-y-auto px-2 py-3 space-y-4">
+        <nav className="custom-scrollbar flex-1 overflow-y-auto px-4 py-2 space-y-6">
           {navSections.map((section) => (
-            <div key={section.title} className="space-y-1">
-              {!isCollapsed && (
-                <h3 className="px-2 text-[10px] font-mono font-bold uppercase tracking-widest text-slate-400 py-1">
-                  {section.title}
-                </h3>
-              )}
-
-              <div className="space-y-0.5">
+            <div key={section.title} className="space-y-1.5">
+              {/* Seção invisível para manter hierarquia sem poluir o visual clean */}
+              
+              <div className="space-y-1.5">
                 {section.groups.map((group) => {
                   const Icon = group.icon;
                   const isGroupExpanded = !!expandedGroups[group.id];
@@ -422,56 +411,43 @@ export function Sidebar({
                             selectTab(group.primaryTab, e);
                           }
                         }}
-                        className={`group relative flex w-full items-center justify-between rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors cursor-pointer border-l-2 ${
+                        className={`group relative flex w-full items-center justify-between rounded-xl px-4 py-3 text-sm font-medium transition-all duration-200 cursor-pointer ${
                           isActive
-                            ? 'bg-brand/15 text-white font-semibold border-brand'
-                            : 'text-slate-300 hover:bg-white/5 hover:text-white border-transparent'
+                            ? 'bg-[#8B7DFF] text-[#13151A] shadow-sm'
+                            : 'text-slate-400 hover:bg-white/5 hover:text-slate-200'
                         }`}
                         aria-label={group.ariaLabel || group.label}
                         title={isCollapsed ? group.label : undefined}
                       >
-                        <div className="flex items-center gap-2.5 min-w-0">
+                        <div className="flex items-center gap-4 min-w-0">
                           <span
                             data-nav-icon
-                            className={`flex h-4 w-4 shrink-0 items-center justify-center transition-colors ${
-                              isActive ? 'text-brand' : 'text-slate-400 group-hover:text-slate-200'
+                            className={`flex h-5 w-5 shrink-0 items-center justify-center transition-colors ${
+                              isActive ? 'text-[#13151A]' : 'text-slate-400 group-hover:text-slate-200'
                             }`}
                           >
-                            <Icon size={15} />
+                            <Icon size={18} />
                           </span>
 
                           {!isCollapsed && (
-                            <div className="flex items-center gap-1.5 min-w-0">
-                              <span
-                                className={`text-[9px] shrink-0 font-mono transition-colors ${
-                                  isActive
-                                    ? 'text-brand'
-                                    : 'text-slate-500 group-hover:text-slate-400'
-                                }`}
-                                aria-hidden="true"
-                              >
-                                ◉
-                              </span>
-                              <span className="truncate">{group.label}</span>
-                            </div>
+                            <span className="truncate">{group.label}</span>
                           )}
                         </div>
 
                         {!isCollapsed && hasSubItems && (
                           <ChevronDown
-                            size={13}
-                            className={`shrink-0 text-slate-400 transition-transform duration-200 ${
-                              isGroupExpanded ? 'rotate-180' : ''
-                            }`}
+                            size={16}
+                            className={`shrink-0 transition-transform duration-200 ${
+                              isActive ? 'text-[#13151A]/60' : 'text-slate-500'
+                            } ${isGroupExpanded ? 'rotate-180' : ''}`}
                           />
                         )}
                       </button>
 
-                      {/* Árvore Hierárquica da Console (Sub-itens com conectores ├ e └) */}
+                      {/* Árvore Hierárquica da Console */}
                       {!isCollapsed && hasSubItems && isGroupExpanded && (
-                        <div className="ml-3 pl-2.5 border-l border-white/10 space-y-0.5 my-1">
-                          {group.subItems?.map((subItem, idx) => {
-                            const isLast = idx === (group.subItems?.length ?? 1) - 1;
+                        <div className="ml-6 pl-4 border-l-2 border-white/5 space-y-1 mt-2 mb-3">
+                          {group.subItems?.map((subItem) => {
                             const isSubActive = subItem.tab === activeTab;
 
                             return (
@@ -479,27 +455,12 @@ export function Sidebar({
                                 key={subItem.tab + subItem.label}
                                 type="button"
                                 onClick={(e) => selectTab(subItem.tab, e)}
-                                className={`group/sub relative flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-xs transition-colors cursor-pointer text-left ${
+                                className={`group/sub relative flex w-full items-center gap-3 rounded-lg px-3 py-2 text-[13px] transition-colors cursor-pointer text-left ${
                                   isSubActive
-                                    ? 'bg-brand/15 text-white font-semibold text-brand'
+                                    ? 'bg-white/10 text-white font-medium'
                                     : 'text-slate-400 hover:bg-white/5 hover:text-slate-200'
                                 }`}
                               >
-                                <span
-                                  data-nav-icon
-                                  className="font-mono text-slate-500 text-[11px] shrink-0 select-none group-hover/sub:text-slate-300"
-                                >
-                                  {isLast ? '└' : '├'}
-                                </span>
-
-                                <span
-                                  className={`h-1.5 w-1.5 rounded-full shrink-0 transition-colors ${
-                                    isSubActive
-                                      ? 'bg-brand'
-                                      : 'bg-slate-600 group-hover/sub:bg-slate-400'
-                                  }`}
-                                />
-
                                 <span className="truncate">{subItem.label}</span>
                               </button>
                             );
@@ -509,13 +470,13 @@ export function Sidebar({
 
                       {/* Popover em Modo Rail (Recolhido) */}
                       {isCollapsed && hoveredGroupId === group.id && (
-                        <div className="fixed left-16 z-50 min-w-[200px] rounded-lg border border-white/15 bg-[#080D1A]/95 p-3 shadow-2xl backdrop-blur-md">
-                          <p className="mb-2 text-[10px] font-mono font-bold uppercase tracking-wider text-brand">
+                        <div className="fixed left-20 z-50 min-w-[200px] rounded-xl border border-white/10 bg-[#13151A]/95 p-3 shadow-2xl backdrop-blur-md ml-2">
+                          <p className="mb-2 text-xs font-bold text-white">
                             {group.label}
                           </p>
                           {hasSubItems ? (
                             <div className="space-y-1">
-                              {group.subItems?.map((sub, idx) => (
+                              {group.subItems?.map((sub) => (
                                 <button
                                   key={sub.tab + sub.label}
                                   type="button"
@@ -523,15 +484,12 @@ export function Sidebar({
                                     selectTab(sub.tab, e);
                                     setHoveredGroupId(null);
                                   }}
-                                  className={`flex w-full items-center gap-2 rounded px-2.5 py-1.5 text-xs transition-colors ${
+                                  className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors ${
                                     sub.tab === activeTab
-                                      ? 'bg-brand/20 text-brand font-semibold'
-                                      : 'text-slate-300 hover:bg-white/10 hover:text-white'
+                                      ? 'bg-white/10 text-white font-medium'
+                                      : 'text-slate-400 hover:bg-white/5 hover:text-white'
                                   }`}
                                 >
-                                  <span className="font-mono text-slate-500 text-[10px]">
-                                    {idx === (group.subItems?.length ?? 1) - 1 ? '└' : '├'}
-                                  </span>
                                   <span className="truncate">{sub.label}</span>
                                 </button>
                               ))}
@@ -546,7 +504,7 @@ export function Sidebar({
                                     setHoveredGroupId(null);
                                   }
                                 }}
-                                className="flex w-full items-center gap-2 rounded px-2.5 py-1.5 text-xs text-slate-300 hover:bg-white/10 hover:text-white"
+                                className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-slate-300 hover:bg-white/5 hover:text-white"
                               >
                                 <span>Abrir {group.label}</span>
                               </button>
@@ -563,30 +521,30 @@ export function Sidebar({
         </nav>
 
         {/* ── Console Footer: Birth Intelligence Widget ──────────────── */}
-        <div className="shrink-0 p-3 border-t border-white/10 bg-[#080D1A]">
+        <div className="shrink-0 p-4 border-t border-white/5 bg-transparent">
           {!isCollapsed ? (
-            <div className="rounded-lg border border-amber-500/25 bg-amber-500/5 p-3 space-y-2">
+            <div className="rounded-xl border border-amber-500/20 bg-amber-500/5 p-4 space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <span className="text-amber-400 text-sm font-bold animate-pulse">⚡</span>
-                  <span className="text-[10px] font-extrabold uppercase tracking-wider text-amber-300 font-mono">
-                    BIRTH INTELLIGENCE
+                  <span className="text-amber-400 text-base font-bold animate-pulse">⚡</span>
+                  <span className="text-xs font-bold uppercase tracking-wider text-amber-300">
+                    INTELIGÊNCIA
                   </span>
                 </div>
-                <span className="flex h-1.5 w-1.5 rounded-full bg-amber-400 shadow-[0_0_6px_rgba(251,191,36,0.8)]" />
+                <span className="flex h-2 w-2 rounded-full bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.8)]" />
               </div>
-              <p className="text-xs text-slate-300 font-medium leading-tight">
+              <p className="text-xs text-slate-400 font-medium leading-relaxed">
                 7 sinais requerem atenção
               </p>
               <button
                 type="button"
                 onClick={() => openTab('intelligence')}
-                className="group flex items-center gap-1.5 text-xs font-semibold text-amber-400 hover:text-amber-300 transition-colors cursor-pointer pt-0.5"
+                className="group flex items-center gap-2 text-xs font-semibold text-amber-400 hover:text-amber-300 transition-colors cursor-pointer"
               >
-                <span>Ver inteligência</span>
+                <span>Ver análises</span>
                 <ArrowRight
-                  size={13}
-                  className="transition-transform group-hover:translate-x-0.5"
+                  size={14}
+                  className="transition-transform group-hover:translate-x-1"
                 />
               </button>
             </div>
@@ -594,11 +552,11 @@ export function Sidebar({
             <button
               type="button"
               onClick={() => openTab('intelligence')}
-              className="relative flex h-10 w-10 mx-auto items-center justify-center rounded-lg border border-amber-500/30 bg-amber-500/10 text-amber-400 hover:bg-amber-500/20 transition-all cursor-pointer"
+              className="relative flex h-12 w-12 mx-auto items-center justify-center rounded-xl border border-amber-500/20 bg-amber-500/10 text-amber-400 hover:bg-amber-500/20 transition-all cursor-pointer"
               title="Birth Intelligence: 7 sinais requerem atenção"
             >
-              <span className="text-sm font-bold">⚡</span>
-              <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-amber-500 text-[9px] font-black text-slate-950 font-mono">
+              <span className="text-base font-bold">⚡</span>
+              <span className="absolute -top-1.5 -right-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-amber-500 text-[10px] font-black text-slate-950 shadow-md">
                 7
               </span>
             </button>
