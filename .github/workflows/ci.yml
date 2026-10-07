@@ -211,14 +211,14 @@ jobs:
       - name: Run AI Resilience Tests (TD-009)
         run: npm run test:unit -- src/lib/ai/gateway/__tests__/http-client.test.ts src/lib/ai/gateway/__tests__/circuit-breaker.test.ts src/lib/ai/gateway/__tests__/retry.test.ts
 
+      - name: Run Migrations (para testes de integração)
+        run: npx prisma migrate deploy
+
       - name: Golden Dataset live regression gate
         if: ${{ env.GROQ_API_KEY != '' || env.OPENAI_API_KEY != '' }}
         env:
           GOLDEN_EVAL_USE_LLM_JUDGE: 'true'
         run: npm run eval:golden
-
-      - name: Run Migrations (para testes de integração)
-        run: npx prisma migrate deploy
 
       - name: Verificar deriva de schema/migration (DATA-007, não-bloqueante)
         # Compara o banco recém-migrado (todas as migrations de prisma/migrations aplicadas, passo
