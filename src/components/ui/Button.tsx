@@ -79,7 +79,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       soundHover = false,
       sound,
       shine = false,
-      magnetic = false,
+      magnetic = variant === 'default' || variant === 'primary' || variant === 'cosmic' || variant === 'vancouver',
       children,
       ...props
     },
