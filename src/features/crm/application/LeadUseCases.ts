@@ -153,7 +153,7 @@ export class LeadUseCases extends BaseUseCases<Lead, LeadRepository> {
       broadcastEvent({ type: 'DEAL_LOST', organizationId, payload: { leadId: id } });
     }
     if (data.status)
-      this.syncStatusChangeToCrms(organizationId, id, updated.bitrixLeadId, {
+      this.syncStatusChangeToCrms(organizationId, id, updated.bitrixLeadId || null, {
         name: 'Lead Atualizado',
         amount: updated.amount ?? undefined,
         stageLabel: updated.status,
@@ -186,7 +186,7 @@ export class LeadUseCases extends BaseUseCases<Lead, LeadRepository> {
     ) {
       broadcastEvent({ type: 'DEAL_LOST', organizationId, payload: { leadId: id } });
     }
-    this.syncStatusChangeToCrms(organizationId, id, updated.bitrixLeadId, {
+    this.syncStatusChangeToCrms(organizationId, id, updated.bitrixLeadId || null, {
       name: 'Lead Atualizado',
       amount: updated.amount ?? undefined,
       stageLabel: updated.status,

@@ -271,7 +271,7 @@ const envSchema = z
     BITRIX_EXTRACTION_RETENTION_DAYS: z.coerce.number().int().positive().default(45),
     BITRIX_EXTRACTION_PURGE_ENABLED: z
       .enum(['true', 'false'])
-      .default('false')
+      .default('true')
       .transform((value) => value === 'true'),
     // Onda 7, Agente 06: diretório onde os arquivos gerados pelo serviço real de extração
     // (CSV/XLSX/JSON) ficam em disco, fora do controle de versão (ver .gitignore). Mesma limitação

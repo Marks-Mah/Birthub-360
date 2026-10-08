@@ -143,4 +143,71 @@ export const HubspotService = {
       }
     }
   },
+
+  /**
+   * Sincroniza um Lead do Birth Hub como um Deal no HubSpot (v3 API).
+   */
+  async syncLeadToDeal(connectionId: string, leadData: { dealname: string; amount?: number; pipeline: string; dealstage: string; contactId?: string }): Promise<any> {
+    logger.info({ connectionId, dealname: leadData.dealname }, '[hubspot] Sincronizando Lead como Deal no HubSpot');
+
+    const connection = await prisma.externalCrmConnection.findUnique({
+      where: { id: connectionId },
+    });
+
+    if (!connection) {
+      throw new Error('Conexão HubSpot não encontrada');
+    }
+
+    const config = JSON.parse(connection.config);
+    if (!config.accessToken) {
+      throw new Error('Conexão HubSpot sem accessToken');
+    }
+
+    const properties: any = {
+      dealname: leadData.dealname,
+      pipeline: leadData.pipeline,
+      dealstage: leadData.dealstage,
+    };
+
+    if (leadData.amount !== undefined) {
+      properties.amount = leadData.amount.toString();
+    }
+
+    const payload: any = {
+      properties,
+    };
+
+    // Associa ao contato se o contactId for fornecido
+    if (leadData.contactId) {
+       payload.associations = [
+         {
+           to: { id: leadData.contactId },
+           types: [
+             {
+               associationCategory: 'HUBSPOT_DEFINED',
+               associationTypeId: 3 // 3 is usually deal_to_contact
+             }
+           ]
+         }
+       ];
+    }
+
+    const response = await fetch('https://api.hubapi.com/crm/v3/objects/deals', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${config.accessToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      const err = await response.text();
+      logger.error({ err }, '[hubspot] Erro ao criar Deal no HubSpot');
+      throw new Error(`Erro ao criar Deal no HubSpot: ${err}`);
+    }
+
+    const data = await response.json();
+    return data;
+  },
 };

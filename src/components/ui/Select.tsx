@@ -3,18 +3,18 @@ import * as React from 'react';
 import { cn } from '../../lib/utils.js';
 
 const selectVariants = cva(
-  'flex w-full rounded-control border bg-surface-elevated/70 backdrop-blur-sm text-sm text-ink transition-all duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] focus-visible:outline-none disabled:cursor-not-allowed disabled:bg-surface-subtle disabled:opacity-60 disabled:hover:border-line disabled:hover:scale-100 disabled:focus-visible:scale-100',
+  'flex w-full rounded-xl border bg-[#1C1D24] text-sm text-slate-200 transition-all duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] focus-visible:outline-none disabled:cursor-not-allowed disabled:bg-white/5 disabled:opacity-60 disabled:hover:border-white/10 disabled:hover:scale-100 disabled:focus-visible:scale-100',
   {
     variants: {
       variant: {
         default:
-          'border-brand/20 hover:border-brand hover:shadow-glow-brand hover:bg-surface-elevated hover:scale-[1.005] focus-visible:border-brand focus-visible:ring-2 focus-visible:ring-brand/40 focus-visible:scale-[1.01] focus-visible:shadow-glow-brand-strong',
+          'border-white/10 hover:border-white/20 hover:bg-[#22232B] focus-visible:border-[#8B7DFF] focus-visible:ring-2 focus-visible:ring-[#8B7DFF]/50',
         filled:
-          'border-transparent bg-surface-2 hover:bg-surface-interactive hover:border-brand/30 hover:shadow-glow-brand hover:scale-[1.005] focus-visible:bg-surface focus-visible:border-brand focus-visible:ring-2 focus-visible:ring-brand/30 focus-visible:shadow-glow-brand-strong focus-visible:scale-[1.01]',
+          'border-transparent bg-[#22232B] hover:bg-[#2A2B35] focus-visible:bg-[#1C1D24] focus-visible:border-[#8B7DFF] focus-visible:ring-2 focus-visible:ring-[#8B7DFF]/50',
         ghost:
-          'border-transparent bg-transparent hover:bg-surface-subtle hover:border-brand/20 hover:shadow-glow-brand hover:scale-[1.005] focus-visible:bg-surface-subtle focus-visible:border-brand/40 focus-visible:ring-2 focus-visible:ring-brand/30 focus-visible:shadow-glow-brand-strong focus-visible:scale-[1.01]',
+          'border-transparent bg-transparent hover:bg-white/5 focus-visible:bg-white/5 focus-visible:border-[#8B7DFF]/50 focus-visible:ring-2 focus-visible:ring-[#8B7DFF]/30',
         cosmic:
-          'border-brand/40 bg-gradient-to-br from-surface-elevated/80 to-brand/5 shadow-glow-brand hover:border-brand/70 hover:shadow-glow-brand-strong focus-visible:border-brand focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:scale-[1.01] focus-visible:shadow-glow-brand-strong',
+          'border-[#8B7DFF]/40 bg-gradient-to-br from-[#1C1D24] to-[#8B7DFF]/10 hover:border-[#8B7DFF] focus-visible:border-[#8B7DFF] focus-visible:ring-2 focus-visible:ring-[#8B7DFF]/50',
       },
       size: {
         default: 'h-10 px-3 py-2',

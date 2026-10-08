@@ -48,7 +48,7 @@ const DrawerContent = React.forwardRef<
         ref={ref}
         aria-modal="true"
         className={cn(
-          'fixed z-50 gap-4 border-line bg-surface p-6 shadow-xl transition ease-out data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:duration-200 data-[state=open]:duration-300',
+          'fixed z-50 gap-4 border-white/10 bg-[#1C1D24] p-6 shadow-xl transition ease-out data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:duration-200 data-[state=open]:duration-300',
           sideVariants[side],
           className,
         )}
@@ -57,9 +57,9 @@ const DrawerContent = React.forwardRef<
         {children}
         <DialogPrimitive.Close
           aria-label="Fechar gaveta"
-          className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-bg transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-surface-elevated"
+          className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-[#13151A] transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-[#8B7DFF] focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-white/5"
         >
-          <X className="h-4 w-4 text-ink-2" />
+          <X className="h-4 w-4 text-slate-400" />
           <span className="sr-only">Fechar gaveta</span>
         </DialogPrimitive.Close>
       </DialogPrimitive.Content>
@@ -87,7 +87,7 @@ const DrawerTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <DialogPrimitive.Title
     ref={ref}
-    className={cn('text-lg font-display font-semibold text-ink', className)}
+    className={cn('text-lg font-display font-semibold text-white', className)}
     {...props}
   />
 ));
@@ -99,7 +99,7 @@ const DrawerDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <DialogPrimitive.Description
     ref={ref}
-    className={cn('text-sm text-ink-2', className)}
+    className={cn('text-sm text-slate-400', className)}
     {...props}
   />
 ));

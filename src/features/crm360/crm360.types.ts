@@ -15,7 +15,7 @@ export interface CrmKpis {
 
 export interface CrmOverviewData {
   kpis: CrmKpis;
-  focusActivities: Array<Activity & { lead?: Lead | null }>;
+  focusActivities: Activity[];
   recentDeals: Lead[];
   stageCounts: Array<{ funnel: 'Lead' | 'Negocio'; status: string; count: number; amount: number }>;
 }

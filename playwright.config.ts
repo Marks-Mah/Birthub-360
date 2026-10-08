@@ -37,6 +37,8 @@ export default defineConfig({
     // a do próprio app sob teste, exatamente o que o navegador enviaria.
     extraHTTPHeaders: { Origin: new URL(BASE_URL).origin },
     trace: 'on-first-retry',
+    screenshot: 'only-on-failure',
+    video: 'retain-on-failure',
   },
   projects: [
     {

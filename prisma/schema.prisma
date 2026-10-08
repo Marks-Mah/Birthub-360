@@ -2760,11 +2760,9 @@ enum BitrixExtractionStatus {
 /// leads/contatos extraídos do Bitrix). A janela de retenção é PARAMETRIZADA
 /// (`BITRIX_EXTRACTION_RETENTION_DAYS`, `src/config/env.ts`, default 45 dias — confirmado pelo
 /// dono do produto em 2026-08-15, ver .agents/handoffs/onda-6/01A-para-06-bitrix-extraction-run-schema.md)
-/// em vez de gravada como número fixo nesta migration, exatamente para não bloquear a existência
-/// do schema numa decisão humana ainda pendente (ver seção "Retenção" do handoff acima). O worker
-/// de expurgo correspondente (`bitrixExtractionPurge.worker.ts`) fica DESLIGADO por padrão
-/// (`BITRIX_EXTRACTION_PURGE_ENABLED=false`) até essa confirmação humana existir — ligar a flag
-/// sem o valor de dias revisado não deve apagar nada por omissão.
+/// em vez de gravada como número fixo nesta migration. O worker de expurgo correspondente 
+/// (`bitrixExtractionPurge.worker.ts`) fica LIGADO por padrão
+/// (`BITRIX_EXTRACTION_PURGE_ENABLED=true`), aplicando a retenção e anonimização rigorosamente.
 model BitrixExtractionRun {
   id             String       @id @default(cuid())
   organizationId String

@@ -72,7 +72,7 @@ export default function App() {
     return () => {
       cancelled = true;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    
   }, [handleLogout, user]);
 
   // Theme state with local persistence

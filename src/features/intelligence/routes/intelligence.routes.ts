@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any -- ver justificativa no local de uso (aiToolkitFunctions, COD-004) */
 
 import { HumanMessage, SystemMessage } from '@langchain/core/messages';
 import { type Prisma, ReportSource } from '@prisma/client';
@@ -846,8 +845,7 @@ ${JSON.stringify(metrics, null, 2)}`;
 // Record (contravariância de parâmetros — `unknown` não é atribuível a `string`), e não há um tipo
 // de união prático que descreva "uma função de N parâmetros de texto, N variando por chave". A
 // aridade real de cada uma é validada em runtime contra AI_TOOLKIT_ARITY logo abaixo.
-// biome-ignore lint/suspicious/noExplicitAny: ver comentário acima
-const aiToolkitFunctions: Record<string, (...args: any[]) => Promise<unknown>> = {
+const aiToolkitFunctions: Record<string, (...args: never[]) => Promise<unknown>> = {
   summarizeLead,
   generateEmailDraft,
   predictConversionScore,

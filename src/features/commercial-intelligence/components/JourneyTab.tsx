@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/no-noninteractive-tabindex -- regiões roláveis focáveis por teclado */
 
 import { AlertTriangle, ArrowRightLeft, RotateCcw, Route, UserX } from 'lucide-react';
 import { useEffect, useState } from 'react';

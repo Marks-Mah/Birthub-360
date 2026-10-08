@@ -489,8 +489,7 @@ describe('dryRunAutomation — casos de borda gerais', () => {
     const result = await dryRunAutomation(
       'org-1',
       baseAutomation({
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        action: 'Ação removida' as any,
+        action: 'Ação removida',
       }),
     );
 

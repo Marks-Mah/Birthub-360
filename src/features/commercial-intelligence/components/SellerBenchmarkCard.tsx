@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/no-noninteractive-tabindex -- região rolável focável por teclado, mesmo padrão de ForecastAccuracyCard.tsx */
 
 import { AlertTriangle, Trophy } from 'lucide-react';
 import { useEffect, useState } from 'react';

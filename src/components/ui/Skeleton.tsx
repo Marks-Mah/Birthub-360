@@ -11,8 +11,8 @@ export function Skeleton({ className, shimmer = true, ...props }: SkeletonProps)
       className={cn(
         'rounded-md transition-all duration-300',
         shimmer
-          ? 'bh-skeleton-shimmer relative overflow-hidden before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_2s_infinite] before:bg-gradient-to-r before:from-transparent before:via-brand/10 before:to-transparent bg-surface-2/60 backdrop-blur-sm'
-          : 'animate-pulse bg-surface-2/60 backdrop-blur-sm',
+          ? 'bh-skeleton-shimmer relative overflow-hidden before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_2s_infinite] before:bg-gradient-to-r before:from-transparent before:via-white/5 before:to-transparent bg-[#22232B]'
+          : 'animate-pulse bg-[#22232B]',
         className,
       )}
       {...props}
@@ -24,7 +24,7 @@ export function MetricSkeleton({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        'rounded-xl border border-line bg-surface p-5 shadow-card space-y-4',
+        'rounded-2xl border border-white/5 bg-[#1C1D24] p-5 shadow-sm space-y-4',
         className,
       )}
     >
@@ -47,7 +47,7 @@ export function CardSkeleton({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        'rounded-xl border border-line bg-surface p-6 shadow-card space-y-4',
+        'rounded-2xl border border-white/5 bg-[#1C1D24] p-6 shadow-sm space-y-4',
         className,
       )}
     >
@@ -63,7 +63,7 @@ export function CardSkeleton({ className }: { className?: string }) {
         <Skeleton className="h-4 w-5/6" />
         <Skeleton className="h-4 w-2/3" />
       </div>
-      <div className="flex items-center justify-between pt-4 border-t border-line">
+      <div className="flex items-center justify-between pt-4 border-t border-white/5">
         <Skeleton className="h-4 w-24" />
         <Skeleton className="h-8 w-24 rounded-lg" />
       </div>
@@ -73,13 +73,13 @@ export function CardSkeleton({ className }: { className?: string }) {
 
 export function TableSkeleton({ rows = 5, cols = 4 }: { rows?: number; cols?: number }) {
   return (
-    <div className="w-full rounded-xl border border-line bg-surface overflow-hidden shadow-card">
-      <div className="flex items-center gap-4 px-4 py-3 border-b border-line bg-surface-2/50">
+    <div className="w-full rounded-2xl border border-white/5 bg-[#1C1D24] overflow-hidden shadow-sm">
+      <div className="flex items-center gap-4 px-4 py-3 border-b border-white/5 bg-[#15151A]/50">
         {Array.from({ length: cols }).map((_, i) => (
           <Skeleton key={`th-${i}`} className="h-3.5 flex-1" />
         ))}
       </div>
-      <div className="divide-y divide-line">
+      <div className="divide-y divide-white/5">
         {Array.from({ length: rows }).map((_, r) => (
           <div key={`tr-${r}`} className="flex items-center gap-4 px-4 py-3.5">
             {Array.from({ length: cols }).map((_, c) => (
@@ -101,7 +101,7 @@ export function ListSkeleton({ items = 4 }: { items?: number }) {
       {Array.from({ length: items }).map((_, i) => (
         <div
           key={`list-item-${i}`}
-          className="flex items-center justify-between p-3.5 rounded-xl border border-line bg-surface"
+          className="flex items-center justify-between p-3.5 rounded-2xl border border-white/5 bg-[#1C1D24]"
         >
           <div className="flex items-center gap-3">
             <Skeleton className="h-9 w-9 rounded-full shrink-0" />
@@ -121,7 +121,7 @@ export function ChartSkeleton({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        'rounded-xl border border-line bg-surface p-6 shadow-card space-y-6',
+        'rounded-2xl border border-white/5 bg-[#1C1D24] p-6 shadow-sm space-y-6',
         className,
       )}
     >

@@ -34,9 +34,9 @@ describe('src/lib/queue/metrics.ts', () => {
       getWaitingCount: vi.fn().mockResolvedValue(7),
       getActiveCount: vi.fn().mockResolvedValue(2),
       getFailedCount: vi.fn().mockResolvedValue(1),
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } as any;
+    };
 
+    // @ts-expect-error mock parcial de Queue
     registerQueueForMetrics('test-queue', fakeQueue);
 
     const metrics = await client.register.getMetricsAsJSON();
@@ -47,20 +47,18 @@ describe('src/lib/queue/metrics.ts', () => {
     expect(fakeQueue.getWaitingCount).toHaveBeenCalled();
     expect(fakeQueue.getActiveCount).toHaveBeenCalled();
     expect(fakeQueue.getFailedCount).toHaveBeenCalled();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    expect((waiting as any)?.values).toEqual(
+    type MetricWithValues = { values: Array<{ value: number; labels: { queue: string } }> };
+    expect((waiting as unknown as MetricWithValues)?.values).toEqual(
       expect.arrayContaining([
         expect.objectContaining({ value: 7, labels: { queue: 'test-queue' } }),
       ]),
     );
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    expect((active as any)?.values).toEqual(
+    expect((active as unknown as MetricWithValues)?.values).toEqual(
       expect.arrayContaining([
         expect.objectContaining({ value: 2, labels: { queue: 'test-queue' } }),
       ]),
     );
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    expect((failed as any)?.values).toEqual(
+    expect((failed as unknown as MetricWithValues)?.values).toEqual(
       expect.arrayContaining([
         expect.objectContaining({ value: 1, labels: { queue: 'test-queue' } }),
       ]),
@@ -85,16 +83,16 @@ describe('src/lib/queue/metrics.ts', () => {
       getWaitingCount: vi.fn().mockRejectedValue(new Error('Redis offline')),
       getActiveCount: vi.fn().mockRejectedValue(new Error('Redis offline')),
       getFailedCount: vi.fn().mockRejectedValue(new Error('Redis offline')),
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } as any;
+    };
     const healthyQueue = {
       getWaitingCount: vi.fn().mockResolvedValue(3),
       getActiveCount: vi.fn().mockResolvedValue(0),
       getFailedCount: vi.fn().mockResolvedValue(0),
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } as any;
+    };
 
+    // @ts-expect-error mock parcial de Queue
     registerQueueForMetrics('broken-queue', brokenQueue);
+    // @ts-expect-error mock parcial de Queue
     registerQueueForMetrics('healthy-queue', healthyQueue);
 
     const metrics = await client.register.getMetricsAsJSON();
@@ -139,10 +137,8 @@ describe('src/lib/queue/metrics.ts', () => {
       const { registerRedisConnectionForMetrics } =
         await import('../../../../src/lib/queue/metrics.js');
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const readyRedis = { status: 'ready' } as any;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const reconnectingRedis = { status: 'reconnecting' } as any;
+      const readyRedis = { status: 'ready' } as unknown as import('ioredis').Redis;
+      const reconnectingRedis = { status: 'reconnecting' } as unknown as import('ioredis').Redis;
 
       registerRedisConnectionForMetrics('bullmq', readyRedis, () => true);
       registerRedisConnectionForMetrics('rate-limit', reconnectingRedis, () => true);
@@ -169,10 +165,8 @@ describe('src/lib/queue/metrics.ts', () => {
       const { registerRedisConnectionForMetrics } =
         await import('../../../../src/lib/queue/metrics.js');
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const first = { status: 'ready' } as any;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const second = { status: 'reconnecting' } as any;
+      const first = { status: 'ready' } as unknown as import('ioredis').Redis;
+      const second = { status: 'reconnecting' } as unknown as import('ioredis').Redis;
 
       registerRedisConnectionForMetrics('bullmq', first, () => true);
       registerRedisConnectionForMetrics('bullmq', second, () => true);

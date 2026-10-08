@@ -132,7 +132,6 @@ describe('AI Guardrails - Security Integration', () => {
       const result = detectPII(text);
       
       expect(result.blocked).toBe(true);
-      // TODO: Integrar com AILog quando handoff for resolvido
     });
   });
 });

@@ -42,10 +42,29 @@ import type {
 import type { ContactStatus, LeadStatus, LeadTemperature } from '../lib/zod.js';
 
 export type { LeadQualification };
-export type Company = DomainCompany<string>;
-export type Contact = DomainContact<string, ContactStatus>;
-export type Lead = DomainLead<string, LeadStatus, LeadTemperature>;
-export type Activity = DomainActivity<string>;
+
+export type Company = Omit<DomainCompany<string>, 'contacts' | 'leads'> & {
+  contacts?: Contact[];
+  leads?: Lead[];
+};
+
+export type Contact = Omit<DomainContact<string, ContactStatus>, 'company' | 'leads'> & {
+  company?: Company;
+  leads?: Lead[];
+};
+
+export type Lead = Omit<DomainLead<string, LeadStatus, LeadTemperature>, 'company' | 'contact' | 'activities' | 'timeline' | 'internalNotes'> & {
+  company?: Company;
+  contact?: Contact;
+  activities?: Activity[];
+  timeline?: TimelineEvent[];
+  internalNotes?: Note[];
+};
+
+export type Activity = Omit<DomainActivity<string>, 'lead'> & {
+  lead?: Lead;
+};
+
 export type TimelineEvent = DomainTimelineEvent<string>;
 export type Note = DomainNote<string>;
 export type Attachment = DomainAttachment<string>;

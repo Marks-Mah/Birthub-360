@@ -126,8 +126,7 @@ export function rowsToCsv(rows: ExportKpiRow[]): string {
     lines.push([row.block, row.indicator, row.value, row.unit].map(csvEscape).join(';'));
   // BOM UTF-8 (U+FEFF) de propósito no início do CSV — sem ele o Excel abre acentos/ç como
   // mojibake; não é espaço irregular acidental.
-  // eslint-disable-next-line no-irregular-whitespace
-  return `﻿${lines.join('\r\n')}`;
+  return `\uFEFF${lines.join('\r\n')}`;
 }
 
 export interface ExecutiveExportJson {

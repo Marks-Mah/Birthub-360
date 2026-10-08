@@ -49,13 +49,8 @@ import { deleteExtractionRunFiles } from '../service/extractionFiles.js';
 //    preservado — é só uma data-cursor do checkpoint incremental (Onda 41), não dado pessoal, e
 //    zerá-lo quebraria a retomada incremental de `findEntityCheckpoint` sem necessidade.
 //
-// IDEMPOTÊNCIA sem coluna nova: o schema não tem `purgedAt` (fora do escopo deste agente editar
-// `prisma/schema.prisma` — ver handoff `.agents/handoffs/onda-42/02-para-00-registrar-worker-purge-
-// bitrix.md`, que documenta o campo dedicado recomendado para quando isso puder ser migrado). Até
-// lá, o marcador de "já expurgado" vive dentro do próprio `progress` (Json já existente): um run
-// expurgado ganha `progress.purgedAt` (ISO). Mesmo idioma já usado neste código para "já tratado"
-// sem coluna dedicada (`autoAnonymizeDisqualified.worker.ts` marca o Contact anonimizado pelo nome
-// `'[titular anonimizado — LGPD]'` em vez de uma coluna `anonymizedAt`).
+// IDEMPOTÊNCIA: o schema agora possui a coluna `purgedAt` (Onda 42). O worker a utiliza no filtro
+// WHERE para ignorar execuções já expurgadas e a preenche diretamente no UPDATE.
 export const BITRIX_EXTRACTION_PURGE_QUEUE_NAME = 'bitrix-extraction-purge-queue';
 
 /** Só extrações em estado TERMINAL são candidatas — nunca `queued`/`running` (em andamento, mesmo que antiga/travada; reconciliar runs travados é responsabilidade de outra rotina, não deste expurgo). */
@@ -67,16 +62,10 @@ const PURGE_BATCH_SIZE = 500;
 interface PurgeCandidate {
   id: string;
   filters: unknown;
-  progress: unknown;
 }
 
 interface StoredFilters {
   search?: string;
-  [key: string]: unknown;
-}
-
-interface StoredProgress {
-  purgedAt?: string;
   [key: string]: unknown;
 }
 
@@ -87,22 +76,12 @@ export interface BitrixExtractionPurgeResult {
   retentionDays: number;
 }
 
-function isAlreadyPurged(progress: unknown): boolean {
-  return typeof (progress as StoredProgress | null)?.purgedAt === 'string';
-}
-
 /** Remove só o texto livre digitado pelo usuário — o resto do filtro é configuração/estatística, não dado pessoal de um titular. */
 function redactFilters(filters: unknown): Prisma.InputJsonValue {
   if (!filters || typeof filters !== 'object') return {} as Prisma.InputJsonValue;
   const { search: _search, ...rest } = filters as StoredFilters;
   void _search; // descartado de propósito — é o único campo de texto livre desta linha, ver comentário de topo do arquivo.
   return rest as Prisma.InputJsonValue;
-}
-
-function markPurgedProgress(progress: unknown, purgedAt: string): Prisma.InputJsonValue {
-  const base =
-    progress && typeof progress === 'object' ? (progress as Record<string, unknown>) : {};
-  return { ...base, purgedAt } as Prisma.InputJsonValue;
 }
 
 /**
@@ -150,17 +129,14 @@ export async function runBitrixExtractionPurgeSweep(): Promise<BitrixExtractionP
             organizationId: org.id,
             createdAt: { lte: cutoff },
             status: { in: [...TERMINAL_STATUSES] },
+            purgedAt: null,
           },
-          select: { id: true, filters: true, progress: true },
+          select: { id: true, filters: true, errorMessage: true },
           take: PURGE_BATCH_SIZE,
         }),
-      )) as PurgeCandidate[];
+      )) as (PurgeCandidate & { errorMessage: string | null })[];
 
       for (const candidate of candidates) {
-        // Idempotência: rodar a varredura duas vezes seguidas não reprocessa (nem falha) um
-        // run já expurgado numa rodada anterior.
-        if (isAlreadyPurged(candidate.progress)) continue;
-
         try {
           const purgedAt = new Date().toISOString();
           // Arquivo primeiro, linha depois (mesmo motivo/ordem de `deleteExtractionRun`):
@@ -175,7 +151,8 @@ export async function runBitrixExtractionPurgeSweep(): Promise<BitrixExtractionP
               data: {
                 files: null as unknown as Prisma.InputJsonValue,
                 filters: redactFilters(candidate.filters),
-                progress: markPurgedProgress(candidate.progress, purgedAt),
+                purgedAt: new Date(purgedAt),
+                errorMessage: candidate.errorMessage ? '[erro anonimizado — LGPD]' : null,
               },
             }),
           );
