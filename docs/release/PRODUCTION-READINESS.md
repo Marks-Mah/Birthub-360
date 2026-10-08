@@ -14,6 +14,7 @@
 
 | Data | O que mudou | Autor/origem |
 |---|---|---|
+| **2026-10-08** | **Remediação de Dívida Técnica Docker (Agente 08).** Atualizado `/Dockerfile` com restauração de dependências de sistema (`openssl`, `ca-certificates`, toolchain), compilação do bundle `worker.cjs`, sanitização de permissões non-root e healthcheck nativo. Blindagem do `/.dockerignore` eliminando centenas de MB de contexto e risco de inclusão de dumps/segredos. Abertura de handoff para Agente 10 referente a `docker/postgres/Dockerfile` e `docker-compose.qdrant.yml`. | Agente 08 / QA e Release |
 | **2026-09-20** | **Remediação Completa de Go-Live (Prompts 01-14).** Revalidação de todos os gates operacionais, auditoria de migrations (01/02), reconciliação Stripe (08), erasure LGPD de voz e storage (09), rotina de retenção e drill de backup/restore (10), validação MinIO S3 local (11), observabilidade granular com healthchecks (12), auditoria de CI/CD (13) e atualização de runbooks operacionais (14). TypeScript zerado (0 erros), Biome zerado (0 erros), 408 suítes unitárias passando e ambiente Docker 100% ativo. | Equipe de Engenharia / Agente 08 / Remediação Go-Live |
 | 2026-09-11 | **Consolidação (ACH-08-06).** Unificação documental dos relatórios fragmentados. Registro de falha temporária em `urlGuard.ts` e daemon Docker inacessível naquela máquina específica. | Sessão Claude Code (ACH-08-06) |
 | 2026-09-04 | Relatório de finalização completo (triagem de PRs #339-342, 16 bugs corrigidos, gates completos rodados contra Docker real, veredito **RELEASE APPROVED** no commit `2d0a25a`/`ef5f1f0`, PR #344). | `docs/release/FINALIZATION_REPORT_2026-09-04.md` (preservado como histórico) |
@@ -83,6 +84,7 @@ Esta rodada executou a remediação e verificação exaustiva de todos os aponta
 | **R6** | `npx tsc --noEmit` com erro em `urlGuard.ts` | Baixo | Aberto (09-11) | ✅ **Resolvido** — 0 erros de compilação TypeScript |
 | **R7** | Falta de revalidação dos gates após refatorações | Alto | Aberto (09-11) | ✅ **Resolvido** — Todos os gates técnicos revalidados com evidência real |
 | **R8** | Observabilidade de dependências sem granularidade | Médio | Aberto | ✅ **Resolvido** — `/health/ready` granular com DB, Redis e Storage |
+| **R9** | Dockerfiles duplicados, desatualizados ou sem dependências essenciais | Médio | Aberto | ✅ **Resolvido** — `/Dockerfile` atualizado com openssl/ca-certificates e build de worker; `.dockerignore` blindado; handoff aberto para Agente 10 |
 
 ---
 

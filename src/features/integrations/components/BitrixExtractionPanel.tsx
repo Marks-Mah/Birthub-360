@@ -181,6 +181,7 @@ export function BitrixExtractionPanel({ connectionId, canManage }: BitrixExtract
 
   const [runs, setRuns] = useState<ExtractionRun[]>([]);
   const [loadingRuns, setLoadingRuns] = useState(true);
+  const [retryingId, setRetryingId] = useState<string | null>(null);
   const pollRef = useRef<number | null>(null);
 
   const loadRuns = useCallback(async () => {
@@ -449,6 +450,11 @@ export function BitrixExtractionPanel({ connectionId, canManage }: BitrixExtract
                       />{' '}
                       {badge.label}
                     </span>
+                    {(run.attempts ?? 0) > 1 && (
+                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-surface-2 text-ink-2">
+                        {run.attempts}ª tentativa
+                      </span>
+                    )}
                     <span className="text-xs text-ink-2">
                       {run.entities.map((e) => ENTITY_LABEL.get(e) || e).join(', ')}
                     </span>
@@ -457,6 +463,22 @@ export function BitrixExtractionPanel({ connectionId, canManage }: BitrixExtract
                     </span>
                   </div>
                   <div className="flex items-center gap-1.5">
+                    {(run.status === 'failed' ||
+                      run.status === 'cancelled' ||
+                      run.status === 'completed_partial') && (
+                      <button
+                        type="button"
+                        onClick={() => retryRun(run.id)}
+                        disabled={retryingId === run.id}
+                        title="Tentar extração novamente"
+                        className="flex items-center gap-1 px-2.5 py-1.5 text-[11px] font-bold text-brand bg-brand/10 hover:bg-brand/20 rounded-lg transition-colors disabled:opacity-50"
+                      >
+                        <RotateCcw
+                          className={`w-3 h-3 ${retryingId === run.id ? 'animate-spin' : ''}`}
+                        />{' '}
+                        Tentar novamente
+                      </button>
+                    )}
                     {(run.status === 'queued' || run.status === 'running') && (
                       <button
                         type="button"

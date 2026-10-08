@@ -56,12 +56,12 @@ echarts.use([
 // Fecha em cinza neutro, para a categoria "Outros"/resíduo não competir com as
 // cores de marca.
 const BRAND_CHART_COLORS = [
-  '#D4AF37', // Antique Gold
-  '#5B21B6', // Deep Iris
-  '#0065D2', // Orbit Blue
-  '#8C6D1F', // Gold Deep
-  '#9B7BE0', // Iris claro
-  '#6B7280', // Neutro
+  '#8B7DFF', // Brand Purple
+  '#38BDF8', // Sky Blue
+  '#34D399', // Emerald
+  '#F472B6', // Pink
+  '#A78BFA', // Violet
+  '#64748B', // Slate
 ];
 const DARK_BG = 'transparent';
 const LIGHT_BG = 'transparent';
@@ -290,7 +290,7 @@ export function HeatmapChart({
       calculable: true,
       orient: 'horizontal',
       show: false,
-      inRange: { color: ['#1F2937', '#F97316'] },
+      inRange: { color: ['#22232B', '#8B7DFF'] },
     },
     series: [
       {
@@ -335,8 +335,8 @@ export function BarChart({
 }: BarChartProps) {
   const { theme } = useTheme();
   const axisStyle = {
-    axisLabel: { fontSize: 11, color: '#6B7280' },
-    axisLine: { lineStyle: { color: '#374151' } },
+    axisLabel: { fontSize: 11, color: '#94A3B8' },
+    axisLine: { lineStyle: { color: 'rgba(255, 255, 255, 0.1)' } },
   };
   const option: EChartsOption = {
     backgroundColor: theme === 'dark' ? DARK_BG : LIGHT_BG,
@@ -364,7 +364,7 @@ export function BarChart({
     [horizontal ? 'xAxis' : 'yAxis']: {
       type: 'value',
       ...axisStyle,
-      splitLine: { lineStyle: { color: '#1F2937' } },
+      splitLine: { lineStyle: { color: 'rgba(255, 255, 255, 0.05)' } },
     },
     series: data.series.map((s) => ({
       name: s.name,
