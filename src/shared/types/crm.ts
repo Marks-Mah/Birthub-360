@@ -241,40 +241,43 @@ export interface ExternalCrmStageMapping {
 /**
  * Tabela de equivalência padrão (default mappings) para os estágios nativos dos CRMs suportados.
  */
-export const DEFAULT_CRM_STAGE_MAPPINGS: Record<string, { stage: CanonicalPipelineStage; defaultProbability: number }> = {
+export const DEFAULT_CRM_STAGE_MAPPINGS: Record<
+  string,
+  { stage: CanonicalPipelineStage; defaultProbability: number }
+> = {
   // HubSpot Deal Stages
-  'appointmentscheduled': { stage: 'PROSPECTING', defaultProbability: 0.2 },
-  'qualifiedtobuy': { stage: 'QUALIFICATION', defaultProbability: 0.4 },
-  'presentationscheduled': { stage: 'PROPOSAL', defaultProbability: 0.6 },
-  'decisionmakerboughtin': { stage: 'NEGOTIATION', defaultProbability: 0.8 },
-  'closedwon': { stage: 'WON', defaultProbability: 1.0 },
-  'closedlost': { stage: 'LOST', defaultProbability: 0.0 },
+  appointmentscheduled: { stage: 'PROSPECTING', defaultProbability: 0.2 },
+  qualifiedtobuy: { stage: 'QUALIFICATION', defaultProbability: 0.4 },
+  presentationscheduled: { stage: 'PROPOSAL', defaultProbability: 0.6 },
+  decisionmakerboughtin: { stage: 'NEGOTIATION', defaultProbability: 0.8 },
+  closedwon: { stage: 'WON', defaultProbability: 1.0 },
+  closedlost: { stage: 'LOST', defaultProbability: 0.0 },
 
   // Pipedrive Deal Stages
-  'lead_in': { stage: 'PROSPECTING', defaultProbability: 0.15 },
-  'contact_made': { stage: 'QUALIFICATION', defaultProbability: 0.35 },
-  'demo_scheduled': { stage: 'PROPOSAL', defaultProbability: 0.55 },
-  'proposal_sent': { stage: 'PROPOSAL', defaultProbability: 0.7 },
-  'negotiations_started': { stage: 'NEGOTIATION', defaultProbability: 0.85 },
-  'won': { stage: 'WON', defaultProbability: 1.0 },
-  'lost': { stage: 'LOST', defaultProbability: 0.0 },
+  lead_in: { stage: 'PROSPECTING', defaultProbability: 0.15 },
+  contact_made: { stage: 'QUALIFICATION', defaultProbability: 0.35 },
+  demo_scheduled: { stage: 'PROPOSAL', defaultProbability: 0.55 },
+  proposal_sent: { stage: 'PROPOSAL', defaultProbability: 0.7 },
+  negotiations_started: { stage: 'NEGOTIATION', defaultProbability: 0.85 },
+  won: { stage: 'WON', defaultProbability: 1.0 },
+  lost: { stage: 'LOST', defaultProbability: 0.0 },
 
   // RD Station CRM
-  'sem_contato': { stage: 'PROSPECTING', defaultProbability: 0.1 },
-  'contato_feito': { stage: 'QUALIFICATION', defaultProbability: 0.3 },
-  'reuniao_agendada': { stage: 'PROPOSAL', defaultProbability: 0.5 },
-  'proposta_enviada': { stage: 'PROPOSAL', defaultProbability: 0.7 },
-  'em_negociacao': { stage: 'NEGOTIATION', defaultProbability: 0.85 },
-  'fechado_ganho': { stage: 'WON', defaultProbability: 1.0 },
-  'fechado_perdido': { stage: 'LOST', defaultProbability: 0.0 },
+  sem_contato: { stage: 'PROSPECTING', defaultProbability: 0.1 },
+  contato_feito: { stage: 'QUALIFICATION', defaultProbability: 0.3 },
+  reuniao_agendada: { stage: 'PROPOSAL', defaultProbability: 0.5 },
+  proposta_enviada: { stage: 'PROPOSAL', defaultProbability: 0.7 },
+  em_negociacao: { stage: 'NEGOTIATION', defaultProbability: 0.85 },
+  fechado_ganho: { stage: 'WON', defaultProbability: 1.0 },
+  fechado_perdido: { stage: 'LOST', defaultProbability: 0.0 },
 
   // Monday.com Deals Board
-  'new_lead': { stage: 'PROSPECTING', defaultProbability: 0.15 },
-  'qualified': { stage: 'QUALIFICATION', defaultProbability: 0.4 },
-  'proposal': { stage: 'PROPOSAL', defaultProbability: 0.65 },
-  'negotiation': { stage: 'NEGOTIATION', defaultProbability: 0.85 },
-  'won_deal': { stage: 'WON', defaultProbability: 1.0 },
-  'lost_deal': { stage: 'LOST', defaultProbability: 0.0 },
+  new_lead: { stage: 'PROSPECTING', defaultProbability: 0.15 },
+  qualified: { stage: 'QUALIFICATION', defaultProbability: 0.4 },
+  proposal: { stage: 'PROPOSAL', defaultProbability: 0.65 },
+  negotiation: { stage: 'NEGOTIATION', defaultProbability: 0.85 },
+  won_deal: { stage: 'WON', defaultProbability: 1.0 },
+  lost_deal: { stage: 'LOST', defaultProbability: 0.0 },
 };
 
 /**
@@ -285,8 +288,11 @@ export function normalizeCrmStage(
   defaultStage: CanonicalPipelineStage = 'PROSPECTING',
 ): { stage: CanonicalPipelineStage; probability: number } {
   if (!rawStage) return { stage: defaultStage, probability: 0.2 };
-  const normalizedKey = rawStage.toLowerCase().trim().replace(/[\s-_]+/g, '_');
-  
+  const normalizedKey = rawStage
+    .toLowerCase()
+    .trim()
+    .replace(/[\s-_]+/g, '_');
+
   if (DEFAULT_CRM_STAGE_MAPPINGS[normalizedKey]) {
     return {
       stage: DEFAULT_CRM_STAGE_MAPPINGS[normalizedKey].stage,
@@ -295,8 +301,10 @@ export function normalizeCrmStage(
   }
 
   // Fallback heurístico por substring caso o CRM envie label customizado
-  if (/ganh|won|closed_won|fechado_ganho/i.test(rawStage)) return { stage: 'WON', probability: 1.0 };
-  if (/perd|lost|closed_lost|fechado_perdido/i.test(rawStage)) return { stage: 'LOST', probability: 0.0 };
+  if (/ganh|won|closed_won|fechado_ganho/i.test(rawStage))
+    return { stage: 'WON', probability: 1.0 };
+  if (/perd|lost|closed_lost|fechado_perdido/i.test(rawStage))
+    return { stage: 'LOST', probability: 0.0 };
   if (/negoc|negotiat/i.test(rawStage)) return { stage: 'NEGOTIATION', probability: 0.85 };
   if (/propos|apresenta|demo/i.test(rawStage)) return { stage: 'PROPOSAL', probability: 0.6 };
   if (/qualif|contato/i.test(rawStage)) return { stage: 'QUALIFICATION', probability: 0.35 };

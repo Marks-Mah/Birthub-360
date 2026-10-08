@@ -6,10 +6,7 @@ import type {
   OutboundCallResult,
   VoiceAgentType,
 } from '../integrations/birth-voice/birthVoice.service.js';
-import type {
-  VoiceCommandRequest,
-  VoiceCommandExecutionResult,
-} from '../voice/types.js';
+import type { VoiceCommandRequest, VoiceCommandExecutionResult } from '../voice/types.js';
 
 /**
  * AiVoiceOrchestratorService

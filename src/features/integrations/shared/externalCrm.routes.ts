@@ -124,7 +124,10 @@ externalCrmRoutes.post('/:id/test', async (req: Request, res: Response) => {
       message: 'Conexão validada com sucesso!',
     });
   } catch (err: any) {
-    logger.error({ err, organizationId, connectionId: id }, 'Erro ao testar conexão de CRM externo');
+    logger.error(
+      { err, organizationId, connectionId: id },
+      'Erro ao testar conexão de CRM externo',
+    );
     return res.status(500).send({
       success: false,
       error: err instanceof Error ? err.message : 'Falha ao validar credenciais.',
@@ -158,4 +161,3 @@ externalCrmRoutes.post('/:id/sync', async (req: Request, res: Response) => {
     });
   }
 });
-

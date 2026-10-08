@@ -166,11 +166,7 @@ const PROVIDER_METAS: Record<string, ProviderMeta> = {
   },
 };
 
-export function ExternalCrmPanel({
-  providerKey,
-  displayName,
-  authType,
-}: ExternalCrmPanelProps) {
+export function ExternalCrmPanel({ providerKey, displayName, authType }: ExternalCrmPanelProps) {
   const { currentUser } = useAuth();
   const canManage = !!currentUser && hasRequiredRole(currentUser.role, ['ADMIN', 'GESTOR']);
 
@@ -410,7 +406,9 @@ export function ExternalCrmPanel({
 
   // Delete connection
   const handleDeleteConnection = async (connectionId: string, label: string) => {
-    if (!window.confirm(`Tem certeza que deseja desconectar e remover "${label}" do ${displayName}?`)) {
+    if (
+      !window.confirm(`Tem certeza que deseja desconectar e remover "${label}" do ${displayName}?`)
+    ) {
       return;
     }
     SoundFX.play('click');
@@ -506,7 +504,11 @@ export function ExternalCrmPanel({
                   : 'bg-surface-3 text-ink-2 border-line'
               }`}
             >
-              {isConnected ? <PlugZapIcon className="w-3.5 h-3.5" /> : <Clock className="w-3.5 h-3.5" />}
+              {isConnected ? (
+                <PlugZapIcon className="w-3.5 h-3.5" />
+              ) : (
+                <Clock className="w-3.5 h-3.5" />
+              )}
               {isConnected ? 'status: ativo' : 'status: desconectado'}
             </span>
 
@@ -918,7 +920,8 @@ export function ExternalCrmPanel({
                 <div>
                   <p className="text-xs font-bold text-ink">Habilitar Webhooks de Entrada</p>
                   <p className="text-[11px] text-ink-2">
-                    Recebe atualizações de leads e negócios automaticamente quando alterados no {displayName}.
+                    Recebe atualizações de leads e negócios automaticamente quando alterados no{' '}
+                    {displayName}.
                   </p>
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer shrink-0">

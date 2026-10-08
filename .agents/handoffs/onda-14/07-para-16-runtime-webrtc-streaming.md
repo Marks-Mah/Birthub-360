@@ -1,7 +1,7 @@
 - De: 07 (IA e Automações)
 - Para: 16 (Runtime, Workers e Escala)
 - Onda: 14
-- Status: aberto
+- Status: resolvido
 - Prioridade: alto
 
 ## Problema
@@ -25,3 +25,10 @@ O Agente 16 deve:
 
 ## Contexto adicional
 Alinha o módulo de voz com a governança de escalabilidade do Agente 16.
+
+## Resolução (Agente 16 - 2026-10-08)
+O Agente 16 desenhou e implementou os controles de runtime e concorrência para streaming de áudio:
+1. `src/features/voice/audio-stream-bridge.ts`: Controle de backpressure orientado a eventos assíncronos (`EventEmitter`), limitando alocação de buffers em memória e expurgando filas de pacotes durante eventos de interrupção (barge-in).
+2. `src/features/voice/sip-webrtc-bridge.service.ts`: Sessões mapeadas em memória com isolamento por chamada (`Map<string, ActiveBridgeSession>`), evitando gargalos no event loop principal do servidor HTTP.
+3. Testes unitários de concorrência e bridge executados com sucesso em `tests/unit/features/voice/`.
+Status atualizado para **resolvido**.

@@ -9,4 +9,3 @@ const { scrapeProspect } = proxyActivities<typeof activities>({
 export async function prospectWorkflow(params: ScrapeProspectParams): Promise<any> {
   return await scrapeProspect(params);
 }
-

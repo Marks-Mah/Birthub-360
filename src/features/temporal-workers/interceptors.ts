@@ -49,7 +49,10 @@ export class TenantActivityInboundInterceptor implements ActivityInboundCallsInt
       const headerVal =
         typeof (input.headers as any).get === 'function'
           ? (input.headers as any).get('tenant-id') || (input.headers as any).get('organization-id')
-          : headers['tenant-id'] || headers['organization-id'] || headers.tenantId || headers.organizationId;
+          : headers['tenant-id'] ||
+            headers['organization-id'] ||
+            headers.tenantId ||
+            headers.organizationId;
 
       if (typeof headerVal === 'string' && headerVal.trim().length > 0) {
         tenantId = headerVal.trim();

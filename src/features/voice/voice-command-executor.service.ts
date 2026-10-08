@@ -108,9 +108,12 @@ export class VoiceCommandExecutorService {
       (parameters.scheduledAt as string) ||
       (parameters.dateTime as string) ||
       (parameters.date as string);
-    const scheduledDate = scheduledDateStr ? new Date(scheduledDateStr) : new Date(Date.now() + 24 * 60 * 60 * 1000);
+    const scheduledDate = scheduledDateStr
+      ? new Date(scheduledDateStr)
+      : new Date(Date.now() + 24 * 60 * 60 * 1000);
     const title = (parameters.title as string) || 'Reunião Agendada via SDR de Voz';
-    const notes = (parameters.notes as string) || 'Reunião agendada durante chamada autônoma de voz.';
+    const notes =
+      (parameters.notes as string) || 'Reunião agendada durante chamada autônoma de voz.';
 
     const activity = await prisma.activity.create({
       data: {
@@ -229,12 +232,11 @@ export class VoiceCommandExecutorService {
     };
   }
 
-  private async handleOptOut(
-    command: VoiceCommandRequest,
-  ): Promise<VoiceCommandExecutionResult> {
+  private async handleOptOut(command: VoiceCommandRequest): Promise<VoiceCommandExecutionResult> {
     const { organizationId, leadId, parameters } = command;
     const phone = (parameters.phone as string) || (parameters.phoneNumber as string);
-    const reason = (parameters.reason as string) || 'Solicitado pelo contato durante ligação de voz';
+    const reason =
+      (parameters.reason as string) || 'Solicitado pelo contato durante ligação de voz';
 
     if (!phone && !leadId) {
       return {
@@ -311,7 +313,8 @@ export class VoiceCommandExecutorService {
       };
     }
 
-    const proposalTitle = (parameters.title as string) || 'Proposta Comercial - Apresentação de Soluções';
+    const proposalTitle =
+      (parameters.title as string) || 'Proposta Comercial - Apresentação de Soluções';
     const activity = await prisma.activity.create({
       data: {
         organizationId,

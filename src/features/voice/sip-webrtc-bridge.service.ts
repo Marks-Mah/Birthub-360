@@ -24,6 +24,10 @@ import type {
   WebRTCSessionInfo,
 } from './types.js';
 import { voiceCommandExecutorService } from './voice-command-executor.service.js';
+import { redactResidualPii } from '../../shared/security/piiRedaction.js';
+
+export const MANDATORY_VOICE_AI_DISCLOSURE =
+  'Esta ligação é realizada com auxílio de inteligência artificial e poderá ser gravada para fins de atendimento e segurança. Diga "opt-out" a qualquer momento para revogar o consentimento.';
 
 export interface ActiveBridgeSession {
   sessionId: string;
@@ -213,7 +217,10 @@ export class SipWebRtcBridgeService {
       Math.round((endedAt.getTime() - session.startedAt.getTime()) / 1000),
     );
     const audioStats = session.audioBridge.getStats();
-    const fullTranscription = session.transcriptionParts.join('\n');
+    const rawTranscription = session.transcriptionParts.join('\n');
+    const sanitizedTranscription = rawTranscription
+      ? redactResidualPii(rawTranscription).redactedText
+      : '';
 
     const determinedOutcome: CallOutcomeState =
       outcomeOverride ||
@@ -221,7 +228,7 @@ export class SipWebRtcBridgeService {
         providerOutcome: reason,
         machineDetected: false,
         durationSeconds,
-        text: fullTranscription,
+        text: sanitizedTranscription,
       });
 
     const hadConversation = callResultedInConversation(determinedOutcome);
@@ -238,7 +245,9 @@ export class SipWebRtcBridgeService {
           session.commandsExecuted.length > 0
             ? `Comandos executados:\n${session.commandsExecuted.map((c) => `- [${c.type}] ${c.message}`).join('\n')}`
             : null,
-          fullTranscription ? `\n--- Transcrição ---\n${fullTranscription}` : null,
+          sanitizedTranscription
+            ? `\n--- Transcrição (LGPD Sanitizada) ---\n${sanitizedTranscription}`
+            : null,
           marker,
         ]
           .filter(Boolean)
@@ -275,6 +284,8 @@ export class SipWebRtcBridgeService {
         durationSeconds,
         bargeInCount: audioStats.bargeInCount,
         commandsCount: session.commandsExecuted.length,
+        audioRetentionDays: 90, // Política de retenção LGPD (Art. 16)
+        transcriptionLength: sanitizedTranscription.length,
       },
     });
 
@@ -301,7 +312,7 @@ export class SipWebRtcBridgeService {
       outcome: determinedOutcome,
       durationSeconds,
       recordingUrl: `https://storage.internal.birthub.local/recordings/${sessionId}.opus`,
-      transcriptionSummary: fullTranscription || null,
+      transcriptionSummary: sanitizedTranscription || null,
       commandsExecuted: session.commandsExecuted,
       bargeInCount: audioStats.bargeInCount,
       startedAt: session.startedAt,

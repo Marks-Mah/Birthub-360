@@ -1,10 +1,6 @@
 import { EventEmitter } from 'node:events';
 import { logger } from '../../lib/logger.js';
-import type {
-  AudioPacket,
-  BargeInConfig,
-  BargeInEvent,
-} from './types.js';
+import type { AudioPacket, BargeInConfig, BargeInEvent } from './types.js';
 
 export interface AudioStreamStats {
   inboundPackets: number;
@@ -62,7 +58,8 @@ export class AudioStreamBridge extends EventEmitter {
    */
   pushInboundPacket(packet: AudioPacket): void {
     this.stats.inboundPackets += 1;
-    const packetSize = typeof packet.payload === 'string' ? packet.payload.length : packet.payload.byteLength;
+    const packetSize =
+      typeof packet.payload === 'string' ? packet.payload.length : packet.payload.byteLength;
     this.stats.inboundBytes += packetSize;
 
     // Track for recording summary
@@ -100,7 +97,8 @@ export class AudioStreamBridge extends EventEmitter {
   pushOutboundPacket(packet: AudioPacket): boolean {
     // If agent was interrupted and queue was purged, check status
     this.stats.outboundPackets += 1;
-    const packetSize = typeof packet.payload === 'string' ? packet.payload.length : packet.payload.byteLength;
+    const packetSize =
+      typeof packet.payload === 'string' ? packet.payload.length : packet.payload.byteLength;
     this.stats.outboundBytes += packetSize;
     this.stats.totalAgentSpeechDurationMs += packet.durationMs;
     this.isAgentSpeaking = true;
