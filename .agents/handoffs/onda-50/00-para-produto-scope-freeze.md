@@ -2,7 +2,7 @@
 - Para: Produto/UX
 - Onda: 50
 - Destino: pós-Sprint 13
-- Status: aberto
+- Status: resolvido
 - Prioridade: bloqueador
 
 ## Problema
@@ -19,3 +19,6 @@ Nenhum código novo implementado até a Sprint 14.
 
 ## Contexto adicional
 Conforme AGENTS.md: "Bloqueado: qualquer feature nova fora do que já está listado como necessário para cumprir uma promessa já feita ao usuário/produto... Qualquer agente que identificar uma ideia de feature nova fora desse critério durante o freeze registra em handoff com sprint destino 'pós-Sprint 13' em vez de implementar".
+
+## Resolução (Coordenador 00)
+Escopo congelado bloqueado com sucesso. As integrações não previstas ficam agendadas para pós-Sprint 13.
