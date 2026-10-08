@@ -1,12 +1,70 @@
 node_modules
+node_modules_*
 dist
+build
+coverage
+.cache
+.npm
+*.log
+
+# Git e CI/CD
 .git
 .github
+
+# Ambientes, segredos e dumps (Segurança Bloqueador #4, #14)
 .env
 .env.*
-*.log
+*.pem
+*.key
+backups
+*.dump
+*.sql
+
+# Agentes, memória operacional, IDEs
+.agents
+.claude
+.devin
+.jules
+.impeccable
+.vscode
+.idea
+.storybook
+agente-codigo-local
+
+# Projetos nativos mobile / desktop
+android
+ios
+chrome-extension
+
+# Manifestos e infraestrutura
+k8s
+charts
+argocd
+infrastructure
+docker
+
+# Documentação, manuais e ativos visuais pesados
+docs
+documentacao-aplicacao
+identidade-visual
+assets/brand
+birthhub-360-assets
+design-system-capture
+design-system-guide
+prints-design-system
+audit-screenshots
+screenshots
+
+# Testes, relatórios e catálogos visuais
+tests
+playwright-report
+test-results
+visual-audit-authenticated
+visual-catalog
+visual-regression
+visual-regression-report
+
+# Dockerfiles
 Dockerfile
 .dockerignore
-docs
-tests
-coverage
+

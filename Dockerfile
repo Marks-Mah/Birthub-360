@@ -5,7 +5,13 @@ WORKDIR /app
 
 ENV DATABASE_URL=""
 
-#RUN apt-get update && apt-get install -y openssl python3 make g++ ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    openssl \
+    ca-certificates \
+    python3 \
+    make \
+    g++ \
+    && rm -rf /var/lib/apt/lists/*
 
 # .npmrc carrega `legacy-peer-deps=true` (mem0ai fixa peer @types/pg@8.11.0, incompatível com o
 # @types/pg@^8.16 exigido por @prisma/adapter-pg — só tipos de dev, sem efeito em runtime). Sem
@@ -19,6 +25,7 @@ RUN npm ci --ignore-scripts
 COPY . .
 RUN npx prisma generate
 RUN npm run build
+RUN npm run build:worker
 
 # Remove devDependencies (typescript, eslint, vitest, prisma CLI, etc.) antes de copiar
 # node_modules pro estágio final — nada disso é necessário em runtime, só incha a imagem
@@ -43,7 +50,10 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=3000
 
-#RUN apt-get update && apt-get install -y openssl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    openssl \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
 
 # Copy necessary files from builder
 COPY --from=builder /app/package*.json ./
@@ -67,11 +77,15 @@ COPY --from=builder /app/scripts ./scripts
 # fonte, não via o bundle.
 COPY --from=builder /app/src ./src
 
-# Create a non-root user
-RUN groupadd -g 1001 nodejs && useradd -u 1001 -g nodejs nodejs
+# Create a non-root user and ensure ownership
+RUN groupadd -g 1001 nodejs && useradd -u 1001 -g nodejs nodejs \
+    && chown -R nodejs:nodejs /app
 USER nodejs
 
 EXPOSE 3000
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
+  CMD node -e "fetch('http://127.0.0.1:3000/health/live').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"
 
 # `prisma migrate deploy` roda a cada boot do container, antes do processo Node começar a
 # aceitar tráfego — mesma garantia que render.yaml já tem no startCommand real

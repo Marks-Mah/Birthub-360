@@ -137,3 +137,21 @@ dependencies.uuid` em todas as versões publicadas do `exceljs` até a mais rece
     aplicar.
   - Reavaliar quando o `exceljs` publicar uma versão que migre para `uuid >=11.1.1`, ou se o
     vetor de exploração for reclassificado.
+
+## Rotação Padronizada de Segredos (Agente 15)
+
+A governança e rotação de segredos da plataforma foi padronizada sob a [Política Global de Rotação de Segredos](SECRET_ROTATION_POLICY.md).
+- **Catálogo & Taxonomia:** Segredos classificados do Tier 0 (chaves de criptografia em repouso e índices cegos de PII) ao Tier 4 (subssistemas locais).
+- **Regra de Ouro (P15):** Nenhuma credencial é considerada rotacionada sem evidência de teste negativo comprovando a invalidação da credencial antiga.
+- **Runbooks Oficiais em `docs/security/runbooks/`:**
+  - [`ROTATE_CREDENTIALS_ENCRYPTION_KEY.md`](runbooks/ROTATE_CREDENTIALS_ENCRYPTION_KEY.md) — Chave mestra AES-256-GCM com re-encriptação de dados em repouso.
+  - [`ROTATE_PII_BLIND_INDEX_KEY.md`](runbooks/ROTATE_PII_BLIND_INDEX_KEY.md) — Chave HMAC-SHA256 para busca exata de contatos (LGPD).
+  - [`ROTATE_BETTER_AUTH_SECRET.md`](runbooks/ROTATE_BETTER_AUTH_SECRET.md) — Segredo de sessões Better Auth.
+  - [`ROTATE_PLATFORM_OPERATOR_TOKEN.md`](runbooks/ROTATE_PLATFORM_OPERATOR_TOKEN.md) — Token de rotas administrativas `/admin/queues` e `/metrics`.
+  - [`ROTATE_INBOUND_WEBHOOK_SECRETS.md`](runbooks/ROTATE_INBOUND_WEBHOOK_SECRETS.md) — Webhooks de entrada (Birth Voices, 3CX, Chatwoot, Voice Result).
+  - [`ROTATE_BITRIX24_WEBHOOKS.md`](runbooks/ROTATE_BITRIX24_WEBHOOKS.md), [`ROTATE_BLAND_AI_KEY.md`](runbooks/ROTATE_BLAND_AI_KEY.md), [`ROTATE_GEMINI_API_KEY.md`](runbooks/ROTATE_GEMINI_API_KEY.md).
+- **Ferramentas de Suporte:**
+  - `scripts/security/reencrypt-credentials.ts` — Re-encriptação transparente de credenciais persistidas.
+  - `scripts/security/audit-secret-hygiene.ts` — Diagnóstico de entropia e conformidade sem vazamento de segredos.
+  - `src/lib/security/credentialCrypto.ts` — Utilitário canônico de criptografia AES-256-GCM e sanitização de logs para conectores externos.
+

@@ -961,7 +961,7 @@ router.post(
       // provedor de IA externo e restaurado na resposta — mesmo padrão de ai.service.ts/crmTools.ts.
       const result = await (
         aiToolkitFunctions[functionName] as (
-          ...args: unknown[]
+          ...args: any[]
         ) => Promise<unknown>
       )(...(args as string[]), normalizePiiValues(piiValues));
       res.json({ success: true, result });

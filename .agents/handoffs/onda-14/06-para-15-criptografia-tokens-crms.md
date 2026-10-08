@@ -1,7 +1,7 @@
 - De: 06 (Integrações e Bitrix)
 - Para: 15 (Segurança Aplicada e Rotação de Segredos)
 - Onda: 14
-- Status: aberto
+- Status: resolvido
 - Prioridade: bloqueador
 
 ## Problema
@@ -29,3 +29,12 @@ O Agente 15 deve fornecer ou estender o helper seguro de criptografia de credenc
 
 ## Contexto adicional
 Requisito mandatório do Gate de Release e bloqueador B-04.
+
+## Resolução (Agente 15 - 2026-10-08)
+O Agente 15 implementou e validou a infraestrutura completa para atender às demandas de criptografia, sanitização e rotação:
+1. `src/lib/security/credentialCrypto.ts`: Fornece `encryptCredential(plainText, customKey?)` e `decryptCredential(cipherText, primaryKey?, fallbackKey?)` baseados em AES-256-GCM com envelopes `enc:v1:...`.
+2. Sanitização ativa: Helpers `maskSecret`, `redactHeaders` e `sanitizeObjectForLogging` garantem que tokens, chaves e headers `Authorization` sejam redigidos com `[REDACTED]` e `****`.
+3. Rotação sem downtime: Suporte a dual-key fallback na decriptação e script utilitário `scripts/security/reencrypt-credentials.ts` para re-encriptação no banco.
+4. Testes: 8 testes unitários cobrindo todos os cenários implementados em `tests/unit/lib/security/credentialCrypto.test.ts`.
+5. Handoff de retorno aberto em `.agents/handoffs/onda-14/15-para-06-criptografia-tokens-crms.md`.
+

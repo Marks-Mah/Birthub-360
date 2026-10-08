@@ -12,12 +12,6 @@
 //   npm run load:k6
 // Uso em CI: .github/workflows/endpoint-latency-budget.yml (k6 binario, sem docker), contra a
 // mesma app subida como em tests/e2e (`npm run start:e2e`).
-//
-// Cobertura conhecida como incompleta: endpoints autenticados de CRM (ex.: listagem de
-// contatos/leads, citados no SRE.md 1.2 como exemplo de rota transacional) nao sao exercitados
-// aqui ainda — exigiriam simular login/sessao dentro do k6. Registrado como debito derivado em
-// docs/development/PERFORMANCE_BUDGETS.md em vez de forjar uma chamada autenticada só para
-// preencher a métrica.
 import http from 'k6/http';
 import { check, sleep } from 'k6';
 

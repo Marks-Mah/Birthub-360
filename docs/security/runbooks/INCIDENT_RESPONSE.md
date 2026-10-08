@@ -20,13 +20,14 @@ Canal de reporte operacional: **`security@birthhub360.com`** ou mantenedor princ
 ## Phase 2: Containment (Contenção Imediata)
 
 1. **Sessões e Autenticação:**
-   - Rotacionar imediatamente `BETTER_AUTH_SECRET` no arquivo `.env`.
+   - Rotacionar imediatamente `BETTER_AUTH_SECRET` seguindo o runbook [`ROTATE_BETTER_AUTH_SECRET.md`](ROTATE_BETTER_AUTH_SECRET.md).
    - Reiniciar a aplicação (`npm run build && npm start` ou reiniciar o container da aplicação).
    - Isso invalida imediatamente todos os cookies de sessão ativos no Better Auth.
 
 2. **Credenciais e Chaves de Integração:**
    - Se o incidente envolver credenciais de integração (Bitrix24, Bland AI, Google, Stripe, etc.), revogar o token no provedor externo.
-   - Rotacionar `CREDENTIALS_ENCRYPTION_KEY` e re-criptografar os segredos necessários (`src/lib/crypto/secretFields.ts`).
+   - Rotacionar `CREDENTIALS_ENCRYPTION_KEY` e re-criptografar os segredos em repouso seguindo [`ROTATE_CREDENTIALS_ENCRYPTION_KEY.md`](ROTATE_CREDENTIALS_ENCRYPTION_KEY.md) com o script `scripts/security/reencrypt-credentials.ts`.
+   - Se índices de PII forem afetados, executar [`ROTATE_PII_BLIND_INDEX_KEY.md`](ROTATE_PII_BLIND_INDEX_KEY.md).
    - Rotacionar chaves de armazenamento local (MinIO): atualizar `STORAGE_ACCESS_KEY_ID` e `STORAGE_SECRET_ACCESS_KEY` no `docker-compose.local-first.yml` e no `.env`.
 
 3. **Isolamento de Rede Local / Banco de Dados:**

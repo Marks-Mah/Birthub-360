@@ -175,7 +175,12 @@ export interface Lead<
   updatedAt: TDate;
 }
 
-export interface Activity<TDate = Date, TLeadStatus = PrismaLeadStatus, TLeadTemperature = PrismaLeadTemperature, TContactStatus = PrismaContactStatus> {
+export interface Activity<
+  TDate = Date,
+  TLeadStatus = PrismaLeadStatus,
+  TLeadTemperature = PrismaLeadTemperature,
+  TContactStatus = PrismaContactStatus,
+> {
   id: string;
   type: ActivityType;
   owner: string;

@@ -1,16 +1,12 @@
-import { useReducedMotion } from 'framer-motion';
-import { ArrowRight, ChevronDown, ChevronLeft, Shield, X } from 'lucide-react';
+import { ArrowRight, ChevronDown, ChevronLeft, X } from 'lucide-react';
 import type React from 'react';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useMemo } from 'react';
 import { useAuth } from '../../contexts/AuthContext.js';
 import { hasRequiredRole } from '../../lib/auth/authorization.js';
-import { SoundFX } from '../../lib/soundEffects.js';
-import { NavLaunchTransition, type NavLaunch } from './NavLaunchTransition.js';
-import { NAV_ACCENT_VAR, TAB_META, type TabType } from './tabMeta.js';
-
-const SIDEBAR_COLLAPSED_KEY = '@birthhub:sidebar-collapsed';
-const LEGACY_SIDEBAR_COLLAPSED_KEY = '@birthhub360:sidebar-collapsed';
+import { NavLaunchTransition } from './NavLaunchTransition.js';
+import { useSidebarState } from './hooks/useSidebarState.js';
+import { getSidebarNavSections } from './sidebarSections.js';
+import type { TabType } from './tabMeta.js';
 
 interface SidebarProps {
   activeTab: TabType;
@@ -20,27 +16,6 @@ interface SidebarProps {
   onToggleCollapse?: () => void;
 }
 
-interface NavSubItem {
-  tab: TabType;
-  label: string;
-}
-
-interface NavGroupItem {
-  id: string;
-  label: string;
-  sublabel?: string;
-  ariaLabel?: string;
-  icon: React.ComponentType<{ size?: number; className?: string }>;
-  primaryTab?: TabType;
-  subItems?: NavSubItem[];
-  accentColor?: string;
-}
-
-interface NavSection {
-  title: string;
-  groups: NavGroupItem[];
-}
-
 export function Sidebar({
   activeTab,
   mobileOpen = false,
@@ -48,277 +23,39 @@ export function Sidebar({
   collapsed: externalCollapsed,
   onToggleCollapse,
 }: SidebarProps) {
-  const [internalCollapsed, setInternalCollapsed] = useState(() => {
-    if (typeof window === 'undefined') return false;
-    return (
-      (window.localStorage.getItem(SIDEBAR_COLLAPSED_KEY) ??
-        window.localStorage.getItem(LEGACY_SIDEBAR_COLLAPSED_KEY)) === 'true'
-    );
+  const {
+    isCollapsed,
+    toggleCollapse,
+    hoveredGroupId,
+    setHoveredGroupId,
+    expandedGroups,
+    toggleGroupExpand,
+    launch,
+    openTab,
+    finishLaunch,
+    selectTab,
+  } = useSidebarState({
+    activeTab,
+    onCloseMobile,
+    collapsed: externalCollapsed,
+    onToggleCollapse,
   });
 
-  const isCollapsed = externalCollapsed !== undefined ? externalCollapsed : internalCollapsed;
-
-  const toggleCollapse = () => {
-    SoundFX.play('focus');
-    if (onToggleCollapse) {
-      onToggleCollapse();
-    } else {
-      setInternalCollapsed((prev) => {
-        const next = !prev;
-        if (typeof window !== 'undefined') {
-          window.localStorage.setItem(SIDEBAR_COLLAPSED_KEY, String(next));
-        }
-        return next;
-      });
-    }
-  };
-
   const { currentUser, isAdmin, canAccessCommercialIntelligence, canAccessCopilotoIa } = useAuth();
-  const navigate = useNavigate();
-  const reduceMotion = useReducedMotion();
-  const [hoveredGroupId, setHoveredGroupId] = useState<string | null>(null);
 
   const canManageOperations =
     !!currentUser && hasRequiredRole(currentUser.role, ['ADMIN', 'GESTOR']);
 
-  // Grupos sanfona com inteligência de expansão da console de operações
-  const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({
-    revenue_tree: true,
-  });
-
-  const toggleGroupExpand = (groupId: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    SoundFX.play('focus');
-    setExpandedGroups((prev) => ({ ...prev, [groupId]: !prev[groupId] }));
-  };
-
-  const [launch, setLaunch] = useState<(NavLaunch & { tab: TabType }) | null>(null);
-
-  const openTab = (tab: TabType) => {
-    navigate(`/app/${tab}`);
-    onCloseMobile?.();
-  };
-
-  const finishLaunch = () => {
-    if (!launch) return;
-    openTab(launch.tab);
-    setLaunch(null);
-  };
-
-  const selectTab = (tab: TabType, event: React.MouseEvent) => {
-    if (launch) return;
-    if (tab !== activeTab) SoundFX.play('navigate');
-
-    const skip =
-      tab === activeTab ||
-      reduceMotion ||
-      (typeof navigator !== 'undefined' && navigator.webdriver) ||
-      event.ctrlKey ||
-      event.metaKey ||
-      event.shiftKey ||
-      event.altKey;
-
-    if (skip) {
-      openTab(tab);
-      return;
-    }
-
-    const meta = TAB_META[tab] ?? TAB_META.dashboard;
-    const anchor = event.currentTarget.querySelector('[data-nav-icon]') ?? event.currentTarget;
-    const rect = anchor.getBoundingClientRect();
-    setLaunch({
-      tab,
-      label: meta.label,
-      Icon: meta.icon,
-      accent: NAV_ACCENT_VAR[meta.accent] || 'var(--nav-c-blue)',
-      from: { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 },
-    });
-  };
-
-  // Seções organizadas no paradigma Console de Operações do BirthHub 360
-  const navSections: NavSection[] = [
-    {
-      title: 'COMMAND CENTER',
-      groups: [
-        {
-          id: 'dashboard',
-          label: 'Visão Geral',
-          sublabel: 'Visão executiva e operacional',
-          icon: TAB_META.dashboard.icon,
-          primaryTab: 'dashboard',
-        },
-      ],
-    },
-    {
-      title: 'RECEITA',
-      groups: [
-        {
-          id: 'revenue_tree',
-          label: 'Pipeline & CRM',
-          icon: TAB_META.crm.icon,
-          primaryTab: 'crm',
-          subItems: [
-            { tab: 'crm', label: 'Pipeline' },
-            { tab: 'crm360', label: 'Negócios' },
-            { tab: 'propostas', label: 'Propostas' },
-            { tab: 'forecast', label: 'Forecast' },
-          ],
-        },
-      ],
-    },
-    {
-      title: 'INTELLIGENCE',
-      groups: [
-        {
-          id: 'market-intelligence',
-          label: 'Inteligência de Mercado',
-          icon: TAB_META['market-intelligence'].icon,
-          primaryTab: 'market-intelligence',
-        },
-        ...(canAccessCommercialIntelligence
-          ? [
-              {
-                id: 'commercial_intelligence',
-                label: 'Revenue Intelligence',
-                icon: TAB_META.commercial_intelligence.icon,
-                primaryTab: 'commercial_intelligence' as TabType,
-              },
-            ]
-          : []),
-        {
-          id: 'signals-risks',
-          label: 'Sinais & Riscos',
-          icon: TAB_META.intelligence.icon,
-          primaryTab: 'intelligence',
-        },
-        ...(canAccessCopilotoIa
-          ? [
-              {
-                id: 'copilot',
-                label: 'Copilot',
-                icon: TAB_META.copiloto_ia.icon,
-                primaryTab: 'copiloto_ia' as TabType,
-              },
-            ]
-          : []),
-      ],
-    },
-    {
-      title: 'EXECUTION',
-      groups: [
-        {
-          id: 'prospecting',
-          label: 'Prospecção',
-          icon: TAB_META.prospect.icon,
-          primaryTab: 'prospect',
-        },
-        {
-          id: 'cadences',
-          label: 'Cadências',
-          icon: TAB_META.cadence.icon,
-          primaryTab: 'cadence',
-        },
-        {
-          id: 'workflows',
-          label: 'Workflows',
-          icon: TAB_META.jornadas.icon,
-          primaryTab: 'jornadas',
-        },
-        ...(canManageOperations
-          ? [
-              {
-                id: 'automations',
-                label: 'Automações',
-                icon: TAB_META.automations.icon,
-                primaryTab: 'automations' as TabType,
-              },
-            ]
-          : []),
-      ],
-    },
-    {
-      title: 'RELATIONSHIPS',
-      groups: [
-        {
-          id: 'companies',
-          label: 'Empresas',
-          icon: TAB_META.companies.icon,
-          primaryTab: 'companies',
-        },
-        {
-          id: 'contacts',
-          label: 'Contatos',
-          icon: TAB_META.contacts.icon,
-          primaryTab: 'contacts',
-        },
-        {
-          id: 'decisores',
-          label: 'Decisores',
-          icon: Shield,
-          primaryTab: 'contacts',
-        },
-      ],
-    },
-    {
-      title: 'PERFORMANCE',
-      groups: [
-        {
-          id: 'performance',
-          label: 'Performance Comercial',
-          ariaLabel: 'Performance Comercial Analytics',
-          icon: TAB_META.analytics.icon,
-          primaryTab: 'analytics',
-        },
-        {
-          id: 'metas',
-          label: 'Metas',
-          icon: TAB_META.metas.icon,
-          primaryTab: 'metas',
-        },
-        {
-          id: 'gamification',
-          label: 'Gamificação',
-          icon: TAB_META.roleplay.icon,
-          primaryTab: 'roleplay',
-        },
-      ],
-    },
-    ...(canManageOperations || isAdmin
-      ? [
-          {
-            title: 'GOVERNANÇA',
-            groups: [
-              ...(canManageOperations
-                ? [
-                    {
-                      id: 'integrations',
-                      label: 'Integrações',
-                      icon: TAB_META.integrations.icon,
-                      primaryTab: 'integrations' as TabType,
-                    },
-                  ]
-                : []),
-              ...(isAdmin
-                ? [
-                    {
-                      id: 'team',
-                      label: 'Gestão de Time',
-                      icon: TAB_META.team.icon,
-                      primaryTab: 'team' as TabType,
-                    },
-                  ]
-                : []),
-              {
-                id: 'settings',
-                label: 'Configurações',
-                icon: TAB_META.settings.icon,
-                primaryTab: 'settings' as TabType,
-              },
-            ],
-          },
-        ]
-      : []),
-  ];
+  const navSections = useMemo(
+    () =>
+      getSidebarNavSections({
+        canAccessCommercialIntelligence,
+        canAccessCopilotoIa,
+        canManageOperations,
+        isAdmin,
+      }),
+    [canAccessCommercialIntelligence, canAccessCopilotoIa, canManageOperations, isAdmin],
+  );
 
   return (
     <>
@@ -382,8 +119,6 @@ export function Sidebar({
         <nav className="custom-scrollbar flex-1 overflow-y-auto px-4 py-2 space-y-6">
           {navSections.map((section) => (
             <div key={section.title} className="space-y-1.5">
-              {/* Seção invisível para manter hierarquia sem poluir o visual clean */}
-
               <div className="space-y-1.5">
                 {section.groups.map((group) => {
                   const Icon = group.icon;
