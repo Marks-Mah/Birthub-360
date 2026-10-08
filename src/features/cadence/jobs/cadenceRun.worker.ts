@@ -100,7 +100,7 @@ export function parseCadenceSequenceDefinition(row: {
   return sequence;
 }
 
-function buildDeps(): AdvanceCadenceRunDeps {
+export function buildDeps(): AdvanceCadenceRunDeps {
   return {
     runRepo: prismaCadenceRunRepository,
     optOutRepo: prismaOptOutRepository,

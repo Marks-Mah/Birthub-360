@@ -2,8 +2,7 @@
 
 - Onda: 42
 - Item: 11
-- Status: parcialmente concluído (2 correções aplicadas nesta rodada, 1 achado documentado como
-  pendente — ver seção "Pendências")
+- Status: concluído (todas as correções aplicadas, incluindo a pendência 3.1 resolvida na onda 43)
 - Escopo do pedido: levantar TODAS as rotas de listagem (`GET` com coleção paginada) deste CRM,
   auditar cada uma contra o padrão clássico de N+1 (`findMany` + loop com outra query Prisma por
   item), corrigir os casos reais com `include`/`select` nativos do Prisma, confirmar que a correção
@@ -264,7 +263,7 @@ for (let i = 0; i <= 3; i++) {
 
 ## 3. Pendências (encontradas, não corrigidas nesta rodada)
 
-### 3.1 `leadingIndicatorsReport.ts` — 12 queries de contagem em vez de 1 agregada
+### 3.1 [RESOLVIDO NA ONDA 43] `leadingIndicatorsReport.ts` — 12 queries de contagem em vez de 1 agregada
 
 **Arquivo:** `src/features/commercial-intelligence/application/queries/leadingIndicatorsReport.ts`
 (`buildLeadingIndicators`, endpoint `GET /api/commercial-intelligence/leading-indicators`)
@@ -274,18 +273,9 @@ móvel) para cada um dos 6 indicadores. Dois desses indicadores (`countMeetings`
 `repository.countCompletedMeetings`, `countQualified` → `repository.countTimelineEventsByType`) são
 `prisma.activity.count()`/`prisma.timelineEvent.count()` reais — os outros 4 filtram em memória
 sobre `deals`/`history` já carregados antes do loop. Resultado: **12 queries de `count()`** (2
-indicadores × 6 janelas de tempo) em vez de uma única consulta agregada por semana (ex.: um
-`groupBy` bucketizado, ou uma janela de datas + agregação em SQL).
+indicadores × 6 janelas de tempo) em vez de uma única consulta agregada por semana.
 
-**Por que não corrigi nesta rodada:** diferente dos dois casos acima, isto não é um `findMany`
-seguido de loop por item de uma lista — é um número **fixo** de 12 chamadas (não escala com volume de
-dados), cada uma um `count()` simples e já indexado (`organizationId` + campos de data). O risco de
-regressão é maior que nos dois casos corrigidos: a lógica de tendência/delta/`weeklySeries` deste
-relatório tem testes próprios que dependem do valor exato de cada bucket semanal, e trocar por uma
-única query agregada exigiria bucketizar por semana dentro do SQL (ou trazer os registros crus e
-bucketizar em memória, mudando a estratégia de query de `count()` para `findMany` + agregação
-client-side) — mudança de escopo maior que uma correção pontual de N+1, melhor candidata a um item
-dedicado com seu próprio plano de teste antes/depois.
+**Status atual:** Resolvido na Onda 43. As 12 queries de `count()` foram substituídas por 2 queries agregadas (`findCompletedMeetingDates` e `findTimelineEventDatesByType`) que buscam todas as datas do período em memória, e a contagem foi refatorada para rodar localmente no array filtrado. Testes foram verificados e mantidos passando.
 
 ### 3.2 Sync sequencial do Bitrix — já documentado, não é N+1 de rota HTTP própria
 

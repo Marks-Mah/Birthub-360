@@ -8,6 +8,7 @@ import {
   type CadenceTouch,
   decideCadenceAction,
   recordTouchAttempt,
+  resolvePendingTouchAttempt,
 } from '../domain/cadence.js';
 import type { OptOutRepository, OptOutSubject } from '../domain/optOut.js';
 import type { CadenceRateLimitPolicy, RateLimitBlockReason } from '../domain/rateLimit.js';
@@ -50,7 +51,7 @@ export interface CadenceDispatcher {
     touch: CadenceTouch,
     run: CadenceRunState,
   ): Promise<{
-    result: 'sent' | 'failed';
+    result: 'sent' | 'failed' | 'pending';
     error?: string | null;
     providerMessageId?: string | null;
   }>;
@@ -310,6 +311,38 @@ export async function advanceCadenceRun(
     );
 
     return { run: updated, decision };
+  } finally {
+    await lock.release();
+  }
+}
+
+export async function advanceCadenceRunPendingTouch(
+  deps: AdvanceCadenceRunDeps,
+  organizationId: string,
+  runId: string,
+  sequence: CadenceSequenceDefinition,
+  providerMessageId: string,
+  now: Date,
+  outcome: {
+    result: 'sent' | 'failed';
+    error?: string | null;
+  }
+): Promise<void> {
+  const run = await deps.runRepo.findById(organizationId, runId);
+  if (!run) return;
+
+  const lock = await deps.lock.acquire(runId);
+  if (!lock.acquired) return; // Se está locked, tentaremos novamente depois ou o worker pegará? Mas isso é o webhook
+
+  try {
+    const updated = resolvePendingTouchAttempt(run, sequence, providerMessageId, now, outcome);
+    if (updated !== run) {
+      await saveWithRetry(deps.runRepo, updated);
+      logger.info(
+        { organizationId, runId, providerMessageId, result: outcome.result },
+        'Toque pendente de cadência resolvido via webhook.',
+      );
+    }
   } finally {
     await lock.release();
   }

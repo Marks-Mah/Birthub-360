@@ -12,6 +12,7 @@ import {
   webhookDeliveryFingerprint,
   validateWebhookTimestamp,
 } from '../../../shared/security/webhookReplayGuard.js';
+import { resolveCadencePendingVoiceTouch } from '../../cadence/infra/cadenceWebhookResolver.js';
 import { sendWhatsAppMessage } from '../whatsapp/whatsapp.service.js';
 import {
   buildObservations,
@@ -202,6 +203,17 @@ async function recordCallResult(
         );
       }
     }
+
+    const providerMessageId = data.callSid || 'sem-id';
+    await resolveCadencePendingVoiceTouch(
+      organizationId,
+      leadId,
+      providerMessageId,
+      {
+        result: hadConversation || data.status === 'completed' ? 'sent' : 'failed',
+        error: data.outcome || data.status || null
+      }
+    );
 
     return 'recorded';
   });

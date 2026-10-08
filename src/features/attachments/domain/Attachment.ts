@@ -2,19 +2,7 @@ import type { Repository } from '../../../shared/domain/Repository.js';
 
 export type AttachmentEntityType = 'lead' | 'company' | 'contact';
 
-export interface Attachment {
-  id: string;
-  leadId: string | null;
-  companyId: string | null;
-  contactId: string | null;
-  fileName: string;
-  mimeType: string;
-  sizeBytes: number;
-  objectKey: string;
-  uploadedBy: string | null;
-  organizationId: string;
-  createdAt: Date;
-}
+export type { Attachment } from '../../../shared/types/crm.js';
 
 export interface CreateAttachmentInput {
   fileName: string;

@@ -87,3 +87,6 @@ Itens 5 e 6 continuam como o relatório original descreveu: item 5 (`Automation`
 `AutomationTrigger`) precisa de confirmação do dono do domínio de automações (07) antes de
 unificar — divergência de forma real, não cópia acidental. Item 6 (entidades núcleo do CRM)
 continua fora de escopo pontual — decisão de arquitetura maior para uma onda própria.
+
+## Resolução do Item 5 (Agente 07)
+- **Item 5** (`Automation`/`AutomationTrigger`): Confirmado que os valores literais de `AutomationTrigger` e `AutomationAction` no frontend (`automations.api.ts`) são idênticos aos `AutomationTriggerLabel` e `AutomationActionLabel` do backend (`src/lib/enumMap.ts`). As definições duplicadas no frontend foram removidas e substituídas por imports diretos (com alias) de `enumMap.ts`. Sobre a interface `Automation` em si, a divergência de `Date` vs `string` e omissão de campos internos como `organizationId` é o comportamento correto e esperado para a serialização JSON da API (semelhante ao Item 6), portanto a separação entre a entidade de domínio e o contrato de API frontend foi mantida intencionalmente.

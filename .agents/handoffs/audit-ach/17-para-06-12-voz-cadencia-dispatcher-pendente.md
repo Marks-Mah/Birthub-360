@@ -1,7 +1,7 @@
 - De: 17 (auditoria ACH-17-03)
 - Para: 12 e 17
 - Onda: Pos-Sprint 13
-- Status: aprovado-aguardando-sprint
+- Status: resolvido
 - Prioridade: normal (P2)
 
 ## Problema
@@ -147,3 +147,10 @@ neste handoff (novo) — mas como as três branches (`fix/ach-17-01`, `fix/ach-1
 branch é mais um ponto de possível conflito (ou, na pior hipótese, de mudanças concorrentes no
 mesmo arquivo de documentação) nesse cluster ao integrar as três. Nenhum conflito de fato
 verificado nesta execução — aviso preventivo para quem for fazer o merge.
+
+## Resolução (Agente 17/12)
+
+- Status: resolvido
+- O dispatcher de voz real foi implementado usando `birthVoice.service.ts::callLead`.
+- O tipo `CadenceTouchResult` foi expandido para incluir o estado `'pending'`.
+- O webhook assíncrono em `birthVoice.webhook.ts` foi atualizado para acionar a resolução de `CadenceTouchAttempt` pendentes, avançando a cadência conforme sucesso/falha vindo do provedor.

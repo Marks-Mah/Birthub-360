@@ -136,7 +136,7 @@ export function buildVoiceCadenceDispatcher(
       try {
         const result = await voicePort.callLead(run.organizationId, run.leadId, 'sdr');
         return {
-          result: 'sent' as const,
+          result: 'pending' as const,
           providerMessageId: result.callSid ?? result.sessionId ?? null,
         };
       } catch (err: any) {

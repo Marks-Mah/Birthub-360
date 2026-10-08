@@ -5,7 +5,6 @@ import { ErrorBoundary } from './components/ErrorBoundary.js';
 import { MainLayout } from './components/layout/MainLayout.js';
 import { ProtectedRoute } from './components/layout/ProtectedRoute.js';
 import { OnboardingGate } from './components/layout/OnboardingGate.js';
-import { SetupWizard } from './features/onboarding/components/SetupWizard.js';
 import { RequireModuleAccess } from './components/layout/RequireModuleAccess.js';
 import { RequireRole } from './components/layout/RequireRole.js';
 import { ClickSpark } from './components/ui/ClickSpark.js';
@@ -17,6 +16,12 @@ import { DailyClosingProvider } from './contexts/DailyClosingContext.js';
 import { ExperienceModeProvider } from './contexts/ExperienceModeContext.js';
 import { ThemeProvider } from './contexts/ThemeContext.js';
 import { COMMERCIAL_INTELLIGENCE_ROLES, MESA_TRATAMENTO_ROLES } from './lib/auth/authorization.js';
+
+const SetupWizard = lazy(() =>
+  import('./features/onboarding/components/SetupWizard.js').then((m) => ({
+    default: m.SetupWizard,
+  })),
+);
 
 const DesignLabPage = lazy(() =>
   import('./features/design-lab/DesignLabPage.js').then((m) => ({ default: m.DesignLabPage })),

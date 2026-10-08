@@ -2,16 +2,7 @@ import type { Repository } from '../../../shared/domain/Repository.js';
 
 export type NoteEntityType = 'lead' | 'company' | 'contact';
 
-export interface Note {
-  id: string;
-  content: string;
-  author: string;
-  leadId: string | null;
-  companyId: string | null;
-  contactId: string | null;
-  createdAt: Date;
-  updatedAt: Date;
-}
+export type { Note } from '../../../shared/types/crm.js';
 
 export interface NoteRepository extends Repository<Note> {
   findByEntity(

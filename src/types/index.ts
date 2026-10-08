@@ -16,46 +16,6 @@ export type {
 } from '../lib/zod.js';
 // Arrays das etapas de cada funil (não tipos) — usados pelos dois Kanbans para montar as colunas.
 
-/**
- * Checklist de qualificação do SDR — Playbook Comercial Birth Hub 360, seção 4.2. Preenchido
- * manualmente pelo time comercial durante a qualificação, nunca inferido automaticamente.
- */
-export interface LeadQualification {
-  // 4.2.1 Contexto Operacional
-  segmentoOperacao?: string;
-  tipoCarga?: string;
-  principaisRotas?: string;
-  usaTerceiros?: 'Sim' | 'Não' | '';
-  mediaContratacaoTerceiros?: string;
-  viagensPorMes?: string;
-  frotaPropria?: string;
-  frotaAgregados?: string;
-  frotaTerceiros?: string;
-  // 4.2.2 Estrutura Atual
-  ermTms?: string;
-  rastreador?: string;
-  seguradora?: string;
-  corretora?: string;
-  possuiGR?: string;
-  fornecedorGRAtual?: string;
-  possuiCadastroMotorista?: string;
-  consultaCadastroAtual?: string;
-  possuiSoftwareLogistico?: string;
-  softwareLogisticoAtual?: string;
-  // 4.2.3 Dor Mapeada
-  dorPrincipal?: string;
-  detalhamentoDor?: string;
-  impactoPercebido?: string;
-  solucaoBirthub360?: 'Profile' | 'GR' | 'Connect' | 'Combinação' | '';
-  // 4.2.4 Interesse e Autoridade
-  nivelAutoridade?: 'Decisor' | 'Influenciador' | 'Usuário' | '';
-  interessePercebido?: 'Baixo' | 'Médio' | 'Alto' | '';
-  horizonteDecisao?: 'Imediato' | '30 dias' | '60-90 dias' | 'Indefinido' | '';
-  // 4.2.5 Próximo Passo
-  expectativaProximaCall?: string;
-  temaProximaReuniao?: string;
-}
-
 export interface PaginatedMeta {
   total: number;
   page: number;
@@ -68,192 +28,22 @@ export interface PaginatedResponse<T> {
   meta: PaginatedMeta;
 }
 
-export interface Company {
-  id: string;
-  legalName: string;
-  tradeName: string;
-  cnpj?: string | null;
-  stateRegistration?: string | null;
-  segment?: string | null;
-  cnae?: string | null;
-  size?: string | null;
-  employeeCount?: number | null;
-  estimatedRevenue?: number | null;
-  website?: string | null;
-  linkedin?: string | null;
-  instagram?: string | null;
-  twitter?: string | null;
-  facebook?: string | null;
-  phones: string[];
-  emails: string[];
-  address?: string | null;
-  city?: string | null;
-  state?: string | null;
-  zipCode?: string | null;
-  status: import('../lib/zod.js').CompanyStatus;
-  tags: string[];
-  observations?: string | null;
-  customFields?: Record<string, unknown> | null;
-  organizationId?: string | null;
-  createdAt: string;
-  updatedAt: string;
+import type {
+  LeadQualification,
+  Company as DomainCompany,
+  Contact as DomainContact,
+  Lead as DomainLead,
+  Activity as DomainActivity,
+  TimelineEvent as DomainTimelineEvent,
+  Note as DomainNote,
+  Attachment as DomainAttachment,
+} from '../shared/types/crm.js';
 
-  // Enriquecimento (Receita Federal)
-  situacaoCadastral?: string | null;
-  naturezaJuridica?: string | null;
-  capitalSocial?: number | null;
-
-  // Google Negócios (Places API)
-  googleRating?: number | null;
-  googleReviewsCount?: number | null;
-  businessHours?: { openNow?: boolean; weekdayDescriptions?: string[] } | null;
-
-  // Firmographics (Apollo Organization Enrich)
-  technologies?: string[];
-  keywords?: string[];
-  logoUrl?: string | null;
-  apolloOrgId?: string | null;
-
-  contacts?: Contact[];
-  leads?: Lead[];
-}
-
-export interface Contact {
-  id: string;
-  name: string;
-  role?: string | null;
-  department?: string | null;
-  phone?: string | null;
-  whatsapp?: string | null;
-  email?: string | null;
-  linkedin?: string | null;
-  birthDate?: string | null;
-  observations?: string | null;
-  status: import('../lib/zod.js').ContactStatus;
-  source?: string | null;
-  seniority?: string | null;
-  emailStatus?: string | null;
-  customFields?: Record<string, unknown> | null;
-  companyId: string;
-  company?: Company;
-  /** Consentimento de processamento por IA (LGPD) — real no schema, já retornado pela API, nunca
-   * declarado aqui antes (achado do Piloto 013). `null`/`undefined` para registros legados sem
-   * consentimento registrado — nunca tratar como "não" silenciosamente. */
-  aiProcessingConsent?: boolean | null;
-  /** Só vem preenchido por GET /api/contacts/:id (detalhe) — a listagem não inclui. */
-  leads?: Lead[];
-  organizationId?: string | null;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface Lead {
-  id: string;
-
-  // CRM Core
-  status: import('../lib/zod.js').LeadStatus;
-  funnel?: 'Lead' | 'Negocio';
-  title?: string | null;
-  amount?: number | null;
-  currency?: string;
-  probability?: number | null;
-  /** Probabilidade ajustada pelo Copiloto IA a partir da conversa mais recente processada —
-   * `null` quando não há snapshot ainda (nunca fabricado). Ver PrismaLeadRepository. */
-  forecastProbabilityAi?: number | null;
-  expectedCloseAt?: string | null;
-  customFields?: Record<string, unknown> | null;
-  pipelineId?: string | null;
-  pipelineStageId?: string | null;
-  source?: string | null;
-  channel?: string | null;
-  temperature?: import('../lib/zod.js').LeadTemperature | null;
-  score?: number | null;
-  owner?: string | null;
-  lastInteraction?: string | null;
-  nextAction?: string | null;
-  organizationId?: string | null;
-  /** PIC (Perfil de Cliente Ideal) do Playbook de Pré-Vendas Atlas — setado manualmente, nunca inferido automaticamente. */
-  pic?: 'PIC1_Expansao' | 'PIC2_Risco' | 'PIC3_Transicao' | null;
-  /** Checklist de qualificação do SDR (Playbook Comercial Birth Hub 360, seção 4.2). */
-  qualification?: LeadQualification | null;
-
-  // Campos comerciais espelhados do Bitrix24 (ver bitrixFieldMap.ts)
-  resumeDate?: string | null;
-  cadenceStage?: string | null;
-  lossReason?: string | null;
-  dealPackage?: string | null;
-  dealStatus?: string | null;
-  relationshipLevel?: string | null;
-  commissionPercent?: string | null;
-  partnerBroker?: string | null;
-  qualificationValidatedByAM?: boolean | null;
-
-  // Vínculo e status de sincronização com o Bitrix24 (ver bitrix.service.ts)
-  bitrixLeadId?: string | null;
-  bitrixDealId?: string | null;
-  bitrixStageLabel?: string | null;
-  /** 'pending' | 'syncing' | 'synced' | 'failed' — null antes da primeira tentativa de export. */
-  bitrixSyncStatus?: string | null;
-  bitrixSyncError?: string | null;
-  bitrixSyncedAt?: string | null;
-
-  companyId?: string | null;
-  company?: Company | null;
-  contactId?: string | null;
-  contact?: Contact | null;
-
-  activities?: Activity[];
-  timeline?: TimelineEvent[];
-  internalNotes?: Note[];
-
-  createdAt?: string;
-  updatedAt?: string;
-}
-
-export interface Activity {
-  id: string;
-  type: import('../lib/zod.js').ActivityType;
-  owner: string;
-  date: string;
-  time?: string | null;
-  status: import('../lib/zod.js').ActivityStatus;
-  observations?: string | null;
-  leadId: string;
-  lead?: Lead;
-  organizationId?: string | null;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface TimelineEvent {
-  id: string;
-  type: string;
-  description: string;
-  leadId: string;
-  createdAt: string;
-}
-
-export interface Note {
-  id: string;
-  content: string;
-  author: string;
-  leadId: string | null;
-  companyId: string | null;
-  contactId: string | null;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface Attachment {
-  id: string;
-  leadId: string | null;
-  companyId: string | null;
-  contactId: string | null;
-  fileName: string;
-  mimeType: string;
-  sizeBytes: number;
-  objectKey: string;
-  uploadedBy: string | null;
-  organizationId: string;
-  createdAt: string;
-}
+export type { LeadQualification };
+export type Company = DomainCompany<string>;
+export type Contact = DomainContact<string>;
+export type Lead = DomainLead<string>;
+export type Activity = DomainActivity<string>;
+export type TimelineEvent = DomainTimelineEvent<string>;
+export type Note = DomainNote<string>;
+export type Attachment = DomainAttachment<string>;

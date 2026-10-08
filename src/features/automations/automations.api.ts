@@ -1,12 +1,9 @@
 import { api } from '../../lib/api.js';
 import { LEAD_STATUS } from '../../lib/zod.js';
 
-export type AutomationTrigger =
-  | 'Lead criado'
-  | 'Lead mudou de status'
-  | 'Atividade concluída'
-  | 'Lead estagnado';
-export type AutomationAction = 'Notificar equipe' | 'Criar atividade' | 'Ligar via SDR de Voz';
+import type { AutomationTriggerLabel as AutomationTrigger, AutomationActionLabel as AutomationAction } from '../../lib/enumMap.js';
+
+export type { AutomationTrigger, AutomationAction };
 
 /**
  * Operador numérico de condição (ver `matchesConditions` em `automation.engine.ts`), usado pelas

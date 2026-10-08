@@ -72,7 +72,7 @@ export type CadenceStopReason =
   | 'completed'
   | 'manual-stop'
   | 'policy-guardrail';
-export type CadenceTouchResult = 'sent' | 'failed' | 'skipped';
+export type CadenceTouchResult = 'sent' | 'failed' | 'skipped' | 'pending';
 /**
  * `contact-rate-limit`/`domain-rate-limit` (auditoria transversal, Agente 17): o mesmo contato (ou
  * o mesmo domínio de e-mail) recebendo toques em excesso quando várias cadências/campanhas
@@ -213,6 +213,13 @@ export function decideCadenceAction(
 
   const touch = touchesForOrder(sequence, run.currentTouchOrder);
   if (!touch) return { type: 'stop', reason: 'completed' };
+
+  const pendingAttempt = attemptsForTouch(run, run.currentTouchOrder).find(
+    (a) => a.result === 'pending'
+  );
+  if (pendingAttempt) {
+    return { type: 'wait', reason: 'locked' };
+  }
 
   const earliestEligible = run.lastTouchAt
     ? new Date(run.lastTouchAt.getTime() + touch.delayHoursFromPrevious * 3_600_000)
@@ -385,6 +392,57 @@ export function recordTouchAttempt(
     ...run,
     attempts,
     lastTouchAt: now,
+    currentTouchOrder: nextOrder,
+    ...(hasNext
+      ? {}
+      : { status: 'completed' as const, stopReason: 'completed' as const, stoppedAt: now }),
+  };
+}
+
+export function resolvePendingTouchAttempt(
+  run: CadenceRunState,
+  sequence: CadenceSequenceDefinition,
+  providerMessageId: string,
+  now: Date,
+  outcome: {
+    result: 'sent' | 'failed';
+    error?: string | null;
+  },
+): CadenceRunState {
+  const attemptIndex = run.attempts.findIndex(
+    (a) => a.result === 'pending' && a.providerMessageId === providerMessageId,
+  );
+  if (attemptIndex === -1) return run; // Idempotente se não achar
+
+  const attempt = run.attempts[attemptIndex];
+  const touch = touchesForOrder(sequence, attempt.touchOrder);
+  if (!touch) return run; // Sequência mudou e o toque sumiu (tecnicamente guardrail já pegaria, mas seguro)
+
+  const updatedAttempt: CadenceTouchAttempt = {
+    ...attempt,
+    result: outcome.result,
+    error: sanitizeTouchError(outcome.error),
+  };
+
+  const attempts = [...run.attempts];
+  attempts[attemptIndex] = updatedAttempt;
+
+  const maxAttempts = touch.maxAttempts ?? 1;
+  const attemptsSoFar = attempts.filter((a) => a.touchOrder === touch.order && a.result !== 'skipped').length;
+  const exhausted = outcome.result === 'failed' && attemptsSoFar >= maxAttempts;
+  const shouldAdvance = outcome.result === 'sent' || exhausted;
+
+  if (!shouldAdvance) {
+    return { ...run, attempts }; // Mantém currentTouchOrder para retry futuro, delay contará a partir do lastTouchAt (q foi setado na criação do pending)
+  }
+
+  const nextOrder =
+    exhausted && touch.fallbackTouchOrder != null ? touch.fallbackTouchOrder : touch.order + 1;
+  const hasNext = touchesForOrder(sequence, nextOrder) !== undefined;
+
+  return {
+    ...run,
+    attempts,
     currentTouchOrder: nextOrder,
     ...(hasNext
       ? {}

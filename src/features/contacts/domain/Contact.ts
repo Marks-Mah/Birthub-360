@@ -1,26 +1,7 @@
 import type { ContactStatus } from '@prisma/client';
 import type { Repository } from '../../../shared/domain/Repository.js';
 
-export interface Contact {
-  id: string;
-  name: string;
-  role: string | null;
-  department: string | null;
-  phone: string | null;
-  whatsapp: string | null;
-  email: string | null;
-  linkedin: string | null;
-  birthDate: Date | null;
-  observations: string | null;
-  status: ContactStatus;
-  source: string | null;
-  companyId: string;
-  organizationId: string | null;
-  createdAt: Date;
-  updatedAt: Date;
-  company?: unknown;
-  leads?: unknown[];
-}
+export type { Contact } from '../../../shared/types/crm.js';
 
 export interface ContactRepository extends Repository<Contact> {
   findAllWithFilters(

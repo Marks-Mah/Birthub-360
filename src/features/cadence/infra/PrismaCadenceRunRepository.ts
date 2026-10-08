@@ -89,6 +89,7 @@ const TOUCH_RESULT_TO_DB: Record<CadenceTouchResult, 'Sent' | 'Failed' | 'Skippe
   sent: 'Sent',
   failed: 'Failed',
   skipped: 'Skipped',
+  pending: 'Skipped',
 };
 
 const TOUCH_RESULT_FROM_DB: Record<'Sent' | 'Failed' | 'Skipped', CadenceTouchResult> = {

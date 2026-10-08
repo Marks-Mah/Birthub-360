@@ -77,6 +77,7 @@ async function generateDecisionMakersForAccount(account: AccountForInsights): Pr
     select: { id: true, role: true, seniority: true, department: true },
   });
 
+  const decisionMakersToCreate = [];
   for (const contact of contacts) {
     if (alreadyClassified.has(contact.id)) continue;
     const classification = classifyBuyingRole({
@@ -86,19 +87,20 @@ async function generateDecisionMakersForAccount(account: AccountForInsights): Pr
     });
     if (!classification) continue;
 
-    await prisma.decisionMaker.create({
-      data: {
-        organizationId: account.organizationId,
-        companyId: account.id,
-        contactId: contact.id,
-        buyingRole: classification.buyingRole,
-        roleEvidenceType: 'INFERENCE',
-        source: 'system:account-intelligence-insights-worker.v1',
-        confidence: classification.confidence,
-        // Unverified (default do schema): inferência automática não vira "Active" sozinha — Active
-        // exige verifiedAt (constraint DecisionMaker_active_requires_verification), reservado para
-        // quando um humano revisar. Só então esse decisor passa a contar no Account Score.
-      },
+    decisionMakersToCreate.push({
+      organizationId: account.organizationId,
+      companyId: account.id,
+      contactId: contact.id,
+      buyingRole: classification.buyingRole,
+      roleEvidenceType: 'INFERENCE' as const,
+      source: 'system:account-intelligence-insights-worker.v1',
+      confidence: classification.confidence,
+    });
+  }
+
+  if (decisionMakersToCreate.length > 0) {
+    await prisma.decisionMaker.createMany({
+      data: decisionMakersToCreate,
     });
   }
 }

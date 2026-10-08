@@ -1,20 +1,7 @@
 import type { ActivityStatus, ActivityType } from '../../../lib/zod.js';
 import type { Repository } from '../../../shared/domain/Repository.js';
 
-export interface Activity {
-  id: string;
-  type: ActivityType;
-  owner: string;
-  date: Date;
-  time: string | null;
-  status: ActivityStatus;
-  observations: string | null;
-  leadId: string;
-  organizationId: string | null;
-  createdAt: Date;
-  updatedAt: Date;
-  lead?: unknown;
-}
+export type { Activity } from '../../../shared/types/crm.js';
 
 export interface ActivityListFilters {
   leadId?: string;

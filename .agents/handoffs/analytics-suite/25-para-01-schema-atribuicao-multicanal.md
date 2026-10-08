@@ -3,7 +3,7 @@
   pela coordenadora de PR/merge (birthub-360-dd, 2026-09-15). Este handoff fica registrado para
   quando alguém assumir esse papel, ou para decisão direta do usuário.
 - Onda: —
-- Status: bloqueado (sem dono de schema para revisar)
+- Status: resolvido
 - Prioridade: normal — não impede os demais itens do roadmap de analytics, só este.
 
 ## Problema
@@ -55,4 +55,4 @@ depender de schema novo — ver commits em `feature/analytics-suite`. Este é o 
 
 ## Resolução
 
-(em aberto)
+Resolvido: O modelo `LeadTouchpoint` foi adicionado ao `prisma/schema.prisma` com os campos `leadId`, `channel`, `campaign`, `source`, `occurredAt`, `position` (além das chaves comuns e de locação `organizationId`), e a relação `touchpoints` foi criada no modelo `Lead`, viabilizando a atribuição multi-touch conforme solicitado na Rota 1. Prisma gerado com sucesso.

@@ -6,44 +6,7 @@
 import type { CompanyStatus } from '../../../lib/zod.js';
 import type { Repository } from '../../../shared/domain/Repository.js';
 
-export interface Company {
-  id: string;
-  legalName: string;
-  tradeName: string;
-  cnpj: string | null;
-  stateRegistration: string | null;
-  segment: string | null;
-  cnae: string | null;
-  size: string | null;
-  employeeCount: number | null;
-  estimatedRevenue: number | null;
-  website: string | null;
-  linkedin: string | null;
-  instagram: string | null;
-  phones: string[];
-  emails: string[];
-  address: string | null;
-  city: string | null;
-  state: string | null;
-  zipCode: string | null;
-  status: CompanyStatus;
-  tags: string[];
-  observations: string | null;
-  createdAt: Date;
-  updatedAt: Date;
-  situacaoCadastral: string | null;
-  naturezaJuridica: string | null;
-  capitalSocial: number | null;
-  dataAbertura: Date | null;
-  qsa: unknown | null;
-  enrichmentStatus: string;
-  enrichmentSource: string | null;
-  enrichedAt: Date | null;
-  googleRating: number | null;
-  googleReviewsCount: number | null;
-  businessHours: unknown | null;
-  organizationId: string | null;
-}
+export type { Company } from '../../../shared/types/crm.js';
 
 export interface CompanyRepository extends Repository<Company> {
   findAllWithFilters(
