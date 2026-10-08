@@ -54,6 +54,14 @@ propósito por estar fora de "## Exceções ativas"):
 - **Registrado em:** 2026-09-30
 - **Reavaliar até:** 2026-11-30
 
+### `src/features/landing/pages/Landing360.tsx`
+
+- **Limite excepcional:** 1600 linhas
+- **Dono:** Marks-Mah
+- **Motivo:** Nova landing page 360 integrada ao portal comercial e vitrine visual; pendente de modularização de seções.
+- **Registrado em:** 2026-10-07
+- **Reavaliar até:** 2026-11-30
+
 ### `src/features/crm360/infra/PrismaCrm360Repository.ts`
 
 - **Limite excepcional:** 1200 linhas
@@ -104,7 +112,6 @@ propósito por estar fora de "## Exceções ativas"):
   refatoração mecânica ampla que não cabe junto de uma correção de CI.
 - **Registrado em:** 2026-09-23
 - **Reavaliar até:** 2026-11-30 (mesmo checkpoint dos demais itens desta lista)
-
 
 ### `src/features/prospecting/outbound/server/routes/leads.routes.ts`
 
