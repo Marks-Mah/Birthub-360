@@ -10,6 +10,18 @@ const PHONE_PATTERN = /(?:\+?\d{1,3}[-.\s]?)?\(?\d{2,3}\)?[-.\s]?\d{4,5}[-.\s]?\
 const EMAIL_PATTERN = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
 const CREDIT_CARD_PATTERN = /\d{4}[-.\s]?\d{4}[-.\s]?\d{4}[-.\s]?\d{4}/g;
 
+/**
+ * Domínios de email autorizados/isentos de bloqueio de PII
+ * - @birthhub360.com: domínio interno corporativo da plataforma
+ * - @example.com: domínio RFC 2606 reservado para testes, documentação e Golden Dataset
+ */
+const ALLOWED_EMAIL_DOMAINS = ['@birthhub360.com', '@example.com'] as const;
+
+function isAllowedEmail(email: string): boolean {
+  const lower = email.toLowerCase();
+  return ALLOWED_EMAIL_DOMAINS.some((domain) => lower.endsWith(domain));
+}
+
 export interface GuardrailResult {
   blocked: boolean;
   redacted?: string;
@@ -31,8 +43,8 @@ export function detectPII(text: string): GuardrailResult {
 
   const emailMatches = text.match(EMAIL_PATTERN);
   if (emailMatches) {
-    const validEmails = emailMatches.filter(e => !e.endsWith('@birthhub360.com') && !e.endsWith('@example.com'));
-    if (validEmails.length > 0) matches.push(...validEmails);
+    const externalEmails = emailMatches.filter((e) => !isAllowedEmail(e));
+    if (externalEmails.length > 0) matches.push(...externalEmails);
   }
 
   const creditCardMatches = text.match(CREDIT_CARD_PATTERN);
@@ -76,8 +88,13 @@ export function redactPII(text: string): { redacted: string; matches: string[] }
 
   const emailMatches = text.match(EMAIL_PATTERN);
   if (emailMatches) {
-    matches.push(...emailMatches);
-    redacted = redacted.replace(EMAIL_PATTERN, '[EMAIL_REDACTED]');
+    const externalEmails = emailMatches.filter((e) => !isAllowedEmail(e));
+    if (externalEmails.length > 0) {
+      matches.push(...externalEmails);
+      redacted = redacted.replace(EMAIL_PATTERN, (match) => {
+        return isAllowedEmail(match) ? match : '[EMAIL_REDACTED]';
+      });
+    }
   }
 
   const creditCardMatches = text.match(CREDIT_CARD_PATTERN);
