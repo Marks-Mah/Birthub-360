@@ -43,8 +43,8 @@ export function detectPII(text: string): GuardrailResult {
 
   const emailMatches = text.match(EMAIL_PATTERN);
   if (emailMatches) {
-    const validEmails = emailMatches.filter((e) => !isAllowedEmail(e));
-    if (validEmails.length > 0) matches.push(...validEmails);
+    const externalEmails = emailMatches.filter((e) => !isAllowedEmail(e));
+    if (externalEmails.length > 0) matches.push(...externalEmails);
   }
 
   const creditCardMatches = text.match(CREDIT_CARD_PATTERN);
@@ -91,8 +91,8 @@ export function redactPII(text: string): { redacted: string; matches: string[] }
     const externalEmails = emailMatches.filter((e) => !isAllowedEmail(e));
     if (externalEmails.length > 0) {
       matches.push(...externalEmails);
-      externalEmails.forEach((e) => {
-        redacted = redacted.replaceAll(e, '[EMAIL_REDACTED]');
+      redacted = redacted.replace(EMAIL_PATTERN, (match) => {
+        return isAllowedEmail(match) ? match : '[EMAIL_REDACTED]';
       });
     }
   }
