@@ -410,8 +410,8 @@ export function LineChart({
 }: LineChartProps) {
   const { theme } = useTheme();
   const axisStyle = {
-    axisLabel: { fontSize: 11, color: '#6B7280' },
-    axisLine: { lineStyle: { color: '#374151' } },
+    axisLabel: { fontSize: 11, color: '#94A3B8' },
+    axisLine: { lineStyle: { color: 'rgba(255, 255, 255, 0.1)' } },
   };
   const option: EChartsOption = {
     backgroundColor: theme === 'dark' ? DARK_BG : LIGHT_BG,
@@ -436,7 +436,7 @@ export function LineChart({
       containLabel: true,
     },
     xAxis: { type: 'category', data: data.categories, boundaryGap: false, ...axisStyle },
-    yAxis: { type: 'value', ...axisStyle, splitLine: { lineStyle: { color: '#1F2937' } } },
+    yAxis: { type: 'value', ...axisStyle, splitLine: { lineStyle: { color: 'rgba(255, 255, 255, 0.05)' } } },
     series: data.series.map((s, i) => ({
       name: s.name,
       type: 'line' as const,

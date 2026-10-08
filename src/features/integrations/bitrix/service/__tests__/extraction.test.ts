@@ -1,6 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AppError } from '../../../../../shared/middlewares/errorHandler.js';
-import { bitrixExtractionFailuresTotal, bitrixExtractionPartialTotal } from '../metrics.js';
+import {
+  bitrixExtractionFailuresTotal,
+  bitrixExtractionPartialTotal,
+  bitrixExtractionRetriesTotal,
+} from '../metrics.js';
+import { __setExtractionRetryDelayForTests } from '../extraction.js';
 
 vi.mock('@/lib/logger', () => ({
   logger: { info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() },
@@ -51,14 +56,20 @@ function baseRun(overrides: Partial<Record<string, unknown>> = {}) {
     fields: {},
     filters: { period: 'all' },
     status: 'running',
+    attempts: 1,
     ...overrides,
   };
 }
 
 beforeEach(() => {
   vi.clearAllMocks();
+  __setExtractionRetryDelayForTests(
+    () => 0,
+    () => Promise.resolve(),
+  );
   bitrixExtractionFailuresTotal.reset();
   bitrixExtractionPartialTotal.reset();
+  bitrixExtractionRetriesTotal.reset();
   clientMock.getConnectionWebhookUrl.mockResolvedValue(WEBHOOK_URL);
   prismaMock.bitrixExtractionRun.updateMany.mockResolvedValue({ count: 1 });
   prismaMock.bitrixExtractionRun.update.mockResolvedValue({});
