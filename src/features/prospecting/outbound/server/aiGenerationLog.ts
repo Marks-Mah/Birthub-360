@@ -53,7 +53,7 @@ export function recordAiGenerationLog(
   if (logBuffer.length > MAX_LOG_ENTRIES) {
     logBuffer.splice(0, logBuffer.length - MAX_LOG_ENTRIES);
   }
-  
+
   console.log('[ai-generation]', JSON.stringify(fullEntry));
   return fullEntry;
 }

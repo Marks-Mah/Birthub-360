@@ -1,4 +1,3 @@
-
 import { HumanMessage, SystemMessage } from '@langchain/core/messages';
 import { type Prisma, ReportSource } from '@prisma/client';
 import { type NextFunction, type Request, type Response, Router } from 'express';
@@ -960,10 +959,11 @@ router.post(
       // piiValues é opcional: quem chama a API e conhece um dado de PII no texto (ex.: nome do
       // contato de um lead) pode informá-lo aqui para que seja minimizado antes de ir ao
       // provedor de IA externo e restaurado na resposta — mesmo padrão de ai.service.ts/crmTools.ts.
-      const result = await aiToolkitFunctions[functionName](
-        ...(args as string[]),
-        normalizePiiValues(piiValues),
-      );
+      const result = await (
+        aiToolkitFunctions[functionName] as (
+          ...args: unknown[]
+        ) => Promise<unknown>
+      )(...(args as string[]), normalizePiiValues(piiValues));
       res.json({ success: true, result });
     } catch (error: any) {
       logger.error({ err: error }, 'Error executing AI Toolkit function');

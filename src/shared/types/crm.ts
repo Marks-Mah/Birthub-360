@@ -7,7 +7,6 @@ import type {
 } from '@prisma/client';
 
 export interface LeadQualification {
-  // 4.2.1 Contexto Operacional
   segmentoOperacao?: string;
   tipoCarga?: string;
   principaisRotas?: string;
@@ -17,7 +16,6 @@ export interface LeadQualification {
   frotaPropria?: string;
   frotaAgregados?: string;
   frotaTerceiros?: string;
-  // 4.2.2 Estrutura Atual
   ermTms?: string;
   rastreador?: string;
   seguradora?: string;
@@ -28,21 +26,18 @@ export interface LeadQualification {
   consultaCadastroAtual?: string;
   possuiSoftwareLogistico?: string;
   softwareLogisticoAtual?: string;
-  // 4.2.3 Dor Mapeada
   dorPrincipal?: string;
   detalhamentoDor?: string;
   impactoPercebido?: string;
   solucaoBirthub360?: 'Profile' | 'GR' | 'Connect' | 'Combinação' | '';
-  // 4.2.4 Interesse e Autoridade
   nivelAutoridade?: 'Decisor' | 'Influenciador' | 'Usuário' | '';
   interessePercebido?: 'Baixo' | 'Médio' | 'Alto' | '';
   horizonteDecisao?: 'Imediato' | '30 dias' | '60-90 dias' | 'Indefinido' | '';
-  // 4.2.5 Próximo Passo
   expectativaProximaCall?: string;
   temaProximaReuniao?: string;
 }
 
-export interface Company<TDate = Date> {
+export interface Company<TDate = Date, TContactStatus = PrismaContactStatus, TLeadStatus = PrismaLeadStatus, TLeadTemperature = PrismaLeadTemperature> {
   id: string;
   legalName: string;
   tradeName: string;
@@ -72,7 +67,6 @@ export interface Company<TDate = Date> {
   createdAt: TDate;
   updatedAt: TDate;
 
-  // Enriquecimento
   situacaoCadastral?: string | null;
   naturezaJuridica?: string | null;
   capitalSocial?: number | null;
@@ -91,11 +85,11 @@ export interface Company<TDate = Date> {
   logoUrl?: string | null;
   apolloOrgId?: string | null;
 
-  contacts?: Contact<TDate>[];
-  leads?: Lead<TDate>[];
+  contacts?: Contact<TDate, TContactStatus, TLeadStatus, TLeadTemperature>[];
+  leads?: Lead<TDate, TLeadStatus, TLeadTemperature, TContactStatus>[];
 }
 
-export interface Contact<TDate = Date, TStatus = PrismaContactStatus> {
+export interface Contact<TDate = Date, TStatus = PrismaContactStatus, TLeadStatus = PrismaLeadStatus, TLeadTemperature = PrismaLeadTemperature> {
   id: string;
   name: string;
   role?: string | null;
@@ -112,9 +106,9 @@ export interface Contact<TDate = Date, TStatus = PrismaContactStatus> {
   emailStatus?: string | null;
   customFields?: any;
   companyId: string;
-  company?: Company<TDate>;
+  company?: Company<TDate, TStatus, TLeadStatus, TLeadTemperature>;
   aiProcessingConsent?: boolean | null;
-  leads?: Lead<TDate>[];
+  leads?: Lead<TDate, TLeadStatus, TLeadTemperature, TStatus>[];
   organizationId?: string | null;
   createdAt: TDate;
   updatedAt: TDate;
@@ -124,6 +118,7 @@ export interface Lead<
   TDate = Date,
   TStatus = PrismaLeadStatus,
   TTemperature = PrismaLeadTemperature,
+  TContactStatus = PrismaContactStatus
 > {
   id: string;
   status: TStatus;
@@ -168,11 +163,11 @@ export interface Lead<
   bitrixSyncedAt?: TDate | null;
 
   companyId: string | null;
-  company?: Company<TDate>;
+  company?: Company<TDate, TContactStatus, TStatus, TTemperature>;
   contactId: string | null;
-  contact?: Contact<TDate>;
+  contact?: Contact<TDate, TContactStatus, TStatus, TTemperature>;
 
-  activities?: Activity<TDate>[];
+  activities?: Activity<TDate, TStatus, TTemperature, TContactStatus>[];
   timeline?: TimelineEvent<TDate>[];
   internalNotes?: Note<TDate>[];
 
@@ -180,7 +175,7 @@ export interface Lead<
   updatedAt: TDate;
 }
 
-export interface Activity<TDate = Date> {
+export interface Activity<TDate = Date, TLeadStatus = PrismaLeadStatus, TLeadTemperature = PrismaLeadTemperature, TContactStatus = PrismaContactStatus> {
   id: string;
   type: ActivityType;
   owner: string;
@@ -189,7 +184,7 @@ export interface Activity<TDate = Date> {
   status: ActivityStatus;
   observations?: string | null;
   leadId: string;
-  lead?: Lead<TDate>;
+  lead?: Lead<TDate, TLeadStatus, TLeadTemperature, TContactStatus>;
   organizationId?: string | null;
   createdAt: TDate;
   updatedAt: TDate;

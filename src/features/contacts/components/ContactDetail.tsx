@@ -228,7 +228,8 @@ export function ContactDetail({ contactId, onClose }: ContactDetailProps) {
                         {lead.title || 'Negócio sem título'}
                       </p>
                       <p className="text-[11px] text-ink-2">
-                        {LEAD_STATUS_EMOJI[lead.status as keyof typeof LEAD_STATUS_EMOJI] ?? ''} {lead.status}
+                        {LEAD_STATUS_EMOJI[lead.status as keyof typeof LEAD_STATUS_EMOJI] ?? ''}{' '}
+                        {lead.status}
                       </p>
                     </div>
                     {lead.amount != null && (

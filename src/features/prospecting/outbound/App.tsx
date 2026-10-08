@@ -72,7 +72,6 @@ export default function App() {
     return () => {
       cancelled = true;
     };
-    
   }, [handleLogout, user]);
 
   // Theme state with local persistence

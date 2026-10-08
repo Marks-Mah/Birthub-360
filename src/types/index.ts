@@ -1,5 +1,3 @@
-// Re-export domain enum types from the single source of truth (zod.ts)
-// This ensures frontend types stay in sync with backend validation schemas.
 export type {
   ACTIVITY_STATUS,
   ACTIVITY_TYPE,
@@ -14,7 +12,6 @@ export type {
   LeadStatus,
   LeadTemperature,
 } from '../lib/zod.js';
-// Arrays das etapas de cada funil (não tipos) — usados pelos dois Kanbans para montar as colunas.
 
 export interface PaginatedMeta {
   total: number;
@@ -43,27 +40,13 @@ import type { ContactStatus, LeadStatus, LeadTemperature } from '../lib/zod.js';
 
 export type { LeadQualification };
 
-export type Company = Omit<DomainCompany<string>, 'contacts' | 'leads'> & {
-  contacts?: Contact[];
-  leads?: Lead[];
-};
+export interface Company extends DomainCompany<string, ContactStatus, LeadStatus, LeadTemperature> {}
 
-export type Contact = Omit<DomainContact<string, ContactStatus>, 'company' | 'leads'> & {
-  company?: Company;
-  leads?: Lead[];
-};
+export interface Contact extends DomainContact<string, ContactStatus, LeadStatus, LeadTemperature> {}
 
-export type Lead = Omit<DomainLead<string, LeadStatus, LeadTemperature>, 'company' | 'contact' | 'activities' | 'timeline' | 'internalNotes'> & {
-  company?: Company;
-  contact?: Contact;
-  activities?: Activity[];
-  timeline?: TimelineEvent[];
-  internalNotes?: Note[];
-};
+export interface Lead extends DomainLead<string, LeadStatus, LeadTemperature, ContactStatus> {}
 
-export type Activity = Omit<DomainActivity<string>, 'lead'> & {
-  lead?: Lead;
-};
+export interface Activity extends DomainActivity<string, LeadStatus, LeadTemperature, ContactStatus> {}
 
 export type TimelineEvent = DomainTimelineEvent<string>;
 export type Note = DomainNote<string>;

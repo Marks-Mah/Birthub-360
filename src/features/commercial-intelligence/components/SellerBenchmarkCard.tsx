@@ -1,4 +1,3 @@
-
 import { AlertTriangle, Trophy } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Card } from '../../../components/ui/Card.js';
