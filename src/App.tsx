@@ -253,7 +253,9 @@ const OnboardingTour = lazy(() =>
 );
 const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy.js'));
 const TermsOfUse = lazy(() => import('./pages/TermsOfUse.js'));
-const Landing360 = lazy(() => import('./features/landing/pages/Landing360.js').then((m) => ({ default: m.Landing360 })));
+const Landing360 = lazy(() =>
+  import('./features/landing/pages/Landing360.js').then((m) => ({ default: m.Landing360 })),
+);
 const WelcomeScreen = lazy(() =>
   import('./features/auth/components/WelcomeScreen.js').then((m) => ({ default: m.WelcomeScreen })),
 );

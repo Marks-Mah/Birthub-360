@@ -66,7 +66,12 @@ export function TabNavCards({
               <item.icon className="h-[22px] w-[22px]" />
             </span>
             <span className="min-w-0">
-              <span className={cn('block text-[15.5px] font-bold tracking-tight transition-colors group-hover:text-white', active ? 'text-white' : 'text-slate-200')}>
+              <span
+                className={cn(
+                  'block text-[15.5px] font-bold tracking-tight transition-colors group-hover:text-white',
+                  active ? 'text-white' : 'text-slate-200',
+                )}
+              >
                 {item.title}
               </span>
               {item.subtitle && (

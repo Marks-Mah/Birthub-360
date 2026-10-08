@@ -39,10 +39,12 @@ import type {
   Attachment as DomainAttachment,
 } from '../shared/types/crm.js';
 
+import type { ContactStatus, LeadStatus, LeadTemperature } from '../lib/zod.js';
+
 export type { LeadQualification };
 export type Company = DomainCompany<string>;
-export type Contact = DomainContact<string>;
-export type Lead = DomainLead<string>;
+export type Contact = DomainContact<string, ContactStatus>;
+export type Lead = DomainLead<string, LeadStatus, LeadTemperature>;
 export type Activity = DomainActivity<string>;
 export type TimelineEvent = DomainTimelineEvent<string>;
 export type Note = DomainNote<string>;

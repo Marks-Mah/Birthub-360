@@ -7,7 +7,7 @@ export async function resolveCadencePendingVoiceTouch(
   organizationId: string,
   leadId: string,
   providerMessageId: string,
-  outcome: { result: 'sent' | 'failed'; error?: string | null }
+  outcome: { result: 'sent' | 'failed'; error?: string | null },
 ): Promise<void> {
   // Find any active or paused cadence run for this lead that has this providerMessageId as a pending attempt
   const runs = await prisma.cadenceRun.findMany({
@@ -16,17 +16,19 @@ export async function resolveCadencePendingVoiceTouch(
       leadId,
       status: { in: ['Active', 'Paused'] },
     },
-    select: { id: true, sequenceId: true, attempts: true }
+    select: { id: true, sequenceId: true, attempts: true },
   });
 
   for (const row of runs) {
     const attempts = row.attempts as any[];
-    const hasPending = attempts.some(a => a.result === 'pending' && a.providerMessageId === providerMessageId);
+    const hasPending = attempts.some(
+      (a) => a.result === 'pending' && a.providerMessageId === providerMessageId,
+    );
     if (!hasPending) continue;
 
     const sequenceRow = await prisma.cadenceSequence.findUnique({
       where: { id: row.sequenceId },
-      select: { id: true, name: true, touches: true }
+      select: { id: true, name: true, touches: true },
     });
     if (!sequenceRow) continue;
 
@@ -42,7 +44,7 @@ export async function resolveCadencePendingVoiceTouch(
         sequence,
         providerMessageId,
         new Date(),
-        outcome
+        outcome,
       );
     } catch (err) {
       logger.error({ err, runId: row.id }, 'Falha ao resolver toque pendente de voz via webhook');

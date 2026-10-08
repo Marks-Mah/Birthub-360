@@ -1,4 +1,5 @@
-import React, { useEffect, useState, useId } from 'react';
+import type React from 'react';
+import { useEffect, useState, useId } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, useReducedMotion } from 'framer-motion';
 import {
@@ -184,7 +185,11 @@ function BH360LogoMark({ size = 52 }: { size?: number }) {
   );
 }
 
-export function Landing360({ initialScreen = 'intro' }: { initialScreen?: 'intro' | 'login' } = {}) {
+export function Landing360({
+  initialScreen = 'intro',
+}: {
+  initialScreen?: 'intro' | 'login';
+} = {}) {
   const [activeScreen, setActiveScreen] = useState<'intro' | 'login'>(initialScreen);
   const { currentUser, isPending: isAuthPending } = useAuth();
   const { theme, setThemeMode } = useTheme();
@@ -239,7 +244,20 @@ export function Landing360({ initialScreen = 'intro' }: { initialScreen?: 'intro
   const secondDeg = seconds * 6;
 
   const daysArr = ['DOMINGO', 'SEGUNDA', 'TERÇA', 'QUARTA', 'QUINTA', 'SEXTA', 'SÁBADO'];
-  const monthsArr = ['JAN', 'FEV', 'MAR', 'ABR', 'MAI', 'JUN', 'JUL', 'AGO', 'SET', 'OUT', 'NOV', 'DEZ'];
+  const monthsArr = [
+    'JAN',
+    'FEV',
+    'MAR',
+    'ABR',
+    'MAI',
+    'JUN',
+    'JUL',
+    'AGO',
+    'SET',
+    'OUT',
+    'NOV',
+    'DEZ',
+  ];
   const dayName = daysArr[currentDate.getDay()];
   const dayNum = String(currentDate.getDate()).padStart(2, '0');
   const monthName = monthsArr[currentDate.getMonth()];
@@ -300,12 +318,16 @@ export function Landing360({ initialScreen = 'intro' }: { initialScreen?: 'intro
         });
 
         if (result.error) {
-          setErrorMessage(result.error.message || 'Erro ao solicitar provisionamento. Verifique os dados.');
+          setErrorMessage(
+            result.error.message || 'Erro ao solicitar provisionamento. Verifique os dados.',
+          );
           setIsSubmitting(false);
           return;
         }
 
-        setSuccessMessage('Solicitação de provisionamento enviada com sucesso! Verifique seu e-mail corporativo.');
+        setSuccessMessage(
+          'Solicitação de provisionamento enviada com sucesso! Verifique seu e-mail corporativo.',
+        );
         setIsSubmitting(false);
       } else if (authMode === 'forgot') {
         const result = await authClient.requestPasswordReset({
@@ -367,15 +389,33 @@ export function Landing360({ initialScreen = 'intro' }: { initialScreen?: 'intro
 
             {/* Links de navegação desktop */}
             <nav className="hidden xl:flex items-center gap-6 font-mono text-xs font-semibold text-[#475569]">
-              <a href="#problema" className="hover:text-[#0284C7] transition-colors">Problema</a>
-              <a href="#plataforma" className="hover:text-[#0284C7] transition-colors">Plataforma</a>
-              <a href="#pilares" className="hover:text-[#0284C7] transition-colors">8 Pilares</a>
-              <a href="#fluxo" className="hover:text-[#0284C7] transition-colors">Fluxo</a>
-              <a href="#ia" className="hover:text-[#0284C7] transition-colors">IA</a>
-              <a href="#automacao" className="hover:text-[#0284C7] transition-colors">Automação</a>
-              <a href="#performance" className="hover:text-[#0284C7] transition-colors">Performance</a>
-              <a href="#previsibilidade" className="hover:text-[#0284C7] transition-colors">Previsibilidade</a>
-              <a href="#ecossistema" className="hover:text-[#0284C7] transition-colors">Ecossistema</a>
+              <a href="#problema" className="hover:text-[#0284C7] transition-colors">
+                Problema
+              </a>
+              <a href="#plataforma" className="hover:text-[#0284C7] transition-colors">
+                Plataforma
+              </a>
+              <a href="#pilares" className="hover:text-[#0284C7] transition-colors">
+                8 Pilares
+              </a>
+              <a href="#fluxo" className="hover:text-[#0284C7] transition-colors">
+                Fluxo
+              </a>
+              <a href="#ia" className="hover:text-[#0284C7] transition-colors">
+                IA
+              </a>
+              <a href="#automacao" className="hover:text-[#0284C7] transition-colors">
+                Automação
+              </a>
+              <a href="#performance" className="hover:text-[#0284C7] transition-colors">
+                Performance
+              </a>
+              <a href="#previsibilidade" className="hover:text-[#0284C7] transition-colors">
+                Previsibilidade
+              </a>
+              <a href="#ecossistema" className="hover:text-[#0284C7] transition-colors">
+                Ecossistema
+              </a>
             </nav>
 
             {/* Botão Acessar Plataforma na Navbar */}
@@ -392,7 +432,10 @@ export function Landing360({ initialScreen = 'intro' }: { initialScreen?: 'intro
         </header>
 
         {/* 2. HERO */}
-        <section id="hero" className="relative px-5 py-12 sm:px-8 lg:px-14 overflow-hidden border-b border-slate-200">
+        <section
+          id="hero"
+          className="relative px-5 py-12 sm:px-8 lg:px-14 overflow-hidden border-b border-slate-200"
+        >
           {/* Fundo estrutural em grid e halos sutis */}
           <div
             className="pointer-events-none absolute inset-0 z-0 opacity-70"
@@ -417,7 +460,9 @@ export function Landing360({ initialScreen = 'intro' }: { initialScreen?: 'intro
                 <div className="flex items-center gap-2 font-mono text-xs">
                   <span className="font-bold uppercase tracking-[0.2em] text-[#16A34A]">LIVE</span>
                   <span className="w-px h-3.5 bg-slate-300" aria-hidden="true" />
-                  <span className="text-[#475569] font-medium tracking-wide">Sistema Operacional Online</span>
+                  <span className="text-[#475569] font-medium tracking-wide">
+                    Sistema Operacional Online
+                  </span>
                 </div>
               </div>
 
@@ -441,21 +486,65 @@ export function Landing360({ initialScreen = 'intro' }: { initialScreen?: 'intro
 
                 <div className="relative w-12 h-12 shrink-0">
                   <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-xs">
-                    <circle cx="50" cy="50" r="48" fill="none" stroke="#E2E8F0" strokeWidth="2" strokeDasharray="3 3" />
-                    <circle cx="50" cy="50" r="45" fill="#FFFFFF" stroke="#CBD5E1" strokeWidth="1.5" />
+                    <circle
+                      cx="50"
+                      cy="50"
+                      r="48"
+                      fill="none"
+                      stroke="#E2E8F0"
+                      strokeWidth="2"
+                      strokeDasharray="3 3"
+                    />
+                    <circle
+                      cx="50"
+                      cy="50"
+                      r="45"
+                      fill="#FFFFFF"
+                      stroke="#CBD5E1"
+                      strokeWidth="1.5"
+                    />
                     <g stroke="#94A3B8" strokeWidth="1.5" strokeLinecap="round">
                       <line x1="50" y1="7" x2="50" y2="13" stroke="#0284C7" strokeWidth="2.5" />
                       <line x1="50" y1="87" x2="50" y2="93" stroke="#0284C7" strokeWidth="2.5" />
                       <line x1="7" y1="50" x2="13" y2="50" stroke="#0284C7" strokeWidth="2.5" />
                       <line x1="87" y1="50" x2="93" y2="50" stroke="#0284C7" strokeWidth="2.5" />
                     </g>
-                    <line x1="50" y1="50" x2="50" y2="28" stroke="#0284C7" strokeWidth="3.5" strokeLinecap="round" transform={`rotate(${hourDeg} 50 50)`} />
-                    <line x1="50" y1="50" x2="50" y2="18" stroke="#7C3AED" strokeWidth="2.5" strokeLinecap="round" transform={`rotate(${minuteDeg} 50 50)`} />
-                    <line x1="50" y1="56" x2="50" y2="12" stroke="#EF4444" strokeWidth="1.5" strokeLinecap="round" transform={`rotate(${secondDeg} 50 50)`} />
+                    <line
+                      x1="50"
+                      y1="50"
+                      x2="50"
+                      y2="28"
+                      stroke="#0284C7"
+                      strokeWidth="3.5"
+                      strokeLinecap="round"
+                      transform={`rotate(${hourDeg} 50 50)`}
+                    />
+                    <line
+                      x1="50"
+                      y1="50"
+                      x2="50"
+                      y2="18"
+                      stroke="#7C3AED"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                      transform={`rotate(${minuteDeg} 50 50)`}
+                    />
+                    <line
+                      x1="50"
+                      y1="56"
+                      x2="50"
+                      y2="12"
+                      stroke="#EF4444"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      transform={`rotate(${secondDeg} 50 50)`}
+                    />
                     <circle cx="50" cy="50" r="3.5" fill="#0284C7" />
                   </svg>
                   <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 px-1.5 py-0.2 rounded bg-white border border-[#CBD5E1] shadow-2xs">
-                    <span className="font-mono text-[9px] font-bold text-[#0284C7] tabular-nums">{timeString}</span>
+                    <span className="font-mono text-[9px] font-bold text-[#0284C7] tabular-nums">
+                      {timeString}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -478,7 +567,8 @@ export function Landing360({ initialScreen = 'intro' }: { initialScreen?: 'intro
 
             {/* Subheadline Oficial Definido */}
             <p className="mt-6 text-base sm:text-lg md:text-xl font-normal text-[#334155] max-w-3xl leading-relaxed">
-              Conecte CRM, dados, inteligência artificial e automação em um único centro de comando para planejar, monitorar, prever e acelerar suas operações comerciais.
+              Conecte CRM, dados, inteligência artificial e automação em um único centro de comando
+              para planejar, monitorar, prever e acelerar suas operações comerciais.
             </p>
 
             {/* CTAs do Hero */}
@@ -512,7 +602,10 @@ export function Landing360({ initialScreen = 'intro' }: { initialScreen?: 'intro
                     className="capability-pill flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-medium border bg-white shadow-2xs"
                     style={{ borderColor: `${tag.color}40`, color: tag.color }}
                   >
-                    <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: tag.color }} />
+                    <span
+                      className="w-1.5 h-1.5 rounded-full"
+                      style={{ backgroundColor: tag.color }}
+                    />
                     <span className="text-[#334155]">{tag.label}</span>
                   </div>
                 ))}
@@ -522,18 +615,22 @@ export function Landing360({ initialScreen = 'intro' }: { initialScreen?: 'intro
         </section>
 
         {/* 3. PROBLEMA */}
-        <section id="problema" className="px-5 py-16 sm:px-8 lg:px-14 bg-[#FFFFFF] border-b border-slate-200">
+        <section
+          id="problema"
+          className="px-5 py-16 sm:px-8 lg:px-14 bg-[#FFFFFF] border-b border-slate-200"
+        >
           <div className="max-w-6xl mx-auto">
             <div className="text-center max-w-3xl mx-auto mb-12">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-mono font-bold uppercase tracking-widest bg-rose-50 border border-rose-200 text-rose-700 mb-3">
-                <ShieldAlert className="w-3.5 h-3.5" />
-                O Gargalo Estrutural das Empresas
+                <ShieldAlert className="w-3.5 h-3.5" />O Gargalo Estrutural das Empresas
               </div>
               <h2 className="font-display text-2xl sm:text-4xl font-extrabold text-[#0F172A] tracking-tight">
                 A realidade de operar com dados fragmentados e equipes no escuro
               </h2>
               <p className="mt-3 text-sm sm:text-base text-[#475569] leading-relaxed">
-                Empresas investem em múltiplas ferramentas, mas continuam sem clareza sobre onde o pipeline está travado, quais negócios realmente têm chance de fechar e o que cada vendedor deve fazer a seguir.
+                Empresas investem em múltiplas ferramentas, mas continuam sem clareza sobre onde o
+                pipeline está travado, quais negócios realmente têm chance de fechar e o que cada
+                vendedor deve fazer a seguir.
               </p>
             </div>
 
@@ -546,7 +643,9 @@ export function Landing360({ initialScreen = 'intro' }: { initialScreen?: 'intro
                   Silos e Ferramentas Desconectadas
                 </h3>
                 <p className="text-xs sm:text-sm text-[#64748B] leading-relaxed">
-                  O CRM não fala em tempo real com a telefonia, as trocas de WhatsApp ficam perdidas no celular do vendedor e os dados de prospecção não retroalimentam o time de fechamento.
+                  O CRM não fala em tempo real com a telefonia, as trocas de WhatsApp ficam perdidas
+                  no celular do vendedor e os dados de prospecção não retroalimentam o time de
+                  fechamento.
                 </p>
               </div>
 
@@ -558,7 +657,9 @@ export function Landing360({ initialScreen = 'intro' }: { initialScreen?: 'intro
                   Gestão Reativa &amp; Decisões Tardias
                 </h3>
                 <p className="text-xs sm:text-sm text-[#64748B] leading-relaxed">
-                  Gestores passam o dia cobrando preenchimento manual de planilhas e só descobrem que a meta não será atingida nos últimos dias do mês, quando já não há tempo hábil para corrigir o curso.
+                  Gestores passam o dia cobrando preenchimento manual de planilhas e só descobrem
+                  que a meta não será atingida nos últimos dias do mês, quando já não há tempo hábil
+                  para corrigir o curso.
                 </p>
               </div>
 
@@ -570,7 +671,9 @@ export function Landing360({ initialScreen = 'intro' }: { initialScreen?: 'intro
                   Perda Invisível de Oportunidades
                 </h3>
                 <p className="text-xs sm:text-sm text-[#64748B] leading-relaxed">
-                  Sem orquestração e alertas preditivos, leads esfriam na fila sem follow-up tempestivo, objeções críticas não são tratadas e a taxa de conversão despenca sem causa raiz evidente.
+                  Sem orquestração e alertas preditivos, leads esfriam na fila sem follow-up
+                  tempestivo, objeções críticas não são tratadas e a taxa de conversão despenca sem
+                  causa raiz evidente.
                 </p>
               </div>
             </div>
@@ -578,7 +681,10 @@ export function Landing360({ initialScreen = 'intro' }: { initialScreen?: 'intro
         </section>
 
         {/* 4. PLATAFORMA */}
-        <section id="plataforma" className="px-5 py-16 sm:px-8 lg:px-14 bg-[#F8FAFC] border-b border-slate-200">
+        <section
+          id="plataforma"
+          className="px-5 py-16 sm:px-8 lg:px-14 bg-[#F8FAFC] border-b border-slate-200"
+        >
           <div className="max-w-6xl mx-auto">
             <div className="text-center max-w-3xl mx-auto mb-12">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-mono font-bold uppercase tracking-widest bg-sky-50 border border-sky-200 text-[#0284C7] mb-3">
@@ -589,7 +695,8 @@ export function Landing360({ initialScreen = 'intro' }: { initialScreen?: 'intro
                 Um único sistema operacional para planejar, monitorar e acelerar
               </h2>
               <p className="mt-3 text-sm sm:text-base text-[#475569] leading-relaxed">
-                O Birth Hub 360° unifica a governança de dados, os algoritmos de diagnóstico e o centro de comando diário da sua equipe comercial.
+                O Birth Hub 360° unifica a governança de dados, os algoritmos de diagnóstico e o
+                centro de comando diário da sua equipe comercial.
               </p>
             </div>
 
@@ -599,11 +706,16 @@ export function Landing360({ initialScreen = 'intro' }: { initialScreen?: 'intro
                   <div className="w-10 h-10 rounded-xl bg-sky-100 text-[#0284C7] flex items-center justify-center">
                     <Server className="w-5 h-5" />
                   </div>
-                  <span className="font-mono text-xs font-bold uppercase text-[#0284C7]">Camada 1</span>
+                  <span className="font-mono text-xs font-bold uppercase text-[#0284C7]">
+                    Camada 1
+                  </span>
                 </div>
-                <h3 className="font-display text-base font-bold text-[#0F172A] mb-2">Dados &amp; Integração Contínua</h3>
+                <h3 className="font-display text-base font-bold text-[#0F172A] mb-2">
+                  Dados &amp; Integração Contínua
+                </h3>
                 <p className="text-xs sm:text-sm text-[#64748B] leading-relaxed">
-                  Conexão com Bitrix24, e-mails corporativos, canais de mensageria e dados enriquecidos de empresas B2B consolidados em uma única fonte de verdade.
+                  Conexão com Bitrix24, e-mails corporativos, canais de mensageria e dados
+                  enriquecidos de empresas B2B consolidados em uma única fonte de verdade.
                 </p>
               </div>
 
@@ -612,11 +724,16 @@ export function Landing360({ initialScreen = 'intro' }: { initialScreen?: 'intro
                   <div className="w-10 h-10 rounded-xl bg-purple-100 text-[#7C3AED] flex items-center justify-center">
                     <Cpu className="w-5 h-5" />
                   </div>
-                  <span className="font-mono text-xs font-bold uppercase text-[#7C3AED]">Camada 2</span>
+                  <span className="font-mono text-xs font-bold uppercase text-[#7C3AED]">
+                    Camada 2
+                  </span>
                 </div>
-                <h3 className="font-display text-base font-bold text-[#0F172A] mb-2">Motor de Diagnóstico &amp; IA</h3>
+                <h3 className="font-display text-base font-bold text-[#0F172A] mb-2">
+                  Motor de Diagnóstico &amp; IA
+                </h3>
                 <p className="text-xs sm:text-sm text-[#64748B] leading-relaxed">
-                  Algoritmos contextuais que avaliam a saúde de cada deal, detectam riscos em tempo real e sugerem a próxima melhor ação para fechar com maior margem.
+                  Algoritmos contextuais que avaliam a saúde de cada deal, detectam riscos em tempo
+                  real e sugerem a próxima melhor ação para fechar com maior margem.
                 </p>
               </div>
 
@@ -625,11 +742,16 @@ export function Landing360({ initialScreen = 'intro' }: { initialScreen?: 'intro
                   <div className="w-10 h-10 rounded-xl bg-emerald-100 text-[#16A34A] flex items-center justify-center">
                     <Zap className="w-5 h-5" />
                   </div>
-                  <span className="font-mono text-xs font-bold uppercase text-[#16A34A]">Camada 3</span>
+                  <span className="font-mono text-xs font-bold uppercase text-[#16A34A]">
+                    Camada 3
+                  </span>
                 </div>
-                <h3 className="font-display text-base font-bold text-[#0F172A] mb-2">Execução &amp; Orquestração</h3>
+                <h3 className="font-display text-base font-bold text-[#0F172A] mb-2">
+                  Execução &amp; Orquestração
+                </h3>
                 <p className="text-xs sm:text-sm text-[#64748B] leading-relaxed">
-                  Cockpit de trabalho ágil para pré-vendas (SDR), vendas (Closer) e liderança, com automações de tarefas repetitivas e cadências sem atrito.
+                  Cockpit de trabalho ágil para pré-vendas (SDR), vendas (Closer) e liderança, com
+                  automações de tarefas repetitivas e cadências sem atrito.
                 </p>
               </div>
             </div>
@@ -637,7 +759,10 @@ export function Landing360({ initialScreen = 'intro' }: { initialScreen?: 'intro
         </section>
 
         {/* 5. 8 PILARES OFICIAIS (CARDS COLORIDOS COMPLETOS) */}
-        <section id="pilares" className="px-5 py-16 sm:px-8 lg:px-14 bg-[#FFFFFF] border-b border-slate-200">
+        <section
+          id="pilares"
+          className="px-5 py-16 sm:px-8 lg:px-14 bg-[#FFFFFF] border-b border-slate-200"
+        >
           <div className="max-w-6xl mx-auto">
             <div className="text-center max-w-3xl mx-auto mb-12">
               <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-mono font-bold uppercase tracking-widest bg-sky-50 border border-sky-200 text-[#0284C7] mb-3">
@@ -648,7 +773,8 @@ export function Landing360({ initialScreen = 'intro' }: { initialScreen?: 'intro
                 Os 8 Pilares Oficiais do Birth Hub 360°
               </h2>
               <p className="mt-3 text-sm sm:text-base text-[#475569] leading-relaxed">
-                Cada pilar resolve uma dimensão estratégica da operação comercial, operando de forma independente ou em perfeita sinergia sistêmica.
+                Cada pilar resolve uma dimensão estratégica da operação comercial, operando de forma
+                independente ou em perfeita sinergia sistêmica.
               </p>
             </div>
 
@@ -721,9 +847,7 @@ export function Landing360({ initialScreen = 'intro' }: { initialScreen?: 'intro
                       <h3 className="font-display text-sm sm:text-base font-bold text-[#0F172A] leading-tight mb-1 group-hover:text-black">
                         {p.name}
                       </h3>
-                      <p className="font-sans text-xs text-[#64748B] leading-snug mb-3">
-                        {p.desc}
-                      </p>
+                      <p className="font-sans text-xs text-[#64748B] leading-snug mb-3">{p.desc}</p>
                       <div className="inline-block px-2 py-0.5 rounded text-[10px] font-mono font-semibold bg-slate-100 text-[#475569]">
                         Foco: {p.focus}
                       </div>
@@ -732,12 +856,21 @@ export function Landing360({ initialScreen = 'intro' }: { initialScreen?: 'intro
                     {/* Rodapé do Card */}
                     <div className="mt-4 pt-2.5 border-t border-slate-100 flex items-center justify-between">
                       <div className="flex items-center gap-1.5">
-                        <span className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: p.color }} />
-                        <span className="font-mono text-[10px] font-bold uppercase tracking-wider" style={{ color: p.color }}>
+                        <span
+                          className="w-2 h-2 rounded-full animate-pulse"
+                          style={{ backgroundColor: p.color }}
+                        />
+                        <span
+                          className="font-mono text-[10px] font-bold uppercase tracking-wider"
+                          style={{ color: p.color }}
+                        >
                           {p.tag}
                         </span>
                       </div>
-                      <span className="font-mono text-[10px] opacity-0 group-hover:opacity-100 transition-opacity font-bold" style={{ color: p.color }}>
+                      <span
+                        className="font-mono text-[10px] opacity-0 group-hover:opacity-100 transition-opacity font-bold"
+                        style={{ color: p.color }}
+                      >
                         CONECTADO →
                       </span>
                     </div>
@@ -749,7 +882,10 @@ export function Landing360({ initialScreen = 'intro' }: { initialScreen?: 'intro
         </section>
 
         {/* 6. FLUXO OPERACIONAL */}
-        <section id="fluxo" className="px-5 py-16 sm:px-8 lg:px-14 bg-[#F8FAFC] border-b border-slate-200">
+        <section
+          id="fluxo"
+          className="px-5 py-16 sm:px-8 lg:px-14 bg-[#F8FAFC] border-b border-slate-200"
+        >
           <div className="max-w-6xl mx-auto">
             <div className="text-center max-w-3xl mx-auto mb-12">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-mono font-bold uppercase tracking-widest bg-sky-50 border border-sky-200 text-[#0284C7] mb-3">
@@ -760,46 +896,68 @@ export function Landing360({ initialScreen = 'intro' }: { initialScreen?: 'intro
                 Como os dados fluem da prospecção ao fechamento
               </h2>
               <p className="mt-3 text-sm sm:text-base text-[#475569]">
-                Cada etapa é governada por automações e inteligência para garantir velocidade e zero perda de oportunidades.
+                Cada etapa é governada por automações e inteligência para garantir velocidade e zero
+                perda de oportunidades.
               </p>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
               <div className="flow-step-card p-5">
                 <div className="font-mono text-xs font-bold text-[#0284C7] mb-2">ETAPA 01</div>
-                <h4 className="font-display text-sm font-bold text-[#0F172A] mb-1">Entrada &amp; Captura</h4>
-                <p className="text-xs text-[#64748B]">Leads e contas são integrados via Bitrix24, campanhas ou prospecção ativa.</p>
+                <h4 className="font-display text-sm font-bold text-[#0F172A] mb-1">
+                  Entrada &amp; Captura
+                </h4>
+                <p className="text-xs text-[#64748B]">
+                  Leads e contas são integrados via Bitrix24, campanhas ou prospecção ativa.
+                </p>
               </div>
 
               <div className="flow-step-card p-5">
                 <div className="font-mono text-xs font-bold text-[#2563EB] mb-2">ETAPA 02</div>
-                <h4 className="font-display text-sm font-bold text-[#0F172A] mb-1">Enriquecimento B2B</h4>
-                <p className="text-xs text-[#64748B]">Dados de receita, decisores e porte validam o fit do cliente ideal (ICP).</p>
+                <h4 className="font-display text-sm font-bold text-[#0F172A] mb-1">
+                  Enriquecimento B2B
+                </h4>
+                <p className="text-xs text-[#64748B]">
+                  Dados de receita, decisores e porte validam o fit do cliente ideal (ICP).
+                </p>
               </div>
 
               <div className="flow-step-card p-5">
                 <div className="font-mono text-xs font-bold text-[#0EA5E9] mb-2">ETAPA 03</div>
-                <h4 className="font-display text-sm font-bold text-[#0F172A] mb-1">Cadência &amp; SLA</h4>
-                <p className="text-xs text-[#64748B]">Distribuição instantânea ao SDR com réguas de contato automáticas.</p>
+                <h4 className="font-display text-sm font-bold text-[#0F172A] mb-1">
+                  Cadência &amp; SLA
+                </h4>
+                <p className="text-xs text-[#64748B]">
+                  Distribuição instantânea ao SDR com réguas de contato automáticas.
+                </p>
               </div>
 
               <div className="flow-step-card p-5">
                 <div className="font-mono text-xs font-bold text-[#7C3AED] mb-2">ETAPA 04</div>
                 <h4 className="font-display text-sm font-bold text-[#0F172A] mb-1">Apoio com IA</h4>
-                <p className="text-xs text-[#64748B]">Copiloto analisa objeções, histórico e recomenda a abordagem ideal.</p>
+                <p className="text-xs text-[#64748B]">
+                  Copiloto analisa objeções, histórico e recomenda a abordagem ideal.
+                </p>
               </div>
 
               <div className="flow-step-card p-5">
                 <div className="font-mono text-xs font-bold text-[#16A34A] mb-2">ETAPA 05</div>
-                <h4 className="font-display text-sm font-bold text-[#0F172A] mb-1">Fechamento &amp; Dados</h4>
-                <p className="text-xs text-[#64748B]">Contrato fechado e aprendizados de win/loss retroalimentam o sistema.</p>
+                <h4 className="font-display text-sm font-bold text-[#0F172A] mb-1">
+                  Fechamento &amp; Dados
+                </h4>
+                <p className="text-xs text-[#64748B]">
+                  Contrato fechado e aprendizados de win/loss retroalimentam o sistema.
+                </p>
               </div>
             </div>
           </div>
         </section>
 
         {/* 7. IA (INTELIGÊNCIA ARTIFICIAL CONTEXTUAL) */}
-        <section id="ia" className="px-5 py-16 sm:px-8 lg:px-14 bg-[#FFFFFF] border-b border-slate-200">
+        <section
+          id="ia"
+          className="px-5 py-16 sm:px-8 lg:px-14 bg-[#FFFFFF] border-b border-slate-200"
+        >
           <div className="max-w-6xl mx-auto flex flex-col lg:flex-row items-center gap-10">
             <div className="lg:w-1/2">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-mono font-bold uppercase tracking-widest bg-purple-50 border border-purple-200 text-[#7C3AED] mb-3">
@@ -810,26 +968,37 @@ export function Landing360({ initialScreen = 'intro' }: { initialScreen?: 'intro
                 Inteligência Artificial que compreende o seu pipeline
               </h2>
               <p className="text-sm sm:text-base text-[#475569] leading-relaxed mb-6">
-                Ao contrário de ferramentas genéricas de texto, a IA do Birth Hub 360° é diretamente conectada aos dados operacionais do seu CRM, entendendo o estágio de cada negociação, o histórico de contatos e as objeções recorrentes.
+                Ao contrário de ferramentas genéricas de texto, a IA do Birth Hub 360° é diretamente
+                conectada aos dados operacionais do seu CRM, entendendo o estágio de cada
+                negociação, o histórico de contatos e as objeções recorrentes.
               </p>
               <div className="space-y-3 font-sans text-xs sm:text-sm text-[#334155]">
                 <div className="flex items-start gap-3">
                   <div className="w-5 h-5 rounded-full bg-purple-100 text-[#7C3AED] flex items-center justify-center shrink-0 mt-0.5">
                     <Check className="w-3.5 h-3.5" />
                   </div>
-                  <span><strong>Diagnóstico de Entraves:</strong> Alerta deals estagnados com sugestões claras de destravamento.</span>
+                  <span>
+                    <strong>Diagnóstico de Entraves:</strong> Alerta deals estagnados com sugestões
+                    claras de destravamento.
+                  </span>
                 </div>
                 <div className="flex items-start gap-3">
                   <div className="w-5 h-5 rounded-full bg-purple-100 text-[#7C3AED] flex items-center justify-center shrink-0 mt-0.5">
                     <Check className="w-3.5 h-3.5" />
                   </div>
-                  <span><strong>Próxima Melhor Ação:</strong> Recomendações acionáveis para o vendedor avançar o contato.</span>
+                  <span>
+                    <strong>Próxima Melhor Ação:</strong> Recomendações acionáveis para o vendedor
+                    avançar o contato.
+                  </span>
                 </div>
                 <div className="flex items-start gap-3">
                   <div className="w-5 h-5 rounded-full bg-purple-100 text-[#7C3AED] flex items-center justify-center shrink-0 mt-0.5">
                     <Check className="w-3.5 h-3.5" />
                   </div>
-                  <span><strong>Isolamento &amp; Segurança:</strong> Seus dados comerciais jamais são utilizados para treinar modelos públicos.</span>
+                  <span>
+                    <strong>Isolamento &amp; Segurança:</strong> Seus dados comerciais jamais são
+                    utilizados para treinar modelos públicos.
+                  </span>
                 </div>
               </div>
             </div>
@@ -839,16 +1008,20 @@ export function Landing360({ initialScreen = 'intro' }: { initialScreen?: 'intro
                 <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
                   <div className="flex items-center gap-2">
                     <span className="w-3 h-3 rounded-full bg-[#7C3AED]" />
-                    <span className="font-mono text-xs font-bold text-[#7C3AED]">COPILOTO COMERCIAL ATIVO</span>
+                    <span className="font-mono text-xs font-bold text-[#7C3AED]">
+                      COPILOTO COMERCIAL ATIVO
+                    </span>
                   </div>
                   <span className="font-mono text-[10px] text-slate-400">Contexto: Deal #4892</span>
                 </div>
                 <div className="space-y-3 font-mono text-xs">
                   <div className="p-3 rounded-xl bg-purple-50/70 border border-purple-100 text-[#475569]">
-                    <span className="text-[#7C3AED] font-bold">Diagnóstico:</span> Negociação de R$ 140k sem retorno há 4 dias após envio de proposta.
+                    <span className="text-[#7C3AED] font-bold">Diagnóstico:</span> Negociação de R$
+                    140k sem retorno há 4 dias após envio de proposta.
                   </div>
                   <div className="p-3 rounded-xl bg-white border border-slate-200 text-[#334155]">
-                    <span className="text-[#0284C7] font-bold">Ação Sugerida:</span> Disparar cadência de validação de decisor financeiro abordando ROI estimado em 90 dias.
+                    <span className="text-[#0284C7] font-bold">Ação Sugerida:</span> Disparar
+                    cadência de validação de decisor financeiro abordando ROI estimado em 90 dias.
                   </div>
                 </div>
               </div>
@@ -857,7 +1030,10 @@ export function Landing360({ initialScreen = 'intro' }: { initialScreen?: 'intro
         </section>
 
         {/* 8. AUTOMAÇÃO (& CONECTIVIDADE) */}
-        <section id="automacao" className="px-5 py-16 sm:px-8 lg:px-14 bg-[#F8FAFC] border-b border-slate-200">
+        <section
+          id="automacao"
+          className="px-5 py-16 sm:px-8 lg:px-14 bg-[#F8FAFC] border-b border-slate-200"
+        >
           <div className="max-w-6xl mx-auto">
             <div className="text-center max-w-3xl mx-auto mb-12">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-mono font-bold uppercase tracking-widest bg-orange-50 border border-orange-200 text-[#EA580C] mb-3">
@@ -868,27 +1044,37 @@ export function Landing360({ initialScreen = 'intro' }: { initialScreen?: 'intro
                 Eficiência sem desumanizar o contato comercial
               </h2>
               <p className="mt-3 text-sm sm:text-base text-[#475569]">
-                Remova tarefas braçais repetitivas e deixe seu time focado no que gera receita: construir relacionamentos e fechar negócios.
+                Remova tarefas braçais repetitivas e deixe seu time focado no que gera receita:
+                construir relacionamentos e fechar negócios.
               </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="section-card p-6 bg-white">
-                <h3 className="font-display text-base font-bold text-[#0F172A] mb-2">Sincronização Bitrix24</h3>
+                <h3 className="font-display text-base font-bold text-[#0F172A] mb-2">
+                  Sincronização Bitrix24
+                </h3>
                 <p className="text-xs sm:text-sm text-[#64748B] leading-relaxed">
-                  Atualizações automáticas de campos, estágios de oportunidade e tarefas sem necessidade de digitação dupla.
+                  Atualizações automáticas de campos, estágios de oportunidade e tarefas sem
+                  necessidade de digitação dupla.
                 </p>
               </div>
               <div className="section-card p-6 bg-white">
-                <h3 className="font-display text-base font-bold text-[#0F172A] mb-2">Gatilhos de Comportamento</h3>
+                <h3 className="font-display text-base font-bold text-[#0F172A] mb-2">
+                  Gatilhos de Comportamento
+                </h3>
                 <p className="text-xs sm:text-sm text-[#64748B] leading-relaxed">
-                  Aberturas de proposta, acessos a links ou ausência de contato disparam alertas imediatos para a equipe responsável.
+                  Aberturas de proposta, acessos a links ou ausência de contato disparam alertas
+                  imediatos para a equipe responsável.
                 </p>
               </div>
               <div className="section-card p-6 bg-white">
-                <h3 className="font-display text-base font-bold text-[#0F172A] mb-2">Distribuição Inteligente</h3>
+                <h3 className="font-display text-base font-bold text-[#0F172A] mb-2">
+                  Distribuição Inteligente
+                </h3>
                 <p className="text-xs sm:text-sm text-[#64748B] leading-relaxed">
-                  Roteamento de oportunidades com base em carga de trabalho, especialidade do vendedor e tamanho da conta.
+                  Roteamento de oportunidades com base em carga de trabalho, especialidade do
+                  vendedor e tamanho da conta.
                 </p>
               </div>
             </div>
@@ -896,7 +1082,10 @@ export function Landing360({ initialScreen = 'intro' }: { initialScreen?: 'intro
         </section>
 
         {/* 9. PERFORMANCE COMERCIAL */}
-        <section id="performance" className="px-5 py-16 sm:px-8 lg:px-14 bg-[#FFFFFF] border-b border-slate-200">
+        <section
+          id="performance"
+          className="px-5 py-16 sm:px-8 lg:px-14 bg-[#FFFFFF] border-b border-slate-200"
+        >
           <div className="max-w-6xl mx-auto">
             <div className="text-center max-w-3xl mx-auto mb-12">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-mono font-bold uppercase tracking-widest bg-emerald-50 border border-emerald-200 text-[#16A34A] mb-3">
@@ -907,40 +1096,62 @@ export function Landing360({ initialScreen = 'intro' }: { initialScreen?: 'intro
                 Visibilidade cirúrgica da tração e das metas
               </h2>
               <p className="mt-3 text-sm sm:text-base text-[#475569]">
-                Monitore taxas de passagem por fase, tempo de permanência em cada estágio e produtividade real da equipe.
+                Monitore taxas de passagem por fase, tempo de permanência em cada estágio e
+                produtividade real da equipe.
               </p>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <div className="section-card p-5 border-t-4 border-t-[#16A34A]">
                 <div className="font-mono text-xs text-[#64748B] uppercase">Taxa de Conversão</div>
-                <div className="font-display text-2xl font-extrabold text-[#0F172A] my-1">Funil 360°</div>
-                <p className="text-xs text-[#64748B]">Acompanhamento da taxa de conversão entre cada etapa do pipeline.</p>
+                <div className="font-display text-2xl font-extrabold text-[#0F172A] my-1">
+                  Funil 360°
+                </div>
+                <p className="text-xs text-[#64748B]">
+                  Acompanhamento da taxa de conversão entre cada etapa do pipeline.
+                </p>
               </div>
 
               <div className="section-card p-5 border-t-4 border-t-[#0284C7]">
-                <div className="font-mono text-xs text-[#64748B] uppercase">Velocidade de Vendas</div>
-                <div className="font-display text-2xl font-extrabold text-[#0F172A] my-1">Ciclo Médio</div>
-                <p className="text-xs text-[#64748B]">Identificação do tempo exato que um lead leva da qualificação ao fechamento.</p>
+                <div className="font-mono text-xs text-[#64748B] uppercase">
+                  Velocidade de Vendas
+                </div>
+                <div className="font-display text-2xl font-extrabold text-[#0F172A] my-1">
+                  Ciclo Médio
+                </div>
+                <p className="text-xs text-[#64748B]">
+                  Identificação do tempo exato que um lead leva da qualificação ao fechamento.
+                </p>
               </div>
 
               <div className="section-card p-5 border-t-4 border-t-[#2563EB]">
                 <div className="font-mono text-xs text-[#64748B] uppercase">Gestão de Metas</div>
-                <div className="font-display text-2xl font-extrabold text-[#0F172A] my-1">Ritmo &amp; Pace</div>
-                <p className="text-xs text-[#64748B]">Comparativo diário de faturamento atingido versus meta mensal estabelecida.</p>
+                <div className="font-display text-2xl font-extrabold text-[#0F172A] my-1">
+                  Ritmo &amp; Pace
+                </div>
+                <p className="text-xs text-[#64748B]">
+                  Comparativo diário de faturamento atingido versus meta mensal estabelecida.
+                </p>
               </div>
 
               <div className="section-card p-5 border-t-4 border-t-[#E11D48]">
                 <div className="font-mono text-xs text-[#64748B] uppercase">Motivos de Perda</div>
-                <div className="font-display text-2xl font-extrabold text-[#0F172A] my-1">Win / Loss</div>
-                <p className="text-xs text-[#64748B]">Análise estruturada de causas de perda para correção contínua do produto.</p>
+                <div className="font-display text-2xl font-extrabold text-[#0F172A] my-1">
+                  Win / Loss
+                </div>
+                <p className="text-xs text-[#64748B]">
+                  Análise estruturada de causas de perda para correção contínua do produto.
+                </p>
               </div>
             </div>
           </div>
         </section>
 
         {/* 10. PREVISIBILIDADE COMERCIAL */}
-        <section id="previsibilidade" className="px-5 py-16 sm:px-8 lg:px-14 bg-[#F8FAFC] border-b border-slate-200">
+        <section
+          id="previsibilidade"
+          className="px-5 py-16 sm:px-8 lg:px-14 bg-[#F8FAFC] border-b border-slate-200"
+        >
           <div className="max-w-6xl mx-auto">
             <div className="text-center max-w-3xl mx-auto mb-12">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-mono font-bold uppercase tracking-widest bg-amber-50 border border-amber-200 text-[#D97706] mb-3">
@@ -951,7 +1162,8 @@ export function Landing360({ initialScreen = 'intro' }: { initialScreen?: 'intro
                 Previsibilidade comercial baseada em dados reais
               </h2>
               <p className="mt-3 text-sm sm:text-base text-[#475569] leading-relaxed">
-                Sem promessas mágicas: modelagem estatística séria que pondera a maturidade do pipeline e as taxas históricas de conversão.
+                Sem promessas mágicas: modelagem estatística séria que pondera a maturidade do
+                pipeline e as taxas históricas de conversão.
               </p>
             </div>
 
@@ -960,9 +1172,12 @@ export function Landing360({ initialScreen = 'intro' }: { initialScreen?: 'intro
                 <div className="w-8 h-8 rounded-lg bg-amber-100 text-[#D97706] flex items-center justify-center font-bold mb-3">
                   1
                 </div>
-                <h3 className="font-display text-base font-bold text-[#0F172A] mb-2">Pipeline Ponderado</h3>
+                <h3 className="font-display text-base font-bold text-[#0F172A] mb-2">
+                  Pipeline Ponderado
+                </h3>
                 <p className="text-xs sm:text-sm text-[#64748B] leading-relaxed">
-                  Cálculo de probabilidade de fechamento por estágio formal de negociação, evitando expectativas infladas de receita.
+                  Cálculo de probabilidade de fechamento por estágio formal de negociação, evitando
+                  expectativas infladas de receita.
                 </p>
               </div>
 
@@ -970,9 +1185,12 @@ export function Landing360({ initialScreen = 'intro' }: { initialScreen?: 'intro
                 <div className="w-8 h-8 rounded-lg bg-amber-100 text-[#D97706] flex items-center justify-center font-bold mb-3">
                   2
                 </div>
-                <h3 className="font-display text-base font-bold text-[#0F172A] mb-2">Maturidade de Dados</h3>
+                <h3 className="font-display text-base font-bold text-[#0F172A] mb-2">
+                  Maturidade de Dados
+                </h3>
                 <p className="text-xs sm:text-sm text-[#64748B] leading-relaxed">
-                  O sistema reconhece que a precisão preditiva depende da consistência de preenchimento e do histórico da organização.
+                  O sistema reconhece que a precisão preditiva depende da consistência de
+                  preenchimento e do histórico da organização.
                 </p>
               </div>
 
@@ -980,9 +1198,12 @@ export function Landing360({ initialScreen = 'intro' }: { initialScreen?: 'intro
                 <div className="w-8 h-8 rounded-lg bg-amber-100 text-[#D97706] flex items-center justify-center font-bold mb-3">
                   3
                 </div>
-                <h3 className="font-display text-base font-bold text-[#0F172A] mb-2">Cenários Conservador &amp; Otimista</h3>
+                <h3 className="font-display text-base font-bold text-[#0F172A] mb-2">
+                  Cenários Conservador &amp; Otimista
+                </h3>
                 <p className="text-xs sm:text-sm text-[#64748B] leading-relaxed">
-                  Simulação de faixas de faturamento para que a liderança tome decisões de contratação e investimento com segurança.
+                  Simulação de faixas de faturamento para que a liderança tome decisões de
+                  contratação e investimento com segurança.
                 </p>
               </div>
             </div>
@@ -990,7 +1211,10 @@ export function Landing360({ initialScreen = 'intro' }: { initialScreen?: 'intro
         </section>
 
         {/* 11. ECOSSISTEMA */}
-        <section id="ecossistema" className="px-5 py-16 sm:px-8 lg:px-14 bg-[#FFFFFF] border-b border-slate-200">
+        <section
+          id="ecossistema"
+          className="px-5 py-16 sm:px-8 lg:px-14 bg-[#FFFFFF] border-b border-slate-200"
+        >
           <div className="max-w-6xl mx-auto">
             <div className="text-center max-w-3xl mx-auto mb-12">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-mono font-bold uppercase tracking-widest bg-sky-50 border border-sky-200 text-[#0284C7] mb-3">
@@ -1001,7 +1225,8 @@ export function Landing360({ initialScreen = 'intro' }: { initialScreen?: 'intro
                 Integrado ao ecossistema tecnológico da sua empresa
               </h2>
               <p className="mt-3 text-sm sm:text-base text-[#475569]">
-                Construído para operar em harmonia com as ferramentas corporativas que você já utiliza.
+                Construído para operar em harmonia com as ferramentas corporativas que você já
+                utiliza.
               </p>
             </div>
 
@@ -1022,7 +1247,9 @@ export function Landing360({ initialScreen = 'intro' }: { initialScreen?: 'intro
               </div>
 
               <div className="p-5 rounded-2xl bg-[#F8FAFC] border border-slate-200 text-center">
-                <div className="font-mono text-sm font-bold text-[#D97706]">Webhooks &amp; APIs</div>
+                <div className="font-mono text-sm font-bold text-[#D97706]">
+                  Webhooks &amp; APIs
+                </div>
                 <div className="font-sans text-xs text-[#64748B] mt-1">Conexão Flexível</div>
               </div>
             </div>
@@ -1030,7 +1257,10 @@ export function Landing360({ initialScreen = 'intro' }: { initialScreen?: 'intro
         </section>
 
         {/* 12. COMMAND CENTER */}
-        <section id="command-center" className="px-5 py-16 sm:px-8 lg:px-14 bg-[#F8FAFC] border-b border-slate-200">
+        <section
+          id="command-center"
+          className="px-5 py-16 sm:px-8 lg:px-14 bg-[#F8FAFC] border-b border-slate-200"
+        >
           <div className="max-w-6xl mx-auto flex flex-col lg:flex-row items-center gap-10">
             <div className="lg:w-1/2">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-mono font-bold uppercase tracking-widest bg-sky-50 border border-sky-200 text-[#0284C7] mb-3">
@@ -1041,14 +1271,18 @@ export function Landing360({ initialScreen = 'intro' }: { initialScreen?: 'intro
                 O centro de comando unificado para liderança e time
               </h2>
               <p className="text-sm sm:text-base text-[#475569] leading-relaxed mb-6">
-                Tenha um ambiente único onde diretores acompanham a saúde da receita, gerentes supervisionam gargalos em tempo real e executivos de vendas recebem sua rotina de atividades organizada por prioridade.
+                Tenha um ambiente único onde diretores acompanham a saúde da receita, gerentes
+                supervisionam gargalos em tempo real e executivos de vendas recebem sua rotina de
+                atividades organizada por prioridade.
               </p>
               <div className="grid grid-cols-2 gap-3 font-mono text-xs">
                 <div className="p-3 rounded-xl bg-white border border-slate-200">
-                  <span className="font-bold text-[#0284C7]">SDRs &amp; BDRs:</span> Fila organizada e dados enriquecidos na tela.
+                  <span className="font-bold text-[#0284C7]">SDRs &amp; BDRs:</span> Fila organizada
+                  e dados enriquecidos na tela.
                 </div>
                 <div className="p-3 rounded-xl bg-white border border-slate-200">
-                  <span className="font-bold text-[#16A34A]">Closers:</span> Histórico 360°, objeções e apoio do copiloto.
+                  <span className="font-bold text-[#16A34A]">Closers:</span> Histórico 360°,
+                  objeções e apoio do copiloto.
                 </div>
               </div>
             </div>
@@ -1056,8 +1290,12 @@ export function Landing360({ initialScreen = 'intro' }: { initialScreen?: 'intro
             <div className="lg:w-1/2 w-full">
               <div className="section-card p-6 bg-white border-2 border-slate-200">
                 <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
-                  <span className="font-mono text-xs font-bold text-[#0F172A]">BIRTH HUB 360° · COCKPIT</span>
-                  <span className="font-mono text-[10px] px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 font-bold">100% OPERACIONAL</span>
+                  <span className="font-mono text-xs font-bold text-[#0F172A]">
+                    BIRTH HUB 360° · COCKPIT
+                  </span>
+                  <span className="font-mono text-[10px] px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 font-bold">
+                    100% OPERACIONAL
+                  </span>
                 </div>
                 <div className="space-y-3 font-mono text-xs">
                   <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200">
@@ -1079,13 +1317,17 @@ export function Landing360({ initialScreen = 'intro' }: { initialScreen?: 'intro
         </section>
 
         {/* 13. CTA (CALL TO ACTION) */}
-        <section id="cta" className="px-5 py-20 sm:px-8 lg:px-14 bg-gradient-to-br from-sky-50 via-white to-purple-50/40 text-center border-b border-slate-200">
+        <section
+          id="cta"
+          className="px-5 py-20 sm:px-8 lg:px-14 bg-gradient-to-br from-sky-50 via-white to-purple-50/40 text-center border-b border-slate-200"
+        >
           <div className="max-w-4xl mx-auto">
             <h2 className="font-display text-3xl sm:text-5xl font-extrabold text-[#0F172A] tracking-tight leading-tight">
               Pronto para transformar sua operação comercial em um centro de comando inteligente?
             </h2>
             <p className="mt-4 text-base sm:text-lg text-[#475569] max-w-2xl mx-auto">
-              Acesse a plataforma corporativa do Birth Hub 360° e conecte dados, equipe e execução em tempo real.
+              Acesse a plataforma corporativa do Birth Hub 360° e conecte dados, equipe e execução
+              em tempo real.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
               <button
@@ -1107,18 +1349,34 @@ export function Landing360({ initialScreen = 'intro' }: { initialScreen?: 'intro
               <BH360LogoMark size={42} />
               <div>
                 <div className="font-display text-lg font-bold text-[#0F172A]">Birth Hub 360°</div>
-                <div className="font-mono text-[10px] uppercase tracking-widest text-[#64748B]">Business Command Center</div>
+                <div className="font-mono text-[10px] uppercase tracking-widest text-[#64748B]">
+                  Business Command Center
+                </div>
               </div>
             </div>
 
             <div className="flex flex-wrap items-center justify-center gap-6 font-mono text-xs text-[#64748B]">
-              <a href="#problema" className="hover:text-[#0284C7]">Problema</a>
-              <a href="#plataforma" className="hover:text-[#0284C7]">Plataforma</a>
-              <a href="#pilares" className="hover:text-[#0284C7]">8 Pilares</a>
-              <a href="#fluxo" className="hover:text-[#0284C7]">Fluxo</a>
-              <a href="#ia" className="hover:text-[#0284C7]">IA</a>
-              <a href="#performance" className="hover:text-[#0284C7]">Performance</a>
-              <a href="#previsibilidade" className="hover:text-[#0284C7]">Previsibilidade</a>
+              <a href="#problema" className="hover:text-[#0284C7]">
+                Problema
+              </a>
+              <a href="#plataforma" className="hover:text-[#0284C7]">
+                Plataforma
+              </a>
+              <a href="#pilares" className="hover:text-[#0284C7]">
+                8 Pilares
+              </a>
+              <a href="#fluxo" className="hover:text-[#0284C7]">
+                Fluxo
+              </a>
+              <a href="#ia" className="hover:text-[#0284C7]">
+                IA
+              </a>
+              <a href="#performance" className="hover:text-[#0284C7]">
+                Performance
+              </a>
+              <a href="#previsibilidade" className="hover:text-[#0284C7]">
+                Previsibilidade
+              </a>
             </div>
           </div>
 
@@ -1140,7 +1398,9 @@ export function Landing360({ initialScreen = 'intro' }: { initialScreen?: 'intro
       ════════════════════════════════════════════════════════════════════ */}
       <div
         className={`fixed inset-0 w-full h-full flex flex-col items-center justify-start z-50 bg-[#F8FAFC] px-5 py-8 sm:px-10 lg:px-16 overflow-y-auto transition-all duration-500 ${
-          activeScreen === 'login' ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+          activeScreen === 'login'
+            ? 'opacity-100 pointer-events-auto'
+            : 'opacity-0 pointer-events-none'
         }`}
       >
         {/* Botão Voltar para a Landing */}
@@ -1182,22 +1442,25 @@ export function Landing360({ initialScreen = 'intro' }: { initialScreen?: 'intro
               {authMode === 'signup'
                 ? 'Criar conta corporativa'
                 : authMode === 'forgot'
-                ? 'Redefinir Senha'
-                : 'Acessar conta'}
+                  ? 'Redefinir Senha'
+                  : 'Acessar conta'}
             </h2>
             <p className="font-sans text-xs sm:text-sm text-[#64748B] font-medium max-w-[380px] mx-auto leading-relaxed">
               {authMode === 'signup'
                 ? 'Preencha suas informações corporativas para solicitar acesso.'
                 : authMode === 'forgot'
-                ? 'Informe seu e-mail corporativo para receber o link de recuperação.'
-                : 'Central de inteligência comercial, previsibilidade e governança integrada.'}
+                  ? 'Informe seu e-mail corporativo para receber o link de recuperação.'
+                  : 'Central de inteligência comercial, previsibilidade e governança integrada.'}
             </p>
           </div>
 
           <div className="card-glow-light rounded-2xl p-6 sm:p-8 relative">
             {/* Abas E-mail vs SSO */}
             {authMode === 'signin' && (
-              <div className="tab-segmented-container-light grid grid-cols-2 gap-1.5 mb-6" role="tablist">
+              <div
+                className="tab-segmented-container-light grid grid-cols-2 gap-1.5 mb-6"
+                role="tablist"
+              >
                 <button
                   type="button"
                   onClick={() => setAuthMethod('email')}
@@ -1240,7 +1503,10 @@ export function Landing360({ initialScreen = 'intro' }: { initialScreen?: 'intro
             <form onSubmit={handleAuthSubmit} className="space-y-4" noValidate>
               {authMode === 'signup' && (
                 <div className="space-y-1.5">
-                  <label htmlFor="login-name" className="block font-mono text-xs font-bold text-[#475569] uppercase tracking-wider">
+                  <label
+                    htmlFor="login-name"
+                    className="block font-mono text-xs font-bold text-[#475569] uppercase tracking-wider"
+                  >
                     Nome Completo
                   </label>
                   <input
@@ -1257,7 +1523,10 @@ export function Landing360({ initialScreen = 'intro' }: { initialScreen?: 'intro
 
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between">
-                  <label htmlFor="login-email" className="block font-mono text-xs font-bold text-[#475569] uppercase tracking-wider">
+                  <label
+                    htmlFor="login-email"
+                    className="block font-mono text-xs font-bold text-[#475569] uppercase tracking-wider"
+                  >
                     {authMethod === 'sso' ? 'E-mail ou Domínio SSO' : 'E-mail Corporativo'}
                   </label>
                   <span className="font-mono text-[10px] text-[#94A3B8]">Domínio empresarial</span>
@@ -1270,7 +1539,9 @@ export function Landing360({ initialScreen = 'intro' }: { initialScreen?: 'intro
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="app-input-pro pl-12 pr-4"
-                    placeholder={authMethod === 'sso' ? 'usuario@empresa.com.br' : 'diretor@suaempresa.com.br'}
+                    placeholder={
+                      authMethod === 'sso' ? 'usuario@empresa.com.br' : 'diretor@suaempresa.com.br'
+                    }
                     required
                     autoComplete="email"
                   />
@@ -1280,7 +1551,10 @@ export function Landing360({ initialScreen = 'intro' }: { initialScreen?: 'intro
               {authMode !== 'forgot' && (
                 <div className="space-y-1.5">
                   <div className="flex items-center justify-between">
-                    <label htmlFor="login-password" className="block font-mono text-xs font-bold text-[#475569] uppercase tracking-wider">
+                    <label
+                      htmlFor="login-password"
+                      className="block font-mono text-xs font-bold text-[#475569] uppercase tracking-wider"
+                    >
                       Senha de Acesso
                     </label>
                   </div>
@@ -1346,8 +1620,8 @@ export function Landing360({ initialScreen = 'intro' }: { initialScreen?: 'intro
                       {authMode === 'signup'
                         ? 'Solicitar Provisionamento'
                         : authMode === 'forgot'
-                        ? 'Enviar Link de Redefinição'
-                        : 'Entrar no Birth Hub'}
+                          ? 'Enviar Link de Redefinição'
+                          : 'Entrar no Birth Hub'}
                     </span>
                     <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1 text-white" />
                   </>
@@ -1398,7 +1672,9 @@ export function Landing360({ initialScreen = 'intro' }: { initialScreen?: 'intro
                   className="font-sans text-xs text-[#64748B] hover:text-[#0F172A] transition-colors cursor-pointer"
                 >
                   Voltar para{' '}
-                  <span className="font-bold text-[#0284C7] hover:underline">Login Corporativo</span>
+                  <span className="font-bold text-[#0284C7] hover:underline">
+                    Login Corporativo
+                  </span>
                 </button>
               )}
             </div>
@@ -1420,10 +1696,22 @@ export function Landing360({ initialScreen = 'intro' }: { initialScreen?: 'intro
                     className="btn-social-light flex items-center justify-center gap-2 py-2.5 px-2 rounded-xl text-xs font-mono font-bold cursor-pointer"
                   >
                     <svg viewBox="0 0 24 24" className="w-4 h-4 shrink-0">
-                      <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-                      <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-                      <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
-                      <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+                      <path
+                        fill="#4285F4"
+                        d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                      />
+                      <path
+                        fill="#34A853"
+                        d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                      />
+                      <path
+                        fill="#FBBC05"
+                        d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                      />
+                      <path
+                        fill="#EA4335"
+                        d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                      />
                     </svg>
                     <span>Google</span>
                   </button>
@@ -1463,28 +1751,36 @@ export function Landing360({ initialScreen = 'intro' }: { initialScreen?: 'intro
             <div className="trust-badge-light flex items-center gap-2 p-2.5 rounded-xl">
               <span className="w-2 h-2 rounded-full bg-[#16A34A] shrink-0" />
               <div className="min-w-0">
-                <div className="font-mono text-[10px] font-bold text-[#0F172A] truncate">AES-256</div>
+                <div className="font-mono text-[10px] font-bold text-[#0F172A] truncate">
+                  AES-256
+                </div>
                 <div className="font-sans text-[9px] text-[#64748B] truncate">Criptografado</div>
               </div>
             </div>
             <div className="trust-badge-light flex items-center gap-2 p-2.5 rounded-xl">
               <span className="w-2 h-2 rounded-full bg-[#2563EB] shrink-0" />
               <div className="min-w-0">
-                <div className="font-mono text-[10px] font-bold text-[#0F172A] truncate">SSO &amp; MFA</div>
+                <div className="font-mono text-[10px] font-bold text-[#0F172A] truncate">
+                  SSO &amp; MFA
+                </div>
                 <div className="font-sans text-[9px] text-[#64748B] truncate">Autenticação</div>
               </div>
             </div>
             <div className="trust-badge-light flex items-center gap-2 p-2.5 rounded-xl">
               <span className="w-2 h-2 rounded-full bg-[#7C3AED] shrink-0" />
               <div className="min-w-0">
-                <div className="font-mono text-[10px] font-bold text-[#0F172A] truncate">LGPD/GDPR</div>
+                <div className="font-mono text-[10px] font-bold text-[#0F172A] truncate">
+                  LGPD/GDPR
+                </div>
                 <div className="font-sans text-[9px] text-[#64748B] truncate">Conformidade</div>
               </div>
             </div>
             <div className="trust-badge-light flex items-center gap-2 p-2.5 rounded-xl">
               <span className="w-2 h-2 rounded-full bg-[#16A34A] shrink-0" />
               <div className="min-w-0">
-                <div className="font-mono text-[10px] font-bold text-[#0F172A] truncate">99.99%</div>
+                <div className="font-mono text-[10px] font-bold text-[#0F172A] truncate">
+                  99.99%
+                </div>
                 <div className="font-sans text-[9px] text-[#64748B] truncate">Uptime SLA</div>
               </div>
             </div>

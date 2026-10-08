@@ -1,6 +1,6 @@
 /**
  * Monday.com Integration Service
- * 
+ *
  * Stub para gerenciar:
  * 1. Autenticação (OAuth 2.0 flow ou API Key).
  * 2. Mapeamento de funil (Boards, Groups, Status columns).
@@ -50,5 +50,5 @@ export const MondayService = {
   async handleWebhookWriteback(payload: any): Promise<void> {
     logger.info({ payload }, '[monday] Recebido webhook do Monday.com');
     // TODO: Implementar lógica de atualização baseado nos eventos recebidos do monday
-  }
+  },
 };

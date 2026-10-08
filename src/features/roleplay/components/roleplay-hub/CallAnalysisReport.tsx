@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/media-has-caption -- transcrição completa é exibida junto ao áudio */
 import { motion } from 'framer-motion';
 import { AlertTriangle, CheckCircle2, Phone, RotateCcw, ShieldCheck } from 'lucide-react';
 import { Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
@@ -96,13 +95,9 @@ export function CallAnalysisReport({
           <h3 className="font-black text-xl text-ink tracking-tight mb-4">
             Gravação e Feedback do Gestor
           </h3>
-          {/* Sem <track kind="captions">: a transcrição completa e cronometrada (quem falou +
-              texto exato) já é exibida logo abaixo, sempre — este bloco só renderiza quando
-              `timestamps` também existe (linha 86). É uma alternativa textual completa e
-              sincronizada à gravação, não uma trilha de legenda WebVTT, mas cobre o mesmo
-              propósito de acessibilidade (conteúdo falado disponível como texto). */}
-          {/* biome-ignore lint/a11y/useMediaCaption: transcrição textual completa cobre o mesmo propósito, ver comentário acima */}
-          <audio controls className="w-full h-12" src={audioBlobUrl} />
+          <audio controls className="w-full h-12" src={audioBlobUrl}>
+            <track kind="captions" srcLang="pt-BR" label="Transcrição disponível abaixo" />
+          </audio>
 
           <div className="mt-6 space-y-4 max-h-64 overflow-y-auto pr-2">
             <h4 className="text-sm font-bold text-ink-2 uppercase tracking-wider mb-2">

@@ -1,7 +1,10 @@
 import { api } from '../../lib/api.js';
 import { LEAD_STATUS } from '../../lib/zod.js';
 
-import type { AutomationTriggerLabel as AutomationTrigger, AutomationActionLabel as AutomationAction } from '../../lib/enumMap.js';
+import type {
+  AutomationTriggerLabel as AutomationTrigger,
+  AutomationActionLabel as AutomationAction,
+} from '../../lib/enumMap.js';
 
 export type { AutomationTrigger, AutomationAction };
 

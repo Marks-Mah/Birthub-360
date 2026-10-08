@@ -668,8 +668,8 @@ export function CrmBoard({ funnel: funnelProp, embedded = false }: CrmBoardProps
         <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
           {/* Views Salvas (Onda B2b) */}
           <Button
-              magnetic
-              onClick={() => setIsSavedViewsOpen(true)}
+            magnetic
+            onClick={() => setIsSavedViewsOpen(true)}
             variant="secondary"
             className="text-xs"
             title="Ver e salvar views do pipeline (funil + filtros)"

@@ -1,9 +1,10 @@
+import type { CompanyStatus, ActivityStatus, ActivityType } from '../../lib/zod.js';
 import type {
-  CompanyStatus,
-  ActivityStatus,
-  ActivityType,
-} from '../../lib/zod.js';
-import type { LeadFunnel, ContactStatus as PrismaContactStatus, LeadStatus as PrismaLeadStatus, LeadTemperature as PrismaLeadTemperature } from '@prisma/client';
+  LeadFunnel,
+  ContactStatus as PrismaContactStatus,
+  LeadStatus as PrismaLeadStatus,
+  LeadTemperature as PrismaLeadTemperature,
+} from '@prisma/client';
 
 export interface LeadQualification {
   // 4.2.1 Contexto Operacional
@@ -119,7 +120,11 @@ export interface Contact<TDate = Date, TStatus = PrismaContactStatus> {
   updatedAt: TDate;
 }
 
-export interface Lead<TDate = Date, TStatus = PrismaLeadStatus, TTemperature = PrismaLeadTemperature> {
+export interface Lead<
+  TDate = Date,
+  TStatus = PrismaLeadStatus,
+  TTemperature = PrismaLeadTemperature,
+> {
   id: string;
   status: TStatus;
   funnel?: LeadFunnel | 'Lead' | 'Negocio';

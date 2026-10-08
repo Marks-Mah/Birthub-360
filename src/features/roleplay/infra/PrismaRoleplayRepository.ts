@@ -199,7 +199,7 @@ export class PrismaRoleplayRepository implements RoleplayRepository {
       organizationId: row.organizationId,
       userId: row.userId,
       personaId: row.personaId,
-      status: row.overallScore > 0 || Boolean(row.summary) ? 'COMPLETED' : 'ACTIVE',
+      status: row.overallScore > 0 || row.summary ? 'COMPLETED' : 'ACTIVE',
       messages: (Array.isArray(row.transcript)
         ? row.transcript
         : []) as unknown as RoleplayMessage[],

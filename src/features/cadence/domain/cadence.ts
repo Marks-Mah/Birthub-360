@@ -215,7 +215,7 @@ export function decideCadenceAction(
   if (!touch) return { type: 'stop', reason: 'completed' };
 
   const pendingAttempt = attemptsForTouch(run, run.currentTouchOrder).find(
-    (a) => a.result === 'pending'
+    (a) => a.result === 'pending',
   );
   if (pendingAttempt) {
     return { type: 'wait', reason: 'locked' };
@@ -428,7 +428,9 @@ export function resolvePendingTouchAttempt(
   attempts[attemptIndex] = updatedAttempt;
 
   const maxAttempts = touch.maxAttempts ?? 1;
-  const attemptsSoFar = attempts.filter((a) => a.touchOrder === touch.order && a.result !== 'skipped').length;
+  const attemptsSoFar = attempts.filter(
+    (a) => a.touchOrder === touch.order && a.result !== 'skipped',
+  ).length;
   const exhausted = outcome.result === 'failed' && attemptsSoFar >= maxAttempts;
   const shouldAdvance = outcome.result === 'sent' || exhausted;
 

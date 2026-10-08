@@ -87,6 +87,7 @@ export function GoalEditorDialog({
           Valor da meta (R$)
         </label>
         <input
+          ref={inputRef}
           id="goal-amount"
           type="text"
           inputMode="decimal"
@@ -94,10 +95,6 @@ export function GoalEditorDialog({
           onChange={(e) => setAmount(e.target.value)}
           placeholder="Ex.: 1000000"
           className="w-full rounded-xl border border-line bg-surface-2 px-3 py-2 text-sm text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
-          /* Dialog (componente compartilhado) aberto por ação do usuário; foca o único campo do
-             formulário, padrão de diálogo do WAI-ARIA Authoring Practices. */
-          // eslint-disable-next-line jsx-a11y/no-autofocus
-          autoFocus
         />
         <p className="text-xs text-ink-2">
           Meta mensal de nova receita recorrente para {period}. Só ADMIN/GESTOR pode alterar.

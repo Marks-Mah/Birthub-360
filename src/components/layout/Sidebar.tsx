@@ -383,7 +383,7 @@ export function Sidebar({
           {navSections.map((section) => (
             <div key={section.title} className="space-y-1.5">
               {/* Seção invisível para manter hierarquia sem poluir o visual clean */}
-              
+
               <div className="space-y-1.5">
                 {section.groups.map((group) => {
                   const Icon = group.icon;
@@ -423,15 +423,15 @@ export function Sidebar({
                           <span
                             data-nav-icon
                             className={`flex h-5 w-5 shrink-0 items-center justify-center transition-colors ${
-                              isActive ? 'text-[#13151A]' : 'text-slate-400 group-hover:text-slate-200'
+                              isActive
+                                ? 'text-[#13151A]'
+                                : 'text-slate-400 group-hover:text-slate-200'
                             }`}
                           >
                             <Icon size={18} />
                           </span>
 
-                          {!isCollapsed && (
-                            <span className="truncate">{group.label}</span>
-                          )}
+                          {!isCollapsed && <span className="truncate">{group.label}</span>}
                         </div>
 
                         {!isCollapsed && hasSubItems && (
@@ -471,9 +471,7 @@ export function Sidebar({
                       {/* Popover em Modo Rail (Recolhido) */}
                       {isCollapsed && hoveredGroupId === group.id && (
                         <div className="fixed left-20 z-50 min-w-[200px] rounded-xl border border-white/10 bg-[#13151A]/95 p-3 shadow-2xl backdrop-blur-md ml-2">
-                          <p className="mb-2 text-xs font-bold text-white">
-                            {group.label}
-                          </p>
+                          <p className="mb-2 text-xs font-bold text-white">{group.label}</p>
                           {hasSubItems ? (
                             <div className="space-y-1">
                               {group.subItems?.map((sub) => (
@@ -542,10 +540,7 @@ export function Sidebar({
                 className="group flex items-center gap-2 text-xs font-semibold text-amber-400 hover:text-amber-300 transition-colors cursor-pointer"
               >
                 <span>Ver análises</span>
-                <ArrowRight
-                  size={14}
-                  className="transition-transform group-hover:translate-x-1"
-                />
+                <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
               </button>
             </div>
           ) : (

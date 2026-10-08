@@ -101,12 +101,7 @@ export async function createVoiceSessionHandler(req: Request, res: Response) {
     ...(configOverrides || {}),
   };
 
-  const session = sessionManager.createSession(
-    agentId,
-    callerId,
-    runtimeConfig,
-    organizationId,
-  );
+  const session = sessionManager.createSession(agentId, callerId, runtimeConfig, organizationId);
 
   await sessionManager.startSession(session.sessionId);
 

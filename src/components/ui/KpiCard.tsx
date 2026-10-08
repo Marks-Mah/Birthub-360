@@ -145,7 +145,7 @@ export function KpiCard({
           }}
         />
       )}
-      
+
       <div className="relative z-10 flex flex-col justify-between h-full space-y-4">
         {/* Top: Icon */}
         <div className="flex items-start justify-between">
@@ -154,7 +154,10 @@ export function KpiCard({
               'flex h-[38px] w-[38px] items-center justify-center rounded-xl border border-dashed transition-all duration-300 group-hover:scale-110 group-hover:rotate-3',
               t.chip,
             )}
-            style={{ borderStyle: 'solid' /* Override dashed with solid to match image, or keep border thin */ }}
+            style={{
+              borderStyle:
+                'solid' /* Override dashed with solid to match image, or keep border thin */,
+            }}
           >
             <Icon className="h-5 w-5" />
           </span>
@@ -176,9 +179,7 @@ export function KpiCard({
           <h3 className="font-sans text-[26px] font-bold text-white tracking-tight leading-none mb-1.5">
             {value}
           </h3>
-          <p className="text-[13px] font-medium text-slate-400">
-            {displayLabel}
-          </p>
+          <p className="text-[13px] font-medium text-slate-400">{displayLabel}</p>
         </div>
 
         {/* Bottom: Trend / Subtitle */}
@@ -186,7 +187,9 @@ export function KpiCard({
           <div className="flex items-center gap-1.5 mt-2">
             {trend && (
               <span className={cn('text-[11px] font-semibold', t.trend)}>
-                {trend.isPositive !== false ? '+' : '-'}{trend.value}{trend.text ? ` ${trend.text}` : ''}
+                {trend.isPositive !== false ? '+' : '-'}
+                {trend.value}
+                {trend.text ? ` ${trend.text}` : ''}
               </span>
             )}
             {displaySubtitle && (

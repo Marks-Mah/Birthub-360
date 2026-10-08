@@ -1,4 +1,5 @@
-import React, { useEffect, useState, useId } from 'react';
+import type React from 'react';
+import { useEffect, useState, useId } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, useReducedMotion } from 'framer-motion';
 import {

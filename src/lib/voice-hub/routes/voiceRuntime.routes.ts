@@ -19,7 +19,11 @@ router.delete('/voice-runtime', requireTenant, resetVoiceRuntimeHandler);
 
 // Live WebRTC/Whisper session control, intent analysis & post-call automation
 router.post('/voice-runtime/sessions', requireTenant, createVoiceSessionHandler);
-router.post('/voice-runtime/sessions/:sessionId/interact', requireTenant, interactVoiceSessionHandler);
+router.post(
+  '/voice-runtime/sessions/:sessionId/interact',
+  requireTenant,
+  interactVoiceSessionHandler,
+);
 router.post('/voice-runtime/sessions/:sessionId/end', requireTenant, endVoiceSessionHandler);
 
 export default router;

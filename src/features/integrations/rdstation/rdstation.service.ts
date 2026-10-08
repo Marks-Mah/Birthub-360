@@ -1,6 +1,6 @@
 /**
  * RD Station Integration Service
- * 
+ *
  * Stub para gerenciar:
  * 1. OAuth 2.0 flow (geração de URL de consentimento, troca de código por token, refresh).
  * 2. Mapeamento de funil (deal stages, funnels).
@@ -42,5 +42,5 @@ export const RdStationService = {
   async handleWebhookWriteback(payload: any): Promise<void> {
     logger.info({ payload }, '[rdstation] Recebido webhook do RD Station');
     // TODO: Implementar lógica de atualização de leads/negócios baseado no payload
-  }
+  },
 };

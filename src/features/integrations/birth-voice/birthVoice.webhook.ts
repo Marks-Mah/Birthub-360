@@ -205,15 +205,10 @@ async function recordCallResult(
     }
 
     const providerMessageId = data.callSid || 'sem-id';
-    await resolveCadencePendingVoiceTouch(
-      organizationId,
-      leadId,
-      providerMessageId,
-      {
-        result: hadConversation || data.status === 'completed' ? 'sent' : 'failed',
-        error: data.outcome || data.status || null
-      }
-    );
+    await resolveCadencePendingVoiceTouch(organizationId, leadId, providerMessageId, {
+      result: hadConversation || data.status === 'completed' ? 'sent' : 'failed',
+      error: data.outcome || data.status || null,
+    });
 
     return 'recorded';
   });

@@ -326,7 +326,7 @@ export async function advanceCadenceRunPendingTouch(
   outcome: {
     result: 'sent' | 'failed';
     error?: string | null;
-  }
+  },
 ): Promise<void> {
   const run = await deps.runRepo.findById(organizationId, runId);
   if (!run) return;

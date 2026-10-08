@@ -1,7 +1,10 @@
 import { logger } from '../../lib/logger.js';
 import { webRTCChannelService } from './webrtc-channel.service.js';
 import { flowiseRouterService } from './flowise-router.service.js';
-import type { OutboundCallResult, VoiceAgentType } from '../integrations/birth-voice/birthVoice.service.js';
+import type {
+  OutboundCallResult,
+  VoiceAgentType,
+} from '../integrations/birth-voice/birthVoice.service.js';
 
 /**
  * Orchestrator stub that connects the existing birthVoice.service to
@@ -16,12 +19,15 @@ export class AiVoiceOrchestratorService {
     organizationId: string,
     leadId: string,
     targetNumber: string,
-    agentType: VoiceAgentType
+    agentType: VoiceAgentType,
   ): Promise<OutboundCallResult> {
     const sessionId = `livekit-sess-${leadId}-${Date.now()}`;
     const callSid = `livekit-call-${leadId}`;
 
-    logger.info({ organizationId, leadId, targetNumber, agentType }, 'Initializing Real-time AI Voice session... (STUB)');
+    logger.info(
+      { organizationId, leadId, targetNumber, agentType },
+      'Initializing Real-time AI Voice session... (STUB)',
+    );
 
     // 1. Establish WebRTC channel (LiveKit)
     await webRTCChannelService.connectSession(sessionId, targetNumber);
@@ -30,9 +36,9 @@ export class AiVoiceOrchestratorService {
     const initialContext = {
       leadId,
       organizationId,
-      agentType
+      agentType,
     };
-    
+
     // Simulate initial system prompt routing
     await flowiseRouterService.routePrompt(sessionId, 'SYSTEM_INIT', initialContext);
 
@@ -40,7 +46,7 @@ export class AiVoiceOrchestratorService {
     return {
       sessionId,
       callSid,
-      status: 'in-progress'
+      status: 'in-progress',
     };
   }
 
