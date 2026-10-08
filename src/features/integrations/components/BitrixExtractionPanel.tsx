@@ -11,6 +11,7 @@ import {
   FileText,
   Loader2,
   Lock,
+  RotateCcw,
   Trash2,
   X,
 } from 'lucide-react';
@@ -77,6 +78,7 @@ interface ExtractionRun {
   progress: { entities: ExtractionEntityProgress[] } | null;
   errorMessage: string | null;
   files: ExtractionFileMeta[] | null;
+  attempts?: number;
   createdAt: string;
   completedAt: string | null;
 }
@@ -260,6 +262,19 @@ export function BitrixExtractionPanel({ connectionId, canManage }: BitrixExtract
       await loadRuns();
     } catch (e: any) {
       toast.error(e instanceof Error ? e.message : 'Falha ao cancelar a extração.');
+    }
+  };
+
+  const retryRun = async (runId: string) => {
+    setRetryingId(runId);
+    try {
+      await api.post(`/api/bitrix/extractions/${runId}/retry`);
+      toast.success('Extração reenfileirada com sucesso!');
+      await loadRuns();
+    } catch (e: any) {
+      toast.error(e instanceof Error ? e.message : 'Falha ao retentar a extração.');
+    } finally {
+      setRetryingId(null);
     }
   };
 
