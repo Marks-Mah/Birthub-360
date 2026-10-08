@@ -46,25 +46,25 @@ function DecisionInstrument({
 }) {
   const toneClass =
     tone === 'good'
-      ? 'text-success-active dark:text-success'
+      ? 'text-[#22c55e]'
       : tone === 'critical'
-        ? 'text-critical'
-        : 'text-ink';
+        ? 'text-[#EF4444]'
+        : 'text-slate-200';
 
   const trend = previousValue && (
     <div className="flex items-center gap-1 text-[10px] font-semibold">
       {tone === 'good' ? (
         <>
           <TrendingUp className="w-3 h-3" />
-          <span className="text-success-active">Tendência positiva</span>
+          <span className="text-[#22c55e]">Tendência positiva</span>
         </>
       ) : tone === 'critical' ? (
         <>
           <TrendingDown className="w-3 h-3" />
-          <span className="text-critical">Atenção necessária</span>
+          <span className="text-[#EF4444]">Atenção necessária</span>
         </>
       ) : (
-        <span className="text-ink-2/60">Estável</span>
+        <span className="text-slate-500">Estável</span>
       )}
     </div>
   );
@@ -73,21 +73,19 @@ function DecisionInstrument({
     <Card
       variant="stat"
       padding="sm"
-      spotlight
-      soundHover
-      className="relative overflow-hidden group/decision transition-all duration-300"
+      className="relative overflow-hidden group/decision transition-all duration-300 bg-[#1C1D24] border-white/5"
     >
       <div
-        className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-brand/40 to-transparent opacity-0 group-hover/decision:opacity-100 transition-opacity duration-700 z-20"
+        className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-[#8B7DFF]/40 to-transparent opacity-0 group-hover/decision:opacity-100 transition-opacity duration-700 z-20"
         aria-hidden="true"
       />
-      <div className="absolute top-0 right-0 w-16 h-16 bg-brand/5 rounded-bl-full pointer-events-none" />
+      <div className="absolute top-0 right-0 w-16 h-16 bg-[#8B7DFF]/5 rounded-bl-full pointer-events-none" />
       <div className="relative z-10">
-        <p className="text-[10px] font-bold uppercase tracking-widest text-ink-2/70">{label}</p>
+        <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">{label}</p>
         <p className={`text-2xl lg:text-3xl font-black mt-1 ${toneClass}`}>{value}</p>
-        {target && <p className="text-[10px] text-ink-2/60 mt-0.5">Meta: {target}</p>}
+        {target && <p className="text-[10px] text-slate-500 mt-0.5">Meta: {target}</p>}
         {trend && <div className="mt-1">{trend}</div>}
-        {hint && <p className="text-[10px] text-ink-2/60 mt-1">{hint}</p>}
+        {hint && <p className="text-[10px] text-slate-500 mt-1">{hint}</p>}
       </div>
     </Card>
   );
@@ -108,7 +106,7 @@ function TableTwin({
     <div className="mt-3 overflow-x-auto">
       <table className="w-full text-xs">
         <thead>
-          <tr className="text-ink-2 border-b border-line">
+          <tr className="text-slate-400 border-b border-white/5">
             {headers.map((h) => (
               <th key={h} className="text-left font-semibold py-1.5 pr-4">
                 {h}
@@ -116,9 +114,9 @@ function TableTwin({
             ))}
           </tr>
         </thead>
-        <tbody className="text-ink-2 [font-variant-numeric:tabular-nums]">
+        <tbody className="text-slate-300 [font-variant-numeric:tabular-nums]">
           {rows.map((row, i) => (
-            <tr key={i} className="border-b border-line">
+            <tr key={i} className="border-b border-white/5">
               {row.map((cell, j) => (
                 <td key={j} className="py-1.5 pr-4">
                   {cell}
@@ -151,18 +149,18 @@ function DecisionInstrumentCard({
 }) {
   const [showTable, setShowTable] = useState(false);
   return (
-    <Card padding="sm" spotlight className={`relative group/dicard ${className ?? ''}`}>
+    <Card padding="sm" className={`relative group/dicard bg-[#1C1D24] border-white/5 ${className ?? ''}`}>
       <div
-        className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-brand/40 to-transparent opacity-0 group-hover/dicard:opacity-100 transition-opacity duration-700 z-20"
+        className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-[#8B7DFF]/40 to-transparent opacity-0 group-hover/dicard:opacity-100 transition-opacity duration-700 z-20"
         aria-hidden="true"
       />
       <div className="flex items-start justify-between gap-3 mb-3 relative z-30">
         <div className="flex-1">
-          <h3 className="text-sm font-bold text-ink">{title}</h3>
-          {subtitle && <p className="text-[11px] text-ink-2/70">{subtitle}</p>}
+          <h3 className="text-sm font-bold text-slate-200">{title}</h3>
+          {subtitle && <p className="text-[11px] text-slate-400">{subtitle}</p>}
           {insight && (
-            <div className="mt-2 p-2 rounded-lg bg-red-violet/5 border border-red-violet/10">
-              <p className="text-[10px] text-red-violet-active font-medium flex items-center gap-1">
+            <div className="mt-2 p-2 rounded-lg bg-[#8B7DFF]/5 border border-[#8B7DFF]/10">
+              <p className="text-[10px] text-[#8B7DFF] font-medium flex items-center gap-1">
                 <Flame className="w-3 h-3" />
                 {insight}
               </p>
@@ -174,7 +172,7 @@ function DecisionInstrumentCard({
           onClick={() => setShowTable((v) => !v)}
           aria-pressed={showTable}
           title="Ver como tabela"
-          className="p-1.5 rounded-lg text-ink-2 hover:text-ink hover:bg-surface-2 transition-colors shrink-0"
+          className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition-colors shrink-0"
         >
           <Table2 className="w-4 h-4" />
         </button>
@@ -533,14 +531,14 @@ export function Analytics() {
               </DecisionInstrumentCard>
 
               {/* TMQ - Decision Instrument */}
-              <Card padding="sm" spotlight className="relative overflow-hidden group/tmq">
+              <Card padding="sm" className="relative overflow-hidden group/tmq bg-[#1C1D24] border-white/5">
                 <div
-                  className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-brand/40 to-transparent opacity-0 group-hover/tmq:opacity-100 transition-opacity duration-700 z-20"
+                  className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-[#8B7DFF]/40 to-transparent opacity-0 group-hover/tmq:opacity-100 transition-opacity duration-700 z-20"
                   aria-hidden="true"
                 />
-                <div className="absolute top-0 right-0 w-12 h-12 bg-brand/5 rounded-bl-full pointer-events-none" />
-                <h3 className="text-sm font-bold text-ink mb-1">⏱ Tempo Médio de Qualificação</h3>
-                <p className="text-[10px] text-ink-2/70 mb-3">
+                <div className="absolute top-0 right-0 w-12 h-12 bg-[#8B7DFF]/5 rounded-bl-full pointer-events-none" />
+                <h3 className="text-sm font-bold text-slate-200 mb-1">⏱ Tempo Médio de Qualificação</h3>
+                <p className="text-[10px] text-slate-400 mb-3">
                   Do lead recebido até a primeira qualificação
                 </p>
                 <TmqTile value={data.tmqMetric} />
@@ -549,28 +547,28 @@ export function Analytics() {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Performance IA vs Humanos - Decision Instrument */}
-              <Card padding="sm" spotlight className="relative overflow-hidden group/perf">
+              <Card padding="sm" className="relative overflow-hidden group/perf bg-[#1C1D24] border-white/5">
                 <div
-                  className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-red-violet/40 to-transparent opacity-0 group-hover/perf:opacity-100 transition-opacity duration-700 z-20"
+                  className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-[#8B7DFF]/40 to-transparent opacity-0 group-hover/perf:opacity-100 transition-opacity duration-700 z-20"
                   aria-hidden="true"
                 />
-                <div className="absolute top-0 right-0 w-12 h-12 bg-red-violet/5 rounded-bl-full pointer-events-none" />
-                <h3 className="text-sm font-bold text-ink mb-1">🤖 Performance: IA vs Humanos</h3>
-                <p className="text-[10px] text-ink-2/70 mb-3">
+                <div className="absolute top-0 right-0 w-12 h-12 bg-[#8B7DFF]/5 rounded-bl-full pointer-events-none" />
+                <h3 className="text-sm font-bold text-slate-200 mb-1">🤖 Performance: IA vs Humanos</h3>
+                <p className="text-[10px] text-slate-400 mb-3">
                   Leads qualificados por responsável no período
                 </p>
                 <AgentPerformanceWidget data={data.performanceReport} />
               </Card>
 
               {/* Motivos de Perda - Decision Instrument */}
-              <Card padding="sm" spotlight className="relative overflow-hidden group/lost">
+              <Card padding="sm" className="relative overflow-hidden group/lost bg-[#1C1D24] border-white/5">
                 <div
-                  className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-critical/40 to-transparent opacity-0 group-hover/lost:opacity-100 transition-opacity duration-700 z-20"
+                  className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-[#EF4444]/40 to-transparent opacity-0 group-hover/lost:opacity-100 transition-opacity duration-700 z-20"
                   aria-hidden="true"
                 />
-                <div className="absolute top-0 right-0 w-12 h-12 bg-critical/5 rounded-bl-full pointer-events-none" />
-                <h3 className="text-sm font-bold text-ink mb-1">📉 Principais Motivos de Perda</h3>
-                <p className="text-[10px] text-ink-2/70 mb-3">
+                <div className="absolute top-0 right-0 w-12 h-12 bg-[#EF4444]/5 rounded-bl-full pointer-events-none" />
+                <h3 className="text-sm font-bold text-slate-200 mb-1">📉 Principais Motivos de Perda</h3>
+                <p className="text-[10px] text-slate-400 mb-3">
                   Leads desqualificados/perdidos por motivo
                 </p>
                 <LostReasonsWidget data={data.lostReasons} />

@@ -5,7 +5,6 @@ import {
   bitrixExtractionPartialTotal,
   bitrixExtractionRetriesTotal,
 } from '../metrics.js';
-import { __setExtractionRetryDelayForTests } from '../extraction.js';
 
 vi.mock('@/lib/logger', () => ({
   logger: { info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() },
@@ -61,8 +60,9 @@ function baseRun(overrides: Partial<Record<string, unknown>> = {}) {
   };
 }
 
-beforeEach(() => {
+beforeEach(async () => {
   vi.clearAllMocks();
+  const { __setExtractionRetryDelayForTests } = await import('../extraction.js');
   __setExtractionRetryDelayForTests(
     () => 0,
     () => Promise.resolve(),
@@ -709,3 +709,160 @@ describe('downloadExtractionFile — nunca serve arquivo sem checar tenant/statu
     );
   });
 });
+
+describe('Resiliência e retentativas na extração (06/06A)', () => {
+  it('incrementa attempts atomicamente ao reivindicar a execução queued -> running', async () => {
+    prismaMock.bitrixExtractionRun.findFirst.mockResolvedValue(baseRun({ entities: ['lead'] }));
+    clientMock.callBitrix.mockResolvedValueOnce({ result: [], next: null });
+
+    const { executeExtractionRun } = await import('../extraction.js');
+    await executeExtractionRun('org-1', 'run-1');
+
+    expect(prismaMock.bitrixExtractionRun.updateMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { id: 'run-1', organizationId: 'org-1', status: 'queued' },
+        data: expect.objectContaining({
+          status: 'running',
+          attempts: { increment: 1 },
+        }),
+      }),
+    );
+  });
+
+  it('reintenta busca de página em falha transitória (502/429) e conclui com sucesso', async () => {
+    prismaMock.bitrixExtractionRun.findFirst.mockResolvedValue(baseRun({ entities: ['lead'] }));
+    clientMock.callBitrix
+      .mockRejectedValueOnce(new AppError('Falha temporária de rede.', 502))
+      .mockResolvedValueOnce({ result: [{ ID: '1' }], next: null });
+
+    const { executeExtractionRun } = await import('../extraction.js');
+    await executeExtractionRun('org-1', 'run-1');
+
+    expect(clientMock.callBitrix).toHaveBeenCalledTimes(2);
+    expect(prismaMock.bitrixExtractionRun.update).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({ status: 'completed', totalCount: 1 }),
+      }),
+    );
+    expect(await bitrixExtractionRetriesTotal.get()).toMatchObject({
+      values: expect.arrayContaining([
+        expect.objectContaining({ labels: { tenant: 'org-1', entity: 'lead' }, value: 1 }),
+      ]),
+    });
+  });
+
+  it('não reintenta quando erro for definitivo (401/403/token revogado)', async () => {
+    const { BitrixDefinitiveError } = await import('../client.js');
+    prismaMock.bitrixExtractionRun.findFirst.mockResolvedValue(baseRun({ entities: ['lead'] }));
+    clientMock.callBitrix.mockRejectedValue(
+      new BitrixDefinitiveError('Token revogado.', 401, 'corr-1'),
+    );
+
+    const { executeExtractionRun } = await import('../extraction.js');
+    await executeExtractionRun('org-1', 'run-1');
+
+    // Falha rápida: chamada executada apenas 1 vez, sem consumir retries
+    expect(clientMock.callBitrix).toHaveBeenCalledTimes(1);
+    expect(prismaMock.bitrixExtractionRun.updateMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({ status: 'failed', errorMessage: 'Token revogado.' }),
+      }),
+    );
+  });
+});
+
+describe('retryExtractionRun — retentativa manual/operador', () => {
+  it('rejeita se extração não for encontrada', async () => {
+    prismaMock.bitrixExtractionRun.findFirst.mockResolvedValue(null);
+    const { retryExtractionRun } = await import('../extraction.js');
+    await expect(retryExtractionRun('org-1', 'run-inexistente')).rejects.toThrow(
+      'Extração não encontrada.',
+    );
+  });
+
+  it('rejeita se extração já estiver em andamento ou na fila', async () => {
+    prismaMock.bitrixExtractionRun.findFirst.mockResolvedValue(baseRun({ status: 'running' }));
+    const { retryExtractionRun } = await import('../extraction.js');
+    await expect(retryExtractionRun('org-1', 'run-1')).rejects.toThrow(
+      'Esta extração já está em andamento ou na fila.',
+    );
+  });
+
+  it('reenfileira extração failed com sucesso, limpa erro e reinicia execução', async () => {
+    prismaMock.bitrixExtractionRun.findFirst.mockResolvedValue(
+      baseRun({ status: 'failed', errorMessage: 'Erro anterior', attempts: 2 }),
+    );
+    prismaMock.bitrixExtractionRun.update.mockResolvedValue(
+      baseRun({ status: 'queued', errorMessage: null }),
+    );
+    // Para não prosseguir na execução background neste teste:
+    prismaMock.bitrixExtractionRun.updateMany.mockResolvedValueOnce({ count: 0 });
+
+    const { retryExtractionRun } = await import('../extraction.js');
+    const result = await retryExtractionRun('org-1', 'run-1');
+
+    expect(result.status).toBe('queued');
+    expect(filesMock.deleteExtractionRunFiles).toHaveBeenCalledWith('org-1', 'run-1');
+    expect(prismaMock.bitrixExtractionRun.update).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { id: 'run-1' },
+        data: expect.objectContaining({
+          status: 'queued',
+          errorMessage: null,
+          completedAt: null,
+          startedAt: null,
+        }),
+      }),
+    );
+    expect(auditServiceMock.log).toHaveBeenCalledWith(
+      expect.objectContaining({
+        action: 'UPDATE',
+        entity: 'BitrixExtractionRun',
+        tenantId: 'org-1',
+        afterState: expect.objectContaining({ retry: true }),
+      }),
+    );
+  });
+});
+
+describe('reconcileStuckRuns — recuperação de execuções travadas', () => {
+  it('re-enfileira extração travada quando attempts < MAX_RUN_ATTEMPTS', async () => {
+    prismaMock.bitrixExtractionRun.findMany.mockResolvedValue([
+      { id: 'run-stuck-1', organizationId: 'org-1', attempts: 1, correlationId: 'c1' },
+    ]);
+    prismaMock.bitrixExtractionRun.updateMany.mockResolvedValueOnce({ count: 0 });
+
+    const { reconcileStuckRuns } = await import('../extraction.js');
+    const result = await reconcileStuckRuns('org-1', 1000);
+
+    expect(result.reconciledCount).toBe(1);
+    expect(result.retriedCount).toBe(1);
+    expect(result.failedCount).toBe(0);
+    expect(prismaMock.bitrixExtractionRun.update).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { id: 'run-stuck-1' },
+        data: expect.objectContaining({ status: 'queued' }),
+      }),
+    );
+  });
+
+  it('marca como failed quando attempts >= MAX_RUN_ATTEMPTS', async () => {
+    prismaMock.bitrixExtractionRun.findMany.mockResolvedValue([
+      { id: 'run-stuck-max', organizationId: 'org-1', attempts: 3, correlationId: 'c2' },
+    ]);
+
+    const { reconcileStuckRuns } = await import('../extraction.js');
+    const result = await reconcileStuckRuns('org-1', 1000);
+
+    expect(result.reconciledCount).toBe(1);
+    expect(result.retriedCount).toBe(0);
+    expect(result.failedCount).toBe(1);
+    expect(prismaMock.bitrixExtractionRun.updateMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { id: 'run-stuck-max', organizationId: 'org-1', status: 'running' },
+        data: expect.objectContaining({ status: 'failed' }),
+      }),
+    );
+  });
+});
+
