@@ -9,35 +9,31 @@ import { cn } from '../../lib/utils.js';
 import { Magnetic } from './Magnetic.js';
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-[10px] text-sm font-semibold transition-all duration-150 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-bg disabled:pointer-events-none disabled:bg-surface-subtle disabled:text-ink-2 disabled:border-transparent',
+  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl text-sm font-semibold transition-all duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8B7DFF]/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#13151A] disabled:pointer-events-none disabled:bg-white/5 disabled:text-slate-500 disabled:border-transparent',
   {
     variants: {
       variant: {
         default:
-          'bg-gradient-to-r from-brand to-brand-2 text-on-brand shadow-glow-brand hover:shadow-glow-brand-strong hover:scale-[1.02] hover:-translate-y-0.5 active:scale-[0.98]',
+          'bg-[#8B7DFF] text-[#13151A] hover:bg-[#9b8fff] hover:scale-[1.02] hover:-translate-y-0.5 active:scale-[0.98] shadow-sm',
         primary:
-          'bg-gradient-to-r from-brand to-brand-2 text-on-brand shadow-glow-brand hover:shadow-glow-brand-strong hover:scale-[1.02] hover:-translate-y-0.5 active:scale-[0.98]',
+          'bg-[#8B7DFF] text-[#13151A] hover:bg-[#9b8fff] hover:scale-[1.02] hover:-translate-y-0.5 active:scale-[0.98] shadow-sm',
         tertiary:
-          'bg-surface-subtle border-transparent text-ink hover:bg-surface-interactive hover:text-ink hover:shadow-glow-brand hover:scale-[1.02] hover:-translate-y-0.5 active:scale-[0.98]',
+          'bg-[#1C1D24] border-transparent text-slate-200 hover:bg-[#22232B] hover:text-white hover:scale-[1.02] hover:-translate-y-0.5 active:scale-[0.98]',
         success:
-          'bg-gradient-to-r from-ok to-green-400 text-slate-950 font-bold shadow-sm hover:opacity-90 hover:shadow-glow-ok hover:scale-[1.02] hover:-translate-y-0.5 active:scale-[0.98]',
-        // bg-btn-danger (color-mix com --danger, globals.css) — bg-red-500 cru com texto branco
-        // media ~3.76:1, abaixo do mínimo AA 4.5:1 (mesma classe de achado do DQA-19 que motivou
-        // bg-brand-active acima). btn-danger-hover escurece mais, mesma lógica de bg-brand-2.
-
+          'bg-[#22c55e] text-[#13151A] font-bold shadow-sm hover:bg-[#4ade80] hover:scale-[1.02] hover:-translate-y-0.5 active:scale-[0.98]',
         destructive:
-          'bg-gradient-to-r from-danger to-pulse text-slate-950 font-bold shadow-sm hover:shadow-glow-pulse hover:bg-danger/90 hover:-translate-y-0.5 active:bg-danger/80',
+          'bg-[#EF4444] text-white font-bold shadow-sm hover:bg-[#f87171] hover:-translate-y-0.5 active:bg-[#dc2626]',
         outline:
-          'border border-brand/50 bg-transparent text-ink hover:border-brand hover:shadow-glow-brand hover:bg-surface-interactive active:bg-surface-subtle',
+          'border border-white/10 bg-transparent text-slate-200 hover:border-white/20 hover:bg-white/5 active:bg-white/10',
         secondary:
-          'border border-transparent bg-surface-elevated text-ink shadow-sm hover:bg-surface-interactive hover:shadow-glow-brand active:bg-surface-subtle',
+          'border border-white/5 bg-[#1C1D24] text-slate-200 shadow-sm hover:bg-[#22232B] hover:border-white/10 active:bg-[#15151A]',
         ghost:
-          'border border-transparent text-ink-2 hover:bg-surface-interactive hover:text-ink hover:shadow-glow-brand active:bg-surface-subtle',
-        link: 'text-brand-ink dark:text-brand underline-offset-4 hover:underline hover:text-brand hover:drop-shadow-[0_0_8px_rgba(0,229,255,0.8)]',
+          'border border-transparent text-slate-400 hover:bg-white/5 hover:text-white active:bg-white/10',
+        link: 'text-[#8B7DFF] underline-offset-4 hover:underline hover:text-[#9b8fff]',
         cosmic:
-          'bg-gradient-to-r from-brand to-brand-2 text-on-brand shadow-glow-brand hover:shadow-glow-brand-strong hover:scale-[1.02] hover:-translate-y-0.5 active:scale-[0.98]',
+          'bg-[#8B7DFF] text-[#13151A] hover:bg-[#9b8fff] hover:scale-[1.02] hover:-translate-y-0.5 active:scale-[0.98] shadow-sm',
         vancouver:
-          'vancouver-btn-gradient rounded-lg text-white shadow-glow-brand hover:scale-[1.02] hover:-translate-y-0.5 hover:shadow-lg active:scale-[0.98]',
+          'bg-[#8B7DFF] text-[#13151A] hover:bg-[#9b8fff] hover:scale-[1.02] hover:-translate-y-0.5 active:scale-[0.98] shadow-sm',
       },
       size: {
         default: 'h-9 px-4 py-2',

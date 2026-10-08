@@ -1,7 +1,8 @@
 import type { ActivityStatus, ActivityType } from '../../../lib/zod.js';
 import type { Repository } from '../../../shared/domain/Repository.js';
 
-export type { Activity } from '../../../shared/types/crm.js';
+import type { Activity } from '../../../shared/types/crm.js';
+export type { Activity };
 
 export interface ActivityListFilters {
   leadId?: string;

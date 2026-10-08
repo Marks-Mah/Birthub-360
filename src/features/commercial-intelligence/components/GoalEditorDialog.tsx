@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Button } from '../../../components/ui/Button.js';
 import { Dialog } from '../../../components/ui/Dialog.js';
 import {
@@ -29,11 +29,16 @@ export function GoalEditorDialog({
   const [amount, setAmount] = useState('');
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (isOpen) {
       setAmount(currentGoal ? String(currentGoal.amount) : '');
       setError(null);
+      const timer = setTimeout(() => {
+        inputRef.current?.focus();
+      }, 0);
+      return () => clearTimeout(timer);
     }
   }, [isOpen, currentGoal]);
 

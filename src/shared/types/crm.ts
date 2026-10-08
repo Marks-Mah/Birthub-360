@@ -1,12 +1,9 @@
 import type {
   CompanyStatus,
-  ContactStatus,
-  LeadStatus,
-  LeadTemperature,
   ActivityStatus,
   ActivityType,
 } from '../../lib/zod.js';
-import type { LeadFunnel } from '@prisma/client';
+import type { LeadFunnel, ContactStatus as PrismaContactStatus, LeadStatus as PrismaLeadStatus, LeadTemperature as PrismaLeadTemperature } from '@prisma/client';
 
 export interface LeadQualification {
   // 4.2.1 Contexto Operacional
@@ -69,7 +66,7 @@ export interface Company<TDate = Date> {
   status: CompanyStatus;
   tags: string[];
   observations?: string | null;
-  customFields?: Record<string, unknown> | null;
+  customFields?: any;
   organizationId?: string | null;
   createdAt: TDate;
   updatedAt: TDate;
@@ -86,7 +83,7 @@ export interface Company<TDate = Date> {
 
   googleRating?: number | null;
   googleReviewsCount?: number | null;
-  businessHours?: { openNow?: boolean; weekdayDescriptions?: string[] } | unknown | null;
+  businessHours?: { openNow?: boolean; weekdayDescriptions?: string[] } | null;
 
   technologies?: string[];
   keywords?: string[];
@@ -97,7 +94,7 @@ export interface Company<TDate = Date> {
   leads?: Lead<TDate>[];
 }
 
-export interface Contact<TDate = Date> {
+export interface Contact<TDate = Date, TStatus = PrismaContactStatus> {
   id: string;
   name: string;
   role?: string | null;
@@ -108,11 +105,11 @@ export interface Contact<TDate = Date> {
   linkedin?: string | null;
   birthDate?: TDate | null;
   observations?: string | null;
-  status: ContactStatus;
+  status: TStatus;
   source?: string | null;
   seniority?: string | null;
   emailStatus?: string | null;
-  customFields?: Record<string, unknown> | null;
+  customFields?: any;
   companyId: string;
   company?: Company<TDate>;
   aiProcessingConsent?: boolean | null;
@@ -122,9 +119,9 @@ export interface Contact<TDate = Date> {
   updatedAt: TDate;
 }
 
-export interface Lead<TDate = Date> {
+export interface Lead<TDate = Date, TStatus = PrismaLeadStatus, TTemperature = PrismaLeadTemperature> {
   id: string;
-  status: LeadStatus;
+  status: TStatus;
   funnel?: LeadFunnel | 'Lead' | 'Negocio';
   title?: string | null;
   amount?: number | null;
@@ -132,13 +129,13 @@ export interface Lead<TDate = Date> {
   probability?: number | null;
   forecastProbabilityAi?: number | null;
   expectedCloseAt?: TDate | null;
-  customFields?: Record<string, unknown> | null;
+  customFields?: any;
   tags: string[];
   pipelineId?: string | null;
   pipelineStageId?: string | null;
   source?: string | null;
   channel?: string | null;
-  temperature?: LeadTemperature | null;
+  temperature?: TTemperature | null;
   score?: number | null;
   owner?: string | null;
   lastInteraction?: TDate | null;
@@ -165,9 +162,9 @@ export interface Lead<TDate = Date> {
   bitrixSyncError?: string | null;
   bitrixSyncedAt?: TDate | null;
 
-  companyId?: string | null;
+  companyId: string | null;
   company?: Company<TDate>;
-  contactId?: string | null;
+  contactId: string | null;
   contact?: Contact<TDate>;
 
   activities?: Activity<TDate>[];

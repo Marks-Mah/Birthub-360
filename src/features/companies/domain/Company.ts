@@ -6,7 +6,8 @@
 import type { CompanyStatus } from '../../../lib/zod.js';
 import type { Repository } from '../../../shared/domain/Repository.js';
 
-export type { Company } from '../../../shared/types/crm.js';
+import type { Company } from '../../../shared/types/crm.js';
+export type { Company };
 
 export interface CompanyRepository extends Repository<Company> {
   findAllWithFilters(

@@ -2,7 +2,8 @@ import type { Repository } from '../../../shared/domain/Repository.js';
 
 export type NoteEntityType = 'lead' | 'company' | 'contact';
 
-export type { Note } from '../../../shared/types/crm.js';
+import type { Note } from '../../../shared/types/crm.js';
+export type { Note };
 
 export interface NoteRepository extends Repository<Note> {
   findByEntity(
