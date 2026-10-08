@@ -3,63 +3,52 @@ import { ChevronDown } from 'lucide-react';
 import { SoundFX } from '../../lib/soundEffects.js';
 import { cn } from '../../lib/utils.js';
 
-/* Generalizado a partir de `KpiStat` (JoaoReisDiagnosticHub.tsx) — mesmo vocabulário visual
-   (barra de destaque no topo, chip de ícone, valor em mono tabular), promovido pra cá porque
-   passou a ser reaproveitado fora do diagnóstico SDR. */
+/* Generalizado a partir de `KpiStat` (JoaoReisDiagnosticHub.tsx) — atualizado para novo visual Minimal Dark */
 const KPI_TONES = {
   brand: {
-    bar: 'bg-brand',
-    chip: 'bg-brand/10 text-brand border-brand/20',
-    value: 'text-brand',
-    glow: 'rgba(58,134,255,0.12)',
+    chip: 'border-[#38bdf8] text-[#38bdf8] bg-[#38bdf8]/10',
+    trend: 'text-[#38bdf8]',
+    glow: 'rgba(56,189,248,0.15)',
   },
   ink: {
-    bar: 'bg-ink-2/30',
-    chip: 'bg-surface-2 text-ink-2 border-line/40',
-    value: 'text-ink',
+    chip: 'border-slate-500 text-slate-400 bg-slate-800',
+    trend: 'text-slate-400',
     glow: 'rgba(255,255,255,0.06)',
   },
   ok: {
-    bar: 'bg-ok',
-    chip: 'bg-ok/15 text-ok-active dark:text-ok border-ok/25',
-    value: 'text-ok-active dark:text-ok',
-    glow: 'rgba(15,157,100,0.12)',
+    chip: 'border-[#22c55e] text-[#22c55e] bg-[#22c55e]/10',
+    trend: 'text-[#22c55e]',
+    glow: 'rgba(34,197,94,0.15)',
   },
   gold: {
-    bar: 'bg-coolors-yellow',
-    chip: 'bg-coolors-yellow/15 text-coolors-yellow border-coolors-yellow/25',
-    value: 'text-coolors-yellow',
-    glow: 'rgba(255,190,11,0.12)',
+    chip: 'border-[#EAB308] text-[#EAB308] bg-[#EAB308]/10',
+    trend: 'text-[#EAB308]',
+    glow: 'rgba(234,179,8,0.15)',
   },
   critical: {
-    bar: 'bg-critical',
-    chip: 'bg-critical/10 text-critical border-critical/20',
-    value: 'text-critical',
-    glow: 'rgba(208,59,59,0.12)',
+    chip: 'border-[#EF4444] text-[#EF4444] bg-[#EF4444]/10',
+    trend: 'text-[#EF4444]',
+    glow: 'rgba(239,68,68,0.15)',
   },
   iris: {
-    bar: 'bg-coolors-purple',
-    chip: 'bg-coolors-purple/15 text-coolors-purple border-coolors-purple/25',
-    value: 'text-coolors-purple',
-    glow: 'rgba(131,56,236,0.12)',
+    chip: 'border-[#8B5CF6] text-[#8B5CF6] bg-[#8B5CF6]/10',
+    trend: 'text-[#8B5CF6]',
+    glow: 'rgba(139,92,246,0.15)',
   },
   cyan: {
-    bar: 'bg-coolors-blue',
-    chip: 'bg-coolors-blue/15 text-coolors-blue border-coolors-blue/25',
-    value: 'text-coolors-blue',
-    glow: 'rgba(58,134,255,0.12)',
+    chip: 'border-[#06b6d4] text-[#06b6d4] bg-[#06b6d4]/10',
+    trend: 'text-[#06b6d4]',
+    glow: 'rgba(6,182,212,0.15)',
   },
   pulse: {
-    bar: 'bg-coolors-pink',
-    chip: 'bg-coolors-pink/15 text-coolors-pink border-coolors-pink/25',
-    value: 'text-coolors-pink',
-    glow: 'rgba(255,0,110,0.12)',
+    chip: 'border-[#EC4899] text-[#EC4899] bg-[#EC4899]/10',
+    trend: 'text-[#EC4899]',
+    glow: 'rgba(236,72,153,0.15)',
   },
   orange: {
-    bar: 'bg-coolors-orange',
-    chip: 'bg-coolors-orange/15 text-coolors-orange border-coolors-orange/25',
-    value: 'text-coolors-orange',
-    glow: 'rgba(251,86,7,0.12)',
+    chip: 'border-[#F97316] text-[#F97316] bg-[#F97316]/10',
+    trend: 'text-[#F97316]',
+    glow: 'rgba(249,115,22,0.15)',
   },
 } as const;
 
@@ -74,18 +63,14 @@ export interface KpiCardProps {
   subtitle?: string;
   tone?: KpiTone;
   variant?: string;
-  /** Indicador dinâmico de tendência (ex: +12% ou -3%) */
   trend?: {
     value: string | number;
     isPositive?: boolean;
+    text?: string;
   };
-  /** Ativa holofote especular que segue o cursor em tempo real (2026 Spatial UI) */
   spotlight?: boolean;
-  /** Emite som suave ao interagir */
   sound?: boolean;
-  /** Torna o card um botão de drill-down (ex.: abrir modal com a lista por trás do número). */
   onSelect?: () => void;
-  /** Estado ativo do drill-down — gira o chevron e destaca a borda. */
   active?: boolean;
   className?: string;
 }
@@ -142,20 +127,15 @@ export function KpiCard({
   };
 
   const sharedClassName = cn(
-    'group relative w-full overflow-hidden rounded-card border border-line bg-gradient-to-br from-surface-elevated/90 to-surface/85 backdrop-blur-xl p-4 text-left shadow-card transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]',
+    'group relative w-full overflow-hidden rounded-2xl border border-white/5 bg-[#1C1D24] p-5 text-left shadow-sm transition-all duration-300',
     onSelect &&
-      'cursor-pointer active:scale-[0.98] hover:-translate-y-1 hover:border-brand/40 hover:shadow-card-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 focus-visible:ring-offset-2 focus-visible:ring-offset-bg',
-    active && 'border-brand/60 shadow-[0_0_0_2px_color-mix(in_srgb,var(--brand)_28%,transparent)]',
+      'cursor-pointer active:scale-[0.98] hover:-translate-y-1 hover:border-white/10 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8B7DFF]',
+    active && 'border-[#8B7DFF]/60 shadow-[0_0_0_2px_rgba(139,125,255,0.2)] bg-[#1F202B]',
     className,
   );
 
   const content = (
     <>
-      {/* 2026 Specular Highlight Edge */}
-      <span
-        className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-brand to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100 z-20"
-        aria-hidden="true"
-      />
       {spotlight && isHovered && (
         <span
           aria-hidden="true"
@@ -165,70 +145,58 @@ export function KpiCard({
           }}
         />
       )}
-      <span className={cn('absolute inset-x-0 top-0 h-[3px]', t.bar)} aria-hidden="true" />
-      <span className="relative z-10 flex items-center justify-between">
-        <span
-          className={cn(
-            'flex h-8 w-8 items-center justify-center rounded-lg border transition-all duration-300 group-hover:scale-110 group-hover:rotate-3 group-hover:shadow-[0_0_12px_rgba(212,175,55,0.25)]',
-            t.chip,
-          )}
-        >
-          <Icon className="h-4 w-4" />
-        </span>
+      
+      <div className="relative z-10 flex flex-col justify-between h-full space-y-4">
+        {/* Top: Icon */}
+        <div className="flex items-start justify-between">
+          <span
+            className={cn(
+              'flex h-[38px] w-[38px] items-center justify-center rounded-xl border border-dashed transition-all duration-300 group-hover:scale-110 group-hover:rotate-3',
+              t.chip,
+            )}
+            style={{ borderStyle: 'solid' /* Override dashed with solid to match image, or keep border thin */ }}
+          >
+            <Icon className="h-5 w-5" />
+          </span>
 
-        <span className="flex items-center gap-2">
           {active && (
             <span
               className="relative flex h-2 w-2 items-center justify-center"
               aria-hidden="true"
               title="Card ativo"
             >
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand opacity-75" />
-              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-brand" />
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#8B7DFF] opacity-75" />
+              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[#8B7DFF]" />
             </span>
           )}
-          {trend && (
-            <span
-              className={cn(
-                'inline-flex items-center gap-0.5 rounded-full px-2 py-0.5 text-[10px] font-bold',
-                trend.isPositive !== false
-                  ? 'bg-success/15 text-success border border-success/30'
-                  : 'bg-danger/15 text-danger border border-danger/30',
-              )}
-            >
-              <span>{trend.isPositive !== false ? '↑' : '↓'}</span>
-              <span>{trend.value}</span>
-            </span>
-          )}
+        </div>
 
-          {onSelect && (
-            <span
-              aria-hidden="true"
-              className={cn(
-                'flex h-5 w-5 items-center justify-center rounded-full bg-surface-2 text-ink-2 transition-colors duration-200',
-                active && 'bg-brand text-on-brand',
-              )}
-            >
-              <ChevronDown
-                className={cn(
-                  'h-2.5 w-2.5 transition-transform duration-200',
-                  active && 'rotate-180',
-                )}
-              />
-            </span>
-          )}
-        </span>
-      </span>
+        {/* Middle: Value & Label */}
+        <div>
+          <h3 className="font-sans text-[26px] font-bold text-white tracking-tight leading-none mb-1.5">
+            {value}
+          </h3>
+          <p className="text-[13px] font-medium text-slate-400">
+            {displayLabel}
+          </p>
+        </div>
 
-      <p className={cn('relative z-10 mt-3 font-mono text-2xl font-bold tabular-nums', t.value)}>
-        {value}
-      </p>
-      <p className="relative z-10 mt-1 text-[10px] font-bold uppercase tracking-wide text-ink-2">
-        {displayLabel}
-      </p>
-      {displaySubtitle && (
-        <p className="relative z-10 mt-0.5 text-[10px] text-ink-2">{displaySubtitle}</p>
-      )}
+        {/* Bottom: Trend / Subtitle */}
+        {(trend || displaySubtitle) && (
+          <div className="flex items-center gap-1.5 mt-2">
+            {trend && (
+              <span className={cn('text-[11px] font-semibold', t.trend)}>
+                {trend.isPositive !== false ? '+' : '-'}{trend.value}{trend.text ? ` ${trend.text}` : ''}
+              </span>
+            )}
+            {displaySubtitle && (
+              <span className={cn('text-[11px] text-slate-500', !trend && t.trend)}>
+                {displaySubtitle}
+              </span>
+            )}
+          </div>
+        )}
+      </div>
     </>
   );
 
@@ -253,6 +221,7 @@ export function KpiCard({
       onPointerMove={handlePointerMove}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
+      role={onSelect ? 'button' : undefined}
       className={sharedClassName}
     >
       {content}

@@ -5,32 +5,32 @@ import { BorderBeam, type BorderBeamProps } from './BorderBeam.js';
 import { SoundFX } from '../../lib/soundEffects.js';
 import { cn } from '../../lib/utils.js';
 
-const cardVariants = cva('relative overflow-hidden rounded-card text-ink', {
+const cardVariants = cva('relative overflow-hidden rounded-2xl text-slate-200', {
   variants: {
     variant: {
       default:
-        'bg-surface-elevated/80 backdrop-blur-md border border-brand/20 shadow-card transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-brand/60 hover:shadow-glow-brand hover:-translate-y-0.5 hover:scale-[1.005]',
-      stat: 'bg-surface-elevated/80 backdrop-blur-md border border-brand/20 shadow-card transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-brand/60 hover:shadow-glow-brand hover:-translate-y-0.5 hover:scale-[1.005]',
+        'bg-[#1C1D24] border border-white/5 shadow-sm transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-white/10 hover:shadow-md hover:-translate-y-0.5',
+      stat: 'bg-[#1C1D24] border border-white/5 shadow-sm transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-white/10 hover:shadow-md hover:-translate-y-0.5',
       outline:
-        'border border-brand/30 bg-transparent transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-brand hover:shadow-glow-brand hover:bg-brand/5',
+        'border border-white/10 bg-transparent transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-white/20 hover:bg-white/5',
       accent:
-        'bg-surface-elevated/80 backdrop-blur-md border border-brand/40 shadow-card transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-brand/80 hover:shadow-glow-brand-strong hover:-translate-y-0.5 hover:scale-[1.005]',
+        'bg-[#1C1D24] border border-[#8B7DFF]/40 shadow-sm transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-[#8B7DFF]/80 hover:-translate-y-0.5',
       elevated:
-        'bg-surface-elevated border border-brand/20 shadow-card transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-brand/60 hover:shadow-glow-brand-strong hover:-translate-y-0.5 hover:scale-[1.005]',
+        'bg-[#1C1D24] border border-white/10 shadow-md transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-white/20 hover:shadow-lg hover:-translate-y-0.5',
       interactive:
-        'group bg-surface-elevated/80 backdrop-blur-md border border-brand/20 shadow-card cursor-pointer transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-brand hover:bg-surface-interactive hover:shadow-glow-brand-strong hover:-translate-y-0.5 hover:scale-[1.01] active:scale-[0.99]',
+        'group bg-[#1C1D24] border border-white/5 shadow-sm cursor-pointer transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-[#8B7DFF]/50 hover:bg-[#1F202B] hover:-translate-y-0.5 active:scale-[0.99]',
       // Variantes estruturais recomendadas pelo Design System v2.0
       surface:
-        'bg-surface border border-brand/10 shadow-none hover:shadow-glow-brand hover:border-brand/40 transition-all duration-300',
+        'bg-[#15151A] border border-white/5 shadow-none hover:border-white/10 transition-all duration-300',
       panel:
-        'bg-surface-elevated/90 border border-brand/20 shadow-subtle backdrop-blur-md hover:shadow-glow-brand hover:border-brand/50 transition-all duration-300',
+        'bg-[#1C1D24] border border-white/5 shadow-sm hover:border-white/10 transition-all duration-300',
       metric:
-        'bg-surface-elevated border border-brand/30 shadow-card hover:border-brand hover:shadow-glow-brand-strong transition-all duration-300 hover:-translate-y-0.5',
-      data: 'bg-surface border border-brand/20 shadow-none hover:shadow-glow-brand hover:border-brand/50 transition-all duration-300',
+        'bg-[#1C1D24] border border-white/10 shadow-sm hover:border-[#8B7DFF]/50 transition-all duration-300 hover:-translate-y-0.5',
+      data: 'bg-[#15151A] border border-white/10 shadow-none hover:border-[#8B7DFF]/30 transition-all duration-300',
       feature:
-        'bg-gradient-to-br from-surface-elevated/95 to-brand/5 border border-brand/40 shadow-glow-brand hover:border-brand hover:shadow-glow-brand-strong transition-all duration-300 hover:-translate-y-0.5 hover:scale-[1.005]',
+        'bg-gradient-to-br from-[#1C1D24] to-[#15151A] border border-[#8B7DFF]/20 shadow-sm hover:border-[#8B7DFF]/50 transition-all duration-300 hover:-translate-y-0.5',
       floating:
-        'bg-surface-elevated/95 border border-brand/40 shadow-card backdrop-blur-xl hover:shadow-glow-brand-strong transition-all duration-300',
+        'bg-[#1C1D24]/95 border border-white/10 shadow-lg backdrop-blur-xl transition-all duration-300',
       // Variantes decorativas preservadas para compatibilidade (@deprecated)
       // Prefira as variantes estruturais acima (surface, panel, metric, data, feature, floating)
       /** @deprecated Kept for backward compatibility but should not be used in new code. */
@@ -47,7 +47,7 @@ const cardVariants = cva('relative overflow-hidden rounded-card text-ink', {
       metallic:
         'bg-gradient-to-br from-surface via-brand/5 to-surface-2 border border-brand/40 shadow-glow-brand transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-brand hover:shadow-glow-brand-strong hover:-translate-y-0.5 hover:scale-[1.005]',
       bento:
-        'bg-surface-elevated/85 backdrop-blur-xl border border-brand/30 shadow-card hover:border-brand hover:shadow-glow-brand-strong hover:-translate-y-1 hover:scale-[1.006] transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]',
+        'bg-[#1C1D24] border border-white/5 shadow-sm hover:border-[#8B7DFF]/30 hover:-translate-y-1 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]',
       /** @deprecated Kept for backward compatibility but should not be used in new code. */
       cosmic:
         'bg-gradient-to-br from-surface-elevated/90 to-brand/10 backdrop-blur-2xl border border-brand/50 shadow-card hover:border-brand hover:shadow-glow-brand-strong hover:-translate-y-1 transition-all duration-300',
@@ -55,13 +55,13 @@ const cardVariants = cva('relative overflow-hidden rounded-card text-ink', {
       specular:
         'bg-surface/75 backdrop-blur-2xl border border-brand/40 shadow-card hover:border-brand hover:shadow-glow-brand-strong hover:-translate-y-1 transition-all duration-300',
       vancouver:
-        'vancouver-card bg-gradient-to-br from-surface-elevated/95 to-surface/90 backdrop-blur-xl border border-line hover:border-brand/40 shadow-card hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1 hover:scale-[1.005]',
+        'vancouver-card bg-[#1C1D24] border border-white/5 hover:border-white/10 shadow-sm transition-all duration-300 hover:-translate-y-1',
       vancouverGradient:
-        'bg-gradient-to-br from-coolors-blue to-coolors-purple text-white border-white/20 shadow-lg hover:shadow-xl hover:-translate-y-1 hover:scale-[1.005] transition-all duration-300',
+        'bg-gradient-to-br from-[#8B7DFF] to-[#6D5CE6] text-white border-white/10 shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300',
       vancouverGold:
-        'bg-gradient-to-br from-coolors-yellow to-coolors-orange text-white border-white/20 shadow-lg hover:shadow-xl hover:-translate-y-1 hover:scale-[1.005] transition-all duration-300',
+        'bg-gradient-to-br from-[#EAB308] to-[#CA8A04] text-white border-white/10 shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300',
       vancouverPink:
-        'bg-gradient-to-br from-coolors-pink to-coolors-purple text-white border-white/20 shadow-lg hover:shadow-xl hover:-translate-y-1 hover:scale-[1.005] transition-all duration-300',
+        'bg-gradient-to-br from-[#EC4899] to-[#DB2777] text-white border-white/10 shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300',
     },
     padding: {
       default: 'p-6',
@@ -242,7 +242,7 @@ const CardTitle = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<HT
   ({ className, ...props }, ref) => (
     <h3
       ref={ref}
-      className={cn('font-display font-semibold leading-none tracking-tight', className)}
+      className={cn('font-display font-semibold leading-none tracking-tight text-white', className)}
       {...props}
     />
   ),
@@ -253,7 +253,7 @@ const CardDescription = React.forwardRef<
   HTMLParagraphElement,
   React.HTMLAttributes<HTMLParagraphElement>
 >(({ className, ...props }, ref) => (
-  <p ref={ref} className={cn('text-sm text-ink-2', className)} {...props} />
+  <p ref={ref} className={cn('text-sm text-slate-400', className)} {...props} />
 ));
 CardDescription.displayName = 'CardDescription';
 
