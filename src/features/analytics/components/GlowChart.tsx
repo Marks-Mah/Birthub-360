@@ -179,7 +179,11 @@ export function GlowChart({ data, error }: GlowChartProps) {
                       </linearGradient>
                     ))}
                   </defs>
-                  <CartesianGrid vertical={false} stroke="rgba(255, 255, 255, 0.05)" strokeDasharray="4 8" />
+                  <CartesianGrid
+                    vertical={false}
+                    stroke="rgba(255, 255, 255, 0.05)"
+                    strokeDasharray="4 8"
+                  />
                   <XAxis
                     dataKey="name"
                     stroke="#94a3b8"
