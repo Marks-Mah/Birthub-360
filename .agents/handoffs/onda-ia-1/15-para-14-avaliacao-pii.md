@@ -1,7 +1,7 @@
 - De: Agente 15
 - Para: Agente 14
 - Onda: IA-1
-- Status: aberto
+- Status: resolvido
 - Prioridade: normal
 
 ## Problema
@@ -37,3 +37,6 @@ Teste em `tests/security/pii-guardrail.spec.ts` que:
 Revisão completa em handoff: `.agents/handoffs/onda-ia-1/15-para-14-avaliacao-pii.md`
 
 Decisão: APROVADO COM RESERVA para Onda 1. Implementação base é sólida, mas melhorias recomendadas para ondas posteriores.
+
+## Resolução (Coordenador 00)
+Testes já implementados pelo Agente 14, conformes e registrados na resposta de handoff associada.

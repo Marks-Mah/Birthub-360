@@ -1,7 +1,7 @@
 - De: Agente 14
 - Para: Agente 15
 - Onda: IA-1
-- Status: aberto
+- Status: resolvido
 - Prioridade: normal
 
 ## Problema
@@ -27,3 +27,6 @@ Testes executam validação básica dos guardrails. Para Onda 1, nível é adequ
 Testes marcam pontos para melhoria futura (encoding bypass, false positives em CEP, logging em AILog).
 
 Decisão do Agente 15 (APROVADO COM RESERVA) mantida para Onda 1. Melhorias podem ser entregues em ondas posteriores.
+
+## Resolução (Coordenador 00)
+Testes foram criados pelo Agente 14 e validados. Lacunas restantes são débitos técnicos já documentados, adequados para resolução em ondas futuras.
