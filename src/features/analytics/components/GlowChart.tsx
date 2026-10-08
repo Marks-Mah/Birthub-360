@@ -28,9 +28,9 @@ const SERIES: Array<{
   color: string;
   fillId: string;
 }> = [
-  { key: 'created', label: 'Criados', color: 'var(--brand-2)', fillId: 'pulseCreated' },
-  { key: 'won', label: 'Ganhos', color: 'var(--brand)', fillId: 'pulseWon' },
-  { key: 'lost', label: 'Perdidos', color: 'var(--critical)', fillId: 'pulseLost' },
+  { key: 'created', label: 'Criados', color: '#8B7DFF', fillId: 'pulseCreated' },
+  { key: 'won', label: 'Ganhos', color: '#22c55e', fillId: 'pulseWon' },
+  { key: 'lost', label: 'Perdidos', color: '#EF4444', fillId: 'pulseLost' },
 ];
 
 export function GlowChart({ data, error }: GlowChartProps) {
@@ -41,9 +41,6 @@ export function GlowChart({ data, error }: GlowChartProps) {
     lost: true,
   });
 
-  // Halo decorativo (aria-hidden) só deve animar em loop enquanto o card está de fato visível —
-  // regra de performance da constituição (seção 11): nenhuma animação contínua fora da
-  // viewport/aba ativa. `once: false` para pausar de novo se o usuário rolar o card para fora.
   const sectionRef = useRef<HTMLElement>(null);
   const isCardInView = useInView(sectionRef, { amount: 0.2, once: false });
 
@@ -73,11 +70,11 @@ export function GlowChart({ data, error }: GlowChartProps) {
     <section
       ref={sectionRef}
       data-testid="dashboard-analytics-chart"
-      className="group relative min-h-[18rem] w-full overflow-hidden rounded-[1.6rem] border border-line bg-surface/92 p-4 shadow-[0_28px_70px_-42px_rgba(0,0,0,0.85),inset_0_1px_0_rgba(255,255,255,0.06)] sm:p-5"
+      className="group relative min-h-[18rem] w-full overflow-hidden rounded-2xl border border-white/5 bg-[#1C1D24] p-4 shadow-sm sm:p-5"
     >
       <motion.div
         aria-hidden="true"
-        className="pointer-events-none absolute -right-24 -top-28 h-72 w-72 rounded-full bg-brand/20 blur-[90px]"
+        className="pointer-events-none absolute -right-24 -top-28 h-72 w-72 rounded-full bg-[#8B7DFF]/10 blur-[90px]"
         animate={
           isCardInView
             ? { scale: [1, 1.08, 1], opacity: [0.34, 0.5, 0.34] }
@@ -89,25 +86,22 @@ export function GlowChart({ data, error }: GlowChartProps) {
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-brand/45 to-transparent"
+        className="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-[#8B7DFF]/20 to-transparent"
       />
 
       <div className="relative z-10 flex h-full flex-col">
         <div className="mb-5 flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
           <div>
-            <div className="mb-1 flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.22em] text-brand-ink dark:text-brand">
+            <div className="mb-1 flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.22em] text-[#8B7DFF]">
               <CircleDot className="h-3.5 w-3.5" aria-hidden="true" /> Pulso comercial
             </div>
-            <h3 className="text-lg font-black text-ink">Entrada, ganho e perda por mês</h3>
-            <p className="mt-1 text-sm text-ink-2">
+            <h3 className="text-lg font-black text-white">Entrada, ganho e perda por mês</h3>
+            <p className="mt-1 text-sm text-slate-400">
               Explore as séries reais dos últimos {chartData.length} meses e isole o sinal que quer
               analisar.
             </p>
           </div>
 
-          {/* Toolbar de botões toggle (não campos de formulário) — <fieldset> não traria ganho
-              real de acessibilidade aqui, só estilo. */}
-          {/* biome-ignore lint/a11y/useSemanticElements: ver comentário acima */}
           <div
             role="group"
             aria-label="Séries exibidas no gráfico"
@@ -121,28 +115,28 @@ export function GlowChart({ data, error }: GlowChartProps) {
                   type="button"
                   onClick={() => toggleSeries(series.key)}
                   aria-pressed={active}
-                  className={`group/series flex min-w-[7.25rem] items-center gap-2 rounded-xl border px-3 py-2 text-left transition-[transform,border-color,background-color,box-shadow] duration-200 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand ${
+                  className={`group/series flex min-w-[7.25rem] items-center gap-2 rounded-xl border px-3 py-2 text-left transition-[transform,border-color,background-color,box-shadow] duration-200 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8B7DFF] ${
                     active
-                      ? 'border-line bg-surface-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]'
+                      ? 'border-white/10 bg-[#13151A] shadow-sm'
                       : 'border-transparent bg-transparent opacity-55'
                   }`}
                 >
                   <span
-                    className="h-2.5 w-2.5 shrink-0 rounded-full shadow-[0_0_14px_currentColor]"
+                    className="h-2.5 w-2.5 shrink-0 rounded-full"
                     style={{ color: series.color, backgroundColor: series.color }}
                   />
                   <span className="min-w-0 flex-1">
-                    <span className="block text-[10px] font-bold uppercase tracking-wide text-ink-2">
+                    <span className="block text-[10px] font-bold uppercase tracking-wide text-slate-400">
                       {series.label}
                     </span>
-                    <span className="block text-sm font-black text-ink [font-variant-numeric:tabular-nums]">
+                    <span className="block text-sm font-black text-white [font-variant-numeric:tabular-nums]">
                       {totals[series.key].toLocaleString('pt-BR')}
                     </span>
                   </span>
                   {active ? (
-                    <Eye className="h-3.5 w-3.5 text-ink-2 transition-transform group-hover/series:scale-110" />
+                    <Eye className="h-3.5 w-3.5 text-slate-400 transition-transform group-hover/series:scale-110" />
                   ) : (
-                    <EyeOff className="h-3.5 w-3.5 text-ink-2" />
+                    <EyeOff className="h-3.5 w-3.5 text-slate-400" />
                   )}
                 </button>
               );
@@ -156,14 +150,14 @@ export function GlowChart({ data, error }: GlowChartProps) {
               className="flex h-64 flex-col items-center justify-center gap-2 px-4 text-center"
               role="status"
             >
-              <AlertTriangle className="h-5 w-5 text-warning" />
-              <p className="text-sm font-semibold text-warning-active dark:text-warning">
+              <AlertTriangle className="h-5 w-5 text-amber-500" />
+              <p className="text-sm font-semibold text-amber-500">
                 Não foi possível carregar a série mensal.
               </p>
-              <p className="text-xs text-ink-2">{error}</p>
+              <p className="text-xs text-slate-400">{error}</p>
             </div>
           ) : chartData.length === 0 ? (
-            <div className="flex h-64 items-center justify-center text-sm text-ink-2">
+            <div className="flex h-64 items-center justify-center text-sm text-slate-400">
               Sem dados suficientes ainda.
             </div>
           ) : (
@@ -185,32 +179,32 @@ export function GlowChart({ data, error }: GlowChartProps) {
                       </linearGradient>
                     ))}
                   </defs>
-                  <CartesianGrid vertical={false} stroke="var(--line)" strokeDasharray="4 8" />
+                  <CartesianGrid vertical={false} stroke="rgba(255, 255, 255, 0.05)" strokeDasharray="4 8" />
                   <XAxis
                     dataKey="name"
-                    stroke={theme === 'light' ? '#94a3b8' : '#64748b'}
+                    stroke="#94a3b8"
                     fontSize={11}
                     tickLine={false}
                     axisLine={false}
                     dy={10}
                   />
                   <YAxis
-                    stroke={theme === 'light' ? '#94a3b8' : '#64748b'}
+                    stroke="#94a3b8"
                     fontSize={11}
                     tickLine={false}
                     axisLine={false}
                     allowDecimals={false}
                   />
                   <Tooltip
-                    cursor={{ stroke: 'var(--line)', strokeWidth: 1 }}
+                    cursor={{ stroke: 'rgba(255, 255, 255, 0.1)', strokeWidth: 1 }}
                     contentStyle={{
-                      backgroundColor: 'var(--surface)',
-                      color: 'var(--ink)',
-                      borderRadius: '16px',
-                      border: '1px solid var(--line)',
-                      boxShadow: '0 18px 50px -24px rgba(0,0,0,.7)',
+                      backgroundColor: '#1C1D24',
+                      color: '#ffffff',
+                      borderRadius: '12px',
+                      border: '1px solid rgba(255, 255, 255, 0.05)',
+                      boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.5)',
                     }}
-                    labelStyle={{ color: 'var(--ink)', fontWeight: 800, marginBottom: 6 }}
+                    labelStyle={{ color: '#ffffff', fontWeight: 800, marginBottom: 6 }}
                     itemStyle={{ fontSize: 12, fontWeight: 700 }}
                   />
                   {SERIES.map(
@@ -225,7 +219,7 @@ export function GlowChart({ data, error }: GlowChartProps) {
                           strokeWidth={series.key === 'won' ? 3.5 : 2.25}
                           fill={`url(#${series.fillId})`}
                           fillOpacity={1}
-                          activeDot={{ r: 5, strokeWidth: 2, fill: 'var(--surface)' }}
+                          activeDot={{ r: 5, strokeWidth: 2, fill: '#1C1D24' }}
                           animationDuration={900}
                           animationEasing="ease-out"
                         />

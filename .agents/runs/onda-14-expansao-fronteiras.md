@@ -35,8 +35,8 @@ Para eliminar a dívida de acoplamento tácito e garantir rastreabilidade confor
 
 | ID Handoff | De | Para | Prioridade | Status | Escopo / Objeto da Dependência |
 | :--- | :---: | :---: | :---: | :---: | :--- |
-| `06-para-01-schema-novos-crms.md` | 06 | 01 | **Bloqueador** | Aberto | Modelagem e migração Prisma para persistência de tokens e conexões dos novos CRMs |
-| `06-para-15-criptografia-tokens-crms.md` | 06 | 15 | **Bloqueador** | Aberto | Criptografia em repouso (AES-256-GCM) para tokens OAuth e API Keys dos novos CRMs (B-04) |
+| `06-para-01-schema-novos-crms.md` | 06 | 01 | **Bloqueador** | **Resolvido** | Modelagem e migração Prisma para persistência de tokens e conexões dos novos CRMs |
+| `06-para-15-criptografia-tokens-crms.md` | 06 | 15 | **Bloqueador** | **Resolvido** | Criptografia em repouso (AES-256-GCM) para tokens OAuth e API Keys dos novos CRMs (B-04) |
 | `06-para-04-contrato-entidades-pipeline.md` | 06 | 04 | Alto | Aberto | Normalização de estágios de pipeline (deal stages) para o modelo canônico de Commercial Intelligence |
 | `06-para-02-ui-conectores-crm.md` | 06 | 02 | Alto | Aberto | Interface de usuário (cards, modais e status) para conexão de CRMs no painel de Integrações |
 | `07-para-12-orquestracao-webrtc-telefonia.md` | 07 | 12 | **Bloqueador** | Aberto | Bridge de áudio bidirecional e eventos entre o LiveKit/WebRTC e sessões de telefonia SIP/3CX (B-07) |
