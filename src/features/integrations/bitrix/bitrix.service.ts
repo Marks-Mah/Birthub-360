@@ -91,6 +91,8 @@ export {
   EXTRACTION_PERIODS,
   getExtractionRun,
   listExtractionRuns,
+  reconcileStuckRuns,
+  retryExtractionRun,
 } from './service/extraction.js';
 export type { ExtractionFileFormat } from './service/extractionFiles.js';
 export type { BitrixLeadFilters, BitrixLeadSummary } from './service/leads.js';

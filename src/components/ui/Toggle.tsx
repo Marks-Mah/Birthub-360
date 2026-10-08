@@ -42,17 +42,17 @@ export function Toggle({
 
   const classicStyles = {
     container: 'h-6 w-11',
-    checked: 'bg-brand shadow-glow-brand hover:brightness-110',
-    unchecked: 'bg-surface-2 dark:bg-surface border-line hover:bg-line',
-    thumb: 'h-5 w-5 bg-white shadow-md',
+    checked: 'bg-[#8B7DFF] shadow-sm hover:brightness-110',
+    unchecked: 'bg-[#1C1D24] border-white/10 hover:bg-[#22232B]',
+    thumb: 'h-5 w-5 bg-white shadow-sm',
   };
 
   return (
     <div className={cn('flex items-center justify-between gap-3', className)}>
       {(label || description) && (
         <label htmlFor={toggleId} className="flex flex-col select-none cursor-pointer">
-          {label && <span className="text-sm font-semibold text-ink">{label}</span>}
-          {description && <span className="text-xs text-ink-2 leading-relaxed">{description}</span>}
+          {label && <span className="text-sm font-semibold text-slate-200">{label}</span>}
+          {description && <span className="text-xs text-slate-400 leading-relaxed">{description}</span>}
         </label>
       )}
 

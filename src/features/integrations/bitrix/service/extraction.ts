@@ -5,7 +5,8 @@ import { logger } from '../../../../lib/logger.js';
 import { prisma } from '../../../../lib/prisma.js';
 import { AppError } from '../../../../shared/middlewares/errorHandler.js';
 import { BITRIX_FIELD_MAP_VERSION } from '../bitrixFieldMap.js';
-import { callBitrix, getConnectionWebhookUrl } from './client.js';
+import { BitrixDefinitiveError, callBitrix, getConnectionWebhookUrl } from './client.js';
+import { computeBackoffDelayMs, sleep } from '../../../../shared/http/retryWithBackoff.js';
 import {
   ALL_EXTRACTION_ENTITIES,
   type BitrixExtractionEntity,
@@ -29,7 +30,12 @@ import {
   type PeriodRange,
   resolvePeriodRange,
 } from './extractionPeriod.js';
-import { bitrixExtractionFailuresTotal, bitrixExtractionPartialTotal } from './metrics.js';
+import {
+  bitrixExtractionFailuresTotal,
+  bitrixExtractionPartialTotal,
+  bitrixExtractionRetriesTotal,
+} from './metrics.js';
+
 
 // ── Serviço real de Extrações Bitrix (Onda 7, Agente 06/06A) ───────────────────────────────────
 //
@@ -259,7 +265,22 @@ function applyCheckpoint(
   return { from, to };
 }
 
+let extractionBackoffDelayFn = (attempt: number) => computeBackoffDelayMs(attempt, 200, 2000);
+let extractionSleepFn = sleep;
+
+/** Configura atraso de retentativa para testes unitários — permite eliminar waits reais. */
+export function __setExtractionRetryDelayForTests(
+  delayFn?: (attempt: number) => number,
+  sleepFn?: (ms: number) => Promise<void>,
+) {
+  extractionBackoffDelayFn = delayFn ?? ((attempt: number) => computeBackoffDelayMs(attempt, 200, 2000));
+  extractionSleepFn = sleepFn ?? sleep;
+}
+
+export const MAX_PAGE_RETRIES = 3;
+
 async function extractEntityPages(
+  organizationId: string,
   webhookUrl: string,
   entity: BitrixExtractionEntity,
   filter: Record<string, unknown>,
@@ -283,9 +304,50 @@ async function extractEntityPages(
     const params: Record<string, unknown> = { filter, start };
     if (select) params.select = select;
     if (entity !== 'user') params.order = { ID: 'ASC' }; // ordem estável — evita pular/duplicar registro se algo for criado/alterado entre páginas
-    const data = await callBitrix<BitrixListResponse>(webhookUrl, method, params, {
-      correlationId,
-    });
+
+    let data: BitrixListResponse | null = null;
+    let pageAttempt = 1;
+
+    while (pageAttempt <= MAX_PAGE_RETRIES) {
+      try {
+        data = await callBitrix<BitrixListResponse>(webhookUrl, method, params, {
+          correlationId,
+        });
+        break;
+      } catch (err: any) {
+        // Erro definitivo (401/403/filtro inválido) propaga imediatamente sem retentar
+        if (
+          err instanceof BitrixDefinitiveError ||
+          err?.statusCode === 401 ||
+          err?.statusCode === 403 ||
+          err?.statusCode === 400
+        ) {
+          throw err;
+        }
+
+        if (pageAttempt >= MAX_PAGE_RETRIES) {
+          logger.error(
+            { correlationId, entity, start, pageAttempt, maxPageAttempts: MAX_PAGE_RETRIES, err },
+            '[bitrix] Retentativas de página esgotadas na extração',
+          );
+          throw err;
+        }
+
+        const delay = extractionBackoffDelayFn(pageAttempt);
+        logger.warn(
+          { correlationId, entity, start, pageAttempt, maxPageAttempts: MAX_PAGE_RETRIES, delayMs: delay },
+          '[bitrix] Falha transitória ao buscar página da extração — retentando com backoff',
+        );
+        bitrixExtractionRetriesTotal.inc({ tenant: organizationId, entity });
+        await extractionSleepFn(delay);
+        pageAttempt++;
+      }
+    }
+
+    if (!data) {
+      throw new AppError(`Falha ao obter dados da página start=${start} do Bitrix24.`, 502);
+    }
+
     rows.push(...data.result);
     pagesScanned++;
 
@@ -423,7 +485,7 @@ export async function executeExtractionRun(organizationId: string, runId: string
   // a mesma extração em paralelo (duplicando arquivos/contagens).
   const claimed = await prisma.bitrixExtractionRun.updateMany({
     where: { id: runId, organizationId, status: 'queued' },
-    data: { status: 'running', startedAt: new Date() },
+    data: { status: 'running', startedAt: new Date(), attempts: { increment: 1 } },
   });
   if (claimed.count !== 1) return;
 
@@ -511,64 +573,95 @@ export async function executeExtractionRun(organizationId: string, runId: string
     }
     const filter = buildFilter(entity, filters, effectiveRange);
 
-    try {
-      const { rows, pagesScanned, pagesExhausted, cancelled } = await extractEntityPages(
-        webhookUrl,
-        entity,
-        filter,
-        select,
-        correlationId,
-        async (processedSoFar) => {
-          entry.processed = processedSoFar;
-          await persistProgress(
-            organizationId,
-            runId,
-            progressEntities,
-            totalCount + processedSoFar,
-            countByEntity,
-          );
-          return isCancelled(organizationId, runId);
-        },
-      );
+    let entitySuccess = false;
+    let entityAttempt = 1;
+    const maxEntityAttempts = 2;
 
-      entry.pagesScanned = pagesScanned;
-      entry.pagesExhausted = pagesExhausted;
-      entry.processed = rows.length;
-      entry.status = cancelled ? 'pending' : 'done';
-      countByEntity[entity] = rows.length;
-      totalCount += rows.length;
-      datasets.push({ entity, label: EXTRACTION_ENTITY_SPECS[entity].label, rows });
-
-      // Só avança o checkpoint quando a entidade de fato esgotou o portal sem cancelamento —
-      // uma entidade que bateu no teto de segurança (`pagesExhausted: false`) ainda tem
-      // registros não vistos dentro do próprio período pedido; gravar um checkpoint aqui
-      // faria uma futura retomada PULAR esses registros nunca lidos, não só evitar reler os
-      // já lidos. Sem cursor gravado, a próxima execução compatível simplesmente refaz o
-      // período inteiro de novo para essa entidade (mesmo comportamento de hoje).
-      if (pagesExhausted && !cancelled) {
-        entry.checkpointTo = (effectiveRange?.to ?? runNow).toISOString();
-      }
-
-      await persistProgress(organizationId, runId, progressEntities, totalCount, countByEntity);
-
-      if (!pagesExhausted && !cancelled) {
-        incompleteEntities.push(entity);
-        bitrixExtractionPartialTotal.inc({ tenant: organizationId, entity });
-        logger.warn(
-          { organizationId, runId, entity, pagesScanned },
-          '[bitrix] Extração atingiu o teto de segurança de páginas antes de esgotar o portal — contagem desta entidade é parcial',
+    while (entityAttempt <= maxEntityAttempts && !entitySuccess) {
+      try {
+        const { rows, pagesScanned, pagesExhausted, cancelled } = await extractEntityPages(
+          organizationId,
+          webhookUrl,
+          entity,
+          filter,
+          select,
+          correlationId,
+          async (processedSoFar) => {
+            entry.processed = processedSoFar;
+            await persistProgress(
+              organizationId,
+              runId,
+              progressEntities,
+              totalCount + processedSoFar,
+              countByEntity,
+            );
+            return isCancelled(organizationId, runId);
+          },
         );
+
+        entry.pagesScanned = pagesScanned;
+        entry.pagesExhausted = pagesExhausted;
+        entry.processed = rows.length;
+        entry.status = cancelled ? 'pending' : 'done';
+        countByEntity[entity] = rows.length;
+        totalCount += rows.length;
+        datasets.push({ entity, label: EXTRACTION_ENTITY_SPECS[entity].label, rows });
+
+        // Só avança o checkpoint quando a entidade de fato esgotou o portal sem cancelamento —
+        // uma entidade que bateu no teto de segurança (`pagesExhausted: false`) ainda tem
+        // registros não vistos dentro do próprio período pedido; gravar um checkpoint aqui
+        // faria uma futura retomada PULAR esses registros nunca lidos, não só evitar reler os
+        // já lidos. Sem cursor gravado, a próxima execução compatível simplesmente refaz o
+        // período inteiro de novo para essa entidade (mesmo comportamento de hoje).
+        if (pagesExhausted && !cancelled) {
+          entry.checkpointTo = (effectiveRange?.to ?? runNow).toISOString();
+        }
+
+        await persistProgress(organizationId, runId, progressEntities, totalCount, countByEntity);
+
+        if (!pagesExhausted && !cancelled) {
+          incompleteEntities.push(entity);
+          bitrixExtractionPartialTotal.inc({ tenant: organizationId, entity });
+          logger.warn(
+            { organizationId, runId, entity, pagesScanned },
+            '[bitrix] Extração atingiu o teto de segurança de páginas antes de esgotar o portal — contagem desta entidade é parcial',
+          );
+        }
+        if (cancelled) {
+          wasCancelled = true;
+        }
+        entitySuccess = true;
+      } catch (err: any) {
+        const isDefinitive =
+          err instanceof BitrixDefinitiveError ||
+          err?.statusCode === 401 ||
+          err?.statusCode === 403 ||
+          err?.statusCode === 400;
+
+        if (
+          isDefinitive ||
+          entityAttempt >= maxEntityAttempts ||
+          (await isCancelled(organizationId, runId))
+        ) {
+          entry.status = 'error';
+          entry.error = err instanceof Error ? err.message : String(err);
+          await persistProgress(organizationId, runId, progressEntities, totalCount, countByEntity);
+          await failRun(organizationId, runId, entry.error, entity);
+          return;
+        }
+
+        logger.warn(
+          { organizationId, runId, entity, entityAttempt, maxEntityAttempts, err },
+          '[bitrix] Falha transitória na entidade durante extração — retentando entidade inteira com backoff',
+        );
+        bitrixExtractionRetriesTotal.inc({ tenant: organizationId, entity });
+        await extractionSleepFn(extractionBackoffDelayFn(entityAttempt));
+        entityAttempt++;
       }
-      if (cancelled) {
-        wasCancelled = true;
-        break;
-      }
-    } catch (err: any) {
-      entry.status = 'error';
-      entry.error = err instanceof Error ? err.message : String(err);
-      await persistProgress(organizationId, runId, progressEntities, totalCount, countByEntity);
-      await failRun(organizationId, runId, entry.error, entity);
-      return;
+    }
+
+    if (wasCancelled) {
+      break;
     }
   }
 
@@ -787,5 +880,126 @@ export async function downloadExtractionFile(
   return { buffer, filename: meta.filename, contentType };
 }
 
+/**
+ * Retenta uma extração que falhou, foi cancelada ou terminou de forma parcial.
+ * Valida autorização de tenant, limpa arquivos antigos, redefine status para 'queued',
+ * registra auditoria e reinicia a execução em segundo plano.
+ */
+export async function retryExtractionRun(
+  organizationId: string,
+  runId: string,
+) {
+  const run = await prisma.bitrixExtractionRun.findFirst({
+    where: { id: runId, organizationId },
+  });
+  if (!run) throw new AppError('Extração não encontrada.', 404);
+
+  if (run.status === 'running' || run.status === 'queued') {
+    throw new AppError('Esta extração já está em andamento ou na fila.', 400);
+  }
+
+  if (!run.connectionId) {
+    throw new AppError('Extração sem conexão Bitrix24 associada.', 400);
+  }
+  // Valida que a conexão ainda existe e pertence à organização
+  await getConnectionWebhookUrl(organizationId, run.connectionId);
+
+  // Remove arquivos gerados anteriormente (se houver) para evitar inconsistência
+  await deleteExtractionRunFiles(organizationId, runId).catch((err) => {
+    logger.warn({ err, runId, organizationId }, '[bitrix] Falha ao limpar arquivos anteriores antes do retry');
+  });
+
+  const updatedRun = await prisma.bitrixExtractionRun.update({
+    where: { id: runId },
+    data: {
+      status: 'queued',
+      errorMessage: null,
+      completedAt: null,
+      cancelledAt: null,
+      startedAt: null,
+    },
+  });
+
+  await AuditService.log({
+    action: 'UPDATE',
+    entity: 'BitrixExtractionRun',
+    entityId: runId,
+    tenantId: organizationId,
+    afterState: { status: 'queued', retry: true, previousAttempts: run.attempts },
+  });
+
+  bitrixExtractionRetriesTotal.inc({ tenant: organizationId, entity: 'run' });
+
+  void executeExtractionRun(organizationId, runId).catch((err) => {
+    logger.error(
+      { err, organizationId, runId },
+      '[bitrix] Retentativa da extração falhou de forma inesperada, fora do tratamento interno',
+    );
+  });
+
+  return updatedRun;
+}
+
+export const DEFAULT_STUCK_TIMEOUT_MS = 15 * 60 * 1000; // 15 minutos
+export const MAX_RUN_ATTEMPTS = 3;
+
+/**
+ * Reconcilia extrações que ficaram presas com status 'running'
+ * (por exemplo, devido a reinício do processo HTTP, crash ou timeout).
+ * Se a extração estiver presa por mais de stuckTimeoutMs:
+ * - Se attempts < MAX_RUN_ATTEMPTS: reenfileira com status 'queued' para retry automático.
+ * - Se attempts >= MAX_RUN_ATTEMPTS: marca como 'failed' com mensagem informativa.
+ */
+export async function reconcileStuckRuns(
+  organizationId?: string,
+  stuckTimeoutMs = DEFAULT_STUCK_TIMEOUT_MS,
+): Promise<{ reconciledCount: number; retriedCount: number; failedCount: number }> {
+  const cutoff = new Date(Date.now() - stuckTimeoutMs);
+  const where: Prisma.BitrixExtractionRunWhereInput = {
+    status: 'running',
+    startedAt: { lte: cutoff },
+    ...(organizationId ? { organizationId } : {}),
+  };
+
+  const stuckRuns = await prisma.bitrixExtractionRun.findMany({
+    where,
+    select: { id: true, organizationId: true, attempts: true, correlationId: true },
+  });
+
+  let retriedCount = 0;
+  let failedCount = 0;
+
+  for (const run of stuckRuns) {
+    if ((run.attempts ?? 0) < MAX_RUN_ATTEMPTS) {
+      await prisma.bitrixExtractionRun.update({
+        where: { id: run.id },
+        data: {
+          status: 'queued',
+          errorMessage: `Execução anterior interrompida (timeout ou reinício). Reenfileirada automaticamente (tentativa ${(run.attempts ?? 0) + 1} de ${MAX_RUN_ATTEMPTS}).`,
+          startedAt: null,
+        },
+      });
+      bitrixExtractionRetriesTotal.inc({ tenant: run.organizationId, entity: 'run' });
+      void executeExtractionRun(run.organizationId, run.id);
+      retriedCount++;
+    } else {
+      await failRun(
+        run.organizationId,
+        run.id,
+        `Extração interrompida após ${run.attempts} tentativas (timeout ou reinício do servidor).`,
+        'run',
+      );
+      failedCount++;
+    }
+  }
+
+  return {
+    reconciledCount: stuckRuns.length,
+    retriedCount,
+    failedCount,
+  };
+}
+
 export type { BitrixExtractionEntity, BitrixExtractionPeriod };
 export { ALL_EXTRACTION_ENTITIES, EXTRACTION_PERIODS };
+

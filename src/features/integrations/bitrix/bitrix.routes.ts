@@ -29,8 +29,10 @@ import {
   listRecentBitrixSyncLogs,
   listSyncRules,
   postCommentToBitrix,
+  reconcileStuckRuns,
   regenerateWebhookSecret,
   resolveOwnBitrixUserId,
+  retryExtractionRun,
   setInboundEventsEnabled,
   setSyncRuleActive,
   testBitrixConnection,
@@ -754,6 +756,34 @@ router.post(
       const { organizationId } = (req as AuthRequest).user;
       await cancelExtractionRun(organizationId, routeParam(req.params.id, 'id'));
       res.json({ success: true });
+    } catch (error: any) {
+      next(error);
+    }
+  },
+);
+
+router.post(
+  '/extractions/:id/retry',
+  managementRoles,
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const { organizationId } = (req as AuthRequest).user;
+      const result = await retryExtractionRun(organizationId, routeParam(req.params.id, 'id'));
+      res.json({ success: true, data: result });
+    } catch (error: any) {
+      next(error);
+    }
+  },
+);
+
+router.post(
+  '/extractions/reconcile-stuck',
+  managementRoles,
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const { organizationId } = (req as AuthRequest).user;
+      const result = await reconcileStuckRuns(organizationId);
+      res.json({ success: true, data: result });
     } catch (error: any) {
       next(error);
     }

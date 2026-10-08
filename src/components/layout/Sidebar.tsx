@@ -1,10 +1,9 @@
 import { ArrowRight, ChevronDown, ChevronLeft, X } from 'lucide-react';
-import type React from 'react';
 import { useMemo } from 'react';
 import { useAuth } from '../../contexts/AuthContext.js';
 import { hasRequiredRole } from '../../lib/auth/authorization.js';
-import { NavLaunchTransition } from './NavLaunchTransition.js';
 import { useSidebarState } from './hooks/useSidebarState.js';
+import { NavLaunchTransition } from './NavLaunchTransition.js';
 import { getSidebarNavSections } from './sidebarSections.js';
 import type { TabType } from './tabMeta.js';
 
