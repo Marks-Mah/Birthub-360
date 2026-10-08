@@ -3,7 +3,6 @@ import {
   createDecipheriv,
   createHash,
   randomBytes,
-  timingSafeEqual,
 } from 'node:crypto';
 import { env } from '../../config/env.js';
 import { logger } from '../logger.js';
@@ -117,15 +116,14 @@ export function decryptCredentialSync(
     }
   }
 
-  let lastError: unknown = null;
   for (const key of keysToTry) {
     try {
       const decipher = createDecipheriv(ALGORITHM, key, iv, { authTagLength: AUTH_TAG_LENGTH });
       decipher.setAuthTag(authTag);
       const plaintext = Buffer.concat([decipher.update(encryptedBuf), decipher.final()]);
       return plaintext.toString('utf8');
-    } catch (err) {
-      lastError = err;
+    } catch {
+      // Tenta próxima chave disponível
     }
   }
 

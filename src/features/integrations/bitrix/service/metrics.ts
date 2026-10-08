@@ -71,3 +71,19 @@ export const bitrixExtractionPartialTotal =
     help: 'Total de extrações concluídas de forma PARCIAL (teto de segurança de páginas atingido para ao menos uma entidade), por organização (tenant) e entidade.',
     labelNames: ['tenant', 'entity'] as const,
   });
+
+/**
+ * Total de retentativas executadas pelo serviço de Extrações Bitrix (BitrixExtractionRun) —
+ * rastreia resiliência operacional tanto em retentativas no nível de página/entidade
+ * quanto em reexecuções manuais/automáticas de execuções com falha transitória.
+ */
+export const bitrixExtractionRetriesTotal =
+  (client.register.getSingleMetric('bitrix_extraction_retries_total') as
+    | client.Counter<'tenant' | 'entity'>
+    | undefined) ??
+  new client.Counter({
+    name: 'bitrix_extraction_retries_total',
+    help: 'Total de retentativas executadas pelo serviço de Extrações Bitrix (BitrixExtractionRun), por organização (tenant) e entidade.',
+    labelNames: ['tenant', 'entity'] as const,
+  });
+
