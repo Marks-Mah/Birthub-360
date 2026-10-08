@@ -428,33 +428,33 @@
 }
 
 .dark {
-  /* Dark theme mais leve e moderno — base azul-marinho com melhor contraste */
-  --bg: #0f172a;
-  --surface: #1e293b;
-  --surface-2: #334155;
-  --surface-subtle: #1e293b;
-  --surface-elevated: #334155;
-  --surface-interactive: #475569;
-  --overlay: rgba(15, 23, 42, 0.85);
-  --ink: #f1f5f9;
-  --ink-2: #cbd5e1;
-  --line: rgba(255, 255, 255, 0.08);
-  --soft: rgba(255, 190, 11, 0.16);
+  /* Minimalist Dark Theme (Updated) */
+  --bg: #15151A;
+  --surface: #1C1D24;
+  --surface-2: #13151A;
+  --surface-subtle: #1C1D24;
+  --surface-elevated: #22232B;
+  --surface-interactive: #22232B;
+  --overlay: rgba(15, 20, 25, 0.85);
+  --ink: #f8fafc;
+  --ink-2: #94a3b8;
+  --line: rgba(255, 255, 255, 0.05);
+  --soft: rgba(139, 125, 255, 0.1);
   /* Paleta Coolors - Dark mode versions */
   --coolors-yellow: #ffd166;
   --coolors-orange: #ff6b35;
   --coolors-pink: #ff3399;
-  --coolors-purple: #9d4edd;
+  --coolors-purple: #8B7DFF;
   --coolors-blue: #4da6ff;
-  /* Atualização de tokens para usar Coolors */
-  --brand: #4da6ff;
-  --brand-2: #9d4edd;
-  --iris: #9d4edd;
-  --orbit-blue: #4da6ff;
-  --red: #ff3399;
-  --pink: #ff3399;
-  --warn: #ffd166;
-  --gold: #ffd166;
+  /* Atualização de tokens */
+  --brand: #8B7DFF;
+  --brand-2: #A78BFA;
+  --iris: #8B7DFF;
+  --orbit-blue: #38bdf8;
+  --red: #EF4444;
+  --pink: #F472B6;
+  --warn: #F59E0B;
+  --gold: #FCD34D;
   /* Acentos de ícone da Sidebar, lado escuro: matizes mais vibrantes e legíveis - Coolors */
   --nav-c-gold: #ffd166;
   --nav-c-iris: #9d4edd;
