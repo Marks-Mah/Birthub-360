@@ -18,7 +18,7 @@ Static analysis via grep/ripgrep, manual code inspection, verifying exact paths 
 
 ## Findings
 ### TD-08-001
-Status: REAL
+Status: FIXED (2026-10-08)
 Severity: P4
 Category: TESTING
 
@@ -27,13 +27,13 @@ Line: 19
 Symbol: Test Env
 
 Evidence:
-`// @ts-expect-error -- simulate an environment where matchMedia is unavailable`
+Substituído `// @ts-expect-error` e mutação direta de `window.matchMedia` por `vi.stubGlobal('matchMedia', undefined)`.
 
-Impact: Tests rely on suppressing TypeScript errors instead of properly mocking the environment.
+Impact: Resolvido. O teste não depende mais de supressão de erro do compilador TypeScript.
 
-Root Cause: Missing global mock for window.matchMedia in test setup.
+Root Cause: Mutação direta do objeto global window em vez de mock/stub idiomático do Vitest.
 
-Recommendation: Add window.matchMedia mock in tests/mocks/setup.ts and remove @ts-expect-error.
+Recommendation: Resolvido via `vi.stubGlobal('matchMedia', undefined)`.
 
 Duplicate Of: N/A
 Confidence: HIGH
@@ -45,16 +45,16 @@ Confidence: HIGH
 *(Nenhum confirmado nesta varredura)*
 
 ## Already Fixed
-*(Nenhum confirmado nesta varredura)*
+- TD-08-001: Mock idiomático via `vi.stubGlobal` implementado em `useReducedMotion.test.ts`.
 
 ## Needs Investigation
 - None.
 
 ## Summary
-Real: 1
+Real: 0
 Partial: 0
 Duplicate: 0
 Invalid: 0
 No Evidence: 0
-Already Fixed: 0
+Already Fixed: 1
 Needs Investigation: 0

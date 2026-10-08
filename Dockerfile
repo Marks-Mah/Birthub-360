@@ -50,9 +50,31 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=3000
 
+# Dependências de SO para a aplicação, Prisma e Chromium/Playwright headless (Crawlee/scraping)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     openssl \
     ca-certificates \
+    libnss3 \
+    libnspr4 \
+    libatk1.0-0 \
+    libatk-bridge2.0-0 \
+    libcups2 \
+    libdrm2 \
+    libxkbcommon0 \
+    libxcomposite1 \
+    libxdamage1 \
+    libxfixes3 \
+    libxrandr2 \
+    libgbm1 \
+    libasound2 \
+    libpango-1.0-0 \
+    libpangocairo-1.0-0 \
+    libglib2.0-0 \
+    libx11-6 \
+    libx11-xcb1 \
+    libxcb1 \
+    libxext6 \
+    fonts-liberation \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy necessary files from builder

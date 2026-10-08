@@ -150,6 +150,10 @@ const envSchema = z
     QDRANT_PORT: z.coerce.number().int().positive().default(6333),
     QDRANT_API_KEY: z.string().optional(),
 
+    // ── Temporal (OS-4, docker-compose.opensource.yml) ───────────────────────
+    TEMPORAL_ADDRESS: z.string().default('localhost:7233'),
+    TEMPORAL_NAMESPACE: z.string().default('default'),
+
     // ── n8n — disparo de workflow de saída (OS-4, docker-compose.services.yml) ──
     // Helper genérico em src/features/automations/infra/N8nWebhookDispatcher.ts, também sem
     // nenhum gatilho de negócio ligado a ele ainda — decidir QUAL evento do sistema deve disparar

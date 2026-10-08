@@ -1,7 +1,7 @@
 - De: 07 (IA e Automações)
 - Para: 21 (Privacidade e LGPD)
 - Onda: 14
-- Status: aberto
+- Status: resolvido
 - Prioridade: bloqueador
 
 ## Problema
@@ -29,3 +29,15 @@ O Agente 21 deve:
 
 ## Contexto adicional
 Bloqueador prioritário B-13 e conformidade regulatória mandatória.
+
+## Resolução (Agente 21 - 2026-10-08)
+O Agente 21 estabeleceu as diretrizes e regras normativas de privacidade para o subsistema de IA de Voz:
+1. **Bases Legais Definidas:** Art. 7º, I (Consentimento do Titular) para prospecção outbound e Art. 7º, V (Execução de Contrato/Diligências pré-contratuais) para negociações em andamento.
+2. **Aviso Sonoro Obrigatório:** Formalizado script introdutório mandatório executado antes de qualquer processamento de áudio por LLMs: *"Olá! Esta ligação é realizada com auxílio de inteligência artificial da Birth Hub 360 e poderá ser gravada para fins de atendimento e conformidade."*
+3. **Tabela de Retenção & Expurgo:**
+   - Gravações brutas de áudio: Expurgo programado em 90 dias via storage lifecycle rules.
+   - Transcrições e insights: Criptografia em repouso (`VoiceCallLog.transcript`) e higienização de PII via `LgpdSanitizerService` antes de indexação vetorial.
+   - Logs de telemetria: Retenção máxima de 30 dias sem identificadores nominais.
+4. **Direitos do Titular (Art. 18 LGPD):** Integrado ao `LgpdService.eraseContact` e `eraseDataSubject` para expurgo imediato de gravações e transcrições mediante solicitação do titular ou comando de opt-out.
+Status atualizado para **resolvido**.
+

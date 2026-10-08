@@ -62,6 +62,7 @@ const PURGE_BATCH_SIZE = 500;
 interface PurgeCandidate {
   id: string;
   filters: unknown;
+  progress: unknown;
 }
 
 interface StoredFilters {
@@ -131,13 +132,21 @@ export async function runBitrixExtractionPurgeSweep(): Promise<BitrixExtractionP
             status: { in: [...TERMINAL_STATUSES] },
             purgedAt: null,
           },
-          select: { id: true, filters: true, errorMessage: true },
+          select: { id: true, filters: true, progress: true, errorMessage: true },
           take: PURGE_BATCH_SIZE,
         }),
       )) as (PurgeCandidate & { errorMessage: string | null })[];
 
       for (const candidate of candidates) {
         try {
+          const rawProgress =
+            candidate.progress && typeof candidate.progress === 'object'
+              ? (candidate.progress as Record<string, unknown>)
+              : null;
+          if (rawProgress && rawProgress.purgedAt) {
+            continue;
+          }
+
           const purgedAt = new Date().toISOString();
           // Arquivo primeiro, linha depois (mesmo motivo/ordem de `deleteExtractionRun`):
           // nunca deixar a linha marcada como "expurgada" com o arquivo real ainda em
@@ -145,12 +154,18 @@ export async function runBitrixExtractionPurgeSweep(): Promise<BitrixExtractionP
           // é `fs`/disco puro (não usa Prisma), então não precisa de `requestContext`.
           await deleteExtractionRunFiles(org.id, candidate.id);
 
+          const nextProgress = {
+            ...(rawProgress || {}),
+            purgedAt,
+          };
+
           await requestContext.run({ tenantId: org.id }, () =>
             prisma.bitrixExtractionRun.update({
               where: { id: candidate.id },
               data: {
                 files: null as unknown as Prisma.InputJsonValue,
                 filters: redactFilters(candidate.filters),
+                progress: nextProgress as unknown as Prisma.InputJsonValue,
                 purgedAt: new Date(purgedAt),
                 errorMessage: candidate.errorMessage ? '[erro anonimizado — LGPD]' : null,
               },

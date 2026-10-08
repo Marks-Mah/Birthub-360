@@ -1,7 +1,7 @@
 - De: 06 (Integrações e Bitrix)
 - Para: 02 (Produto e UX)
 - Onda: 14
-- Status: aberto
+- Status: resolvido
 - Prioridade: alto
 
 ## Problema
@@ -27,3 +27,11 @@ O Agente 02 deve:
 
 ## Contexto adicional
 Garante conformidade com o design system do Birth Hub 360 e princípios de UX do produto.
+
+## Resolução (Agente 02 - 2026-10-08)
+O Agente 02 implementou o painel visual completo e acessível em `src/features/integrations/components/ExternalCrmPanel.tsx`:
+1. Suporte nativo a HubSpot, Pipedrive, RD Station e Monday.com.
+2. Estados explícitos de interface (`disconnected`, `connecting`, `connected`, `syncing`, `error`).
+3. Modais acessíveis para entrada de chaves/OAuth com validação de campos, feedback sonoro (`SoundFX`) e teste de conectividade ponta a ponta (`/api/integrations/external-crm/:id/test`).
+4. Máscara de segurança para tokens (`maskSecret`), foco gerenciado e contraste conforme WCAG 2.2 AA.
+Status atualizado para **resolvido**.

@@ -40,16 +40,13 @@ import type { ContactStatus, LeadStatus, LeadTemperature } from '../lib/zod.js';
 
 export type { LeadQualification };
 
-export interface Company
-  extends DomainCompany<string, ContactStatus, LeadStatus, LeadTemperature> {}
+export interface Company extends DomainCompany<string> {}
 
-export interface Contact
-  extends DomainContact<string, ContactStatus, LeadStatus, LeadTemperature> {}
+export interface Contact extends DomainContact<string> {}
 
-export interface Lead extends DomainLead<string, LeadStatus, LeadTemperature, ContactStatus> {}
+export interface Lead extends DomainLead<string> {}
 
-export interface Activity
-  extends DomainActivity<string, LeadStatus, LeadTemperature, ContactStatus> {}
+export interface Activity extends DomainActivity<string> {}
 
 export type TimelineEvent = DomainTimelineEvent<string>;
 export type Note = DomainNote<string>;

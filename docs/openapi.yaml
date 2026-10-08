@@ -4950,6 +4950,55 @@ paths:
                   success: { type: boolean }
         '401': { description: Não autenticado }
         '403': { $ref: '#/components/responses/Forbidden' }
+  /integrations/external-crm/{id}/test:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema: { type: string }
+    post:
+      tags: [CRM Externo]
+      summary: Testa e valida a conectividade das credenciais da conexão (somente ADMIN/GESTOR)
+      responses:
+        '200':
+          description: Conexão validada com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  valid: { type: boolean }
+                  message: { type: string }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { description: Não autenticado }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '500': { $ref: '#/components/responses/InternalError' }
+  /integrations/external-crm/{id}/sync:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema: { type: string }
+    post:
+      tags: [CRM Externo]
+      summary: Dispara a sincronização/importação manual de leads do CRM externo (somente ADMIN/GESTOR)
+      responses:
+        '200':
+          description: Sincronização executada com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  importedCount: { type: integer }
+                  nextCursor: { type: string, nullable: true }
+                  message: { type: string }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { description: Não autenticado }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '500': { $ref: '#/components/responses/InternalError' }
   /integrations/birth-voice/calls:
     get:
       tags: [Birth Voice]
@@ -8252,6 +8301,32 @@ paths:
         '200':
           {
             description: Cancelada,
+            content:
+              { application/json: { schema: { $ref: '#/components/schemas/DataEnvelope' } } },
+          }
+        '403': { $ref: '#/components/responses/Forbidden' }
+  /bitrix/extractions/{id}/retry:
+    parameters:
+      - $ref: '#/components/parameters/IdParam'
+    post:
+      tags: [Bitrix24]
+      summary: Reexecuta uma extração com falha ou interrompida (somente ADMIN/GESTOR)
+      responses:
+        '200':
+          {
+            description: Reiniciada,
+            content:
+              { application/json: { schema: { $ref: '#/components/schemas/DataEnvelope' } } },
+          }
+        '403': { $ref: '#/components/responses/Forbidden' }
+  /bitrix/extractions/reconcile-stuck:
+    post:
+      tags: [Bitrix24]
+      summary: Reconcilia e marca como falhas as extrações travadas/órfãs (somente ADMIN/GESTOR)
+      responses:
+        '200':
+          {
+            description: Reconciliação concluída,
             content:
               { application/json: { schema: { $ref: '#/components/schemas/DataEnvelope' } } },
           }

@@ -844,7 +844,7 @@ ${JSON.stringify(metrics, null, 2)}`;
 // Record (contravariância de parâmetros — `unknown` não é atribuível a `string`), e não há um tipo
 // de união prático que descreva "uma função de N parâmetros de texto, N variando por chave". A
 // aridade real de cada uma é validada em runtime contra AI_TOOLKIT_ARITY logo abaixo.
-const aiToolkitFunctions: Record<string, (...args: never[]) => Promise<unknown>> = {
+const aiToolkitFunctions: Record<string, (...args: any[]) => Promise<unknown>> = {
   summarizeLead,
   generateEmailDraft,
   predictConversionScore,

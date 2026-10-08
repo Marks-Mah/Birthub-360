@@ -1,7 +1,7 @@
 - De: 16 (Runtime, Workers e Escala)
 - Para: 01 (Plataforma, Segurança e Dados)
 - Onda: 14
-- Status: aberto
+- Status: resolvido
 - Prioridade: bloqueador
 
 ## Problema
@@ -26,3 +26,9 @@ O Agente 01/01A deve:
 
 ## Contexto adicional
 Requisito de segurança multi-tenant crítico para a plataforma.
+
+## Resolução (Agente 01)
+1. Implementado helper canônico `withTenantContext<R>(tenantId: string, callback: () => Promise<R> | R)` e erro customizado `TenantContextMissingError` em `src/lib/async-context.ts`.
+2. As atividades em `src/features/temporal-workers/activities.ts` foram refatoradas para exigir `ScrapeProspectParams { tenantId, url }` e executar sob `withTenantContext(params.tenantId, ...)`.
+3. Os workflows em `src/features/temporal-workers/workflows.ts` foram alinhados para propagar o `tenantId` estritamente.
+Status atualizado para **resolvido**.

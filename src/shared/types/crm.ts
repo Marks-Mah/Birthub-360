@@ -37,12 +37,7 @@ export interface LeadQualification {
   temaProximaReuniao?: string;
 }
 
-export interface Company<
-  TDate = Date,
-  TContactStatus = PrismaContactStatus,
-  TLeadStatus = PrismaLeadStatus,
-  TLeadTemperature = PrismaLeadTemperature,
-> {
+export interface Company<TDate = Date> {
   id: string;
   legalName: string;
   tradeName: string;
@@ -64,7 +59,7 @@ export interface Company<
   city?: string | null;
   state?: string | null;
   zipCode?: string | null;
-  status: CompanyStatus;
+  status: CompanyStatus | string;
   tags: string[];
   observations?: string | null;
   customFields?: any;
@@ -90,16 +85,11 @@ export interface Company<
   logoUrl?: string | null;
   apolloOrgId?: string | null;
 
-  contacts?: Contact<TDate, TContactStatus, TLeadStatus, TLeadTemperature>[];
-  leads?: Lead<TDate, TLeadStatus, TLeadTemperature, TContactStatus>[];
+  contacts?: Contact<TDate>[];
+  leads?: Lead<TDate>[];
 }
 
-export interface Contact<
-  TDate = Date,
-  TStatus = PrismaContactStatus,
-  TLeadStatus = PrismaLeadStatus,
-  TLeadTemperature = PrismaLeadTemperature,
-> {
+export interface Contact<TDate = Date> {
   id: string;
   name: string;
   role?: string | null;
@@ -110,29 +100,24 @@ export interface Contact<
   linkedin?: string | null;
   birthDate?: TDate | null;
   observations?: string | null;
-  status: TStatus;
+  status: PrismaContactStatus | string;
   source?: string | null;
   seniority?: string | null;
   emailStatus?: string | null;
   customFields?: any;
   companyId: string;
-  company?: Company<TDate, TStatus, TLeadStatus, TLeadTemperature>;
+  company?: Company<TDate>;
   aiProcessingConsent?: boolean | null;
-  leads?: Lead<TDate, TLeadStatus, TLeadTemperature, TStatus>[];
+  leads?: Lead<TDate>[];
   organizationId?: string | null;
   createdAt: TDate;
   updatedAt: TDate;
 }
 
-export interface Lead<
-  TDate = Date,
-  TStatus = PrismaLeadStatus,
-  TTemperature = PrismaLeadTemperature,
-  TContactStatus = PrismaContactStatus,
-> {
+export interface Lead<TDate = Date> {
   id: string;
-  status: TStatus;
-  funnel?: LeadFunnel | 'Lead' | 'Negocio';
+  status: PrismaLeadStatus | string;
+  funnel?: LeadFunnel | 'Lead' | 'Negocio' | string;
   title?: string | null;
   amount?: number | null;
   currency: string;
@@ -145,7 +130,7 @@ export interface Lead<
   pipelineStageId?: string | null;
   source?: string | null;
   channel?: string | null;
-  temperature?: TTemperature | null;
+  temperature?: PrismaLeadTemperature | string | null;
   score?: number | null;
   owner?: string | null;
   lastInteraction?: TDate | null;
@@ -173,11 +158,11 @@ export interface Lead<
   bitrixSyncedAt?: TDate | null;
 
   companyId: string | null;
-  company?: Company<TDate, TContactStatus, TStatus, TTemperature>;
+  company?: Company<TDate>;
   contactId: string | null;
-  contact?: Contact<TDate, TContactStatus, TStatus, TTemperature>;
+  contact?: Contact<TDate>;
 
-  activities?: Activity<TDate, TStatus, TTemperature, TContactStatus>[];
+  activities?: Activity<TDate>[];
   timeline?: TimelineEvent<TDate>[];
   internalNotes?: Note<TDate>[];
 
@@ -185,21 +170,16 @@ export interface Lead<
   updatedAt: TDate;
 }
 
-export interface Activity<
-  TDate = Date,
-  TLeadStatus = PrismaLeadStatus,
-  TLeadTemperature = PrismaLeadTemperature,
-  TContactStatus = PrismaContactStatus,
-> {
+export interface Activity<TDate = Date> {
   id: string;
-  type: ActivityType;
+  type: ActivityType | string;
   owner: string;
   date: TDate;
   time?: string | null;
-  status: ActivityStatus;
+  status: ActivityStatus | string;
   observations?: string | null;
   leadId: string;
-  lead?: Lead<TDate, TLeadStatus, TLeadTemperature, TContactStatus>;
+  lead?: Lead<TDate>;
   organizationId?: string | null;
   createdAt: TDate;
   updatedAt: TDate;
@@ -236,4 +216,90 @@ export interface Attachment<TDate = Date> {
   uploadedBy: string | null;
   organizationId: string;
   createdAt: TDate;
+}
+
+/**
+ * Estágios canônicos do Funil de Vendas do Birth Hub 360 (Commercial Intelligence).
+ * Utilizados para agregação cross-CRM sem discrepâncias taxonômicas.
+ */
+export type CanonicalPipelineStage =
+  | 'PROSPECTING'
+  | 'QUALIFICATION'
+  | 'PROPOSAL'
+  | 'NEGOTIATION'
+  | 'WON'
+  | 'LOST';
+
+export interface ExternalCrmStageMapping {
+  provider: 'hubspot' | 'pipedrive' | 'rdstation' | 'monday' | 'bitrix';
+  externalStageId: string;
+  externalStageName?: string;
+  canonicalStage: CanonicalPipelineStage;
+  defaultProbability: number;
+}
+
+/**
+ * Tabela de equivalência padrão (default mappings) para os estágios nativos dos CRMs suportados.
+ */
+export const DEFAULT_CRM_STAGE_MAPPINGS: Record<string, { stage: CanonicalPipelineStage; defaultProbability: number }> = {
+  // HubSpot Deal Stages
+  'appointmentscheduled': { stage: 'PROSPECTING', defaultProbability: 0.2 },
+  'qualifiedtobuy': { stage: 'QUALIFICATION', defaultProbability: 0.4 },
+  'presentationscheduled': { stage: 'PROPOSAL', defaultProbability: 0.6 },
+  'decisionmakerboughtin': { stage: 'NEGOTIATION', defaultProbability: 0.8 },
+  'closedwon': { stage: 'WON', defaultProbability: 1.0 },
+  'closedlost': { stage: 'LOST', defaultProbability: 0.0 },
+
+  // Pipedrive Deal Stages
+  'lead_in': { stage: 'PROSPECTING', defaultProbability: 0.15 },
+  'contact_made': { stage: 'QUALIFICATION', defaultProbability: 0.35 },
+  'demo_scheduled': { stage: 'PROPOSAL', defaultProbability: 0.55 },
+  'proposal_sent': { stage: 'PROPOSAL', defaultProbability: 0.7 },
+  'negotiations_started': { stage: 'NEGOTIATION', defaultProbability: 0.85 },
+  'won': { stage: 'WON', defaultProbability: 1.0 },
+  'lost': { stage: 'LOST', defaultProbability: 0.0 },
+
+  // RD Station CRM
+  'sem_contato': { stage: 'PROSPECTING', defaultProbability: 0.1 },
+  'contato_feito': { stage: 'QUALIFICATION', defaultProbability: 0.3 },
+  'reuniao_agendada': { stage: 'PROPOSAL', defaultProbability: 0.5 },
+  'proposta_enviada': { stage: 'PROPOSAL', defaultProbability: 0.7 },
+  'em_negociacao': { stage: 'NEGOTIATION', defaultProbability: 0.85 },
+  'fechado_ganho': { stage: 'WON', defaultProbability: 1.0 },
+  'fechado_perdido': { stage: 'LOST', defaultProbability: 0.0 },
+
+  // Monday.com Deals Board
+  'new_lead': { stage: 'PROSPECTING', defaultProbability: 0.15 },
+  'qualified': { stage: 'QUALIFICATION', defaultProbability: 0.4 },
+  'proposal': { stage: 'PROPOSAL', defaultProbability: 0.65 },
+  'negotiation': { stage: 'NEGOTIATION', defaultProbability: 0.85 },
+  'won_deal': { stage: 'WON', defaultProbability: 1.0 },
+  'lost_deal': { stage: 'LOST', defaultProbability: 0.0 },
+};
+
+/**
+ * Normaliza qualquer estágio externo para o modelo canônico de Commercial Intelligence.
+ */
+export function normalizeCrmStage(
+  rawStage: string | null | undefined,
+  defaultStage: CanonicalPipelineStage = 'PROSPECTING',
+): { stage: CanonicalPipelineStage; probability: number } {
+  if (!rawStage) return { stage: defaultStage, probability: 0.2 };
+  const normalizedKey = rawStage.toLowerCase().trim().replace(/[\s-_]+/g, '_');
+  
+  if (DEFAULT_CRM_STAGE_MAPPINGS[normalizedKey]) {
+    return {
+      stage: DEFAULT_CRM_STAGE_MAPPINGS[normalizedKey].stage,
+      probability: DEFAULT_CRM_STAGE_MAPPINGS[normalizedKey].defaultProbability,
+    };
+  }
+
+  // Fallback heurístico por substring caso o CRM envie label customizado
+  if (/ganh|won|closed_won|fechado_ganho/i.test(rawStage)) return { stage: 'WON', probability: 1.0 };
+  if (/perd|lost|closed_lost|fechado_perdido/i.test(rawStage)) return { stage: 'LOST', probability: 0.0 };
+  if (/negoc|negotiat/i.test(rawStage)) return { stage: 'NEGOTIATION', probability: 0.85 };
+  if (/propos|apresenta|demo/i.test(rawStage)) return { stage: 'PROPOSAL', probability: 0.6 };
+  if (/qualif|contato/i.test(rawStage)) return { stage: 'QUALIFICATION', probability: 0.35 };
+
+  return { stage: defaultStage, probability: 0.2 };
 }

@@ -82,3 +82,25 @@ export const getTenantId = (): string | undefined => {
 export const getUserId = (): string | undefined => {
   return requestContext.getStore()?.userId;
 };
+
+export class TenantContextMissingError extends Error {
+  constructor(message = 'Tenant context missing: organizationId/tenantId is required') {
+    super(message);
+    this.name = 'TenantContextMissingError';
+  }
+}
+
+/**
+ * Executa uma operação assíncrona garantindo o contexto de tenancy no AsyncLocalStorage.
+ * Obrigatório para Temporal Activities, background workers e sagas desacopladas de requisições HTTP.
+ */
+export function withTenantContext<R>(
+  tenantId: string,
+  callback: () => Promise<R> | R,
+): Promise<R> | R {
+  if (!tenantId || typeof tenantId !== 'string' || tenantId.trim() === '') {
+    throw new TenantContextMissingError();
+  }
+  return requestContext.run({ tenantId: tenantId.trim() }, callback);
+}
+

@@ -129,11 +129,11 @@ worker:
     targetMemoryUtilizationPercentage: 80
   resources:
     limits:
-      cpu: 500m
-      memory: 512Mi
+      cpu: 1000m
+      memory: 1024Mi
     requests:
-      cpu: 100m
-      memory: 256Mi
+      cpu: 200m
+      memory: 512Mi
 
 nodeSelector: {}
 
@@ -151,6 +151,8 @@ env:
   ENABLE_EMBEDDED_WORKERS: 'false'
   WORKER_HEALTH_PORT: '3006'
   LITELLM_URL: 'http://birthhub-360-litellm:4000'
+  TEMPORAL_ADDRESS: 'temporal:7233'
+  TEMPORAL_NAMESPACE: 'default'
 
 secrets:
   # JWT_SECRET: "secret"

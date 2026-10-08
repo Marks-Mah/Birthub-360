@@ -1,6 +1,6 @@
 # Onda 14 - Expansão de Fronteiras
 
-**Status:** EM EXECUÇÃO (MATRIZ PUBLICADA E HANDOFFS MAPEADOS)  
+**Status:** GATE_VERDE (TODOS OS BLOQUEADORES E HANDOFFS RESOLVIDOS)  
 **Data:** 2026-10-08  
 **Coordenador:** Agente 00  
 
@@ -37,17 +37,17 @@ Para eliminar a dívida de acoplamento tácito e garantir rastreabilidade confor
 | :--- | :---: | :---: | :---: | :---: | :--- |
 | `06-para-01-schema-novos-crms.md` | 06 | 01 | **Bloqueador** | **Resolvido** | Modelagem e migração Prisma para persistência de tokens e conexões dos novos CRMs |
 | `06-para-15-criptografia-tokens-crms.md` | 06 | 15 | **Bloqueador** | **Resolvido** | Criptografia em repouso (AES-256-GCM) para tokens OAuth e API Keys dos novos CRMs (B-04) |
-| `06-para-04-contrato-entidades-pipeline.md` | 06 | 04 | Alto | Aberto | Normalização de estágios de pipeline (deal stages) para o modelo canônico de Commercial Intelligence |
-| `06-para-02-ui-conectores-crm.md` | 06 | 02 | Alto | Aberto | Interface de usuário (cards, modais e status) para conexão de CRMs no painel de Integrações |
-| `07-para-12-orquestracao-webrtc-telefonia.md` | 07 | 12 | **Bloqueador** | Aberto | Bridge de áudio bidirecional e eventos entre o LiveKit/WebRTC e sessões de telefonia SIP/3CX (B-07) |
-| `07-para-21-consentimento-retencao-audio.md` | 07 | 21 | **Bloqueador** | Aberto | Política de consentimento de gravação de voz humana por IA, sanitização e retenção LGPD (B-13) |
-| `07-para-16-runtime-webrtc-streaming.md` | 07 | 16 | Alto | Aberto | Isolamento de processos de streaming WebRTC de baixa latência fora do event loop HTTP |
-| `16-para-05-integracao-crawlee-prospeccao.md` | 16 | 05 | Alto | Aberto | Integração do crawler Crawlee no pipeline de enriquecimento deep de mercado da prospecção |
-| `16-para-10-infra-temporal-crawlee.md` | 16 | 10 | **Bloqueador** | Aberto | Provisionamento de Temporal Server no Docker/K8s e dependências headless de Chromium no Dockerfile |
-| `16-para-01-tenant-context-temporal-activities.md` | 16 | 01 | **Bloqueador** | Aberto | Propagação de isolamento Multi-Tenant / RLS e contexto de organização em Temporal Activities (B-10) |
-| `08-para-05-ts-errors-prospecting.md` | 08 | 05 | **Bloqueador** | Aberto | Erros de tipagem TypeScript no crawler de prospecção bloqueando gate global |
-| `08-para-07-ts-errors-intelligence.md` | 08 | 07 | **Bloqueador** | Aberto | Erros de tipagem e import de Playwright no módulo de inteligência bloqueando gate global |
-| `00-para-18-contratos-openapi-onda14.md` | 00 | 18 | Normal | Aberto | Documentação viva OpenAPI para novos webhooks de CRM, rotas WebRTC e APIs do Temporal |
+| `06-para-04-contrato-entidades-pipeline.md` | 06 | 04 | Alto | **Resolvido** | Normalização de estágios de pipeline (deal stages) para o modelo canônico de Commercial Intelligence |
+| `06-para-02-ui-conectores-crm.md` | 06 | 02 | Alto | **Resolvido** | Interface de usuário (cards, modais e status) para conexão de CRMs no painel de Integrações |
+| `07-para-12-orquestracao-webrtc-telefonia.md` | 07 | 12 | **Bloqueador** | **Resolvido** | Bridge de áudio bidirecional e eventos entre o LiveKit/WebRTC e sessões de telefonia SIP/3CX (B-07) |
+| `07-para-21-consentimento-retencao-audio.md` | 07 | 21 | **Bloqueador** | **Resolvido** | Política de consentimento de gravação de voz humana por IA, sanitização e retenção LGPD (B-13) |
+| `07-para-16-runtime-webrtc-streaming.md` | 07 | 16 | Alto | **Resolvido** | Isolamento de processos de streaming WebRTC de baixa latência fora do event loop HTTP |
+| `16-para-05-integracao-crawlee-prospeccao.md` | 16 | 05 | Alto | **Resolvido** | Integração do crawler Crawlee no pipeline de enriquecimento deep de mercado da prospecção |
+| `16-para-10-infra-temporal-crawlee.md` | 16 | 10 | **Bloqueador** | **Resolvido** | Provisionamento de Temporal Server no Docker/K8s e dependências headless de Chromium no Dockerfile |
+| `16-para-01-tenant-context-temporal-activities.md` | 16 | 01 | **Bloqueador** | **Resolvido** | Propagação de isolamento Multi-Tenant / RLS e contexto de organização em Temporal Activities (B-10) |
+| `08-para-05-ts-errors-prospecting.md` | 08 | 05 | **Bloqueador** | **Resolvido** | Erros de tipagem TypeScript no crawler de prospecção bloqueando gate global |
+| `08-para-07-ts-errors-intelligence.md` | 08 | 07 | **Bloqueador** | **Resolvido** | Erros de tipagem e import de Playwright no módulo de inteligência bloqueando gate global |
+| `00-para-18-contratos-openapi-onda14.md` | 00 | 18 | Normal | **Resolvido** | Documentação viva OpenAPI para novos webhooks de CRM, rotas WebRTC e APIs do Temporal |
 
 ---
 

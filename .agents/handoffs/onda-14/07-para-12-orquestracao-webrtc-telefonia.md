@@ -1,7 +1,7 @@
 - De: 07 (IA e Automações)
 - Para: 12 (Voz e Telefonia)
 - Onda: 14
-- Status: aberto
+- Status: resolvido
 - Prioridade: bloqueador
 
 ## Problema
@@ -26,3 +26,12 @@ O Agente 12 deve:
 
 ## Contexto adicional
 Bloqueador prioritário B-07.
+
+## Resolução (Agente 12 - 2026-10-08)
+O Agente 12 implementou a arquitetura completa da ponte de telefonia com WebRTC eliminando o bloqueador B-07:
+1. `src/features/voice/audio-stream-bridge.ts`: Gerencia o fluxo de áudio bidirecional em tempo real com buffering, piping e detecção de interrupção (barge-in).
+2. `src/features/voice/sip-webrtc-bridge.service.ts`: Orquestra o handshake entre a sessão telefônica ativa SIP/3CX e a sala WebRTC/LiveKit, com classificação de desfecho de chamada e persistência.
+3. `src/features/voice/voice-command-executor.service.ts`: Executa e valida ações reais declaradas pela IA de voz (agendamento de reunião, qualificação de lead, atualização de status, opt-out LGPD, envio de proposta, transferência) com auditoria via `AuditService`.
+4. Integração bidirecional conectada em `src/features/ai-voice/ai-voice-orchestrator.service.ts`.
+5. Testes unitários implementados em `tests/unit/features/voice/`.
+Status atualizado para **resolvido**.

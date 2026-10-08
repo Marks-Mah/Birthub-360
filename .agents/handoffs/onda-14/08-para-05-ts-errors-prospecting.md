@@ -1,7 +1,7 @@
 - De: 08
 - Para: 05
 - Onda: 14
-- Status: aberto
+- Status: resolvido
 - Prioridade: bloqueador
 - Bloqueador-ref: B-100 (Typecheck bloqueado)
 - Sprint destino: Atual
@@ -27,3 +27,10 @@ src/features/prospecting/crawlee/crawler.ts(18,53): error TS7006: Parameter 'lin
 
 ## Contexto adicional
 Bloqueia o gate do CI global. O tipo `any` implícito viola o `tsconfig.json` do projeto.
+
+## Resolução (Agente 05)
+Tipagem explícita adicionada em `src/features/prospecting/crawlee/crawler.ts`:
+- `anchors: HTMLAnchorElement[]`
+- `a: HTMLAnchorElement`
+- `link: string`
+Erros de tipo eliminados. Status atualizado para **resolvido**.

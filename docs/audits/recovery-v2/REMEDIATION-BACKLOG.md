@@ -70,6 +70,7 @@
 
 ### REM-004
 - **ID:** REM-004
+- **STATUS:** RESOLVED (2026-10-08 - Agente 08)
 - **ROOT_CAUSE:** ROOT-004: Incomplete Pre-deploy Checks in Secondary Workflows
 - **FINDINGS:** Pre-deploy gate disparity in `deploy-aws.yml`
 - **DOMAIN:** DevOps & CI/CD
@@ -78,7 +79,7 @@
 - **DEPENDENCIES:** GitHub Actions
 - **FIX_STRATEGY:**
   1. Align `deploy-aws.yml` steps to require `npm run typecheck` in addition to `npm run lint` and `npm run test:unit`.
-- **VALIDATION:** YAML linting and validation against GitHub Actions schema.
+- **VALIDATION:** Step `- run: npm run typecheck` inserido antes de lint e test:unit em `.github/workflows/deploy-aws.yml`.
 - **REGRESSION_RISK:** None.
 
 ---

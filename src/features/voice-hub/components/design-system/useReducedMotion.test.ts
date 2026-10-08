@@ -15,13 +15,9 @@ describe('usePrefersReducedMotion', () => {
   });
 
   it('does not throw in an environment without window.matchMedia (e.g. jsdom-lite/SSR-ish setups)', () => {
-    const original = window.matchMedia;
-    // @ts-expect-error -- simulate an environment where matchMedia is unavailable
-    window.matchMedia = undefined;
+    vi.stubGlobal('matchMedia', undefined);
 
     expect(() => renderHook(() => usePrefersReducedMotion())).not.toThrow();
-
-    window.matchMedia = original;
   });
 
   it('reflects the in-app `data-reduced-motion` toggle set by Preferences', async () => {

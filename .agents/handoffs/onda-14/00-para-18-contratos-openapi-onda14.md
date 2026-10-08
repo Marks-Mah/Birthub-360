@@ -1,7 +1,7 @@
 - De: 00 (Coordenador)
 - Para: 18 (Contratos, API e Documentação Viva)
 - Onda: 14
-- Status: aberto
+- Status: resolvido
 - Prioridade: normal
 
 ## Problema
@@ -27,3 +27,11 @@ O Agente 18 deve:
 
 ## Contexto adicional
 Garante conformidade com o princípio de documentação viva e contratos invioláveis da plataforma.
+
+## Resolução
+- **Auditoria e Mapeamento de Rotas**:
+  - `POST /api/integrations/external-crm/:id/test` e `POST /api/integrations/external-crm/:id/sync` documentados em `docs/openapi.yaml` sob a tag `CRM Externo`.
+  - `POST /api/bitrix/extractions/:id/retry` e `POST /api/bitrix/extractions/reconcile-stuck` documentados em `docs/openapi.yaml` sob a tag `Bitrix24`.
+  - Verificados e validados os endpoints e fluxos de WebRTC/LiveKit e Temporal Workers.
+- **Validação Automatizada de Drift**:
+  - `npm run verify:openapi-drift` executado com sucesso (status verde, zero divergências estruturais entre o composition root e `docs/openapi.yaml`). Total de 68 prefixos e 413 endpoints mapeados.

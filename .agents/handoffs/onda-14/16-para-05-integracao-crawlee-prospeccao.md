@@ -1,7 +1,7 @@
 - De: 16 (Runtime, Workers e Escala)
 - Para: 05 (Prospecção)
 - Onda: 14
-- Status: aberto
+- Status: resolvido
 - Prioridade: alto
 
 ## Problema
@@ -26,3 +26,10 @@ O Agente 05 deve:
 
 ## Contexto adicional
 Eleva a taxa de qualificação do pipeline outbound eliminando enriquecimento manual.
+
+## Resolução (Agente 05 - 2026-10-08)
+1. Conectada a engine `runCrawler` de `src/features/prospecting/crawlee/crawler.ts` com tipagem estrita de DOM (`HTMLAnchorElement`).
+2. O serviço de extração agora é acionado pelo workflow do Temporal para enriquecimento assíncrono de empresas, extraindo emails de contato, links sociais (LinkedIn, Instagram, Facebook, Twitter) e metadados de página.
+3. Integrado ao pipeline de ingestão de leads com persistência e deduplicação semântica.
+Status atualizado para **resolvido**.
+

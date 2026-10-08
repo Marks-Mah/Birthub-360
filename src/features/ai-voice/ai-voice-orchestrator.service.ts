@@ -1,48 +1,65 @@
 import { logger } from '../../lib/logger.js';
 import { webRTCChannelService } from './webrtc-channel.service.js';
 import { flowiseRouterService } from './flowise-router.service.js';
+import { sipWebRtcBridgeService } from '../voice/sip-webrtc-bridge.service.js';
 import type {
   OutboundCallResult,
   VoiceAgentType,
 } from '../integrations/birth-voice/birthVoice.service.js';
+import type {
+  VoiceCommandRequest,
+  VoiceCommandExecutionResult,
+} from '../voice/types.js';
 
 /**
- * Orchestrator stub that connects the existing birthVoice.service to
- * the new real-time intelligence engine (WebRTC + Flowise).
+ * AiVoiceOrchestratorService
+ *
+ * Connects the real-time AI intelligence engine (WebRTC + Flowise)
+ * with the underlying SIP/3CX telephony bridge and voice command executor.
  */
 export class AiVoiceOrchestratorService {
   /**
-   * Initializes a new AI voice session.
-   * This would eventually be called by birthVoice.service.ts or replace its external provider logic.
+   * Initializes a new AI voice session connected to SIP telephony and LiveKit.
    */
   async initializeCallSession(
     organizationId: string,
     leadId: string,
     targetNumber: string,
     agentType: VoiceAgentType,
+    sipOptions?: {
+      callId?: string;
+      extension?: string;
+      pbxUrl?: string;
+    },
   ): Promise<OutboundCallResult> {
     const sessionId = `livekit-sess-${leadId}-${Date.now()}`;
-    const callSid = `livekit-call-${leadId}`;
+    const callSid = sipOptions?.callId || `livekit-call-${leadId}`;
 
     logger.info(
-      { organizationId, leadId, targetNumber, agentType },
-      'Initializing Real-time AI Voice session... (STUB)',
+      { organizationId, leadId, targetNumber, agentType, sessionId },
+      'Initializing Real-time AI Voice session with SIP WebRTC Bridge...',
     );
 
-    // 1. Establish WebRTC channel (LiveKit)
-    await webRTCChannelService.connectSession(sessionId, targetNumber);
+    // 1. Establish WebRTC + SIP channel bridge
+    await webRTCChannelService.connectSession(sessionId, targetNumber, {
+      callId: callSid,
+      extension: sipOptions?.extension,
+      pbxUrl: sipOptions?.pbxUrl,
+      organizationId,
+      leadId,
+    });
 
     // 2. Prepare context for LLM routing (Flowise)
     const initialContext = {
       leadId,
       organizationId,
       agentType,
+      sessionId,
     };
 
-    // Simulate initial system prompt routing
+    // Initial system prompt routing
     await flowiseRouterService.routePrompt(sessionId, 'SYSTEM_INIT', initialContext);
 
-    // Return the result format expected by the current system
     return {
       sessionId,
       callSid,
@@ -50,9 +67,22 @@ export class AiVoiceOrchestratorService {
     };
   }
 
-  async endCallSession(sessionId: string): Promise<void> {
-    logger.info({ sessionId }, 'Ending Real-time AI Voice session... (STUB)');
-    await webRTCChannelService.disconnectSession(sessionId);
+  /**
+   * Executes a business action command emitted by the voice assistant during the call.
+   */
+  async executeCommand(
+    sessionId: string,
+    command: Omit<VoiceCommandRequest, 'sessionId' | 'organizationId' | 'leadId'>,
+  ): Promise<VoiceCommandExecutionResult> {
+    return sipWebRtcBridgeService.executeVoiceCommand(sessionId, command);
+  }
+
+  /**
+   * Ends the real-time AI Voice session and persists call activities.
+   */
+  async endCallSession(sessionId: string, reason = 'normal_completion'): Promise<void> {
+    logger.info({ sessionId, reason }, 'Ending Real-time AI Voice session...');
+    await webRTCChannelService.disconnectSession(sessionId, reason);
   }
 }
 

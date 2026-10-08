@@ -1,7 +1,7 @@
 - De: 06 (Integrações e Bitrix)
 - Para: 04 (CRM e BI)
 - Onda: 14
-- Status: aberto
+- Status: resolvido
 - Prioridade: alto
 
 ## Problema
@@ -28,3 +28,10 @@ O Agente 04 deve validar e formalizar:
 
 ## Contexto adicional
 Alinha o domínio de integrações externas com o ecossistema de dados analíticos do Birth Hub 360.
+
+## Resolução (Agente 04 - 2026-10-08)
+1. Formalizado o tipo canônico `CanonicalPipelineStage` em `src/shared/types/crm.ts`: `PROSPECTING | QUALIFICATION | PROPOSAL | NEGOTIATION | WON | LOST`.
+2. Criada tabela canônica `DEFAULT_CRM_STAGE_MAPPINGS` mapeando explicitamente todos os estágios do HubSpot, Pipedrive, RD Station e Monday.com para o modelo analítico do Birth Hub 360.
+3. Criada a função pura `normalizeCrmStage(rawStage, defaultStage?)` com normalização defensiva e fallback determinístico sem emissão de `NaN`.
+4. Implementada suíte de testes unitários em `tests/unit/features/crm/normalizeCrmStage.test.ts` com 100% de aprovação.
+

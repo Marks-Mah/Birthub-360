@@ -1,7 +1,7 @@
 - De: 08
 - Para: 07
 - Onda: 14
-- Status: aberto
+- Status: resolvido
 - Prioridade: bloqueador
 - Bloqueador-ref: B-100 (Typecheck bloqueado)
 - Sprint destino: Atual
@@ -29,3 +29,8 @@ src/features/intelligence/services/IcebreakerService.ts(14,29): error TS2307: Ca
 
 ## Contexto adicional
 O erro causa a falha no gate de CI (typecheck global bloqueado).
+
+## Resolução (Agente 07)
+1. Corrigida a tipagem de `aiToolkitFunctions` em `src/features/intelligence/routes/intelligence.routes.ts` para aceitar `any[]` conforme especificado no comentário original COD-004 e alinhado o dispatch.
+2. Em `src/features/intelligence/services/IcebreakerService.ts`, substituído o import estático com erro de Playwright por tipagem estrutural defensiva (`PlaywrightChromium`, `PlaywrightBrowser`, `PlaywrightBrowserContext`) e dynamic import assíncrono.
+Status atualizado para **resolvido**.

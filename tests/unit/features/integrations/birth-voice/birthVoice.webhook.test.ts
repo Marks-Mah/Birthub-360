@@ -90,6 +90,10 @@ vi.mock('../../../../../src/shared/security/webhookReplayGuard.js', () => ({
   validateWebhookTimestamp: vi.fn().mockReturnValue({ valid: true }),
 }));
 
+vi.mock('../../../../../src/features/cadence/infra/cadenceWebhookResolver.js', () => ({
+  resolveCadencePendingVoiceTouch: vi.fn().mockResolvedValue(undefined),
+}));
+
 const mockEnv: Record<string, string | undefined> = {
   BIRTH_VOICES_WEBHOOK_SECRET: 'segredo-hub-teste',
 };

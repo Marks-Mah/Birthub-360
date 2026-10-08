@@ -15,11 +15,13 @@ export async function runCrawler(urls: string[]) {
       const emails = [...new Set(emailMatches)];
 
       // Basic social media links extraction
-      const links = await page.$$eval('a', (anchors) => anchors.map((a) => a.href));
+      const links = await page.$$eval('a', (anchors: HTMLAnchorElement[]) =>
+        anchors.map((a: HTMLAnchorElement) => a.href),
+      );
       const socialMedia = [
         ...new Set(
           links.filter(
-            (link) =>
+            (link: string) =>
               link.includes('linkedin.com') ||
               link.includes('twitter.com') ||
               link.includes('facebook.com') ||

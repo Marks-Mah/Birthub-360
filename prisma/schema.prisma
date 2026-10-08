@@ -706,9 +706,11 @@ model Lead {
   @@unique([organizationId, bitrixLeadId])
   @@unique([organizationId, bitrixDealId])
   @@index([organizationId])
+  @@index([organizationId, createdAt])
   @@index([organizationId, status])
   @@index([organizationId, funnel])
   @@index([organizationId, pipelineId, pipelineStageId])
+  @@index([pipelineStageId])
   @@index([bitrixLeadId])
   @@index([bitrixDealId])
   @@index([savedSearchId])
@@ -753,6 +755,9 @@ model TimelineEvent {
   lead   Lead   @relation(fields: [leadId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
+
+  @@index([leadId])
+  @@index([leadId, createdAt])
 }
 
 model Note {
@@ -1288,9 +1293,11 @@ model DecisionMaker {
   updatedAt        DateTime                 @updatedAt
 
   @@unique([organizationId, companyId, contactId])
+  @@index([organizationId, createdAt])
   @@index([organizationId, companyId, status])
   @@index([organizationId, companyId, buyingRole])
   @@index([snapshotId])
+  @@index([contactId])
 }
 
 /// Evidencia normalizada e deduplicavel. subjectType/subjectId permitem vincular a um signal,
@@ -1631,7 +1638,11 @@ model CrmCommercialDocument {
   // reconciliação nunca colidem entre si), comportamento padrão de unique constraint no Postgres.
   @@unique([organizationId, stripePaymentIntentId])
   @@index([organizationId, type, status])
+  @@index([organizationId, createdAt])
   @@index([leadId])
+  @@index([companyId])
+  @@index([contactId])
+  @@index([stripeConnectionId])
 }
 
 model Session {
@@ -2053,6 +2064,8 @@ model Notification {
   createdAt      DateTime     @default(now())
 
   @@index([organizationId, readAt, createdAt])
+  @@index([automationId])
+  @@index([userId])
 }
 
 /// Evento que dispara uma automação.
@@ -2195,6 +2208,7 @@ model WhatsAppMessage {
   @@unique([organizationId, waMessageId])
   @@index([organizationId, phoneE164])
   @@index([leadId])
+  @@index([contactId])
 }
 
 /// Sinal de intenção extraído por IA de uma janela de mensagens de WhatsApp já persistidas em
@@ -3561,6 +3575,8 @@ model CadenceRun {
   calendarEvents CadenceCalendarEvent[]
 
   @@index([organizationId, status])
+  @@index([organizationId, startedAt])
+  @@index([sequenceId])
   /// PARTIAL unique index — a condição `WHERE "status" = 'Active'` vive só na migration SQL
   /// (`prisma/migrations/20260816120000_cadence_scheduling_signature/migration.sql`); a sintaxe
   /// do Prisma schema não consegue expressar a condição WHERE parcial, então este `@@index` é
@@ -3680,8 +3696,10 @@ model CadenceCalendarEvent {
 
   createdAt DateTime @default(now())
 
-  @@index([leadId])
+  @@index([organizationId, createdAt])
   @@index([organizationId])
+  @@index([leadId])
+  @@index([cadenceRunId])
 }
 
 /// Fotografia imutável de `CrmCommercialDocument` em um instante (entrega 5, parte 1 — proposta
@@ -4050,6 +4068,7 @@ model UserJobRole {
 
   @@unique([userId, jobRoleId])
   @@index([organizationId])
+  @@index([jobRoleId])
   /// PARTIAL unique index — a condição `WHERE "isPrimary" = true AND "isActive" = true` vive só
   /// na migration SQL
   /// (`prisma/migrations/20260908020000_multi_cargo_agent_governance_foundation/migration.sql`);
@@ -4343,6 +4362,7 @@ model AgentExecution {
 
   @@index([organizationId, createdAt])
   @@index([agentDefinitionId])
+  @@index([agentVersionId])
   @@index([organizationId, status])
 }
 
@@ -4488,6 +4508,8 @@ model TemporaryCapabilityGrant {
   createdAt              DateTime             @default(now())
 
   @@index([organizationId, granteeId, capabilityDefinitionId])
+  @@index([organizationId, createdAt])
+  @@index([capabilityDefinitionId])
   @@index([expiresAt])
 }
 
@@ -4893,9 +4915,10 @@ model AgentBuildProposal {
   @@index([organizationId, createdAt])
 }
 
-// --- ELITE COMMERCIAL AGENT ---
-
-// --- GENERIC CRM INTEGRATION (HubSpot, Pipedrive, RD Station, Monday) ---
+// ---------------------------------------------------------------------------------------------
+// Integrações CRM Externas (HubSpot, Pipedrive, RD Station, Monday)
+// Dado de negócio por tenant: RLS estrito (sem bypass_rls).
+// ---------------------------------------------------------------------------------------------
 
 model ExternalCrmConnection {
   id             String       @id @default(cuid())
@@ -4924,6 +4947,7 @@ model ExternalCrmConnection {
   updatedAt DateTime @updatedAt
 
   @@index([organizationId])
+  @@index([organizationId, createdAt])
   @@index([provider])
 }
 
@@ -4953,6 +4977,7 @@ model ExternalCrmSyncRule {
   updatedAt DateTime @updatedAt
 
   @@index([organizationId])
+  @@index([organizationId, createdAt])
   @@index([connectionId])
   @@index([active])
 }
@@ -4978,10 +5003,16 @@ model ExternalCrmSyncLog {
   createdAt DateTime @default(now())
 
   @@index([organizationId])
+  @@index([organizationId, createdAt])
   @@index([connectionId])
   @@index([leadId])
   @@index([createdAt])
 }
+
+// ---------------------------------------------------------------------------------------------
+// Layouts de Workspace Dinâmicos por Cargo
+// Configuração de interface por tenant: RLS estrito (sem bypass_rls).
+// ---------------------------------------------------------------------------------------------
 
 /// Define o layout do Workspace vinculado a um papel.
 model RoleWorkspaceDefinition {
@@ -4995,6 +5026,7 @@ model RoleWorkspaceDefinition {
   updatedAt      DateTime        @updatedAt
 
   @@unique([organizationId, role])
+  @@index([organizationId, createdAt])
   @@index([layoutId])
 }
 
@@ -5010,6 +5042,7 @@ model WorkspaceLayout {
   updatedAt      DateTime                  @updatedAt
 
   @@index([organizationId])
+  @@index([organizationId, createdAt])
 }
 
 /// Representa colunas, abas ou painéis dentro de um layout.
@@ -5042,6 +5075,11 @@ model WorkspaceWidget {
   @@index([sectionId])
 }
 
+// ---------------------------------------------------------------------------------------------
+// Workflows e Automações de Fluxo
+// Dado por organização: RLS estrito (sem bypass_rls).
+// ---------------------------------------------------------------------------------------------
+
 model Workflow {
   id             String       @id @default(uuid())
   organizationId String
@@ -5064,6 +5102,7 @@ model Workflow {
   versions WorkflowVersion[]
 
   @@index([organizationId])
+  @@index([organizationId, createdAt])
   @@index([userId])
 }
 
@@ -5082,6 +5121,11 @@ model WorkflowVersion {
   @@index([workflowId])
 }
 
+// ---------------------------------------------------------------------------------------------
+// Voice Hub / Telefonia / Agentes e Métricas
+// Modelos por tenant: RLS estrito (sem bypass_rls).
+// ---------------------------------------------------------------------------------------------
+
 model Agent {
   id             String       @id @default(uuid())
   organizationId String
@@ -5097,6 +5141,7 @@ model Agent {
   deletedAt DateTime?
 
   @@index([organizationId])
+  @@index([organizationId, createdAt])
   @@index([userId])
 }
 
@@ -5161,6 +5206,7 @@ model OrganizationAiConsent {
   updatedAt DateTime @updatedAt
 
   @@index([organizationId])
+  @@index([organizationId, createdAt])
 }
 
 model Birthub360CallResult {
@@ -5196,6 +5242,7 @@ model APIKey {
   revokedAt  DateTime?
 
   @@index([organizationId])
+  @@index([organizationId, createdAt])
   @@index([createdByUserId])
 }
 
@@ -5222,7 +5269,13 @@ model OrganizationWebhookEndpoint {
   lastDeliveryStatus String?
 
   @@index([organizationId])
+  @@index([organizationId, createdAt])
 }
+
+// ---------------------------------------------------------------------------------------------
+// Catálogo Global de Integrações e Planos
+// Catálogo de PRODUTO global, sem organizationId, sem RLS.
+// ---------------------------------------------------------------------------------------------
 
 model Integration {
   id       String @id @default(uuid())
@@ -5247,6 +5300,11 @@ model Plan {
   updatedAt DateTime @updatedAt
 }
 
+// ---------------------------------------------------------------------------------------------
+// Faturamento, Sessões de Agentes, Campanhas e Ferramentas Customizadas
+// Modelos por tenant: RLS estrito (sem bypass_rls).
+// ---------------------------------------------------------------------------------------------
+
 model Wallet {
   id               String        @id @default(uuid())
   organizationId   String        @unique
@@ -5263,6 +5321,7 @@ model Wallet {
   updatedAt DateTime @updatedAt
 
   @@index([organizationId])
+  @@index([organizationId, createdAt])
   @@index([planId])
 }
 
@@ -5282,6 +5341,7 @@ model Transaction {
   createdAt         DateTime     @default(now())
 
   @@index([organizationId])
+  @@index([organizationId, createdAt])
   @@index([walletId])
 }
 
@@ -5301,6 +5361,7 @@ model AgentSession {
   deletedAt DateTime?
 
   @@index([organizationId])
+  @@index([organizationId, createdAt])
   @@index([userId])
 }
 
@@ -5316,6 +5377,7 @@ model Campaign {
   callAttempts CallAttempt[]
 
   @@index([organizationId])
+  @@index([organizationId, createdAt])
 }
 
 model CallAttempt {
@@ -5342,6 +5404,7 @@ model DncList {
 
   @@unique([organizationId, phone])
   @@index([organizationId])
+  @@index([organizationId, createdAt])
 }
 
 model CustomAiTool {
@@ -5355,7 +5418,13 @@ model CustomAiTool {
   updatedAt      DateTime     @updatedAt
 
   @@index([organizationId])
+  @@index([organizationId, createdAt])
 }
+
+// ---------------------------------------------------------------------------------------------
+// Atribuição de Receita Multicanal (LeadTouchpoint)
+// Rastreamento de toques pré-conversão por tenant: RLS estrito (sem bypass_rls).
+// ---------------------------------------------------------------------------------------------
 
 model LeadTouchpoint {
   id         String   @id @default(cuid())
@@ -5373,8 +5442,9 @@ model LeadTouchpoint {
   organizationId String
   organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 
+  @@index([organizationId, createdAt])
+  @@index([organizationId])
   @@index([leadId])
   @@index([campaign])
   @@index([occurredAt])
-  @@index([organizationId])
 }

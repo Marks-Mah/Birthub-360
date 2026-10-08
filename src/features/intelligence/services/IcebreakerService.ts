@@ -3,16 +3,31 @@ import { getAiModel, logAiUsage } from '../../../lib/ai/gateway.js';
 import { logger } from '../../../lib/logger.js';
 
 // Playwright é opcional em produção: pode não estar instalado no container mínimo.
-// Importamos de forma assíncrona e defensiva para não quebrar o boot da aplicação.
-type PlaywrightChromium = typeof import('playwright').chromium;
+// Importamos de forma assíncrona e defensiva para não quebrar o boot da aplicação nem a tipagem.
+interface PlaywrightBrowserContext {
+  newPage(): Promise<{
+    goto(url: string, options?: { timeout?: number }): Promise<unknown>;
+    evaluate<T>(fn: () => T): Promise<T>;
+  }>;
+  close(): Promise<void>;
+}
+
+interface PlaywrightBrowser {
+  newContext(): Promise<PlaywrightBrowserContext>;
+  close(): Promise<void>;
+}
+
+interface PlaywrightChromium {
+  launch(options?: { headless?: boolean }): Promise<PlaywrightBrowser>;
+}
+
 let _chromium: PlaywrightChromium | null = null;
 
 async function getChromium(): Promise<PlaywrightChromium | null> {
   if (_chromium !== null) return _chromium;
   try {
-    // 'playwright' é o pacote de produção; '@playwright/test' é só para testes.
-    const pw = await import('playwright');
-    _chromium = pw.chromium;
+    const pw = (await import('playwright' as string)) as { chromium?: PlaywrightChromium };
+    _chromium = pw.chromium ?? null;
     return _chromium;
   } catch {
     logger.warn('Playwright não está instalado — IcebreakerService funcionará sem scraping.');
@@ -34,7 +49,7 @@ export class IcebreakerService {
     const chromium = await getChromium();
     if (!chromium) return '';
 
-    let browser: Awaited<ReturnType<typeof chromium.launch>> | undefined;
+    let browser: PlaywrightBrowser | undefined;
     try {
       // Scraping headless robusto para contornar bloqueios de bots simples
       browser = await chromium.launch({ headless: true });

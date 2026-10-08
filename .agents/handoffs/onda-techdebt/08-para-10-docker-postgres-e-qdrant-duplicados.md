@@ -1,7 +1,7 @@
 - De: 08
 - Para: 10
 - Onda: techdebt
-- Status: aberto
+- Status: resolvido
 - Prioridade: normal
 
 ## Problema
@@ -33,3 +33,17 @@ Identificada duplicidade e desatualização em arquivos Docker pertencentes ao A
 
 ## Contexto adicional
 Investigação da dívida técnica "Dockerfiles duplicados ou desatualizados" pelo Agente 08. As alterações no `Dockerfile` principal da raiz e no `.dockerignore` foram tratadas e corrigidas diretamente pelo Agente 08 (proprietário exclusivo).
+
+## Resolução (Agente 10 — Infraestrutura e SRE)
+Handoff atendido e resolvido pelo Agente 10:
+
+1. **`docker/postgres/Dockerfile` atualizado:**
+   - Base atualizada de `pgvector/pgvector:pg16` para `pgvector/pgvector:pg17`.
+   - Dependência atualizada para `postgresql-17-postgis-3`.
+   - Comentários limpos para remover referências legadas ao antigo deploy OCI e clarificar seu papel como imagem auxiliar local com PostGIS + pgvector + TLS autoassinado.
+
+2. **`docker-compose.qdrant.yml` padronizado:**
+   - Removida a chave obsoleta `version: '3.8'` do Compose v2, eliminando avisos de depreciação.
+   - `container_name` alinhado para `birthhub_qdrant` (convenção canônica da stack).
+   - Healthcheck alinhado para `http://127.0.0.1:6333/healthz`, consistente com `docker-compose.services.yml` e `infrastructure/qdrant/README.md`.
+

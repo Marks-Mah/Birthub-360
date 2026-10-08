@@ -60,4 +60,6 @@ export const TENANT_INJECTED_MODELS = [
   // Onda 49 (Playbook Vivo): livingPlaybook.service.ts cria/atualiza PlaybookInsight direto pelo
   // client `prisma` global (não via req.db) — mesmo padrão de rede de segurança dos demais acima.
   'PlaybookInsight',
+  // LeadTouchpoint multi-tenant isolation
+  'LeadTouchpoint',
 ];
