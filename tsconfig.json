@@ -6,7 +6,7 @@
     "module": "ESNext",
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "skipLibCheck": true,
-    "resolveJsonModule": true,
+    "resolveJsonModule": false,
     "moduleResolution": "bundler",
     "isolatedModules": true,
     "moduleDetection": "force",
@@ -41,6 +41,8 @@
     "src/features/voice-hub",
     "src/features/cadence/dialer",
     "src/features/prospecting/outbound",
+    "src/features/temporal-workers",
+    "src/features/prospecting/crawlee",
     "src/**/*.test.ts",
     "src/**/*.test.tsx",
     "src/**/__tests__/**"
