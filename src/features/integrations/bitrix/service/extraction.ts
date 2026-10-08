@@ -3,10 +3,10 @@ import type { Prisma } from '@prisma/client';
 import { AuditService } from '../../../../lib/audit/audit.service.js';
 import { logger } from '../../../../lib/logger.js';
 import { prisma } from '../../../../lib/prisma.js';
+import { computeBackoffDelayMs, sleep } from '../../../../shared/http/retryWithBackoff.js';
 import { AppError } from '../../../../shared/middlewares/errorHandler.js';
 import { BITRIX_FIELD_MAP_VERSION } from '../bitrixFieldMap.js';
 import { BitrixDefinitiveError, callBitrix, getConnectionWebhookUrl } from './client.js';
-import { computeBackoffDelayMs, sleep } from '../../../../shared/http/retryWithBackoff.js';
 import {
   ALL_EXTRACTION_ENTITIES,
   type BitrixExtractionEntity,
@@ -35,7 +35,6 @@ import {
   bitrixExtractionPartialTotal,
   bitrixExtractionRetriesTotal,
 } from './metrics.js';
-
 
 // ── Serviço real de Extrações Bitrix (Onda 7, Agente 06/06A) ───────────────────────────────────
 //
@@ -273,7 +272,8 @@ export function __setExtractionRetryDelayForTests(
   delayFn?: (attempt: number) => number,
   sleepFn?: (ms: number) => Promise<void>,
 ) {
-  extractionBackoffDelayFn = delayFn ?? ((attempt: number) => computeBackoffDelayMs(attempt, 200, 2000));
+  extractionBackoffDelayFn =
+    delayFn ?? ((attempt: number) => computeBackoffDelayMs(attempt, 200, 2000));
   extractionSleepFn = sleepFn ?? sleep;
 }
 
@@ -335,7 +335,14 @@ async function extractEntityPages(
 
         const delay = extractionBackoffDelayFn(pageAttempt);
         logger.warn(
-          { correlationId, entity, start, pageAttempt, maxPageAttempts: MAX_PAGE_RETRIES, delayMs: delay },
+          {
+            correlationId,
+            entity,
+            start,
+            pageAttempt,
+            maxPageAttempts: MAX_PAGE_RETRIES,
+            delayMs: delay,
+          },
           '[bitrix] Falha transitória ao buscar página da extração — retentando com backoff',
         );
         bitrixExtractionRetriesTotal.inc({ tenant: organizationId, entity });
@@ -885,10 +892,7 @@ export async function downloadExtractionFile(
  * Valida autorização de tenant, limpa arquivos antigos, redefine status para 'queued',
  * registra auditoria e reinicia a execução em segundo plano.
  */
-export async function retryExtractionRun(
-  organizationId: string,
-  runId: string,
-) {
+export async function retryExtractionRun(organizationId: string, runId: string) {
   const run = await prisma.bitrixExtractionRun.findFirst({
     where: { id: runId, organizationId },
   });
@@ -908,7 +912,10 @@ export async function retryExtractionRun(
   try {
     await deleteExtractionRunFiles(organizationId, runId);
   } catch (err) {
-    logger.warn({ err, runId, organizationId }, '[bitrix] Falha ao limpar arquivos anteriores antes do retry');
+    logger.warn(
+      { err, runId, organizationId },
+      '[bitrix] Falha ao limpar arquivos anteriores antes do retry',
+    );
   }
 
   const updatedRun = await prisma.bitrixExtractionRun.update({
@@ -1004,4 +1011,3 @@ export async function reconcileStuckRuns(
 
 export type { BitrixExtractionEntity, BitrixExtractionPeriod };
 export { ALL_EXTRACTION_ENTITIES, EXTRACTION_PERIODS };
-
