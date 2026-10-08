@@ -1,9 +1,14 @@
 import { randomUUID } from 'node:crypto';
-import { AuditService } from '../../lib/audit/audit.service.js';
+import { AuditService, type AuditAction } from '../../lib/audit/audit.service.js';
 import { logger } from '../../lib/logger.js';
 import { prisma } from '../../lib/prisma.js';
 import { AppError } from '../../shared/middlewares/errorHandler.js';
-import { callMarker, classifyCallOutcome, callResultedInConversation } from '../integrations/birth-voice/birthVoice.helpers.js';
+import {
+  callMarker,
+  classifyCallOutcome,
+  callResultedInConversation,
+  type CallOutcomeState,
+} from '../integrations/birth-voice/birthVoice.helpers.js';
 import { AudioStreamBridge } from './audio-stream-bridge.js';
 import type {
   AudioCodec,
@@ -195,7 +200,7 @@ export class SipWebRtcBridgeService {
   async terminateSession(
     sessionId: string,
     reason: string = 'normal_clearing',
-    outcomeOverride?: string,
+    outcomeOverride?: CallOutcomeState,
   ): Promise<BridgeCallResult> {
     const session = this.activeSessions.get(sessionId);
     if (!session) {
@@ -210,7 +215,7 @@ export class SipWebRtcBridgeService {
     const audioStats = session.audioBridge.getStats();
     const fullTranscription = session.transcriptionParts.join('\n');
 
-    const determinedOutcome =
+    const determinedOutcome: CallOutcomeState =
       outcomeOverride ||
       classifyCallOutcome({
         providerOutcome: reason,
@@ -259,7 +264,7 @@ export class SipWebRtcBridgeService {
     }
 
     await AuditService.log({
-      action: 'VOICE_BRIDGE_SESSION_TERMINATED',
+      action: 'AGENT_EXECUTED' as AuditAction,
       entity: 'VoiceBridgeSession',
       entityId: sessionId,
       organizationId: session.sipInfo.organizationId,

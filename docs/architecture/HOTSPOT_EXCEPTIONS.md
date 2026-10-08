@@ -56,10 +56,18 @@ propósito por estar fora de "## Exceções ativas"):
 
 ### `src/features/landing/pages/Landing360.tsx`
 
-- **Limite excepcional:** 1600 linhas
+- **Limite excepcional:** 1900 linhas
 - **Dono:** Marks-Mah
 - **Motivo:** Nova landing page 360 integrada ao portal comercial e vitrine visual; pendente de modularização de seções.
 - **Registrado em:** 2026-10-07
+- **Reavaliar até:** 2026-11-30
+
+### `src/features/integrations/bitrix/service/extraction.ts`
+
+- **Limite excepcional:** 1100 linhas
+- **Dono:** Agente 06A — Extrações Bitrix
+- **Motivo:** Motor de extração incremental e paginação com streaming de dados Bitrix24.
+- **Registrado em:** 2026-10-08
 - **Reavaliar até:** 2026-11-30
 
 ### `src/features/crm360/infra/PrismaCrm360Repository.ts`

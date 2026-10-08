@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { voiceCommandExecutorService } from '../../../../src/features/voice/voice-command-executor.service.js';
 import { prisma } from '../../../../src/lib/prisma.js';
-import { suppressNumber } from '../../../../src/features/integrations/birth-voice/callSuppression.service.js';
+import { recordOptOut } from '../../../../src/features/integrations/birth-voice/callSuppression.service.js';
 import type { VoiceCommandRequest } from '../../../../src/features/voice/types.js';
 
 vi.mock('../../../../src/lib/prisma.js', () => ({
@@ -23,7 +23,7 @@ vi.mock('../../../../src/lib/audit/audit.service.js', () => ({
 }));
 
 vi.mock('../../../../src/features/integrations/birth-voice/callSuppression.service.js', () => ({
-  suppressNumber: vi.fn().mockResolvedValue(undefined),
+  recordOptOut: vi.fn().mockResolvedValue({ id: 'optout-1' }),
 }));
 
 describe('VoiceCommandExecutorService (B-07 Elimination)', () => {
@@ -141,11 +141,13 @@ describe('VoiceCommandExecutorService (B-07 Elimination)', () => {
 
     expect(result.executed).toBe(true);
     expect(result.verified).toBe(true);
-    expect(suppressNumber).toHaveBeenCalledWith(
+    expect(recordOptOut).toHaveBeenCalledWith({
       organizationId,
-      '+5511999998888',
-      'Contato pediu para não ligar mais',
-    );
+      phone: '+5511999998888',
+      source: 'call-opt-out',
+      reason: 'Contato pediu para não ligar mais',
+      leadId,
+    });
   });
 
   it('should execute SEND_PROPOSAL command and record email activity', async () => {

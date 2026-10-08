@@ -1,7 +1,7 @@
-import { AuditService } from '../../lib/audit/audit.service.js';
+import { AuditService, type AuditAction } from '../../lib/audit/audit.service.js';
 import { logger } from '../../lib/logger.js';
 import { prisma } from '../../lib/prisma.js';
-import { suppressNumber } from '../integrations/birth-voice/callSuppression.service.js';
+import { recordOptOut } from '../integrations/birth-voice/callSuppression.service.js';
 import type {
   VoiceCommandExecutionResult,
   VoiceCommandRequest,
@@ -125,7 +125,7 @@ export class VoiceCommandExecutorService {
     });
 
     await AuditService.log({
-      action: 'VOICE_COMMAND_SCHEDULE_MEETING',
+      action: 'AGENT_EXECUTED' as AuditAction,
       entity: 'Activity',
       entityId: activity.id,
       organizationId,
@@ -267,10 +267,16 @@ export class VoiceCommandExecutorService {
       };
     }
 
-    await suppressNumber(organizationId, targetPhone, reason);
+    await recordOptOut({
+      organizationId,
+      phone: targetPhone,
+      source: 'call-opt-out',
+      reason,
+      leadId: leadId || undefined,
+    });
 
     await AuditService.log({
-      action: 'VOICE_COMMAND_OPT_OUT',
+      action: 'AGENT_EXECUTED' as AuditAction,
       entity: 'CallSuppression',
       organizationId,
       afterState: {

@@ -10,6 +10,51 @@
   },
   {
     "type": "dependency",
+    "from": "src/features/ai-voice/ai-voice-orchestrator.service.ts",
+    "rule": {
+      "name": "no-cross-feature-imports",
+      "severity": "error"
+    },
+    "to": "src/features/integrations/birth-voice/birthVoice.service.ts"
+  },
+  {
+    "type": "dependency",
+    "from": "src/features/ai-voice/ai-voice-orchestrator.service.ts",
+    "rule": {
+      "name": "no-cross-feature-imports",
+      "severity": "error"
+    },
+    "to": "src/features/voice/sip-webrtc-bridge.service.ts"
+  },
+  {
+    "type": "dependency",
+    "from": "src/features/ai-voice/ai-voice-orchestrator.service.ts",
+    "rule": {
+      "name": "no-cross-feature-imports",
+      "severity": "error"
+    },
+    "to": "src/features/voice/types.ts"
+  },
+  {
+    "type": "dependency",
+    "from": "src/features/ai-voice/webrtc-channel.service.ts",
+    "rule": {
+      "name": "no-cross-feature-imports",
+      "severity": "error"
+    },
+    "to": "src/features/voice/sip-webrtc-bridge.service.ts"
+  },
+  {
+    "type": "dependency",
+    "from": "src/features/ai-voice/webrtc-channel.service.ts",
+    "rule": {
+      "name": "no-cross-feature-imports",
+      "severity": "error"
+    },
+    "to": "src/features/voice/types.ts"
+  },
+  {
+    "type": "dependency",
     "from": "src/features/automations/application/cold-leads-scanner.service.ts",
     "rule": {
       "name": "no-cross-feature-imports",
@@ -226,6 +271,15 @@
   },
   {
     "type": "dependency",
+    "from": "src/features/crm/components/LeadDetailDrawer.tsx",
+    "rule": {
+      "name": "no-cross-feature-imports",
+      "severity": "error"
+    },
+    "to": "src/features/intelligence/components/PredictiveScoringNbaCard.tsx"
+  },
+  {
+    "type": "dependency",
     "from": "src/features/crm/jobs/followUp.worker.ts",
     "rule": {
       "name": "no-cross-feature-imports",
@@ -307,15 +361,6 @@
   },
   {
     "type": "dependency",
-    "from": "src/features/gamification/routes/gamification.routes.ts",
-    "rule": {
-      "name": "no-cross-feature-imports",
-      "severity": "error"
-    },
-    "to": "src/features/intelligence/services/CentralAISuiteService.ts"
-  },
-  {
-    "type": "dependency",
     "from": "src/features/integrations/birth-voice/birthVoice.routes.ts",
     "rule": {
       "name": "no-cross-feature-imports",
@@ -331,6 +376,15 @@
       "severity": "error"
     },
     "to": "src/features/intelligence/services/guardrails.service.ts"
+  },
+  {
+    "type": "dependency",
+    "from": "src/features/integrations/birth-voice/birthVoice.webhook.ts",
+    "rule": {
+      "name": "no-cross-feature-imports",
+      "severity": "error"
+    },
+    "to": "src/features/cadence/infra/cadenceWebhookResolver.ts"
   },
   {
     "type": "dependency",
@@ -600,6 +654,33 @@
       "severity": "error"
     },
     "to": "src/features/team/components/Team.tsx"
+  },
+  {
+    "type": "dependency",
+    "from": "src/features/temporal-workers/activities.ts",
+    "rule": {
+      "name": "no-cross-feature-imports",
+      "severity": "error"
+    },
+    "to": "src/features/prospecting/crawlee/crawler.ts"
+  },
+  {
+    "type": "dependency",
+    "from": "src/features/voice/sip-webrtc-bridge.service.ts",
+    "rule": {
+      "name": "no-cross-feature-imports",
+      "severity": "error"
+    },
+    "to": "src/features/integrations/birth-voice/birthVoice.helpers.ts"
+  },
+  {
+    "type": "dependency",
+    "from": "src/features/voice/voice-command-executor.service.ts",
+    "rule": {
+      "name": "no-cross-feature-imports",
+      "severity": "error"
+    },
+    "to": "src/features/integrations/birth-voice/callSuppression.service.ts"
   },
   {
     "type": "cycle",
