@@ -158,6 +158,15 @@ export default defineConfig(() => {
             if (normalizedId.includes('/echarts/') || normalizedId.includes('/zrender/')) {
               return 'vendor-echarts';
             }
+            if (normalizedId.includes('/exceljs/')) {
+              return 'vendor-excel';
+            }
+            if (normalizedId.includes('/recharts/') || normalizedId.includes('/d3-')) {
+              return 'vendor-charts';
+            }
+            if (normalizedId.includes('/@better-auth/') || normalizedId.includes('/redux/')) {
+              return 'vendor-auth';
+            }
             // Tiptap + ProseMirror
             if (normalizedId.includes('/@tiptap/') || normalizedId.includes('/prosemirror-')) {
               return 'vendor-tiptap';
