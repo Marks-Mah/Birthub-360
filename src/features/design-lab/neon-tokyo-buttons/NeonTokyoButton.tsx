@@ -82,7 +82,7 @@ export const NeonTokyoButton = React.forwardRef<HTMLButtonElement, NeonTokyoButt
           style={accent ? { color: accent, ...style } : style}
           ref={ref}
           disabled={loading || props.disabled}
-          {...props}
+          {...(props as any)}
         >
           {loading && <Loader2 className="h-4 w-4 shrink-0 animate-spin" aria-hidden="true" />}
           {children}

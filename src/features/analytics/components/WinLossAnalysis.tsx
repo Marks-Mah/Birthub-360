@@ -248,7 +248,11 @@ export function WinLossAnalysis() {
             )}
 
             {sections.map((section, i) => (
-              <Card key={i} padding="lg" className="hover:border-[#8B7DFF]/40 transition-colors bg-[#1C1D24] border-white/5">
+              <Card
+                key={i}
+                padding="lg"
+                className="hover:border-[#8B7DFF]/40 transition-colors bg-[#1C1D24] border-white/5"
+              >
                 <div className="flex items-start gap-3">
                   <span className="text-2xl shrink-0 mt-0.5">{section.icon}</span>
                   <div className="flex-1 min-w-0">

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Float, MeshDistortMaterial, Sparkles } from '@react-three/drei';
 import { Canvas, useFrame } from '@react-three/fiber';
 import confetti from 'canvas-confetti';

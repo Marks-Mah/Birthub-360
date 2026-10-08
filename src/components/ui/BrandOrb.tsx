@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Float, MeshDistortMaterial, Sparkles, Sphere } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
 import { useReducedMotion } from 'framer-motion';

@@ -40,6 +40,7 @@ import { bitrixApi } from '../../integrations/bitrix/bitrix.api.js';
 // de WhatsApp (src/features/integrations/whatsapp, sessão Baileys por tenant) — reusado aqui em vez
 // de duplicar lógica de polling/envio; CRM só decide QUANDO oferecer a ação, não COMO ela funciona.
 import { WhatsAppChatPanel } from '../../integrations/whatsapp/components/WhatsAppChatPanel.js';
+import { PredictiveScoringNbaCard } from '../../intelligence/components/PredictiveScoringNbaCard.js';
 import { type BantQualificationData, calculateLeadScore } from '../domain/leadScoreCalculator.js';
 // Central unificada de conversas (item #18) — mescla lead.timeline com WhatsApp/e-mail/ligações.
 import {
@@ -413,6 +414,7 @@ export function LeadDetailDrawer({ leadId, onClose, onChanged }: LeadDetailDrawe
           conveniência de mouse/touch, não um alvo de interação que um usuário de teclado precise
           alcançar. Elemento de backdrop com role="button" para fechar via teclado - sem aria-hidden
           pois é focável. */}
+      {/* biome-ignore lint/a11y/useSemanticElements: backdrop overlay com clique para fechar */}
       <div
         className="fixed inset-0 bg-ink/40 backdrop-blur-xs transition-opacity"
         role="button"
@@ -869,6 +871,14 @@ export function LeadDetailDrawer({ leadId, onClose, onChanged }: LeadDetailDrawe
                   />
                 </section>
               )}
+
+              <PredictiveScoringNbaCard
+                leadId={lead.id}
+                leadName={lead.contact?.name || lead.title || 'Lead'}
+                companyName={company?.legalName || company?.tradeName || undefined}
+                stage={lead.status}
+                recentNotes={lead.internalNotes?.map((n) => n.content).join('; ')}
+              />
 
               <LeadCopilotoPanel leadId={lead.id} />
 

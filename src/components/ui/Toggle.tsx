@@ -52,7 +52,9 @@ export function Toggle({
       {(label || description) && (
         <label htmlFor={toggleId} className="flex flex-col select-none cursor-pointer">
           {label && <span className="text-sm font-semibold text-slate-200">{label}</span>}
-          {description && <span className="text-xs text-slate-400 leading-relaxed">{description}</span>}
+          {description && (
+            <span className="text-xs text-slate-400 leading-relaxed">{description}</span>
+          )}
         </label>
       )}
 

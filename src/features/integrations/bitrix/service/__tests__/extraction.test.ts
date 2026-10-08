@@ -879,4 +879,3 @@ describe('reconcileStuckRuns — recuperação de execuções travadas', () => {
     );
   });
 });
-

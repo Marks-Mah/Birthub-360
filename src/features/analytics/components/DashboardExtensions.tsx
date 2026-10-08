@@ -13,9 +13,7 @@ export function AgentPerformanceWidget({ data }: { data?: any }) {
       height={220}
       data={{
         categories: data.map((d: any) => d.agent),
-        series: [
-          { name: 'Leads Qualificados', data: data.map((d: any) => d.qualified) },
-        ],
+        series: [{ name: 'Leads Qualificados', data: data.map((d: any) => d.qualified) }],
       }}
     />
   );
@@ -29,9 +27,7 @@ export function LostReasonsWidget({ data }: { data?: any }) {
       height={220}
       data={{
         categories: data.map((d: any) => d.reason),
-        series: [
-          { name: 'Perdidos', data: data.map((d: any) => d.count) },
-        ],
+        series: [{ name: 'Perdidos', data: data.map((d: any) => d.count) }],
       }}
     />
   );
@@ -39,5 +35,9 @@ export function LostReasonsWidget({ data }: { data?: any }) {
 
 export function TmqTile({ value }: { value?: any }) {
   if (value == null) return null;
-  return <div className="text-4xl font-black text-slate-200">{value.toFixed(1)} <span className="text-lg font-normal text-slate-400">dias</span></div>;
+  return (
+    <div className="text-4xl font-black text-slate-200">
+      {value.toFixed(1)} <span className="text-lg font-normal text-slate-400">dias</span>
+    </div>
+  );
 }

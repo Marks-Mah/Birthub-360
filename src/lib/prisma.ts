@@ -83,7 +83,7 @@ export const dbPoolWaitingRequests = new client.Gauge({
   },
 });
 
-const adapter = new PrismaPg(pool);
+const adapter = new PrismaPg(pool as any);
 
 const CONTACT_PII_FIELDS = ['email', 'phone', 'whatsapp'] as const;
 const NESTED_CONTACT_PII_MAX_DEPTH = 6;

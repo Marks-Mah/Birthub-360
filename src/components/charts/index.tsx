@@ -436,7 +436,11 @@ export function LineChart({
       containLabel: true,
     },
     xAxis: { type: 'category', data: data.categories, boundaryGap: false, ...axisStyle },
-    yAxis: { type: 'value', ...axisStyle, splitLine: { lineStyle: { color: 'rgba(255, 255, 255, 0.05)' } } },
+    yAxis: {
+      type: 'value',
+      ...axisStyle,
+      splitLine: { lineStyle: { color: 'rgba(255, 255, 255, 0.05)' } },
+    },
     series: data.series.map((s, i) => ({
       name: s.name,
       type: 'line' as const,

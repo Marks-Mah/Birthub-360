@@ -45,11 +45,7 @@ function DecisionInstrument({
   target?: string;
 }) {
   const toneClass =
-    tone === 'good'
-      ? 'text-[#22c55e]'
-      : tone === 'critical'
-        ? 'text-[#EF4444]'
-        : 'text-slate-200';
+    tone === 'good' ? 'text-[#22c55e]' : tone === 'critical' ? 'text-[#EF4444]' : 'text-slate-200';
 
   const trend = previousValue && (
     <div className="flex items-center gap-1 text-[10px] font-semibold">
@@ -149,7 +145,10 @@ function DecisionInstrumentCard({
 }) {
   const [showTable, setShowTable] = useState(false);
   return (
-    <Card padding="sm" className={`relative group/dicard bg-[#1C1D24] border-white/5 ${className ?? ''}`}>
+    <Card
+      padding="sm"
+      className={`relative group/dicard bg-[#1C1D24] border-white/5 ${className ?? ''}`}
+    >
       <div
         className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-[#8B7DFF]/40 to-transparent opacity-0 group-hover/dicard:opacity-100 transition-opacity duration-700 z-20"
         aria-hidden="true"
@@ -531,13 +530,18 @@ export function Analytics() {
               </DecisionInstrumentCard>
 
               {/* TMQ - Decision Instrument */}
-              <Card padding="sm" className="relative overflow-hidden group/tmq bg-[#1C1D24] border-white/5">
+              <Card
+                padding="sm"
+                className="relative overflow-hidden group/tmq bg-[#1C1D24] border-white/5"
+              >
                 <div
                   className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-[#8B7DFF]/40 to-transparent opacity-0 group-hover/tmq:opacity-100 transition-opacity duration-700 z-20"
                   aria-hidden="true"
                 />
                 <div className="absolute top-0 right-0 w-12 h-12 bg-[#8B7DFF]/5 rounded-bl-full pointer-events-none" />
-                <h3 className="text-sm font-bold text-slate-200 mb-1">⏱ Tempo Médio de Qualificação</h3>
+                <h3 className="text-sm font-bold text-slate-200 mb-1">
+                  ⏱ Tempo Médio de Qualificação
+                </h3>
                 <p className="text-[10px] text-slate-400 mb-3">
                   Do lead recebido até a primeira qualificação
                 </p>
@@ -547,13 +551,18 @@ export function Analytics() {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Performance IA vs Humanos - Decision Instrument */}
-              <Card padding="sm" className="relative overflow-hidden group/perf bg-[#1C1D24] border-white/5">
+              <Card
+                padding="sm"
+                className="relative overflow-hidden group/perf bg-[#1C1D24] border-white/5"
+              >
                 <div
                   className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-[#8B7DFF]/40 to-transparent opacity-0 group-hover/perf:opacity-100 transition-opacity duration-700 z-20"
                   aria-hidden="true"
                 />
                 <div className="absolute top-0 right-0 w-12 h-12 bg-[#8B7DFF]/5 rounded-bl-full pointer-events-none" />
-                <h3 className="text-sm font-bold text-slate-200 mb-1">🤖 Performance: IA vs Humanos</h3>
+                <h3 className="text-sm font-bold text-slate-200 mb-1">
+                  🤖 Performance: IA vs Humanos
+                </h3>
                 <p className="text-[10px] text-slate-400 mb-3">
                   Leads qualificados por responsável no período
                 </p>
@@ -561,13 +570,18 @@ export function Analytics() {
               </Card>
 
               {/* Motivos de Perda - Decision Instrument */}
-              <Card padding="sm" className="relative overflow-hidden group/lost bg-[#1C1D24] border-white/5">
+              <Card
+                padding="sm"
+                className="relative overflow-hidden group/lost bg-[#1C1D24] border-white/5"
+              >
                 <div
                   className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-[#EF4444]/40 to-transparent opacity-0 group-hover/lost:opacity-100 transition-opacity duration-700 z-20"
                   aria-hidden="true"
                 />
                 <div className="absolute top-0 right-0 w-12 h-12 bg-[#EF4444]/5 rounded-bl-full pointer-events-none" />
-                <h3 className="text-sm font-bold text-slate-200 mb-1">📉 Principais Motivos de Perda</h3>
+                <h3 className="text-sm font-bold text-slate-200 mb-1">
+                  📉 Principais Motivos de Perda
+                </h3>
                 <p className="text-[10px] text-slate-400 mb-3">
                   Leads desqualificados/perdidos por motivo
                 </p>

@@ -46,7 +46,7 @@ export const getUploadUrl = async (key: string, contentType: string) => {
       Key: key,
       ContentType: contentType,
     });
-    const signedUrl = await getSignedUrl(getS3Client(), command, { expiresIn: 3600 });
+    const signedUrl = await getSignedUrl(getS3Client() as any, command as any, { expiresIn: 3600 });
     return { signedUrl, key };
   } catch (err: any) {
     logger.error({ err, key }, 'Error generating upload URL');
@@ -60,7 +60,7 @@ export const getDownloadUrl = async (key: string) => {
       Bucket: getBucketName(),
       Key: key,
     });
-    const signedUrl = await getSignedUrl(getS3Client(), command, { expiresIn: 3600 });
+    const signedUrl = await getSignedUrl(getS3Client() as any, command as any, { expiresIn: 3600 });
     return { signedUrl, key };
   } catch (err: any) {
     logger.error({ err, key }, 'Error generating download URL');

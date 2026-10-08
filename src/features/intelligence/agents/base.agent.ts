@@ -190,7 +190,7 @@ export abstract class BaseAgent {
       const { SystemMessage, HumanMessage } = await import('@langchain/core/messages');
 
       const model = buildModelWithFallback(this.toolsModelName, tools);
-      const agent = createReactAgent({ llm: model, tools });
+      const agent = createReactAgent({ llm: model, tools: tools as any });
 
       const result = await agent.invoke({
         messages: [

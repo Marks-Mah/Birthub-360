@@ -429,12 +429,12 @@
 
 .dark {
   /* Minimalist Dark Theme (Updated) */
-  --bg: #15151A;
-  --surface: #1C1D24;
-  --surface-2: #13151A;
-  --surface-subtle: #1C1D24;
-  --surface-elevated: #22232B;
-  --surface-interactive: #22232B;
+  --bg: #15151a;
+  --surface: #1c1d24;
+  --surface-2: #13151a;
+  --surface-subtle: #1c1d24;
+  --surface-elevated: #22232b;
+  --surface-interactive: #22232b;
   --overlay: rgba(15, 20, 25, 0.85);
   --ink: #f8fafc;
   --ink-2: #94a3b8;
@@ -444,17 +444,17 @@
   --coolors-yellow: #ffd166;
   --coolors-orange: #ff6b35;
   --coolors-pink: #ff3399;
-  --coolors-purple: #8B7DFF;
+  --coolors-purple: #8b7dff;
   --coolors-blue: #4da6ff;
   /* Atualização de tokens */
-  --brand: #8B7DFF;
-  --brand-2: #A78BFA;
-  --iris: #8B7DFF;
+  --brand: #8b7dff;
+  --brand-2: #a78bfa;
+  --iris: #8b7dff;
   --orbit-blue: #38bdf8;
-  --red: #EF4444;
-  --pink: #F472B6;
-  --warn: #F59E0B;
-  --gold: #FCD34D;
+  --red: #ef4444;
+  --pink: #f472b6;
+  --warn: #f59e0b;
+  --gold: #fcd34d;
   /* Acentos de ícone da Sidebar, lado escuro: matizes mais vibrantes e legíveis - Coolors */
   --nav-c-gold: #ffd166;
   --nav-c-iris: #9d4edd;

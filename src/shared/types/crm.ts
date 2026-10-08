@@ -37,7 +37,12 @@ export interface LeadQualification {
   temaProximaReuniao?: string;
 }
 
-export interface Company<TDate = Date, TContactStatus = PrismaContactStatus, TLeadStatus = PrismaLeadStatus, TLeadTemperature = PrismaLeadTemperature> {
+export interface Company<
+  TDate = Date,
+  TContactStatus = PrismaContactStatus,
+  TLeadStatus = PrismaLeadStatus,
+  TLeadTemperature = PrismaLeadTemperature,
+> {
   id: string;
   legalName: string;
   tradeName: string;
@@ -89,7 +94,12 @@ export interface Company<TDate = Date, TContactStatus = PrismaContactStatus, TLe
   leads?: Lead<TDate, TLeadStatus, TLeadTemperature, TContactStatus>[];
 }
 
-export interface Contact<TDate = Date, TStatus = PrismaContactStatus, TLeadStatus = PrismaLeadStatus, TLeadTemperature = PrismaLeadTemperature> {
+export interface Contact<
+  TDate = Date,
+  TStatus = PrismaContactStatus,
+  TLeadStatus = PrismaLeadStatus,
+  TLeadTemperature = PrismaLeadTemperature,
+> {
   id: string;
   name: string;
   role?: string | null;
@@ -118,7 +128,7 @@ export interface Lead<
   TDate = Date,
   TStatus = PrismaLeadStatus,
   TTemperature = PrismaLeadTemperature,
-  TContactStatus = PrismaContactStatus
+  TContactStatus = PrismaContactStatus,
 > {
   id: string;
   status: TStatus;

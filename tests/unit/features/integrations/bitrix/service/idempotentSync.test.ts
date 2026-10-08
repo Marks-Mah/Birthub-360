@@ -1,11 +1,11 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import * as clientModule from '../../../../../../src/features/integrations/bitrix/service/client.js';
 import {
-  acquireBitrixSyncLock,
-  releaseBitrixSyncLock,
-  callBitrixPaginated,
   BitrixPaginationError,
-} from '../idempotentSync.js';
-import * as clientModule from '../client.js';
+  acquireBitrixSyncLock,
+  callBitrixPaginated,
+  releaseBitrixSyncLock,
+} from '../../../../../../src/features/integrations/bitrix/service/idempotentSync.js';
 
 describe('Bitrix idempotentSync & Pagination', () => {
   beforeEach(() => {

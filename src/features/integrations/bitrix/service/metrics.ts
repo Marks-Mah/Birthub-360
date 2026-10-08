@@ -86,4 +86,3 @@ export const bitrixExtractionRetriesTotal =
     help: 'Total de retentativas executadas pelo serviço de Extrações Bitrix (BitrixExtractionRun), por organização (tenant) e entidade.',
     labelNames: ['tenant', 'entity'] as const,
   });
-

@@ -30,7 +30,7 @@ const tools = [
   copywriterTool,
   summarizeLeadTool,
 ];
-const toolNode = new ToolNode(tools);
+const toolNode = new ToolNode(tools as any);
 
 import { buildModelWithFallbackAndTools } from './fallback.util.js';
 

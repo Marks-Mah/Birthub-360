@@ -960,9 +960,7 @@ router.post(
       // contato de um lead) pode informá-lo aqui para que seja minimizado antes de ir ao
       // provedor de IA externo e restaurado na resposta — mesmo padrão de ai.service.ts/crmTools.ts.
       const result = await (
-        aiToolkitFunctions[functionName] as (
-          ...args: any[]
-        ) => Promise<unknown>
+        aiToolkitFunctions[functionName] as (...args: any[]) => Promise<unknown>
       )(...(args as string[]), normalizePiiValues(piiValues));
       res.json({ success: true, result });
     } catch (error: any) {

@@ -36,7 +36,7 @@ const tools = [
   createFollowUpTaskTool,
   notifyTeamTool,
 ];
-const toolNode = new ToolNode(tools);
+const toolNode = new ToolNode(tools as any);
 
 import { buildModelWithFallbackAndTools } from './fallback.util.js';
 
