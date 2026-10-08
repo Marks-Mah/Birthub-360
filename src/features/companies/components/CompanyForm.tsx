@@ -84,7 +84,7 @@ export function CompanyForm({ company, onClose, onSave }: CompanyFormProps) {
   });
 
   useEffect(() => {
-    reset(company ? { ...emptyDefaults, ...company } : emptyDefaults);
+    reset(company ? ({ ...emptyDefaults, ...company } as CompanyFormInput) : emptyDefaults);
   }, [company, reset]);
 
   const { onChange: onStateChange, ...stateField } = register('state');

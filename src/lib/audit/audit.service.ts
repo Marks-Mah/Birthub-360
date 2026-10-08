@@ -23,6 +23,7 @@ export interface AuditLogParams {
   entityId?: string;
   actorId?: string;
   tenantId?: string;
+  organizationId?: string;
   ipAddress?: string;
   device?: string;
   beforeState?: Record<string, unknown>;
@@ -44,7 +45,7 @@ export const AuditService = {
           entity: params.entity,
           entityId: params.entityId,
           actorId: params.actorId,
-          tenantId: params.tenantId || '',
+          tenantId: params.tenantId || params.organizationId || '',
           ipAddress: params.ipAddress,
           details: details,
         },

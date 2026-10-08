@@ -56,7 +56,7 @@ export function ContactForm({ contact, onClose, onSave }: ContactFormProps) {
   });
 
   useEffect(() => {
-    reset(contact ? { ...emptyDefaults, ...contact } : emptyDefaults);
+    reset(contact ? ({ ...emptyDefaults, ...contact } as ContactFormInput) : emptyDefaults);
 
     companiesDB
       .list({ limit: 200 })

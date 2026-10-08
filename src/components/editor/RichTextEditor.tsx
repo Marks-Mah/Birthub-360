@@ -88,7 +88,7 @@ export function RichTextEditor({
       }),
       Placeholder.configure({ placeholder }),
       ...(characterLimit > 0 ? [CharacterCount.configure({ limit: characterLimit })] : []),
-    ],
+    ] as any[],
     content,
     editable: !readOnly,
     onUpdate: ({ editor: ed }) => {

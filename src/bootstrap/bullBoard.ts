@@ -74,9 +74,9 @@ export function mountBullBoard(app: Express): void {
   if (queuesEnabled && leadsQueue && searchQueue && agentQueue) {
     createBullBoard({
       queues: [
-        new TenantIsolatedBullMQAdapter(leadsQueue),
-        new TenantIsolatedBullMQAdapter(searchQueue),
-        new TenantIsolatedBullMQAdapter(agentQueue),
+        new TenantIsolatedBullMQAdapter(leadsQueue as any),
+        new TenantIsolatedBullMQAdapter(searchQueue as any),
+        new TenantIsolatedBullMQAdapter(agentQueue as any),
       ],
       serverAdapter,
     });

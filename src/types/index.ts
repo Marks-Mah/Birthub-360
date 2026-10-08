@@ -36,15 +36,22 @@ import type {
   Attachment as DomainAttachment,
 } from '../shared/types/crm.js';
 
-import type { ContactStatus, LeadStatus, LeadTemperature } from '../lib/zod.js';
+import type { CompanyStatus, ContactStatus, LeadStatus, LeadTemperature } from '../lib/zod.js';
 
 export type { LeadQualification };
 
-export interface Company extends DomainCompany<string> {}
+export interface Company extends Omit<DomainCompany<string>, 'status'> {
+  status: CompanyStatus;
+}
 
-export interface Contact extends DomainContact<string> {}
+export interface Contact extends Omit<DomainContact<string>, 'status'> {
+  status: ContactStatus;
+}
 
-export interface Lead extends DomainLead<string> {}
+export interface Lead extends Omit<DomainLead<string>, 'status' | 'temperature'> {
+  status: LeadStatus;
+  temperature?: LeadTemperature | null;
+}
 
 export interface Activity extends DomainActivity<string> {}
 
