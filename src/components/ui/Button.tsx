@@ -6,6 +6,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { Loader2 } from 'lucide-react';
 
 import { cn } from '../../lib/utils.js';
+import { Magnetic } from './Magnetic.js';
 
 const buttonVariants = cva(
   'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-[10px] text-sm font-semibold transition-all duration-150 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-bg disabled:pointer-events-none disabled:bg-surface-subtle disabled:text-ink-2 disabled:border-transparent',
@@ -63,6 +64,7 @@ export interface ButtonProps
   soundHover?: boolean;
   sound?: string;
   shine?: boolean;
+  magnetic?: boolean;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
@@ -77,6 +79,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       soundHover = false,
       sound,
       shine = false,
+      magnetic = false,
       children,
       ...props
     },
@@ -84,7 +87,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ) => {
     const Comp = asChild ? Slot : 'button';
 
-    return (
+    const buttonContent = (
       <Comp
         className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
@@ -95,6 +98,12 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {children}
       </Comp>
     );
+
+    if (magnetic) {
+      return <Magnetic>{buttonContent}</Magnetic>;
+    }
+
+    return buttonContent;
   },
 );
 Button.displayName = 'Button';
