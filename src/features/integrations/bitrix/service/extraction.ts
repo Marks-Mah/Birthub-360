@@ -905,9 +905,11 @@ export async function retryExtractionRun(
   await getConnectionWebhookUrl(organizationId, run.connectionId);
 
   // Remove arquivos gerados anteriormente (se houver) para evitar inconsistência
-  await deleteExtractionRunFiles(organizationId, runId).catch((err) => {
+  try {
+    await deleteExtractionRunFiles(organizationId, runId);
+  } catch (err) {
     logger.warn({ err, runId, organizationId }, '[bitrix] Falha ao limpar arquivos anteriores antes do retry');
-  });
+  }
 
   const updatedRun = await prisma.bitrixExtractionRun.update({
     where: { id: runId },

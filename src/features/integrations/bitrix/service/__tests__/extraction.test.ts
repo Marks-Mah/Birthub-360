@@ -25,13 +25,27 @@ const prismaMock = {
 };
 vi.mock('@/lib/prisma', () => ({ prisma: prismaMock }));
 
-const clientMock = { callBitrix: vi.fn(), getConnectionWebhookUrl: vi.fn() };
+class BitrixDefinitiveError extends AppError {
+  constructor(
+    message: string,
+    statusCode: number,
+    public readonly correlationId: string,
+  ) {
+    super(message, statusCode);
+  }
+}
+
+const clientMock = {
+  callBitrix: vi.fn(),
+  getConnectionWebhookUrl: vi.fn(),
+  BitrixDefinitiveError,
+};
 vi.mock('../client.js', () => clientMock);
 
 const filesMock = {
   writeExtractionFile: vi.fn(),
   readExtractionFile: vi.fn(),
-  deleteExtractionRunFiles: vi.fn(),
+  deleteExtractionRunFiles: vi.fn().mockResolvedValue(undefined),
   toCsv: vi.fn(() => 'csv-content'),
   toJson: vi.fn(() => 'json-content'),
   buildXlsxWorkbook: vi.fn(async () => Buffer.from('xlsx-content')),

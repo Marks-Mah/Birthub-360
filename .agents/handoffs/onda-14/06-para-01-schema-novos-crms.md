@@ -1,7 +1,7 @@
 - De: 06 (Integrações e Bitrix)
 - Para: 01 (Plataforma, Segurança e Dados)
 - Onda: 14
-- Status: aberto
+- Status: resolvido
 - Prioridade: bloqueador
 
 ## Problema
@@ -42,3 +42,12 @@ O Agente 01 deve projetar e aplicar a migração Prisma com as seguintes caracte
 
 ## Contexto adicional
 Bloqueador de arquitetura prioritário B-05 ("Deploy capaz de iniciar sem migrações") e B-10 ("Separação visual sem isolamento real de dados").
+
+## Resolução (Agente 01)
+Modelos e migração canônica já consolidados no banco de dados:
+1. Modelos `ExternalCrmConnection`, `ExternalCrmSyncRule` e `ExternalCrmSyncLog` presentes em `prisma/schema.prisma` (linhas 4900-4960).
+2. Campo `provider` com suporte a `hubspot`, `pipedrive`, `rdstation`, `monday`.
+3. Campo `config` estruturado como texto criptografado em repouso com suporte a tokens OAuth e API keys.
+4. Isolamento multi-tenant garantido com chave estrangeira `organizationId` obrigatória associada à `Organization` com `onDelete: Cascade` e índice `@@index([organizationId])`.
+5. Migração de banco aplicada em `prisma/migrations/20260923170000_add_external_crm_and_workspace_layouts/migration.sql`.
+Status alterado para **resolvido**.
