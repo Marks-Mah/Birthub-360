@@ -10,7 +10,6 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import { useTheme } from '../../../contexts/ThemeContext.js';
 import { formatMonthLabel, type MonthlyPoint } from '../analytics.api.js';
 
 interface GlowChartProps {
@@ -34,7 +33,6 @@ const SERIES: Array<{
 ];
 
 export function GlowChart({ data, error }: GlowChartProps) {
-  const { theme } = useTheme();
   const [visible, setVisible] = useState<Record<SeriesKey, boolean>>({
     created: true,
     won: true,
@@ -102,6 +100,7 @@ export function GlowChart({ data, error }: GlowChartProps) {
             </p>
           </div>
 
+          {/* biome-ignore lint/a11y/useSemanticElements: toolbar de botões de alternância da série */}
           <div
             role="group"
             aria-label="Séries exibidas no gráfico"
