@@ -93,6 +93,7 @@ import { searchService } from '../../features/knowledge/search.service.js';
 // o container é uma FÁBRICA — registrar uma instância aqui vazaria o tenant da primeira requisição
 // para todas as seguintes.
 import { AccountIntelligenceService } from '../../features/market-intelligence/server/accountIntelligence.service.js';
+import { listMarketIntelligenceCompanies } from '../../features/market-intelligence/server/marketIntelligenceCompany.service.js';
 // Use Cases
 import { NoteUseCases } from '../../features/notes/application/NoteUseCases.js';
 // Repositories
@@ -213,6 +214,7 @@ export function setupDI() {
   container.register('CommercialIntelligenceUseCases', commercialIntelligenceUseCases);
   container.register('CommercialIntelligenceAiService', commercialIntelligenceAiService);
   container.register('CommercialIntelligencePeriod', { currentPeriod });
+  container.register('CompanyCatalogSearch', listMarketIntelligenceCompanies);
   container.register('ChurnPredictionService', churnPredictionService);
   // AIAGENT-004 (onda 6): fábrica por requisição — ver comentário no import. O chamador
   // (`agent.routes.ts`) passa `req.db` e o `organizationId` da sessão autenticada, nunca do body.
