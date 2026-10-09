@@ -72,8 +72,14 @@ export function Sidebar({
       >
         {/* Decorative orbs */}
         <div className="pointer-events-none absolute inset-0 overflow-hidden opacity-60">
-          <div className="el-orb el-orb-gold el-drift" style={{ width: 180, height: 180, top: -40, left: -60 }} />
-          <div className="el-orb el-orb-pink el-drift" style={{ width: 140, height: 140, bottom: 120, right: -40, animationDelay: '-7s' }} />
+          <div
+            className="el-orb el-orb-gold el-drift"
+            style={{ width: 180, height: 180, top: -40, left: -60 }}
+          />
+          <div
+            className="el-orb el-orb-pink el-drift"
+            style={{ width: 140, height: 140, bottom: 120, right: -40, animationDelay: '-7s' }}
+          />
         </div>
 
         {/* ── Console Header: Brand & Status ────────────────────────── */}
@@ -221,7 +227,9 @@ export function Sidebar({
                             size={13}
                             strokeWidth={1.5}
                             className={`shrink-0 relative transition-transform duration-500 ${
-                              isActive ? 'text-[color:var(--el-gold)]' : 'text-[color:var(--el-ink-3)]'
+                              isActive
+                                ? 'text-[color:var(--el-gold)]'
+                                : 'text-[color:var(--el-ink-3)]'
                             } ${isGroupExpanded ? 'rotate-180' : ''}`}
                           />
                         )}
@@ -317,8 +325,7 @@ export function Sidebar({
             <div
               className="relative rounded-2xl p-4 space-y-3 overflow-hidden el-fade-up"
               style={{
-                background:
-                  'linear-gradient(135deg, rgba(201,162,76,0.08), rgba(241,91,181,0.05))',
+                background: 'linear-gradient(135deg, rgba(201,162,76,0.08), rgba(241,91,181,0.05))',
                 border: '1px solid var(--el-line-strong)',
               }}
             >
@@ -329,7 +336,10 @@ export function Sidebar({
               <div className="relative flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <span className="relative flex h-6 w-6 items-center justify-center">
-                    <span className="absolute inset-0 rounded-full el-pulse-ring" style={{ background: 'var(--el-gold)' }} />
+                    <span
+                      className="absolute inset-0 rounded-full el-pulse-ring"
+                      style={{ background: 'var(--el-gold)' }}
+                    />
                     <span className="relative h-2 w-2 rounded-full bg-[color:var(--el-gold)]" />
                   </span>
                   <span className="font-display italic text-xs text-[color:var(--el-ink-2)] tracking-wide">
@@ -338,7 +348,8 @@ export function Sidebar({
                 </div>
               </div>
               <p className="relative font-display text-[13px] text-[color:var(--el-ink)] leading-snug">
-                7 sinais aguardam<br />
+                7 sinais aguardam
+                <br />
                 <span className="italic text-[color:var(--el-gold-deep)]">sua atenção</span>
               </p>
               <button

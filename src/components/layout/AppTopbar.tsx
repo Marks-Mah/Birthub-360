@@ -107,7 +107,9 @@ export function AppTopbar({ activeTab, onOpenMobileNav }: AppTopbarProps) {
       <div className="flex min-w-0 items-center gap-3">
         <div
           className="grid h-9 w-9 place-items-center rounded-full border border-[color:var(--el-line-strong)]"
-          style={{ background: 'linear-gradient(135deg, var(--surface) 0%, var(--surface-2) 100%)' }}
+          style={{
+            background: 'linear-gradient(135deg, var(--surface) 0%, var(--surface-2) 100%)',
+          }}
         >
           <Icon className="h-4 w-4 shrink-0 text-[color:var(--el-gold-deep)]" strokeWidth={1.5} />
         </div>
@@ -115,7 +117,10 @@ export function AppTopbar({ activeTab, onOpenMobileNav }: AppTopbarProps) {
           <span className="text-[10px] uppercase tracking-[0.25em] text-[color:var(--el-ink-3)] font-display">
             Birth Hub 360°
           </span>
-          <h1 className="truncate font-display text-base text-[color:var(--el-ink)] italic mt-0.5" style={{ fontWeight: 400 }}>
+          <h1
+            className="truncate font-display text-base text-[color:var(--el-ink)] italic mt-0.5"
+            style={{ fontWeight: 400 }}
+          >
             {meta.label}
           </h1>
         </div>
@@ -130,7 +135,10 @@ export function AppTopbar({ activeTab, onOpenMobileNav }: AppTopbarProps) {
         className="group ml-5 hidden max-w-md flex-1 items-center gap-3 rounded-full border border-[color:var(--el-line-strong)] bg-[color:var(--surface)]/70 px-4 py-2.5 text-[color:var(--el-ink-2)] transition-all duration-500 hover:border-[color:var(--el-gold)] hover:bg-[color:var(--surface)] hover:text-[color:var(--el-ink)] hover:shadow-[var(--el-shadow-sm)] lg:flex"
         data-testid="topbar-command-palette"
       >
-        <Search className="h-3.5 w-3.5 shrink-0 transition-all duration-500 group-hover:text-[color:var(--el-gold-deep)] group-hover:rotate-12" strokeWidth={1.5} />
+        <Search
+          className="h-3.5 w-3.5 shrink-0 transition-all duration-500 group-hover:text-[color:var(--el-gold-deep)] group-hover:rotate-12"
+          strokeWidth={1.5}
+        />
         <span className="text-xs font-display italic">Buscar empresa, decisor ou comando…</span>
         <kbd className="ml-auto rounded-full border border-[color:var(--el-line-strong)] bg-[color:var(--surface-2)] px-2 py-0.5 text-[9px] font-medium text-[color:var(--el-ink-3)] transition-colors group-hover:border-[color:var(--el-gold)]">
           ⌘K
@@ -144,7 +152,10 @@ export function AppTopbar({ activeTab, onOpenMobileNav }: AppTopbarProps) {
           <p className="text-[9px] font-display italic uppercase tracking-[0.2em] text-[color:var(--el-ink-3)]">
             {dateLabel}
           </p>
-          <p className="font-display text-sm text-[color:var(--el-ink)] [font-variant-numeric:tabular-nums]" style={{ fontWeight: 400 }}>
+          <p
+            className="font-display text-sm text-[color:var(--el-ink)] [font-variant-numeric:tabular-nums]"
+            style={{ fontWeight: 400 }}
+          >
             {timeLabel}
           </p>
         </div>
@@ -163,7 +174,11 @@ export function AppTopbar({ activeTab, onOpenMobileNav }: AppTopbarProps) {
           title={`Mudar para modo ${theme === 'dark' ? 'claro' : 'escuro'}`}
           data-testid="topbar-toggle-theme"
         >
-          {theme === 'dark' ? <Sun className="h-4 w-4" strokeWidth={1.5} /> : <Moon className="h-4 w-4" strokeWidth={1.5} />}
+          {theme === 'dark' ? (
+            <Sun className="h-4 w-4" strokeWidth={1.5} />
+          ) : (
+            <Moon className="h-4 w-4" strokeWidth={1.5} />
+          )}
         </motion.button>
 
         <motion.button
@@ -181,7 +196,11 @@ export function AppTopbar({ activeTab, onOpenMobileNav }: AppTopbarProps) {
           aria-label={soundEnabled ? 'Desativar sons' : 'Ativar sons'}
           data-testid="topbar-toggle-sound"
         >
-          {soundEnabled ? <Volume2 className="h-4 w-4" strokeWidth={1.5} /> : <VolumeX className="h-4 w-4" strokeWidth={1.5} />}
+          {soundEnabled ? (
+            <Volume2 className="h-4 w-4" strokeWidth={1.5} />
+          ) : (
+            <VolumeX className="h-4 w-4" strokeWidth={1.5} />
+          )}
         </motion.button>
 
         <motion.button

@@ -15,7 +15,7 @@
    - Instrument Sans — body, UI
    ───────────────────────────────────────────────────────────────────── */
 
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..800;1,9..144,300..800&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Instrument+Serif:ital@0;1&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..800;1,9..144,300..800&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Instrument+Serif:ital@0;1&display=swap");
 
 /* ─── Design Tokens Override ───────────────────────────────────────── */
 :root,
@@ -42,13 +42,7 @@
   --el-line-strong: rgba(20, 18, 24, 0.14);
 
   /* Signature gradients */
-  --el-grad-signature: linear-gradient(
-    135deg,
-    #c9a24c 0%,
-    #f15bb5 45%,
-    #b9dbf0 80%,
-    #5f8a7a 100%
-  );
+  --el-grad-signature: linear-gradient(135deg, #c9a24c 0%, #f15bb5 45%, #b9dbf0 80%, #5f8a7a 100%);
   --el-grad-gold: linear-gradient(135deg, #e6c979 0%, #c9a24c 50%, #9b7a2d 100%);
   --el-grad-dawn: linear-gradient(135deg, #fbf8f3 0%, #ffe8f4 50%, #e8f4fb 100%);
 
@@ -128,8 +122,10 @@ html,
 body {
   background: var(--el-pearl);
   color: var(--el-ink);
-  font-family: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
-  font-feature-settings: 'ss01' on, 'cv11' on;
+  font-family: "Instrument Sans", ui-sans-serif, system-ui, sans-serif;
+  font-feature-settings:
+    "ss01" on,
+    "cv11" on;
   letter-spacing: -0.005em;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
@@ -152,13 +148,13 @@ body {
 
 /* Display font applied globally where font-display class is used */
 .font-display,
-[class*='font-display'],
+[class*="font-display"],
 h1,
 h2,
 h3,
 .text-display,
 .el-display {
-  font-family: 'Fraunces', 'Instrument Serif', ui-serif, Georgia, serif !important;
+  font-family: "Fraunces", "Instrument Serif", ui-serif, Georgia, serif !important;
   font-optical-sizing: auto;
   letter-spacing: -0.02em;
   font-weight: 400;
@@ -166,7 +162,7 @@ h3,
 
 .el-display-italic,
 .font-display-italic {
-  font-family: 'Instrument Serif', 'Fraunces', ui-serif, Georgia, serif !important;
+  font-family: "Instrument Serif", "Fraunces", ui-serif, Georgia, serif !important;
   font-style: italic;
   letter-spacing: -0.01em;
 }
@@ -206,7 +202,7 @@ h3,
   position: relative;
 }
 .el-hairline::after {
-  content: '';
+  content: "";
   position: absolute;
   inset: auto 0 0 0;
   height: 1px;
@@ -221,7 +217,7 @@ h3,
 }
 
 .el-hairline-top::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0 0 auto 0;
   height: 1px;
@@ -241,7 +237,7 @@ h3,
   display: inline-block;
 }
 .el-underline::after {
-  content: '';
+  content: "";
   position: absolute;
   left: 0;
   right: 0;
@@ -276,7 +272,7 @@ h3,
   position: relative;
 }
 .el-grain::after {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   pointer-events: none;
@@ -465,7 +461,7 @@ h3,
   gap: 0.6rem;
   padding: 0.7rem 1.4rem;
   border-radius: var(--el-r-pill);
-  font-family: 'Instrument Sans', sans-serif;
+  font-family: "Instrument Sans", sans-serif;
   font-weight: 500;
   font-size: 0.875rem;
   letter-spacing: 0.01em;
@@ -480,7 +476,9 @@ h3,
   background: var(--el-grad-gold);
   background-size: 200% 200%;
   color: var(--el-ink);
-  box-shadow: var(--el-shadow-sm), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  box-shadow:
+    var(--el-shadow-sm),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 .el-btn-primary:hover {
   background-position: 100% 0;
@@ -499,7 +497,7 @@ h3,
 }
 
 .el-btn::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   background: linear-gradient(
@@ -533,7 +531,7 @@ h3,
   transform: translateY(-2px);
 }
 .el-card::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   background: linear-gradient(135deg, transparent 0%, rgba(201, 162, 76, 0.04) 100%);
@@ -548,7 +546,7 @@ h3,
 /* ─── Decorative Elements ────────────────────────────────────────── */
 .el-corner-ornament::before,
 .el-corner-ornament::after {
-  content: '';
+  content: "";
   position: absolute;
   width: 16px;
   height: 16px;
@@ -603,7 +601,7 @@ h3,
   border: 1px solid var(--el-line-strong);
   border-radius: var(--el-r-md);
   color: var(--el-ink);
-  font-family: 'Instrument Sans', sans-serif;
+  font-family: "Instrument Sans", sans-serif;
   font-size: 0.925rem;
   transition: all 0.3s var(--el-ease);
   outline: none;
@@ -622,13 +620,13 @@ h3,
   align-items: center;
   gap: 1rem;
   color: var(--el-ink-3);
-  font-family: 'Fraunces', serif;
+  font-family: "Fraunces", serif;
   font-style: italic;
   font-size: 0.875rem;
 }
 .el-divider::before,
 .el-divider::after {
-  content: '';
+  content: "";
   flex: 1;
   height: 1px;
   background: linear-gradient(90deg, transparent, var(--el-line-strong), transparent);

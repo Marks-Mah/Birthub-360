@@ -23,11 +23,10 @@ import { useNavigate } from 'react-router-dom';
 import { GamificationWidget } from '../../../components/ui/GamificationWidget.js';
 import { Skeleton } from '../../../components/ui/Skeleton.js';
 import { useAuth } from '../../../contexts/AuthContext.js';
+import { useBitrixIntegration } from '../../../hooks/useBitrixIntegration.js';
 import { useAnalyticsDashboard } from '../../../hooks/useDatabase.js';
 import { useOnlineStatus } from '../../../hooks/useOnlineStatus.js';
-import { useBitrixIntegration } from '../../../hooks/useBitrixIntegration.js';
 import {
-  fadeInUp,
   metricReveal,
   metricsContainer,
   staggerContainer,
@@ -70,7 +69,9 @@ export function SinglePageDashboard() {
           <div className="w-12 h-12 rounded-full bg-rose-500/10 text-rose-500 mx-auto flex items-center justify-center">
             <AlertTriangle className="w-6 h-6" />
           </div>
-          <h2 className="text-lg font-bold text-ink font-display">Falha ao carregar indicadores comerciais</h2>
+          <h2 className="text-lg font-bold text-ink font-display">
+            Falha ao carregar indicadores comerciais
+          </h2>
           <p className="text-sm text-ink-2 max-w-md mx-auto">
             {error || 'Não foi possível sincronizar as métricas de pipeline com o servidor.'}
           </p>
@@ -196,12 +197,13 @@ export function SinglePageDashboard() {
             </p>
             <div className="flex items-center justify-between mt-3 pt-3 border-t border-line/40 text-xs text-ink-2">
               <span>{totalLeads} oportunidades ativas</span>
-              <span
+              <button
+                type="button"
                 className="text-brand font-semibold cursor-pointer hover:underline"
                 onClick={() => navigate('/app/crm')}
               >
                 Ver kanban &rarr;
-              </span>
+              </button>
             </div>
           </motion.div>
 
@@ -224,12 +226,13 @@ export function SinglePageDashboard() {
             </p>
             <div className="flex items-center justify-between mt-3 pt-3 border-t border-line/40 text-xs text-ink-2">
               <span>{closedThisMonth} fechados no período</span>
-              <span
+              <button
+                type="button"
                 className="text-emerald-600 dark:text-emerald-400 font-semibold cursor-pointer hover:underline"
                 onClick={() => navigate('/app/analytics')}
               >
                 Métricas &rarr;
-              </span>
+              </button>
             </div>
           </motion.div>
 
@@ -252,12 +255,13 @@ export function SinglePageDashboard() {
             </p>
             <div className="flex items-center justify-between mt-3 pt-3 border-t border-line/40 text-xs text-ink-2">
               <span>Ações na cadência</span>
-              <span
+              <button
+                type="button"
                 className="text-iris font-semibold cursor-pointer hover:underline"
                 onClick={() => navigate('/app/calendar')}
               >
                 Agenda &rarr;
-              </span>
+              </button>
             </div>
           </motion.div>
 
@@ -280,12 +284,13 @@ export function SinglePageDashboard() {
             </p>
             <div className="flex items-center justify-between mt-3 pt-3 border-t border-line/40 text-xs text-ink-2">
               <span>Organizações no radar</span>
-              <span
+              <button
+                type="button"
                 className="text-amber-600 dark:text-amber-400 font-semibold cursor-pointer hover:underline"
                 onClick={() => navigate('/app/companies')}
               >
                 Ver empresas &rarr;
-              </span>
+              </button>
             </div>
           </motion.div>
         </motion.div>
@@ -458,15 +463,15 @@ export function SinglePageDashboard() {
                 </div>
                 <div
                   className={`flex items-center gap-1.5 ${
-                    hasBitrixActive
-                      ? 'text-emerald-600 dark:text-emerald-400'
-                      : 'text-ink-2'
+                    hasBitrixActive ? 'text-emerald-600 dark:text-emerald-400' : 'text-ink-2'
                   }`}
                 >
                   {hasBitrixActive ? (
                     <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
                   ) : (
-                    <span className="w-3.5 h-3.5 rounded-full border border-line flex items-center justify-center text-[8px]">•</span>
+                    <span className="w-3.5 h-3.5 rounded-full border border-line flex items-center justify-center text-[8px]">
+                      •
+                    </span>
                   )}
                   <span className="text-ink font-medium">
                     {hasBitrixActive ? 'Bitrix24 Ativo' : 'Bitrix24 Pendente'}
@@ -677,9 +682,9 @@ export function SinglePageDashboard() {
             </div>
 
             <GamificationWidget
-              initialXp={Math.max(350, totalLeads * 50 + closedThisMonth * 200)}
+              initialXp={totalLeads * 50 + closedThisMonth * 200}
               level={Math.max(1, Math.floor((totalLeads * 50 + closedThisMonth * 200) / 1000) + 1)}
-              streakDays={closedThisMonth > 0 ? 5 : 2}
+              streakDays={closedThisMonth > 0 ? 1 : 0}
               show3DCore={false}
             />
           </div>
