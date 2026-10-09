@@ -108,7 +108,8 @@ export async function checkOptOutStatus(
       blocked: true,
       allowed: false,
       code: 'OPT_OUT_SUPPRESSED',
-      reason: 'Parâmetros obrigatórios ausentes para verificação de opt-out (contactId, channel e organizationId).',
+      reason:
+        'Parâmetros obrigatórios ausentes para verificação de opt-out (contactId, channel e organizationId).',
       matchedBy: 'missing_params',
     };
     if (options?.throwOnBlocked) {
@@ -219,7 +220,9 @@ export async function checkOptOutStatus(
   }
 
   // 5. Consulta na tabela unificada de opt-out (OptOutRecord) por leadId, e-mail e telefone
-  const leadIds = Array.isArray(contact.leads) ? contact.leads.map((l: { id: string }) => l.id) : [];
+  const leadIds = Array.isArray(contact.leads)
+    ? contact.leads.map((l: { id: string }) => l.id)
+    : [];
   const orConditions: Array<Record<string, unknown>> = [];
 
   if (leadIds.length > 0) {

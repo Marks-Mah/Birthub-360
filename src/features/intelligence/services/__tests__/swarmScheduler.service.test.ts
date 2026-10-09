@@ -62,11 +62,9 @@ vi.mock('../negotiatorReply.service.js', () => ({
   draftNegotiatorReply: (...args: unknown[]) => draftNegotiatorReplyMock(...args),
 }));
 
-const {
-  enabledOrganizations,
-  getSwarmSloSnapshot,
-  runSwarmScheduler,
-} = await import('../swarmScheduler.service.js');
+const { enabledOrganizations, getSwarmSloSnapshot, runSwarmScheduler } = await import(
+  '../swarmScheduler.service.js'
+);
 
 // Quarta-feira 14:00 (horário comercial válido)
 const COMMERCIAL_WEDNESDAY = new Date('2026-08-12T14:00:00-03:00');
@@ -75,10 +73,7 @@ const SATURDAY_AFTERNOON = new Date('2026-08-15T14:00:00-03:00');
 // Quarta-feira 23:00 (fora da janela comercial - noite)
 const WEDNESDAY_NIGHT = new Date('2026-08-12T23:00:00-03:00');
 
-function setupLeadFindMany(opts: {
-  dueFollowUps?: unknown[];
-  pipelineLeads?: unknown[];
-}) {
+function setupLeadFindMany(opts: { dueFollowUps?: unknown[]; pipelineLeads?: unknown[] }) {
   leadFindMany.mockImplementation((args: { where?: { nextAction?: unknown; OR?: unknown } }) => {
     if (args?.where?.nextAction) {
       return Promise.resolve(opts.dueFollowUps ?? []);
@@ -155,7 +150,13 @@ describe('SwarmScheduler — As 7 Travas do Modo Full de Envio Autônomo', () =>
     lastInteraction: null,
     nextAction: null,
     company: { tradeName: 'TechCorp', segment: 'Tecnologia', size: 'Média' },
-    contact: { email: 'contato@techcorp.com', emailStatus: 'VERIFIED', role: 'CTO', whatsapp: null, phone: null },
+    contact: {
+      email: 'contato@techcorp.com',
+      emailStatus: 'VERIFIED',
+      role: 'CTO',
+      whatsapp: null,
+      phone: null,
+    },
   };
 
   it('Trava 1 (Organização autorizada): runSwarmScheduler respeita o tenantId no contexto', async () => {

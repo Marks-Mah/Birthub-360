@@ -114,4 +114,3 @@ export {
   type OptOutChannel,
   type OptOutCheckResult,
 } from '../../lgpd/services/optOutCheck.service.js';
-

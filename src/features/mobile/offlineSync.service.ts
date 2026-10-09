@@ -377,7 +377,10 @@ export class OfflineSyncService {
         }
       }
     } catch (err) {
-      console.warn('[OfflineSync] Falha ao recuperar fila do storage local, reinicializando vazia:', err);
+      console.warn(
+        '[OfflineSync] Falha ao recuperar fila do storage local, reinicializando vazia:',
+        err,
+      );
       this.queue = [];
     }
 
@@ -509,9 +512,7 @@ export class OfflineSyncService {
     leadId: string,
     leadData: Record<string, unknown>,
   ): Promise<OfflineQueueItem> {
-    const isTemp =
-      leadId.startsWith('temp_') ||
-      this.queue.some((q) => q.temporaryId === leadId);
+    const isTemp = leadId.startsWith('temp_') || this.queue.some((q) => q.temporaryId === leadId);
 
     return this.enqueue({
       type: 'UPDATE_LEAD',
@@ -530,9 +531,7 @@ export class OfflineSyncService {
     leadId: string,
     noteData: { content: string; author: string },
   ): Promise<OfflineQueueItem> {
-    const isTemp =
-      leadId.startsWith('temp_') ||
-      this.queue.some((q) => q.temporaryId === leadId);
+    const isTemp = leadId.startsWith('temp_') || this.queue.some((q) => q.temporaryId === leadId);
 
     return this.enqueue({
       type: 'CREATE_NOTE',
@@ -794,9 +793,8 @@ export class OfflineSyncService {
    * Retorna quantidade de itens pendentes de envio.
    */
   public getPendingCount(): number {
-    return this.queue.filter(
-      (item) => item.status === 'pending' || item.status === 'syncing',
-    ).length;
+    return this.queue.filter((item) => item.status === 'pending' || item.status === 'syncing')
+      .length;
   }
 
   /**

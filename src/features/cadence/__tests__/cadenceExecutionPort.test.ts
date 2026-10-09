@@ -345,13 +345,7 @@ describe('CadenceExecutionPort (Integração Swarm ↔ Cadência)', () => {
       });
 
       // Último toque foi de e-mail há apenas 5 minutos
-      seedTouches(
-        runRepo,
-        leadId,
-        'email',
-        1,
-        new Date(SEGUNDA_10H_SP.getTime() - 5 * 60_000),
-      );
+      seedTouches(runRepo, leadId, 'email', 1, new Date(SEGUNDA_10H_SP.getTime() - 5 * 60_000));
 
       // Swarm tenta disparar WhatsApp agora (precisa de 30min de espaçamento entre canais diferentes)
       const input = sampleActionInput('whatsapp');

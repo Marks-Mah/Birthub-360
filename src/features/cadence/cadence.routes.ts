@@ -25,7 +25,6 @@ import { recordOptOut } from './application/optOutService.js';
 import { checkOptOutStatus, recordContactOptOut } from '../lgpd/services/optOutCheck.service.js';
 import { parseCadenceSequenceDefinition } from './jobs/cadenceRun.worker.js';
 
-
 /**
  * Router de cadência multicanal e opt-out unificado. Leitura (opt-outs/runs) desde a Onda 10;
  * escrita (criar sequência, iniciar run para um lead) adicionada nesta rodada — pré-requisito para
@@ -166,7 +165,6 @@ router.post(
     }
   },
 );
-
 
 router.get('/runs', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {

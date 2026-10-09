@@ -189,7 +189,10 @@ export class TokenQuotaService {
       const cached = await cacheConnection.get(cacheKey);
       if (cached !== null) return Number(cached);
     } catch (err: unknown) {
-      logger.warn({ err, organizationId }, '[TokenQuota] Redis indisponível ao ler cache de tokens');
+      logger.warn(
+        { err, organizationId },
+        '[TokenQuota] Redis indisponível ao ler cache de tokens',
+      );
     }
 
     const now = Date.now();
@@ -218,7 +221,10 @@ export class TokenQuotaService {
     try {
       await cacheConnection.set(cacheKey, fresh.toString(), 'EX', CACHE_TTL_SECONDS);
     } catch (err: unknown) {
-      logger.warn({ err, organizationId }, '[TokenQuota] Redis indisponível ao gravar cache de tokens');
+      logger.warn(
+        { err, organizationId },
+        '[TokenQuota] Redis indisponível ao gravar cache de tokens',
+      );
     }
 
     return fresh;
@@ -535,7 +541,8 @@ export class TokenQuotaService {
         recommendation =
           'Alerta preventivo: ritmo diário atual projeta ultrapassar a franquia antes do fim do mês.';
       } else {
-        recommendation = 'Franquia saudável: ritmo de consumo compatível com a alocação contratada.';
+        recommendation =
+          'Franquia saudável: ritmo de consumo compatível com a alocação contratada.';
       }
 
       const topModels = modelGroups.map((g) => ({
@@ -579,7 +586,10 @@ export class TokenQuotaService {
             },
           });
         } catch (err: unknown) {
-          logger.warn({ err }, '[TokenQuotaService] Falha ao enviar relatório executivo ao Langfuse');
+          logger.warn(
+            { err },
+            '[TokenQuotaService] Falha ao enviar relatório executivo ao Langfuse',
+          );
         }
       }
 
@@ -611,7 +621,8 @@ export class TokenQuotaService {
 
     try {
       langfuse.event({
-        name: params.level === 'warning_80' ? 'finops:quota-warning-80' : 'finops:quota-exceeded-100',
+        name:
+          params.level === 'warning_80' ? 'finops:quota-warning-80' : 'finops:quota-exceeded-100',
         metadata: {
           organizationId: params.organizationId,
           tier: params.tier,

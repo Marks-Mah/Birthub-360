@@ -6,7 +6,6 @@ import type { CadenceDispatcher } from '../../application/cadenceService.js';
 import type { CadenceRunState, CadenceTouch } from '../../domain/cadence.js';
 import { checkOptOutStatus } from '../../../lgpd/services/optOutCheck.service.js';
 
-
 /**
  * Dispatchers reais de canal (CYC-008, onda-19) — a peça que faltava para `advanceCadenceRun`
  * (dom\u00ednio puro, entregue na Onda 10) sair do papel: até aqui a única implementação de
@@ -50,7 +49,10 @@ async function resolveLeadEmail(organizationId: string, leadId: string): Promise
   return lead?.contact?.email ?? null;
 }
 
-async function resolveLeadContactId(organizationId: string, leadId: string): Promise<string | null> {
+async function resolveLeadContactId(
+  organizationId: string,
+  leadId: string,
+): Promise<string | null> {
   const lead = await prisma.lead.findFirst({
     where: { id: leadId, organizationId },
     select: { contactId: true },
@@ -66,7 +68,12 @@ export const whatsAppCadenceDispatcher: Pick<CadenceDispatcher, 'dispatch'> = {
       const optOutCheck = await checkOptOutStatus(contactId, 'whatsapp', run.organizationId);
       if (optOutCheck.blocked) {
         logger.warn(
-          { organizationId: run.organizationId, leadId: run.leadId, contactId, code: optOutCheck.code },
+          {
+            organizationId: run.organizationId,
+            leadId: run.leadId,
+            contactId,
+            code: optOutCheck.code,
+          },
           'Toque de cadência WhatsApp barrado: contato suprimido por opt-out (OPT_OUT_SUPPRESSED).',
         );
         return {
@@ -128,7 +135,12 @@ export const emailCadenceDispatcher: Pick<CadenceDispatcher, 'dispatch'> = {
       const optOutCheck = await checkOptOutStatus(contactId, 'email', run.organizationId);
       if (optOutCheck.blocked) {
         logger.warn(
-          { organizationId: run.organizationId, leadId: run.leadId, contactId, code: optOutCheck.code },
+          {
+            organizationId: run.organizationId,
+            leadId: run.leadId,
+            contactId,
+            code: optOutCheck.code,
+          },
           'Toque de cadência e-mail barrado: contato suprimido por opt-out (OPT_OUT_SUPPRESSED).',
         );
         return {
@@ -178,7 +190,12 @@ export function buildVoiceCadenceDispatcher(
         const optOutCheck = await checkOptOutStatus(contactId, 'voice', run.organizationId);
         if (optOutCheck.blocked) {
           logger.warn(
-            { organizationId: run.organizationId, leadId: run.leadId, contactId, code: optOutCheck.code },
+            {
+              organizationId: run.organizationId,
+              leadId: run.leadId,
+              contactId,
+              code: optOutCheck.code,
+            },
             'Toque de cadência voz barrado: contato suprimido por opt-out (OPT_OUT_SUPPRESSED).',
           );
           return {

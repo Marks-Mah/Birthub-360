@@ -33,6 +33,7 @@ Agente / Onda / Branch: 00 — Coordenador / auditoria-2026-10-09 / main local. 
 - `npm run build` → exit 0; precache PWA validado. Avisos de chunks grandes, comentários PURE de dependência e glob ico sem correspondência; não tratados fora do escopo.
 - Primeira tentativa do teste do HTML → NÃO EXECUTADA por ausência do Chromium headless do Playwright. Correção: usar canal Chrome já instalado; verificações seguintes passaram.
 - Screenshots desktop 1440×960 e mobile 390×844 → VERIFICADO VISUALMENTE.
+- `git diff --check` → exit 0. Varredura dirigida de 12 arquivos textuais da entrega por padrões de chave AWS, chave privada, token GitHub/OpenAI e telefone brasileiro → exit 0, nenhum achado. Essa busca dirigida não certifica ausência universal de segredos no repositório.
 - Unit/integration/e2e do CRM, npm audit e produção → NÃO EXECUTADOS: missão altera governança e HTML standalone, não comportamento do CRM nem release. Testes pertinentes do artefato foram executados.
 
 ## Evidências e riscos

@@ -359,7 +359,11 @@ describe('TokenQuotaService — Governança e FinOps de Tokens de IA (Onda 15)',
         _sum: { tokens: 2_500_000, cost: 42.5 },
       });
       groupByMock.mockResolvedValue([
-        { model: 'groq/llama-3.3-70b-versatile', _sum: { tokens: 1_800_000, cost: 30.0 }, _count: { id: 120 } },
+        {
+          model: 'groq/llama-3.3-70b-versatile',
+          _sum: { tokens: 1_800_000, cost: 30.0 },
+          _count: { id: 120 },
+        },
         { model: 'openai/gpt-4o', _sum: { tokens: 700_000, cost: 12.5 }, _count: { id: 35 } },
       ]);
 

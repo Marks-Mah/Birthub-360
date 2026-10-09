@@ -80,8 +80,12 @@ export interface CadenceExecutionServiceDeps {
 }
 
 function resolveCallWindowFromEnv(): CallWindow {
-  const start = process.env.SDR_CALL_WINDOW_START ? Number(process.env.SDR_CALL_WINDOW_START) : DEFAULT_CALL_WINDOW.startHour;
-  const end = process.env.SDR_CALL_WINDOW_END ? Number(process.env.SDR_CALL_WINDOW_END) : DEFAULT_CALL_WINDOW.endHour;
+  const start = process.env.SDR_CALL_WINDOW_START
+    ? Number(process.env.SDR_CALL_WINDOW_START)
+    : DEFAULT_CALL_WINDOW.startHour;
+  const end = process.env.SDR_CALL_WINDOW_END
+    ? Number(process.env.SDR_CALL_WINDOW_END)
+    : DEFAULT_CALL_WINDOW.endHour;
   const timeZone = process.env.SDR_CALL_TIMEZONE || DEFAULT_CALL_WINDOW.timeZone;
   return {
     startHour: Number.isFinite(start) ? start : 9,
@@ -324,7 +328,9 @@ export class CadenceExecutionService implements CadenceExecutionPort {
       }
 
       if (!this.deps.dispatcher) {
-        throw new Error('Dispatcher de canais externos (CadenceChannelDispatcherPort) não configurado.');
+        throw new Error(
+          'Dispatcher de canais externos (CadenceChannelDispatcherPort) não configurado.',
+        );
       }
 
       let dispatchOutcome: DispatchChannelResult;

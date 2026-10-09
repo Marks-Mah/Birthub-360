@@ -159,7 +159,6 @@ export const getAiModel = (
         agentContext,
       );
 
-
       const usage = response.usage;
       const content = response.choices?.[0]?.message?.content?.trim() ?? '';
 

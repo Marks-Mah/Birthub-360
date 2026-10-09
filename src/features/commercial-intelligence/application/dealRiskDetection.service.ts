@@ -289,10 +289,7 @@ export function evaluateLiveCallInsightRisk(insight: LiveCallInsight): RiskCandi
   }
 
   // 2. Concorrente citado na chamada
-  if (
-    insight.competitorMentioned ||
-    insight.objectionCategory?.toLowerCase() === 'concorrente'
-  ) {
+  if (insight.competitorMentioned || insight.objectionCategory?.toLowerCase() === 'concorrente') {
     const competitor = insight.competitorMentioned ?? 'Concorrente';
     candidates.push({
       leadId: insight.dealId,
@@ -304,10 +301,7 @@ export function evaluateLiveCallInsightRisk(insight: LiveCallInsight): RiskCandi
   }
 
   // 3. Objeção crítica levantada, exceto quando classificada como concorrente
-  if (
-    insight.objectionCategory &&
-    insight.objectionCategory.toLowerCase() !== 'concorrente'
-  ) {
+  if (insight.objectionCategory && insight.objectionCategory.toLowerCase() !== 'concorrente') {
     candidates.push({
       leadId: insight.dealId,
       reason: 'objecao_chamada',
@@ -379,7 +373,13 @@ export interface DealNegotiationExecutiveSummary {
 }
 
 export function buildDealNegotiationExecutiveSummary(
-  deal: { id: string; title?: string | null; amount: number; stageName?: string | null; probability?: number | null },
+  deal: {
+    id: string;
+    title?: string | null;
+    amount: number;
+    stageName?: string | null;
+    probability?: number | null;
+  },
   liveInsights: LiveCallInsight[] = [],
 ): DealNegotiationExecutiveSummary {
   const competitors: string[] = [];
@@ -388,9 +388,7 @@ export function buildDealNegotiationExecutiveSummary(
   let totalSentiment = 0;
   for (const insight of liveInsights) {
     const normalizedSentiment =
-      insight.sentimentScore > 1
-        ? (insight.sentimentScore - 50) / 50
-        : insight.sentimentScore;
+      insight.sentimentScore > 1 ? (insight.sentimentScore - 50) / 50 : insight.sentimentScore;
     totalSentiment += normalizedSentiment;
 
     if (insight.competitorMentioned && !competitors.includes(insight.competitorMentioned)) {

@@ -101,7 +101,8 @@ export function LiveCopilotHUD({
 
   const isCallActive = propIsActive ?? sessionState.isCallActive;
   const currentLeadName = propLeadName || sessionState.session?.leadName || 'Lead em Atendimento';
-  const currentCompany = propLeadCompany || sessionState.session?.leadCompany || 'Empresa em Prospecção';
+  const currentCompany =
+    propLeadCompany || sessionState.session?.leadCompany || 'Empresa em Prospecção';
 
   const [isMinimized, setIsMinimized] = useState(initialMinimized);
   const [size, setSize] = useState<HUDSize>(initialSize);
@@ -282,7 +283,11 @@ export function LiveCopilotHUD({
                   type="button"
                   onClick={() => {
                     const nextSize: HUDSize =
-                      size === 'compact' ? 'standard' : size === 'standard' ? 'expanded' : 'compact';
+                      size === 'compact'
+                        ? 'standard'
+                        : size === 'standard'
+                          ? 'expanded'
+                          : 'compact';
                     setSize(nextSize);
                   }}
                   aria-label={`Tamanho atual: ${size}. Clique para alternar.`}
@@ -444,9 +449,18 @@ export function LiveCopilotHUD({
                   </div>
 
                   <div className="flex items-center gap-0.5" aria-hidden="true">
-                    <span className="h-1.5 w-1 rounded-full bg-brand animate-bounce" style={{ animationDelay: '0ms' }} />
-                    <span className="h-2.5 w-1 rounded-full bg-brand animate-bounce" style={{ animationDelay: '150ms' }} />
-                    <span className="h-1.5 w-1 rounded-full bg-brand animate-bounce" style={{ animationDelay: '300ms' }} />
+                    <span
+                      className="h-1.5 w-1 rounded-full bg-brand animate-bounce"
+                      style={{ animationDelay: '0ms' }}
+                    />
+                    <span
+                      className="h-2.5 w-1 rounded-full bg-brand animate-bounce"
+                      style={{ animationDelay: '150ms' }}
+                    />
+                    <span
+                      className="h-1.5 w-1 rounded-full bg-brand animate-bounce"
+                      style={{ animationDelay: '300ms' }}
+                    />
                   </div>
                 </div>
 
@@ -458,14 +472,14 @@ export function LiveCopilotHUD({
                   {sessionState.transcripts.length > 0 ? (
                     sessionState.transcripts.slice(-3).map((item) => (
                       <p key={item.id} className="truncate">
-                        <strong className="text-ink">{item.speaker === 'lead' ? 'Lead: ' : 'Closer: '}</strong>
+                        <strong className="text-ink">
+                          {item.speaker === 'lead' ? 'Lead: ' : 'Closer: '}
+                        </strong>
                         {item.text}
                       </p>
                     ))
                   ) : (
-                    <p className="text-ink-3 italic">
-                      Ouvindo canal de voz em tempo real…
-                    </p>
+                    <p className="text-ink-3 italic">Ouvindo canal de voz em tempo real…</p>
                   )}
                 </div>
               </div>

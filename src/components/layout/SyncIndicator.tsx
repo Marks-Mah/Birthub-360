@@ -39,7 +39,9 @@ export function useNetworkSync(): SyncStateDetail & {
   const isOnline = useOnlineStatus();
   const [status, setStatus] = useState<NetworkSyncStatus>(() => (isOnline ? 'online' : 'offline'));
   const [pendingCount, setPendingCount] = useState<number>(0);
-  const [lastSyncedAt, setLastSyncedAt] = useState<Date | null>(() => (isOnline ? new Date() : null));
+  const [lastSyncedAt, setLastSyncedAt] = useState<Date | null>(() =>
+    isOnline ? new Date() : null,
+  );
   const isFirstRender = useRef(true);
 
   // Sincroniza com as mudanças do status de conectividade (online / offline)
@@ -172,7 +174,10 @@ export function OfflineBadge({ className = '' }: { className?: string }) {
       {status === 'offline' ? (
         <>
           <WifiOff className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
-          <span>Offline{pendingCount > 0 ? ` (${pendingCount} pendente${pendingCount > 1 ? 's' : ''})` : ''}</span>
+          <span>
+            Offline
+            {pendingCount > 0 ? ` (${pendingCount} pendente${pendingCount > 1 ? 's' : ''})` : ''}
+          </span>
         </>
       ) : (
         <>
@@ -236,7 +241,10 @@ export function SyncIndicator({ className = '' }: { className?: string }) {
 
         {status === 'offline' && (
           <>
-            <CloudOff className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" aria-hidden="true" />
+            <CloudOff
+              className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400"
+              aria-hidden="true"
+            />
             <span className="font-mono text-[11px] font-semibold">
               Offline{pendingCount > 0 ? ` (${pendingCount})` : ''}
             </span>
@@ -257,7 +265,9 @@ export function SyncIndicator({ className = '' }: { className?: string }) {
           >
             <div className="flex items-center gap-2 mb-1">
               {status === 'online' && <Wifi className="w-3.5 h-3.5 text-emerald-500" />}
-              {status === 'syncing' && <RefreshCw className="w-3.5 h-3.5 text-brand animate-spin" />}
+              {status === 'syncing' && (
+                <RefreshCw className="w-3.5 h-3.5 text-brand animate-spin" />
+              )}
               {status === 'offline' && <WifiOff className="w-3.5 h-3.5 text-amber-500" />}
               <span className="font-bold text-ink">
                 {status === 'online' && 'Conectado à nuvem'}
@@ -266,7 +276,8 @@ export function SyncIndicator({ className = '' }: { className?: string }) {
               </span>
             </div>
             <p className="text-[11px] text-ink-2 leading-relaxed">
-              {status === 'online' && 'Todos os dados e alterações estão sincronizados com o servidor.'}
+              {status === 'online' &&
+                'Todos os dados e alterações estão sincronizados com o servidor.'}
               {status === 'syncing' && 'Enviando alterações gravadas localmente para o backend…'}
               {status === 'offline' &&
                 'Suas ações no CRM serão armazenadas localmente no dispositivo e sincronizadas assim que a conexão retornar.'}

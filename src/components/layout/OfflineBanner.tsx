@@ -48,7 +48,8 @@ export function OfflineBanner() {
                 <WifiOff className="w-4 h-4 shrink-0 text-ink" aria-hidden="true" />
                 <span>Sem conexão — os dados exibidos podem estar desatualizados.</span>
                 <span className="hidden md:inline font-normal opacity-90">
-                  Modo offline ativo: suas ações serão armazenadas localmente e sincronizadas quando a conexão retornar.
+                  Modo offline ativo: suas ações serão armazenadas localmente e sincronizadas quando
+                  a conexão retornar.
                 </span>
               </div>
               <button
@@ -57,7 +58,10 @@ export function OfflineBanner() {
                 disabled={checking}
                 className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-md bg-warn/25 hover:bg-warn/35 text-ink border border-warn/40 transition-colors cursor-pointer disabled:opacity-50"
               >
-                <RefreshCw className={`w-3 h-3 ${checking ? 'animate-spin' : ''}`} aria-hidden="true" />
+                <RefreshCw
+                  className={`w-3 h-3 ${checking ? 'animate-spin' : ''}`}
+                  aria-hidden="true"
+                />
                 <span>{checking ? 'Verificando…' : 'Verificar conexão'}</span>
               </button>
             </div>

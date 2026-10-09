@@ -144,16 +144,37 @@ export async function eraseDataSubject(target: ErasureTarget): Promise<ErasureRe
       if ((prisma as any).optOutRecord?.create) {
         try {
           const { toE164BR } = await import('../../lib/phone.js');
-          const phoneE164 = contact.phone || contact.whatsapp ? toE164BR(contact.whatsapp ?? contact.phone ?? undefined) : null;
+          const phoneE164 =
+            contact.phone || contact.whatsapp
+              ? toE164BR(contact.whatsapp ?? contact.phone ?? undefined)
+              : null;
           const emailNormalized = contact.email ? contact.email.trim().toLowerCase() : null;
 
           if (leadIds.length > 0) {
             for (const leadId of leadIds) {
-              await (prisma as any).optOutRecord.create({
+              await (prisma as any).optOutRecord
+                .create({
+                  data: {
+                    organizationId: target.organizationId,
+                    scope: 'Global',
+                    leadId,
+                    email: emailNormalized,
+                    phoneE164,
+                    originChannel: 'manual',
+                    reason: 'LGPD Art. 18 - Direito de exclusão exercido pelo titular',
+                    evidence: 'Exercício de direito do titular sob LGPD',
+                    requestedBy: target.actorUserId ?? null,
+                  },
+                })
+                .catch(() => {});
+            }
+          } else if (emailNormalized || phoneE164) {
+            await (prisma as any).optOutRecord
+              .create({
                 data: {
                   organizationId: target.organizationId,
                   scope: 'Global',
-                  leadId,
+                  leadId: null,
                   email: emailNormalized,
                   phoneE164,
                   originChannel: 'manual',
@@ -161,22 +182,8 @@ export async function eraseDataSubject(target: ErasureTarget): Promise<ErasureRe
                   evidence: 'Exercício de direito do titular sob LGPD',
                   requestedBy: target.actorUserId ?? null,
                 },
-              }).catch(() => {});
-            }
-          } else if (emailNormalized || phoneE164) {
-            await (prisma as any).optOutRecord.create({
-              data: {
-                organizationId: target.organizationId,
-                scope: 'Global',
-                leadId: null,
-                email: emailNormalized,
-                phoneE164,
-                originChannel: 'manual',
-                reason: 'LGPD Art. 18 - Direito de exclusão exercido pelo titular',
-                evidence: 'Exercício de direito do titular sob LGPD',
-                requestedBy: target.actorUserId ?? null,
-              },
-            }).catch(() => {});
+              })
+              .catch(() => {});
           }
         } catch {
           // não bloqueia o fluxo de anonimização caso ocorra erro no registro auxiliar

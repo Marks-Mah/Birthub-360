@@ -110,18 +110,15 @@ lgpdRouter.get(
 );
 
 // Consulta de Status de Opt-Out por Contato e Canal (B-13 e §27)
-lgpdRouter.get(
-  '/opt-out/:contactId',
-  (req: Request, res: Response, next: NextFunction): void => {
-    (async () => {
-      const { organizationId } = (req as AuthRequest).user;
-      const contactId = routeParam(req.params.contactId, 'contactId');
-      const channel = (req.query.channel as string) || 'global';
-      const status = await lgpdService.checkOptOut(contactId, channel, organizationId);
-      res.json({ success: true, data: status });
-    })().catch(next);
-  },
-);
+lgpdRouter.get('/opt-out/:contactId', (req: Request, res: Response, next: NextFunction): void => {
+  (async () => {
+    const { organizationId } = (req as AuthRequest).user;
+    const contactId = routeParam(req.params.contactId, 'contactId');
+    const channel = (req.query.channel as string) || 'global';
+    const status = await lgpdService.checkOptOut(contactId, channel, organizationId);
+    res.json({ success: true, data: status });
+  })().catch(next);
+});
 
 // Registro de Opt-Out Manual / Expresso de Contato
 lgpdRouter.post(
@@ -164,4 +161,3 @@ lgpdRouter.post(
     })().catch(next);
   },
 );
-

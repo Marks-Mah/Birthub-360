@@ -111,4 +111,3 @@ export {
   type OptOutChannel,
   type OptOutCheckResult,
 };
-

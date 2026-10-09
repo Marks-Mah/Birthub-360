@@ -298,9 +298,7 @@ export const HEALTH_PILLAR_ORDER: HealthPillarKey[] = [
 /**
  * Consolida insights de chamadas ao vivo em métricas agregadas (Onda 15).
  */
-export function summarizeLiveCallInsights(
-  insights: LiveCallInsight[],
-): LiveCallInsightsSummary {
+export function summarizeLiveCallInsights(insights: LiveCallInsight[]): LiveCallInsightsSummary {
   if (!insights || insights.length === 0) {
     return {
       totalCalls: 0,
@@ -320,8 +318,7 @@ export function summarizeLiveCallInsights(
     totalSentiment += item.sentimentScore;
     if (item.objectionCategory) {
       activeObjectionsCount++;
-      objectionCounts[item.objectionCategory] =
-        (objectionCounts[item.objectionCategory] || 0) + 1;
+      objectionCounts[item.objectionCategory] = (objectionCounts[item.objectionCategory] || 0) + 1;
     }
     if (item.competitorMentioned) {
       competitorsSet.add(item.competitorMentioned);
@@ -417,9 +414,7 @@ export function computeDealHealthScore(
     const insights = input.liveInsights;
     const sentimentSum = insights.reduce((sum, item) => {
       const normalized =
-        item.sentimentScore > 1
-          ? (item.sentimentScore - 50) / 50
-          : item.sentimentScore;
+        item.sentimentScore > 1 ? (item.sentimentScore - 50) / 50 : item.sentimentScore;
       return sum + normalized;
     }, 0);
     const avgSentiment = sentimentSum / insights.length;
@@ -432,15 +427,15 @@ export function computeDealHealthScore(
     } else if (avgSentiment > 0.3) {
       const bonus = Math.min(15, Math.round(avgSentiment * 15));
       liveInsightAdjustment += bonus;
-      reasons.push(`Sentimento positivo e receptivo em chamada recente (índice ${recentSentiment})`);
+      reasons.push(
+        `Sentimento positivo e receptivo em chamada recente (índice ${recentSentiment})`,
+      );
     }
 
     const unresolvedObjections = insights.filter(
       (i) => i.objectionCategory && !i.suggestedRebuttal,
     );
-    const resolvedWithRebuttal = insights.filter(
-      (i) => i.objectionCategory && i.suggestedRebuttal,
-    );
+    const resolvedWithRebuttal = insights.filter((i) => i.objectionCategory && i.suggestedRebuttal);
     activeObjectionsCount = unresolvedObjections.length;
 
     if (activeObjectionsCount > 0) {
@@ -509,9 +504,7 @@ export function computeHealthScore(input: HealthScoreInput, now: Date): HealthSc
           ? liveInsightsSummary.averageSentimentScore
           : (liveInsightsSummary.averageSentimentScore + 1) * 50;
       // Ponderação reativa: 85% pilares consolidados + 15% sentimento das chamadas ao vivo
-      overallScore = roundMoney(
-        clamp(overallScore * 0.85 + sentimentScore100 * 0.15, 0, 100),
-      );
+      overallScore = roundMoney(clamp(overallScore * 0.85 + sentimentScore100 * 0.15, 0, 100));
     }
   }
 
@@ -541,9 +534,7 @@ export function applyLiveCallInsightToHealthScore(
       summary.averageSentimentScore > 1
         ? summary.averageSentimentScore
         : (summary.averageSentimentScore + 1) * 50;
-    newOverallScore = roundMoney(
-      clamp(newOverallScore * 0.85 + sentimentScore100 * 0.15, 0, 100),
-    );
+    newOverallScore = roundMoney(clamp(newOverallScore * 0.85 + sentimentScore100 * 0.15, 0, 100));
   }
 
   return {

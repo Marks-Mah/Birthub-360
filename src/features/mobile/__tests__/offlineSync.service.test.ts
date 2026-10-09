@@ -81,12 +81,10 @@ describe('OfflineSyncService (Mobile / Capacitor / PWA)', () => {
     });
 
     it('isTransientNetworkError classifica corretamente erros de rede transitórios vs erros de cliente', () => {
-      expect(
-        isTransientNetworkError(new Error('Não foi possível conectar ao servidor.')),
-      ).toBe(true);
-      expect(
-        isTransientNetworkError(new Error('A API demorou demais para responder.')),
-      ).toBe(true);
+      expect(isTransientNetworkError(new Error('Não foi possível conectar ao servidor.'))).toBe(
+        true,
+      );
+      expect(isTransientNetworkError(new Error('A API demorou demais para responder.'))).toBe(true);
       expect(isTransientNetworkError(new Error('Failed to fetch'))).toBe(true);
       expect(isTransientNetworkError(new Error('Status 503 Service Unavailable'))).toBe(true);
 
@@ -263,9 +261,7 @@ describe('OfflineSyncService (Mobile / Capacitor / PWA)', () => {
       service.setOnlineState(true);
       await service.enqueueCreateLead({ name: 'Empresa Crítica' });
 
-      mockApiClient.request.mockRejectedValue(
-        new Error('Não foi possível conectar ao servidor.'),
-      );
+      mockApiClient.request.mockRejectedValue(new Error('Não foi possível conectar ao servidor.'));
 
       // 3 tentativas falhas
       await service.syncQueue();
@@ -323,7 +319,9 @@ describe('OfflineSyncService (Mobile / Capacitor / PWA)', () => {
       expect(result.failed).toBe(2);
       const failed = service.getFailedItems();
       expect(failed[0].lastError).toContain('CNPJ inválido');
-      expect(failed[1].lastError).toContain('Operação cancelada: a criação da entidade dependente falhou');
+      expect(failed[1].lastError).toContain(
+        'Operação cancelada: a criação da entidade dependente falhou',
+      );
     });
 
     it('retryFailed reativa itens com status failed para nova tentativa', async () => {
@@ -392,15 +390,9 @@ describe('OfflineSyncService (Mobile / Capacitor / PWA)', () => {
       service.setOnlineState(true);
       await service.syncQueue();
 
-      expect(listener).toHaveBeenCalledWith(
-        expect.objectContaining({ type: 'sync_start' }),
-      );
-      expect(listener).toHaveBeenCalledWith(
-        expect.objectContaining({ type: 'item_synced' }),
-      );
-      expect(listener).toHaveBeenCalledWith(
-        expect.objectContaining({ type: 'sync_completed' }),
-      );
+      expect(listener).toHaveBeenCalledWith(expect.objectContaining({ type: 'sync_start' }));
+      expect(listener).toHaveBeenCalledWith(expect.objectContaining({ type: 'item_synced' }));
+      expect(listener).toHaveBeenCalledWith(expect.objectContaining({ type: 'sync_completed' }));
 
       // Antes do unsubscribe foram 6 eventos (offline, enqueued, online, sync_start, item_synced, sync_completed)
       expect(listener).toHaveBeenCalledTimes(6);
@@ -492,4 +484,3 @@ describe('OfflineSyncService (Mobile / Capacitor / PWA)', () => {
     });
   });
 });
-

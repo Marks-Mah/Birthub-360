@@ -20,7 +20,6 @@ import { prismaConversationSignalPort } from '../../cadence/infra/PrismaConversa
 import { isOptOutKeyword, recordOptOut } from '../../cadence/application/optOutService.js';
 import { prismaOptOutRepository } from '../../cadence/infra/PrismaOptOutRepository.js';
 
-
 /**
  * CYC-003 (onda 26) — transporte de ENTRADA de e-mail, hoje um stub: nenhum provedor real
  * (IMAP/webhook de inbound-parse, ex. SendGrid/Postmark/Mailgun) está conectado ainda, então este
@@ -159,7 +158,10 @@ async function recordInboundEmail(
         reason: 'Solicitação de descadastro/opt-out via réplica de e-mail',
         evidence: email.subject || email.body?.slice(0, 500) || null,
       }).catch((err) => {
-        logger.error({ err, leadId: lead?.id, email: email.fromEmail }, 'Falha ao registrar opt-out vindo de e-mail.');
+        logger.error(
+          { err, leadId: lead?.id, email: email.fromEmail },
+          'Falha ao registrar opt-out vindo de e-mail.',
+        );
       });
 
       if (lead) {
