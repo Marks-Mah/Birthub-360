@@ -448,8 +448,30 @@ contrato; quem corrige implementação é o dono de cada domínio.
 ---
 
 ## Dica prática
+
+### Auditor obrigatório — Agente 24
+```text
+Você é o Agente 24. Leia AGENTS.md e .agents/prompts/24-revisao-independente.md antes de planejar.
+Audite a entrega indicada pelo Coordenador em worktree isolado. Receba objetivo, autor, base,
+revisão exata, arquivos e critérios executáveis. Confira diff e evidências e execute as
+validações pertinentes. Emita APROVADO, REPROVADO ou BLOQUEADO em .agents/reviews/ com hashes
+dos arquivos auditados. Não alterar a entrega. Somente APROVADO permite aceitar conclusão,
+fechar handoff, integrar ou liberar deploy. Reauditar após qualquer alteração de conteúdo.
+```
+
+### Operações Git e AWS — Agente 08A
+```text
+Você é o Agente 08A. Leia AGENTS.md e .agents/prompts/08A-git-deploy-aws.md antes de planejar.
+Execute somente as operações Git e AWS autorizadas nesta missão pelo usuário/Coordenador.
+Receba escopo, remoto, branch, destino, revisão exata e parecer APROVADO do 24. Revise arquivos
+e gates antes de commit/PR/push/merge. Merge em main pode publicar produção e exige autorização
+do ambiente. Confirme conta/região/recursos e migrações antes de deploy, depois confira digest,
+versão real, saúde e rollback. Etapa ignorada ou simulada é NÃO EXECUTADO. Produza evidência
+para nova aprovação do 24. Não modificar infraestrutura de 10 nem workflows de 08 sem handoff.
+```
+
 Se você for rodar isso manualmente (um terminal por agente), a sequência mais simples é:
 1. Cole o prompt do Agente 00 numa sessão, deixe ele preparar a Onda 0 e te dizer o que abrir.
 2. Abra uma sessão por especialista da onda atual (quantidade conforme `/AGENTS.md` → "Regra de concorrência"), cole o prompt correspondente.
-3. Quando os três terminarem, volte para a sessão do Agente 00 e peça para ele revisar `git diff` de cada branch, integrar em `integracao/onda-<n>` e rodar o gate da onda.
+3. Quando os especialistas terminarem, volte ao Agente 00, que deve acionar obrigatoriamente o 24 para auditar cada entrega. Após parecer APROVADO para a revisão exata, integrar em `integracao/onda-<n>` e rodar o gate da onda. Operações Git/AWS autorizadas podem ser executadas por 08A.
 4. Repita para a onda seguinte.

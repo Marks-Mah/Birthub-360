@@ -11,6 +11,7 @@
 - `prompts/06A-extracoes-bitrix.md` — especialista interno do Agente 06
 - `prompts/07-ia-automacoes.md`
 - `prompts/08-qa-release.md`
+- `prompts/08A-git-deploy-aws.md` — operações Git e AWS autorizadas; mesmo slot de 08, após aprovação de 24
 - `prompts/09-mobile.md`
 - `prompts/10-infraestrutura-sre.md`
 - `prompts/11-marca-institucional.md`
@@ -21,6 +22,7 @@
 - `prompts/16-runtime-workers-escala.md`
 - `prompts/17-cadencia-ciclo-receita.md`
 - `prompts/18-contratos-api-docs.md`
+- `prompts/24-revisao-independente.md` — auditor obrigatório de toda entrega, com parecer rastreável
 - `prompts/01A-dados-rls-retencao.md` — especialista interno do Agente 01, mesmo slot
 - `COMO-CHAMAR-OS-AGENTES.md` — prompts prontos para colar, um por agente, para abrir a sessão correspondente em qualquer ferramenta de agente de código
 
@@ -39,6 +41,10 @@
 7. Não pule gates de typecheck/lint/tests/build.
 8. Não aceite "auditoria concluída" quando existe correção executável.
 9. Revise handoffs abertos em `.agents/handoffs/onda-<n>/` antes de aprovar a onda.
+10. Acione SEMPRE o Agente 24 antes de aceitar conclusão, fechar handoff, integrar ou liberar deploy. Somente seu parecer APROVADO para a revisão exata permite avançar. Ver AGENTS.md §40.
+
+## Checklist dos handoffs
+O inventário HTML em `reviews/checklist-handoffs.html` separa status documental de aprovação independente. Marcar uma revisão pessoal no navegador não constitui aprovação oficial. Regenerar com `node scripts/generate-handoffs-checklist.cjs`; parecer inicial em `reviews/handoffs-2026-10-09-24.md`.
 
 ## Observação
 Os `AGENTS.md` locais definem propriedade e evitam que especialistas editem as mesmas áreas de forma concorrente. Nenhum agente edita os arquivos em `prompts/` — ajuste de prompt é decisão humana fora do ciclo de execução.

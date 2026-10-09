@@ -1,5 +1,5 @@
 # AGENTS.md — Governança Global de Agentes
-Revisão: 2026-09-30
+Revisão: 2026-10-09
 Projeto: BIRTH HUB 360
 Este arquivo é a autoridade global para qualquer agente que trabalhe neste repositório.
 Regras locais em AGENTS.md dentro de subpastas podem refinar o escopo, mas nunca anulam as regras globais de segurança, qualidade, coordenação, tenancy, LGPD ou propriedade definidas aqui.
@@ -115,6 +115,9 @@ Especialista do mesmo slot do Agente 06. Não executa simultaneamente com o 06 q
 
 **08 — QA e Release**
 
+**08A — Operações Git e Deploy AWS**
+Especialista do mesmo slot do Agente 08. Executa commit, PR, merge, push e deploy autorizado após aprovação independente do 24. Não executa simultaneamente com 08 quando houver sobreposição de propriedade. Infraestrutura continua pertencendo ao 10.
+
 **09 — Mobile**
 
 **10 — Infraestrutura, Observabilidade e SRE**
@@ -146,7 +149,7 @@ Responsável por produzir evidências de que ações de UI realmente persistiram
 Responsável por custos, latência, limites, N+1, orçamento de tokens e eficiência do Enxame e das automações.
 
 **24 — Revisão Independente**
-Especialista somente leitura que revisa diffs, escopo, propriedade, P1–P4, tenancy e LGPD antes da integração.
+Auditor obrigatório de toda entrega. Revisa diffs, escopo, propriedade, P1–P4, evidências, tenancy e LGPD antes de aceitar conclusão, encerrar handoff, integrar ou liberar release. Não altera código auditado; registra parecer em `.agents/reviews/`. Prompt: `.agents/prompts/24-revisao-independente.md`.
 
 ## 4. Agentes 19 e 20
 Os agentes 19 e 20 não existem e continuam reservados.
@@ -556,7 +559,7 @@ Cada transição exige evidência.
 O Coordenador deve:
 1. revisar o diff;
 2. verificar propriedade;
-3. consumir revisão do 24 quando ativo;
+3. acionar obrigatoriamente o 24 e consumir seu parecer APROVADO referente à revisão exata da entrega;
 4. integrar em levas de 2–3 merges;
 5. executar gate após cada leva;
 6. identificar o merge causador de falha;
@@ -787,6 +790,7 @@ Uma tarefa só está concluída quando:
 - aprendizados relevantes foram registrados;
 - handoffs necessários foram criados;
 - agentes impactados foram comunicados.
+- o Agente 24 emitiu parecer APROVADO com evidências para a revisão exata da entrega.
 
 ## 33. Proibição de "auditoria sem correção"
 Encontrou um problema corrigível dentro do escopo?
@@ -895,3 +899,17 @@ Perguntas ao usuário são último recurso e devem ser reservadas para:
 Não invente. Não assuma silenciosamente. Não altere fora do escopo. Não esconda falhas. Não repita erros. Não trabalhe isoladamente quando houver dependência.
 
 Pesquise. Pense. Consulte. Implemente. Teste. Comunique. Registre. Aprenda.
+
+## 40. Auditoria independente obrigatória (decisão humana de 2026-10-09)
+
+O usuário autorizou a criação dos prompts 24 e 08A e esta atualização de governança. Isso não concede autorização permanente para agentes modificarem prompts ou regras globais.
+
+O Coordenador deve SEMPRE acionar o Agente 24 antes de declarar qualquer trabalho concluído, fechar handoffs, aprovar ondas, integrar PRs ou autorizar release/deploy. A regra também cobre documentação, scripts, HTML, configuração e trabalhos realizados pelo próprio Coordenador ou pelo 08A. O autor nunca aprova a própria entrega. Toda missão deve prever essa revisão no critério final de sucesso.
+
+O parecer é um destes: APROVADO, REPROVADO ou BLOQUEADO. Somente APROVADO permite avançar. Ausência de auditor, evidência insuficiente, teste obrigatório não executado ou ambiente indisponível não equivalem a aprovação. O auditor pode justificar um teste como não aplicável ao escopo; falhas pré-existentes devem ser identificadas e não podem ser anunciadas como gate verde.
+
+Cada parecer em `.agents/reviews/` deve identificar missão, autor, auditor, base, commit/revisão ou hashes dos arquivos auditados, escopo, critérios, comandos/resultados, evidências, achados, pendências e decisão. Qualquer mudança no conteúdo auditado invalida a aprovação e exige nova revisão. Comentários e marcações pessoais de checklist não são pareceres oficiais.
+
+Auditorias históricas distinguem status declarado, conformidade documental e validação atual do comportamento. Um handoff com `Status: resolvido` não comprova persistência, segurança ou funcionamento. Pendência humana, resolução parcial e deploy simulado devem permanecer explícitos.
+
+O 08A executa operações Git e AWS somente para o escopo e ambiente autorizados na missão, após aprovação do 24 e gates pertinentes do 08, com coordenação do 00 e 10. Merge/push que dispare deploy automático também é operação de produção e depende dessa autorização. Não reescrever histórico, forçar push, expor credenciais ou aceitar deploy ignorado como concluído. Detalhes em `.agents/prompts/08A-git-deploy-aws.md`.
