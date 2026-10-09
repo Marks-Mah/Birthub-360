@@ -1,7 +1,7 @@
 - De: 17 (Cadência Multicanal e Ciclo de Receita)
 - Para: 21 (Privacidade e LGPD)
 - Onda: 15
-- Status: aberto
+- Status: resolvido
 - Prioridade: bloqueador
 
 ## Problema
@@ -20,3 +20,9 @@ O Agente 21 deve:
 
 ## Teste esperado
 - Teste unitário e de integração: tentativa de envio para contato em lista de opt-out deve ser rejeitada com código específico (`OPT_OUT_SUPPRESSED`).
+
+## Resolução (Agente 21)
+1. Serviço interceptor `OptOutCheckService` e método `checkOptOutStatus` implementados em `src/features/lgpd/services/optOutCheck.service.ts`.
+2. Bloqueio automático de disparos com código de erro canônico `OPT_OUT_SUPPRESSED` e auditoria em log.
+3. Handlers para palavras-chave de descadastro ("SAIR", "STOP", "CANCELAR") conectados aos webhooks e à API de opt-out em `lgpd.routes.ts`.
+4. Suíte de testes `src/features/lgpd/services/__tests__/optOutCheck.service.test.ts` (18 testes) 100% aprovada.

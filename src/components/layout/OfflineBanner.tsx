@@ -1,26 +1,38 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { WifiOff } from 'lucide-react';
+import { RefreshCw, WifiOff } from 'lucide-react';
+import { useState } from 'react';
 import { useOnlineStatus } from '../../hooks/useOnlineStatus.js';
+import { dispatchSyncStatus } from './SyncIndicator.js';
 
 /**
- * Indicador persistente de perda de conectividade — ver
- * `.agents/handoffs/onda-8/09-para-02-offline-stale-state-ausente.md`. Sem isto, dado já
- * carregado na tela (dashboard, CRM, listas) continua sendo exibido como se fosse atual mesmo
- * depois do dispositivo perder conexão, sem nenhuma indicação de que a informação pode estar
- * desatualizada — bloqueador #6 do AGENTS.md por extensão ("dados fictícios/desatualizados
- * apresentados como reais").
+ * Indicador persistente e não-intrusivo de operação offline — ver
+ * `.agents/handoffs/onda-15/09-para-02-shell-mobile-offline.md`.
  *
- * Fica montado em fluxo normal (não `position: fixed`) no topo de `MainLayout`, acima de
- * Sidebar/Topbar, empurrando o conteúdo para baixo em vez de sobrepor — uma faixa fixa por cima
- * cobriria parte da busca/notificações do Topbar. `role="status"`/`aria-live="polite"` mantido
- * sempre montado (só o conteúdo entra/sai) para leitor de tela anunciar tanto o aparecimento
- * quanto o desaparecimento da mensagem.
+ * Exibe banner quando a aplicação alternar para o modo offline, informando
+ * que as ações serão armazenadas localmente e sincronizadas automaticamente quando
+ * a conexão for restabelecida.
+ *
+ * Fica montado em fluxo normal no topo de `MainLayout` / `FuturisticLayout`,
+ * acima da Sidebar/Topbar, empurrando o conteúdo para baixo. Mantém `role="status"`
+ * e `aria-live="polite"` para anúncio acessível em leitores de tela.
  */
 export function OfflineBanner() {
   const isOnline = useOnlineStatus();
+  const [checking, setChecking] = useState(false);
+
+  const handleCheckConnection = () => {
+    setChecking(true);
+    if (typeof window !== 'undefined' && navigator.onLine) {
+      dispatchSyncStatus({ status: 'syncing' });
+      window.dispatchEvent(new Event('online'));
+    }
+    setTimeout(() => {
+      setChecking(false);
+    }, 1200);
+  };
 
   return (
-    <div role="status" aria-live="polite" className="shrink-0">
+    <div role="status" aria-live="polite" className="shrink-0 w-full z-40">
       <AnimatePresence initial={false}>
         {!isOnline && (
           <motion.div
@@ -29,11 +41,25 @@ export function OfflineBanner() {
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.25, ease: 'easeOut' }}
-            className="overflow-hidden bg-warn/15 border-b border-warn/40"
+            className="overflow-hidden bg-warn/15 border-b border-warn/40 text-ink"
           >
-            <div className="flex items-center justify-center gap-2 px-4 py-2 text-xs sm:text-sm font-semibold text-ink">
-              <WifiOff className="w-4 h-4 shrink-0 text-ink" aria-hidden="true" />
-              <span>Sem conexão — os dados exibidos podem estar desatualizados.</span>
+            <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-2 text-xs sm:text-sm font-semibold">
+              <div className="flex items-center gap-2">
+                <WifiOff className="w-4 h-4 shrink-0 text-ink" aria-hidden="true" />
+                <span>Sem conexão — os dados exibidos podem estar desatualizados.</span>
+                <span className="hidden md:inline font-normal opacity-90">
+                  Modo offline ativo: suas ações serão armazenadas localmente e sincronizadas quando a conexão retornar.
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={handleCheckConnection}
+                disabled={checking}
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-md bg-warn/25 hover:bg-warn/35 text-ink border border-warn/40 transition-colors cursor-pointer disabled:opacity-50"
+              >
+                <RefreshCw className={`w-3 h-3 ${checking ? 'animate-spin' : ''}`} aria-hidden="true" />
+                <span>{checking ? 'Verificando…' : 'Verificar conexão'}</span>
+              </button>
             </div>
           </motion.div>
         )}

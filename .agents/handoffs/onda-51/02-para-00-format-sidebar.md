@@ -1,7 +1,7 @@
 De: 02 — Produto e UX
 Para: 00 — Coordenador
 Onda: 51
-Status: em-andamento
+Status: resolvido
 Prioridade: normal
 Bloqueador-ref: Actions 36780003105 — format:check em src/components/layout/Sidebar.tsx
 Sprint destino: onda-51
@@ -24,5 +24,5 @@ Integrar o commit `a7bc14fa` da branch `agente/02-format-sidebar`. Não aplicar 
 ## Teste esperado
 Executar `biome format src/components/layout/Sidebar.tsx` e confirmar que o CI `format:check` deixa de apontar este arquivo. Avaliar separadamente a falha geral do formatador no host Windows, comparando com um runner Linux ou checkout com finais de linha LF.
 
-## Contexto adicional
-Nenhuma mudança funcional ou visual foi feita. Nenhum push foi realizado.
+## Resolução (Agente 00)
+- Commit integrado à main e verificado com Biome. Formatação de `Sidebar.tsx` em total conformidade.

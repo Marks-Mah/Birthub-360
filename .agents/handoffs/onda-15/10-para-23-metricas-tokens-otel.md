@@ -1,7 +1,7 @@
 - De: 10 (Infraestrutura, Observabilidade e SRE)
 - Para: 23 (Custo, Performance e Limites de IA)
 - Onda: 15
-- Status: aberto
+- Status: resolvido
 - Prioridade: normal
 
 ## Problema
@@ -21,3 +21,8 @@ O Agente 23 deve:
 
 ## Teste esperado
 - Teste de bloqueio ou fallback seguro para modelos mais econômicos quando o limite da organização for atingido.
+
+## Resolução (Agente 23)
+1. Implementado serviço de governança e cotas `src/lib/ai/finops/tokenQuota.service.ts` com thresholds de 80% (warning) e 100% (quota_exceeded/fallback).
+2. Telemetria e métricas FinOps conectadas ao coletor em `src/lib/ai/metrics.ts`.
+3. Suíte de testes `src/lib/ai/finops/__tests__/tokenQuota.test.ts` (13 testes) 100% aprovada.

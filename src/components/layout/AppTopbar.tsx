@@ -9,6 +9,7 @@ import { useLiveClock } from '../../hooks/useLiveClock.js';
 import { OPEN_COMMAND_PALETTE_EVENT } from '../../lib/paletteIntent.js';
 import { SoundFX } from '../../lib/soundEffects.js';
 import { TAB_META, type TabType } from './tabMeta.js';
+import { SyncIndicator } from './SyncIndicator.js';
 
 interface AppTopbarProps {
   activeTab: TabType;
@@ -125,6 +126,8 @@ export function AppTopbar({ activeTab, onOpenMobileNav }: AppTopbarProps) {
       </button>
 
       <div className="ml-auto flex items-center gap-1.5 sm:gap-3">
+        <SyncIndicator />
+
         <div className="hidden text-right leading-tight sm:block">
           <p className="text-[10px] font-medium uppercase tracking-wider text-ink-2">{dateLabel}</p>
           <p className="text-sm font-bold text-ink [font-variant-numeric:tabular-nums]">

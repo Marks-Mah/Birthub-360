@@ -311,3 +311,36 @@ export function normalizeCrmStage(
 
   return { stage: defaultStage, probability: 0.2 };
 }
+
+/**
+ * Categorias canônicas de objeção em chamadas comerciais (Voice / WebRTC / LiveKit).
+ */
+export type LiveCallObjectionCategory =
+  | 'preco_ou_orcamento'
+  | 'concorrente'
+  | 'timing_ou_prioridade'
+  | 'autoridade_decisor'
+  | 'produto_fit'
+  | 'indecisao'
+  | 'contrato_ou_juridico'
+  | 'outros'
+  | string;
+
+/**
+ * Contrato de LiveCallInsight para recepção de sinais de chamadas em tempo real (Onda 15).
+ * Emite eventos de detecção de sentimento, objeções comerciais e intenções de compra
+ * sem poluir o histórico com logs brutos.
+ */
+export interface LiveCallInsight {
+  callId: string;
+  dealId: string;
+  timestamp: string | Date;
+  objectionCategory?: LiveCallObjectionCategory | null;
+  suggestedRebuttal?: string | null;
+  sentimentScore: number;
+  organizationId?: string;
+  confidence?: number;
+  competitorMentioned?: string | null;
+  keyPhrases?: string[];
+  transcriptSnippet?: string | null;
+}

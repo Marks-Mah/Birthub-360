@@ -2706,6 +2706,39 @@ paths:
                     items:
                       type: object
 
+  /intelligence/swarm/schedule:
+    post:
+      tags: [Intelligence]
+      summary: Disparo do ciclo do Swarm Scheduler para avaliar leads e acionar cadências (Onda 15)
+      description: >-
+        Executa o ciclo de agendamento do Enxame Comercial Autônomo, avaliando oportunidades
+        estagnadas e enfileirando ações multicanal via CadenceExecutionPort com rate-limiting e
+        respeito às janelas comerciais (handoff 13-para-17).
+      responses:
+        '200':
+          description: Ciclo do scheduler disparado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataEnvelope'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /intelligence/swarm/status:
+    get:
+      tags: [Intelligence]
+      summary: Consulta status de execução e métricas do Swarm Scheduler (Onda 15)
+      description: >-
+        Retorna o estado operacional do agendador autônomo, última execução, organizações ativas
+        e volume de recomendações geradas.
+      responses:
+        '200':
+          description: Status operacional do Swarm Scheduler
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SwarmSchedulerStatusResponse'
+
   # ─────────────────── Intelligence Suite (catálogo de 16 ações de IA) ───────────────────
   # Montado em intelligence.routes.ts (`router.use('/suite', aiSuiteRouter)`), restrito a
   # ADMIN/GESTOR/CLOSER/SDR (ver src/features/intelligence/routes/ai-suite.routes.ts). A maioria
@@ -4279,6 +4312,50 @@ paths:
               schema:
                 $ref: '#/components/schemas/DataEnvelope'
 
+  /usage/quota:
+    get:
+      tags: [Usage]
+      summary: Consulta de quota de tokens, franquia mensal e telemetria FinOps (Onda 15)
+      description: >-
+        Retorna o teto mensal de tokens por tier de organização, consumo acumulado no mês corrente,
+        percentual utilizado, estado de alerta (Normal, Warning 80%, Crítico 100%) e indicador de
+        ativação de fallback para modelos econômicos (handoff 10-para-23). Restrito a ADMIN e GESTOR.
+      responses:
+        '200':
+          description: Métricas de quota e FinOps da organização
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenQuotaFinOps'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /usage/quota/alert:
+    post:
+      tags: [Usage]
+      summary: Configuração de limiares de alerta e ações preventivas de FinOps (Onda 15)
+      description: >-
+        Configura limiares de aviso (80% e 100%) e ações automatizadas (notificação por email/webhook,
+        ativação forçada de fallback para LLMs mais econômicos, ou throttling defensivo) para a franquia
+        de IA da organização. Restrito a ADMIN.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenQuotaAlertConfig'
+      responses:
+        '200':
+          description: Configuração de alerta de FinOps atualizada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataEnvelope'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
   /gamification/leaderboard:
     get:
       tags: [Gamification]
@@ -4367,6 +4444,54 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DataEnvelope'
+    post:
+      tags: [Cadence]
+      summary: Registra solicitação de descadastramento (opt-out) multicanal ou global (Onda 15 / B-13)
+      description: >-
+        Adiciona contato à lista de supressão de cadência por canal ou global (palavras-chave STOP,
+        SAIR, CANCELAR ou link de unsubscribe). Atualiza consentimento no banco de dados instantaneamente.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CadenceOptOutCreateRequest'
+      responses:
+        '201':
+          description: Registro de opt-out criado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataEnvelope'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /cadence/opt-outs/check:
+    get:
+      tags: [Cadence]
+      summary: Valida status de opt-out/supressão antes do disparo multicanal (Onda 15 / B-13)
+      description: >-
+        Interceptor pré-envio `checkOptOutStatus`. Garante que nenhum toque multicanal (WhatsApp, e-mail,
+        voz) é disparado para titular em lista de supressão, revogação de consentimento ou exclusão LGPD
+        Art. 18. Bloqueador B-13 e Regra Global §27.
+      parameters:
+        - name: contactId
+          in: query
+          required: true
+          schema: { type: string }
+        - name: channel
+          in: query
+          required: true
+          schema: { type: string, enum: [email, whatsapp, voice] }
+      responses:
+        '200':
+          description: Status de opt-out avaliado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CadenceOptOutCheckResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
 
   /cadence/templates:
     get:
@@ -4572,6 +4697,34 @@ paths:
               schema: { $ref: '#/components/schemas/DataEnvelope' }
         '404':
           description: Execução não encontrada nesta organização
+
+  /cadence/runs/{id}/events:
+    parameters:
+      - $ref: '#/components/parameters/IdParam'
+    post:
+      tags: [Cadence]
+      summary: Notifica status de entrega e engajamento do toque de cadência (Onda 15 / CadenceExecutionPort)
+      description: >-
+        Recebe atualizações de status de entrega (`delivered`, `bounced`, `replied`, `failed`) emitidas pelos
+        despachantes multicanal (WhatsApp, e-mail, SDR Voice) para alimentar o Swarm e a máquina de estados do
+        run (handoff 13-para-17).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CadenceTouchEventRequest'
+      responses:
+        '200':
+          description: Evento registrado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataEnvelope'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
 
   /cadence/leads/{leadId}/schedule-meeting:
     post:
@@ -6211,6 +6364,63 @@ paths:
                 properties:
                   success: { type: boolean, example: true }
                   logs: { type: array, items: { type: object } }
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /lgpd/opt-out/{contactId}:
+    parameters:
+      - name: contactId
+        in: path
+        required: true
+        schema: { type: string }
+    get:
+      tags: [LGPD]
+      summary: Consulta status de opt-out por contato e canal (Onda 15 / B-13)
+      description: >-
+        Verifica se um titular possui registro de descadastramento/opt-out ativo para um canal
+        específico (email, whatsapp, voz) ou globalmente na organização autenticada.
+      parameters:
+        - name: channel
+          in: query
+          schema: { type: string, default: global }
+      responses:
+        '200':
+          description: Status de opt-out retornado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CadenceOptOutCheckResponse'
+
+  /lgpd/opt-out:
+    post:
+      tags: [LGPD]
+      summary: Registro manual ou expresso de opt-out do titular (Onda 15 / B-13)
+      description: >-
+        Grava opt-out para um titular na organização com canal, escopo, canal de origem, motivo
+        e evidência. Restrito a ADMIN, GESTOR, CLOSER e SDR.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [contactId]
+              properties:
+                contactId: { type: string }
+                channel: { type: string }
+                scope: { type: string }
+                originChannel: { type: string, default: manual }
+                reason: { type: string }
+                evidence: { type: string }
+      responses:
+        '201':
+          description: Opt-out registrado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataEnvelope'
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '403':
           $ref: '#/components/responses/Forbidden'
 
@@ -8987,6 +9197,70 @@ paths:
           }
         '404': { $ref: '#/components/responses/NotFound' }
 
+  /copiloto-ia/conversations/{id}/live-insights:
+    parameters:
+      - $ref: '#/components/parameters/IdParam'
+    post:
+      tags: [Copiloto IA]
+      summary: Ingestão de insight em tempo real (sentimento e objeção) durante chamada ativa (Onda 15)
+      description: >-
+        Emite eventos de detecção de sentimento, objeções comerciais e intenções de compra durante chamadas
+        LiveKit/WebRTC ativas. Alimenta o Live HUD do closer (<800ms) e o cálculo de risco de fechamento do deal
+        (handoffs 07-para-04 e 07-para-02).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LiveCallInsight'
+      responses:
+        '201':
+          description: Live insight registrado e contorno sugerido calculado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataEnvelope'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    get:
+      tags: [Copiloto IA]
+      summary: Lista insights e objeções capturados em tempo real durante a chamada (Onda 15)
+      description: >-
+        Retorna a linha do tempo cronológica de insights em tempo real de uma conversa/ligação ativa ou encerrada.
+      responses:
+        '200':
+          description: Lista de live insights
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LiveCallInsightListResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /copiloto-ia/live-hud/{callId}:
+    parameters:
+      - name: callId
+        in: path
+        required: true
+        schema: { type: string }
+    get:
+      tags: [Copiloto IA]
+      summary: Snapshot em tempo real para o HUD flutuante do vendedor durante a chamada (Onda 15)
+      description: >-
+        Fornece o estado atualizado para o componente LiveCopilotHUD (sentimento predominante, objeção ativa,
+        sugestão de contorno recomendada e alerta de risco).
+      responses:
+        '200':
+          description: Estado do Live HUD
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LiveHudStatus'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
   # ───────────────────────────── Webhooks (corpo cru) ─────────────────────────────
   # Montados em server.ts ANTES do express.json() global — corpo não é JSON parseado pelo
   # middleware padrão, e a autenticidade não vem de sessão de usuário. Ver env vars citadas em
@@ -10398,3 +10672,154 @@ components:
           type: string
           maxLength: 200
           description: Quando presente, permite ao agente SDR do enxame buscar o contexto real do lead no CRM.
+
+    # ── Onda 15: Cadência Multicanal & Opt-Out ──
+    CadenceOptOutCheckResponse:
+      type: object
+      properties:
+        success: { type: boolean }
+        data:
+          type: object
+          properties:
+            contactId: { type: string }
+            channel: { type: string, enum: [email, whatsapp, voice] }
+            optedOut: { type: boolean }
+            suppressed: { type: boolean }
+            reason: { type: string, nullable: true }
+            optedOutAt: { type: string, format: date-time, nullable: true }
+
+    CadenceOptOutCreateRequest:
+      type: object
+      required: [contactId, channel]
+      properties:
+        contactId: { type: string }
+        channel: { type: string, enum: [email, whatsapp, voice, all] }
+        reason: { type: string, maxLength: 500 }
+        evidence: { type: string, maxLength: 1000 }
+
+    CadenceTouchEventRequest:
+      type: object
+      required: [stepOrder, channel, status]
+      properties:
+        stepOrder: { type: integer, minimum: 1 }
+        channel: { type: string, enum: [email, whatsapp, voice] }
+        status: { type: string, enum: [delivered, bounced, replied, failed] }
+        details: { type: string, maxLength: 1000 }
+        timestamp: { type: string, format: date-time }
+
+    SwarmSchedulerStatusResponse:
+      type: object
+      properties:
+        success: { type: boolean }
+        data:
+          type: object
+          properties:
+            active: { type: boolean }
+            lastRunAt: { type: string, format: date-time, nullable: true }
+            nextRunAt: { type: string, format: date-time, nullable: true }
+            organizationsCovered: { type: integer }
+            recommendationsCount: { type: integer }
+            touchesDispatchedCount: { type: integer }
+
+    # ── Onda 15: Copiloto Live & Insights em Tempo Real ──
+    LiveCallInsight:
+      type: object
+      required: [callId, dealId, timestamp, sentimentScore]
+      properties:
+        callId: { type: string }
+        dealId: { type: string }
+        timestamp: { type: string, format: date-time }
+        objectionCategory:
+          type: string
+          enum:
+            - preco_ou_orcamento
+            - concorrente
+            - timing_ou_prioridade
+            - autoridade_decisor
+            - produto_fit
+            - indecisao
+            - contrato_ou_juridico
+            - outros
+          nullable: true
+        suggestedRebuttal: { type: string, nullable: true }
+        sentimentScore:
+          type: number
+          minimum: -1
+          maximum: 1
+          description: Score de sentimento (-1 muito negativo a +1 muito positivo)
+        organizationId: { type: string }
+        confidence:
+          type: number
+          minimum: 0
+          maximum: 1
+        competitorMentioned: { type: string, nullable: true }
+        keyPhrases:
+          type: array
+          items: { type: string }
+        transcriptSnippet: { type: string, nullable: true }
+
+    LiveCallInsightListResponse:
+      type: object
+      properties:
+        success: { type: boolean }
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/LiveCallInsight'
+
+    LiveHudStatus:
+      type: object
+      properties:
+        success: { type: boolean }
+        data:
+          type: object
+          properties:
+            callId: { type: string }
+            dealId: { type: string }
+            currentSentiment: { type: string, enum: [MUITO_POSITIVO, POSITIVO, NEUTRO, NEGATIVO] }
+            sentimentScore: { type: number }
+            activeObjection:
+              type: object
+              nullable: true
+              properties:
+                category: { type: string }
+                detectedText: { type: string }
+                suggestedRebuttal: { type: string }
+                confidence: { type: number }
+            riskAlert: { type: string, nullable: true }
+            latencyMs: { type: integer }
+
+    # ── Onda 15: Token Quota FinOps ──
+    TokenQuotaFinOps:
+      type: object
+      properties:
+        success: { type: boolean }
+        data:
+          type: object
+          required: [tier, monthlyTokenAllowance, tokensConsumedThisMonth, percentUsed, periodStart, periodEnd]
+          properties:
+            tier:
+              type: string
+              enum: [STARTER, PROFESSIONAL, ENTERPRISE, CUSTOM]
+            monthlyTokenAllowance: { type: integer }
+            tokensConsumedThisMonth: { type: integer }
+            percentUsed: { type: number }
+            alertStatus:
+              type: string
+              enum: [NORMAL, WARNING_80, CRITICAL_100, EXCEEDED]
+            fallbackModeActive:
+              type: boolean
+              description: True quando o consumo atinge 100% e o gateway faz fallback para modelos econômicos
+            periodStart: { type: string, format: date-time }
+            periodEnd: { type: string, format: date-time }
+            costUsdEstimate: { type: number }
+
+    TokenQuotaAlertConfig:
+      type: object
+      required: [thresholdPercent]
+      properties:
+        thresholdPercent: { type: integer, enum: [80, 100] }
+        notifyEmails: { type: array, items: { type: string, format: email } }
+        webhookUrl: { type: string, format: uri }
+        action: { type: string, enum: [notify_only, enforce_fallback, throttle] }
+

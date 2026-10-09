@@ -38,7 +38,12 @@ vi.mock('../../../notifications/notification.service.js', () => ({
   notificationService: { create: (...args: unknown[]) => notificationCreateMock(...args) },
 }));
 
-const { detectDealRisks } = await import('../dealRiskDetection.service');
+const {
+  detectDealRisks,
+  evaluateLiveCallInsightRisk,
+  ingestLiveCallInsight,
+  buildDealNegotiationExecutiveSummary,
+} = await import('../dealRiskDetection.service');
 
 beforeEach(() => {
   vi.clearAllMocks();
@@ -172,5 +177,144 @@ describe('detectDealRisks', () => {
 
     expect(result.alertsCreated).toBe(0);
     expect(notificationCreateMock).not.toHaveBeenCalled();
+  });
+
+  describe('LiveCallInsight - Integração e Ingestão Reativa', () => {
+    it('avalia sentimento negativo em chamada ao vivo e gera candidato a risco', () => {
+      const candidates = evaluateLiveCallInsightRisk({
+        callId: 'call-101',
+        dealId: 'deal-99',
+        timestamp: new Date('2026-09-10T14:00:00Z'),
+        sentimentScore: -0.65,
+      });
+
+      expect(candidates).toHaveLength(1);
+      expect(candidates[0].reason).toBe('sentimento_negativo_chamada');
+      expect(candidates[0].leadId).toBe('deal-99');
+      expect(candidates[0].detail).toContain('call-101');
+    });
+
+    it('avalia menção de concorrente com sugestão de contorno', () => {
+      const candidates = evaluateLiveCallInsightRisk({
+        callId: 'call-102',
+        dealId: 'deal-99',
+        timestamp: new Date('2026-09-10T14:05:00Z'),
+        sentimentScore: 0.1,
+        objectionCategory: 'concorrente',
+        competitorMentioned: 'Logix Competitor',
+        suggestedRebuttal: 'Destacar SLAs superiores e integração direta.',
+      });
+
+      expect(candidates).toHaveLength(1);
+      expect(candidates[0].reason).toBe('concorrente_mencionado');
+      expect(candidates[0].detail).toContain('Logix Competitor');
+      expect(candidates[0].detail).toContain('SLAs superiores');
+    });
+
+    it('avalia objeção crítica de preço com sugestão de contorno', () => {
+      const candidates = evaluateLiveCallInsightRisk({
+        callId: 'call-103',
+        dealId: 'deal-99',
+        timestamp: new Date('2026-09-10T14:10:00Z'),
+        sentimentScore: -0.3,
+        objectionCategory: 'preco_ou_orcamento',
+        suggestedRebuttal: 'Apresentar modelo de ROI em 3 meses.',
+      });
+
+      // Sentimento negativo (-0.3) e objeção crítica de preço geram 2 candidatos complementares
+      expect(candidates).toHaveLength(2);
+      expect(candidates.map((c) => c.reason)).toEqual([
+        'sentimento_negativo_chamada',
+        'objecao_chamada',
+      ]);
+      expect(candidates[1].detail).toContain('preco_ou_orcamento');
+      expect(candidates[1].detail).toContain('modelo de ROI em 3 meses');
+    });
+
+    it('ingestLiveCallInsight notifica gestores imediatamente quando há risco e fora do cooldown', async () => {
+      userFindManyMock.mockResolvedValue([{ id: 'manager-1' }]);
+
+      const result = await ingestLiveCallInsight('org-1', {
+        callId: 'call-200',
+        dealId: 'deal-88',
+        timestamp: new Date('2026-09-10T15:00:00Z'),
+        sentimentScore: -0.7,
+        objectionCategory: 'concorrente',
+        competitorMentioned: 'OmniTransport',
+      });
+
+      expect(result.candidates.length).toBeGreaterThan(0);
+      expect(result.alertsCreated).toBe(result.candidates.length);
+      expect(result.skippedCooldown).toBe(0);
+      expect(notificationCreateMock).toHaveBeenCalledTimes(result.candidates.length);
+    });
+
+    it('ingestLiveCallInsight respeita cooldown e não duplica notificação recente', async () => {
+      notificationFindFirstMock.mockResolvedValue({ id: 'existing-alert' });
+
+      const result = await ingestLiveCallInsight('org-1', {
+        callId: 'call-201',
+        dealId: 'deal-88',
+        timestamp: new Date('2026-09-10T15:05:00Z'),
+        sentimentScore: -0.8,
+      });
+
+      expect(result.candidates).toHaveLength(1);
+      expect(result.alertsCreated).toBe(0);
+      expect(result.skippedCooldown).toBe(1);
+      expect(notificationCreateMock).not.toHaveBeenCalled();
+    });
+
+    it('detectDealRisks inclui live insights no escopo global de análise', async () => {
+      leadFindManyMock.mockResolvedValue([]);
+      whatsAppFindManyMock.mockResolvedValue([]);
+      userFindManyMock.mockResolvedValue([{ id: 'admin-1' }]);
+
+      const liveInsights = [
+        {
+          callId: 'call-live-1',
+          dealId: 'deal-live-1',
+          timestamp: new Date(),
+          sentimentScore: -0.5,
+          objectionCategory: 'timing_ou_prioridade',
+        },
+      ];
+
+      const result = await detectDealRisks('org-1', new Date(), liveInsights);
+
+      expect(result.scanned).toBe(2); // 1 sentimento negativo + 1 objeção crítica
+      expect(result.alertsCreated).toBe(2);
+    });
+
+    it('buildDealNegotiationExecutiveSummary consolida insights e ajusta status de risco da negociação', () => {
+      const summary = buildDealNegotiationExecutiveSummary(
+        {
+          id: 'deal-55',
+          title: 'Contrato Anual TransLog',
+          amount: 150_000,
+          stageName: 'Proposta Apresentada',
+          probability: 70,
+        },
+        [
+          {
+            callId: 'call-live-9',
+            dealId: 'deal-55',
+            timestamp: new Date(),
+            sentimentScore: -0.4,
+            objectionCategory: 'concorrente',
+            competitorMentioned: 'Competitor Corp',
+            suggestedRebuttal: 'Destacar tecnologia proprietária.',
+          },
+        ],
+      );
+
+      expect(summary.dealId).toBe('deal-55');
+      expect(summary.sentimentLabel).toBe('negativo');
+      expect(summary.competitorsMentioned).toContain('Competitor Corp');
+      expect(summary.activeObjections).toHaveLength(1);
+      expect(summary.healthScore).toBeLessThan(70);
+      expect(summary.riskStatus).toBe('alto_risco');
+      expect(summary.executiveTakeaway).toContain('Competitor Corp');
+    });
   });
 });

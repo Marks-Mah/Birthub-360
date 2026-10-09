@@ -24,6 +24,8 @@ import type {
   HealthScoreResult,
   LeadingIndicatorsReport,
   PerformanceMetrics,
+  LiveCallInsight,
+  LiveCallInsightsSummary,
 } from '../domain/CommercialIntelligence.js';
 import {
   COVERAGE_PROTECTION_FALLBACK_HEALTHY,
@@ -38,6 +40,8 @@ export interface HealthScoreInput {
   leadingIndicators: LeadingIndicatorsReport;
   crmQuality: CrmQualityIndex;
   forecastAccuracy: ForecastAccuracySummary;
+  /** Insights de chamadas em tempo real recebidos para atualização reativa (Onda 15). */
+  liveInsights?: LiveCallInsight[];
 }
 
 /** Limiares de classificação por pilar — política documentada, não medição (mesmo espírito de `FORECAST_RULES`/`STAGE_AGING_CRITICAL_DAYS`). */
@@ -292,24 +296,260 @@ export const HEALTH_PILLAR_ORDER: HealthPillarKey[] = [
 ];
 
 /**
- * Agrega os 6 pilares. `overallScore` é a média simples (não ponderada, de propósito — cada pilar
- * já tem sua própria fórmula ponderada internamente onde faz sentido; ponderar os pilares entre si
- * exigiria uma política de negócio que não existe hoje) dos pilares com `score` não-nulo.
+ * Consolida insights de chamadas ao vivo em métricas agregadas (Onda 15).
+ */
+export function summarizeLiveCallInsights(
+  insights: LiveCallInsight[],
+): LiveCallInsightsSummary {
+  if (!insights || insights.length === 0) {
+    return {
+      totalCalls: 0,
+      averageSentimentScore: null,
+      activeObjectionsCount: 0,
+      topObjections: [],
+      detectedCompetitors: [],
+    };
+  }
+
+  let totalSentiment = 0;
+  let activeObjectionsCount = 0;
+  const objectionCounts: Record<string, number> = {};
+  const competitorsSet = new Set<string>();
+
+  for (const item of insights) {
+    totalSentiment += item.sentimentScore;
+    if (item.objectionCategory) {
+      activeObjectionsCount++;
+      objectionCounts[item.objectionCategory] =
+        (objectionCounts[item.objectionCategory] || 0) + 1;
+    }
+    if (item.competitorMentioned) {
+      competitorsSet.add(item.competitorMentioned);
+    }
+  }
+
+  const avgSentiment = roundMoney(totalSentiment / insights.length);
+  const topObjections = Object.entries(objectionCounts)
+    .map(([category, count]) => ({ category, count }))
+    .sort((a, b) => b.count - a.count);
+
+  return {
+    totalCalls: insights.length,
+    averageSentimentScore: avgSentiment,
+    activeObjectionsCount,
+    topObjections,
+    detectedCompetitors: Array.from(competitorsSet),
+  };
+}
+
+export interface DealHealthScoreInput {
+  dealId: string;
+  stageProbability: number;
+  daysInCurrentStage?: number | null;
+  stageAverageDurationDays?: number | null;
+  lastInteractionDays?: number | null;
+  hasOverdueNextAction?: boolean;
+  liveInsights?: LiveCallInsight[];
+}
+
+export interface DealHealthScoreFactors {
+  baseProbability: number;
+  stagnationPenalty: number;
+  activityPenalty: number;
+  liveInsightAdjustment: number;
+  recentSentiment: number | null;
+  activeObjectionsCount: number;
+}
+
+export interface DealHealthScoreResult {
+  dealId: string;
+  score: number;
+  classification: 'saudavel' | 'atencao' | 'critico';
+  factors: DealHealthScoreFactors;
+  reasons: string[];
+}
+
+/**
+ * Calcula o score de saúde de uma oportunidade/negócio individual (Deal Health Score),
+ * reagindo instantaneamente a sinais de pipeline e a insights de chamadas ao vivo (`LiveCallInsight`).
+ */
+export function computeDealHealthScore(
+  input: DealHealthScoreInput,
+  _now: Date = new Date(),
+): DealHealthScoreResult {
+  const reasons: string[] = [];
+  let score = clamp(input.stageProbability, 0, 100);
+
+  // 1. Estagnação na etapa
+  let stagnationPenalty = 0;
+  if (
+    input.daysInCurrentStage != null &&
+    input.stageAverageDurationDays != null &&
+    input.stageAverageDurationDays > 0
+  ) {
+    if (input.daysInCurrentStage > input.stageAverageDurationDays * 1.5) {
+      stagnationPenalty = 15;
+      score -= stagnationPenalty;
+      reasons.push(
+        `Estagnação na etapa: ${input.daysInCurrentStage} dias (média: ${Math.round(input.stageAverageDurationDays)} dias)`,
+      );
+    }
+  }
+
+  // 2. Acompanhamento/atividades
+  let activityPenalty = 0;
+  if (input.hasOverdueNextAction) {
+    activityPenalty += 10;
+    reasons.push('Próxima ação de acompanhamento vencida');
+  }
+  if (input.lastInteractionDays != null && input.lastInteractionDays > 14) {
+    activityPenalty += 10;
+    reasons.push(`Sem contato há ${input.lastInteractionDays} dias`);
+  }
+  score -= activityPenalty;
+
+  // 3. Ajuste reativo com LiveCallInsight(s)
+  let liveInsightAdjustment = 0;
+  let recentSentiment: number | null = null;
+  let activeObjectionsCount = 0;
+
+  if (input.liveInsights && input.liveInsights.length > 0) {
+    const insights = input.liveInsights;
+    const sentimentSum = insights.reduce((sum, item) => {
+      const normalized =
+        item.sentimentScore > 1
+          ? (item.sentimentScore - 50) / 50
+          : item.sentimentScore;
+      return sum + normalized;
+    }, 0);
+    const avgSentiment = sentimentSum / insights.length;
+    recentSentiment = roundMoney(avgSentiment);
+
+    if (avgSentiment < -0.15) {
+      const penalty = Math.min(25, Math.round(Math.abs(avgSentiment) * 25));
+      liveInsightAdjustment -= penalty;
+      reasons.push(`Sentimento negativo em chamada recente (índice ${recentSentiment})`);
+    } else if (avgSentiment > 0.3) {
+      const bonus = Math.min(15, Math.round(avgSentiment * 15));
+      liveInsightAdjustment += bonus;
+      reasons.push(`Sentimento positivo e receptivo em chamada recente (índice ${recentSentiment})`);
+    }
+
+    const unresolvedObjections = insights.filter(
+      (i) => i.objectionCategory && !i.suggestedRebuttal,
+    );
+    const resolvedWithRebuttal = insights.filter(
+      (i) => i.objectionCategory && i.suggestedRebuttal,
+    );
+    activeObjectionsCount = unresolvedObjections.length;
+
+    if (activeObjectionsCount > 0) {
+      const objectionPenalty = Math.min(20, activeObjectionsCount * 10);
+      liveInsightAdjustment -= objectionPenalty;
+      reasons.push(
+        `${activeObjectionsCount} objeção(ões) crítica(s) em chamada sem contorno registrado`,
+      );
+    }
+    if (resolvedWithRebuttal.length > 0) {
+      reasons.push(
+        `${resolvedWithRebuttal.length} objeção(ões) com argumento de contorno preparado`,
+      );
+    }
+
+    const competitorMentions = insights.filter((i) => i.competitorMentioned);
+    if (competitorMentions.length > 0) {
+      liveInsightAdjustment -= 10;
+      reasons.push('Concorrente ativo mencionado durante a chamada');
+    }
+  }
+
+  score += liveInsightAdjustment;
+  const finalScore = clamp(roundMoney(score), 0, 100);
+
+  const classification: 'saudavel' | 'atencao' | 'critico' =
+    finalScore >= 70 ? 'saudavel' : finalScore >= 40 ? 'atencao' : 'critico';
+
+  return {
+    dealId: input.dealId,
+    score: finalScore,
+    classification,
+    factors: {
+      baseProbability: input.stageProbability,
+      stagnationPenalty,
+      activityPenalty,
+      liveInsightAdjustment,
+      recentSentiment,
+      activeObjectionsCount,
+    },
+    reasons,
+  };
+}
+
+/**
+ * Agrega os 6 pilares. `overallScore` é a média simples dos pilares disponíveis.
+ * Quando `input.liveInsights` estiver presente, consolida os insights e reflete
+ * reativamente o sentimento médio das chamadas no score geral.
  */
 export function computeHealthScore(input: HealthScoreInput, now: Date): HealthScoreResult {
   const pillars = HEALTH_PILLAR_ORDER.map((key) => PILLAR_BUILDERS[key](input));
   const available = pillars.filter(
     (p): p is HealthPillarScore & { score: number } => p.score != null,
   );
-  const overallScore =
+  let overallScore =
     available.length > 0
       ? roundMoney(available.reduce((sum, p) => sum + p.score, 0) / available.length)
       : null;
+
+  let liveInsightsSummary: LiveCallInsightsSummary | null = null;
+  if (input.liveInsights && input.liveInsights.length > 0) {
+    liveInsightsSummary = summarizeLiveCallInsights(input.liveInsights);
+    if (overallScore != null && liveInsightsSummary.averageSentimentScore != null) {
+      const sentimentScore100 =
+        liveInsightsSummary.averageSentimentScore > 1
+          ? liveInsightsSummary.averageSentimentScore
+          : (liveInsightsSummary.averageSentimentScore + 1) * 50;
+      // Ponderação reativa: 85% pilares consolidados + 15% sentimento das chamadas ao vivo
+      overallScore = roundMoney(
+        clamp(overallScore * 0.85 + sentimentScore100 * 0.15, 0, 100),
+      );
+    }
+  }
 
   return {
     period: input.overview.period,
     pillars,
     overallScore,
     generatedAt: now.toISOString(),
+    liveInsightsSummary,
+  };
+}
+
+/**
+ * Ingestão reativa de um LiveCallInsight atualizando um HealthScoreResult existente.
+ */
+export function applyLiveCallInsightToHealthScore(
+  currentResult: HealthScoreResult,
+  insight: LiveCallInsight,
+  existingInsights: LiveCallInsight[] = [],
+): HealthScoreResult {
+  const updatedInsights = [...existingInsights, insight];
+  const summary = summarizeLiveCallInsights(updatedInsights);
+
+  let newOverallScore = currentResult.overallScore;
+  if (newOverallScore != null && summary.averageSentimentScore != null) {
+    const sentimentScore100 =
+      summary.averageSentimentScore > 1
+        ? summary.averageSentimentScore
+        : (summary.averageSentimentScore + 1) * 50;
+    newOverallScore = roundMoney(
+      clamp(currentResult.overallScore * 0.85 + sentimentScore100 * 0.15, 0, 100),
+    );
+  }
+
+  return {
+    ...currentResult,
+    overallScore: newOverallScore,
+    liveInsightsSummary: summary,
+    generatedAt: new Date().toISOString(),
   };
 }

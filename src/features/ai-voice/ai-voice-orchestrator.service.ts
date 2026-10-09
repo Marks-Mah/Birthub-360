@@ -1,12 +1,18 @@
 import { logger } from '../../lib/logger.js';
-import { webRTCChannelService } from './webrtc-channel.service.js';
-import { flowiseRouterService } from './flowise-router.service.js';
-import { sipWebRtcBridgeService } from '../voice/sip-webrtc-bridge.service.js';
 import type {
   OutboundCallResult,
   VoiceAgentType,
 } from '../integrations/birth-voice/birthVoice.service.js';
-import type { VoiceCommandRequest, VoiceCommandExecutionResult } from '../voice/types.js';
+import { sipWebRtcBridgeService } from '../voice/sip-webrtc-bridge.service.js';
+import type { VoiceCommandExecutionResult, VoiceCommandRequest } from '../voice/types.js';
+import { flowiseRouterService } from './flowise-router.service.js';
+import {
+  type DetectionOptions,
+  type ObjectionDetectionResult,
+  objectionDetectionService,
+  type StreamingTranscriptionChunk,
+} from './objectionDetection.service.js';
+import { webRTCChannelService } from './webrtc-channel.service.js';
 
 /**
  * AiVoiceOrchestratorService
@@ -75,10 +81,21 @@ export class AiVoiceOrchestratorService {
   }
 
   /**
+   * Analyzes live streaming transcription for objections and recommends real-time rebuttals.
+   */
+  async detectStreamingObjections(
+    chunk: StreamingTranscriptionChunk,
+    options?: DetectionOptions,
+  ): Promise<ObjectionDetectionResult | null> {
+    return objectionDetectionService.processChunk(chunk, options);
+  }
+
+  /**
    * Ends the real-time AI Voice session and persists call activities.
    */
   async endCallSession(sessionId: string, reason = 'normal_completion'): Promise<void> {
     logger.info({ sessionId, reason }, 'Ending Real-time AI Voice session...');
+    objectionDetectionService.clearSession(sessionId);
     await webRTCChannelService.disconnectSession(sessionId, reason);
   }
 }

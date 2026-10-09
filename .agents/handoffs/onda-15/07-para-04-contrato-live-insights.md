@@ -1,7 +1,7 @@
 - De: 07 (IA e Automações)
 - Para: 04 (CRM e BI)
 - Onda: 15
-- Status: aberto
+- Status: resolvido
 - Prioridade: alto
 
 ## Problema
@@ -19,3 +19,8 @@ O Agente 04 deve:
 
 ## Teste esperado
 - Teste de ingestão de live insights atualizando o score de saúde do negócio (`healthScore.ts`) de forma reativa.
+
+## Resolução (Agente 04)
+1. Tipo canônico `LiveCallInsight` formalizado e integrado em `src/shared/types/crm.ts` e `src/features/commercial-intelligence/domain/CommercialIntelligence.ts`.
+2. Serviço `dealRiskDetection.service.ts` e `healthScore.ts` equipados com ingestão e cálculo reativo de risco de fechamento a partir de live insights.
+3. Suíte de testes `src/features/commercial-intelligence/application/__tests__/dealRiskDetection.service.test.ts` (13 testes) 100% aprovada.

@@ -4,6 +4,8 @@ import { prisma } from '../../../../lib/prisma.js';
 import { sendWhatsAppMessage } from '../../../integrations/whatsapp/whatsapp.service.js';
 import type { CadenceDispatcher } from '../../application/cadenceService.js';
 import type { CadenceRunState, CadenceTouch } from '../../domain/cadence.js';
+import { checkOptOutStatus } from '../../../lgpd/services/optOutCheck.service.js';
+
 
 /**
  * Dispatchers reais de canal (CYC-008, onda-19) — a peça que faltava para `advanceCadenceRun`
@@ -48,9 +50,32 @@ async function resolveLeadEmail(organizationId: string, leadId: string): Promise
   return lead?.contact?.email ?? null;
 }
 
-/** Rotas para WhatsApp real. Opt-out já foi checado por `advanceCadenceRun` antes de chegar aqui, mas `sendWhatsAppMessage` checa de novo por padrão — redundante e seguro, não desativado (ver Sprint 06/CYC-001: já houve bug real de bypass desse flag). */
+async function resolveLeadContactId(organizationId: string, leadId: string): Promise<string | null> {
+  const lead = await prisma.lead.findFirst({
+    where: { id: leadId, organizationId },
+    select: { contactId: true },
+  });
+  return lead?.contactId ?? null;
+}
+
+/** Rotas para WhatsApp real. Opt-out é verificado pelo interceptor checkOptOutStatus antes do envio para assegurar bloqueio instantâneo e ausência de vazamento multi-tenant (B-13 e §27). */
 export const whatsAppCadenceDispatcher: Pick<CadenceDispatcher, 'dispatch'> = {
   async dispatch(touch: CadenceTouch, run: CadenceRunState) {
+    const contactId = await resolveLeadContactId(run.organizationId, run.leadId);
+    if (contactId) {
+      const optOutCheck = await checkOptOutStatus(contactId, 'whatsapp', run.organizationId);
+      if (optOutCheck.blocked) {
+        logger.warn(
+          { organizationId: run.organizationId, leadId: run.leadId, contactId, code: optOutCheck.code },
+          'Toque de cadência WhatsApp barrado: contato suprimido por opt-out (OPT_OUT_SUPPRESSED).',
+        );
+        return {
+          result: 'failed' as const,
+          error: `[OPT_OUT_SUPPRESSED] ${optOutCheck.reason}`,
+        };
+      }
+    }
+
     const phone = await resolveLeadPhone(run.organizationId, run.leadId);
     if (!phone) {
       return {
@@ -95,9 +120,24 @@ function splitSubjectAndBody(
   return { subject: firstLine, body: rest.join('\n').trimStart() };
 }
 
-/** Rotas para e-mail real via SMTP (`sendEmail`). Opt-out já foi checado por `advanceCadenceRun` — `sendEmail` não tem checagem própria (é transporte puro), diferente de `sendWhatsAppMessage`. */
+/** Rotas para e-mail real via SMTP (`sendEmail`). Interceptor checkOptOutStatus valida opt-out e consentimento antes do disparo (B-13 e §27). */
 export const emailCadenceDispatcher: Pick<CadenceDispatcher, 'dispatch'> = {
   async dispatch(touch: CadenceTouch, run: CadenceRunState) {
+    const contactId = await resolveLeadContactId(run.organizationId, run.leadId);
+    if (contactId) {
+      const optOutCheck = await checkOptOutStatus(contactId, 'email', run.organizationId);
+      if (optOutCheck.blocked) {
+        logger.warn(
+          { organizationId: run.organizationId, leadId: run.leadId, contactId, code: optOutCheck.code },
+          'Toque de cadência e-mail barrado: contato suprimido por opt-out (OPT_OUT_SUPPRESSED).',
+        );
+        return {
+          result: 'failed' as const,
+          error: `[OPT_OUT_SUPPRESSED] ${optOutCheck.reason}`,
+        };
+      }
+    }
+
     const email = await resolveLeadEmail(run.organizationId, run.leadId);
     if (!email) {
       return { result: 'failed' as const, error: 'Lead sem e-mail cadastrado no contato.' };
@@ -126,13 +166,28 @@ export const emailCadenceDispatcher: Pick<CadenceDispatcher, 'dispatch'> = {
  * Dispatcher de voz (CYC-004/ACH-17-03). Recebe uma porta `VoiceCallPort` via injeção — o
  * worker passa a implementação real (`birthVoice.service.ts::callLead`) sem que este arquivo
  * precise importar diretamente `src/features/integrations/birth-voice/**`. Opt-out e PII
- * consent já são checados dentro de `callLead` — não duplicados aqui para evitar divergência.
+ * consent são verificados pelo interceptor checkOptOutStatus e callLead (B-13 e §27).
  */
 export function buildVoiceCadenceDispatcher(
   voicePort: VoiceCallPort,
 ): Pick<CadenceDispatcher, 'dispatch'> {
   return {
     async dispatch(touch: CadenceTouch, run: CadenceRunState) {
+      const contactId = await resolveLeadContactId(run.organizationId, run.leadId);
+      if (contactId) {
+        const optOutCheck = await checkOptOutStatus(contactId, 'voice', run.organizationId);
+        if (optOutCheck.blocked) {
+          logger.warn(
+            { organizationId: run.organizationId, leadId: run.leadId, contactId, code: optOutCheck.code },
+            'Toque de cadência voz barrado: contato suprimido por opt-out (OPT_OUT_SUPPRESSED).',
+          );
+          return {
+            result: 'failed' as const,
+            error: `[OPT_OUT_SUPPRESSED] ${optOutCheck.reason}`,
+          };
+        }
+      }
+
       try {
         const result = await voicePort.callLead(run.organizationId, run.leadId, 'sdr');
         return {

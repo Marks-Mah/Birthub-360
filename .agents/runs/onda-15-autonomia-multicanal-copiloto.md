@@ -1,6 +1,6 @@
 # Onda 15 — Autonomia Multicanal, Copiloto Live e Experiência Mobile
 
-**Status:** PLANEJADA & MATRIZ_PUBLICADA  
+**Status:** GATE_VERDE (TODOS OS BLOQUEADORES E HANDOFFS RESOLVIDOS)  
 **Data:** 2026-10-08  
 **Coordenador:** Agente 00  
 
@@ -41,13 +41,13 @@ Após a consolidação dos novos conectores de CRM, da infraestrutura do Tempora
 
 | ID Handoff | De | Para | Prioridade | Status | Escopo / Objeto da Dependência |
 | :--- | :---: | :---: | :---: | :---: | :--- |
-| `13-para-17-disparo-cadencia-enxame.md` | 13 | 17 | **Bloqueador** | Aberto | Protocolo de acionamento de cadências multicanal a partir de recomendações do Swarm |
-| `17-para-21-validacao-optout-multicanal.md` | 17 | 21 | **Bloqueador** | Aberto | Trava de consentimento e checagem de blacklist/opt-out antes de qualquer envio |
-| `07-para-04-contrato-live-insights.md` | 07 | 04 | Alto | Aberto | Schema de eventos de objeções e insights em tempo real para o dashboard do CRM |
-| `07-para-02-hud-copiloto-live.md` | 07 | 02 | Alto | Aberto | Interface visual flutuante (HUD) para exibição de sugestões de IA durante a chamada |
-| `09-para-02-shell-mobile-offline.md` | 09 | 02 | Alto | Aberto | Adaptação de layout responsivo e indicadores visuais de conectividade (online/offline) |
-| `10-para-23-metricas-tokens-otel.md` | 10 | 23 | Normal | Aberto | Exposição de métricas de tokens e latência via OpenTelemetry Collector para o FinOps |
-| `00-para-18-contratos-openapi-onda15.md` | 00 | 18 | Normal | Aberto | Documentação viva OpenAPI para rotas do Swarm, Cadências e endpoints Mobile |
+| `13-para-17-disparo-cadencia-enxame.md` | 13 | 17 | **Bloqueador** | **Resolvido** | Protocolo de acionamento de cadências multicanal a partir de recomendações do Swarm |
+| `17-para-21-validacao-optout-multicanal.md` | 17 | 21 | **Bloqueador** | **Resolvido** | Trava de consentimento e checagem de blacklist/opt-out antes de qualquer envio |
+| `07-para-04-contrato-live-insights.md` | 07 | 04 | Alto | **Resolvido** | Schema de eventos de objeções e insights em tempo real para o dashboard do CRM |
+| `07-para-02-hud-copiloto-live.md` | 07 | 02 | Alto | **Resolvido** | Interface visual flutuante (HUD) para exibição de sugestões de IA durante a chamada |
+| `09-para-02-shell-mobile-offline.md` | 09 | 02 | Alto | **Resolvido** | Adaptação de layout responsivo e indicadores visuais de conectividade (online/offline) |
+| `10-para-23-metricas-tokens-otel.md` | 10 | 23 | Normal | **Resolvido** | Exposição de métricas de tokens e latência via OpenTelemetry Collector para o FinOps |
+| `00-para-18-contratos-openapi-onda15.md` | 00 | 18 | Normal | **Resolvido** | Documentação viva OpenAPI para rotas do Swarm, Cadências e endpoints Mobile |
 
 ---
 

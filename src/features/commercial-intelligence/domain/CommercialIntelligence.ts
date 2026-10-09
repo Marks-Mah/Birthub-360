@@ -703,6 +703,8 @@ export interface HealthScoreResult {
   /** Média simples (não ponderada) dos pilares com `score` não-nulo. `null` se nenhum pilar tiver dado suficiente. */
   overallScore: number | null;
   generatedAt: string;
+  /** Resumo reativo de insights de chamadas ao vivo quando disponíveis (Onda 15). */
+  liveInsightsSummary?: LiveCallInsightsSummary | null;
 }
 
 // ─── Motivo real de perda via IA sobre transcrição real (item 21 — não o campo manual) ──────
@@ -1190,4 +1192,39 @@ export interface CommercialIntelligenceRepository {
     currency: string,
     createdBy: string,
   ): Promise<CommercialGoalDTO>;
+}
+
+// ─── Live Call Insights & Objeções em Tempo Real (Onda 15) ─────────────────────
+
+export type LiveCallObjectionCategory =
+  | 'preco_ou_orcamento'
+  | 'concorrente'
+  | 'timing_ou_prioridade'
+  | 'autoridade_decisor'
+  | 'produto_fit'
+  | 'indecisao'
+  | 'contrato_ou_juridico'
+  | 'outros'
+  | string;
+
+export interface LiveCallInsight {
+  callId: string;
+  dealId: string;
+  timestamp: string | Date;
+  objectionCategory?: LiveCallObjectionCategory | null;
+  suggestedRebuttal?: string | null;
+  sentimentScore: number;
+  organizationId?: string;
+  confidence?: number;
+  competitorMentioned?: string | null;
+  keyPhrases?: string[];
+  transcriptSnippet?: string | null;
+}
+
+export interface LiveCallInsightsSummary {
+  totalCalls: number;
+  averageSentimentScore: number | null;
+  activeObjectionsCount: number;
+  topObjections: { category: string; count: number }[];
+  detectedCompetitors: string[];
 }

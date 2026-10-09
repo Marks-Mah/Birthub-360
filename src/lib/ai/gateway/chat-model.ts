@@ -9,6 +9,7 @@ import type { BaseMessage } from '@langchain/core/messages';
 import { requestContext } from '../../async-context.js';
 import { assertAiBudgetNotExceeded } from '../budget.js';
 import { recordAiUsageCost } from '../metrics.js';
+import { tokenQuotaService } from '../finops/tokenQuota.service.js';
 import { detectPII, detectToxicity } from '../guardrails/index.js';
 import { resolveFallbackTimeoutMs } from './http-client.js';
 import { resolveModelName } from './model-routing.js';
@@ -89,17 +90,30 @@ async function callWithFallback(
     : PROVIDER_CHAIN;
   for (const provider of chain) {
     if (!provider.isConfigured()) continue;
-    try {
-      const response = await provider.chatCompletion({
-        messages: requestMessages,
-        temperature,
-        agentContext,
-        resolvedModel,
-        timeoutMs,
-      });
-      return { response, providerUsed: provider.name };
-    } catch (error: any) {
-      errorsByProvider.set(provider.name, error);
+    let attempts = 0;
+    while (attempts < 3) {
+      attempts++;
+      try {
+        const response = await provider.chatCompletion({
+          messages: requestMessages,
+          temperature,
+          agentContext,
+          resolvedModel,
+          timeoutMs,
+        });
+        return { response, providerUsed: provider.name };
+      } catch (error: any) {
+        const errMsg = String(error?.message || error);
+        const isRateLimit = errMsg.includes('429') || errMsg.toLowerCase().includes('rate limit');
+        if (isRateLimit && attempts < 3) {
+          const match = errMsg.match(/try again in ([\d\.]+)s/i);
+          const waitMs = match ? Math.ceil(parseFloat(match[1]) * 1000) + 1500 : attempts * 5000;
+          await new Promise((resolve) => setTimeout(resolve, waitMs));
+          continue;
+        }
+        errorsByProvider.set(provider.name, error);
+        break;
+      }
     }
   }
 
@@ -123,14 +137,28 @@ export const getAiModel = (
       // excedido, a chamada nem chega a ser tentada em nenhum provedor.
       await assertAiBudgetNotExceeded();
 
+      // FINOPS-001: governança de quota de tokens por tenant (Onda 15)
+      let effectiveModel = resolvedModel;
+      const tenantId = requestContext.getStore()?.tenantId;
+      if (tenantId) {
+        const quotaDecision = await tokenQuotaService.enforceTokenQuota({
+          organizationId: tenantId,
+          requestedModel: resolvedModel,
+        });
+        if (quotaDecision.effectiveModel && quotaDecision.effectiveModel !== resolvedModel) {
+          effectiveModel = resolveModelName(quotaDecision.effectiveModel);
+        }
+      }
+
       const requestMessages = toChatCompletionMessages(messages);
       const invokeStartedAt = Date.now();
       const { response, providerUsed } = await callWithFallback(
-        resolvedModel,
+        effectiveModel,
         requestMessages,
         temperature,
         agentContext,
       );
+
 
       const usage = response.usage;
       const content = response.choices?.[0]?.message?.content?.trim() ?? '';
@@ -183,12 +211,22 @@ export const getAiModel = (
       recordAiUsageCost(
         providerUsed,
         requestContext.getStore()?.tenantId,
-        estimateCostUsd(response.model || resolvedModel, {
+        estimateCostUsd(response.model || effectiveModel, {
           totalTokens: usage?.total_tokens ?? 0,
           promptTokens: usage?.prompt_tokens ?? 0,
           completionTokens: usage?.completion_tokens ?? 0,
         }),
       );
+
+      if (usage?.total_tokens) {
+        tokenQuotaService
+          .recordUsage({
+            organizationId: requestContext.getStore()?.tenantId,
+            model: response.model || effectiveModel,
+            tokens: usage.total_tokens,
+          })
+          .catch(() => {});
+      }
 
       traceAiGeneration({
         provider: providerUsed,

@@ -23,6 +23,12 @@ const SetupWizard = lazy(() =>
   })),
 );
 
+const LiveCopilotHUD = lazy(() =>
+  import('./features/copilot/components/LiveCopilotHUD.js').then((m) => ({
+    default: m.LiveCopilotHUD,
+  })),
+);
+
 const DesignLabPage = lazy(() =>
   import('./features/design-lab/DesignLabPage.js').then((m) => ({ default: m.DesignLabPage })),
 );
@@ -508,6 +514,9 @@ function AppLayout() {
           </Suspense>
         )}
       </MainLayout>
+      <Suspense fallback={null}>
+        <LiveCopilotHUD />
+      </Suspense>
     </OnboardingGate>
   );
 }

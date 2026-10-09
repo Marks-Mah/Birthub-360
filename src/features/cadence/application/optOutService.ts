@@ -104,3 +104,14 @@ export async function assertNotOptedOut(
 
 export type { CadenceChannel, OptOutRecord, OptOutRepository, OptOutSubject };
 export { normalizeOptOutSubject };
+
+export {
+  checkOptOutStatus,
+  assertOptOutStatus,
+  recordContactOptOut,
+  OptOutSuppressedError,
+  isOptOutKeyword,
+  type OptOutChannel,
+  type OptOutCheckResult,
+} from '../../lgpd/services/optOutCheck.service.js';
+

@@ -101,3 +101,111 @@ if (env.AI_MONTHLY_BUDGET_USD !== undefined) {
   });
   aiUsageBudgetUsdTotal.set(env.AI_MONTHLY_BUDGET_USD);
 }
+
+// ─── FinOps: Governança de Quota de Tokens de IA (Onda 15) ─────────────────────────
+
+/**
+ * FINOPS-001: Métrica de consumo de tokens por organização e tier de assinatura.
+ */
+export const aiTokenUsageTotal = new client.Counter({
+  name: 'ai_token_usage_total',
+  help: 'Total de tokens consumidos acumulados por organização, tier e modelo.',
+  labelNames: ['organization', 'tier', 'model'] as const,
+});
+
+export function recordTokenUsage(
+  organization: string | null | undefined,
+  tier: string,
+  model: string,
+  tokens: number,
+): void {
+  if (!Number.isFinite(tokens) || tokens <= 0) return;
+  aiTokenUsageTotal.inc(
+    {
+      organization: organization || 'unattributed',
+      tier: tier || 'unknown',
+      model: model || 'unknown',
+    },
+    tokens,
+  );
+}
+
+/**
+ * FINOPS-002: Alertas de quota de tokens atingida (80% aviso / 100% estouro).
+ */
+export const aiTokenQuotaAlertTotal = new client.Counter({
+  name: 'ai_token_quota_alert_total',
+  help: 'Alertas de FinOps disparados quando uma organização atinge limites de quota mensal (80% warning ou 100% exceeded).',
+  labelNames: ['organization', 'tier', 'level'] as const,
+});
+
+export function recordTokenQuotaAlert(
+  organizationId: string,
+  tier: string,
+  level: 'warning_80' | 'exceeded_100',
+): void {
+  aiTokenQuotaAlertTotal.inc({
+    organization: organizationId || 'unattributed',
+    tier: tier || 'unknown',
+    level,
+  });
+}
+
+/**
+ * FINOPS-003: Fallback econômico ativado por estouro de quota de tokens (fail-safe).
+ */
+export const aiTokenQuotaFallbackTotal = new client.Counter({
+  name: 'ai_token_quota_fallback_total',
+  help: 'Chamadas de IA redirecionadas para modelo econômico de fallback devido ao consumo de quota de tokens.',
+  labelNames: ['organization', 'from_model', 'to_model'] as const,
+});
+
+export function recordTokenQuotaFallback(
+  organizationId: string,
+  fromModel: string,
+  toModel: string,
+): void {
+  aiTokenQuotaFallbackTotal.inc({
+    organization: organizationId || 'unattributed',
+    from_model: fromModel || 'unknown',
+    to_model: toModel || 'unknown',
+  });
+}
+
+/**
+ * FINOPS-004: Bloqueio estrito de chamada por quota de tokens esgotada sem fallback viável.
+ */
+export const aiTokenQuotaBlockedTotal = new client.Counter({
+  name: 'ai_token_quota_blocked_total',
+  help: 'Chamadas de IA bloqueadas estritamente por excederem a franquia mensal de tokens sem fallback viável.',
+  labelNames: ['organization', 'tier'] as const,
+});
+
+export function recordTokenQuotaBlocked(organizationId: string, tier: string): void {
+  aiTokenQuotaBlockedTotal.inc({
+    organization: organizationId || 'unattributed',
+    tier: tier || 'unknown',
+  });
+}
+
+/**
+ * FINOPS-005: Gauge do limite mensal de tokens contratado/alocado por organização.
+ */
+export const aiTokenQuotaLimitGauge = new client.Gauge({
+  name: 'ai_token_quota_limit',
+  help: 'Limite mensal de tokens de IA alocado para a organização conforme seu tier/plano.',
+  labelNames: ['organization', 'tier'] as const,
+});
+
+export function setTokenQuotaLimitGauge(
+  organizationId: string,
+  tier: string,
+  quotaTokens: number,
+): void {
+  if (!Number.isFinite(quotaTokens) || quotaTokens < 0) return;
+  aiTokenQuotaLimitGauge.set(
+    { organization: organizationId || 'unattributed', tier: tier || 'unknown' },
+    quotaTokens,
+  );
+}
+

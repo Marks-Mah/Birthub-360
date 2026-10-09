@@ -21,7 +21,10 @@ import { prismaCadenceSequenceRepository } from './infra/PrismaCadenceSequenceRe
 import { prismaCalendarSchedulerPort } from './infra/PrismaCalendarSchedulerPort.js';
 import { prismaMeetingConfirmationNotePort } from './infra/PrismaMeetingConfirmationNotePort.js';
 import { prismaOptOutRepository } from './infra/PrismaOptOutRepository.js';
+import { recordOptOut } from './application/optOutService.js';
+import { checkOptOutStatus, recordContactOptOut } from '../lgpd/services/optOutCheck.service.js';
 import { parseCadenceSequenceDefinition } from './jobs/cadenceRun.worker.js';
+
 
 /**
  * Router de cadência multicanal e opt-out unificado. Leitura (opt-outs/runs) desde a Onda 10;
@@ -113,6 +116,57 @@ router.get('/opt-outs', async (req: Request, res: Response, next: NextFunction):
     next(error);
   }
 });
+
+const createOptOutSchema = z.object({
+  scope: z.enum(['email', 'whatsapp', 'voice', 'global']).default('global'),
+  leadId: z.string().trim().optional(),
+  contactId: z.string().trim().optional(),
+  email: z.string().trim().email().optional(),
+  phone: z.string().trim().optional(),
+  originChannel: z.enum(['email', 'whatsapp', 'voice', 'manual', 'import']).default('manual'),
+  reason: z.string().trim().max(500).optional(),
+  evidence: z.string().trim().max(1000).optional(),
+});
+
+router.post(
+  '/opt-outs',
+  writeRoles,
+  validateRequest(createOptOutSchema),
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const { organizationId, id: userId } = (req as AuthRequest).user;
+      const { scope, leadId, contactId, email, phone, originChannel, reason, evidence } = req.body;
+
+      if (contactId) {
+        await recordContactOptOut({
+          organizationId,
+          contactId,
+          channel: scope === 'global' ? undefined : scope,
+          scope,
+          originChannel,
+          reason,
+          evidence,
+          actorUserId: userId,
+        });
+      } else {
+        await recordOptOut(prismaOptOutRepository, {
+          organizationId,
+          scope,
+          subject: { leadId: leadId ?? null, email: email ?? null, phoneE164: phone ?? null },
+          originChannel,
+          reason: reason ?? null,
+          evidence: evidence ?? null,
+          requestedBy: userId,
+        });
+      }
+
+      res.status(201).json({ success: true, message: 'Opt-out registrado com sucesso.' });
+    } catch (error: any) {
+      next(error);
+    }
+  },
+);
+
 
 router.get('/runs', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
@@ -248,7 +302,7 @@ router.post(
 
       const lead = await prisma.lead.findFirst({
         where: { id: leadId, organizationId },
-        select: { id: true },
+        select: { id: true, contactId: true },
       });
       if (!lead) throw new AppError('Lead não encontrado nesta organização.', 404);
 
@@ -265,6 +319,17 @@ router.post(
           'Sequência com dados inválidos — não é possível iniciar um run a partir dela.',
           422,
         );
+
+      if (lead.contactId) {
+        const firstChannel = sequence.touches[0]?.channel ?? 'whatsapp';
+        const optOutCheck = await checkOptOutStatus(lead.contactId, firstChannel, organizationId);
+        if (optOutCheck.blocked) {
+          throw new AppError(
+            `Não é possível iniciar cadência: contato em lista de opt-out/supressão (${optOutCheck.code}): ${optOutCheck.reason}`,
+            409,
+          );
+        }
+      }
 
       const run = startCadenceRun({
         id: randomUUID(),

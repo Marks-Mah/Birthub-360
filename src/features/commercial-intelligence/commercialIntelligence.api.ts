@@ -461,6 +461,7 @@ export interface HealthScoreResult {
   pillars: HealthPillarScore[];
   overallScore: number | null;
   generatedAt: string;
+  liveInsightsSummary?: LiveCallInsightsSummary | null;
 }
 
 export type ForecastAccuracyUnavailableReason =
@@ -966,4 +967,37 @@ export {
 
 export function currentMonth(): string {
   return brazilMonthKey(new Date());
+}
+
+export type LiveCallObjectionCategory =
+  | 'preco_ou_orcamento'
+  | 'concorrente'
+  | 'timing_ou_prioridade'
+  | 'autoridade_decisor'
+  | 'produto_fit'
+  | 'indecisao'
+  | 'contrato_ou_juridico'
+  | 'outros'
+  | string;
+
+export interface LiveCallInsight {
+  callId: string;
+  dealId: string;
+  timestamp: string | Date;
+  objectionCategory?: LiveCallObjectionCategory | null;
+  suggestedRebuttal?: string | null;
+  sentimentScore: number;
+  organizationId?: string;
+  confidence?: number;
+  competitorMentioned?: string | null;
+  keyPhrases?: string[];
+  transcriptSnippet?: string | null;
+}
+
+export interface LiveCallInsightsSummary {
+  totalCalls: number;
+  averageSentimentScore: number | null;
+  activeObjectionsCount: number;
+  topObjections: { category: string; count: number }[];
+  detectedCompetitors: string[];
 }

@@ -4,21 +4,22 @@ import { cleanAndParseJson, getAiModel, logAiUsage } from '../../../lib/ai/gatew
 import { logger } from '../../../lib/logger.js';
 import { prisma } from '../../../lib/prisma.js';
 import { notificationService } from '../../notifications/notification.service.js';
+import type { LiveCallInsight } from '../domain/CommercialIntelligence.js';
 
 /**
  * Detecção de deal em risco (item 5 de "IA Agêntica de Vendas"): três sinais — silêncio do lead,
  * mudança de tom na conversa e menção de concorrente — geram um alerta direto ao(s) gestor(es) da
  * organização, antes da perda ser registrada.
  *
- * Escopo deliberado desta primeira versão: os sinais de tom/concorrente NÃO viram coluna nova em
+ * Na Onda 15, integra eventos em tempo real de chamadas telefônicas/WebRTC (`LiveCallInsight`),
+ * permitindo reação imediata a objeções graves, concorrentes citados e sentimento negativo.
+ *
+ * Escopo deliberado desta versão: os sinais de tom/concorrente NÃO viram coluna nova em
  * `ConversationSignal` (schema é propriedade exclusiva do Agente 01 — ver AGENTS.md raiz) nem
  * tocam `conversation-intelligence.service.ts` (propriedade exclusiva do Agente 06, coordenação
  * de IA com o Agente 07 — ver `src/features/integrations/AGENTS.md`). Em vez disso, é uma
  * segunda leitura independente, própria deste serviço, sobre as mesmas `WhatsAppMessage` já
- * persistidas — não duplica nem conflita com a extração existente (intenção/urgência/objeção),
- * só adiciona os dois sinais que faltavam. O alerta em si usa `notificationService` (exceção
- * estrutural documentada em `.dependency-cruiser.cjs`: serviço transversal, importável direto por
- * qualquer feature).
+ * persistidas e sobre eventos de `LiveCallInsight`. O alerta em si usa `notificationService`.
  */
 
 const OPEN_STATUSES_EXCLUDED: LeadStatus[] = [
@@ -35,9 +36,14 @@ const MAX_LEADS_SCANNED_FOR_CONVERSATION = 15;
 const RECENT_MESSAGE_WINDOW_HOURS = 24;
 const MESSAGES_PER_LEAD_ANALYZED = 6;
 
-export type DealRiskReason = 'silencio' | 'tom_negativo' | 'concorrente_mencionado';
+export type DealRiskReason =
+  | 'silencio'
+  | 'tom_negativo'
+  | 'concorrente_mencionado'
+  | 'objecao_chamada'
+  | 'sentimento_negativo_chamada';
 
-interface RiskCandidate {
+export interface RiskCandidate {
   leadId: string;
   reason: DealRiskReason;
   detail: string;
@@ -58,6 +64,9 @@ interface ConversationAnalysis {
 function titlePrefix(reason: DealRiskReason): string {
   if (reason === 'silencio') return 'Risco de perda — silêncio do lead';
   if (reason === 'tom_negativo') return 'Risco de perda — mudança de tom';
+  if (reason === 'sentimento_negativo_chamada')
+    return 'Risco de perda — sentimento negativo em chamada';
+  if (reason === 'objecao_chamada') return 'Risco de perda — objeção crítica em chamada';
   return 'Risco de perda — concorrente mencionado';
 }
 
@@ -260,12 +269,200 @@ async function notifyManagers(organizationId: string, candidate: RiskCandidate):
 }
 
 /**
+ * Avalia um LiveCallInsight recebido em tempo real e identifica potenciais candidatos a risco.
+ * Mapeia sentimento negativo, menção a concorrente e objeções comerciais críticas.
+ */
+export function evaluateLiveCallInsightRisk(insight: LiveCallInsight): RiskCandidate[] {
+  const candidates: RiskCandidate[] = [];
+
+  // 1. Sentimento negativo: se a escala for [-1, 1], negativo < -0.15; se for [0, 100], negativo < 45
+  const isNegative =
+    (insight.sentimentScore <= 1 && insight.sentimentScore < -0.15) ||
+    (insight.sentimentScore > 1 && insight.sentimentScore < 45);
+
+  if (isNegative) {
+    candidates.push({
+      leadId: insight.dealId,
+      reason: 'sentimento_negativo_chamada',
+      detail: `Sentimento negativo detectado em chamada ao vivo (${insight.callId}): score ${insight.sentimentScore}.`,
+    });
+  }
+
+  // 2. Concorrente citado na chamada
+  if (
+    insight.competitorMentioned ||
+    insight.objectionCategory?.toLowerCase() === 'concorrente'
+  ) {
+    const competitor = insight.competitorMentioned ?? 'Concorrente';
+    candidates.push({
+      leadId: insight.dealId,
+      reason: 'concorrente_mencionado',
+      detail: `Concorrente mencionado durante chamada (${insight.callId}): "${competitor}".${
+        insight.suggestedRebuttal ? ` Sugestão de contorno: "${insight.suggestedRebuttal}"` : ''
+      }`,
+    });
+  }
+
+  // 3. Objeção crítica levantada, exceto quando classificada como concorrente
+  if (
+    insight.objectionCategory &&
+    insight.objectionCategory.toLowerCase() !== 'concorrente'
+  ) {
+    candidates.push({
+      leadId: insight.dealId,
+      reason: 'objecao_chamada',
+      detail: `Objeção detectada em chamada ao vivo (${insight.callId}): categoria "${insight.objectionCategory}".${
+        insight.suggestedRebuttal ? ` Sugestão de contorno: "${insight.suggestedRebuttal}"` : ''
+      }`,
+    });
+  }
+
+  return candidates;
+}
+
+export interface IngestLiveCallInsightResult {
+  candidates: RiskCandidate[];
+  alertsCreated: number;
+  skippedCooldown: number;
+}
+
+/**
+ * Ingestão reativa de um insight de chamada ao vivo (Onda 15).
+ * Identifica riscos de fechamento, filtra por cooldown e notifica gestores imediatamente.
+ */
+export async function ingestLiveCallInsight(
+  organizationId: string,
+  insight: LiveCallInsight,
+  now: Date = new Date(),
+  options: { notify?: boolean } = { notify: true },
+): Promise<IngestLiveCallInsightResult> {
+  const candidates = evaluateLiveCallInsightRisk(insight);
+  let alertsCreated = 0;
+  let skippedCooldown = 0;
+
+  for (const candidate of candidates) {
+    const inCooldown = await isWithinCooldown(
+      organizationId,
+      candidate.leadId,
+      candidate.reason,
+      now,
+    );
+
+    if (inCooldown) {
+      skippedCooldown++;
+      continue;
+    }
+
+    if (options.notify !== false) {
+      await notifyManagers(organizationId, candidate);
+      alertsCreated++;
+    }
+  }
+
+  return { candidates, alertsCreated, skippedCooldown };
+}
+
+/**
+ * Sumário executivo da negociação integrando dados comerciais e insights de chamadas ao vivo.
+ */
+export interface DealNegotiationExecutiveSummary {
+  dealId: string;
+  title?: string | null;
+  amount: number;
+  stageName?: string | null;
+  healthScore: number;
+  riskStatus: 'baixo_risco' | 'atencao' | 'alto_risco';
+  sentimentLabel: 'positivo' | 'neutro' | 'negativo' | 'sem_chamadas';
+  activeObjections: { category: string; suggestedRebuttal: string | null }[];
+  competitorsMentioned: string[];
+  executiveTakeaway: string;
+}
+
+export function buildDealNegotiationExecutiveSummary(
+  deal: { id: string; title?: string | null; amount: number; stageName?: string | null; probability?: number | null },
+  liveInsights: LiveCallInsight[] = [],
+): DealNegotiationExecutiveSummary {
+  const competitors: string[] = [];
+  const activeObjections: { category: string; suggestedRebuttal: string | null }[] = [];
+
+  let totalSentiment = 0;
+  for (const insight of liveInsights) {
+    const normalizedSentiment =
+      insight.sentimentScore > 1
+        ? (insight.sentimentScore - 50) / 50
+        : insight.sentimentScore;
+    totalSentiment += normalizedSentiment;
+
+    if (insight.competitorMentioned && !competitors.includes(insight.competitorMentioned)) {
+      competitors.push(insight.competitorMentioned);
+    }
+    if (insight.objectionCategory) {
+      activeObjections.push({
+        category: insight.objectionCategory,
+        suggestedRebuttal: insight.suggestedRebuttal ?? null,
+      });
+    }
+  }
+
+  const avgSentiment = liveInsights.length > 0 ? totalSentiment / liveInsights.length : 0;
+  const sentimentLabel: DealNegotiationExecutiveSummary['sentimentLabel'] =
+    liveInsights.length === 0
+      ? 'sem_chamadas'
+      : avgSentiment > 0.2
+        ? 'positivo'
+        : avgSentiment < -0.15
+          ? 'negativo'
+          : 'neutro';
+
+  // Base de probabilidade ou 50 como fallback
+  let healthScore = deal.probability ?? 50;
+  if (sentimentLabel === 'negativo') healthScore -= 20;
+  if (sentimentLabel === 'positivo') healthScore += 15;
+  healthScore -= Math.min(25, activeObjections.length * 8);
+  if (competitors.length > 0) healthScore -= 10;
+  healthScore = Math.max(0, Math.min(100, Math.round(healthScore)));
+
+  const riskStatus: DealNegotiationExecutiveSummary['riskStatus'] =
+    healthScore >= 70 ? 'baixo_risco' : healthScore >= 40 ? 'atencao' : 'alto_risco';
+
+  let executiveTakeaway = `Negociação "${deal.title ?? deal.id}" em estágio ${deal.stageName ?? 'em andamento'}. `;
+  if (riskStatus === 'alto_risco') {
+    executiveTakeaway += `Risco elevado detectado (Score ${healthScore}/100). `;
+  } else if (riskStatus === 'atencao') {
+    executiveTakeaway += `Negociação requer acompanhamento ativo (Score ${healthScore}/100). `;
+  } else {
+    executiveTakeaway += `Negociação com boa saúde e tração positiva (Score ${healthScore}/100). `;
+  }
+
+  if (competitors.length > 0) {
+    executiveTakeaway += `Concorrente(s) citado(s): ${competitors.join(', ')}. `;
+  }
+  if (activeObjections.length > 0) {
+    executiveTakeaway += `${activeObjections.length} objeção(ões) registrada(s). `;
+  }
+
+  return {
+    dealId: deal.id,
+    title: deal.title,
+    amount: deal.amount,
+    stageName: deal.stageName,
+    healthScore,
+    riskStatus,
+    sentimentLabel,
+    activeObjections,
+    competitorsMentioned: competitors,
+    executiveTakeaway: executiveTakeaway.trim(),
+  };
+}
+
+/**
  * Uma rodada de detecção de deal em risco. Cada candidato passa pelo cooldown antes de gerar
  * notificação — nunca span o gestor com o mesmo alerta a cada execução do worker.
  */
 export async function detectDealRisks(
   organizationId: string,
   now: Date = new Date(),
+  liveInsights?: LiveCallInsight[],
 ): Promise<DetectDealRisksResult> {
   const result: DetectDealRisksResult = {
     scanned: 0,
@@ -279,7 +476,14 @@ export async function detectDealRisks(
     findConversationRisks(organizationId, now),
   ]);
 
-  const candidates = [...silentLeads, ...conversationRisks];
+  const liveCandidates: RiskCandidate[] = [];
+  if (liveInsights && liveInsights.length > 0) {
+    for (const insight of liveInsights) {
+      liveCandidates.push(...evaluateLiveCallInsightRisk(insight));
+    }
+  }
+
+  const candidates = [...silentLeads, ...conversationRisks, ...liveCandidates];
   result.scanned = candidates.length;
 
   for (const candidate of candidates) {

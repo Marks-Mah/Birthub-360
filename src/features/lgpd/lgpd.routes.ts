@@ -108,3 +108,60 @@ lgpdRouter.get(
     })().catch(next);
   },
 );
+
+// Consulta de Status de Opt-Out por Contato e Canal (B-13 e §27)
+lgpdRouter.get(
+  '/opt-out/:contactId',
+  (req: Request, res: Response, next: NextFunction): void => {
+    (async () => {
+      const { organizationId } = (req as AuthRequest).user;
+      const contactId = routeParam(req.params.contactId, 'contactId');
+      const channel = (req.query.channel as string) || 'global';
+      const status = await lgpdService.checkOptOut(contactId, channel, organizationId);
+      res.json({ success: true, data: status });
+    })().catch(next);
+  },
+);
+
+// Registro de Opt-Out Manual / Expresso de Contato
+lgpdRouter.post(
+  '/opt-out',
+  requireRole(['ADMIN', 'GESTOR', 'CLOSER', 'SDR']),
+  (req: Request, res: Response, next: NextFunction): void => {
+    (async () => {
+      const { organizationId, id: actorId } = (req as AuthRequest).user;
+      const { contactId, channel, scope, originChannel, reason, evidence } = req.body;
+      if (!contactId || typeof contactId !== 'string') {
+        res.status(400).json({ success: false, error: 'contactId é obrigatório.' });
+        return;
+      }
+
+      await lgpdService.recordOptOut({
+        organizationId,
+        contactId,
+        channel,
+        scope,
+        originChannel: originChannel || 'manual',
+        reason,
+        evidence,
+        actorUserId: actorId,
+      });
+
+      await AuditService.log({
+        action: 'UPDATE',
+        entity: 'LGPD_OPTOUT',
+        entityId: contactId,
+        actorId,
+        tenantId: organizationId,
+        ipAddress: req.ip,
+        afterState: { channel, scope, reason },
+      });
+
+      res.status(201).json({
+        success: true,
+        message: 'Opt-out registrado com sucesso.',
+      });
+    })().catch(next);
+  },
+);
+

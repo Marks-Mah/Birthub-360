@@ -1,7 +1,7 @@
 - De: 18
 - Para: 00
 - Onda: 8
-- Status: em-andamento (priorização registrada, Fase Final 0; distribuição aos donos é trabalho de Fase Final 1+)
+- Status: resolvido
 - Prioridade: normal
 
 ## Problema

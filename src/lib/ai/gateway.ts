@@ -58,3 +58,9 @@ export type {
 } from './gateway/types.js';
 export { litellmProvider } from './gateway/providers/litellm.provider.js';
 export { logAiUsage } from './usage-log.js';
+export {
+  tokenQuotaService,
+  TokenQuotaService,
+  AiTokenQuotaExceededError,
+  TIER_QUOTAS,
+} from './finops/tokenQuota.service.js';

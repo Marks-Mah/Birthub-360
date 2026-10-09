@@ -1,6 +1,15 @@
 import { logger } from '../../lib/logger.js';
 import { prisma } from '../../lib/prisma.js';
 import { eraseDataSubject } from '../../shared/services/dataSubjectErasure.service.js';
+import {
+  checkOptOutStatus,
+  assertOptOutStatus,
+  recordContactOptOut,
+  OptOutSuppressedError,
+  isOptOutKeyword,
+  type OptOutChannel,
+  type OptOutCheckResult,
+} from './services/optOutCheck.service.js';
 
 export class LgpdService {
   /**
@@ -8,6 +17,29 @@ export class LgpdService {
    */
   async eraseContact(organizationId: string, contactId: string, actorUserId?: string) {
     return await eraseDataSubject({ organizationId, contactId, actorUserId });
+  }
+
+  /**
+   * Verifica se o contato está bloqueado por opt-out antes de qualquer disparo.
+   */
+  async checkOptOut(contactId: string, channel: OptOutChannel, organizationId: string) {
+    return await checkOptOutStatus(contactId, channel, organizationId);
+  }
+
+  /**
+   * Registra opt-out instantâneo para o contato e seus canais/leads.
+   */
+  async recordOptOut(input: {
+    organizationId: string;
+    contactId: string;
+    channel?: OptOutChannel;
+    scope?: 'global' | 'email' | 'whatsapp' | 'voice';
+    originChannel: string;
+    reason?: string;
+    evidence?: string;
+    actorUserId?: string;
+  }) {
+    return await recordContactOptOut(input);
   }
 
   /**
@@ -69,3 +101,14 @@ export class LgpdService {
 }
 
 export const lgpdService = new LgpdService();
+
+export {
+  checkOptOutStatus,
+  assertOptOutStatus,
+  recordContactOptOut,
+  OptOutSuppressedError,
+  isOptOutKeyword,
+  type OptOutChannel,
+  type OptOutCheckResult,
+};
+

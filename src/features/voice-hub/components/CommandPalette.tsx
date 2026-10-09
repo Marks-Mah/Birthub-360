@@ -1,4 +1,4 @@
-import { useSessionStore } from '../../store/useSessionStore.js';
+import { useSessionStore } from '../store/useSessionStore.js';
 import type React from 'react';
 import { useState, useEffect, useRef, useId } from 'react';
 import { useNavigate } from 'react-router-dom';

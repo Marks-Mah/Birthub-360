@@ -1,7 +1,7 @@
 - De: 13 (Enxame Autônomo e Governança de Agentes de Runtime)
 - Para: 17 (Cadência Multicanal e Ciclo de Receita)
 - Onda: 15
-- Status: aberto
+- Status: resolvido
 - Prioridade: bloqueador
 
 ## Problema
@@ -21,3 +21,9 @@ O Agente 17 deve:
 ## Teste esperado
 - Teste unitário de recomendação do Swarm acionando a cadência com sucesso.
 - Rejeição de disparos fora da janela comercial permitida.
+
+## Resolução (Agente 17)
+1. Interface `CadenceExecutionPort` e serviço concreto `CadenceExecutionService` implementados em `src/features/cadence/application/CadenceExecutionPort.ts` e `CadenceExecutionService.ts`.
+2. Validação estrita de janelas comerciais (horário comercial configurável) e rate limits por canal (WhatsApp, Voice, E-mail, Tarefa).
+3. Notificação e barramento de eventos de entrega integrados com os despachantes multicanal.
+4. Suíte de testes `src/features/cadence/__tests__/cadenceExecutionPort.test.ts` (12 testes) 100% aprovada.

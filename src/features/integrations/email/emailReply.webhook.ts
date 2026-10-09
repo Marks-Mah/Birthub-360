@@ -17,6 +17,9 @@ import {
 } from '../../../shared/security/webhookReplayGuard.js';
 import { emailIntentClassifier } from '../../cadence/infra/emailIntentClassifier.js';
 import { prismaConversationSignalPort } from '../../cadence/infra/PrismaConversationSignalPort.js';
+import { isOptOutKeyword, recordOptOut } from '../../cadence/application/optOutService.js';
+import { prismaOptOutRepository } from '../../cadence/infra/PrismaOptOutRepository.js';
+
 
 /**
  * CYC-003 (onda 26) — transporte de ENTRADA de e-mail, hoje um stub: nenhum provedor real
@@ -145,6 +148,53 @@ async function recordInboundEmail(
         receivedAt: email.receivedAt,
       },
     });
+
+    const isOptOut = isOptOutKeyword(email.subject) || isOptOutKeyword(email.body);
+    if (isOptOut) {
+      await recordOptOut(prismaOptOutRepository, {
+        organizationId,
+        scope: 'global',
+        subject: { leadId: lead?.id ?? null, email: email.fromEmail },
+        originChannel: 'email',
+        reason: 'Solicitação de descadastro/opt-out via réplica de e-mail',
+        evidence: email.subject || email.body?.slice(0, 500) || null,
+      }).catch((err) => {
+        logger.error({ err, leadId: lead?.id, email: email.fromEmail }, 'Falha ao registrar opt-out vindo de e-mail.');
+      });
+
+      if (lead) {
+        const leadWithContact = await prisma.lead.findFirst({
+          where: { id: lead.id, organizationId },
+          select: { contactId: true, customFields: true },
+        });
+        const currentLeadFields = (leadWithContact?.customFields as Record<string, unknown>) || {};
+        await prisma.lead.update({
+          where: { id: lead.id },
+          data: {
+            customFields: { ...currentLeadFields, optOut: true, optOutEmail: true },
+          },
+        });
+        if (leadWithContact?.contactId) {
+          const contact = await prisma.contact.findFirst({
+            where: { id: leadWithContact.contactId, organizationId },
+            select: { customFields: true },
+          });
+          const contactFields = (contact?.customFields as Record<string, unknown>) || {};
+          await prisma.contact.update({
+            where: { id: leadWithContact.contactId },
+            data: {
+              customFields: {
+                ...contactFields,
+                optOut: true,
+                optOutEmail: true,
+                optedOutAt: new Date().toISOString(),
+                optOutReason: 'Solicitação de opt-out via e-mail',
+              },
+            },
+          });
+        }
+      }
+    }
 
     if (!lead) return { status: 'lead-not-found' };
 
