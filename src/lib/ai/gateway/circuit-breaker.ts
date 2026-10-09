@@ -106,14 +106,18 @@ export async function recordCircuitFailure(provider: string): Promise<void> {
  * adapter de provedor (`providers/*.provider.ts`) usa para chamar a rede — nenhum deles implementa
  * retry/circuit breaker por conta própria.
  */
-export async function callProvider<T>(provider: string, fn: () => Promise<T>): Promise<T> {
+export async function callProvider<T>(
+  provider: string,
+  fn: () => Promise<T>,
+  retries = MAX_ATTEMPTS_PER_LEG - 1,
+): Promise<T> {
   if (await isCircuitOpen(provider)) {
     throw new Error(
       `Provedor "${provider}" temporariamente desativado após falhas recentes (nova tentativa em breve).`,
     );
   }
   try {
-    const result = await withRetry(fn, MAX_ATTEMPTS_PER_LEG - 1, RETRY_BASE_DELAY_MS);
+    const result = await withRetry(fn, retries, RETRY_BASE_DELAY_MS);
     await recordCircuitSuccess(provider);
     return result;
   } catch (error: any) {

@@ -20,7 +20,7 @@ export const logAiUsage = async (input: AiUsageLogInput): Promise<void> => {
   const data = {
     model: input.model,
     tokens: input.usage.totalTokens,
-    cost: estimateCostUsd(input.model, input.usage),
+    cost: input.costInUsd ?? estimateCostUsd(input.model, input.usage),
     latencyMs: input.latencyMs,
     promptId: input.promptId,
     organizationId,
