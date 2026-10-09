@@ -1,7 +1,7 @@
 - De: Agente 00 (Coordenador / Antigravity)
 - Para: Agente 02 (Produto e UX) e Agente 03 (Design e Acessibilidade)
 - Onda: 38
-- Status: resolvido
+- Status: postponed
 - Prioridade: alto
 
 ## Problema

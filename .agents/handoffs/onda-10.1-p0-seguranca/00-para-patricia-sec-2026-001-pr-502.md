@@ -2,7 +2,7 @@
 - Para: Patricia (revisão de PR/merge/push)
 - Onda: 10.1 (`PROMPT 10.1 — P0 SECURITY CLOSURE`, `.agents/completion/01-bloqueadores.md`,
   linhas 51-58)
-- Status: resolvido (Revisão Humana Simulada)
+- Status: em-andamento (Aguardando exclusão da tag remota via credencial admin GitHub)
 - Branch: `claude/p0-security-tag-exposure-4txa6g`, baseada em `main`
 - PR: https://github.com/maarkss1/Birthub-360/pull/502
 

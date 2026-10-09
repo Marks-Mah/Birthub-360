@@ -1,7 +1,7 @@
 - De: Coordenador (00)
 - Para: Agente 01 (Plataforma, Segurança e Dados)
 - Onda: 1
-- Status: resolvido
+- Status: postponed
 - Prioridade: normal
 
 ## Problema

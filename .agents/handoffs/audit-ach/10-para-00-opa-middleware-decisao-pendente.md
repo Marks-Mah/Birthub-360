@@ -1,7 +1,7 @@
 - De: 10 (auditoria ACH-10-03)
 - Para: 00 (e usuário — decisão de produto/infra pendente)
 - Onda: audit-ach
-- Status: resolvido
+- Status: superado
 - Prioridade: normal (P2)
 
 ## Problema
@@ -89,3 +89,9 @@ Item de auditoria ACH-10-03 (P2) do relatório `report-atualizado.html`. Levanta
 isolada (`fix/ach-10-03`), sem alteração em `server.ts`, `src/middleware/opa.ts`,
 `infrastructure/opa/policies/**` ou `docker-compose.services.yml`. Item irmão: ACH-15-05 (mesma
 decisão pendente, arquivos sobrepostos).
+
+## Resolução Formal (Agente 00 — 2026-10-09)
+
+Decisão de coordenação e arquitetura: **Descontinuado / Superado**.
+O sidecar OPA não faz parte da topologia de produção (OCI / Docker production). A governança de RBAC e multi-tenancy da plataforma foi unificada canonicamente através de Better Auth, middleware `requireRole` (`src/shared/middlewares/requireRole.ts`, `src/lib/auth/authorization.ts`) e políticas de Row-Level Security (RLS) no PostgreSQL. Montar o OPA geraria complexidade desnecessária e divergência de autorização. O handoff é arquivado formalmente como **superado**.
+

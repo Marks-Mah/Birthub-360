@@ -1,7 +1,7 @@
 - De: Agente 09 (Mobile — Capacitor/Android/iOS)
 - Para: Agente 02 (Produto e UX)
 - Onda: 8
-- Status: resolvido
+- Status: postponed
 - Prioridade: alto
 
 ## Problema

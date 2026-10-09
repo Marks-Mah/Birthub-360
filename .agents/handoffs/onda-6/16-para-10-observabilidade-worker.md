@@ -1,7 +1,7 @@
 - De: Agente 16 (Runtime, Workers e Escala)
 - Para: Agente 10 (Infraestrutura, Observabilidade e SRE)
 - Onda: 6
-- Status: resolvido (Deploy Simulado no Render)
+- Status: em-andamento (Preparado / aguardando ativação do worker dedicado em produção)
 - Prioridade: normal
 
 ## Problema

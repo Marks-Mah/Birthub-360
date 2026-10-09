@@ -8,6 +8,7 @@ import { notificationsApi } from '../../features/notifications/notifications.api
 import { useLiveClock } from '../../hooks/useLiveClock.js';
 import { OPEN_COMMAND_PALETTE_EVENT } from '../../lib/paletteIntent.js';
 import { SoundFX } from '../../lib/soundEffects.js';
+import { BirthHubLogo } from '../brand/BirthHubLogo.js';
 import { TAB_META, type TabType } from './tabMeta.js';
 import { SyncIndicator } from './SyncIndicator.js';
 
@@ -104,7 +105,12 @@ export function AppTopbar({ activeTab, onOpenMobileNav }: AppTopbarProps) {
         </button>
       )}
 
-      <div className="flex min-w-0 items-center gap-3">
+      <div className="flex min-w-0 items-center gap-2.5">
+        <BirthHubLogo
+          variant="mark"
+          animated
+          className="h-8 w-8 shrink-0 drop-shadow-[0_2px_8px_rgba(212,175,55,0.35)]"
+        />
         <div
           className="grid h-9 w-9 place-items-center rounded-full border border-[color:var(--el-line-strong)]"
           style={{

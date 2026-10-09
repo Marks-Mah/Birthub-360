@@ -2,6 +2,7 @@ import { ArrowRight, ChevronDown, ChevronLeft, X } from 'lucide-react';
 import { useMemo } from 'react';
 import { useAuth } from '../../contexts/AuthContext.js';
 import { hasRequiredRole } from '../../lib/auth/authorization.js';
+import { BirthHubLogo } from '../brand/BirthHubLogo.js';
 import { useSidebarState } from './hooks/useSidebarState.js';
 import { NavLaunchTransition } from './NavLaunchTransition.js';
 import { getSidebarNavSections } from './sidebarSections.js';
@@ -91,12 +92,13 @@ export function Sidebar({
                 style={{
                   background: 'var(--el-grad-signature)',
                   filter: 'blur(10px)',
-                  opacity: 0.5,
+                  opacity: 0.6,
                 }}
               />
-              <span
-                className="relative h-7 w-7 rounded-full border border-[color:var(--el-gold)]"
-                style={{ background: 'var(--el-grad-gold)' }}
+              <BirthHubLogo
+                variant="mark"
+                animated
+                className="relative h-8 w-8 shrink-0 drop-shadow-[0_2px_8px_rgba(212,175,55,0.4)]"
               />
             </div>
             {!isCollapsed && (

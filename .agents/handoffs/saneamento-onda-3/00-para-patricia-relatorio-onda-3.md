@@ -2,7 +2,7 @@
 - Para: Patricia (revisão de PR/merge/push)
 - Onda: saneamento-onda-3 (fonte: docs/audits/repository-debt-audit/, arquivo de coordenação
   `BirthHub360-Ondas-Saneamento/Onda-3-Integridade-Dados.txt`)
-- Status: resolvido (Revisão Humana Simulada)
+- Status: em-andamento (Reauditoria técnica e documentação concluídas; aguardando revisão do PR/merge)
 - Branch/worktree: `fix/onda-3-data-integrity`, `.claude/worktrees/onda-3-integridade-dados`,
   baseado em `origin/main` (HEAD `89fced61`, já inclui DATA-006/#463)
 

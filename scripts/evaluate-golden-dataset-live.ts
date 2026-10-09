@@ -45,4 +45,4 @@ console.log(
   `Overall: ${report.overallScore.toFixed(3)} | threshold ${report.thresholds.overallMinimum} | ${report.passed ? 'PASS' : 'FAIL'}`,
 );
 
-if (!report.passed) process.exitCode = 1;
+process.exit(report.passed ? 0 : 1);
