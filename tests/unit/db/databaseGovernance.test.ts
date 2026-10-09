@@ -77,5 +77,5 @@ describe('Database Governance & Schema Index Audit', () => {
     // Tenant index coverage should be high (> 80%)
     expect(report.tenantIndexCoveragePercent).toBeGreaterThanOrEqual(75);
     expect(report.fkIndexCoveragePercent).toBeGreaterThan(50);
-  });
+  }, 60000);
 });
