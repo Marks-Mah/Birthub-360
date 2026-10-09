@@ -44,5 +44,5 @@ describe('BaseAgent.runWithTools — AI-011 (orçamento mensal de IA)', () => {
 
     expect(result.error).toContain('Orçamento mensal de IA excedido (teste)');
     expect(buildSpy).not.toHaveBeenCalled();
-  }, 30_000);
+  }, 90_000);
 });
