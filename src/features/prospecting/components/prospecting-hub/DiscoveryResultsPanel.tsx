@@ -1,18 +1,19 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import {
   AlertTriangle,
-  CheckCircle2,
   Database,
-  Globe,
   Loader2,
   RefreshCw,
   Search,
   UserPlus,
 } from 'lucide-react';
 import type { FitScoreResult } from '../../services/enrichment.service.js';
-import type { ProspectCandidate } from '../../services/prospecting.service.js';
+import type { DiscoverResult, ProspectCandidate } from '../../services/prospecting.service.js';
 import { SoundFX } from '../../../../lib/soundEffects.js';
 import { CandidateCard } from './CandidateCard.js';
+import { SearchExecutionPanel } from './SearchExecutionPanel.js';
+import { TurboProvidersPanel } from './TurboProvidersPanel.js';
 
 interface PromoteResult {
   lead: { id: string };
@@ -33,8 +34,8 @@ export function DiscoveryResultsPanel({
   candidates,
   filteredCandidates,
   isSearching,
-  loadingStepIdx,
-  loadingSteps,
+  searchResult,
+  onCancel,
   resultFilter,
   setResultFilter,
   apolloError,
@@ -56,14 +57,14 @@ export function DiscoveryResultsPanel({
   candidates: ProspectCandidate[];
   filteredCandidates: Array<{ c: ProspectCandidate; i: number }>;
   isSearching: boolean;
-  loadingStepIdx: number;
-  loadingSteps: string[];
+  searchResult: DiscoverResult | null;
+  onCancel: () => void;
   resultFilter: string;
   setResultFilter: (value: string) => void;
   apolloError: string | null;
   isSavingBatch: boolean;
   onSaveAll: () => void;
-  onExport: () => void;
+  onExport: (format: 'xlsx' | 'csv', columns: number[], target: 'companies' | 'decisionMakers') => void;
   selectedCandidates: Set<number>;
   toggleSelectAll: () => void;
   toggleSelect: (idx: number) => void;
@@ -78,12 +79,15 @@ export function DiscoveryResultsPanel({
   rejectingKey: string | null;
   onRejectCandidate: (candidate: ProspectCandidate, idx: number) => void;
 }) {
+  const [exportTarget, setExportTarget] = useState<'companies' | 'decisionMakers'>('companies');
+  const [exportColumns, setExportColumns] = useState<number[]>(Array.from({ length: 14 }, (_, i) => i));
+  const columns = exportTarget === 'companies' ? ['Nome', 'Razão social', 'CNPJ', 'Segmento', 'Porte', 'Localização', 'Website', 'E-mails', 'Telefone', 'LinkedIn', 'Decisores', 'Fonte', 'Score ICP', 'Completude'] : ['Nome', 'Cargo', 'Empresa', 'LinkedIn', 'E-mail profissional', 'Telefone profissional', 'Fonte do e-mail'];
   return (
     <div className="xl:col-span-8 flex flex-col h-full">
       <div className="flex items-center justify-between mb-4 gap-4 flex-wrap">
         <h2 className="font-display font-bold text-2xl text-ink">✨ Resultados</h2>
         {candidates.length > 0 && (
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
             <button
               type="button"
               onClick={() => {
@@ -99,12 +103,13 @@ export function DiscoveryResultsPanel({
               type="button"
               onClick={() => {
                 SoundFX.play('click');
-                onExport();
+                onExport('xlsx', exportColumns, exportTarget);
               }}
               className="bg-emerald-600 text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-emerald-700 active:scale-95 transition-all shadow-sm flex items-center gap-2 cursor-pointer"
             >
               <Database size={14} /> Exportar Excel
             </button>
+            <button type="button" onClick={() => onExport('csv', exportColumns, exportTarget)} className="px-4 py-2 rounded-xl border border-line text-xs text-ink">Exportar CSV</button>
             <span className="bg-surface-2 text-ink-2 px-3 py-1 rounded-full text-xs font-bold">
               🎯 {filteredCandidates.length}/{candidates.length} Candidatos
             </span>
@@ -112,10 +117,30 @@ export function DiscoveryResultsPanel({
         )}
       </div>
 
+      <TurboProvidersPanel />
+      {candidates.length > 0 && <details className="mb-4 text-xs text-ink-2">
+        <summary className="cursor-pointer py-2">Configurar exportação e selecionar colunas</summary>
+        <label htmlFor="export-target" className="block py-2">Exportar
+          <select id="export-target" value={exportTarget} onChange={(e) => { const target = e.target.value as typeof exportTarget; setExportTarget(target); setExportColumns(Array.from({ length: target === 'companies' ? 14 : 7 }, (_, i) => i)); }} className="ml-2 p-2 rounded-lg border border-line bg-surface text-ink"><option value="companies">Empresas</option><option value="decisionMakers">Decisores</option></select>
+        </label>
+        <div className="flex flex-wrap gap-3">{columns.map((column, index) => <label key={column} className="flex gap-1 items-center"><input type="checkbox" checked={exportColumns.includes(index)} onChange={(e) => setExportColumns((prev) => e.target.checked ? [...prev, index] : prev.filter((i) => i !== index))} />{column}</label>)}</div>
+      </details>}
+      {searchResult && !isSearching && (
+        <div className="mb-4 rounded-xl border border-line bg-surface p-4 text-xs text-ink-2 space-y-2" aria-live="polite">
+          <p>Execução: {searchResult.searchId}</p>
+          <SearchExecutionPanel key={searchResult.searchId} searchId={searchResult.searchId} />
+          <p>{candidates.length} empresas · CNPJ informado: {candidates.filter((c) => c.cnpjGuess).length} · Telefone: {candidates.filter((c) => c.phone).length} · E-mail: {candidates.filter((c) => c.emails?.length).length} · Decisores: {candidates.reduce((sum, c) => sum + (c.decisionMakers?.length ?? 0), 0)}</p>
+          <p>WhatsApp confirmado: indisponível. Consumo de créditos não fornecido nesta resposta.</p>
+          {(searchResult.partialFailures ?? []).map((failure, i) => <p key={i} className="text-warning-active dark:text-warning">Falha parcial {failure.provider}: {failure.message}</p>)}
+          {(searchResult.filterWarnings ?? []).map((warning, i) => <p key={i} className="text-warning-active dark:text-warning">{warning}</p>)}
+          <p>Dados Google Places são apenas para consulta: excluídos da seleção, CRM e exportação. Exportação usa resultados filtrados ou a seleção atual.</p>
+        </div>
+      )}
       {candidates.length > 0 && !isSearching && (
         <div className="relative mb-4">
           <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-ink-2" />
           <input
+            aria-label="Filtrar resultados por nome, segmento ou cidade"
             type="text"
             placeholder="⚡ Filtrar resultados instantaneamente por nome, segmento, cidade..."
             value={resultFilter}
@@ -128,47 +153,24 @@ export function DiscoveryResultsPanel({
       {apolloError && !isSearching && (
         <div className="mb-4 p-3 bg-warning/10 border border-warning/30 rounded-xl text-xs text-warning-active dark:text-warning flex items-start gap-2">
           <AlertTriangle size={14} className="mt-0.5 shrink-0" />
-          Apollo.io não retornou resultados: {apolloError}
+          Falha parcial Apollo.io: {apolloError}
         </div>
       )}
 
       {isSearching ? (
         <div className="flex-1 bg-surface rounded-2xl border border-line shadow-sm flex flex-col items-center justify-center p-10 min-h-[400px]">
-          <div className="w-24 h-24 relative mb-8">
-            <div className="absolute inset-0 border-4 border-line rounded-full" />
-            <div className="absolute inset-0 border-4 border-brand rounded-full border-t-transparent animate-spin" />
-            <div className="absolute inset-0 flex items-center justify-center text-brand">
-              <Globe size={32} className="animate-pulse" />
-            </div>
-          </div>
-          <h3 className="font-black text-xl text-ink mb-4 text-center">🌎 Mapeando Mercado...</h3>
-          <div className="space-y-3 w-full max-w-sm">
-            {loadingSteps.map((step, idx) => (
-              <div
-                key={idx}
-                className={`flex items-center gap-3 text-sm font-medium ${idx === loadingStepIdx ? 'text-brand-ink dark:text-brand' : idx < loadingStepIdx ? 'text-ink-2' : 'text-ink opacity-50'}`}
-              >
-                {idx < loadingStepIdx ? (
-                  <CheckCircle2 size={16} />
-                ) : idx === loadingStepIdx ? (
-                  <Loader2 size={16} className="animate-spin" />
-                ) : (
-                  <div className="w-4 h-4 rounded-full border-2 border-current" />
-                )}
-                {step}
-              </div>
-            ))}
-          </div>
+          <Loader2 size={32} className="animate-spin text-brand" aria-hidden="true" />
+          <p role="status" className="text-sm text-ink mt-4">Pesquisa em andamento. Aguardando resposta dos provedores autorizados.</p>
+          <button type="button" onClick={onCancel} className="mt-4 px-4 py-2 border border-line rounded-xl text-sm text-ink">Cancelar espera</button>
         </div>
       ) : candidates.length > 0 ? (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
-          <div className="flex items-center gap-3 bg-surface p-3 rounded-xl border border-line mb-4">
+          <div className="flex flex-wrap items-center gap-3 bg-surface p-3 rounded-xl border border-line mb-4">
             <input
               type="checkbox"
               className="rounded border-line text-brand focus:ring-brand"
-              checked={
-                selectedCandidates.size > 0 && selectedCandidates.size === filteredCandidates.length
-              }
+              aria-label="Selecionar todos os resultados reutilizáveis visíveis"
+              checked={filteredCandidates.some(({ c }) => c.source !== 'googlePlaces') && filteredCandidates.filter(({ c }) => c.source !== 'googlePlaces').every(({ i }) => selectedCandidates.has(i))}
               onChange={toggleSelectAll}
             />
             <span className="text-xs text-ink-2 font-bold">

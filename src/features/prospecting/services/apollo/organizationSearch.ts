@@ -6,12 +6,11 @@ import { fetchWithProviderRetry } from '../../../../lib/enrichment/providerFetch
 import { logger } from '../../../../lib/logger.js';
 import { validContactEmails } from '../../../../shared/utils/contact-links.js';
 import type { ProspectCandidate, ProspectCriteria } from '../../domain/prospectTypes.js';
-import { buildLocationLabel } from '../../domain/prospectTypes.js';
 import { ExclusionSet } from '../../utils/exclusionSet.js';
 import { assertProspectingBudgetNotExceeded } from '../providerBudget.js';
 import { recordProviderCallCost } from '../providerCostMetrics.js';
 import { checkProviderRateLimit } from '../providerRateLimit.js';
-import { APOLLO_SEARCH_URL, DECISION_MAKER_PREFETCH_BUDGET_MS } from './client.js';
+import { APOLLO_SEARCH_URL } from './client.js';
 import { enrichCandidatesWithDecisionMakers } from './people.js';
 import type { ApolloSearchResponse } from './types.js';
 
@@ -179,13 +178,17 @@ export async function fetchApolloCandidates(
     : [];
 
   if (criteria.icp) extraKeywords.push(criteria.icp.trim());
-  if (criteria.volume) extraKeywords.push(criteria.volume.trim());
-  if (criteria.decisorCargos?.length) {
-    for (const cargo of criteria.decisorCargos) {
-      const trimmed = cargo.trim();
-      if (trimmed) extraKeywords.push(trimmed);
-    }
-  }
+  const details = criteria.segmentoDetalhes;
+  extraKeywords.push(
+    ...[
+      details?.subsegmento,
+      details?.nicho,
+      ...(details?.produtos ?? []),
+      ...(details?.servicos ?? []),
+      ...(details?.palavrasObrigatorias ?? []),
+      ...(details?.palavrasOpcionais ?? []),
+    ].filter((v): v is string => !!v),
+  );
 
   const needsFoundedYearFilter = criteria.anoFundacaoMin != null || criteria.anoFundacaoMax != null;
   const needsIcpAffinityRanking = isTransportOperatorSegment(criteria.segmento);
@@ -254,12 +257,6 @@ export async function fetchApolloCandidates(
       .map((t) => t.trim())
       .filter(Boolean);
   }
-  if (criteria.tecnologiasExcluir) {
-    body.currently_not_using_any_of_technology_uids = criteria.tecnologiasExcluir
-      .split(',')
-      .map((t) => t.trim())
-      .filter(Boolean);
-  }
   if (criteria.localizacaoExcluir) {
     body.organization_not_locations = criteria.localizacaoExcluir
       .split(',')
@@ -267,9 +264,24 @@ export async function fetchApolloCandidates(
       .filter(Boolean)
       .map((l) => (l.toLowerCase().endsWith('brazil') ? l : `${l}, Brazil`));
   }
-  if (criteria.apenasCapitalAberto) {
-    body.organization_trading_status = ['public'];
-  }
+
+  const filters = criteria.apolloFiltros;
+  if (filters?.dominios?.length) body.q_organization_domains_list = filters.dominios;
+  if (filters?.dominiosExcluir?.length)
+    body.not_organization_websites_list = filters.dominiosExcluir;
+  if (filters?.organizacaoIds?.length) body.organization_ids = filters.organizacaoIds;
+  if (filters?.funcionariosFaixas?.length)
+    body.organization_num_employees_ranges = filters.funcionariosFaixas;
+  if (filters?.financiamentoTotalMin != null || filters?.financiamentoTotalMax != null)
+    body.total_funding_range = {
+      min: filters.financiamentoTotalMin,
+      max: filters.financiamentoTotalMax,
+    };
+  if (filters?.ultimaRodadaMin != null || filters?.ultimaRodadaMax != null)
+    body.latest_funding_amount_range = {
+      min: filters.ultimaRodadaMin,
+      max: filters.ultimaRodadaMax,
+    };
 
   try {
     const res = await fetchWithProviderRetry(
@@ -292,8 +304,7 @@ export async function fetchApolloCandidates(
     );
 
     if (!res.ok) {
-      const text = await res.text().catch(() => '');
-      return { candidates: [], error: `Apollo API respondeu ${res.status}: ${text.slice(0, 200)}` };
+      return { candidates: [], error: `Apollo API respondeu HTTP ${res.status}` };
     }
 
     recordProviderCallCost('apollo');
@@ -333,7 +344,8 @@ export async function fetchApolloCandidates(
       size: org.estimated_num_employees
         ? `~${org.estimated_num_employees} funcionários`
         : 'Não informado',
-      location: [org.city, org.state].filter(Boolean).join(', ') || buildLocationLabel(criteria),
+      location: [org.city, org.state].filter(Boolean).join(', '),
+      locationObserved: !!(org.city || org.state),
       fitScoreEstimate: needsIcpAffinityRanking
         ? matchesIcpIndustry(org.industry) === true
           ? 82
@@ -358,10 +370,7 @@ export async function fetchApolloCandidates(
     // a busca principal: nem por erro (candidatos já vieram da Apollo com sucesso) nem por
     // demora (respeita um orçamento de tempo próprio, menor que o timeout do frontend).
     try {
-      await Promise.race([
-        enrichCandidatesWithDecisionMakers(candidates, organizations),
-        new Promise<void>((resolve) => setTimeout(resolve, DECISION_MAKER_PREFETCH_BUDGET_MS)),
-      ]);
+      await enrichCandidatesWithDecisionMakers(candidates, organizations, criteria);
     } catch (decisionMakerError: any) {
       // Log e segue — os candidatos (já obtidos com sucesso) continuam válidos sem decisores.
       logger.error({ err: decisionMakerError }, 'Falha ao pré-buscar decisores na descoberta');
@@ -373,10 +382,10 @@ export async function fetchApolloCandidates(
     }
 
     return { candidates };
-  } catch (error: any) {
+  } catch {
     return {
       candidates: [],
-      error: error instanceof Error ? error.message : 'Falha ao consultar Apollo.io',
+      error: 'Falha ao consultar Apollo.io; conexão ou orçamento indisponível',
     };
   }
 }

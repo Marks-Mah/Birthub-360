@@ -118,6 +118,8 @@ describe('discoverCandidates — dedupe entre providers', () => {
     segmento: 'Transportadora',
     localizacao: 'Rio de Janeiro e Região',
     quantidade: 5,
+    modoPesquisa: 'equilibrado',
+    autorizarPagos: true,
   };
 
   it('não duplica a mesma empresa quando Apollo e Google Places devolvem o mesmo nome (case-insensitive)', async () => {

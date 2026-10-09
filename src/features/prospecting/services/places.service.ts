@@ -39,7 +39,8 @@ export async function searchGooglePlacesCandidates(
   count: number,
 ): Promise<PlaceCandidate[]> {
   const apiKey = getPaidProspectingKey('GOOGLE_MAPS_API_KEY');
-  if (!apiKey || !query.trim()) return [];
+  if (!query.trim()) return [];
+  if (!apiKey) throw new Error('Google Places não configurado');
 
   try {
     const res = await fetchWithProviderRetry(
@@ -67,11 +68,8 @@ export async function searchGooglePlacesCandidates(
     );
 
     if (!res.ok) {
-      logger.error(
-        { status: res.status, body: await res.text() },
-        'Google Places (discovery) error',
-      );
-      return [];
+      logger.error({ status: res.status }, 'Google Places discovery failed');
+      throw new Error(`Google Places HTTP ${res.status}`);
     }
 
     const data = (await res.json()) as GooglePlacesTextSearchResponse;
@@ -96,9 +94,9 @@ export async function searchGooglePlacesCandidates(
         website: p.websiteUri,
       } satisfies PlaceCandidate;
     });
-  } catch (error: any) {
-    logger.error({ err: error, query }, 'Error searching Google Places candidates');
-    return [];
+  } catch {
+    logger.error({ provider: 'googlePlaces' }, 'Google Places discovery failed');
+    throw new Error('Google Places indisponível durante a consulta');
   }
 }
 
@@ -163,9 +161,8 @@ export async function searchGooglePlaceDetailed(
     );
 
     if (!res.ok) {
-      const text = await res.text().catch(() => '');
-      logger.error({ status: res.status, body: text }, 'Google Places API error');
-      return { place: null, error: `Google Places respondeu ${res.status}: ${text.slice(0, 150)}` };
+      logger.error({ status: res.status }, 'Google Places API error');
+      return { place: null, error: `Google Places HTTP ${res.status}` };
     }
 
     const data = await res.json();
@@ -190,11 +187,11 @@ export async function searchGooglePlaceDetailed(
         businessHours: p.regularOpeningHours,
       },
     };
-  } catch (error: any) {
-    logger.error({ err: error, companyName, locationStr }, 'Error fetching Google Place');
+  } catch {
+    logger.error({ provider: 'googlePlaces' }, 'Error fetching Google Place');
     return {
       place: null,
-      error: error instanceof Error ? error.message : 'Falha ao consultar Google Places',
+      error: 'Falha ao consultar Google Places',
     };
   }
 }

@@ -14,6 +14,9 @@ export interface ProviderChatParams {
    * decide se usa esse valor direto ou o remapeia para o nome específico do provedor. */
   resolvedModel: string;
   timeoutMs: number;
+  maxTokens?: number;
+  jsonMode?: boolean;
+  retries?: number;
 }
 
 export interface ProviderAdapter {

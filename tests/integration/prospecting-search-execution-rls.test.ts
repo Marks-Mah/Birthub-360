@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { prisma } from '../../src/lib/prisma';
+import { prisma, withRlsContext } from '../../src/lib/prisma';
 import { requestContext } from '../../src/lib/async-context';
 import {
   SearchExecutionTracker,
@@ -23,6 +23,7 @@ async function cleanup() {
   for (const org of [ORG_A, ORG_B]) {
     asTenant(org);
     await prisma.prospectingSearchExecution.deleteMany({ where: { organizationId: org } });
+    await prisma.savedSearch.deleteMany({ where: { organizationId: org } });
   }
   asBypass();
   await prisma.organization.deleteMany({ where: { id: { in: [ORG_A, ORG_B] } } });
@@ -73,5 +74,39 @@ describe('ProspectingSearchExecution — Search-ID rastreável (Postgres real, R
 
     const ownTenantRead = await findSearchExecution(tracker.searchId, ORG_A);
     expect(ownTenantRead).not.toBeNull();
+  });
+
+  it('preserva filtros Turbo e proveniência da busca salva após releitura, com falha parcial', async () => {
+    asTenant(ORG_A);
+    const criteria = {
+      segmento: 'Engenharia', localizacao: 'São Paulo', quantidade: 10,
+      modoPesquisa: 'economico', autorizarPagos: false,
+      segmentoDetalhes: { produtos: ['projetos'], palavrasExcluir: ['residencial'] },
+      personas: [{ cargoPrincipal: 'Diretor', cargosEquivalentes: ['Head'], departamentos: ['Compras'] }],
+    };
+    const saved = await prisma.savedSearch.create({data: {name: 'Turbo RLS fixture', criteria, organizationId: ORG_A}});
+    const tracker = new SearchExecutionTracker({organizationId: ORG_A, savedSearchId: saved.id, criteria, providerMode: 'free'});
+    tracker.recordProviderCall({provider: 'nominatim', resultCount: 1, status: 'ok'});
+    tracker.recordProviderCall({provider: 'brasilapi', resultCount: 0, status: 'error', errorMessage: 'Consulta temporariamente indisponível'});
+    await tracker.finish({status: 'partial', totalResults: 1});
+
+    const persistedSaved = await prisma.savedSearch.findFirst({where: {id: saved.id, organizationId: ORG_A}});
+    const persisted = await findSearchExecution(tracker.searchId, ORG_A);
+    expect(persistedSaved?.criteria).toEqual(criteria);
+    expect(persisted?.criteria).toEqual(criteria);
+    expect(persisted?.savedSearchId).toBe(saved.id);
+    expect(persisted?.status).toBe('partial');
+    expect(persisted?.totalResults).toBe(1);
+    expect(persisted?.costUsd).toBe(0);
+    expect(persisted?.providersCalled).toEqual([
+      expect.objectContaining({provider: 'nominatim', status: 'ok', resultCount: 1}),
+      expect.objectContaining({provider: 'brasilapi', status: 'error', resultCount: 0}),
+    ]);
+
+    asTenant(ORG_B);
+    expect(await prisma.savedSearch.findFirst({where: {id: saved.id}})).toBeNull();
+    const raw = await withRlsContext((tx) => tx.$queryRaw<Array<{id: string}>>`SELECT id FROM "ProspectingSearchExecution" WHERE id = ${tracker.searchId}`);
+    expect(raw).toEqual([]);
+    expect(await findSearchExecution(tracker.searchId, ORG_B)).toBeNull();
   });
 });

@@ -87,7 +87,7 @@ describe('searchGooglePlaceDetailed', () => {
   });
 
   it('achado corrigido: falha de rede também preenche `.error`', async () => {
-    const fetchMock = vi.fn().mockRejectedValue(new Error('network down'));
+    const fetchMock = vi.fn().mockRejectedValue(new Error('network down token=never-expose-this-fixture'));
     vi.stubGlobal('fetch', fetchMock);
 
     const { place, error } = await searchGooglePlaceDetailed(
@@ -96,7 +96,8 @@ describe('searchGooglePlaceDetailed', () => {
     );
 
     expect(place).toBeNull();
-    expect(error).toBe('network down');
+    expect(error).toBe('Falha ao consultar Google Places');
+    expect(error).not.toContain('never-expose-this-fixture');
   });
 });
 

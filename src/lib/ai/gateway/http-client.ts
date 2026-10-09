@@ -69,12 +69,15 @@ export async function requestChatCompletion(
   agentContext: string,
   timeoutMs: number,
   includeMetadata: boolean,
+  options?: { maxTokens?: number; jsonMode?: boolean },
 ): Promise<ChatCompletionResponse> {
   const body: Record<string, unknown> = {
     model,
     messages,
     temperature: normalizeTemperature(temperature),
   };
+  if (options?.maxTokens !== undefined) body.max_tokens = options.maxTokens;
+  if (options?.jsonMode) body.response_format = { type: 'json_object' };
   if (includeMetadata) {
     body.user = agentContext.slice(0, 128);
     body.metadata = { agent: agentContext.slice(0, 128) };

@@ -82,6 +82,8 @@ const criteria: ProspectCriteria = {
   segmento: 'Transportadora',
   localizacao: 'Rio de Janeiro',
   quantidade: 5,
+  modoPesquisa: 'equilibrado',
+  autorizarPagos: true,
 };
 
 beforeEach(() => {
@@ -171,7 +173,7 @@ describe('discoverCandidates — Search-ID', () => {
   });
 
   it('registra status "partial" quando um provider falha mas a busca ainda devolve resultados', async () => {
-    mockFetchApolloCandidates.mockRejectedValue(new Error('Apollo indisponível'));
+    mockFetchApolloCandidates.mockRejectedValue(new Error('token=never-expose-this-fixture'));
     mockSearchGooglePlacesCandidates.mockResolvedValue([{ tradeName: 'Transportadora Nova' }]);
 
     const result = await discoverCandidates(criteria, 'org-1');
@@ -180,7 +182,9 @@ describe('discoverCandidates — Search-ID', () => {
     expect(result.apolloError).toBeTruthy();
     const { data } = createSearchExecutionMock.mock.calls[0][0];
     expect(data.status).toBe('partial');
-    expect(data.errorMessage).toBe('Apollo indisponível');
+    expect(data.errorMessage).toBe('Apollo indisponível durante a consulta');
+    expect(JSON.stringify(result.partialFailures)).not.toContain('never-expose-this-fixture');
+    expect(result.partialFailures).toEqual([{provider: 'apollo', message: 'Falha na consulta apollo; tente novamente mais tarde'}]);
 
     const apolloCall = data.providersCalled.find(
       (c: { provider: string }) => c.provider === 'apollo',
