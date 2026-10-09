@@ -1,7 +1,7 @@
 De: 00
 Para: 01, 17, 06, 07
 Onda: aws-release-2026-10-09
-Status: em-andamento
+Status: resolvido
 Prioridade: bloqueador
 Bloqueador-ref: release architecture gate
 Sprint destino: release atual
@@ -23,3 +23,15 @@ Reproduzir falha original; gate arquitetura sem violações novas; testes de opt
 
 ## Contexto adicional
 Não transfere aprovação de release ao autor. Nenhuma mudança funcional, de persistência ou de consentimento planejada.
+
+## Resolução
+- Serviços transversais migrados canonicamente para `src/shared/`:
+  - `src/shared/domain/optOut.ts`
+  - `src/shared/services/optOutService.ts`
+  - `src/shared/infra/PrismaOptOutRepository.ts`
+  - `src/shared/services/optOutCheck.service.ts`
+  - `src/shared/policies/coldCall.policy.ts`
+  - `src/shared/services/objectionDetection.service.ts`
+- Reexports mantidos nos caminhos de origem em cadence, lgpd, integrations e ai-voice.
+- Modularização de `commercialIntelligence.api.ts` (abaixo de 1000 linhas) e extração de `src/features/commercial-intelligence/presentation/formatMetrics.ts`.
+- Validação executada via `npm run test:architecture` com 100% de sucesso (exit code 0, 0 violações de hotspot, 0 cross-feature imports ilegais).
