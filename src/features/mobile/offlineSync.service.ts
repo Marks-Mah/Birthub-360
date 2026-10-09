@@ -359,7 +359,7 @@ export class OfflineSyncService {
         status: online ? 'online' : 'offline',
       });
       if (online && this.autoSync) {
-        void this.syncQueue();
+        void this.sync();
       }
     });
   }

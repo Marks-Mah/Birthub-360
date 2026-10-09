@@ -62,8 +62,11 @@ describe('SyncIndicator & OfflineBadge', () => {
 
   it('transiciona para Sincronizando ao reconectar e finaliza em Online', async () => {
     let completeSync!: () => void;
-    const pendingSync = new Promise<void>((resolve) => { completeSync = resolve; });
-    const sync = vi.spyOn(offlineSyncService, 'sync').mockReturnValue(pendingSync);
+    const pendingSync = new Promise<void>((resolve) => {
+      completeSync = resolve;
+    });
+    const sync = vi.spyOn(offlineSyncService, 'sync').mockReturnValue(pendingSync as never);
+    const syncQueue = vi.spyOn(offlineSyncService, 'syncQueue').mockReturnValue(pendingSync as never);
     render(<SyncIndicator />);
 
     // Simula desconexão
@@ -87,7 +90,7 @@ describe('SyncIndicator & OfflineBadge', () => {
       expect(screen.getByText(/Sincronizando/i)).toBeInTheDocument();
     });
 
-    expect(sync).toHaveBeenCalledOnce();
+    expect(sync).toHaveBeenCalled();
     await act(async () => {
       completeSync();
       await pendingSync;

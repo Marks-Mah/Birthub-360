@@ -43,6 +43,11 @@ vi.mock('../../../../lib/prisma.js', () => ({
   },
 }));
 
+vi.mock('../../../../lib/email/mailer.js', () => ({
+  sendEmail: vi.fn().mockRejectedValue(new Error('SMTP indisponível no teste')),
+  MailerNotConfiguredError: class MailerNotConfiguredError extends Error {},
+}));
+
 vi.mock('../../../../lib/logger.js', () => ({
   logger: { info: vi.fn(), warn: vi.fn(), error: vi.fn() },
 }));
