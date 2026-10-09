@@ -41,6 +41,33 @@ describe('Opt-out Multicanal & LGPD (B-13 e §27)', () => {
   });
 
   describe('isOptOutKeyword', () => {
+    it.each([
+      [' !?.#-_* SAIR *_-#.?! ', true],
+      ['\t## Não Quero Mais!!\n', true],
+      ['---opt-out---', true],
+      ['stop, messages!', true],
+      ['! .sair. !', false],
+      ['sair! por favor', false],
+      ['sair\tpor favor', false],
+      ['sair; por favor', false],
+      ['sair,', true],
+      [',sair', false],
+      ['!?.#-_*', false],
+      ['\u00a0! SAIR !\u00a0', true],
+    ])('preserva as regras de pontuação para %j', (text, expected) => {
+      expect(isOptOutKeyword(text)).toBe(expected);
+    });
+
+    it('processa sequências adversariais de pontuação sem retrocesso quadrático', () => {
+      const punctuation = '!'.repeat(50_000);
+      const started = performance.now();
+
+      expect(isOptOutKeyword(`sair${punctuation}a`)).toBe(false);
+      expect(isOptOutKeyword(`${punctuation}sair${punctuation}`)).toBe(true);
+      expect(isOptOutKeyword(punctuation)).toBe(false);
+      expect(performance.now() - started).toBeLessThan(1000);
+    });
+
     it('reconhece palavras-chave em maiúsculas, minúsculas e com pontuação', () => {
       const validCases = [
         'SAIR',

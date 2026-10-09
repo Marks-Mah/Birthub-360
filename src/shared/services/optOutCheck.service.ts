@@ -70,11 +70,14 @@ const OPT_OUT_TERMS = [
 
 export function isOptOutKeyword(rawText: string | null | undefined): boolean {
   if (!rawText || typeof rawText !== 'string') return false;
-  const normalized = rawText
-    .trim()
-    .toLowerCase()
-    .replace(/^[!?.#\-_*]+|[!?.#\-_*]+$/g, '')
-    .trim();
+  const text = rawText.trim().toLowerCase();
+  const punctuation = '!?.#-_*';
+  let start = 0;
+  let end = text.length;
+  // Scan each edge once: a suffix regex can retry every position on untrusted text.
+  while (start < end && punctuation.includes(text[start])) start += 1;
+  while (end > start && punctuation.includes(text[end - 1])) end -= 1;
+  const normalized = text.slice(start, end).trim();
 
   if (!normalized) return false;
 
