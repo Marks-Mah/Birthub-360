@@ -130,7 +130,9 @@ export function ProspectingHub() {
 
   const [selectedCandidates, setSelectedCandidates] = useState<Set<number>>(new Set());
   const toggleSelectAll = () => {
-    const visible = filteredCandidates.filter(({ c }) => c.source !== 'googlePlaces').map(({ i }) => i);
+    const visible = filteredCandidates
+      .filter(({ c }) => c.source !== 'googlePlaces')
+      .map(({ i }) => i);
     if (visible.length > 0 && visible.every((i) => selectedCandidates.has(i))) {
       setSelectedCandidates(new Set());
     } else {
@@ -188,7 +190,10 @@ export function ProspectingHub() {
     }
   };
   const bulkEnrich = async () => {
-    if (!criteria.autorizarPagos) { setDiscoverError('Autorize provedores pagos antes do enriquecimento em massa.'); return; }
+    if (!criteria.autorizarPagos) {
+      setDiscoverError('Autorize provedores pagos antes do enriquecimento em massa.');
+      return;
+    }
     if (selectedCandidates.size === 0 || isSavingBatch) return;
     setIsSavingBatch(true);
     try {
@@ -327,19 +332,92 @@ export function ProspectingHub() {
       );
     });
 
-  const exportResults = async (format: 'xlsx' | 'csv', columns: number[], target: 'companies' | 'decisionMakers') => {
-    const allowed = filteredCandidates.filter(({ c, i }) => c.source !== 'googlePlaces' && (selectedCandidates.size === 0 || selectedCandidates.has(i))).map(({ c }) => c);
-    if (!columns.length) { setDiscoverError('Selecione ao menos uma coluna para exportar.'); return; }
-    if (!allowed.length) { setDiscoverError('Nenhum resultado reutilizável selecionado. Dados Google Places não são exportados.'); return; }
+  const exportResults = async (
+    format: 'xlsx' | 'csv',
+    columns: number[],
+    target: 'companies' | 'decisionMakers',
+  ) => {
+    const allowed = filteredCandidates
+      .filter(
+        ({ c, i }) =>
+          c.source !== 'googlePlaces' &&
+          (selectedCandidates.size === 0 || selectedCandidates.has(i)),
+      )
+      .map(({ c }) => c);
+    if (!columns.length) {
+      setDiscoverError('Selecione ao menos uma coluna para exportar.');
+      return;
+    }
+    if (!allowed.length) {
+      setDiscoverError(
+        'Nenhum resultado reutilizável selecionado. Dados Google Places não são exportados.',
+      );
+      return;
+    }
     try {
-      let headers = ['Nome', 'Razão social', 'CNPJ', 'Segmento', 'Porte', 'Localização', 'Website', 'E-mails', 'Telefone', 'LinkedIn', 'Decisores', 'Fonte', 'Score ICP', 'Completude'];
-      let rows: unknown[][] = allowed.map((c) => [c.tradeName, c.legalNameGuess ?? '', c.cnpjGuess ?? '', c.segmentObserved ? c.segment : '', c.size, c.location, c.website ?? '', (c.emails ?? []).join(', '), c.phone ?? '', c.linkedinUrl ?? '', (c.decisionMakers ?? c.apolloContacts ?? []).map((d) => `${d.name} (${d.title ?? ''}) ${d.email ?? ''}`).join(' | '), c.source ?? '', c.metrics?.icpScore ?? '', c.metrics?.completeness ?? '']);
+      let headers = [
+        'Nome',
+        'Razão social',
+        'CNPJ',
+        'Segmento',
+        'Porte',
+        'Localização',
+        'Website',
+        'E-mails',
+        'Telefone',
+        'LinkedIn',
+        'Decisores',
+        'Fonte',
+        'Score ICP',
+        'Completude',
+      ];
+      let rows: unknown[][] = allowed.map((c) => [
+        c.tradeName,
+        c.legalNameGuess ?? '',
+        c.cnpjGuess ?? '',
+        c.segmentObserved ? c.segment : '',
+        c.size,
+        c.location,
+        c.website ?? '',
+        (c.emails ?? []).join(', '),
+        c.phone ?? '',
+        c.linkedinUrl ?? '',
+        (c.decisionMakers ?? c.apolloContacts ?? [])
+          .map((d) => `${d.name} (${d.title ?? ''}) ${d.email ?? ''}`)
+          .join(' | '),
+        c.source ?? '',
+        c.metrics?.icpScore ?? '',
+        c.metrics?.completeness ?? '',
+      ]);
       if (target === 'decisionMakers') {
-        headers = ['Nome', 'Cargo', 'Empresa', 'LinkedIn', 'E-mail profissional', 'Telefone profissional', 'Fonte do e-mail'];
-        rows = allowed.flatMap((c) => (c.decisionMakers ?? c.apolloContacts ?? []).map((d) => [d.name, d.title ?? '', c.tradeName, d.linkedinUrl ?? '', d.email ?? '', d.phone ?? '', d.emailSource ?? 'Não informada']));
-        if (!rows.length) { setDiscoverError('Nenhum decisor disponível nos resultados selecionados.'); return; }
+        headers = [
+          'Nome',
+          'Cargo',
+          'Empresa',
+          'LinkedIn',
+          'E-mail profissional',
+          'Telefone profissional',
+          'Fonte do e-mail',
+        ];
+        rows = allowed.flatMap((c) =>
+          (c.decisionMakers ?? c.apolloContacts ?? []).map((d) => [
+            d.name,
+            d.title ?? '',
+            c.tradeName,
+            d.linkedinUrl ?? '',
+            d.email ?? '',
+            d.phone ?? '',
+            d.emailSource ?? 'Não informada',
+          ]),
+        );
+        if (!rows.length) {
+          setDiscoverError('Nenhum decisor disponível nos resultados selecionados.');
+          return;
+        }
       }
-      const selectedColumns = columns.filter((i) => i >= 0 && i < headers.length).sort((a, b) => a - b);
+      const selectedColumns = columns
+        .filter((i) => i >= 0 && i < headers.length)
+        .sort((a, b) => a - b);
       headers = selectedColumns.map((i) => headers[i]);
       rows = rows.map((row) => selectedColumns.map((i) => row[i]));
       let blob: Blob;
@@ -347,26 +425,61 @@ export function ProspectingHub() {
         const ExcelJS = (await import('exceljs')).default;
         const workbook = new ExcelJS.Workbook();
         const sheet = workbook.addWorksheet('Prospects');
-        sheet.addRow(headers); rows.forEach((row) => { sheet.addRow(row); });
-        blob = new Blob([await workbook.xlsx.writeBuffer()], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        sheet.addRow(headers);
+        rows.forEach((row) => {
+          sheet.addRow(row);
+        });
+        blob = new Blob([await workbook.xlsx.writeBuffer()], {
+          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        });
       } else {
-        const escapeCsv = (value: unknown) => `"${String(value).replace(/^[=+@-]/, "'$&").replace(/"/g, '""')}"`;
-        blob = new Blob([`\uFEFF${[headers, ...rows].map((row) => row.map(escapeCsv).join(';')).join('\r\n')}`], { type: 'text/csv;charset=utf-8' });
+        const escapeCsv = (value: unknown) =>
+          `"${String(value)
+            .replace(/^[=+@-]/, "'$&")
+            .replace(/"/g, '""')}"`;
+        blob = new Blob(
+          [`\uFEFF${[headers, ...rows].map((row) => row.map(escapeCsv).join(';')).join('\r\n')}`],
+          { type: 'text/csv;charset=utf-8' },
+        );
       }
       const url = URL.createObjectURL(blob);
-      const a = document.createElement('a'); a.href = url; a.download = `${BRAND.shortName}_Prospects_${new Date().toISOString().slice(0, 10)}.${format}`;
-      a.click(); URL.revokeObjectURL(url);
-    } catch (error: unknown) { setDiscoverError(getErrorMessage(error, 'Falha ao exportar resultados.')); }
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${BRAND.shortName}_Prospects_${new Date().toISOString().slice(0, 10)}.${format}`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (error: unknown) {
+      setDiscoverError(getErrorMessage(error, 'Falha ao exportar resultados.'));
+    }
   };
 
-  const interpretSearch = async (query: string, mode: 'automatic' | 'groq' | 'local', model?: string) => {
-    setIsInterpreting(true); setInterpretationMessage(null);
+  const interpretSearch = async (
+    query: string,
+    mode: 'automatic' | 'groq' | 'local',
+    model?: string,
+  ) => {
+    setIsInterpreting(true);
+    setInterpretationMessage(null);
     try {
-      const result = await api.post<{ criteria: ProspectCriteria; warnings?: string[] }>('/api/prospecting/interpret', { query, mode, model, consent: true, allowPaidProviders: !!criteria.autorizarPagos }, { timeoutMs: 35_000 });
-      setCriteria((prev) => ({ ...prev, ...result.criteria, quantidade: 20, autorizarPagos: prev.autorizarPagos }));
-      setInterpretationMessage(['Filtros preenchidos. Confira antes de pesquisar.', ...(result.warnings ?? [])].join(' '));
-    } catch (error: unknown) { setInterpretationMessage(getErrorMessage(error, 'Não foi possível interpretar a pesquisa.')); }
-    finally { setIsInterpreting(false); }
+      const result = await api.post<{ criteria: ProspectCriteria; warnings?: string[] }>(
+        '/api/prospecting/interpret',
+        { query, mode, model, consent: true, allowPaidProviders: !!criteria.autorizarPagos },
+        { timeoutMs: 35_000 },
+      );
+      setCriteria((prev) => ({
+        ...prev,
+        ...result.criteria,
+        quantidade: 20,
+        autorizarPagos: prev.autorizarPagos,
+      }));
+      setInterpretationMessage(
+        ['Filtros preenchidos. Confira antes de pesquisar.', ...(result.warnings ?? [])].join(' '),
+      );
+    } catch (error: unknown) {
+      setInterpretationMessage(getErrorMessage(error, 'Não foi possível interpretar a pesquisa.'));
+    } finally {
+      setIsInterpreting(false);
+    }
   };
 
   const handleCnpjLookup = async () => {
@@ -439,7 +552,11 @@ export function ProspectingHub() {
       setDiscoveryPage(page);
       setApolloError(result.apolloError || null);
     } catch (error: any) {
-      setDiscoverError(abort.signal.aborted ? 'Pesquisa cancelada no navegador. Chamadas já iniciadas no servidor podem terminar e consumir créditos.' : getErrorMessage(error, 'Falha ao buscar leads'));
+      setDiscoverError(
+        abort.signal.aborted
+          ? 'Pesquisa cancelada no navegador. Chamadas já iniciadas no servidor podem terminar e consumir créditos.'
+          : getErrorMessage(error, 'Falha ao buscar leads'),
+      );
     } finally {
       setSearchAbort(null);
       setIsSearching(false);

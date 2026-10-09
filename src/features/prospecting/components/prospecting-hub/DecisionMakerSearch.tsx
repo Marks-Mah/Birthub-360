@@ -598,7 +598,7 @@ export function DecisionMakerSearch({
                   <span className="block text-[9px] uppercase tracking-wider text-ink-2 mb-1">
                     WhatsApp do decisor
                   </span>
-<span className="text-ink-2">Não confirmado</span>
+                  <span className="text-ink-2">Não confirmado</span>
                 </div>
                 <div className="rounded-xl bg-surface-2 p-3">
                   <span className="block text-[9px] uppercase tracking-wider text-ink-2 mb-1">

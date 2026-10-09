@@ -417,7 +417,12 @@ export function DiscoveryFilterPanel({
         </div>
 
         <PersonaForm criteria={criteria} setCriteria={setCriteria} />
-        <TurboField id="turbo-cnpj" label="CNPJ (consulta cadastral exata)" value={criteria.cnpj} onChange={(value) => setCriteria({ ...criteria, cnpj: value || undefined })} />
+        <TurboField
+          id="turbo-cnpj"
+          label="CNPJ (consulta cadastral exata)"
+          value={criteria.cnpj}
+          onChange={(value) => setCriteria({ ...criteria, cnpj: value || undefined })}
+        />
 
         <div>
           <label
@@ -450,30 +455,121 @@ export function DiscoveryFilterPanel({
 
         <fieldset className="space-y-3 border-t border-line pt-3">
           <legend className="text-sm font-semibold text-ink">Pesquisa em linguagem natural</legend>
-          <TurboField id="turbo-query" label="Descreva sua pesquisa" maxLength={2000} value={query} onChange={setQuery} />
-          <label htmlFor="turbo-ai-mode" className="block text-xs text-ink-2">Provedor de IA
-            <select id="turbo-ai-mode" value={aiMode} onChange={(e) => setAiMode(e.target.value as typeof aiMode)} className="w-full p-3 rounded-xl bg-surface border border-line text-ink">
-              <option value="automatic">Automático</option><option value="groq">Groq</option><option value="local">Local (Ollama)</option>
+          <TurboField
+            id="turbo-query"
+            label="Descreva sua pesquisa"
+            maxLength={2000}
+            value={query}
+            onChange={setQuery}
+          />
+          <label htmlFor="turbo-ai-mode" className="block text-xs text-ink-2">
+            Provedor de IA
+            <select
+              id="turbo-ai-mode"
+              value={aiMode}
+              onChange={(e) => setAiMode(e.target.value as typeof aiMode)}
+              className="w-full p-3 rounded-xl bg-surface border border-line text-ink"
+            >
+              <option value="automatic">Automático</option>
+              <option value="groq">Groq</option>
+              <option value="local">Local (Ollama)</option>
             </select>
           </label>
-          <TurboField id="turbo-ai-model" label="Modelo de IA (opcional)" maxLength={120} value={aiModel} onChange={setAiModel} />
-          <p className="text-xs text-ink-2">Deixe vazio para seleção automática. O modelo precisa estar disponível no provedor; Groq exige preço cadastrado. Consulte os modelos em Central de provedores → Testar conexões autorizadas.</p>
-          <label className="flex gap-2 text-xs text-ink-2"><input type="checkbox" checked={aiConsent} onChange={(e) => setAiConsent(e.target.checked)} />Autorizo enviar somente esta descrição ao provedor de IA escolhido. Não inclua dados pessoais ou segredos.</label>
-          <button type="button" disabled={!aiConsent || !query.trim() || query.length > 2000 || aiModel.length > 120 || isInterpreting || isSearching} onClick={() => onInterpret(query, aiMode, aiModel.trim() || undefined)} className="w-full p-3 rounded-xl border border-line text-sm text-ink disabled:opacity-50">{isInterpreting ? 'Interpretando...' : 'Interpretar e preencher filtros'}</button>
-          {interpretationMessage && <p role="status" className="text-xs text-ink-2">{interpretationMessage}</p>}
-          <p className="text-xs text-ink-2">Confira os filtros preenchidos antes de pesquisar. A IA interpreta a solicitação; dados empresariais vêm das fontes consultadas.</p>
+          <TurboField
+            id="turbo-ai-model"
+            label="Modelo de IA (opcional)"
+            maxLength={120}
+            value={aiModel}
+            onChange={setAiModel}
+          />
+          <p className="text-xs text-ink-2">
+            Deixe vazio para seleção automática. O modelo precisa estar disponível no provedor; Groq
+            exige preço cadastrado. Consulte os modelos em Central de provedores → Testar conexões
+            autorizadas.
+          </p>
+          <label className="flex gap-2 text-xs text-ink-2">
+            <input
+              type="checkbox"
+              checked={aiConsent}
+              onChange={(e) => setAiConsent(e.target.checked)}
+            />
+            Autorizo enviar somente esta descrição ao provedor de IA escolhido. Não inclua dados
+            pessoais ou segredos.
+          </label>
+          <button
+            type="button"
+            disabled={
+              !aiConsent ||
+              !query.trim() ||
+              query.length > 2000 ||
+              aiModel.length > 120 ||
+              isInterpreting ||
+              isSearching
+            }
+            onClick={() => onInterpret(query, aiMode, aiModel.trim() || undefined)}
+            className="w-full p-3 rounded-xl border border-line text-sm text-ink disabled:opacity-50"
+          >
+            {isInterpreting ? 'Interpretando...' : 'Interpretar e preencher filtros'}
+          </button>
+          {interpretationMessage && (
+            <p role="status" className="text-xs text-ink-2">
+              {interpretationMessage}
+            </p>
+          )}
+          <p className="text-xs text-ink-2">
+            Confira os filtros preenchidos antes de pesquisar. A IA interpreta a solicitação; dados
+            empresariais vêm das fontes consultadas.
+          </p>
         </fieldset>
         <fieldset className="space-y-3 border-t border-line pt-3">
           <legend className="text-sm font-semibold text-ink">Fontes e custo</legend>
-          <label htmlFor="turbo-search-mode" className="block text-xs text-ink-2">Modo de pesquisa
-            <select id="turbo-search-mode" value={criteria.modoPesquisa ?? 'economico'} onChange={(e) => setCriteria({ ...criteria, modoPesquisa: e.target.value as ProspectCriteria['modoPesquisa'] })} className="w-full p-3 rounded-xl bg-surface border border-line text-ink">
-              <option value="economico">Econômico</option><option value="equilibrado">Equilibrado</option><option value="completo">Completo</option>
+          <label htmlFor="turbo-search-mode" className="block text-xs text-ink-2">
+            Modo de pesquisa
+            <select
+              id="turbo-search-mode"
+              value={criteria.modoPesquisa ?? 'economico'}
+              onChange={(e) =>
+                setCriteria({
+                  ...criteria,
+                  modoPesquisa: e.target.value as ProspectCriteria['modoPesquisa'],
+                })
+              }
+              className="w-full p-3 rounded-xl bg-surface border border-line text-ink"
+            >
+              <option value="economico">Econômico</option>
+              <option value="equilibrado">Equilibrado</option>
+              <option value="completo">Completo</option>
             </select>
           </label>
-          <label className="flex gap-2 text-xs text-ink-2"><input type="checkbox" checked={!!criteria.autorizarPagos} onChange={(e) => setCriteria({ ...criteria, autorizarPagos: e.target.checked })} />Autorizar provedores que podem consumir créditos, dentro dos limites configurados.</label>
-          <p className="text-xs text-ink-2">Sem autorização, operações pagas não são executadas. O modo não garante gratuidade ou completude. Os resultados são ampliados pela próxima página, respeitando cotas.</p>
+          <label className="flex gap-2 text-xs text-ink-2">
+            <input
+              type="checkbox"
+              checked={!!criteria.autorizarPagos}
+              onChange={(e) => setCriteria({ ...criteria, autorizarPagos: e.target.checked })}
+            />
+            Autorizar provedores que podem consumir créditos, dentro dos limites configurados.
+          </label>
+          <p className="text-xs text-ink-2">
+            Sem autorização, operações pagas não são executadas. O modo não garante gratuidade ou
+            completude. Os resultados são ampliados pela próxima página, respeitando cotas.
+          </p>
         </fieldset>
-        <button type="button" className="py-2 text-xs text-ink-2 underline" disabled={isSearching} onClick={() => setCriteria({ segmento: '', localizacao: '', quantidade: 20, modoPesquisa: 'economico', autorizarPagos: false })}>Limpar todos os filtros</button>
+        <button
+          type="button"
+          className="py-2 text-xs text-ink-2 underline"
+          disabled={isSearching}
+          onClick={() =>
+            setCriteria({
+              segmento: '',
+              localizacao: '',
+              quantidade: 20,
+              modoPesquisa: 'economico',
+              autorizarPagos: false,
+            })
+          }
+        >
+          Limpar todos os filtros
+        </button>
         <button
           type="button"
           aria-expanded={showAdvanced}
@@ -488,19 +584,107 @@ export function DiscoveryFilterPanel({
 
         {showAdvanced && (
           <div className="space-y-4 pt-1">
-            {(['dominios', 'dominiosExcluir', 'organizacaoIds', 'funcionariosFaixas'] as const).map((key, index) => (
-              <TurboField key={key} id={`apollo-${key}`} label={['Domínios (separados por vírgula)', 'Excluir domínios (separados por vírgula)', 'IDs de organizações Apollo (separados por vírgula)', 'Faixas de funcionários (ex.: 11,50;51,200)'][index]}
-                value={(criteria.apolloFiltros?.[key] ?? []).join(key === 'funcionariosFaixas' ? ';' : ',')}
-                onChange={(value) => setCriteria({ ...criteria, apolloFiltros: { ...criteria.apolloFiltros, [key]: value.split(key === 'funcionariosFaixas' ? ';' : ',') } })} />
+            {(['dominios', 'dominiosExcluir', 'organizacaoIds', 'funcionariosFaixas'] as const).map(
+              (key, index) => (
+                <TurboField
+                  key={key}
+                  id={`apollo-${key}`}
+                  label={
+                    [
+                      'Domínios (separados por vírgula)',
+                      'Excluir domínios (separados por vírgula)',
+                      'IDs de organizações Apollo (separados por vírgula)',
+                      'Faixas de funcionários (ex.: 11,50;51,200)',
+                    ][index]
+                  }
+                  value={(criteria.apolloFiltros?.[key] ?? []).join(
+                    key === 'funcionariosFaixas' ? ';' : ',',
+                  )}
+                  onChange={(value) =>
+                    setCriteria({
+                      ...criteria,
+                      apolloFiltros: {
+                        ...criteria.apolloFiltros,
+                        [key]: value.split(key === 'funcionariosFaixas' ? ';' : ','),
+                      },
+                    })
+                  }
+                />
+              ),
+            )}
+            {(
+              [
+                'financiamentoTotalMin',
+                'financiamentoTotalMax',
+                'ultimaRodadaMin',
+                'ultimaRodadaMax',
+              ] as const
+            ).map((key, index) => (
+              <TurboField
+                key={key}
+                id={`apollo-${key}`}
+                label={
+                  [
+                    'Financiamento total mínimo (USD)',
+                    'Financiamento total máximo (USD)',
+                    'Última rodada mínima (USD)',
+                    'Última rodada máxima (USD)',
+                  ][index]
+                }
+                type="number"
+                value={criteria.apolloFiltros?.[key]}
+                onChange={(value) =>
+                  setCriteria({
+                    ...criteria,
+                    apolloFiltros: {
+                      ...criteria.apolloFiltros,
+                      [key]: value ? Number(value) : undefined,
+                    },
+                  })
+                }
+              />
             ))}
-            {(['financiamentoTotalMin', 'financiamentoTotalMax', 'ultimaRodadaMin', 'ultimaRodadaMax'] as const).map((key, index) => (
-              <TurboField key={key} id={`apollo-${key}`} label={['Financiamento total mínimo (USD)', 'Financiamento total máximo (USD)', 'Última rodada mínima (USD)', 'Última rodada máxima (USD)'][index]} type="number" value={criteria.apolloFiltros?.[key]} onChange={(value) => setCriteria({ ...criteria, apolloFiltros: { ...criteria.apolloFiltros, [key]: value ? Number(value) : undefined } })} />
-            ))}
-            <details className="space-y-2"><summary className="cursor-pointer py-2 text-sm font-semibold text-ink">Pesos do score ICP</summary>
-              <p className="text-xs text-ink-2">Pesos relativos entre os critérios efetivamente avaliados. Dados não confirmados recebem zero pontos.</p>
-              {([['segment', 'Segmento'], ['state', 'Estado'], ['city', 'Cidade'], ['annualRevenue', 'Faturamento anual'], ['foundedYear', 'Fundação'], ['technologies', 'Tecnologias'], ['decisionMakerTitles', 'Cargo do decisor']] as const).map(([key, label]) => <TurboField key={key} id={`icp-weight-${key}`} label={label} type="number" value={criteria.icpPesos?.[key] ?? 1} onChange={(value) => setCriteria({ ...criteria, icpPesos: { ...criteria.icpPesos, [key]: Math.min(100, Math.max(0, Number(value) || 0)) } })} />)}
+            <details className="space-y-2">
+              <summary className="cursor-pointer py-2 text-sm font-semibold text-ink">
+                Pesos do score ICP
+              </summary>
+              <p className="text-xs text-ink-2">
+                Pesos relativos entre os critérios efetivamente avaliados. Dados não confirmados
+                recebem zero pontos.
+              </p>
+              {(
+                [
+                  ['segment', 'Segmento'],
+                  ['state', 'Estado'],
+                  ['city', 'Cidade'],
+                  ['annualRevenue', 'Faturamento anual'],
+                  ['foundedYear', 'Fundação'],
+                  ['technologies', 'Tecnologias'],
+                  ['decisionMakerTitles', 'Cargo do decisor'],
+                ] as const
+              ).map(([key, label]) => (
+                <TurboField
+                  key={key}
+                  id={`icp-weight-${key}`}
+                  label={label}
+                  type="number"
+                  value={criteria.icpPesos?.[key] ?? 1}
+                  onChange={(value) =>
+                    setCriteria({
+                      ...criteria,
+                      icpPesos: {
+                        ...criteria.icpPesos,
+                        [key]: Math.min(100, Math.max(0, Number(value) || 0)),
+                      },
+                    })
+                  }
+                />
+              ))}
             </details>
-            <p className="text-xs text-ink-2">Filtros Apollo dependem das permissões do plano. Filtros brasileiros são avaliados pelas fontes cadastrais, não enviados ao Apollo.</p>
+            <p className="text-xs text-ink-2">
+              Filtros Apollo dependem das permissões do plano. Filtros brasileiros são avaliados
+              pelas fontes cadastrais, não enviados ao Apollo.
+            </p>
             <div>
               <label
                 htmlFor="discovery-ano-min"
@@ -589,7 +773,9 @@ export function DiscoveryFilterPanel({
               </p>
             </div>
             <div>
-              <p className="text-xs text-ink-2">Exclusão de tecnologias indisponível no contrato atual Apollo.</p>
+              <p className="text-xs text-ink-2">
+                Exclusão de tecnologias indisponível no contrato atual Apollo.
+              </p>
               <span
                 id="tech-excluded-label"
                 className="block text-[10px] tracking-wider font-bold uppercase mb-1.5 text-ink-2"
@@ -695,7 +881,11 @@ export function DiscoveryFilterPanel({
             </>
           )}
         </button>
-        {discoverError && <p role="alert" className="text-xs text-danger-active dark:text-ink mt-2">{discoverError}</p>}
+        {discoverError && (
+          <p role="alert" className="text-xs text-danger-active dark:text-ink mt-2">
+            {discoverError}
+          </p>
+        )}
       </div>
     </div>
   );

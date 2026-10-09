@@ -69,7 +69,9 @@ export const leadQualificationGraph = new StateGraph(LeadQualificationState)
 
     const response = await model.invoke([
       new SystemMessage(
-        'Você é um SDR/BDR sênior especialista em qualificação de leads B2B para o setor de logística no Brasil. Analise os dados reais da empresa e dê uma nota de propensão à compra de 0 a 100, considerando: aderência ao ICP (transportadoras/embarcadores/operadores logísticos), sinais de porte e saúde financeira (situação cadastral, capital social, porte), e maturidade digital (tecnologias em uso). Responda SOMENTE com um JSON válido, sem markdown, no formato exato: {"score": number, "summary": string}. O summary deve ter 1-2 frases citando pelo menos um dado real recebido — nunca genérico.',
+        'Você é um SDR/BDR sênior especialista em qualificação de leads B2B para o setor de logística no Brasil. Analise os dados reais da empresa e dê uma nota de propensão à compra de 0 a 100, considerando: aderência ao ICP (transportadoras/embarcadores/operadores logísticos), sinais de porte e saúde financeira (situação cadastral, capital social, porte), e maturidade digital (tecnologias em uso). ' +
+          'Critérios de pontuação: Frotas a partir de 10 veículos, sinistros/roubos recorrentes de carga ou faturamento relevante possuem alto fit e dor confirmada, devendo receber score >= 75 (QUALIFIED), mesmo com restrição orçamentária temporária. Pequenas frotas locais sem dor ou sem demanda tecnológica devem receber score <= 40 (UNQUALIFIED). ' +
+          'Responda SOMENTE com um JSON válido, sem markdown, no formato exato: {"score": number, "summary": string}. O summary deve ter 1-2 frases citando pelo menos um dado real recebido — nunca genérico.',
       ),
       new HumanMessage(`Dados da empresa: ${state.companyInfo}`),
     ]);

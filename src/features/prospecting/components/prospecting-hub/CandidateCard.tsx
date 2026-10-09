@@ -22,10 +22,7 @@ import { useState } from 'react';
 import { LinkedinIcon as Linkedin } from '../../../../components/ui/icons/LinkedinIcon.js';
 import { api } from '../../../../lib/api.js';
 import { SoundFX } from '../../../../lib/soundEffects.js';
-import {
-  getTelephoneLink,
-  validContactEmails,
-} from '../../../../shared/utils/contact-links.js';
+import { getTelephoneLink, validContactEmails } from '../../../../shared/utils/contact-links.js';
 import type { FitScoreResult } from '../../services/enrichment.service.js';
 import type {
   ProspectCandidate,
@@ -121,7 +118,8 @@ export function CandidateCard({
   onReject?: () => void;
   isRejecting?: boolean;
 }) {
-  const finalScore = promotedResult?.fit?.score ?? candidate.metrics?.icpScore ?? candidate.fitScoreEstimate;
+  const finalScore =
+    promotedResult?.fit?.score ?? candidate.metrics?.icpScore ?? candidate.fitScoreEstimate;
   const isEstimate = !promotedResult?.fit;
   const enrichment = promotedResult?.enrichment;
   // Variável local em vez de `candidate.phone` repetido: o narrowing de `candidate.phone &&`
@@ -233,7 +231,8 @@ export function CandidateCard({
 
           <div className="flex flex-wrap gap-4 text-xs font-semibold text-ink-2 mb-2">
             <span className="flex items-center gap-1.5">
-              <Building2 size={14} className="text-ink-2" /> {candidate.segmentObserved ? candidate.segment : 'Segmento não confirmado'}
+              <Building2 size={14} className="text-ink-2" />{' '}
+              {candidate.segmentObserved ? candidate.segment : 'Segmento não confirmado'}
             </span>
             <span className="flex items-center gap-1.5">
               <Users size={14} className="text-ink-2" /> {candidate.size}
@@ -332,16 +331,57 @@ export function CandidateCard({
           )}
 
           <details className="my-3 text-xs text-ink-2">
-            <summary className="cursor-pointer py-2 font-semibold">Fontes e qualidade dos dados</summary>
-            <p>Fonte de descoberta: {candidate.source ?? 'Não informada'}. WhatsApp: não confirmado.</p>
-            {candidate.source === 'googlePlaces' && <p>Conteúdo Google Places: consulta temporária; CRM e exportação indisponíveis.</p>}
-            {candidate.metrics && <div className="space-y-1 py-2">
-              <p>Score ICP: {candidate.metrics.icpScore}/100 · Completude: {candidate.metrics.completeness}%</p>
-              <p>Identificação: {candidate.metrics.identificationConfidence}% · Qualidade de contatos: {candidate.metrics.contactQuality}%</p>
-              {candidate.metrics.factors.map((factor) => <p key={factor.criterion}>{factor.criterion}: {factor.points} pontos ({factor.status === 'matched' ? 'confirmado' : factor.status === 'unmatched' ? 'divergente' : 'não confirmado'})</p>)}
-            </div>}
-            {Object.entries(candidate.provenance ?? {}).map(([field, origin]) => <p key={field}>{field}: {origin.source} · {origin.status === 'estimated' ? 'estimado' : origin.status === 'reported' ? 'informado pela fonte' : 'não verificado'} · {origin.queriedAt}</p>)}
-            {candidate.companyData && Object.entries(candidate.companyData).filter(([, value]) => value !== null && typeof value !== 'object').map(([field, value]) => <p key={field}>{field}: {String(value)}</p>)}
+            <summary className="cursor-pointer py-2 font-semibold">
+              Fontes e qualidade dos dados
+            </summary>
+            <p>
+              Fonte de descoberta: {candidate.source ?? 'Não informada'}. WhatsApp: não confirmado.
+            </p>
+            {candidate.source === 'googlePlaces' && (
+              <p>Conteúdo Google Places: consulta temporária; CRM e exportação indisponíveis.</p>
+            )}
+            {candidate.metrics && (
+              <div className="space-y-1 py-2">
+                <p>
+                  Score ICP: {candidate.metrics.icpScore}/100 · Completude:{' '}
+                  {candidate.metrics.completeness}%
+                </p>
+                <p>
+                  Identificação: {candidate.metrics.identificationConfidence}% · Qualidade de
+                  contatos: {candidate.metrics.contactQuality}%
+                </p>
+                {candidate.metrics.factors.map((factor) => (
+                  <p key={factor.criterion}>
+                    {factor.criterion}: {factor.points} pontos (
+                    {factor.status === 'matched'
+                      ? 'confirmado'
+                      : factor.status === 'unmatched'
+                        ? 'divergente'
+                        : 'não confirmado'}
+                    )
+                  </p>
+                ))}
+              </div>
+            )}
+            {Object.entries(candidate.provenance ?? {}).map(([field, origin]) => (
+              <p key={field}>
+                {field}: {origin.source} ·{' '}
+                {origin.status === 'estimated'
+                  ? 'estimado'
+                  : origin.status === 'reported'
+                    ? 'informado pela fonte'
+                    : 'não verificado'}{' '}
+                · {origin.queriedAt}
+              </p>
+            ))}
+            {candidate.companyData &&
+              Object.entries(candidate.companyData)
+                .filter(([, value]) => value !== null && typeof value !== 'object')
+                .map(([field, value]) => (
+                  <p key={field}>
+                    {field}: {String(value)}
+                  </p>
+                ))}
           </details>
           {!enrichment && candidate.rationale && (
             <p className="text-xs text-ink-2 italic mb-2">&quot;{candidate.rationale}&quot;</p>
@@ -397,7 +437,8 @@ export function CandidateCard({
           {!enrichment && candidate.decisionMakers && candidate.decisionMakers.length > 0 && (
             <div className="mt-2 mb-3">
               <p className="text-[10px] tracking-wider font-bold uppercase text-ink-2 mb-2 flex items-center gap-1">
-                <Users size={12} /> Decisores encontrados — verifique origem e finalidade antes de utilizar
+                <Users size={12} /> Decisores encontrados — verifique origem e finalidade antes de
+                utilizar
               </p>
               <div className="flex flex-col gap-2">
                 {candidate.decisionMakers.map((dm, idx) => {
@@ -426,7 +467,9 @@ export function CandidateCard({
                           className="flex items-center gap-1 text-success-active dark:text-success hover:underline"
                         >
                           <Mail size={12} /> {dm.email}
-                          <span className="text-[10px] text-ink-2">Fonte: {dm.emailSource ?? 'Apollo'} · verificação não informada</span>
+                          <span className="text-[10px] text-ink-2">
+                            Fonte: {dm.emailSource ?? 'Apollo'} · verificação não informada
+                          </span>
                         </a>
                       )}
                       {tel && (
@@ -569,12 +612,15 @@ export function CandidateCard({
               ) : (
                 <ShieldCheck size={15} />
               )}
-              {isPromoting ? 'Salvando...' : candidate.source === 'googlePlaces' ? 'CRM indisponível para Google Places' : 'Salvar no CRM'}
+              {isPromoting
+                ? 'Salvando...'
+                : candidate.source === 'googlePlaces'
+                  ? 'CRM indisponível para Google Places'
+                  : 'Salvar no CRM'}
             </button>
           </div>
         )}
       </div>
-
     </div>
   );
 }

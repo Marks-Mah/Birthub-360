@@ -22,8 +22,17 @@ for (const goldenCase of dataset.cases) {
 }
 
 const useJudge = process.env.GOLDEN_EVAL_USE_LLM_JUDGE !== 'false';
+const overallMinimum = Number(process.env.GOLDEN_OVERALL_MINIMUM ?? '0.70');
+const categoryMinimum = Number(process.env.GOLDEN_CATEGORY_MINIMUM ?? '0.35');
+const caseMinimum = Number(process.env.GOLDEN_CASE_MINIMUM ?? '0.25');
+
 const report = await evaluateGoldenDataset(observed, {
   judge: useJudge ? new GatewayGoldenSemanticJudge() : undefined,
+  thresholds: {
+    overallMinimum,
+    categoryMinimum,
+    caseMinimum,
+  },
 });
 
 console.table(

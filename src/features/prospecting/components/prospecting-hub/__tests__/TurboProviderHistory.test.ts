@@ -8,11 +8,21 @@ vi.mock('@/lib/api', () => ({ api: { get: getMock, post: postMock } }));
 import { TurboProvidersPanel } from '../TurboProvidersPanel.js';
 import { SearchExecutionPanel } from '../SearchExecutionPanel.js';
 
-afterEach(() => { cleanup(); vi.clearAllMocks(); });
+afterEach(() => {
+  cleanup();
+  vi.clearAllMocks();
+});
 
 describe('Turbo providers and execution history — identified mocked API responses', () => {
   it('does not call providers on render and preserves not-validated state after a requested health test', async () => {
-    postMock.mockResolvedValue([{ id: 'googlePlaces', configured: true, status: 'not_validated', message: 'Consulta paga não executada.' }]);
+    postMock.mockResolvedValue([
+      {
+        id: 'googlePlaces',
+        configured: true,
+        status: 'not_validated',
+        message: 'Consulta paga não executada.',
+      },
+    ]);
     render(createElement(TurboProvidersPanel));
     expect(postMock).not.toHaveBeenCalled();
     fireEvent.click(screen.getByText('Central de provedores'));
@@ -31,9 +41,18 @@ describe('Turbo providers and execution history — identified mocked API respon
   });
 
   it('fetches the tenant-scoped persisted execution on request and shows recorded provider/cost data', async () => {
-    getMock.mockResolvedValue({ id: 'mock-execution', status: 'partial', startedAt: '2026-10-09T12:00:00Z', totalResults: 0, costUsd: 0.02, providersCalled: [{ provider: 'apollo', status: 'error', resultCount: 0, costUsd: 0 }] });
+    getMock.mockResolvedValue({
+      id: 'mock-execution',
+      status: 'partial',
+      startedAt: '2026-10-09T12:00:00Z',
+      totalResults: 0,
+      costUsd: 0.02,
+      providersCalled: [{ provider: 'apollo', status: 'error', resultCount: 0, costUsd: 0 }],
+    });
     render(createElement(SearchExecutionPanel, { searchId: 'mock-execution' }));
-    fireEvent.click(screen.getByRole('button', { name: 'Consultar histórico e custo desta execução' }));
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Consultar histórico e custo desta execução' }),
+    );
     expect(await screen.findByText(/Status registrado: partial/)).toBeInTheDocument();
     expect(screen.getByText(/apollo: error/)).toBeInTheDocument();
     expect(getMock).toHaveBeenCalledWith('/api/prospecting/searches/mock-execution');

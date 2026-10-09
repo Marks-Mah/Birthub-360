@@ -33,9 +33,7 @@ export type CompanyCatalogSearch = (query: {
   sort: 'name';
 }) => Promise<CompanyCatalogSearchResult>;
 
-export async function discoverViaCompanyCatalog(
-  criteria: ProspectCriteria,
-): Promise<{
+export async function discoverViaCompanyCatalog(criteria: ProspectCriteria): Promise<{
   candidates: ProspectCandidate[];
   available: boolean;
   meta?: CompanyCatalogSearchResult['meta'];

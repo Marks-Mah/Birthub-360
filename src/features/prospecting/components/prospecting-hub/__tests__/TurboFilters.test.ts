@@ -14,7 +14,21 @@ function renderFilters() {
   function Harness() {
     const [criteria, setCriteria] = useState(latest);
     latest = criteria;
-    return createElement(DiscoveryFilterPanel, { criteria, setCriteria, activeSegments: [], activePersonaOptions: [], cities: [], showAdvanced: true, setShowAdvanced: vi.fn(), isSearching: false, discoverError: null, onDiscover, onInterpret, isInterpreting: false, interpretationMessage: null });
+    return createElement(DiscoveryFilterPanel, {
+      criteria,
+      setCriteria,
+      activeSegments: [],
+      activePersonaOptions: [],
+      cities: [],
+      showAdvanced: true,
+      setShowAdvanced: vi.fn(),
+      isSearching: false,
+      discoverError: null,
+      onDiscover,
+      onInterpret,
+      isInterpreting: false,
+      interpretationMessage: null,
+    });
   }
   render(createElement(Harness));
   return { onDiscover, onInterpret, criteria: () => latest };
@@ -33,8 +47,12 @@ describe('Turbo filters — real criteria and explicit permissions', () => {
     const products = screen.getByLabelText(/Produtos comercializados/);
     fireEvent.change(products, { target: { value: 'software, consultoria, software' } });
     fireEvent.blur(products);
-    fireEvent.change(screen.getByLabelText('Adicionar modelo de persona'), { target: { value: 'CEO' } });
-    fireEvent.change(screen.getByLabelText('Adicionar modelo de persona'), { target: { value: 'CFO' } });
+    fireEvent.change(screen.getByLabelText('Adicionar modelo de persona'), {
+      target: { value: 'CEO' },
+    });
+    fireEvent.change(screen.getByLabelText('Adicionar modelo de persona'), {
+      target: { value: 'CFO' },
+    });
     expect(harness.criteria().segmentoDetalhes?.produtos).toEqual(['software', 'consultoria']);
     expect(harness.criteria().personas?.map((p) => p.cargoPrincipal)).toEqual(['CEO', 'CFO']);
     fireEvent.click(screen.getByRole('button', { name: 'Remover persona 1' }));
@@ -43,14 +61,22 @@ describe('Turbo filters — real criteria and explicit permissions', () => {
 
   it('requires explicit consent before sending a natural-language query, preserving provider mode', () => {
     const harness = renderFilters();
-    fireEvent.change(screen.getByLabelText('Descreva sua pesquisa'), { target: { value: 'Empresas de engenharia em SP' } });
+    fireEvent.change(screen.getByLabelText('Descreva sua pesquisa'), {
+      target: { value: 'Empresas de engenharia em SP' },
+    });
     const interpret = screen.getByRole('button', { name: 'Interpretar e preencher filtros' });
     expect(interpret).toBeDisabled();
     fireEvent.click(screen.getByLabelText(/Autorizo enviar somente esta descrição/));
     fireEvent.change(screen.getByLabelText('Provedor de IA'), { target: { value: 'local' } });
-    fireEvent.change(screen.getByLabelText('Modelo de IA (opcional)'), { target: { value: '  llama3.2:3b  ' } });
+    fireEvent.change(screen.getByLabelText('Modelo de IA (opcional)'), {
+      target: { value: '  llama3.2:3b  ' },
+    });
     fireEvent.click(interpret);
-    expect(harness.onInterpret).toHaveBeenCalledWith('Empresas de engenharia em SP', 'local', 'llama3.2:3b');
+    expect(harness.onInterpret).toHaveBeenCalledWith(
+      'Empresas de engenharia em SP',
+      'local',
+      'llama3.2:3b',
+    );
     expect(screen.getByLabelText('Descreva sua pesquisa')).toHaveAttribute('maxlength', '2000');
     expect(screen.getByLabelText('Modelo de IA (opcional)')).toHaveAttribute('maxlength', '120');
     expect(harness.onDiscover).not.toHaveBeenCalled();
@@ -63,6 +89,12 @@ describe('Turbo filters — real criteria and explicit permissions', () => {
     fireEvent.click(screen.getByLabelText(/Autorizar provedores que podem consumir/));
     expect(harness.criteria().autorizarPagos).toBe(true);
     fireEvent.click(screen.getByRole('button', { name: 'Limpar todos os filtros' }));
-    expect(harness.criteria()).toEqual({ segmento: '', localizacao: '', quantidade: 20, modoPesquisa: 'economico', autorizarPagos: false });
+    expect(harness.criteria()).toEqual({
+      segmento: '',
+      localizacao: '',
+      quantidade: 20,
+      modoPesquisa: 'economico',
+      autorizarPagos: false,
+    });
   });
 });
