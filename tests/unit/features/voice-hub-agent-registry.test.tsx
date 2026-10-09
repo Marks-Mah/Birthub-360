@@ -34,7 +34,7 @@ function show(Page: typeof AgentRegistry) {
 describe.each([
   ['Voice Hub', AgentRegistry],
   ['Dashboard', DashboardAgentRegistry],
-])('%s AgentRegistry', (_label, Page) => {
+] as const)('%s AgentRegistry', (_label, Page) => {
   beforeEach(() => {
     vi.stubGlobal('fetch', vi.fn());
     vi.stubGlobal('confirm', vi.fn(() => true));
