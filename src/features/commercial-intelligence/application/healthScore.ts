@@ -542,7 +542,7 @@ export function applyLiveCallInsightToHealthScore(
         ? summary.averageSentimentScore
         : (summary.averageSentimentScore + 1) * 50;
     newOverallScore = roundMoney(
-      clamp(currentResult.overallScore * 0.85 + sentimentScore100 * 0.15, 0, 100),
+      clamp(newOverallScore * 0.85 + sentimentScore100 * 0.15, 0, 100),
     );
   }
 

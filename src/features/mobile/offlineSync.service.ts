@@ -737,6 +737,13 @@ export class OfflineSyncService {
   }
 
   /**
+   * Alias de conveniência para syncQueue()
+   */
+  public async sync(): Promise<SyncResult> {
+    return this.syncQueue();
+  }
+
+  /**
    * Reinicia itens que falharam de volta para 'pending' e reexecuta sincronização.
    */
   public async retryFailed(): Promise<SyncResult> {
