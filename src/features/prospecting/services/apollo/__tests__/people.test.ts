@@ -180,7 +180,7 @@ describe('enrichOrganizationWithContacts (Apollo People Search)', () => {
     const result = await enrichOrganizationWithContacts('empresa.com.br', 3);
 
     expect(result.contacts).toEqual([]);
-    expect(result.error).toBe('Timeout de rede');
+    expect(result.error).toMatch(/Falha ao consultar Apollo People/);
   });
 
   it('mesma busca (domínio + limite) repetida usa o cache — não bate o provider de novo', async () => {
@@ -287,7 +287,7 @@ describe('searchDecisionMakersAdvanced (Apollo People Search avançado)', () => 
     const result = await searchDecisionMakersAdvanced('empresa.com.br', {}, 10);
 
     expect(result.contacts).toEqual([]);
-    expect(result.error).toBe('Timeout de rede');
+    expect(result.error).toMatch(/Falha ao consultar Apollo People/);
   });
 });
 

@@ -14,6 +14,9 @@ import { fetchApolloCandidates } from '../apollo.service.js';
 import { searchNominatimCandidates } from '../nominatim.service.js';
 import { searchGooglePlacesCandidates } from '../places.service.js';
 import { type SearchExecutionStatus, SearchExecutionTracker } from '../searchExecution.service.js';
+import { discoverViaCompanyCatalog } from '../companyCatalogDiscovery.service.js';
+import { fetchCnpjData } from '../enrichment/cnpjLookup.js';
+import { annotateTurboCandidate, getTurboFilterWarnings, hasUnavailableDiscoveryFilter, matchesTurboLocalFilters } from '../../domain/turboQuality.js';
 import { enrichCandidatesWithQualityData } from './qualityEnrichment.js';
 import type { DiscoverResult, ProspectCandidate, ProspectCriteria } from './types.js';
 
@@ -26,10 +29,11 @@ function buildPlacesQuery(criteria: ProspectCriteria): string {
   const location = buildLocationLabel(criteria)?.trim();
   const keywords = criteria.palavrasChave?.trim();
   const icp = criteria.icp?.trim();
-  const volume = criteria.volume?.trim();
+  const details = criteria.segmentoDetalhes;
+  const detailTerms = [details?.subsegmento, details?.nicho, ...(details?.produtos ?? []), ...(details?.servicos ?? []), ...(details?.palavrasObrigatorias ?? []), ...(details?.palavrasOpcionais ?? [])];
 
   // Combina os termos relevantes (exclui persona/decisorCargos da busca geográfica, pois foca em serviços/empresas)
-  const terms = [companyOrPlace, segment, icp, keywords, volume].filter(Boolean);
+  const terms = [companyOrPlace, segment, icp, keywords, ...detailTerms].filter(Boolean);
   const term = terms.length > 0 ? terms.join(' ') : 'Empresa';
 
   return [term, location ? `em ${location}` : null].filter(Boolean).join(' ');
@@ -62,7 +66,8 @@ export async function discoverViaGooglePlaces(
       segmentObserved: false,
       source: 'googlePlaces',
       size: 'Não informado',
-      location: [p.city, p.state].filter(Boolean).join(', ') || buildLocationLabel(criteria),
+      location: [p.city, p.state].filter(Boolean).join(', '),
+      locationObserved: !!(p.city || p.state),
       fitScoreEstimate: p.rating ? Math.round(Math.min(100, p.rating * 20)) : 60,
       suggestedContact: null,
       rationale: p.rating
@@ -94,10 +99,13 @@ async function discoverViaNominatim(
       segmentObserved: false,
       source: 'nominatim',
       size: 'Não informado',
-      location: [p.city, p.state].filter(Boolean).join(', ') || buildLocationLabel(criteria),
+      location: [p.city, p.state].filter(Boolean).join(', '),
+      locationObserved: !!(p.city || p.state),
       fitScoreEstimate: 60,
       suggestedContact: null,
       rationale: 'Encontrado via OpenStreetMap (Nominatim)',
+      website: p.website ?? null,
+      phone: p.phone ?? null,
     }));
 }
 
@@ -193,7 +201,9 @@ export async function discoverCandidates(
   // para o restante da função (ranking/corte final) não precisar recalcular o mesmo clamp.
   const intent = buildSearchIntent(criteria);
   const total = intent.quantityRequested;
-  const providerMode = getProspectingProviderMode();
+  const configuredMode = getProspectingProviderMode();
+  const paidAllowed = configuredMode === 'hybrid' && criteria.modoPesquisa !== 'economico' && criteria.autorizarPagos === true;
+  const providerMode = paidAllowed ? configuredMode : 'free';
   // Search-ID gerado ANTES de qualquer chamada a provider — precisa existir mesmo que a busca
   // falhe logo no início, para os logs estruturados da execução inteira poderem carregá-lo.
   const tracker = new SearchExecutionTracker({
@@ -225,13 +235,34 @@ export async function discoverCandidates(
       }
     }
 
-    function reasonMessage(reason: unknown): string {
-      return reason instanceof Error ? reason.message : String(reason);
-    }
 
     // A leva primária continua rodando em PARALELO — o plano decide QUEM e QUANTO, não quando;
     // o tempo de resposta ultrarrápido (Promise.allSettled) é preservado.
     const plan = planCompanyDiscovery(intent, providerMode);
+    if (!paidAllowed) plan.steps = [{provider: 'nominatim', quota: Math.min(total, 8), score: 0, reasons: ['Modo econômico: sem consultas pagas']}];
+    const filterWarnings = getTurboFilterWarnings(criteria, paidAllowed);
+    const catalogSearchRequested = !criteria.cnpj && !!(criteria.nomeEmpresa || criteria.segmentoDetalhes?.cnaePrincipal);
+    if (hasUnavailableDiscoveryFilter(criteria)) plan.steps = [];
+    if (catalogSearchRequested && !hasUnavailableDiscoveryFilter(criteria)) {
+      try {
+        const catalog = await discoverViaCompanyCatalog(criteria);
+        absorb(catalog.candidates);
+        tracker.recordProviderCall({provider: 'cnpj_catalog', resultCount: catalog.candidates.length, status: catalog.available ? 'ok' : 'error', errorMessage: catalog.available ? undefined : 'Nenhum snapshot CNPJ publicado disponível'});
+        if (criteria.segmentoDetalhes?.cnaePrincipal) plan.steps = [];
+      } catch {
+        tracker.recordProviderCall({provider: 'cnpj_catalog', resultCount: 0, status: 'error', errorMessage: 'Catálogo CNPJ indisponível; cadastro por nome/CNAE não consultado'});
+        if (criteria.segmentoDetalhes?.cnaePrincipal) plan.steps = [];
+      }
+    }
+    if (criteria.cnpj && !hasUnavailableDiscoveryFilter(criteria)) {
+      plan.steps = [];
+      const result = await fetchCnpjData(criteria.cnpj);
+      tracker.recordProviderCall({provider: 'brasilapi', resultCount: result.found ? 1 : 0, status: result.error && result.error !== 'not_found' ? 'error' : 'ok', errorMessage: result.error});
+      if (result.found && result.data) {
+        const data = result.data;
+        absorb([{tradeName: data.tradeName, legalNameGuess: data.legalName, cnpjGuess: result.cnpj, segment: data.cnaeDescription, segmentObserved: true, size: data.size, location: [data.city, data.state].join(', '), locationObserved: true, fitScoreEstimate: 0, suggestedContact: null, rationale: 'Cadastro consultado via BrasilAPI', phone: data.phones[0] ?? null, emails: data.emails, companyData: {legalName: data.legalName, tradeName: data.tradeName, cnpj: result.cnpj, cnae: data.cnae, cnaeDescription: data.cnaeDescription, situacaoCadastral: data.situacaoCadastral, naturezaJuridica: data.naturezaJuridica, capitalSocial: data.capitalSocial, dataAbertura: data.dataAbertura, address: data.address, city: data.city, state: data.state, zipCode: data.zipCode}, provenance: {cnpjGuess: {source: 'brasilapi', queriedAt: new Date().toISOString(), status: 'reported'}}}]);
+      }
+    }
     const results = await Promise.allSettled(
       plan.steps.map((step) => executeDiscoveryStep(step, criteria, exclusions)),
     );
@@ -253,20 +284,20 @@ export async function discoverCandidates(
           errorMessage: result.value.error,
         });
       } else {
-        const message = reasonMessage(result.reason);
-        if (step.provider === 'apollo') apolloError = message;
+
+        if (step.provider === 'apollo') apolloError = 'Apollo indisponível durante a consulta';
         tracker.recordProviderCall({
           provider: trackerProviderName(step.provider),
           resultCount: 0,
           status: 'error',
-          errorMessage: message,
+          errorMessage: `Falha na consulta ${step.provider}; tente novamente mais tarde`,
         });
       }
     });
 
     // Se faltarem candidatos para completar a cota desejada, o planner decide se (e como)
     // reforçar — mesma regra do cascade anterior: só em modo 'hybrid', sempre via Google Places.
-    const fallbackStep = planShortfallFallback(intent, providerMode, allCandidates.length);
+    const fallbackStep = paidAllowed && !criteria.cnpj && !criteria.segmentoDetalhes?.cnaePrincipal && !hasUnavailableDiscoveryFilter(criteria) ? planShortfallFallback(intent, providerMode, allCandidates.length) : null;
     if (fallbackStep) {
       try {
         const fallbackResult = await executeDiscoveryStep(fallbackStep, criteria, exclusions);
@@ -281,41 +312,21 @@ export async function discoverCandidates(
           provider: trackerProviderName(fallbackStep.provider),
           resultCount: 0,
           status: 'error',
-          errorMessage: err instanceof Error ? err.message : 'Falha no fallback do Google Places',
+          errorMessage: 'Falha no fallback do Google Places',
         });
       }
     }
 
-    // RANKING DE ALTA QUALIDADE: eleva ao topo os candidatos com maior acionabilidade (decisores, e-mails, fones, site)
-    allCandidates.sort((a, b) => {
-      const scoreA =
-        (a.fitScoreEstimate || 50) +
-        (a.decisionMakers?.length ? 30 : 0) +
-        (a.emails?.length ? 20 : 0) +
-        (a.phone ? 10 : 0) +
-        (a.website ? 10 : 0);
-      const scoreB =
-        (b.fitScoreEstimate || 50) +
-        (b.decisionMakers?.length ? 30 : 0) +
-        (b.emails?.length ? 20 : 0) +
-        (b.phone ? 10 : 0) +
-        (b.website ? 10 : 0);
-      return scoreB - scoreA;
-    });
 
-    const finalCandidates = allCandidates.slice(0, total);
+    const finalCandidates = allCandidates.filter((candidate) => matchesTurboLocalFilters(candidate, criteria)).slice(0, total);
 
     // Enriquecimento de qualidade (CNPJ, decisores + LinkedIn/e-mail/telefone, notícias/quebra-gelo)
     // direto na busca — o teto de MAX_LEADS_PER_SEARCH candidatos é o que torna isto viável em
     // termos de tempo/custo (antes, com até 500 candidatos, só os 10 primeiros recebiam notícia e
     // decisores só vinham para os candidatos originados da Apollo).
-    try {
-      await Promise.race([
-        enrichCandidatesWithQualityData(finalCandidates, tracker),
-        new Promise<void>((resolve) => setTimeout(resolve, 9000)),
-      ]);
-    } catch {
-      // Non-blocking best-effort
+    if (paidAllowed && !criteria.cnpj) {
+      // Await completion: returning while enrichment mutates candidates gives an inconsistent snapshot.
+      await enrichCandidatesWithQualityData(finalCandidates, tracker, criteria);
     }
 
     // Requirement Engine (`domain/requirementEngine.ts`): anota, por candidato, o que cada
@@ -325,7 +336,10 @@ export async function discoverCandidates(
     // reordena `finalCandidates` — só documenta para a UI mostrar com honestidade.
     for (const candidate of finalCandidates) {
       candidate.requirementEvaluations = evaluateCandidateRequirements(intent, candidate);
+      annotateTurboCandidate(candidate, criteria.icpPesos);
     }
+
+    finalCandidates.sort((a, b) => b.fitScoreEstimate - a.fitScoreEstimate);
 
     const hadProviderError = tracker.providerCalls.some((c) => c.status === 'error');
     const finishStatus: SearchExecutionStatus = !hadProviderError
@@ -343,12 +357,10 @@ export async function discoverCandidates(
     return {
       searchId: tracker.searchId,
       candidates: finalCandidates,
-      sources: [
-        {
-          title: 'Apollo.io / Google Places / OpenStreetMap',
-          uri: 'https://apollo.io',
-        },
-      ],
+      sources: tracker.providerCalls.map((call) => ({title: call.provider, uri: call.provider === 'apollo' ? 'https://apollo.io' : call.provider === 'brasilapi' ? 'https://brasilapi.com.br' : call.provider === 'cnpj_catalog' ? 'https://www.gov.br/receitafederal' : call.provider === 'nominatim' ? 'https://www.openstreetmap.org' : call.provider === 'google_places' ? 'https://developers.google.com/maps' : ''})),
+      costSummary: {apolloOrganizationSearchCredits: tracker.providerCalls.filter((call) => call.provider === 'apollo' && call.status === 'ok').length, estimatedUsd: tracker.providerCalls.reduce((total, call) => total + call.costUsd, 0), coverage: 'partial', message: 'Estimativa parcial: não inclui custo de todos os enriquecimentos, créditos de contatos ou Google Places.'},
+      partialFailures: tracker.providerCalls.filter((call) => call.status === 'error').map((call) => ({provider: call.provider, message: call.errorMessage ?? 'Consulta não concluída'})),
+      filterWarnings,
       apolloError: providerMode === 'hybrid' ? apolloError : undefined,
       providerMode,
     };

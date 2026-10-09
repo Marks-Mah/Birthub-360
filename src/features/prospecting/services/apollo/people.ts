@@ -3,7 +3,7 @@
 
 import { getPaidProspectingKey } from '../../../../config/prospecting-integrations.js';
 import { fetchWithProviderRetry } from '../../../../lib/enrichment/providerFetch.js';
-import type { DecisionMaker, ProspectCandidate } from '../../domain/prospectTypes.js';
+import type { DecisionMaker, ProspectCandidate, ProspectCriteria } from '../../domain/prospectTypes.js';
 import { findEmailViaHunter, findPeopleViaDomainSearch } from '../hunter.service.js';
 import { assertProspectingBudgetNotExceeded } from '../providerBudget.js';
 import { buildProviderCacheKey, withProviderCache } from '../providerCache.js';
@@ -92,10 +92,9 @@ async function enrichPersonByNameUncached(
     );
 
     if (!res.ok) {
-      const text = await res.text().catch(() => '');
       return {
         contact: null,
-        error: `Apollo People Match respondeu ${res.status}: ${text.slice(0, 150)}`,
+        error: `Apollo People Match HTTP ${res.status}`,
       };
     }
 
@@ -116,7 +115,7 @@ async function enrichPersonByNameUncached(
   } catch (error: any) {
     return {
       contact: null,
-      error: error instanceof Error ? error.message : 'Falha ao consultar Apollo People Match',
+      error: 'Falha ao consultar Apollo People Match',
     };
   }
 }
@@ -125,6 +124,7 @@ async function enrichPersonByNameUncached(
 export async function enrichCandidatesWithDecisionMakers(
   candidates: ProspectCandidate[],
   organizations: ApolloOrganization[],
+  criteria?: ProspectCriteria,
 ) {
   const withDomain = organizations
     .map((org, idx) => ({ org, idx }))
@@ -134,10 +134,21 @@ export async function enrichCandidatesWithDecisionMakers(
     )
     .slice(0, MAX_DECISION_MAKER_LOOKUPS);
 
+  for (let offset = 0; offset < withDomain.length; offset += 3) {
   await Promise.all(
-    withDomain.map(async ({ org, idx }) => {
+    withDomain.slice(offset, offset + 3).map(async ({ org, idx }) => {
       const domain = org.primary_domain;
-      const { contacts } = await enrichOrganizationWithContacts(domain, 3);
+      const personas = criteria?.personas ?? [];
+      const requestedTitles = [...(criteria?.decisorCargos ?? []), ...personas.flatMap((p) => [p.cargoPrincipal ?? '', ...(p.cargosEquivalentes ?? [])])].filter(Boolean);
+      const result = requestedTitles.length || personas.length
+        ? await searchDecisionMakersAdvanced(domain, {
+          cargos: requestedTitles.join(','),
+          senioridades: personas.flatMap((p) => p.senioridades ?? []),
+          localizacoes: personas.flatMap((p) => p.localizacoes ?? []),
+          cargosExcluir: personas.flatMap((p) => p.cargosExcluir ?? []),
+        }, Math.min(10, Math.max(3, ...personas.map((p) => p.limite ?? 3))))
+        : await enrichOrganizationWithContacts(domain, 3);
+      const contacts = result.contacts.map((c) => ({...c, linkedin_url: 'linkedinUrl' in c ? c.linkedinUrl : c.linkedin_url}));
       if (contacts.length === 0) {
         // Array vazio (em vez de undefined) sinaliza pro frontend "buscamos e não achamos
         // ninguém" — diferente de "nunca tentamos" (candidato sem domínio conhecido).
@@ -170,6 +181,7 @@ export async function enrichCandidatesWithDecisionMakers(
       candidates[idx].decisionMakers = decisionMakers;
     }),
   );
+  }
 }
 
 /**
@@ -249,7 +261,7 @@ async function enrichOrganizationWithContactsUncached(
       }
       return {
         contacts: [],
-        error: `Apollo People API respondeu ${res.status}: ${text.slice(0, 100)}`,
+        error: `Apollo People API HTTP ${res.status}`,
       };
     }
 
@@ -269,7 +281,7 @@ async function enrichOrganizationWithContactsUncached(
   } catch (error: any) {
     return {
       contacts: [],
-      error: error instanceof Error ? error.message : 'Falha ao consultar Apollo People API',
+      error: 'Falha ao consultar Apollo People API',
     };
   }
 }
@@ -330,9 +342,8 @@ async function searchDecisionMakersAdvancedUncached(
     if (criteria.senioridades && criteria.senioridades.length > 0) {
       body.person_seniorities = criteria.senioridades;
     }
-    if (criteria.departamentos && criteria.departamentos.length > 0) {
-      body.person_departments = criteria.departamentos;
-    }
+
+    if (criteria.localizacoes?.length) body.person_locations = criteria.localizacoes;
     if (criteria.cidade || criteria.estado) {
       body.person_locations = [[criteria.cidade, criteria.estado].filter(Boolean).join(', ')];
     }
@@ -390,7 +401,7 @@ async function searchDecisionMakersAdvancedUncached(
       }
       return {
         contacts: [],
-        error: `Apollo People API respondeu ${res.status}: ${text.slice(0, 100)}`,
+        error: `Apollo People API HTTP ${res.status}`,
       };
     }
 
@@ -424,11 +435,11 @@ async function searchDecisionMakersAdvancedUncached(
       }),
     );
 
-    return { contacts, source: 'apollo' };
+    return { contacts: contacts.filter((c) => !criteria.cargosExcluir?.some((title) => c.title?.toLowerCase().includes(title.toLowerCase()))), source: 'apollo' };
   } catch (error: any) {
     return {
       contacts: [],
-      error: error instanceof Error ? error.message : 'Falha ao consultar Apollo People API',
+      error: 'Falha ao consultar Apollo People API',
     };
   }
 }

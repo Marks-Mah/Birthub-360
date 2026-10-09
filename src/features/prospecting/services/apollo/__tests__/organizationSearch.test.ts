@@ -138,7 +138,7 @@ describe('fetchApolloCandidates (Apollo Organization Search)', () => {
     const result = await fetchApolloCandidates(baseCriteria, 10);
 
     expect(result.candidates).toEqual([]);
-    expect(result.error).toBe('Timeout de rede');
+    expect(result.error).toBe('Falha ao consultar Apollo.io; conexão ou orçamento indisponível');
   });
 
   it('mesmo quando a pré-busca de decisores (fallback Hunter) falha, os candidatos já obtidos continuam válidos', async () => {
@@ -157,4 +157,16 @@ describe('fetchApolloCandidates (Apollo Organization Search)', () => {
     expect(result.candidates).toHaveLength(1);
     expect(result.candidates[0].tradeName).toBe('Transportadora Exemplo');
   });
+  it('usa endpoint atual e separa cargos de keywords empresariais', async () => {
+    fetchWithProviderRetryMock.mockResolvedValue(jsonResponse(200, {organizations: []}));
+    await fetchApolloCandidates({...baseCriteria, decisorCargos: ['CEO'], apolloFiltros: {dominios: ['empresa.example'], financiamentoTotalMin: 100}}, 10);
+    const [url, options] = fetchWithProviderRetryMock.mock.calls[0];
+    expect(url).toBe('https://api.apollo.io/api/v1/mixed_companies/search');
+    const body = JSON.parse(options.body);
+    expect(body.q_organization_keyword_tags).not.toContain('CEO');
+    expect(body.q_organization_domains_list).toEqual(['empresa.example']);
+    expect(body.total_funding_range.min).toBe(100);
+    expect(body).not.toHaveProperty('cnae');
+  });
+
 });

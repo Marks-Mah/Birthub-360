@@ -1,11 +1,10 @@
 import { logger } from '../../../../lib/logger.js';
 import { validContactEmails } from '../../../../shared/utils/contact-links.js';
 import { findCompanyDomain } from '../../utils/domain.js';
-import { enrichOrganizationWithContacts } from '../apollo.service.js';
-import { discoverCnpjByName } from '../cnpj.util.js';
+import { searchDecisionMakersAdvanced, enrichOrganizationWithContacts } from '../apollo.service.js';
 import { searchCompanyNews } from '../news.service.js';
 import type { SearchExecutionTracker } from '../searchExecution.service.js';
-import type { ProspectCandidate } from './types.js';
+import type { ProspectCandidate, ProspectCriteria } from './types.js';
 
 /**
  * Enriquecimento de qualidade rodado automaticamente ao final de toda busca (candidatos já
@@ -22,46 +21,28 @@ export async function enrichCandidatesWithQualityData(
    * Search-ID do chamador (ver discoverCandidates). Opcional — chamadores fora do fluxo de busca
    * (ex.: reprocessamento manual) continuam funcionando sem tracker. */
   tracker?: SearchExecutionTracker,
+  criteria?: ProspectCriteria,
 ): Promise<void> {
+  for (let offset = 0; offset < candidates.length; offset += 3) {
   await Promise.allSettled(
-    candidates.map(async (candidate) => {
+    candidates.slice(offset, offset + 3).map(async (candidate) => {
       await Promise.allSettled([
-        (async () => {
-          if (candidate.cnpjGuess) return;
-          try {
-            const cnpj = await discoverCnpjByName(candidate.tradeName);
-            if (cnpj) candidate.cnpjGuess = cnpj;
-            tracker?.recordProviderCall({
-              provider: 'receita_federal',
-              resultCount: cnpj ? 1 : 0,
-              status: 'ok',
-            });
-          } catch (err: any) {
-            logger.error(
-              { err, searchId: tracker?.searchId, companyName: candidate.tradeName },
-              'Falha ao descobrir CNPJ do candidato',
-            );
-            tracker?.recordProviderCall({
-              provider: 'receita_federal',
-              resultCount: 0,
-              status: 'error',
-              errorMessage: err instanceof Error ? err.message : 'Falha ao descobrir CNPJ',
-            });
-          }
-        })(),
         (async () => {
           if (candidate.decisionMakers) return; // já veio pré-buscado (Apollo) ou já tentamos antes
           const domain = findCompanyDomain(candidate.website, candidate.rationale);
           if (!domain) return;
           try {
-            const { contacts, source } = await enrichOrganizationWithContacts(domain, 3);
+            const titles = [...(criteria?.decisorCargos ?? []), ...(criteria?.personas ?? []).flatMap((p) => [p.cargoPrincipal ?? '', ...(p.cargosEquivalentes ?? [])])].filter(Boolean);
+            const { contacts, source, error } = titles.length
+              ? await searchDecisionMakersAdvanced(domain, {cargos: titles.join(','), senioridades: criteria?.personas?.flatMap((p) => p.senioridades ?? []), cargosExcluir: criteria?.personas?.flatMap((p) => p.cargosExcluir ?? [])}, 3)
+              : await enrichOrganizationWithContacts(domain, 3);
             candidate.decisionMakers = contacts.map((c) => ({
               name: c.name,
               title: c.title,
               email: c.email,
               emailSource: c.email ? (source === 'hunter' ? 'hunter' : 'apollo') : undefined,
               phone: c.phone || null,
-              linkedinUrl: c.linkedin_url,
+              linkedinUrl: 'linkedinUrl' in c ? c.linkedinUrl : c.linkedin_url,
             }));
             if (candidate.decisionMakers.length > 0) {
               candidate.emails = validContactEmails(candidate.decisionMakers.map((dm) => dm.email));
@@ -69,7 +50,8 @@ export async function enrichCandidatesWithQualityData(
             tracker?.recordProviderCall({
               provider: source ?? 'apollo',
               resultCount: contacts.length,
-              status: 'ok',
+              status: error ? 'error' : 'ok',
+              errorMessage: error,
             });
           } catch (err: any) {
             logger.error(
@@ -80,7 +62,7 @@ export async function enrichCandidatesWithQualityData(
               provider: 'apollo',
               resultCount: 0,
               status: 'error',
-              errorMessage: err instanceof Error ? err.message : 'Falha ao buscar decisores',
+              errorMessage: 'Falha ao buscar decisores',
             });
           }
         })(),
@@ -109,11 +91,12 @@ export async function enrichCandidatesWithQualityData(
               provider: 'news_search',
               resultCount: 0,
               status: 'error',
-              errorMessage: err instanceof Error ? err.message : 'Falha ao buscar notícias',
+              errorMessage: 'Falha ao buscar notícias',
             });
           }
         })(),
       ]);
     }),
   );
+  }
 }

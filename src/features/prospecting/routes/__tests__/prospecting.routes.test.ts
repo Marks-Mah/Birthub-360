@@ -37,6 +37,12 @@ const savedSearchFindFirstMock = vi.fn();
 const savedSearchUpdateMock = vi.fn();
 const savedSearchDeleteManyMock = vi.fn();
 
+const interpretMock = vi.fn();
+const healthMock = vi.fn();
+vi.mock('../../../../lib/ai/turboSearch.js', () => ({interpretTurboSearch: (...args: unknown[]) => interpretMock(...args)}));
+vi.mock('../../services/turboHealth.service.js', () => ({getTurboProviderHealth: (...args: unknown[]) => healthMock(...args)}));
+vi.mock('../../../../lib/audit/audit.service.js', () => ({AuditService: {log: vi.fn().mockResolvedValue(undefined)}}));
+
 vi.mock('../../services/prospecting.service.js', () => ({
   discoverCandidates: (...args: unknown[]) => discoverCandidatesMock(...args),
   promoteToCrm: (...args: unknown[]) => promoteToCrmMock(...args),
@@ -215,9 +221,35 @@ describe('POST /api/prospecting/enrich-cnpj — não afetado (avaliado e mantido
 
     const res = await request(app)
       .post('/api/prospecting/enrich-cnpj')
-      .send({ cnpj: '00000000000000' });
+      .send({ cnpj: '00000000000191' });
 
     expect(res.status).toBe(200);
     expect(fetchCnpjDataMock).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('Turbo rotas novas', () => {
+  it('CNPJ inválido não consulta rede', async () => {
+    const res = await request(buildApp('VISUALIZADOR')).post('/api/prospecting/enrich-cnpj').send({cnpj: '00000000000000'});
+    expect(res.status).toBe(400); expect(fetchCnpjDataMock).not.toHaveBeenCalled();
+  });
+  it('interpretação requer papel autorizado e consentimento explícito', async () => {
+    const denied = await request(buildApp('VISUALIZADOR')).post('/api/prospecting/interpret').send({query: 'Empresas de tecnologia', consent: true});
+    expect(denied.status).toBe(403);
+    const noConsent = await request(buildApp('SDR')).post('/api/prospecting/interpret').send({query: 'Empresas de tecnologia'});
+    expect(noConsent.status).toBe(400); expect(interpretMock).not.toHaveBeenCalled();
+  });
+  it('interpretação transporta tenant real e traduz JSON validado', async () => {
+    interpretMock.mockResolvedValue({filters: {segment: 'Tecnologia',keywords: ['software'],excludedKeywords:[],cnaes:[],locations:['Brazil'],personas:[{titles:['CEO'],seniorities:[],departments:[]}]} ,provider:'ollama'});
+    const res = await request(buildApp('SDR')).post('/api/prospecting/interpret').send({query: 'Empresas de tecnologia', consent:true, mode:'local',organizationId:'tenant-invasor'});
+    expect(res.status).toBe(200); expect(interpretMock).toHaveBeenCalledWith(expect.objectContaining({organizationId:'org-1',userId:'test-user'}));
+    expect(res.body.data.criteria.personas[0].cargoPrincipal).toBe('CEO');
+    expect(res.body.data.criteria.quantidade).toBe(20);
+  });
+  it('teste conexões é somente administrativo, retorna estados sanitizados', async () => {
+    healthMock.mockResolvedValue([{id:'googlePlaces',configured:true,status:'not_validated'}]);
+    const denied = await request(buildApp('SDR')).post('/api/prospecting/providers/test').send({}); expect(denied.status).toBe(403);
+    const res = await request(buildApp('ADMIN')).post('/api/prospecting/providers/test').send({}); expect(res.status).toBe(200);
+    expect(res.body.data[0]).not.toHaveProperty('apiKey');
   });
 });

@@ -26,16 +26,18 @@ function normalizeName(name: string): string {
 export class ExclusionSet {
   private readonly domains = new Set<string>();
   private readonly names = new Set<string>();
+  private readonly namesWithoutDomain = new Set<string>();
 
   has(name: string, website?: string | null): boolean {
     const domain = normalizeDomain(website);
     if (domain && this.domains.has(domain)) return true;
-    return this.names.has(normalizeName(name));
+    return domain ? this.namesWithoutDomain.has(normalizeName(name)) : this.names.has(normalizeName(name));
   }
 
   add(name: string, website?: string | null): void {
     const domain = normalizeDomain(website);
     if (domain) this.domains.add(domain);
+    else this.namesWithoutDomain.add(normalizeName(name));
     this.names.add(normalizeName(name));
   }
 

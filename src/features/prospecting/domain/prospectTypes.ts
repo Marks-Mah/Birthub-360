@@ -39,13 +39,36 @@ export interface RequirementEvaluation {
   status: RequirementStatus;
   /** De onde veio o valor observado (`apollo`, `googlePlaces`, `nominatim`, ou `none` quando
    * `observed` é null). */
-  source: DiscoveryProviderId | 'none';
+  source: DiscoveryProviderId | 'cnpjCatalog' | 'none';
   /** Frase pronta em português explicando o status — para a UI não precisar montar texto a partir
    * de `type`+`status`. */
   reason: string;
 }
 
+export interface SegmentDetails {
+  subsegmento?: string; nicho?: string; produtos?: string[]; servicos?: string[];
+  descricaoIdeal?: string; palavrasObrigatorias?: string[]; palavrasOpcionais?: string[];
+  palavrasExcluir?: string[]; cnaePrincipal?: string; cnaesSecundarios?: string[];
+  setorEconomico?: string; tipoMercado?: string; modeloNegocio?: string; descricaoPesquisa?: string;
+}
+export interface DecisionPersona {
+  nome?: string; cargoPrincipal?: string; cargosEquivalentes?: string[]; cargosExcluir?: string[];
+  departamentos?: string[]; senioridades?: string[]; localizacoes?: string[];
+  palavrasChave?: string; descricao?: string; limite?: number;
+}
+export interface ApolloFilters {
+  dominios?: string[]; dominiosExcluir?: string[]; organizacaoIds?: string[];
+  funcionariosFaixas?: string[]; financiamentoTotalMin?: number; financiamentoTotalMax?: number;
+  ultimaRodadaMin?: number; ultimaRodadaMax?: number;
+}
 export interface ProspectCriteria {
+  icpPesos?: Record<string, number>;
+  segmentoDetalhes?: SegmentDetails;
+  personas?: DecisionPersona[];
+  apolloFiltros?: ApolloFilters;
+  cnpj?: string;
+  modoPesquisa?: 'economico' | 'equilibrado' | 'completo';
+  autorizarPagos?: boolean;
   /** Detalhes adicionais do ICP além dos campos estruturados abaixo (texto livre, nuance qualitativa). */
   icp?: string;
   /** Cargos-alvo do decisor (ex: "Diretor de Logística", "CEO") — um por linha, adicionados dinamicamente na UI. */
@@ -113,7 +136,11 @@ export interface ProspectCandidate {
    * (`domain/requirementEngine.ts`) para saber se um campo é dado observado de verdade ou só o
    * critério pedido ecoado (ver `segmentObserved`). Não confundir com `rationale`, que é texto
    * livre pensado pra exibição, não pra leitura por código. */
-  source?: DiscoveryProviderId;
+  source?: DiscoveryProviderId | 'cnpjCatalog';
+  locationObserved?: boolean;
+  companyData?: Record<string, unknown>;
+  provenance?: Record<string, { source: string; queriedAt: string; status: 'reported' | 'estimated' | 'unverified' }>;
+  metrics?: { icpScore: number; completeness: number; contactQuality: number; identificationConfidence: number; factors: Array<{criterion: string; points: number; status: RequirementStatus}> };
   /** true quando `segment` veio de uma classificação de indústria real do provider (Apollo
    * `organization.industry`) — false/undefined quando `segment` é só o segmento PEDIDO na busca
    * ecoado de volta (sempre o caso para Google Places/Nominatim, que não classificam indústria; e
@@ -149,6 +176,9 @@ export interface DiscoverResult {
   sources: Array<{ title: string; uri: string }>;
   apolloError?: string;
   providerMode: 'free' | 'hybrid';
+  costSummary?: {apolloOrganizationSearchCredits: number; estimatedUsd: number; coverage: 'partial'; message: string};
+  partialFailures?: Array<{ provider: string; message: string }>;
+  filterWarnings?: string[];
   /** Onda 42 (dossiê CPI, DEC-13, opção A): id único desta EXECUÇÃO de busca (cuid) — amarra
    * critério usado, providers chamados, resultados e custo, persistido em
    * `ProspectingSearchExecution` (ver searchExecution.service.ts) e consultável depois via

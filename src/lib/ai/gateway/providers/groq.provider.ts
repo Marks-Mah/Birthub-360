@@ -19,17 +19,21 @@ export const groqProvider: ProviderAdapter = {
     const apiKey = process.env.GROQ_API_KEY;
     if (!apiKey) throw new Error('Groq não está configurado (GROQ_API_KEY ausente).');
     const groqModel = resolveGroqModelName(params.resolvedModel);
-    return callProvider('groq', () =>
-      requestChatCompletion(
-        GROQ_CHAT_URL,
-        apiKey,
-        groqModel,
-        params.messages,
-        params.temperature,
-        params.agentContext,
-        params.timeoutMs,
-        false, // Groq ignora user/metadata — não vazamos agentContext para fora sem necessidade.
-      ),
+    return callProvider(
+      'groq',
+      () =>
+        requestChatCompletion(
+          GROQ_CHAT_URL,
+          apiKey,
+          groqModel,
+          params.messages,
+          params.temperature,
+          params.agentContext,
+          params.timeoutMs,
+          false, // Groq ignora user/metadata — não vazamos agentContext para fora sem necessidade.
+          { maxTokens: params.maxTokens, jsonMode: params.jsonMode },
+        ),
+      params.retries,
     );
   },
 };

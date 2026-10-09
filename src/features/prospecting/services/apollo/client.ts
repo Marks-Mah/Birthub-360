@@ -1,7 +1,7 @@
 import { getPaidProspectingKey } from '../../../../config/prospecting-integrations.js';
 import { fetchWithTimeout } from '../../../../lib/http.js';
 
-export const APOLLO_SEARCH_URL = 'https://api.apollo.io/api/v1/organizations/search';
+export const APOLLO_SEARCH_URL = 'https://api.apollo.io/api/v1/mixed_companies/search';
 export const APOLLO_ORG_ENRICH_URL = 'https://api.apollo.io/api/v1/organizations/enrich';
 export const APOLLO_PEOPLE_SEARCH_URL = 'https://api.apollo.io/api/v1/mixed_people/api_search';
 export const APOLLO_PEOPLE_MATCH_URL = 'https://api.apollo.io/api/v1/people/match';

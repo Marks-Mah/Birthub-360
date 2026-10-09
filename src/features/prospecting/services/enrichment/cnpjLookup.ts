@@ -5,13 +5,7 @@ import { formatCnpj, isValidCnpj, sanitizeCnpj } from '../cnpj.util.js';
 
 const BRASIL_API_BASE = 'https://brasilapi.com.br/api';
 
-// BrasilAPI está atrás de um CDN que retorna 403 para o User-Agent padrão do fetch/undici do Node.
-// Um header de navegador real resolve — não é bypass de auth, é só evitar o bloqueio de bots do CDN.
-const BRASIL_API_HEADERS = {
-  'User-Agent':
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36',
-  Accept: 'application/json',
-};
+const BRASIL_API_HEADERS = { Accept: 'application/json', 'User-Agent': 'BirthHub360/1.0' };
 
 // Mapeia código de porte da Receita Federal para uma faixa de funcionários estimada.
 // A Receita não expõe headcount real, então isso é uma estimativa explícita — nunca
@@ -162,7 +156,13 @@ export async function fetchCnpjData(cnpjRaw: string): Promise<CnpjLookupResult> 
     };
   }
 
-  const raw = (await res.json()) as BrasilApiCnpjResponse;
+  let raw: BrasilApiCnpjResponse;
+  try {
+    raw = (await res.json()) as BrasilApiCnpjResponse;
+    if (!raw || typeof raw.razao_social !== 'string' || sanitizeCnpj(raw.cnpj ?? '') !== cnpj) return {found: false, cnpj: formatCnpj(cnpj), source: 'BrasilAPI-CNPJ', error: 'invalid_response'};
+  } catch {
+    return {found: false, cnpj: formatCnpj(cnpj), source: 'BrasilAPI-CNPJ', error: 'invalid_response'};
+  }
   const employeeEstimate =
     PORTE_TO_EMPLOYEE_ESTIMATE[raw.codigo_porte] ?? PORTE_TO_EMPLOYEE_ESTIMATE[5];
 

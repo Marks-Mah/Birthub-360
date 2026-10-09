@@ -2,9 +2,8 @@
  * CPI DEC-12 (opção A) — regressão de `discoverCandidates` (prospecting.service.ts) depois de
  * substituir o cascade fixo pelo `QueryPlanner` (domain/queryPlanner.ts): prova, chamando a função
  * pública real (não só o planner isolado — ver domain/__tests__/queryPlanner.test.ts para esse
- * nível), que os providers concretos (`fetchApolloCandidates`, `searchGooglePlacesCandidates`,
- * `searchNominatimCandidates`) continuam recebendo a MESMA cota/condição que recebiam no cascade
- * hardcoded anterior, para os mesmos critérios de entrada. Mesmo padrão de mock de
+ * nível), que os providers concretos preservam cotas e fallback quando o usuário autoriza
+ * consultas pagas, e que o modo econômico impede essas chamadas. Mesmo padrão de mock de
  * `prospecting.service.dedupe.test.ts` (que já cobre a ordem de absorção/dedupe entre providers —
  * este arquivo foca especificamente na aritmética de cota/inclusão por modo e geografia).
  */
@@ -82,7 +81,7 @@ beforeEach(() => {
   mockSearchNominatimCandidates.mockResolvedValue([]);
 });
 
-describe('discoverCandidates — cota/inclusão de cada provider real (paridade com o cascade legado)', () => {
+describe('discoverCandidates — cotas e consentimento dos providers', () => {
   it('modo hybrid, quantidade=20, sem cidade: Apollo pede 20, Google Places pede 20, Nominatim pede 20 (todos entram)', async () => {
     mockGetProspectingProviderMode.mockReturnValue('hybrid');
     // A leva primária já preenche a cota sozinha (20 candidatos vindos da Apollo) — sem isso o
@@ -106,6 +105,8 @@ describe('discoverCandidates — cota/inclusão de cada provider real (paridade 
       segmento: 'Transportadora',
       localizacao: 'Rio de Janeiro e Região',
       quantidade: 20,
+      modoPesquisa: 'equilibrado',
+      autorizarPagos: true,
     };
 
     await discoverCandidates(criteria);
@@ -126,6 +127,8 @@ describe('discoverCandidates — cota/inclusão de cada provider real (paridade 
       cidade: 'Niterói',
       estado: 'RJ',
       quantidade: 20,
+      modoPesquisa: 'equilibrado',
+      autorizarPagos: true,
     };
 
     await discoverCandidates(criteria);
@@ -134,7 +137,7 @@ describe('discoverCandidates — cota/inclusão de cada provider real (paridade 
     expect(mockSearchGooglePlacesCandidates.mock.calls[0][1]).toBe(8);
   });
 
-  it('modo free: Apollo NUNCA é chamado; Google Places/Nominatim são chamados normalmente', async () => {
+  it('sem consentimento: Apollo e Google Places não são chamados; Nominatim recebe no máximo 8', async () => {
     mockGetProspectingProviderMode.mockReturnValue('free');
     const criteria: ProspectCriteria = {
       segmento: 'Transportadora',
@@ -145,8 +148,9 @@ describe('discoverCandidates — cota/inclusão de cada provider real (paridade 
     await discoverCandidates(criteria);
 
     expect(mockFetchApolloCandidates).not.toHaveBeenCalled();
-    expect(mockSearchGooglePlacesCandidates).toHaveBeenCalledTimes(1);
+    expect(mockSearchGooglePlacesCandidates).not.toHaveBeenCalled();
     expect(mockSearchNominatimCandidates).toHaveBeenCalledTimes(1);
+    expect(mockSearchNominatimCandidates.mock.calls[0][1]).toBe(8);
   });
 
   it('quantidade=10 (<=15): Nominatim não é chamado; Apollo/Google Places pedem 10', async () => {
@@ -155,6 +159,8 @@ describe('discoverCandidates — cota/inclusão de cada provider real (paridade 
       segmento: 'Transportadora',
       localizacao: 'Rio de Janeiro e Região',
       quantidade: 10,
+      modoPesquisa: 'equilibrado',
+      autorizarPagos: true,
     };
 
     await discoverCandidates(criteria);
@@ -175,6 +181,8 @@ describe('discoverCandidates — cota/inclusão de cada provider real (paridade 
       segmento: 'Transportadora',
       localizacao: 'Rio de Janeiro e Região',
       quantidade: 20,
+      modoPesquisa: 'equilibrado',
+      autorizarPagos: true,
     };
 
     await discoverCandidates(criteria);
@@ -190,17 +198,37 @@ describe('discoverCandidates — cota/inclusão de cada provider real (paridade 
     expect(secondCallCount).toBe(20);
   });
 
-  it('modo free: nunca reforça (sem chave paga, reforçar com o mesmo provider gratuito não mudaria nada)', async () => {
+  it('modo econômico nunca consulta Google Places nem reforça, mesmo com consentimento', async () => {
     mockGetProspectingProviderMode.mockReturnValue('free');
     mockSearchGooglePlacesCandidates.mockResolvedValueOnce([{ tradeName: 'Só uma empresa' }]);
     const criteria: ProspectCriteria = {
       segmento: 'Transportadora',
       localizacao: 'Rio de Janeiro e Região',
       quantidade: 20,
+      modoPesquisa: 'economico',
+      autorizarPagos: true,
     };
 
     await discoverCandidates(criteria);
 
-    expect(mockSearchGooglePlacesCandidates).toHaveBeenCalledTimes(1);
+    expect(mockSearchGooglePlacesCandidates).not.toHaveBeenCalled();
+    expect(mockFetchApolloCandidates).not.toHaveBeenCalled();
+    expect(mockSearchNominatimCandidates).toHaveBeenCalledTimes(1);
+  });
+
+  it.each(['equilibrado', 'completo'] as const)('%s com consentimento negado nunca consulta provedores pagos', async (modoPesquisa) => {
+    mockGetProspectingProviderMode.mockReturnValue('hybrid');
+    await discoverCandidates({segmento: 'Transportadora', localizacao: 'Brasil', quantidade: 20, modoPesquisa, autorizarPagos: false});
+    expect(mockFetchApolloCandidates).not.toHaveBeenCalled();
+    expect(mockSearchGooglePlacesCandidates).not.toHaveBeenCalled();
+    expect(mockSearchNominatimCandidates).toHaveBeenCalledTimes(1);
+  });
+
+  it('configuração free nunca consulta provedores pagos, mesmo com consentimento', async () => {
+    mockGetProspectingProviderMode.mockReturnValue('free');
+    await discoverCandidates({segmento: 'Transportadora', localizacao: 'Brasil', quantidade: 20, modoPesquisa: 'completo', autorizarPagos: true});
+    expect(mockFetchApolloCandidates).not.toHaveBeenCalled();
+    expect(mockSearchGooglePlacesCandidates).not.toHaveBeenCalled();
+    expect(mockSearchNominatimCandidates).toHaveBeenCalledTimes(1);
   });
 });
