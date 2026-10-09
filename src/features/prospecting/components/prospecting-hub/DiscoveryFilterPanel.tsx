@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   ChevronDown,
@@ -14,9 +15,9 @@ import { fadeIn } from '../../../../lib/motion.js';
 import {
   ESTADO_OPTIONS,
   PORTE_OPTIONS,
-  QUANTIDADE_LEADS_OPTIONS,
   TECNOLOGIA_OPTIONS,
 } from '../../../../shared/constants/icp-options.js';
+import { PersonaForm, SegmentDetailsForm, TurboField } from './TurboCriteriaForms.js';
 import type { ProspectCriteria } from '../../services/prospecting.service.js';
 
 type PersonaOption = {
@@ -37,6 +38,9 @@ export function DiscoveryFilterPanel({
   isSearching,
   discoverError,
   onDiscover,
+  onInterpret,
+  isInterpreting,
+  interpretationMessage,
 }: {
   criteria: ProspectCriteria;
   setCriteria: (criteria: ProspectCriteria) => void;
@@ -48,7 +52,14 @@ export function DiscoveryFilterPanel({
   isSearching: boolean;
   discoverError: string | null;
   onDiscover: () => void;
+  onInterpret: (query: string, mode: 'automatic' | 'groq' | 'local', model?: string) => void;
+  isInterpreting: boolean;
+  interpretationMessage: string | null;
 }) {
+  const [query, setQuery] = useState('');
+  const [aiMode, setAiMode] = useState<'automatic' | 'groq' | 'local'>('automatic');
+  const [aiModel, setAiModel] = useState('');
+  const [aiConsent, setAiConsent] = useState(false);
   const cargos = criteria.decisorCargos ?? [];
 
   const addCargoRow = () => setCriteria({ ...criteria, decisorCargos: [...cargos, ''] });
@@ -75,7 +86,7 @@ export function DiscoveryFilterPanel({
   };
 
   return (
-    <div className="xl:col-span-4 bg-surface p-6 sm:p-8 rounded-2xl border border-line shadow-sm relative overflow-hidden flex flex-col h-full max-h-[800px]">
+    <div className="xl:col-span-4 bg-surface p-6 sm:p-8 rounded-2xl border border-line shadow-sm relative overflow-hidden flex flex-col h-full xl:max-h-[900px]">
       <div className="absolute top-0 right-0 w-40 h-40 bg-brand opacity-5 transform rotate-45 translate-x-20 -translate-y-20" />
       <div className="flex items-center gap-2 mb-6 relative z-10">
         <div className="w-8 h-8 rounded-lg bg-brand/10 flex items-center justify-center text-brand-ink dark:text-brand">
@@ -116,7 +127,9 @@ export function DiscoveryFilterPanel({
             </datalist>
           </div>
 
-          <div className="grid grid-cols-2 gap-2">
+          <SegmentDetailsForm criteria={criteria} setCriteria={setCriteria} />
+
+          <div>
             <div>
               <label
                 htmlFor="discovery-porte"
@@ -136,22 +149,6 @@ export function DiscoveryFilterPanel({
                   </option>
                 ))}
               </select>
-            </div>
-            <div>
-              <label
-                htmlFor="discovery-volume"
-                className="block text-[10px] tracking-wider font-bold uppercase mb-1.5 text-ink-2"
-              >
-                Volume
-              </label>
-              <input
-                id="discovery-volume"
-                type="text"
-                placeholder="Ex: 50 cargas/mês"
-                className="w-full p-3 bg-surface rounded-xl border border-line outline-none focus:border-brand focus:ring-1 focus:ring-brand transition-colors text-sm font-medium text-ink placeholder-ink-2"
-                value={criteria.volume || ''}
-                onChange={(e) => setCriteria({ ...criteria, volume: e.target.value || undefined })}
-              />
             </div>
           </div>
 
@@ -359,7 +356,7 @@ export function DiscoveryFilterPanel({
 
         <div>
           <span className="block text-[10px] tracking-wider font-bold uppercase mb-1.5 text-ink-2">
-            Persona do Decisor
+            Cargos adicionais do decisor
           </span>
 
           {activePersonaOptions.length > 0 && (
@@ -419,6 +416,9 @@ export function DiscoveryFilterPanel({
           </div>
         </div>
 
+        <PersonaForm criteria={criteria} setCriteria={setCriteria} />
+        <TurboField id="turbo-cnpj" label="CNPJ (consulta cadastral exata)" value={criteria.cnpj} onChange={(value) => setCriteria({ ...criteria, cnpj: value || undefined })} />
+
         <div>
           <label
             htmlFor="discovery-pesquisar"
@@ -448,33 +448,35 @@ export function DiscoveryFilterPanel({
           </p>
         </div>
 
-        <div>
-          <label
-            htmlFor="discovery-quantidade"
-            className="block text-[10px] tracking-wider font-bold uppercase mb-1.5 text-ink-2"
-          >
-            Quantidade de Leads
+        <fieldset className="space-y-3 border-t border-line pt-3">
+          <legend className="text-sm font-semibold text-ink">Pesquisa em linguagem natural</legend>
+          <TurboField id="turbo-query" label="Descreva sua pesquisa" maxLength={2000} value={query} onChange={setQuery} />
+          <label htmlFor="turbo-ai-mode" className="block text-xs text-ink-2">Provedor de IA
+            <select id="turbo-ai-mode" value={aiMode} onChange={(e) => setAiMode(e.target.value as typeof aiMode)} className="w-full p-3 rounded-xl bg-surface border border-line text-ink">
+              <option value="automatic">Automático</option><option value="groq">Groq</option><option value="local">Local (Ollama)</option>
+            </select>
           </label>
-          <select
-            id="discovery-quantidade"
-            className="w-full p-3 bg-surface-2 rounded-xl border border-line outline-none focus:border-brand focus:ring-1 focus:ring-brand transition-colors text-sm font-medium text-ink"
-            value={criteria.quantidade ?? 20}
-            onChange={(e) => setCriteria({ ...criteria, quantidade: Number(e.target.value) })}
-          >
-            {QUANTIDADE_LEADS_OPTIONS.map((qtd) => (
-              <option key={qtd} value={qtd}>
-                {qtd}
-              </option>
-            ))}
-          </select>
-          <p className="text-[10px] text-ink-2 mt-1">
-            Máximo 20 — priorizamos qualidade (CNPJ, decisores e notícias em todos os leads) em vez
-            de volume.
-          </p>
-        </div>
-
+          <TurboField id="turbo-ai-model" label="Modelo de IA (opcional)" maxLength={120} value={aiModel} onChange={setAiModel} />
+          <p className="text-xs text-ink-2">Deixe vazio para seleção automática. O modelo precisa estar disponível no provedor; Groq exige preço cadastrado. Consulte os modelos em Central de provedores → Testar conexões autorizadas.</p>
+          <label className="flex gap-2 text-xs text-ink-2"><input type="checkbox" checked={aiConsent} onChange={(e) => setAiConsent(e.target.checked)} />Autorizo enviar somente esta descrição ao provedor de IA escolhido. Não inclua dados pessoais ou segredos.</label>
+          <button type="button" disabled={!aiConsent || !query.trim() || query.length > 2000 || aiModel.length > 120 || isInterpreting || isSearching} onClick={() => onInterpret(query, aiMode, aiModel.trim() || undefined)} className="w-full p-3 rounded-xl border border-line text-sm text-ink disabled:opacity-50">{isInterpreting ? 'Interpretando...' : 'Interpretar e preencher filtros'}</button>
+          {interpretationMessage && <p role="status" className="text-xs text-ink-2">{interpretationMessage}</p>}
+          <p className="text-xs text-ink-2">Confira os filtros preenchidos antes de pesquisar. A IA interpreta a solicitação; dados empresariais vêm das fontes consultadas.</p>
+        </fieldset>
+        <fieldset className="space-y-3 border-t border-line pt-3">
+          <legend className="text-sm font-semibold text-ink">Fontes e custo</legend>
+          <label htmlFor="turbo-search-mode" className="block text-xs text-ink-2">Modo de pesquisa
+            <select id="turbo-search-mode" value={criteria.modoPesquisa ?? 'economico'} onChange={(e) => setCriteria({ ...criteria, modoPesquisa: e.target.value as ProspectCriteria['modoPesquisa'] })} className="w-full p-3 rounded-xl bg-surface border border-line text-ink">
+              <option value="economico">Econômico</option><option value="equilibrado">Equilibrado</option><option value="completo">Completo</option>
+            </select>
+          </label>
+          <label className="flex gap-2 text-xs text-ink-2"><input type="checkbox" checked={!!criteria.autorizarPagos} onChange={(e) => setCriteria({ ...criteria, autorizarPagos: e.target.checked })} />Autorizar provedores que podem consumir créditos, dentro dos limites configurados.</label>
+          <p className="text-xs text-ink-2">Sem autorização, operações pagas não são executadas. O modo não garante gratuidade ou completude. Os resultados são ampliados pela próxima página, respeitando cotas.</p>
+        </fieldset>
+        <button type="button" className="py-2 text-xs text-ink-2 underline" disabled={isSearching} onClick={() => setCriteria({ segmento: '', localizacao: '', quantidade: 20, modoPesquisa: 'economico', autorizarPagos: false })}>Limpar todos os filtros</button>
         <button
           type="button"
+          aria-expanded={showAdvanced}
           onClick={() => setShowAdvanced((v) => !v)}
           className="flex items-center justify-between w-full text-[10px] tracking-wider font-bold uppercase text-ink-2 hover:text-brand transition-colors pt-2"
         >
@@ -486,6 +488,19 @@ export function DiscoveryFilterPanel({
 
         {showAdvanced && (
           <div className="space-y-4 pt-1">
+            {(['dominios', 'dominiosExcluir', 'organizacaoIds', 'funcionariosFaixas'] as const).map((key, index) => (
+              <TurboField key={key} id={`apollo-${key}`} label={['Domínios (separados por vírgula)', 'Excluir domínios (separados por vírgula)', 'IDs de organizações Apollo (separados por vírgula)', 'Faixas de funcionários (ex.: 11,50;51,200)'][index]}
+                value={(criteria.apolloFiltros?.[key] ?? []).join(key === 'funcionariosFaixas' ? ';' : ',')}
+                onChange={(value) => setCriteria({ ...criteria, apolloFiltros: { ...criteria.apolloFiltros, [key]: value.split(key === 'funcionariosFaixas' ? ';' : ',') } })} />
+            ))}
+            {(['financiamentoTotalMin', 'financiamentoTotalMax', 'ultimaRodadaMin', 'ultimaRodadaMax'] as const).map((key, index) => (
+              <TurboField key={key} id={`apollo-${key}`} label={['Financiamento total mínimo (USD)', 'Financiamento total máximo (USD)', 'Última rodada mínima (USD)', 'Última rodada máxima (USD)'][index]} type="number" value={criteria.apolloFiltros?.[key]} onChange={(value) => setCriteria({ ...criteria, apolloFiltros: { ...criteria.apolloFiltros, [key]: value ? Number(value) : undefined } })} />
+            ))}
+            <details className="space-y-2"><summary className="cursor-pointer py-2 text-sm font-semibold text-ink">Pesos do score ICP</summary>
+              <p className="text-xs text-ink-2">Pesos relativos entre os critérios efetivamente avaliados. Dados não confirmados recebem zero pontos.</p>
+              {([['segment', 'Segmento'], ['state', 'Estado'], ['city', 'Cidade'], ['annualRevenue', 'Faturamento anual'], ['foundedYear', 'Fundação'], ['technologies', 'Tecnologias'], ['decisionMakerTitles', 'Cargo do decisor']] as const).map(([key, label]) => <TurboField key={key} id={`icp-weight-${key}`} label={label} type="number" value={criteria.icpPesos?.[key] ?? 1} onChange={(value) => setCriteria({ ...criteria, icpPesos: { ...criteria.icpPesos, [key]: Math.min(100, Math.max(0, Number(value) || 0)) } })} />)}
+            </details>
+            <p className="text-xs text-ink-2">Filtros Apollo dependem das permissões do plano. Filtros brasileiros são avaliados pelas fontes cadastrais, não enviados ao Apollo.</p>
             <div>
               <label
                 htmlFor="discovery-ano-min"
@@ -508,6 +523,7 @@ export function DiscoveryFilterPanel({
                   className="w-full p-3 bg-surface-2 rounded-xl border border-line outline-none focus:border-brand focus:ring-1 focus:ring-brand transition-colors text-sm font-medium text-ink"
                 />
                 <input
+                  aria-label="Ano máximo de fundação"
                   type="number"
                   placeholder="Até"
                   value={criteria.anoFundacaoMax ?? ''}
@@ -549,6 +565,7 @@ export function DiscoveryFilterPanel({
                     <button
                       key={opt.value}
                       type="button"
+                      aria-pressed={selected}
                       onClick={() => {
                         const current = (criteria.tecnologias || '').split(',').filter(Boolean);
                         const next = selected
@@ -572,6 +589,7 @@ export function DiscoveryFilterPanel({
               </p>
             </div>
             <div>
+              <p className="text-xs text-ink-2">Exclusão de tecnologias indisponível no contrato atual Apollo.</p>
               <span
                 id="tech-excluded-label"
                 className="block text-[10px] tracking-wider font-bold uppercase mb-1.5 text-ink-2"
@@ -595,6 +613,9 @@ export function DiscoveryFilterPanel({
                     <button
                       key={opt.value}
                       type="button"
+                      aria-pressed={selected}
+                      disabled
+                      title="Filtro indisponível no contrato atual Apollo"
                       onClick={() => {
                         const current = (criteria.tecnologiasExcluir || '')
                           .split(',')
@@ -643,12 +664,14 @@ export function DiscoveryFilterPanel({
               <input
                 type="checkbox"
                 checked={!!criteria.apenasCapitalAberto}
+                disabled
+                title="Filtro indisponível no contrato atual Apollo"
                 onChange={(e) =>
                   setCriteria({ ...criteria, apenasCapitalAberto: e.target.checked || undefined })
                 }
                 className="rounded border-line text-brand focus:ring-brand"
               />
-              Somente empresas de capital aberto (B3/bolsa)
+              Somente capital aberto — indisponível no contrato atual Apollo
             </label>
           </div>
         )}
@@ -660,7 +683,7 @@ export function DiscoveryFilterPanel({
           id="btn-discover"
           onClick={onDiscover}
           disabled={isSearching}
-          className="w-full bg-brand-active text-on-brand py-4 rounded-xl font-bold hover:brightness-110 disabled:opacity-80 transition-colors flex items-center justify-center gap-2 shadow-lg shadow-brand/20"
+          className="w-full bg-brand text-on-brand py-4 rounded-xl font-bold hover:brightness-110 disabled:opacity-80 transition-colors flex items-center justify-center gap-2 shadow-lg shadow-brand/20"
         >
           {isSearching ? (
             <>
@@ -672,7 +695,7 @@ export function DiscoveryFilterPanel({
             </>
           )}
         </button>
-        {discoverError && <p className="text-xs text-red-600 mt-2">{discoverError}</p>}
+        {discoverError && <p role="alert" className="text-xs text-danger-active dark:text-ink mt-2">{discoverError}</p>}
       </div>
     </div>
   );

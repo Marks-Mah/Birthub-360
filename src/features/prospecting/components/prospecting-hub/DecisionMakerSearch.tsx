@@ -1,4 +1,4 @@
-import { Building2, Globe, Loader2, Mail, MessageCircle, Phone, Search, Users } from 'lucide-react';
+import { Building2, Globe, Loader2, Mail, Phone, Search, Users } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { LinkedinIcon as Linkedin } from '../../../../components/ui/icons/LinkedinIcon.js';
 import { useActivePlaybook } from '../../../../hooks/useActivePlaybook.js';
@@ -9,7 +9,6 @@ import {
 } from '../../../../shared/constants/icp-options.js';
 import {
   getTelephoneLink,
-  getWhatsAppLink,
   validContactEmails,
   validContactPhones,
 } from '../../../../shared/utils/contact-links.js';
@@ -214,7 +213,6 @@ export function DecisionMakerSearch({
       })
     : null;
   const selectedTelephoneLink = getTelephoneLink(selectedDecisionMaker?.phone);
-  const selectedWhatsAppLink = getWhatsAppLink(selectedDecisionMaker?.phone);
 
   if (!open) {
     return (
@@ -326,7 +324,7 @@ export function DecisionMakerSearch({
           </div>
           <div className="rounded-lg bg-surface-2 p-2 sm:col-span-2">
             <span className="block text-[9px] uppercase tracking-wider text-ink-2 mb-1">
-              Telefones e WhatsApp da empresa
+              Telefones da empresa
             </span>
             {normalizedCompanyPhones.length > 0 ? (
               <div className="flex flex-wrap gap-x-3 gap-y-2">
@@ -338,15 +336,6 @@ export function DecisionMakerSearch({
                     >
                       <Phone size={12} /> {phone}
                     </a>
-                    <a
-                      href={getWhatsAppLink(phone)}
-                      target="_blank"
-                      rel="noreferrer"
-                      title="O número foi coletado, mas a existência de WhatsApp não foi verificada"
-                      className="text-emerald-400 hover:text-emerald-300 hover:underline flex items-center gap-1"
-                    >
-                      <MessageCircle size={12} /> Tentar WhatsApp
-                    </a>
                   </span>
                 ))}
               </div>
@@ -356,7 +345,7 @@ export function DecisionMakerSearch({
           </div>
         </div>
         <p className="text-[9px] text-ink-2 mt-2">
-          WhatsApp é um atalho não verificado; nenhum número é inventado.
+          WhatsApp não confirmado: nenhum atalho é disponibilizado sem verificação.
         </p>
       </div>
 
@@ -609,18 +598,7 @@ export function DecisionMakerSearch({
                   <span className="block text-[9px] uppercase tracking-wider text-ink-2 mb-1">
                     WhatsApp do decisor
                   </span>
-                  {selectedWhatsAppLink ? (
-                    <a
-                      href={selectedWhatsAppLink}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="text-emerald-400 hover:underline flex items-center gap-1"
-                    >
-                      <MessageCircle size={12} /> Tentar WhatsApp
-                    </a>
-                  ) : (
-                    <span className="text-ink-2">Não encontrado</span>
-                  )}
+<span className="text-ink-2">Não confirmado</span>
                 </div>
                 <div className="rounded-xl bg-surface-2 p-3">
                   <span className="block text-[9px] uppercase tracking-wider text-ink-2 mb-1">
@@ -694,16 +672,6 @@ export function DecisionMakerSearch({
                         className="flex items-center gap-1 text-ink-2 hover:text-ink hover:underline"
                       >
                         <Phone size={12} /> {dm.phone}
-                      </a>
-                    )}
-                    {getWhatsAppLink(dm.phone) && (
-                      <a
-                        href={getWhatsAppLink(dm.phone)}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="flex items-center gap-1 text-emerald-400 hover:text-emerald-300 hover:underline"
-                      >
-                        <MessageCircle size={12} /> WhatsApp
                       </a>
                     )}
                     <a

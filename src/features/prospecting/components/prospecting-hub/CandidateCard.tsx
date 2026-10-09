@@ -10,7 +10,6 @@ import {
   Loader2,
   Mail,
   MapPin,
-  MessageCircle,
   Phone,
   ShieldCheck,
   Sparkles,
@@ -20,16 +19,13 @@ import {
   Wrench,
 } from 'lucide-react';
 import { useState } from 'react';
-import confetti from 'canvas-confetti';
 import { LinkedinIcon as Linkedin } from '../../../../components/ui/icons/LinkedinIcon.js';
 import { api } from '../../../../lib/api.js';
 import { SoundFX } from '../../../../lib/soundEffects.js';
 import {
   getTelephoneLink,
-  getWhatsAppLink,
   validContactEmails,
 } from '../../../../shared/utils/contact-links.js';
-import { WhatsAppChatPanel } from '../../../integrations/whatsapp/components/WhatsAppChatPanel.js';
 import type { FitScoreResult } from '../../services/enrichment.service.js';
 import type {
   ProspectCandidate,
@@ -125,14 +121,13 @@ export function CandidateCard({
   onReject?: () => void;
   isRejecting?: boolean;
 }) {
-  const finalScore = promotedResult?.fit?.score ?? candidate.fitScoreEstimate;
+  const finalScore = promotedResult?.fit?.score ?? candidate.metrics?.icpScore ?? candidate.fitScoreEstimate;
   const isEstimate = !promotedResult?.fit;
   const enrichment = promotedResult?.enrichment;
   // Variável local em vez de `candidate.phone` repetido: o narrowing de `candidate.phone &&`
   // não sobrevive dentro do closure do onClick do botão de WhatsApp abaixo (TS não propaga
   // narrowing de acesso a propriedade para dentro de funções aninhadas).
   const candidatePhone = candidate.phone;
-  const [chatTarget, setChatTarget] = useState<{ phone: string; name: string } | null>(null);
   const [icebreakerText, setIcebreakerText] = useState<string | null>(
     candidate.icebreakerHook ?? null,
   );
@@ -197,7 +192,9 @@ export function CandidateCard({
           <input
             type="checkbox"
             className="rounded border-line text-brand focus:ring-brand w-5 h-5 cursor-pointer transition-transform active:scale-90"
-            checked={isSelected}
+            aria-label={`Selecionar ${candidate.tradeName}`}
+            disabled={candidate.source === 'googlePlaces'}
+            checked={!!isSelected}
             onChange={() => {
               SoundFX.play('click');
               onToggleSelect?.();
@@ -236,7 +233,7 @@ export function CandidateCard({
 
           <div className="flex flex-wrap gap-4 text-xs font-semibold text-ink-2 mb-2">
             <span className="flex items-center gap-1.5">
-              <Building2 size={14} className="text-ink-2" /> {candidate.segment}
+              <Building2 size={14} className="text-ink-2" /> {candidate.segmentObserved ? candidate.segment : 'Segmento não confirmado'}
             </span>
             <span className="flex items-center gap-1.5">
               <Users size={14} className="text-ink-2" /> {candidate.size}
@@ -273,16 +270,6 @@ export function CandidateCard({
                   <Phone size={14} className="text-ink-2" /> {candidatePhone}
                 </span>
               ))}
-            {candidatePhone && getWhatsAppLink(candidatePhone) && (
-              <button
-                type="button"
-                onClick={() => setChatTarget({ phone: candidatePhone, name: candidate.tradeName })}
-                title="Número coletado — a existência de WhatsApp não foi verificada"
-                className="flex items-center gap-1.5 text-emerald-400 hover:text-emerald-300 hover:underline"
-              >
-                <MessageCircle size={14} /> WhatsApp
-              </button>
-            )}
             {candidate.website && (
               <a
                 href={
@@ -344,6 +331,18 @@ export function CandidateCard({
             </div>
           )}
 
+          <details className="my-3 text-xs text-ink-2">
+            <summary className="cursor-pointer py-2 font-semibold">Fontes e qualidade dos dados</summary>
+            <p>Fonte de descoberta: {candidate.source ?? 'Não informada'}. WhatsApp: não confirmado.</p>
+            {candidate.source === 'googlePlaces' && <p>Conteúdo Google Places: consulta temporária; CRM e exportação indisponíveis.</p>}
+            {candidate.metrics && <div className="space-y-1 py-2">
+              <p>Score ICP: {candidate.metrics.icpScore}/100 · Completude: {candidate.metrics.completeness}%</p>
+              <p>Identificação: {candidate.metrics.identificationConfidence}% · Qualidade de contatos: {candidate.metrics.contactQuality}%</p>
+              {candidate.metrics.factors.map((factor) => <p key={factor.criterion}>{factor.criterion}: {factor.points} pontos ({factor.status === 'matched' ? 'confirmado' : factor.status === 'unmatched' ? 'divergente' : 'não confirmado'})</p>)}
+            </div>}
+            {Object.entries(candidate.provenance ?? {}).map(([field, origin]) => <p key={field}>{field}: {origin.source} · {origin.status === 'estimated' ? 'estimado' : origin.status === 'reported' ? 'informado pela fonte' : 'não verificado'} · {origin.queriedAt}</p>)}
+            {candidate.companyData && Object.entries(candidate.companyData).filter(([, value]) => value !== null && typeof value !== 'object').map(([field, value]) => <p key={field}>{field}: {String(value)}</p>)}
+          </details>
           {!enrichment && candidate.rationale && (
             <p className="text-xs text-ink-2 italic mb-2">&quot;{candidate.rationale}&quot;</p>
           )}
@@ -398,7 +397,7 @@ export function CandidateCard({
           {!enrichment && candidate.decisionMakers && candidate.decisionMakers.length > 0 && (
             <div className="mt-2 mb-3">
               <p className="text-[10px] tracking-wider font-bold uppercase text-ink-2 mb-2 flex items-center gap-1">
-                <Users size={12} /> Decisores já encontrados (Apollo/Hunter) — prontos para uso
+                <Users size={12} /> Decisores encontrados — verifique origem e finalidade antes de utilizar
               </p>
               <div className="flex flex-col gap-2">
                 {candidate.decisionMakers.map((dm, idx) => {
@@ -409,10 +408,7 @@ export function CandidateCard({
                     linkedinUrl: dm.linkedinUrl,
                   });
                   const tel = getTelephoneLink(dm.phone);
-                  const whatsapp = getWhatsAppLink(dm.phone);
-                  // Variável local: o narrowing de `whatsapp && dm.phone &&` não sobrevive dentro
-                  // do closure do onClick abaixo (mesmo motivo de candidatePhone acima).
-                  const dmPhone = dm.phone;
+
                   return (
                     <div
                       key={idx}
@@ -430,19 +426,7 @@ export function CandidateCard({
                           className="flex items-center gap-1 text-success-active dark:text-success hover:underline"
                         >
                           <Mail size={12} /> {dm.email}
-                          {dm.emailSource === 'hunter' ? (
-                            <span className="text-[9px] bg-purple-500/20 text-purple-400 px-1.5 py-0.5 rounded-full font-bold ml-1">
-                              HUNTER
-                            </span>
-                          ) : dm.email.includes('@') ? (
-                            <span className="text-[9px] bg-emerald-500/20 text-emerald-400 px-1.5 py-0.5 rounded-full font-bold ml-1">
-                              ✓ CONFIRMADO
-                            </span>
-                          ) : (
-                            <span className="text-[9px] bg-amber-500/20 text-amber-400 px-1.5 py-0.5 rounded-full font-bold ml-1">
-                              💡 INFERIDO
-                            </span>
-                          )}
+                          <span className="text-[10px] text-ink-2">Fonte: {dm.emailSource ?? 'Apollo'} · verificação não informada</span>
                         </a>
                       )}
                       {tel && (
@@ -452,16 +436,6 @@ export function CandidateCard({
                         >
                           <Phone size={12} /> {dm.phone}
                         </a>
-                      )}
-                      {whatsapp && dmPhone && (
-                        <button
-                          type="button"
-                          onClick={() => setChatTarget({ phone: dmPhone, name: dm.name })}
-                          title="Número coletado — a existência de WhatsApp não foi verificada"
-                          className="flex items-center gap-1 text-emerald-400 hover:text-emerald-300 hover:underline"
-                        >
-                          <MessageCircle size={12} /> WhatsApp
-                        </button>
                       )}
                       <a
                         href={linkedIn.href}
@@ -565,7 +539,7 @@ export function CandidateCard({
                   SoundFX.play('click');
                   onReject();
                 }}
-                disabled={isPromoting || isRejecting}
+                disabled={isPromoting || isRejecting || candidate.source === 'googlePlaces'}
                 title="Descarta este candidato e o exclui de buscas futuras"
                 className="bg-surface-2 border border-line text-ink-2 px-4 py-2.5 rounded-xl font-bold text-xs hover:border-danger/50 hover:text-danger-active dark:hover:text-danger transition-all hover:scale-[1.01] active:scale-95 flex items-center gap-2 w-full sm:w-auto justify-center disabled:opacity-60 cursor-pointer"
               >
@@ -581,15 +555,9 @@ export function CandidateCard({
               type="button"
               onClick={() => {
                 SoundFX.play('success');
-                confetti({
-                  particleCount: 50,
-                  spread: 60,
-                  origin: { y: 0.7 },
-                  colors: ['#00E5FF', '#10B981', '#3B82F6'],
-                });
                 onPromote();
               }}
-              disabled={isPromoting || isRejecting}
+              disabled={isPromoting || isRejecting || candidate.source === 'googlePlaces'}
               className="relative overflow-hidden bg-gradient-to-r from-brand via-brand-2 to-brand text-on-brand px-5 py-2.5 rounded-xl font-bold text-xs hover:brightness-110 active:scale-95 transition-all flex items-center gap-2 shadow-[0_4px_16px_rgba(0,229,255,0.25)] hover:shadow-glow-brand hover:scale-[1.02] w-full sm:w-auto justify-center disabled:opacity-60 cursor-pointer"
             >
               <div
@@ -601,18 +569,12 @@ export function CandidateCard({
               ) : (
                 <ShieldCheck size={15} />
               )}
-              {isPromoting ? '⏳ Enriquecendo...' : '✨ Enriquecer & Salvar no CRM'}
+              {isPromoting ? 'Salvando...' : candidate.source === 'googlePlaces' ? 'CRM indisponível para Google Places' : 'Salvar no CRM'}
             </button>
           </div>
         )}
       </div>
-      {chatTarget && (
-        <WhatsAppChatPanel
-          phone={chatTarget.phone}
-          contactName={chatTarget.name}
-          onClose={() => setChatTarget(null)}
-        />
-      )}
+
     </div>
   );
 }
