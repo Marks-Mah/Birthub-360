@@ -25,7 +25,7 @@ import {
   objectionDetectionService,
   type ObjectionCategory,
   type SuggestedRebuttal,
-} from '../../ai-voice/objectionDetection.service.js';
+} from '../../../shared/services/objectionDetection.service.js';
 import { useLiveCopilotSession } from '../copilotLiveBus.js';
 import type { HUDSize, ObjectionDetectionResult } from '../types.js';
 

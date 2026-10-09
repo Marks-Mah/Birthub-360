@@ -4,7 +4,7 @@ import { prisma } from '../../../../lib/prisma.js';
 import { sendWhatsAppMessage } from '../../../integrations/whatsapp/whatsapp.service.js';
 import type { CadenceDispatcher } from '../../application/cadenceService.js';
 import type { CadenceRunState, CadenceTouch } from '../../domain/cadence.js';
-import { checkOptOutStatus } from '../../../lgpd/services/optOutCheck.service.js';
+import { checkOptOutStatus } from '../../../../shared/services/optOutCheck.service.js';
 
 /**
  * Dispatchers reais de canal (CYC-008, onda-19) — a peça que faltava para `advanceCadenceRun`

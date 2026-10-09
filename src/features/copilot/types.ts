@@ -2,7 +2,7 @@ import type {
   ObjectionCategory,
   ObjectionDetectionResult,
   SuggestedRebuttal,
-} from '../ai-voice/objectionDetection.service.js';
+} from '../../shared/services/objectionDetection.service.js';
 
 export type HUDSize = 'compact' | 'standard' | 'expanded';
 

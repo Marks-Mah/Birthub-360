@@ -64,3 +64,28 @@ Não foi aberta correção de produto/workflow pelo auditor. As necessidades aci
 Somente o backup remoto do SHA de stash identificado está aprovado. Conservar o stash e todos os refs existentes. O Coordenador deve verificar o SHA remoto após push. Qualquer mudança do conteúdo ou integração exige novo parecer. Sincronização integral de outras branches/worktrees depende do inventário e conferência operacional do 00; este parecer não certifica alterações que não foram apresentadas.
 
 O deploy continua BLOQUEADO por evidência insuficiente nesta fase; autorização do usuário não foi confundida com validação técnica. Nenhum arquivo de produto, workflow, prompt ou governança foi alterado. Única escrita do auditor: este parecer.
+
+### Evidência de conclusão recebida do 00
+
+O operador confirmou push para origin/codex/backup-antigravity-desktop-2026-10-09 com SHA remoto `39bca3a2bf6e690253550e3f3057dd829e055979`, igual ao conteúdo aprovado; branch local/upstream 0/0. Oito branches originais 0/0 e seis stashes inalterados. Residual Antigravity sem .git foi comparado com a branch origin usando índice temporário: nenhum arquivo existente alterado; 2277 arquivos ausentes foram preservados no remoto sem propagar exclusões de checkout parcial. Extra mock_data_search.txt é saída derivada de busca sem segredo. Dois HTML scratch sem Git preservados. Esses resultados operacionais foram fornecidos pelo 00, não executados novamente pelo auditor. Completam a evidência da preservação autorizada; não ampliam a aprovação para integração ou deploy.
+
+## Complemento fase 2 — plano EC2, sem aprovação de release
+
+Informação operacional recebida do 00: EC2 `ubuntu@3.143.251.44`, diretório `/home/ubuntu/birthhub-360` sem Git, container `birthhub-app` sem bind mounts, Node 22, `PORT=3024`, imagem corrente identificada pelo operador, boot com migração seguida de start. Liveness observado pelo operador; versão corrente ainda unknown. Essas informações não foram obtidas por acesso remoto do auditor.
+
+Leitura integral de `deploy-ec2.ps1`, `deploy-ec2.sh`, `deploy-aws.ps1` e `src/bootstrap/healthchecks.ts` confirmou:
+
+- Os dois scripts EC2 substituem arquivos no host e reiniciam o container. Sem mount, o container continua com seu próprio conteúdo; isso não demonstra atualização. O shell ainda envia node_modules do ambiente local, incompatível com dependências nativas Windows/Linux.
+- O script AWS usa docker cp e restart. Não oferece imagem reproduzível, identificação da revisão, migração/versionamento verificáveis, gate ou rollback completo. Imprime conclusão baseada na sequência de comandos, sem validar readiness/revisão.
+- `/health/live`, `/health/ready` e `/health/version` expõem commit/versão; versão usa também DEPLOY_TIMESTAMP. Readiness verifica banco e Redis quando filas habilitadas; storage configurado não demonstra acesso real.
+
+### Alternativa recomendada ao 00/08A/10
+
+1. Após remediação e gates, exportar contexto do commit aprovado por Git archive, sem .env ou arquivos ignorados. Construir imagem Linux reproduzível do Dockerfile existente, identificada por SHA/digest. Esse Dockerfile usa fontes/scripts e executa build: um tar contendo somente dist/package/schema não atende seu contrato. Não reutilizar node_modules Windows nem usar diretório remoto com .env como contexto amplo.
+2. Preservar imagem e container antigos, configuração completa e redes; copiar só environment/ports não garante equivalência. Conferir aliases, extra-hosts, user, restart policy, limites, healthcheck, comandos e portas. Não expor environment em saída ou relatório.
+3. Preparar nova imagem e staging sem alterar a instância atual. Confirmar espaço e recursos: build remoto pode pressionar a mesma máquina de produção. Backup externo de dados deve estar concluído e verificável antes de migração.
+4. Validar migrações com 01, executá-las em tarefa identificada antes do novo start e considerar compatibilidade do schema com imagem antiga. Reverter imagem não desfaz migração; plano de rollback precisa cobrir ambos.
+5. Somente com gates e parecer APROVADO da revisão final, efetuar troca preservando container antigo e validar commit, liveness, readiness, frontend/API e Nginx. Usar COMMIT_SHA, BUILD_VERSION e DEPLOY_TIMESTAMP correspondentes à release.
+6. O HEALTHCHECK da imagem atual versionada fixa porta 3000, enquanto ambiente observado usa 3024. Nova execução deve ajustar healthcheck explicitamente ao PORT real; HTTP externo isolado não corrige esse conflito.
+
+Gate arquitetura do HEAD `d930264ae60d5b4ca5026c05c4131d0bce8fb64d`: falha informada pelo 00 em oito dependências entre features. **PRÉ-EXISTENTE na base e BLOQUEADOR de release até remediação**, sem sugerir relaxar a regra. Gates restantes e SHA corrigido não apresentados ao auditor nesta revisão. Autorizar preparação de staging não significa aprovação para restart, migração ou troca de produção. O parecer de backup permanece APROVADO no escopo original; release permanece BLOQUEADO.

@@ -20,9 +20,12 @@ import { prismaCadenceRunRepository } from './infra/PrismaCadenceRunRepository.j
 import { prismaCadenceSequenceRepository } from './infra/PrismaCadenceSequenceRepository.js';
 import { prismaCalendarSchedulerPort } from './infra/PrismaCalendarSchedulerPort.js';
 import { prismaMeetingConfirmationNotePort } from './infra/PrismaMeetingConfirmationNotePort.js';
-import { prismaOptOutRepository } from './infra/PrismaOptOutRepository.js';
-import { recordOptOut } from './application/optOutService.js';
-import { checkOptOutStatus, recordContactOptOut } from '../lgpd/services/optOutCheck.service.js';
+import { prismaOptOutRepository } from '../../shared/infra/PrismaOptOutRepository.js';
+import { recordOptOut } from '../../shared/services/optOutService.js';
+import {
+  checkOptOutStatus,
+  recordContactOptOut,
+} from '../../shared/services/optOutCheck.service.js';
 import { parseCadenceSequenceDefinition } from './jobs/cadenceRun.worker.js';
 
 /**
