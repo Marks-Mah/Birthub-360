@@ -5,10 +5,10 @@ import {
   type CallWindow,
   DEFAULT_CALL_WINDOW,
   isWithinCallWindow,
-} from '../../integrations/birth-voice/coldCall.policy.js';
-import type { CadenceChannel, OptOutRepository, OptOutSubject } from '../domain/optOut.js';
+} from '../../../shared/policies/coldCall.policy.js';
+import type { CadenceChannel, OptOutRepository, OptOutSubject } from '../../../shared/domain/optOut.js';
 import type { CadenceRateLimitPolicy } from '../domain/rateLimit.js';
-import { isOptedOut } from './optOutService.js';
+import { isOptedOut } from '../../../shared/services/optOutService.js';
 import type { LeadSubjectResolver } from './cadenceService.js';
 import {
   type CadenceRateLimitPort,
