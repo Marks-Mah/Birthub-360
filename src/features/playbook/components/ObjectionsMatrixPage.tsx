@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { useConfirmDialog } from '../../../components/ui/ConfirmDialog.js';
+import { PageTitleCard } from '../../../components/ui/PageTitleCard.js';
 import { EmptyState } from '../../../components/ui/EmptyState.js';
 import { Pagination } from '../../../components/ui/Pagination.js';
 import { PLAYBOOKS } from '../../../config/playbooks.js';
@@ -182,61 +183,56 @@ export function ObjectionsMatrixPage() {
   return (
     <div className="flex-1 overflow-y-auto bg-transparent p-6 sm:p-8 font-sans">
       <div className="max-w-5xl mx-auto space-y-8">
-        <div className="flex flex-wrap items-start justify-between gap-4">
-          <div className="space-y-3">
-            <h1 className="text-4xl font-black tracking-tight text-ink flex items-center gap-3">
-              <Shield className="text-brand" size={32} /> Matriz de Objeções
-            </h1>
-            <p className="text-ink-2 text-sm font-medium">
-              {meta?.total ?? items.length} objeç
-              {(meta?.total ?? items.length) !== 1 ? 'ões' : 'ão'} mapeada
-              {(meta?.total ?? items.length) !== 1 ? 's' : ''} no playbook {playbookMeta.label}, com
-              script de contorno recomendado e diferencial-chave.
-            </p>
-          </div>
-          <div className="flex items-center gap-2 shrink-0">
-            {canRunLivingPlaybook && (
+        <PageTitleCard
+          title="Matriz de Objeções"
+          subtitle={`${meta?.total ?? items.length} objeç${(meta?.total ?? items.length) !== 1 ? 'ões' : 'ão'} mapeada${(meta?.total ?? items.length) !== 1 ? 's' : ''} no playbook ${playbookMeta.label}, com script de contorno recomendado e diferencial-chave.`}
+          icon={<Shield className="h-5 w-5" />}
+          accent="warning"
+          actions={
+            <>
+              {canRunLivingPlaybook && (
+                <button
+                  type="button"
+                  onClick={handleGenerateWinningPatterns}
+                  disabled={generatingPatterns}
+                  title="Playbook Vivo: encontra abordagens que converteram melhor a partir de outcomes positivos reais e sugere pro time"
+                  className="flex items-center gap-2 bg-surface-2 hover:bg-line border border-line disabled:opacity-60 text-ink px-4 py-2.5 rounded-2xl font-bold transition-all active:scale-95 cursor-pointer"
+                >
+                  {generatingPatterns ? (
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                  ) : (
+                    <Trophy className="w-5 h-5 text-iris" />
+                  )}
+                  {generatingPatterns ? 'Buscando...' : 'Playbook Vivo'}
+                </button>
+              )}
               <button
                 type="button"
-                onClick={handleGenerateWinningPatterns}
-                disabled={generatingPatterns}
-                title="Playbook Vivo: encontra abordagens que converteram melhor a partir de outcomes positivos reais e sugere pro time"
-                className="flex items-center gap-2 bg-surface-2 hover:bg-line border border-line disabled:opacity-60 text-ink px-4 py-2.5 rounded-2xl font-bold transition-all active:scale-95 cursor-pointer"
+                onClick={handleGenerateSuggestions}
+                disabled={generatingSuggestions}
+                title="Gera sugestões de objeção a partir de padrões reais de negócios perdidos registrados no CRM"
+                className="flex items-center gap-2 bg-surface-2 hover:bg-line border border-line disabled:opacity-60 text-ink px-4 py-2.5 rounded-2xl font-bold transition-colors active:scale-95 cursor-pointer"
               >
-                {generatingPatterns ? (
+                {generatingSuggestions ? (
                   <Loader2 className="w-5 h-5 animate-spin" />
                 ) : (
-                  <Trophy className="w-5 h-5 text-iris" />
+                  <Sparkles className="w-5 h-5 text-iris" />
                 )}
-                {generatingPatterns ? 'Buscando...' : 'Playbook Vivo'}
+                {generatingSuggestions ? 'Gerando...' : 'Gerar sugestões de IA'}
               </button>
-            )}
-            <button
-              type="button"
-              onClick={handleGenerateSuggestions}
-              disabled={generatingSuggestions}
-              title="Gera sugestões de objeção a partir de padrões reais de negócios perdidos registrados no CRM"
-              className="flex items-center gap-2 bg-surface-2 hover:bg-line border border-line disabled:opacity-60 text-ink px-4 py-2.5 rounded-2xl font-bold transition-colors active:scale-95 cursor-pointer"
-            >
-              {generatingSuggestions ? (
-                <Loader2 className="w-5 h-5 animate-spin" />
-              ) : (
-                <Sparkles className="w-5 h-5 text-iris" />
-              )}
-              {generatingSuggestions ? 'Gerando...' : 'Gerar sugestões de IA'}
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setEditingItem(null);
-                setIsFormOpen(true);
-              }}
-              className="flex items-center gap-2 bg-brand-active hover:brightness-110 text-on-brand px-5 py-2.5 rounded-2xl font-bold transition-colors shadow-lg shadow-brand/20 active:scale-95 cursor-pointer"
-            >
-              <Plus className="w-5 h-5" /> Nova Objeção
-            </button>
-          </div>
-        </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setEditingItem(null);
+                  setIsFormOpen(true);
+                }}
+                className="flex items-center gap-2 bg-brand-active hover:brightness-110 text-on-brand px-5 py-2.5 rounded-2xl font-bold transition-colors shadow-lg shadow-brand/20 active:scale-95 cursor-pointer"
+              >
+                <Plus className="w-5 h-5" /> Nova Objeção
+              </button>
+            </>
+          }
+        />
 
         <div className="bg-surface/80 p-4 rounded-2xl border border-line flex flex-wrap items-center gap-3">
           <span className="text-xs font-bold text-ink flex items-center gap-1.5 shrink-0">

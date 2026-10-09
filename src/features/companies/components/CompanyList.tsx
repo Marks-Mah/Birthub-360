@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { PageTitleCard } from '../../../components/ui/PageTitleCard.js';
 import { useConfirmDialog } from '../../../components/ui/ConfirmDialog.js';
 import { ContextualTip } from '../../../components/ui/ContextualTip.js';
 import { EmptyState } from '../../../components/ui/EmptyState.js';
@@ -398,57 +399,56 @@ export function CompanyList() {
         />
 
         {/* Top Header */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-surface p-6 rounded-2xl border border-line shadow-card">
-          <div>
-            <h1 className="text-2xl font-black text-ink flex items-center gap-3 tracking-tight font-[family-name:var(--font-brand-display)]">
-              <Building2 className="w-6 h-6 text-brand" />
-              Empresas & Carteira
-              <span className="text-xs bg-brand/10 text-brand border border-brand/20 px-3 py-1 rounded-full font-bold">
-                {companies.length} Mapeadas
-              </span>
-            </h1>
-            <p className="text-ink-2 text-sm mt-1 font-[family-name:var(--font-brand-sans)]">
-              Gerencie prospects com visibilidade total do ecossistema de software e inteligência
-            </p>
-          </div>
-          <div className="flex items-center gap-3">
-            {/* Layout Mode Toggle */}
-            <div className="bg-surface-2 p-1 rounded-xl border border-line flex items-center gap-1">
-              <button
-                type="button"
-                onClick={() => setLayoutMode('grid')}
-                className={`p-2 rounded-lg transition-colors flex items-center gap-1 text-xs font-semibold ${layoutMode === 'grid' ? 'bg-brand text-on-brand shadow-sm' : 'text-ink-2 hover:text-ink'}`}
-                title="Visão em Cards com Logos de Ferramentas"
-                aria-label="Visão em Cards com Logos de Ferramentas"
-              >
-                <LayoutGrid className="w-4 h-4" />
-                <span className="hidden sm:inline">Cards</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => setLayoutMode('table')}
-                className={`p-2 rounded-lg transition-colors flex items-center gap-1 text-xs font-semibold ${layoutMode === 'table' ? 'bg-brand text-on-brand shadow-sm' : 'text-ink-2 hover:text-ink'}`}
-                title="Visão em Tabela Compacta"
-                aria-label="Visão em Tabela Compacta"
-              >
-                <LayoutList className="w-4 h-4" />
-                <span className="hidden sm:inline">Tabela</span>
-              </button>
-            </div>
+        <PageTitleCard
+          title="Empresas & Carteira"
+          subtitle="Gerencie prospects com visibilidade total do ecossistema de software e inteligência"
+          icon={<Building2 className="h-5 w-5" />}
+          badge={
+            <span className="text-xs bg-brand/10 text-brand-ink dark:text-brand border border-brand/20 px-3 py-1 rounded-full font-bold">
+              {companies.length} Mapeadas
+            </span>
+          }
+          accent="brand"
+          actions={
+            <>
+              {/* Layout Mode Toggle */}
+              <div className="bg-surface-2 p-1 rounded-xl border border-line flex items-center gap-1">
+                <button
+                  type="button"
+                  onClick={() => setLayoutMode('grid')}
+                  className={`p-2 rounded-lg transition-colors flex items-center gap-1 text-xs font-semibold ${layoutMode === 'grid' ? 'bg-brand text-on-brand shadow-sm' : 'text-ink-2 hover:text-ink'}`}
+                  title="Visão em Cards com Logos de Ferramentas"
+                  aria-label="Visão em Cards com Logos de Ferramentas"
+                >
+                  <LayoutGrid className="w-4 h-4" />
+                  <span className="hidden sm:inline">Cards</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setLayoutMode('table')}
+                  className={`p-2 rounded-lg transition-colors flex items-center gap-1 text-xs font-semibold ${layoutMode === 'table' ? 'bg-brand text-on-brand shadow-sm' : 'text-ink-2 hover:text-ink'}`}
+                  title="Visão em Tabela Compacta"
+                  aria-label="Visão em Tabela Compacta"
+                >
+                  <LayoutList className="w-4 h-4" />
+                  <span className="hidden sm:inline">Tabela</span>
+                </button>
+              </div>
 
-            <button
-              type="button"
-              onClick={() => {
-                setSelectedCompany(null);
-                setIsFormOpen(true);
-              }}
-              className="flex items-center gap-2 bg-brand hover:bg-brand/90 text-on-brand px-5 py-2.5 rounded-xl font-bold transition-colors shadow-card hover:shadow-card-hover active:scale-95 cursor-pointer"
-            >
-              <Plus className="w-5 h-5" />
-              Nova Empresa
-            </button>
-          </div>
-        </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedCompany(null);
+                  setIsFormOpen(true);
+                }}
+                className="flex items-center gap-2 bg-brand hover:bg-brand/90 text-on-brand px-5 py-2.5 rounded-xl font-bold transition-colors shadow-card hover:shadow-card-hover active:scale-95 cursor-pointer"
+              >
+                <Plus className="w-5 h-5" />
+                Nova Empresa
+              </button>
+            </>
+          }
+        />
 
         {/* Search & Filter Bar */}
         <div className="bg-surface p-4 rounded-2xl border border-line shadow-lg flex flex-col sm:flex-row gap-4 items-center justify-between">

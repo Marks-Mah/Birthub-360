@@ -116,11 +116,12 @@ export function SinglePageDashboard() {
       <div className="w-full max-w-[98rem] mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
         {/* ── COMMAND CENTER HEADER ────────────────────────────────────────── */}
         <motion.header
-          className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 border-b border-line pb-6"
+          className="relative overflow-hidden rounded-2xl border border-brand/25 bg-surface/80 p-6 shadow-card backdrop-blur-sm transition-all duration-300 dark:border-brand/30 dark:bg-surface/60 flex flex-col md:flex-row md:items-end md:justify-between gap-6"
           variants={staggerContainer(0.08, 0)}
           initial="hidden"
           animate="show"
         >
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand/40 to-transparent" />
           <motion.div className="space-y-2" variants={staggerItem}>
             <div className="flex items-center gap-3">
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-brand/10 text-brand border border-brand/20">
@@ -132,7 +133,7 @@ export function SinglePageDashboard() {
                 SISTEMA OPERACIONAL
               </span>
             </div>
-            <h1 className="font-display text-3xl sm:text-4xl font-extrabold tracking-tight text-ink">
+            <h1 className="font-display text-3xl sm:text-4xl font-extrabold tracking-tight text-brand-ink dark:text-brand">
               {greeting()}, {firstName}.
             </h1>
             <p className="text-sm text-ink-2 max-w-2xl font-sans">

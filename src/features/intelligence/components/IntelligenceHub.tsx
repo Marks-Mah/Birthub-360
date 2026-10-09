@@ -21,6 +21,7 @@ import {
 import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Intelligence } from '../../../components/Intelligence.js';
+import { PageTitleCard } from '../../../components/ui/PageTitleCard.js';
 import { Button } from '../../../components/ui/Button.js';
 import { Card, CardDescription, CardTitle } from '../../../components/ui/Card.js';
 import { useBrandAccent } from '../../../hooks/useBrandAccent.js';
@@ -211,14 +212,13 @@ export function IntelligenceHub({ initialTab }: IntelligenceHubProps) {
     return (
       <div className="flex-1 overflow-y-auto bg-transparent">
         <div className="bh-page bh-page-stack">
-          <header className="border-b border-line pb-5">
-            <div className="bh-label text-brand-ink dark:text-brand">INTELIGÊNCIA APLICADA</div>
-            <h1 className="mt-1 font-display text-h1 font-bold text-ink">Hub de IA</h1>
-            <p className="mt-1 max-w-2xl text-sm leading-relaxed text-ink-2">
-              Escolha uma capacidade para transformar contexto operacional em uma próxima ação
-              verificável.
-            </p>
-          </header>
+          <PageTitleCard
+            eyebrow="INTELIGÊNCIA APLICADA"
+            title="Hub de IA"
+            subtitle="Escolha uma capacidade para transformar contexto operacional em uma próxima ação verificável."
+            icon={<Workflow className="h-5 w-5" />}
+            accent="iris"
+          />
 
           <motion.nav
             aria-label="Ferramentas do Hub de IA"

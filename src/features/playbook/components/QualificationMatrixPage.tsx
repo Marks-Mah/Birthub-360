@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { useConfirmDialog } from '../../../components/ui/ConfirmDialog.js';
+import { PageTitleCard } from '../../../components/ui/PageTitleCard.js';
 import { EmptyState } from '../../../components/ui/EmptyState.js';
 import { Pagination } from '../../../components/ui/Pagination.js';
 import { PLAYBOOKS } from '../../../config/playbooks.js';
@@ -136,28 +137,24 @@ export function QualificationMatrixPage() {
   return (
     <div className="flex-1 overflow-y-auto bg-transparent p-6 sm:p-8 font-sans">
       <div className="max-w-5xl mx-auto space-y-8">
-        <div className="flex flex-wrap items-start justify-between gap-4">
-          <div className="space-y-3">
-            <h1 className="text-4xl font-black tracking-tight text-ink flex items-center gap-3">
-              <Target className="text-brand" size={32} /> Matriz de Qualificação
-            </h1>
-            <p className="text-ink-2 text-sm font-medium">
-              {meta?.total ?? items.length} pergunta{(meta?.total ?? items.length) !== 1 ? 's' : ''}{' '}
-              de diagnóstico (SPIN/BANT/MEDDPICC) no playbook {playbookMeta.label}, com o sinal
-              ideal de resposta esperado.
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={() => {
-              setEditingItem(null);
-              setIsFormOpen(true);
-            }}
-            className="flex items-center gap-2 bg-brand-active hover:brightness-110 text-on-brand px-5 py-2.5 rounded-2xl font-bold transition-colors shadow-lg shadow-brand/20 active:scale-95 cursor-pointer shrink-0"
-          >
-            <Plus className="w-5 h-5" /> Nova Pergunta
-          </button>
-        </div>
+        <PageTitleCard
+          title="Matriz de Qualificação"
+          subtitle={`${meta?.total ?? items.length} pergunta${(meta?.total ?? items.length) !== 1 ? 's' : ''} de diagnóstico (SPIN/BANT/MEDDPICC) no playbook ${playbookMeta.label}, com o sinal ideal de resposta esperado.`}
+          icon={<Target className="h-5 w-5" />}
+          accent="brand"
+          actions={
+            <button
+              type="button"
+              onClick={() => {
+                setEditingItem(null);
+                setIsFormOpen(true);
+              }}
+              className="flex items-center gap-2 bg-brand-active hover:brightness-110 text-on-brand px-5 py-2.5 rounded-2xl font-bold transition-colors shadow-lg shadow-brand/20 active:scale-95 cursor-pointer shrink-0"
+            >
+              <Plus className="w-5 h-5" /> Nova Pergunta
+            </button>
+          }
+        />
 
         <div className="bg-surface/80 p-4 rounded-2xl border border-line flex flex-wrap items-center gap-3">
           <span className="text-xs font-bold text-ink flex items-center gap-1.5 shrink-0">

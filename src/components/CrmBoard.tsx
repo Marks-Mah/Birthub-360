@@ -623,10 +623,10 @@ export function CrmBoard({ funnel: funnelProp, embedded = false }: CrmBoardProps
       className={`flex-1 flex flex-col bg-bg text-ink animate-in fade-in duration-500 overflow-hidden relative ${embedded ? 'min-h-[680px] h-full' : 'h-full'}`}
     >
       {/* Header com estilo moderno */}
-      <div className="flex shrink-0 flex-col items-start justify-between gap-4 border-b border-line bg-surface-elevated/92 p-4 backdrop-blur-xl sm:flex-row sm:items-center lg:px-6 lg:py-5">
+      <div className="flex shrink-0 flex-col items-start justify-between gap-4 border-b border-brand/25 bg-surface-elevated/92 p-4 backdrop-blur-xl sm:flex-row sm:items-center lg:px-6 lg:py-5">
         <div>
           <div className="bh-label mb-1 text-[#1677FF]">PIPELINE COMERCIAL</div>
-          <h2 className="flex items-center gap-2 font-display text-h2 font-bold text-ink">
+          <h2 className="flex items-center gap-2 font-display text-h2 font-bold text-brand-ink dark:text-brand">
             <Target className="h-5 w-5 text-[#1677FF]" aria-hidden="true" />
             {funnel === 'Lead' ? 'Leads e pré-vendas' : 'Negócios e fechamento'}
           </h2>

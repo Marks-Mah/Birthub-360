@@ -43,7 +43,7 @@ export function ChatbookHub() {
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-surface/75 backdrop-blur-2xl rounded-[2.5rem] p-8 border border-line/80 shadow-[0_20px_40px_rgba(0,0,0,0.03)] flex items-center gap-4 relative overflow-hidden"
+          className="bg-surface/75 backdrop-blur-2xl rounded-[2.5rem] p-8 border border-brand/25 shadow-[0_20px_40px_rgba(0,0,0,0.03)] flex items-center gap-4 relative overflow-hidden"
         >
           {/* Luz Especular de Fundo 2026 */}
           <div className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-brand to-transparent opacity-80" />
@@ -65,7 +65,7 @@ export function ChatbookHub() {
 
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
-              <h1 className="text-2xl font-black text-ink tracking-tight">
+              <h1 className="text-2xl font-black text-brand-ink dark:text-brand tracking-tight">
                 {BRAND.shortName} Copilot
               </h1>
               <span className="text-[10px] px-2.5 py-0.5 rounded-full bg-success/15 text-success-active dark:text-success font-bold border border-success/30 shrink-0 inline-flex items-center gap-1">

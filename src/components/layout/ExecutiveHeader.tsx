@@ -46,7 +46,8 @@ export function ExecutiveHeader({
   ].filter((hub) => grantedModules.includes(hub.id));
 
   return (
-    <div className="space-y-2 border-b border-line pb-2.5">
+    <div className="relative overflow-hidden rounded-2xl border border-brand/25 bg-surface/80 p-4 shadow-card backdrop-blur-sm transition-all duration-300 dark:border-brand/30 dark:bg-surface/60 space-y-3">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand/40 to-transparent" />
       {/* Top Banner & Hub Switcher */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 bg-soft/30 px-3 py-1.5 rounded-xl border border-line">
         <div className="flex items-center gap-2 text-[11px] font-semibold text-ink-2">
@@ -96,7 +97,9 @@ export function ExecutiveHeader({
             <IconComponent className="w-4 h-4" />
           </div>
           <div className="min-w-0">
-            <h1 className="text-base font-bold text-ink truncate">{title}</h1>
+            <h1 className="text-base font-bold font-display text-brand-ink dark:text-brand truncate">
+              {title}
+            </h1>
             <p className="text-[11px] text-ink-2 truncate">{subtitle}</p>
           </div>
         </div>

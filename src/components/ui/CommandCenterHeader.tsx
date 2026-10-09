@@ -1,16 +1,17 @@
 import * as React from 'react';
+import { cn } from '../../lib/utils.js';
+import { PageTitleCard } from './PageTitleCard.js';
 import type { VisualStateType } from './VisualState.js';
 import { VisualState } from './VisualState.js';
-import { cn } from '../../lib/utils.js';
 
 interface CommandCenterHeaderProps {
-  /** Module name displayed in large white sans text. */
+  /** Module name. */
   title: string;
   /** Optional description text or node. */
   description?: React.ReactNode;
   /** Optional icon component or node. */
   icon?: React.ReactNode | React.ComponentType<{ className?: string }>;
-  /** Pillar identifier shown in monospace uppercase blue (e.g. "01 · HUB"). */
+  /** Pillar identifier shown above the title (e.g. "01 · HUB"). */
   pillar?: string;
   /** Operational state badge shown next to the title. */
   state?: VisualStateType;
@@ -20,9 +21,8 @@ interface CommandCenterHeaderProps {
 }
 
 /**
- * Reusable header for internal product screens.
- * Renders a module title, optional pillar tag, a VisualState badge, and a right-side actions slot.
- * Below the flex row, a decorative gradient line marks the bottom border.
+ * Header for internal product screens: renders the shared PageTitleCard with the pillar tag,
+ * a VisualState badge and a right-side actions slot.
  */
 export function CommandCenterHeader({
   title,
@@ -35,50 +35,21 @@ export function CommandCenterHeader({
 }: CommandCenterHeaderProps) {
   const renderIcon = () => {
     if (!icon) return null;
-    if (React.isValidElement(icon)) {
-      return <span className="text-brand shrink-0">{icon}</span>;
-    }
+    if (React.isValidElement(icon)) return icon;
     const IconComp = icon as React.ComponentType<{ className?: string }>;
-    return <IconComp className="w-5 h-5 text-brand shrink-0" />;
+    return <IconComp className="h-5 w-5" />;
   };
 
   return (
-    <header
-      className={cn(
-        'relative flex items-center justify-between px-6 py-4',
-        // Subtle bottom border — gradient line is drawn via ::after pseudo (see below)
-        'border-b border-white/[0.08]',
-        className,
-      )}
-    >
-      {/* Left: pillar + title + state */}
-      <div className="flex flex-col gap-0.5 min-w-0">
-        {pillar && (
-          <span className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-[#1677FF]">
-            {pillar}
-          </span>
-        )}
-        <div className="flex items-center gap-3 flex-wrap">
-          {renderIcon()}
-          <h1 className="font-display text-2xl font-bold leading-tight text-ink truncate">
-            {title}
-          </h1>
-          {state && <VisualState state={state} size="sm" />}
-        </div>
-        {description && <p className="text-xs text-ink-2 mt-0.5">{description}</p>}
-      </div>
-
-      {/* Right: action slot */}
-      {actions && <div className="ml-4 flex shrink-0 items-center gap-2">{actions}</div>}
-
-      {/* Decorative gradient line below the border */}
-      <span
-        aria-hidden="true"
-        className={cn(
-          'pointer-events-none absolute inset-x-0 bottom-0 h-px',
-          'bg-gradient-to-r from-[#1677FF]/20 via-[#7C3AED]/10 to-transparent',
-        )}
-      />
-    </header>
+    <PageTitleCard
+      className={cn(className)}
+      eyebrow={pillar}
+      title={title}
+      subtitle={description}
+      icon={renderIcon()}
+      badge={state ? <VisualState state={state} size="sm" /> : undefined}
+      actions={actions}
+      accent="brand"
+    />
   );
 }

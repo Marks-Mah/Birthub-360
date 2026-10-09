@@ -2,6 +2,7 @@ import confetti from 'canvas-confetti';
 import { Play, Plus, Repeat, Sparkles } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '../../../components/ui/Button.js';
+import { PageTitleCard } from '../../../components/ui/PageTitleCard.js';
 import { useAuth } from '../../../contexts/AuthContext.js';
 import { hasRequiredRole } from '../../../lib/auth/authorization.js';
 import { SoundFX } from '../../../lib/soundEffects.js';
@@ -41,48 +42,44 @@ export function CadenceHub() {
   return (
     <div className="flex-1 overflow-y-auto bg-bg text-ink p-6 md:p-8 space-y-6">
       <div className="max-w-6xl mx-auto space-y-6">
-        <header className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
-          <div className="flex flex-col gap-1">
-            <h1 className="text-2xl font-extrabold text-ink flex items-center gap-2 tracking-tight">
-              <Repeat className="w-5 h-5 text-brand" aria-hidden="true" />
-              Cadência &amp; Ciclo de Receita
-            </h1>
-            <p className="text-sm text-ink-2 max-w-2xl">
-              Opt-outs unificados por lead/canal, detecção inteligente de resposta (Reply Tracking)
-              e o estado real de cada sequência multicanal em andamento.
-            </p>
-          </div>
-          <div className="flex items-center gap-2 shrink-0">
-            <Button
-              type="button"
-              variant="secondary"
-              size="sm"
-              soundClick
-              onClick={() => setJourneyTemplatesOpen(true)}
-            >
-              <Sparkles className="w-3.5 h-3.5 mr-1" aria-hidden="true" /> Modelos de Jornada
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              soundClick
-              onClick={() => setNewSequenceOpen(true)}
-            >
-              <Plus className="w-3.5 h-3.5 mr-1" aria-hidden="true" /> Nova sequência
-            </Button>
-            <Button
-              type="button"
-              size="sm"
-              variant="cosmic"
-              shine
-              soundClick
-              onClick={() => setStartRunOpen(true)}
-            >
-              <Play className="w-3.5 h-3.5 mr-1" aria-hidden="true" /> Iniciar cadência
-            </Button>
-          </div>
-        </header>
+        <PageTitleCard
+          title="Cadência & Ciclo de Receita"
+          subtitle="Opt-outs unificados por lead/canal, detecção inteligente de resposta (Reply Tracking) e o estado real de cada sequência multicanal em andamento."
+          icon={<Repeat className="h-5 w-5" aria-hidden="true" />}
+          accent="success"
+          actions={
+            <>
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                soundClick
+                onClick={() => setJourneyTemplatesOpen(true)}
+              >
+                <Sparkles className="w-3.5 h-3.5 mr-1" aria-hidden="true" /> Modelos de Jornada
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                soundClick
+                onClick={() => setNewSequenceOpen(true)}
+              >
+                <Plus className="w-3.5 h-3.5 mr-1" aria-hidden="true" /> Nova sequência
+              </Button>
+              <Button
+                type="button"
+                size="sm"
+                variant="cosmic"
+                shine
+                soundClick
+                onClick={() => setStartRunOpen(true)}
+              >
+                <Play className="w-3.5 h-3.5 mr-1" aria-hidden="true" /> Iniciar cadência
+              </Button>
+            </>
+          }
+        />
 
         {/*
           Chaves com prefixo de propósito: as duas seções são irmãs e os dois contadores começam

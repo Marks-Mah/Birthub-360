@@ -419,14 +419,14 @@ export function RoleplayHub() {
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-surface/70 backdrop-blur-2xl rounded-[3rem] p-8 md:p-12 border border-line shadow-[0_20px_40px_rgba(0,0,0,0.03)] flex flex-col items-center justify-center text-center gap-5 relative overflow-hidden"
+          className="bg-surface/70 backdrop-blur-2xl rounded-[3rem] p-8 md:p-12 border border-brand/25 shadow-[0_20px_40px_rgba(0,0,0,0.03)] flex flex-col items-center justify-center text-center gap-5 relative overflow-hidden"
         >
           <div className="absolute inset-0 bg-gradient-to-b from-surface/50 to-transparent pointer-events-none" />
           <div className="relative z-10 flex flex-col items-center gap-5">
             <span className="px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border border-brand/30 bg-brand/10 text-brand-ink dark:text-brand shadow-sm">
               {playbookMeta.label}
             </span>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-ink tracking-tight flex items-center gap-3">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-brand-ink dark:text-brand tracking-tight flex items-center gap-3">
               <PhoneCall className="text-brand" size={40} /> Roleplay
             </h1>
             <p className="text-ink-2 text-base md:text-lg font-medium max-w-xl">

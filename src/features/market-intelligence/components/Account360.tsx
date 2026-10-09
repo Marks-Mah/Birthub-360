@@ -230,17 +230,17 @@ export function Account360() {
 
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-8 animate-in fade-in duration-500">
-      <header className="flex flex-col md:flex-row md:items-center justify-between border-b border-white/10 pb-6 gap-4">
+      <header className="flex flex-col md:flex-row md:items-center justify-between rounded-card border border-success/25 bg-surface p-5 shadow-card gap-4">
         <div className="flex items-start md:items-center space-x-4">
-          <Button variant="ghost" onClick={() => navigate(-1)} className="hover:bg-white/5">
+          <Button variant="ghost" onClick={() => navigate(-1)}>
             <ArrowLeft className="w-5 h-5 mr-2" /> Voltar
           </Button>
           <div>
-            <h1 className="text-3xl font-bold text-white flex items-center tracking-tight">
+            <h1 className="text-3xl font-bold text-success-active dark:text-success flex items-center tracking-tight">
               <Building2 className="w-8 h-8 mr-3 text-emerald-500" />
               {intelligence?.account.tradeName || intelligence?.account.legalName || `Conta: ${id}`}
             </h1>
-            <p className="text-sm text-white/50 mt-1 flex items-center">
+            <p className="text-sm text-ink-2 mt-1 flex items-center">
               <Zap className="w-4 h-4 mr-1" /> Última atualização:{' '}
               {intelligence?.facts?.generatedAt
                 ? new Date(intelligence.facts.generatedAt).toLocaleString('pt-BR')

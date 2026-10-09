@@ -14,6 +14,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Button } from '../../../components/ui/Button.js';
 import { Card } from '../../../components/ui/Card.js';
 import { useConfirmDialog } from '../../../components/ui/ConfirmDialog.js';
+import { PageTitleCard } from '../../../components/ui/PageTitleCard.js';
 import { useAuth } from '../../../contexts/AuthContext.js';
 import { useBrandAccent } from '../../../hooks/useBrandAccent.js';
 import { hasRequiredRole } from '../../../lib/auth/authorization.js';
@@ -133,56 +134,50 @@ export function Notifications() {
   return (
     <div className="flex-1 overflow-y-auto bg-transparent p-8">
       <div className="max-w-4xl mx-auto space-y-6">
-        <div className="flex items-center justify-between gap-4 border-b border-line pb-6">
-          <div className="flex items-center gap-4">
-            <div
-              className={`w-12 h-12 rounded-xl flex items-center justify-center ${accent.bgSoft} ${accent.text}`}
-            >
-              <Bell className="w-6 h-6" />
-            </div>
-            <div>
-              <h1 className="text-3xl font-bold text-ink">Notificações</h1>
-              <p className="text-sm text-ink-2">
-                {loading
-                  ? 'Carregando…'
-                  : unread === 0
-                    ? 'Tudo em dia'
-                    : `${unread} não lida${unread === 1 ? '' : 's'}`}
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <div className="flex items-center rounded-xl border border-line overflow-hidden">
-              {[
-                { label: 'Todas', value: false },
-                { label: 'Não lidas', value: true },
-              ].map((opt) => (
-                <button
-                  key={opt.label}
-                  type="button"
-                  onClick={() => setOnlyUnread(opt.value)}
-                  aria-pressed={onlyUnread === opt.value}
-                  className={`px-3 py-1.5 text-xs font-semibold transition-colors ${
-                    onlyUnread === opt.value
-                      ? `${accent.bg} text-on-brand`
-                      : 'text-ink-2 hover:text-ink hover:bg-surface-2'
-                  }`}
-                >
-                  {opt.label}
-                </button>
-              ))}
-            </div>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => void markAllRead()}
-              disabled={loading || unread === 0}
-            >
-              <CheckCheck className="w-4 h-4 mr-2" /> Marcar todas
-            </Button>
-          </div>
-        </div>
+        <PageTitleCard
+          title="Notificações"
+          subtitle={
+            loading
+              ? 'Carregando…'
+              : unread === 0
+                ? 'Tudo em dia'
+                : `${unread} não lida${unread === 1 ? '' : 's'}`
+          }
+          icon={<Bell className="h-5 w-5" />}
+          accent="warning"
+          actions={
+            <>
+              <div className="flex items-center rounded-xl border border-line overflow-hidden">
+                {[
+                  { label: 'Todas', value: false },
+                  { label: 'Não lidas', value: true },
+                ].map((opt) => (
+                  <button
+                    key={opt.label}
+                    type="button"
+                    onClick={() => setOnlyUnread(opt.value)}
+                    aria-pressed={onlyUnread === opt.value}
+                    className={`px-3 py-1.5 text-xs font-semibold transition-colors ${
+                      onlyUnread === opt.value
+                        ? `${accent.bg} text-on-brand`
+                        : 'text-ink-2 hover:text-ink hover:bg-surface-2'
+                    }`}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => void markAllRead()}
+                disabled={loading || unread === 0}
+              >
+                <CheckCheck className="w-4 h-4 mr-2" /> Marcar todas
+              </Button>
+            </>
+          }
+        />
 
         {loading && (
           <Card padding="lg" className="text-center text-ink-2 text-sm">

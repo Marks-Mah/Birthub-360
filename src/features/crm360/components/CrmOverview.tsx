@@ -16,6 +16,7 @@ import {
   Users,
 } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { PageTitleCard } from '../../../components/ui/PageTitleCard.js';
 import { Button } from '../../../components/ui/Button.js';
 import { api } from '../../../lib/api.js';
 import { clientLogger } from '../../../lib/clientLogger.js';
@@ -150,26 +151,25 @@ export function CrmOverview({ onNavigate }: CrmOverviewProps) {
 
   return (
     <div className="space-y-6 w-full px-4 sm:px-6 lg:px-8 py-6">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h2 className="text-2xl font-black tracking-tight text-ink font-[family-name:var(--font-brand-display)]">
-            Cockpit Comercial
-          </h2>
-          <p className="text-sm text-ink-2 font-[family-name:var(--font-brand-sans)]">
-            Visão executiva do pipeline, receita e prioridades em tempo real.
-          </p>
-        </div>
-        <Button
-          onClick={() => void load()}
-          disabled={loading}
-          variant="outline"
-          size="sm"
-          sound="confirm"
-          className="inline-flex items-center gap-2 self-start text-xs font-bold"
-        >
-          <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} /> Atualizar
-        </Button>
-      </div>
+      <PageTitleCard
+        as="h2"
+        title="Cockpit Comercial"
+        subtitle="Visão executiva do pipeline, receita e prioridades em tempo real."
+        icon={<Gauge className="h-5 w-5" />}
+        accent="brand"
+        actions={
+          <Button
+            onClick={() => void load()}
+            disabled={loading}
+            variant="outline"
+            size="sm"
+            sound="confirm"
+            className="inline-flex items-center gap-2 self-start text-xs font-bold"
+          >
+            <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} /> Atualizar
+          </Button>
+        }
+      />
 
       <motion.section
         variants={staggerContainer(0.06)}

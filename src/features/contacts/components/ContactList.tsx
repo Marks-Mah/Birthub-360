@@ -23,6 +23,7 @@ import { EmptyState } from '../../../components/ui/EmptyState.js';
 import { LinkedinIcon as Linkedin } from '../../../components/ui/icons/LinkedinIcon.js';
 import { Input } from '../../../components/ui/Input.js';
 import { Pagination } from '../../../components/ui/Pagination.js';
+import { PageTitleCard } from '../../../components/ui/PageTitleCard.js';
 import { useContacts } from '../../../hooks/useDatabase.js';
 import { clientLogger } from '../../../lib/clientLogger.js';
 import { contactsDB } from '../../../lib/db.js';
@@ -179,44 +180,42 @@ export function ContactList() {
     >
       <div className="w-full space-y-6">
         {/* Header */}
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-black text-ink tracking-tight font-[family-name:var(--font-brand-display)] flex items-center gap-3">
-              <Users className="w-6 h-6 text-brand" />
-              Contatos & Decisores
-            </h1>
-            <p className="text-xs text-ink-2 mt-0.5 font-medium font-[family-name:var(--font-brand-sans)]">
-              {loading
-                ? 'Carregando...'
-                : `${meta?.total ?? contacts.length} contato${(meta?.total ?? contacts.length) !== 1 ? 's' : ''} no banco de dados`}
-            </p>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <div className="relative">
-              <Search className="w-4 h-4 text-ink-2 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-              <Input
-                type="text"
-                aria-label="Buscar contatos"
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                placeholder="Buscar por nome, cargo, e-mail..."
-                className="pl-10 text-xs font-semibold w-56 sm:w-64"
-              />
-            </div>
-            <Button
-              type="button"
-              onClick={() => {
-                setSelectedContact(null);
-                setIsFormOpen(true);
-              }}
-              size="default"
-              className="gap-2"
-            >
-              <Plus className="w-4 h-4" /> Novo Contato
-            </Button>
-          </div>
-        </div>
+        <PageTitleCard
+          title="Contatos & Decisores"
+          subtitle={
+            loading
+              ? 'Carregando...'
+              : `${meta?.total ?? contacts.length} contato${(meta?.total ?? contacts.length) !== 1 ? 's' : ''} no banco de dados`
+          }
+          icon={<Users className="h-5 w-5" />}
+          accent="iris"
+          actions={
+            <>
+              <div className="relative">
+                <Search className="w-4 h-4 text-ink-2 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <Input
+                  type="text"
+                  aria-label="Buscar contatos"
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  placeholder="Buscar por nome, cargo, e-mail..."
+                  className="pl-10 text-xs font-semibold w-56 sm:w-64"
+                />
+              </div>
+              <Button
+                type="button"
+                onClick={() => {
+                  setSelectedContact(null);
+                  setIsFormOpen(true);
+                }}
+                size="default"
+                className="gap-2"
+              >
+                <Plus className="w-4 h-4" /> Novo Contato
+              </Button>
+            </>
+          }
+        />
 
         {/* Table */}
         <div className="bg-surface/95 backdrop-blur-2xl rounded-2xl border border-line shadow-card overflow-hidden">

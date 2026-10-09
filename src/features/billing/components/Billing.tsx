@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { Button } from '../../../components/ui/Button.js';
 import { Card } from '../../../components/ui/Card.js';
+import { PageTitleCard } from '../../../components/ui/PageTitleCard.js';
 import { useBrandAccent } from '../../../hooks/useBrandAccent.js';
 import { api } from '../../../lib/api.js';
 import { INK, SINGLE, tooltipStyle } from '../../../shared/constants/chartPalette.js';
@@ -86,55 +87,49 @@ export function Billing() {
   return (
     <div className="flex-1 overflow-y-auto bg-transparent p-8">
       <div className="max-w-6xl mx-auto space-y-6">
-        <div className="flex items-center justify-between gap-4 border-b border-line pb-6">
-          <div className="flex items-center gap-4">
-            <div
-              className={`w-12 h-12 rounded-xl flex items-center justify-center ${accent.bgSoft} ${accent.text}`}
-            >
-              <Wallet className="w-6 h-6" />
-            </div>
-            <div>
-              <h1 className="text-3xl font-bold text-ink">Consumo de IA</h1>
-              <p className="text-sm text-ink-2">Tokens, chamadas e custo estimado por modelo</p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2">
-            {/* Toolbar de botões toggle (não campos de formulário) — <fieldset> não traria ganho
+        <PageTitleCard
+          title="Consumo de IA"
+          subtitle="Tokens, chamadas e custo estimado por modelo"
+          icon={<Wallet className="h-5 w-5" />}
+          accent="warning"
+          actions={
+            <>
+              {/* Toolbar de botões toggle (não campos de formulário) — <fieldset> não traria ganho
                 real de acessibilidade aqui, só estilo. */}
-            {/* biome-ignore lint/a11y/useSemanticElements: ver comentário acima */}
-            <div
-              className="flex items-center rounded-xl border border-line overflow-hidden"
-              role="group"
-              aria-label="Período"
-            >
-              {PERIODS.map((p) => (
-                <button
-                  key={p}
-                  type="button"
-                  onClick={() => setDays(p)}
-                  aria-pressed={days === p}
-                  className={`px-3 py-1.5 text-xs font-semibold transition-colors ${
-                    days === p
-                      ? `${accent.bg} text-on-brand`
-                      : 'text-ink-2 hover:text-ink hover:bg-surface-2'
-                  }`}
-                >
-                  {p}d
-                </button>
-              ))}
-            </div>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => void load(days)}
-              disabled={loading}
-              aria-label="Recarregar"
-            >
-              <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-            </Button>
-          </div>
-        </div>
+              {/* biome-ignore lint/a11y/useSemanticElements: ver comentário acima */}
+              <div
+                className="flex items-center rounded-xl border border-line overflow-hidden"
+                role="group"
+                aria-label="Período"
+              >
+                {PERIODS.map((p) => (
+                  <button
+                    key={p}
+                    type="button"
+                    onClick={() => setDays(p)}
+                    aria-pressed={days === p}
+                    className={`px-3 py-1.5 text-xs font-semibold transition-colors ${
+                      days === p
+                        ? `${accent.bg} text-on-brand`
+                        : 'text-ink-2 hover:text-ink hover:bg-surface-2'
+                    }`}
+                  >
+                    {p}d
+                  </button>
+                ))}
+              </div>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => void load(days)}
+                disabled={loading}
+                aria-label="Recarregar"
+              >
+                <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+              </Button>
+            </>
+          }
+        />
 
         {/* O produto não tem plano, assinatura nem provedor de pagamento; dizer "faturamento"
                     aqui seria inventar. O que existe de real é o custo estimado das chamadas de IA. */}

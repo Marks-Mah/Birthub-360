@@ -29,9 +29,9 @@ import { WhatsAppWebPanel } from '../whatsapp/components/WhatsAppWebPanel.js';
 import { BitrixExtractionPanel } from './BitrixExtractionPanel.js';
 import { BitrixImportPanel } from './BitrixImportPanel.js';
 import { BitrixSyncRulesPanel } from './BitrixSyncRulesPanel.js';
+import { ExternalCrmPanel } from './ExternalCrmPanel.js';
 import { IntegrationStatusBadge } from './IntegrationStatusBadge.js';
 import { WebhookMonitor } from './WebhookMonitor.js';
-import { ExternalCrmPanel } from './ExternalCrmPanel.js';
 
 type IntegrationCapabilityStatus = 'connected' | 'read' | 'write' | 'stub' | 'error' | 'pending';
 
@@ -181,13 +181,16 @@ export function Integrations() {
     <div className="flex-1 overflow-hidden flex flex-col lg:flex-row bg-bg transition-colors duration-300">
       {/* Sidebar (vertical em lg+, barra de abas horizontal abaixo disso) */}
       <div className="w-full lg:w-64 bg-surface border-b lg:border-b-0 lg:border-r border-line flex flex-col lg:h-full shrink-0">
-        <div className="hidden lg:block p-6 border-b border-line">
+        <div className="hidden lg:block p-6 border-b border-line bg-surface/80">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-surface-2 rounded-lg flex items-center justify-center text-brand border border-line">
+            <div className="w-10 h-10 bg-brand/10 rounded-xl flex items-center justify-center text-brand border border-brand/20">
               <IconWrench className="w-5 h-5" />
             </div>
             <div>
-              <h1 className="text-lg font-bold text-ink">Integrações</h1>
+              <h1 className="text-lg font-bold font-display text-brand-ink dark:text-brand">
+                Integrações
+              </h1>
+              <p className="text-[11px] text-ink-2">Conectores & Webhooks</p>
             </div>
           </div>
         </div>

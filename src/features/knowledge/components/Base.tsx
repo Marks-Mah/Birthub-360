@@ -18,6 +18,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Button } from '../../../components/ui/Button.js';
 import { Card } from '../../../components/ui/Card.js';
 import { useConfirmDialog } from '../../../components/ui/ConfirmDialog.js';
+import { PageTitleCard } from '../../../components/ui/PageTitleCard.js';
 import { useAuth } from '../../../contexts/AuthContext.js';
 import { useBrandAccent } from '../../../hooks/useBrandAccent.js';
 import { hasRequiredRole } from '../../../lib/auth/authorization.js';
@@ -369,48 +370,42 @@ export function Base() {
 
       <div className="max-w-6xl mx-auto space-y-6">
         {/* Cabeçalho */}
-        <div className="flex items-center justify-between gap-4 border-b border-line pb-6">
-          <div className="flex items-center gap-4">
-            <div
-              className={`w-12 h-12 rounded-xl flex items-center justify-center ${accent.bgSoft} ${accent.text}`}
-            >
-              <Database className="w-6 h-6" />
-            </div>
-            <div>
-              <h1 className="text-3xl font-bold text-ink">Base de Conhecimento</h1>
-              <p className="text-sm text-ink-2">
-                {loadingDocs
-                  ? 'Carregando…'
-                  : `${documents.length} documento${documents.length === 1 ? '' : 's'} · ${totalChunks} trecho${totalChunks === 1 ? '' : 's'} indexado${totalChunks === 1 ? '' : 's'}`}
-              </p>
-            </div>
-          </div>
-
-          {canWrite && (
-            <div className="flex items-center gap-2">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={openCreateModal}
-                disabled={uploading}
-              >
-                <Type className="w-4 h-4 mr-2" /> Colar texto
-              </Button>
-              <Button
-                type="button"
-                onClick={() => fileInputRef.current?.click()}
-                disabled={uploading}
-              >
-                {uploading ? (
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                ) : (
-                  <Upload className="w-4 h-4 mr-2" />
-                )}
-                {uploading ? 'Indexando…' : 'Enviar arquivo'}
-              </Button>
-            </div>
-          )}
-        </div>
+        <PageTitleCard
+          title="Base de Conhecimento"
+          subtitle={
+            loadingDocs
+              ? 'Carregando…'
+              : `${documents.length} documento${documents.length === 1 ? '' : 's'} · ${totalChunks} trecho${totalChunks === 1 ? '' : 's'} indexado${totalChunks === 1 ? '' : 's'}`
+          }
+          icon={<Database className="h-5 w-5" />}
+          accent="iris"
+          actions={
+            canWrite && (
+              <div className="flex items-center gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={openCreateModal}
+                  disabled={uploading}
+                >
+                  <Type className="w-4 h-4 mr-2" /> Colar texto
+                </Button>
+                <Button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={uploading}
+                >
+                  {uploading ? (
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  ) : (
+                    <Upload className="w-4 h-4 mr-2" />
+                  )}
+                  {uploading ? 'Indexando…' : 'Enviar arquivo'}
+                </Button>
+              </div>
+            )
+          }
+        />
 
         <input
           ref={fileInputRef}

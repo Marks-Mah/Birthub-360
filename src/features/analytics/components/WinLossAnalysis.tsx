@@ -2,6 +2,7 @@ import { AlertCircle, Brain, ChevronRight, Loader2, TrendingDown, TrendingUp } f
 import { useEffect, useState } from 'react';
 import { Button } from '../../../components/ui/Button.js';
 import { Card } from '../../../components/ui/Card.js';
+import { PageTitleCard } from '../../../components/ui/PageTitleCard.js';
 import { api } from '../../../lib/api.js';
 import { type AnalyticsDashboard, analyticsApi } from '../analytics.api.js';
 
@@ -110,32 +111,27 @@ export function WinLossAnalysis() {
     <div className="flex-1 overflow-y-auto bg-transparent p-8">
       <div className="max-w-4xl mx-auto space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between gap-4 border-b border-white/5 pb-6">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-[#8B7DFF]/10 text-[#8B7DFF]">
-              <Brain className="w-6 h-6" />
-            </div>
-            <div>
-              <h1 className="text-3xl font-bold text-white">Win / Loss Analysis</h1>
-              <p className="text-sm text-slate-400">
-                IA analisa padrões de vitórias e derrotas comerciais da semana
-              </p>
-            </div>
-          </div>
-          <Button variant="default" onClick={runAnalysis} disabled={loading} className="shrink-0">
-            {loading ? (
-              <>
-                <Loader2 className="w-4 h-4 animate-spin" />
-                Analisando…
-              </>
-            ) : (
-              <>
-                <Brain className="w-4 h-4" />
-                Rodar Análise
-              </>
-            )}
-          </Button>
-        </div>
+        <PageTitleCard
+          title="Win / Loss Analysis"
+          subtitle="IA analisa padrões de vitórias e derrotas comerciais da semana"
+          icon={<Brain className="h-5 w-5" />}
+          accent="iris"
+          actions={
+            <Button variant="default" onClick={runAnalysis} disabled={loading} className="shrink-0">
+              {loading ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Analisando…
+                </>
+              ) : (
+                <>
+                  <Brain className="w-4 h-4" />
+                  Rodar Análise
+                </>
+              )}
+            </Button>
+          }
+        />
 
         {/* Contexto numérico real, sempre visível — não depende de rodar a análise de IA */}
         {snapshot && !snapshot.isEmpty && (

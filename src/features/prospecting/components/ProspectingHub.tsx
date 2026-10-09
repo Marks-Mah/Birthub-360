@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { Bookmark, Camera, Database, Landmark, Wrench } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { PageTitleCard } from '../../../components/ui/PageTitleCard.js';
 import { GamificationWidget } from '../../../components/ui/GamificationWidget.js';
 import { BRAND } from '../../../config/brand.js';
 import { api } from '../../../lib/api.js';
@@ -649,14 +650,13 @@ export function ProspectingHub() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-4 space-y-4"
         >
-          <div className="bh-label text-brand-ink dark:text-brand">CAPTAÇÃO E QUALIFICAÇÃO</div>
-          <h1 className="font-display text-h1 font-bold tracking-tight text-ink">
-            Prospecção Comercial & Enriquecimento
-          </h1>
-          <p className="max-w-3xl text-sm leading-relaxed text-ink-2">
-            Motor de enriquecimento autônomo com IA para capturar leads corporativos de altíssimo
-            nível.
-          </p>
+          <PageTitleCard
+            eyebrow="CAPTAÇÃO E QUALIFICAÇÃO"
+            title="Prospecção Comercial & Enriquecimento"
+            subtitle="Motor de enriquecimento autônomo com IA para capturar leads corporativos de altíssimo nível."
+            icon={<Landmark className="h-5 w-5" />}
+            accent="brand"
+          />
           <GamificationWidget />
         </motion.div>
 

@@ -524,7 +524,7 @@ export function DailyPlanHub() {
               <Sparkles className="w-4 h-4 text-brand" />
               Plano Diário Operacional
             </div>
-            <h1 className="text-2xl md:text-3xl font-black text-ink">
+            <h1 className="font-display text-2xl md:text-3xl font-extrabold tracking-tight text-brand-ink dark:text-brand">
               {currentUser?.name || 'Comercial'}
             </h1>
             <p className="text-sm text-ink-2 mt-1 flex items-center gap-2 flex-wrap">

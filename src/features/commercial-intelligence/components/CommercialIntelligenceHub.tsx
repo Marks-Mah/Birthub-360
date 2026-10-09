@@ -157,7 +157,7 @@ export function CommercialIntelligenceHub() {
   return (
     <main className="mx-auto w-full max-w-[92rem] flex-1 space-y-5 overflow-y-auto p-4 md:p-8">
       <header
-        className="relative overflow-hidden rounded-[1.7rem] border border-line bg-surface/94 p-5 shadow-[0_30px_72px_-48px_rgba(0,0,0,0.95),inset_0_1px_0_rgba(255,255,255,0.07)] md:p-6 group/header transition-all duration-500 hover:shadow-brand/10"
+        className="relative overflow-hidden rounded-[1.7rem] border border-brand/25 bg-surface/94 p-5 shadow-[0_30px_72px_-48px_rgba(0,0,0,0.95),inset_0_1px_0_rgba(255,255,255,0.07)] md:p-6 group/header transition-all duration-500 hover:shadow-brand/10"
         onPointerMove={handleMouseMove}
       >
         {/* Bento Spotlight */}
@@ -187,7 +187,7 @@ export function CommercialIntelligenceHub() {
               <p className="text-[10px] font-black uppercase tracking-[0.22em] text-brand-ink dark:text-brand">
                 Revenue Command Center
               </p>
-              <h1 className="mt-1 text-xl font-black tracking-tight text-ink md:text-2xl">
+              <h1 className="mt-1 text-xl font-black tracking-tight text-brand-ink dark:text-brand md:text-2xl">
                 Comercial Inteligente
               </h1>
               <p className="mt-1 max-w-2xl text-sm leading-relaxed text-ink-2">

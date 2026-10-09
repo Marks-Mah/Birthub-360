@@ -329,9 +329,11 @@ export function ActivityList() {
     >
       <div className="max-w-6xl mx-auto space-y-6">
         {/* Header */}
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-surface/75 backdrop-blur-xl p-6 rounded-3xl border border-line">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-surface/75 backdrop-blur-xl p-6 rounded-3xl border border-brand/25">
           <div>
-            <h1 className="text-2xl font-black text-ink tracking-tight">📅 Agenda & Tarefas</h1>
+            <h1 className="text-2xl font-black text-brand-ink dark:text-brand tracking-tight">
+              📅 Agenda & Tarefas
+            </h1>
             <p className="text-xs text-ink-2 mt-0.5 font-medium">
               {loading
                 ? 'Carregando compromissos...'
