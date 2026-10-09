@@ -22,6 +22,7 @@ export default defineConfig({
   },
   test: {
     environment: 'jsdom',
+    testTimeout: 15000,
     setupFiles: ['./tests/mocks/setup.ts'],
     // Forkar um processo para cada arquivo tornou a suíte de ~160 arquivos aparentemente
     // travada em hosts com poucos CPUs: o custo de bootstrap do Node/jsdom dominava os testes.

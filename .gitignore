@@ -117,3 +117,6 @@ audit-screenshots/
 # Configuração local MCP com token Modulify
 .vscode/mcp.json
 
+# Arquivos de pacote e deploy temporários
+*.tar.gz
+*.zip
