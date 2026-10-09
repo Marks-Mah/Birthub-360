@@ -1,7 +1,7 @@
 - De: Agente 12 (Voz e Telefonia — Birthub Voices/3CX)
 - Para: Agente 00 (Coordenador)
 - Onda: roadmap-v2-transversais-2
-- Status: resolvido (parcial — ver Resolução)
+- Status: em-andamento (Working tree limpo via git rm; pendente decisão humana de reescrita de histórico Git)
 - Prioridade: normal
 
 ## Problema

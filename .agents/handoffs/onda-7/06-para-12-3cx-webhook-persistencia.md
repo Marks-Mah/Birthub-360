@@ -1,7 +1,7 @@
 - De: Agente 06 (Integrações e Bitrix)
 - Para: Agente 12 (Voz e Telefonia — dono de `threecx/**` a partir da Onda 7)
 - Onda: 7
-- Status: resolvido
+- Status: em-andamento (Preparo de schema concluído; aguardando contrato/payload homologado do 3CX)
 - Prioridade: normal (não é um dos bloqueadores desta onda; item de dívida técnica conhecido desde
   a Onda 1, só nunca resolvido porque `threecx/**` era meu até a Onda 6)
 
