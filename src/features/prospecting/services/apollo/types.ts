@@ -4,6 +4,8 @@ import type { DecisionMaker } from '../../domain/prospectTypes.js';
 
 export interface DecisionMakerCriteria {
   cargos?: string;
+  cargosExcluir?: string[];
+  localizacoes?: string[];
   senioridades?: string[];
   departamentos?: string[];
   cidade?: string;

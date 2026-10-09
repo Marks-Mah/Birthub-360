@@ -268,7 +268,11 @@ export function evaluateCandidateRequirements(
         // `candidate.location` é a geografia real devolvida pelo provider (com fallback à
         // localização pedida só quando o provider não informa nada) — aceito aqui como aproximação
         // honesta o bastante, mesma limitação documentada para `location` em `discovery.ts`.
-        return evaluateText(req, candidate.location || null, source);
+        return evaluateText(
+          req,
+          candidate.locationObserved === false ? null : candidate.location || null,
+          source,
+        );
       case 'annualRevenue':
         return evaluateNumericRange(
           req,

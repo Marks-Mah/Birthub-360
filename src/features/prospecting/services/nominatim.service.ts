@@ -46,8 +46,8 @@ async function fetchNominatim(query: string, count: number): Promise<NominatimPl
   );
 
   if (!res.ok) {
-    logger.error({ status: res.status, body: await res.text() }, 'Nominatim error');
-    return [];
+    logger.error({ status: res.status }, 'Nominatim error');
+    throw new Error(`Nominatim HTTP ${res.status}`);
   }
 
   return res.json();
@@ -83,9 +83,9 @@ export async function searchNominatimCandidates(
         website: tags.website || tags['contact:website'],
       } satisfies PlaceCandidate;
     });
-  } catch (error: any) {
-    logger.error({ err: error, query }, 'Error searching Nominatim candidates');
-    return [];
+  } catch {
+    logger.error({ provider: 'nominatim' }, 'Nominatim discovery failed');
+    throw new Error('Nominatim indisponível durante a consulta');
   }
 }
 

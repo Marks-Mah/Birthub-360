@@ -1,3 +1,5 @@
+import { AuditService } from '../../../lib/audit/audit.service.js';
+import { isValidCnpj } from '../../../lib/cnpj.js';
 import { type NextFunction, type Request, type Response, Router } from 'express';
 import multer from 'multer';
 import { z } from 'zod';
@@ -22,6 +24,8 @@ import {
   rejectCandidate,
 } from '../services/prospecting.service.js';
 import { findSearchExecution } from '../services/searchExecution.service.js';
+import { getTurboProviderHealth } from '../services/turboHealth.service.js';
+import { checkProviderRateLimit } from '../services/providerRateLimit.js';
 import { normalizeCompanyDomain } from '../utils/domain.js';
 
 const icebreakerService = new IcebreakerService();
@@ -68,6 +72,95 @@ router.post(
       const result = await discoverCandidates(criteria, organizationId);
       res.json({ success: true, data: result });
     } catch (error: any) {
+      next(error);
+    }
+  },
+);
+
+router.get('/providers', async (_req: Request, res: Response, next: NextFunction) => {
+  try {
+    res.json({ success: true, data: await getTurboProviderHealth() });
+  } catch (error) {
+    next(error);
+  }
+});
+router.post(
+  '/providers/test',
+  requireRole(['ADMIN', 'GESTOR']),
+  async (_req: Request, res: Response, next: NextFunction) => {
+    try {
+      res.json({ success: true, data: await getTurboProviderHealth() });
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+router.post(
+  '/interpret',
+  requireRole(['ADMIN', 'GESTOR', 'CLOSER', 'SDR']),
+  validateRequest(
+    z.object({
+      query: z.string().trim().min(5).max(2000),
+      model: z
+        .string()
+        .regex(/^[a-zA-Z0-9_./:-]{1,120}$/)
+        .optional(),
+      mode: z.enum(['automatic', 'groq', 'local']).default('automatic'),
+      consent: z.literal(true),
+      allowPaidProviders: z.boolean().default(false),
+    }),
+  ),
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const limit = checkProviderRateLimit('apollo');
+      if (!limit.allowed) {
+        res.status(429).json({
+          success: false,
+          error: 'Limite de interpretação excedido; tente novamente mais tarde.',
+        });
+        return;
+      }
+      const { interpretTurboSearch } = await import('../../../lib/ai/turboSearch.js');
+      const user = (req as AuthRequest).user;
+      await AuditService.log({
+        action: 'AGENT_EXECUTED',
+        entity: 'TurboSearchInterpretConsent',
+        actorId: user.id,
+        organizationId: user.organizationId,
+        afterState: {
+          consent: true,
+          mode: req.body.mode,
+          allowPaidProviders: req.body.allowPaidProviders,
+        },
+      });
+      const result = await interpretTurboSearch({
+        ...req.body,
+        organizationId: user.organizationId,
+        userId: user.id,
+      });
+      const filters = result.filters;
+      const criteria = discoverCriteriaSchema.parse({
+        segmento: filters.segment ?? '',
+        localizacao: filters.locations.join(', '),
+        palavrasChave: filters.keywords.join(','),
+        segmentoDetalhes: {
+          palavrasExcluir: filters.excludedKeywords,
+          cnaePrincipal: filters.cnaes[0],
+          cnaesSecundarios: filters.cnaes.slice(1),
+        },
+        porte:
+          filters.employeeMin != null || filters.employeeMax != null
+            ? `${filters.employeeMin ?? 1},${filters.employeeMax ?? 1000000}`
+            : undefined,
+        personas: filters.personas.map((p) => ({
+          cargoPrincipal: p.titles[0],
+          cargosEquivalentes: p.titles.slice(1),
+          senioridades: p.seniorities,
+          departamentos: p.departments,
+        })),
+      });
+      res.json({ success: true, data: { ...result, criteria } });
+    } catch (error) {
       next(error);
     }
   },
@@ -122,6 +215,10 @@ router.post(
         res.status(400).json({ success: false, error: 'CNPJ é obrigatório' });
         return;
       }
+      if (!isValidCnpj(cnpj)) {
+        res.status(400).json({ success: false, error: 'CNPJ inválido' });
+        return;
+      }
       const result = await fetchCnpjData(cnpj);
       // MI-014 (dossiê CPI, DEC-15 opção A): a UF devolvida pela Receita Federal já basta para
       // reaproveitar o indicador RNTRC/ANTT territorial que o módulo de Market Intelligence
@@ -146,8 +243,27 @@ router.post(
         res.status(400).json({ success: false, error: 'tradeName e source são obrigatórios' });
         return;
       }
+      if (/google|places/i.test(body.source)) {
+        res.status(403).json({
+          success: false,
+          error:
+            'Dados Google Places não podem ser promovidos sem autorização de reutilização comprovada.',
+        });
+        return;
+      }
+      if (req.body.autoEnrich === true && req.body.autorizarPagos !== true) {
+        res.status(400).json({
+          success: false,
+          error: 'Enriquecimento adicional exige autorização de consultas pagas.',
+        });
+        return;
+      }
       const { organizationId } = (req as AuthRequest).user;
-      const result = await promoteToCrm({ ...req.body, organizationId });
+      const result = await promoteToCrm({
+        ...req.body,
+        autoEnrich: req.body.autoEnrich === true && req.body.autorizarPagos === true,
+        organizationId,
+      });
       res.status(201).json({ success: true, data: result });
     } catch (error: any) {
       next(error);
