@@ -1,7 +1,7 @@
 import type React from 'react';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Filter, Plus, Trash2, User, Bot, Clock, ChevronRight } from 'lucide-react';
+import { Search, Plus, Trash2, User, Bot, Clock, ChevronRight } from 'lucide-react';
 import type { AgentConfig } from '../../types.js';
 
 interface AgentRecord {
@@ -18,25 +18,61 @@ export default function AgentRegistry() {
   const [searchTerm, setSearchTerm] = useState('');
   const [agents, setAgents] = useState<AgentRecord[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
 
   useEffect(() => {
+    let active = true;
+    setIsLoading(true);
+    setLoadError(null);
     fetch('/api/agents')
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.agents) {
-          setAgents(data.agents);
+      .then(async (res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data: unknown = await res.json();
+        if (!data || typeof data !== 'object' || !('agents' in data) || !Array.isArray(data.agents)) {
+          throw new Error('Invalid agents response');
         }
+        return data.agents as AgentRecord[];
       })
-      .finally(() => setIsLoading(false));
-  }, []);
+      .then((list) => {
+        if (active) setAgents(list);
+      })
+      .catch(() => {
+        if (active) setLoadError('Não foi possível carregar os agentes de voz.');
+      })
+      .finally(() => {
+        if (active) setIsLoading(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, [retryCount]);
 
   const handleDelete = async (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
-    if (confirm('Tem certeza que deseja excluir este agente?')) {
-      await fetch(`/api/agents/${id}`, { method: 'DELETE' });
+    if (deletingId || !window.confirm('Tem certeza que deseja excluir este agente?')) return;
+    setDeletingId(id);
+    setDeleteError(null);
+    try {
+      const res = await fetch(`/api/agents/${encodeURIComponent(id)}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      if (data?.success !== true) throw new Error('Deletion not confirmed');
       setAgents((prev) => prev.filter((a) => a.id !== id));
+    } catch {
+      setDeleteError('Não foi possível excluir o agente. Tente novamente.');
+    } finally {
+      setDeletingId(null);
     }
   };
+
+  const visibleAgents = agents.filter(
+    (a) =>
+      a.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      a.model.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
 
   return (
     <div className="space-y-8 animate-in fade-in zoom-in-95 duration-500 pb-10">
@@ -57,12 +93,6 @@ export default function AgentRegistry() {
             </p>
           </div>
           <div className="flex gap-3">
-            <button
-              type="button"
-              className="px-4 py-2.5 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 text-white font-medium hover:bg-white/20 transition-all flex items-center shadow-[0_0_15px_rgba(255,255,255,0.1)]"
-            >
-              <Filter className="h-4 w-4 mr-2" /> Filtrar
-            </button>
             <button
               type="button"
               onClick={() => navigate('/dashboard/agents/new')}
@@ -90,9 +120,25 @@ export default function AgentRegistry() {
       </div>
 
       {/* List / Grid */}
+      {deleteError && (
+        <div role="alert" className="rounded-xl border border-red-200 bg-red-50 p-4 text-red-700">
+          {deleteError}
+        </div>
+      )}
       {isLoading ? (
         <div className="flex justify-center items-center py-20">
           <div className="animate-spin rounded-full h-10 w-10 border-b border-line-600"></div>
+        </div>
+      ) : loadError ? (
+        <div role="alert" className="rounded-2xl border border-red-200 bg-red-50 p-6 text-center">
+          <p className="mb-4 text-red-700">{loadError}</p>
+          <button
+            type="button"
+            onClick={() => setRetryCount((count) => count + 1)}
+            className="rounded-xl bg-brand-600 px-5 py-2 text-white hover:bg-brand-700"
+          >
+            Tentar novamente
+          </button>
         </div>
       ) : agents.length === 0 ? (
         <div className="text-center py-20 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm rounded-3xl border border-slate-200 dark:border-slate-800">
@@ -109,15 +155,13 @@ export default function AgentRegistry() {
             <Plus className="h-4 w-4 mr-2" /> Criar Meu Primeiro Agente
           </button>
         </div>
+      ) : visibleAgents.length === 0 ? (
+        <div role="status" className="rounded-2xl border border-slate-200 p-8 text-center text-slate-600">
+          Nenhum agente corresponde à pesquisa.
+        </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {agents
-            .filter(
-              (a) =>
-                a.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                a.model.toLowerCase().includes(searchTerm.toLowerCase()),
-            )
-            .map((agent, i) => {
+          {visibleAgents.map((agent, i) => {
               const config = agent.configuration || {};
               const template = config.template || 'Custom';
 
@@ -127,6 +171,7 @@ export default function AgentRegistry() {
                   role="button"
                   tabIndex={0}
                   onKeyDown={(e) => {
+                    if (e.target !== e.currentTarget) return;
                     if (e.key === 'Enter' || e.key === ' ') {
                       e.preventDefault();
                       e.currentTarget.click();
@@ -161,6 +206,8 @@ export default function AgentRegistry() {
                       <button
                         type="button"
                         onClick={(e) => handleDelete(e, agent.id)}
+                        disabled={deletingId !== null}
+                        aria-label={`Excluir agente ${agent.name}`}
                         className="p-2 text-red-900 hover:text-red-500 hover:bg-red-100 dark:hover:bg-red-900/20 rounded-xl transition-colors"
                       >
                         <Trash2 className="h-4 w-4" />
