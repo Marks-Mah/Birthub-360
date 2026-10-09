@@ -5,76 +5,79 @@ import { BorderBeam, type BorderBeamProps } from './BorderBeam.js';
 import { SoundFX } from '../../lib/soundEffects.js';
 import { cn } from '../../lib/utils.js';
 
-const cardVariants = cva('relative overflow-hidden rounded-2xl text-slate-200', {
-  variants: {
-    variant: {
-      default:
-        'bg-[#1C1D24] border border-white/5 shadow-sm transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-white/10 hover:shadow-md hover:-translate-y-0.5',
-      stat: 'bg-[#1C1D24] border border-white/5 shadow-sm transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-white/10 hover:shadow-md hover:-translate-y-0.5',
-      outline:
-        'border border-white/10 bg-transparent transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-white/20 hover:bg-white/5',
-      accent:
-        'bg-[#1C1D24] border border-[#8B7DFF]/40 shadow-sm transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-[#8B7DFF]/80 hover:-translate-y-0.5',
-      elevated:
-        'bg-[#1C1D24] border border-white/10 shadow-md transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-white/20 hover:shadow-lg hover:-translate-y-0.5',
-      interactive:
-        'group bg-[#1C1D24] border border-white/5 shadow-sm cursor-pointer transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-[#8B7DFF]/50 hover:bg-[#1F202B] hover:-translate-y-0.5 active:scale-[0.99]',
-      // Variantes estruturais recomendadas pelo Design System v2.0
-      surface:
-        'bg-[#15151A] border border-white/5 shadow-none hover:border-white/10 transition-all duration-300',
-      panel:
-        'bg-[#1C1D24] border border-white/5 shadow-sm hover:border-white/10 transition-all duration-300',
-      metric:
-        'bg-[#1C1D24] border border-white/10 shadow-sm hover:border-[#8B7DFF]/50 transition-all duration-300 hover:-translate-y-0.5',
-      data: 'bg-[#15151A] border border-white/10 shadow-none hover:border-[#8B7DFF]/30 transition-all duration-300',
-      feature:
-        'bg-gradient-to-br from-[#1C1D24] to-[#15151A] border border-[#8B7DFF]/20 shadow-sm hover:border-[#8B7DFF]/50 transition-all duration-300 hover:-translate-y-0.5',
-      floating:
-        'bg-[#1C1D24]/95 border border-white/10 shadow-lg backdrop-blur-xl transition-all duration-300',
-      // Variantes decorativas preservadas para compatibilidade (@deprecated)
-      // Prefira as variantes estruturais acima (surface, panel, metric, data, feature, floating)
-      /** @deprecated Kept for backward compatibility but should not be used in new code. */
-      iris: 'bg-surface border border-accent-violet/40 shadow-glow-accent-violet transition-[transform,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:scale-[1.005] hover:border-accent-violet hover:shadow-[0_0_30px_rgba(139,92,246,0.6)]',
-      /** @deprecated Kept for backward compatibility but should not be used in new code. */
-      cyan: 'bg-surface border border-accent-cyan/40 shadow-glow-accent-cyan transition-[transform,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:scale-[1.005] hover:border-accent-cyan hover:shadow-glow-accent-cyan',
-      /** @deprecated Kept for backward compatibility but should not be used in new code. */
-      pulse:
-        'bg-surface border border-pulse/40 shadow-glow-pulse transition-[transform,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:scale-[1.005] hover:border-pulse hover:shadow-[0_0_30px_rgba(239,68,68,0.6)]',
-      /** @deprecated Kept for backward compatibility but should not be used in new code. */
-      glass:
-        'bg-surface/60 backdrop-blur-xl border border-brand/30 shadow-glow-brand transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:bg-surface/80 hover:border-brand hover:shadow-glow-brand-strong hover:-translate-y-0.5 hover:scale-[1.005]',
-      /** @deprecated Kept for backward compatibility but should not be used in new code. */
-      metallic:
-        'bg-gradient-to-br from-surface via-brand/5 to-surface-2 border border-brand/40 shadow-glow-brand transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-brand hover:shadow-glow-brand-strong hover:-translate-y-0.5 hover:scale-[1.005]',
-      bento:
-        'bg-[#1C1D24] border border-white/5 shadow-sm hover:border-[#8B7DFF]/30 hover:-translate-y-1 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]',
-      /** @deprecated Kept for backward compatibility but should not be used in new code. */
-      cosmic:
-        'bg-gradient-to-br from-surface-elevated/90 to-brand/10 backdrop-blur-2xl border border-brand/50 shadow-card hover:border-brand hover:shadow-glow-brand-strong hover:-translate-y-1 transition-all duration-300',
-      /** @deprecated Kept for backward compatibility but should not be used in new code. */
-      specular:
-        'bg-surface/75 backdrop-blur-2xl border border-brand/40 shadow-card hover:border-brand hover:shadow-glow-brand-strong hover:-translate-y-1 transition-all duration-300',
-      vancouver:
-        'vancouver-card bg-[#1C1D24] border border-white/5 hover:border-white/10 shadow-sm transition-all duration-300 hover:-translate-y-1',
-      vancouverGradient:
-        'bg-gradient-to-br from-[#8B7DFF] to-[#6D5CE6] text-white border-white/10 shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300',
-      vancouverGold:
-        'bg-gradient-to-br from-[#EAB308] to-[#CA8A04] text-white border-white/10 shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300',
-      vancouverPink:
-        'bg-gradient-to-br from-[#EC4899] to-[#DB2777] text-white border-white/10 shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300',
+const cardVariants = cva(
+  'relative overflow-hidden rounded-2xl text-slate-800 dark:text-slate-200',
+  {
+    variants: {
+      variant: {
+        default:
+          'bg-white dark:bg-[#1C1D24] border border-slate-200/80 dark:border-white/5 shadow-sm transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-slate-300 dark:hover:border-white/10 hover:shadow-md hover:-translate-y-0.5',
+        stat: 'bg-white dark:bg-[#1C1D24] border border-slate-200/80 dark:border-white/5 shadow-sm transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-slate-300 dark:hover:border-white/10 hover:shadow-md hover:-translate-y-0.5',
+        outline:
+          'border border-slate-200 dark:border-white/10 bg-transparent transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-slate-300 dark:hover:border-white/20 hover:bg-slate-50 dark:hover:bg-white/5',
+        accent:
+          'bg-white dark:bg-[#1C1D24] border border-[#8B7DFF]/40 shadow-sm transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-[#8B7DFF] dark:hover:border-[#8B7DFF]/80 hover:-translate-y-0.5',
+        elevated:
+          'bg-white dark:bg-[#1C1D24] border border-slate-200/80 dark:border-white/10 shadow-md transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-slate-300 dark:hover:border-white/20 hover:shadow-lg hover:-translate-y-0.5',
+        interactive:
+          'group bg-white dark:bg-[#1C1D24] border border-slate-200/80 dark:border-white/5 shadow-sm cursor-pointer transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-[#8B7DFF]/50 hover:bg-slate-50/80 dark:hover:bg-[#1F202B] hover:-translate-y-0.5 active:scale-[0.99]',
+        // Variantes estruturais recomendadas pelo Design System v2.0
+        surface:
+          'bg-slate-50 dark:bg-[#15151A] border border-slate-200/80 dark:border-white/5 shadow-none hover:border-slate-300 dark:hover:border-white/10 transition-all duration-300',
+        panel:
+          'bg-white dark:bg-[#1C1D24] border border-slate-200/80 dark:border-white/5 shadow-sm hover:border-slate-300 dark:hover:border-white/10 transition-all duration-300',
+        metric:
+          'bg-white dark:bg-[#1C1D24] border border-slate-200/80 dark:border-white/10 shadow-sm hover:border-[#8B7DFF]/50 transition-all duration-300 hover:-translate-y-0.5',
+        data: 'bg-slate-50 dark:bg-[#15151A] border border-slate-200/80 dark:border-white/10 shadow-none hover:border-[#8B7DFF]/30 transition-all duration-300',
+        feature:
+          'bg-gradient-to-br from-white to-slate-50 dark:from-[#1C1D24] dark:to-[#15151A] border border-slate-200/80 dark:border-[#8B7DFF]/20 shadow-sm hover:border-[#8B7DFF]/50 transition-all duration-300 hover:-translate-y-0.5',
+        floating:
+          'bg-white/95 dark:bg-[#1C1D24]/95 border border-slate-200/80 dark:border-white/10 shadow-lg backdrop-blur-xl transition-all duration-300',
+        // Variantes decorativas preservadas para compatibilidade (@deprecated)
+        // Prefira as variantes estruturais acima (surface, panel, metric, data, feature, floating)
+        /** @deprecated Kept for backward compatibility but should not be used in new code. */
+        iris: 'bg-surface border border-accent-violet/40 shadow-glow-accent-violet transition-[transform,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:scale-[1.005] hover:border-accent-violet hover:shadow-[0_0_30px_rgba(139,92,246,0.6)]',
+        /** @deprecated Kept for backward compatibility but should not be used in new code. */
+        cyan: 'bg-surface border border-accent-cyan/40 shadow-glow-accent-cyan transition-[transform,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:scale-[1.005] hover:border-accent-cyan hover:shadow-glow-accent-cyan',
+        /** @deprecated Kept for backward compatibility but should not be used in new code. */
+        pulse:
+          'bg-surface border border-pulse/40 shadow-glow-pulse transition-[transform,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:scale-[1.005] hover:border-pulse hover:shadow-[0_0_30px_rgba(239,68,68,0.6)]',
+        /** @deprecated Kept for backward compatibility but should not be used in new code. */
+        glass:
+          'bg-surface/60 backdrop-blur-xl border border-brand/30 shadow-glow-brand transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:bg-surface/80 hover:border-brand hover:shadow-glow-brand-strong hover:-translate-y-0.5 hover:scale-[1.005]',
+        /** @deprecated Kept for backward compatibility but should not be used in new code. */
+        metallic:
+          'bg-gradient-to-br from-surface via-brand/5 to-surface-2 border border-brand/40 shadow-glow-brand transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-brand hover:shadow-glow-brand-strong hover:-translate-y-0.5 hover:scale-[1.005]',
+        bento:
+          'bg-white dark:bg-[#1C1D24] border border-slate-200/80 dark:border-white/5 shadow-sm hover:border-[#8B7DFF]/30 hover:-translate-y-1 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]',
+        /** @deprecated Kept for backward compatibility but should not be used in new code. */
+        cosmic:
+          'bg-gradient-to-br from-surface-elevated/90 to-brand/10 backdrop-blur-2xl border border-brand/50 shadow-card hover:border-brand hover:shadow-glow-brand-strong hover:-translate-y-1 transition-all duration-300',
+        /** @deprecated Kept for backward compatibility but should not be used in new code. */
+        specular:
+          'bg-surface/75 backdrop-blur-2xl border border-brand/40 shadow-card hover:border-brand hover:shadow-glow-brand-strong hover:-translate-y-1 transition-all duration-300',
+        vancouver:
+          'vancouver-card bg-white dark:bg-[#1C1D24] border border-slate-200/80 dark:border-white/5 hover:border-slate-300 dark:hover:border-white/10 shadow-sm transition-all duration-300 hover:-translate-y-1',
+        vancouverGradient:
+          'bg-gradient-to-br from-[#8B7DFF] to-[#6D5CE6] text-white border-white/10 shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300',
+        vancouverGold:
+          'bg-gradient-to-br from-[#EAB308] to-[#CA8A04] text-white border-white/10 shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300',
+        vancouverPink:
+          'bg-gradient-to-br from-[#EC4899] to-[#DB2777] text-white border-white/10 shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300',
+      },
+      padding: {
+        default: 'p-6',
+        sm: 'p-4',
+        lg: 'p-8',
+        none: 'p-0',
+      },
     },
-    padding: {
-      default: 'p-6',
-      sm: 'p-4',
-      lg: 'p-8',
-      none: 'p-0',
+    defaultVariants: {
+      variant: 'default',
+      padding: 'default',
     },
   },
-  defaultVariants: {
-    variant: 'default',
-    padding: 'default',
-  },
-});
+);
 
 export interface CardProps
   extends React.HTMLAttributes<HTMLDivElement>,
@@ -242,7 +245,10 @@ const CardTitle = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<HT
   ({ className, ...props }, ref) => (
     <h3
       ref={ref}
-      className={cn('font-display font-semibold leading-none tracking-tight text-white', className)}
+      className={cn(
+        'font-display font-semibold leading-none tracking-tight text-slate-900 dark:text-white',
+        className,
+      )}
       {...props}
     />
   ),
@@ -253,7 +259,7 @@ const CardDescription = React.forwardRef<
   HTMLParagraphElement,
   React.HTMLAttributes<HTMLParagraphElement>
 >(({ className, ...props }, ref) => (
-  <p ref={ref} className={cn('text-sm text-slate-400', className)} {...props} />
+  <p ref={ref} className={cn('text-sm text-slate-600 dark:text-slate-400', className)} {...props} />
 ));
 CardDescription.displayName = 'CardDescription';
 

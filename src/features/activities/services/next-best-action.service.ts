@@ -31,6 +31,10 @@ Regras:
 2. Defina uma tarefa acionável e objetiva com prazo realista (em dias).
 3. Se o vendedor prometeu enviar algo, crie o modelo sugerido do texto.
 4. Sinalize se há risco de perda do deal.
+5. O actionType DEVE ser um dos seguintes valores exatos: "task", "meeting", "email", "whatsapp", "proposal_revision", "escalation".
+   - Se o cliente pediu revisão ou desconto em proposta, use "proposal_revision".
+   - Se o cliente sumiu ou está sem responder há dias, use "whatsapp" para contato direto.
+   - Se há reunião agendada pendente de confirmação ou preparação, use "meeting".
 
 Retorne SEMPRE e APENAS um JSON válido no formato:
 {

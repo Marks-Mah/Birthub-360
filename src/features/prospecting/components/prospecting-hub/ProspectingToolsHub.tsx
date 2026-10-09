@@ -1,11 +1,9 @@
 import { motion } from 'framer-motion';
 import { ArrowLeft, ArrowRight, Building2, Mail, MapPin, Newspaper } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { Card, CardDescription, CardTitle } from '../../../../components/ui/Card.js';
 import { GithubIcon as Github } from '../../../../components/ui/icons/GithubIcon.js';
 import { LinkedinIcon as Linkedin } from '../../../../components/ui/icons/LinkedinIcon.js';
 import { YoutubeIcon as Youtube } from '../../../../components/ui/icons/YoutubeIcon.js';
-import { useBrandAccent } from '../../../../hooks/useBrandAccent.js';
 import { api } from '../../../../lib/api.js';
 import { fadeInUp, SPRING_SOFT, staggerContainer, staggerItem } from '../../../../lib/motion.js';
 import { ApolloTool } from './tools/ApolloTool.js';
@@ -25,62 +23,78 @@ const TOOL_TABS: {
   icon: any;
   description: string;
   statusKey: keyof Omit<ToolsStatus, 'providerMode'>;
+  iconBg: string;
+  iconColor: string;
 }[] = [
   {
     id: 'google-places',
     label: 'Google Places',
     icon: MapPin,
     description:
-      'Busca empresas por categoria e região, só via Google Places (New) Text Search — sem outras fontes misturadas.',
+      'Busca empresas por categoria e região via Google Places API (New Text Search) com alta precisão cadastral.',
     statusKey: 'googlePlaces',
+    iconBg: 'bg-rose-50 dark:bg-rose-500/10 border-rose-200/80 dark:border-rose-500/20',
+    iconColor: 'text-rose-600 dark:text-rose-400',
   },
   {
     id: 'apollo',
     label: 'Apollo.io',
     icon: Building2,
     description:
-      'Busca firmográfica de empresas por ICP (segmento, porte, região), só via Apollo Organization Search.',
+      'Busca firmográfica avançada por ICP (segmento, porte, faturamento e região) diretamente na base Apollo.',
     statusKey: 'apollo',
+    iconBg: 'bg-indigo-50 dark:bg-indigo-500/10 border-indigo-200/80 dark:border-indigo-500/20',
+    iconColor: 'text-indigo-600 dark:text-indigo-400',
   },
   {
     id: 'hunter',
     label: 'Hunter.io',
     icon: Mail,
     description:
-      'Encontra e verifica e-mails reais de pessoas a partir do domínio de uma empresa, só via Hunter.io.',
+      'Encontra e valida e-mails corporativos reais a partir do domínio corporativo de empresas-alvo.',
     statusKey: 'hunter',
+    iconBg: 'bg-amber-50 dark:bg-amber-500/10 border-amber-200/80 dark:border-amber-500/20',
+    iconColor: 'text-amber-600 dark:text-amber-400',
   },
   {
     id: 'linkedin',
     label: 'LinkedIn',
     icon: Linkedin,
     description:
-      'Busca empresas e decisores com perfil real de LinkedIn (via Apollo), mais um gerador de link manual.',
+      'Mapeia decisores C-Level com perfis reais no LinkedIn via Apollo com link direto de conexão.',
     statusKey: 'apollo',
+    iconBg: 'bg-sky-50 dark:bg-sky-500/10 border-sky-200/80 dark:border-sky-500/20',
+    iconColor: 'text-sky-600 dark:text-sky-400',
   },
   {
     id: 'github',
     label: 'GitHub',
     icon: Github,
     description:
-      'Busca organizações públicas no GitHub — sinal de maturidade técnica de uma empresa-alvo. Gratuita, sem chave.',
+      'Avalia organizações públicas no GitHub, medindo maturidade técnica e ecossistema de software.',
     statusKey: 'github',
+    iconBg: 'bg-purple-50 dark:bg-purple-500/10 border-purple-200/80 dark:border-purple-500/20',
+    iconColor: 'text-purple-600 dark:text-purple-400',
   },
   {
     id: 'news',
-    label: 'Notícias',
+    label: 'Notícias (GDELT)',
     icon: Newspaper,
     description:
-      'Menções recentes de imprensa sobre uma empresa via GDELT — gratuita, sem chave, últimos 6 meses.',
+      'Monitora menções recentes na imprensa sobre empresas-alvo, rodadas de investimento e eventos.',
     statusKey: 'news',
+    iconBg: 'bg-emerald-50 dark:bg-emerald-500/10 border-emerald-200/80 dark:border-emerald-500/20',
+    iconColor: 'text-emerald-600 dark:text-emerald-400',
   },
   {
     id: 'youtube',
     label: 'YouTube',
     icon: Youtube,
     description:
-      'Confere os metadados públicos de um vídeo já encontrado (título, canal, thumbnail) — não é busca por palavra-chave.',
+      'Confere metadados, títulos, alcance e canais em vídeo relacionados a temas comerciais estratégicos.',
     statusKey: 'youtube',
+    iconBg: 'bg-red-50 dark:bg-red-500/10 border-red-200/80 dark:border-red-500/20',
+    iconColor: 'text-red-600 dark:text-red-400',
   },
 ];
 
@@ -93,7 +107,6 @@ const TOOL_TABS: {
 export function ProspectingToolsHub() {
   const [activeTool, setActiveTool] = useState<ToolId | null>(null);
   const [status, setStatus] = useState<ToolsStatus | null>(null);
-  const accent = useBrandAccent();
 
   useEffect(() => {
     api
@@ -106,11 +119,15 @@ export function ProspectingToolsHub() {
     return (
       <div className="space-y-6">
         <header>
-          <h2 className="font-display text-xl font-bold text-ink tracking-tight">
+          <div className="text-[11px] font-bold uppercase tracking-wider text-[#8B7DFF]">
+            Fontes & Conectores
+          </div>
+          <h2 className="font-display text-2xl font-bold text-slate-900 dark:text-white tracking-tight mt-0.5">
             Ferramentas de Prospecção
           </h2>
-          <p className="text-sm text-ink-2 mt-1">
-            Escolha uma fonte para prospectar isoladamente, sem misturar com as outras.
+          <p className="text-sm text-slate-600 dark:text-slate-400 mt-1 max-w-2xl">
+            Execute consultas e enriquecimento em canais e bases de dados externas isoladamente, sem
+            misturar com as outras fontes.
           </p>
         </header>
 
@@ -119,7 +136,7 @@ export function ProspectingToolsHub() {
           variants={staggerContainer()}
           initial="hidden"
           animate="show"
-          className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3"
+          className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4"
         >
           {TOOL_TABS.map((tool) => {
             const Icon = tool.icon;
@@ -130,38 +147,53 @@ export function ProspectingToolsHub() {
                 type="button"
                 variants={staggerItem}
                 whileHover={{ y: -4 }}
-                whileTap={{ scale: 0.97 }}
+                whileTap={{ scale: 0.98 }}
                 transition={SPRING_SOFT}
                 onClick={() => setActiveTool(tool.id)}
-                className="text-left cursor-pointer group"
+                className="text-left cursor-pointer group h-full focus:outline-none"
               >
-                <Card
-                  variant="default"
-                  padding="sm"
-                  className={`h-full transition-colors duration-300 ${accent.hoverBorder} group-hover:bg-surface-2 group-focus-visible:bg-surface-2 group-hover:shadow-lg group-focus-visible:shadow-lg`}
-                >
-                  <div className="flex items-start justify-between mb-3">
-                    <div
-                      className={`w-9 h-9 rounded-xl ${accent.bgSoft} flex items-center justify-center ${accent.text} shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-3 group-focus-visible:scale-110`}
-                    >
-                      <Icon size={16} />
+                <div className="h-full relative overflow-hidden rounded-2xl p-5 flex flex-col justify-between bg-white dark:bg-[#1C1D24] border border-slate-200/80 dark:border-white/5 hover:border-[#8B7DFF]/50 dark:hover:border-[#8B7DFF]/40 shadow-[0_2px_12px_-4px_rgba(20,18,24,0.06)] dark:shadow-none hover:shadow-[0_16px_32px_-8px_rgba(20,18,24,0.12)] dark:hover:shadow-[0_12px_32px_-8px_rgba(0,0,0,0.5)] transition-all duration-300">
+                  {/* Top highlight accent */}
+                  <div className="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-[#8B7DFF] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+                  <div>
+                    {/* Header: Icon + Badge */}
+                    <div className="flex items-center justify-between gap-3 mb-4">
+                      <div
+                        className={`w-10 h-10 rounded-xl border flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-110 shadow-sm ${tool.iconBg} ${tool.iconColor}`}
+                      >
+                        <Icon size={18} strokeWidth={2} />
+                      </div>
+
+                      {status && configured === false ? (
+                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide uppercase bg-amber-50 text-amber-700 border border-amber-200/80 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20">
+                          Não configurado
+                        </span>
+                      ) : (
+                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-semibold tracking-wide bg-emerald-50 text-emerald-700 border border-emerald-200/80 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20 flex items-center gap-1.5">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                          Pronto
+                        </span>
+                      )}
                     </div>
-                    {status && configured === false && (
-                      <span className="px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-warn/15 text-warning-active dark:text-warning border border-warn/30">
-                        Não configurado
-                      </span>
-                    )}
+
+                    {/* Title */}
+                    <h3 className="font-display text-base font-bold text-slate-900 dark:text-white group-hover:text-[#8B7DFF] dark:group-hover:text-[#8B7DFF] transition-colors tracking-tight">
+                      {tool.label}
+                    </h3>
+
+                    {/* Description */}
+                    <p className="mt-1.5 text-xs leading-relaxed text-slate-600 dark:text-slate-400 line-clamp-3 font-normal">
+                      {tool.description}
+                    </p>
                   </div>
-                  <CardTitle className={`${accent.text} text-sm`}>{tool.label}</CardTitle>
-                  <CardDescription className="mt-1 text-xs leading-snug line-clamp-3">
-                    {tool.description}
-                  </CardDescription>
-                  <span
-                    className={`mt-3 inline-flex items-center gap-1 text-xs font-bold ${accent.text} opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-colors duration-300 group-hover:translate-x-0.5`}
-                  >
-                    Abrir <ArrowRight className="w-3.5 h-3.5" />
-                  </span>
-                </Card>
+
+                  {/* Footer Action */}
+                  <div className="mt-5 pt-3.5 border-t border-slate-100 dark:border-white/5 flex items-center justify-between text-xs font-semibold text-slate-400 dark:text-slate-500 group-hover:text-[#8B7DFF] dark:group-hover:text-[#8B7DFF] transition-colors">
+                    <span>Acessar ferramenta</span>
+                    <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+                  </div>
+                </div>
               </motion.button>
             );
           })}

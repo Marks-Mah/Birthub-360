@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Bookmark, Camera, Database, Landmark, Wrench } from 'lucide-react';
+import { Activity, Bookmark, Camera, Database, Landmark, Wrench } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { GamificationWidget } from '../../../components/ui/GamificationWidget.js';
 import { BRAND } from '../../../config/brand.js';
@@ -22,6 +22,7 @@ import { DiscoveryFilterPanel } from './prospecting-hub/DiscoveryFilterPanel.js'
 import { DiscoveryResultsPanel } from './prospecting-hub/DiscoveryResultsPanel.js';
 import { OcrCapturePanel } from './prospecting-hub/OcrCapturePanel.js';
 import { ProspectingToolsHub } from './prospecting-hub/ProspectingToolsHub.js';
+import { IntegrationsCentralPanel } from './prospecting-hub/IntegrationsCentralPanel.js';
 import { SavedSearchesModal } from './SavedSearchesModal.js';
 
 export { DecisionMakerSearch } from './prospecting-hub/DecisionMakerSearch.js';
@@ -33,7 +34,7 @@ export { DecisionMakerSearch } from './prospecting-hub/DecisionMakerSearch.js';
 const ACTIVE_SEGMENTS = [...SEGMENTO_OPTIONS, ...BIRTHHUB360_SEGMENTO_OPTIONS];
 const ACTIVE_PERSONA_OPTIONS = [...ATLAS_PERSONA_OPTIONS, ...BIRTHHUB360_PERSONA_OPTIONS];
 
-type HubTab = 'cnpj' | 'discovery' | 'ocr' | 'tools';
+type HubTab = 'cnpj' | 'discovery' | 'ocr' | 'tools' | 'integrations';
 
 const ufMap: Record<string, string> = {
   Acre: 'AC',
@@ -544,7 +545,7 @@ export function ProspectingHub() {
 
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div
-            className="relative z-10 flex max-w-full gap-1.5 overflow-x-auto rounded-card border border-line bg-surface-subtle/80 backdrop-blur-md p-1.5 shadow-sm"
+            className="relative z-10 flex max-w-full gap-1.5 overflow-x-auto rounded-2xl border border-slate-200/80 dark:border-white/5 bg-slate-100/80 dark:bg-[#1C1D24] p-1.5 shadow-sm"
             role="tablist"
             aria-label="Métodos de prospecção"
           >
@@ -556,10 +557,10 @@ export function ProspectingHub() {
               }}
               role="tab"
               aria-selected={tab === 'cnpj'}
-              className={`flex items-center gap-2 whitespace-nowrap rounded-control px-4 py-2 text-sm font-semibold transition-all duration-200 cursor-pointer ${
+              className={`flex items-center gap-2 whitespace-nowrap rounded-xl px-4 py-2 text-sm font-semibold transition-all duration-200 cursor-pointer ${
                 tab === 'cnpj'
-                  ? 'bg-brand text-on-brand shadow-glow-brand font-bold scale-[1.02]'
-                  : 'text-ink-2 hover:bg-surface-interactive hover:text-ink'
+                  ? 'bg-slate-900 text-white dark:bg-[#8B7DFF] dark:text-white shadow-sm font-bold scale-[1.01]'
+                  : 'text-slate-600 dark:text-slate-400 hover:bg-white/80 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
               <Landmark size={18} /> Busca Direta (CNPJ/Nome)
@@ -572,10 +573,10 @@ export function ProspectingHub() {
               }}
               role="tab"
               aria-selected={tab === 'discovery'}
-              className={`flex items-center gap-2 whitespace-nowrap rounded-control px-4 py-2 text-sm font-semibold transition-all duration-200 cursor-pointer ${
+              className={`flex items-center gap-2 whitespace-nowrap rounded-xl px-4 py-2 text-sm font-semibold transition-all duration-200 cursor-pointer ${
                 tab === 'discovery'
-                  ? 'bg-brand text-on-brand shadow-glow-brand font-bold scale-[1.02]'
-                  : 'text-ink-2 hover:bg-surface-interactive hover:text-ink'
+                  ? 'bg-slate-900 text-white dark:bg-[#8B7DFF] dark:text-white shadow-sm font-bold scale-[1.01]'
+                  : 'text-slate-600 dark:text-slate-400 hover:bg-white/80 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
               <Database size={18} /> Radar Discovery (Fontes abertas)
@@ -588,10 +589,10 @@ export function ProspectingHub() {
               }}
               role="tab"
               aria-selected={tab === 'ocr'}
-              className={`flex items-center gap-2 whitespace-nowrap rounded-control px-4 py-2 text-sm font-semibold transition-all duration-200 cursor-pointer ${
+              className={`flex items-center gap-2 whitespace-nowrap rounded-xl px-4 py-2 text-sm font-semibold transition-all duration-200 cursor-pointer ${
                 tab === 'ocr'
-                  ? 'bg-brand text-on-brand shadow-glow-brand font-bold scale-[1.02]'
-                  : 'text-ink-2 hover:bg-surface-interactive hover:text-ink'
+                  ? 'bg-slate-900 text-white dark:bg-[#8B7DFF] dark:text-white shadow-sm font-bold scale-[1.01]'
+                  : 'text-slate-600 dark:text-slate-400 hover:bg-white/80 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
               <Camera size={18} /> Cadastrar por Foto (OCR)
@@ -604,13 +605,29 @@ export function ProspectingHub() {
               }}
               role="tab"
               aria-selected={tab === 'tools'}
-              className={`flex items-center gap-2 whitespace-nowrap rounded-control px-4 py-2 text-sm font-semibold transition-all duration-200 cursor-pointer ${
+              className={`flex items-center gap-2 whitespace-nowrap rounded-xl px-4 py-2 text-sm font-semibold transition-all duration-200 cursor-pointer ${
                 tab === 'tools'
-                  ? 'bg-brand text-on-brand shadow-glow-brand font-bold scale-[1.02]'
-                  : 'text-ink-2 hover:bg-surface-interactive hover:text-ink'
+                  ? 'bg-slate-900 text-white dark:bg-[#8B7DFF] dark:text-white shadow-sm font-bold scale-[1.01]'
+                  : 'text-slate-600 dark:text-slate-400 hover:bg-white/80 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
               <Wrench size={18} /> Ferramentas
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                SoundFX.play('navigate');
+                setTab('integrations');
+              }}
+              role="tab"
+              aria-selected={tab === 'integrations'}
+              className={`flex items-center gap-2 whitespace-nowrap rounded-xl px-4 py-2 text-sm font-semibold transition-all duration-200 cursor-pointer ${
+                tab === 'integrations'
+                  ? 'bg-slate-900 text-white dark:bg-[#8B7DFF] dark:text-white shadow-sm font-bold scale-[1.01]'
+                  : 'text-slate-600 dark:text-slate-400 hover:bg-white/80 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white'
+              }`}
+            >
+              <Activity size={18} /> Central de Provedores
             </button>
           </div>
 
@@ -620,9 +637,10 @@ export function ProspectingHub() {
               SoundFX.play('focus');
               setIsSavedSearchesOpen(true);
             }}
-            className="flex items-center gap-2 rounded-control border border-line bg-surface-elevated/90 px-4 py-2.5 text-xs font-semibold text-ink shadow-sm transition-all hover:border-brand/40 hover:bg-surface-interactive hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+            className="flex items-center gap-2 rounded-xl border border-slate-200/80 dark:border-white/10 bg-white dark:bg-[#1C1D24] px-4 py-2.5 text-xs font-semibold text-slate-700 dark:text-slate-200 shadow-sm transition-all hover:border-[#8B7DFF]/50 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
           >
-            <Bookmark size={16} className="text-brand animate-pulse" /> Listas Salvas & Agendamentos
+            <Bookmark size={16} className="text-[#8B7DFF] animate-pulse" /> Listas Salvas &
+            Agendamentos
           </button>
         </div>
 
@@ -685,6 +703,8 @@ export function ProspectingHub() {
         {tab === 'ocr' && <OcrCapturePanel />}
 
         {tab === 'tools' && <ProspectingToolsHub />}
+
+        {tab === 'integrations' && <IntegrationsCentralPanel />}
 
         <SavedSearchesModal
           isOpen={isSavedSearchesOpen}

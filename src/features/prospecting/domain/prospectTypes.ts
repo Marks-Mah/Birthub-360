@@ -37,9 +37,8 @@ export interface RequirementEvaluation {
    * este tipo existe para impedir). */
   observed: string | null;
   status: RequirementStatus;
-  /** De onde veio o valor observado (`apollo`, `googlePlaces`, `nominatim`, ou `none` quando
-   * `observed` é null). */
-  source: DiscoveryProviderId | 'none';
+  /** De onde veio o valor observado (provider real ou 'none' quando `observed` é null). */
+  source: NonNullable<ProspectCandidate['source']> | 'none';
   /** Frase pronta em português explicando o status — para a UI não precisar montar texto a partir
    * de `type`+`status`. */
   reason: string;
@@ -53,50 +52,87 @@ export interface ProspectCriteria {
   segmento: string;
   localizacao: string;
   quantidade: number;
-  /** Estado (UF por extenso, ex: "Rio de Janeiro") — refina a busca além da região ampla do playbook. Opcional. */
+  /** Estado (UF por extenso ou sigla) */
   estado?: string;
-  /** Cidade específica — refina ainda mais dentro do estado. Opcional. */
+  /** Cidade específica */
   cidade?: string;
-  /** Faixa de funcionários no formato Apollo "min,max" (ex: "11,50"). Opcional. */
+  /** Faixa de funcionários no formato Apollo "min,max" ou porte */
   porte?: string;
-  /** Faturamento anual estimado em USD — dado da Apollo é normalizado em USD. Opcional. */
   faturamentoMin?: number;
   faturamentoMax?: number;
-  /** Faturamento mensal estimado em USD — convertido para faixa anual (×12) antes de ir pra Apollo, que só reconhece faturamento anual. Opcional. */
   faturamentoMensalMin?: number;
   faturamentoMensalMax?: number;
-  /** Volume de operação/carga (texto livre — ex: "50 cargas/mês", "frota de 30+ veículos"). Sem taxonomia fixa na Apollo; entra como palavra-chave adicional na busca. Opcional. */
+  /** Volume mantido como opcional para retrocompatibilidade técnica interna */
   volume?: string;
-  /** Palavras-chave adicionais (além do segmento), separadas por vírgula. Opcional. */
   palavrasChave?: string;
-  /** Nome da empresa/local para Google Maps, Apollo e fallback OpenStreetMap. Opcional. */
   nomeEmpresa?: string;
-  /** Ano mínimo de fundação. Opcional. */
   anoFundacaoMin?: number;
-  /** Ano máximo de fundação. Opcional. */
   anoFundacaoMax?: number;
-  /** Tecnologias utilizadas (UIDs confirmados, separados por vírgula — ver TECNOLOGIA_OPTIONS). Opcional. */
   tecnologias?: string;
-  /** Tecnologias a EXCLUIR (mesmo formato de `tecnologias`). Opcional. */
   tecnologiasExcluir?: string;
-  /** Cidades/estados a excluir da busca, separados por vírgula (ex: "São Paulo, Minas Gerais"). Opcional. */
   localizacaoExcluir?: string;
-  /** Filtra só empresas de capital aberto (B3/bolsa). Opcional. */
   apenasCapitalAberto?: boolean;
-  /** Página do ranking da Apollo (1-based, padrão 1). Usada pelo botão "Buscar mais resultados"
-   * do frontend para trazer a próxima fatia do mesmo ranking em vez de repetir sempre o topo. */
   pagina?: number;
-  /** Nomes a serem excluidos da busca para evitar duplicidade no append. */
   excludeNames?: string[];
+
+  // NOVOS CAMPOS TURBO 360:
+  subsegmento?: string;
+  nicho?: string;
+  produtos?: string;
+  servicos?: string;
+  descricaoEmpresaIdeal?: string;
+  palavrasChaveObrigatorias?: string;
+  palavrasChaveOpcionais?: string;
+  palavrasChaveExcluir?: string;
+  cnaePrincipal?: string;
+  cnaesSecundarios?: string[];
+  setorEconomico?: string;
+  tipoMercado?: string; // B2B, B2C, B2B2C, etc.
+  modeloNegocio?: string; // SaaS, Indústria, Distribuição, Varejo, etc.
+  cnpj?: string;
+  situacaoCadastral?: string;
+  naturezaJuridica?: string;
+  capitalSocialMin?: number;
+  tipoEstabelecimento?: 'matriz' | 'filial' | 'ambos';
+  buscaModo?: 'economico' | 'equilibrado' | 'completo';
+  aiProviderMode?: 'auto' | 'groq' | 'local';
+
+  // PERSONA DETALHADA:
+  personaNome?: string;
+  departamento?: string;
+  funcao?: string;
+  nivelHierarquico?: string;
+  senioridade?: string;
+  poderDecisao?: string;
+  cargosEquivalentes?: string[];
+  cargosExcluir?: string[];
+  experienciaMinAnos?: number;
+  tempoCargoMinMeses?: number;
+  tempoEmpresaMinMeses?: number;
+  competencias?: string[];
+  apenasComEmail?: boolean;
+  apenasComTelefone?: boolean;
+  apenasComLinkedin?: boolean;
+  maxDecisoresPorEmpresa?: number;
 }
 
 export interface DecisionMaker {
   name: string;
   title: string | null;
   email: string | null;
-  emailSource?: 'apollo' | 'hunter';
+  emailSource?: 'apollo' | 'hunter' | 'receita' | 'web';
+  emailStatus?: 'verified' | 'unconfirmed' | 'inferred' | 'none';
   phone: string | null;
+  phoneType?: 'direct' | 'company' | 'mobile';
+  whatsapp?: string | null;
+  whatsappVerified?: boolean;
   linkedinUrl: string | null;
+  department?: string | null;
+  seniority?: string | null;
+  functionName?: string | null;
+  personaMatchScore?: number | null;
+  source?: string;
+  lastUpdated?: string;
 }
 
 export interface ProspectCandidate {
@@ -109,39 +145,62 @@ export interface ProspectCandidate {
   fitScoreEstimate: number;
   suggestedContact: { name: string; role: string } | null;
   rationale: string;
-  /** Provider que efetivamente encontrou este candidato — usado pelo Requirement Engine
-   * (`domain/requirementEngine.ts`) para saber se um campo é dado observado de verdade ou só o
-   * critério pedido ecoado (ver `segmentObserved`). Não confundir com `rationale`, que é texto
-   * livre pensado pra exibição, não pra leitura por código. */
   source?: DiscoveryProviderId;
-  /** true quando `segment` veio de uma classificação de indústria real do provider (Apollo
-   * `organization.industry`) — false/undefined quando `segment` é só o segmento PEDIDO na busca
-   * ecoado de volta (sempre o caso para Google Places/Nominatim, que não classificam indústria; e
-   * também o caso da Apollo quando ela não devolveu `industry` para aquela organização). Sem esta
-   * distinção, o Requirement Engine trataria todo `segment` como confirmado — exatamente a
-   * "fabricação sutil" (filtro solicitado virando atributo observado) que ele existe para evitar. */
   segmentObserved?: boolean;
-  /** Avaliação, por critério pedido na busca, do que foi de fato observado neste candidato
-   * (`domain/requirementEngine.ts::evaluateCandidateRequirements`) — preenchido em
-   * `discoverCandidates` depois do enriquecimento de qualidade. Não decide inclusão/exclusão do
-   * candidato, só documenta a honestidade de cada critério para a UI mostrar. */
   requirementEvaluations?: RequirementEvaluation[];
-  // Dados extras retornados pela Apollo — deixam o candidato mais rico em informação antes mesmo de promover.
   linkedinUrl?: string | null;
   phone?: string | null;
-  /** Domínio/site real já conhecido (Apollo primary_domain ou Google Places websiteUri) — evita
-   * que o enriquecimento precise "adivinhar" um domínio a partir do nome da empresa depois. */
   website?: string | null;
   foundedYear?: number | null;
   annualRevenue?: number | null;
   technologies?: string[];
   emails?: string[];
   apolloContacts?: DecisionMaker[];
-  /** Decisores encontrados via Apollo People Search (+ Hunter.io como fallback de e-mail) já na descoberta. */
   decisionMakers?: DecisionMaker[];
-  /** Quebra-gelo / fato relevante / notícia recente da empresa obtida via busca na internet para abordagem inicial */
   icebreakerHook?: string | null;
   webInsights?: Array<{ title: string; url: string; domain: string }>;
+
+  // NOVOS CAMPOS TURBO 360 DE DADOS EMPRESARIAIS:
+  cnaePrincipal?: string | null;
+  cnaeDescricao?: string | null;
+  cnaesSecundarios?: Array<{ codigo: string; descricao: string }>;
+  situacaoCadastral?: string | null;
+  dataAbertura?: string | null;
+  naturezaJuridica?: string | null;
+  capitalSocial?: number | null;
+  porte?: string | null;
+  setor?: string | null;
+  enderecoCompleto?: {
+    logradouro?: string;
+    numero?: string;
+    complemento?: string;
+    bairro?: string;
+    cidade?: string;
+    uf?: string;
+    cep?: string;
+  } | null;
+  whatsappComercial?: string | null;
+  whatsappVerified?: boolean;
+  icpScore?: number;
+  icpBreakdown?: {
+    segmento: number;
+    cnae: number;
+    localizacao: number;
+    porte: number;
+    decisor: number;
+    produtosServicos: number;
+    sinais: number;
+    total: number;
+    explicacao?: string;
+  };
+  dataQualityScore?: number;
+  confidenceScore?: number;
+  sourcesProvenance?: Array<{
+    field: string;
+    source: string;
+    observedAt: string;
+    verified: boolean;
+  }>;
 }
 
 export interface DiscoverResult {
@@ -149,11 +208,20 @@ export interface DiscoverResult {
   sources: Array<{ title: string; uri: string }>;
   apolloError?: string;
   providerMode: 'free' | 'hybrid';
-  /** Onda 42 (dossiê CPI, DEC-13, opção A): id único desta EXECUÇÃO de busca (cuid) — amarra
-   * critério usado, providers chamados, resultados e custo, persistido em
-   * `ProspectingSearchExecution` (ver searchExecution.service.ts) e consultável depois via
-   * `GET /api/prospecting/searches/:searchId`. */
   searchId: string;
+  stats?: {
+    totalEncontrados: number;
+    comCnpj: number;
+    comTelefone: number;
+    comEmail: number;
+    comWhatsapp: number;
+    decisoresEncontrados: number;
+    decisoresComLinkedin: number;
+    decisoresComEmail: number;
+    decisoresComTelefone: number;
+    providersConsultados: string[];
+    partialFailures: string[];
+  };
 }
 
 /** Monta a localização mais precisa disponível: cidade + estado > estado > região ampla do playbook. */

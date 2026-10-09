@@ -13,6 +13,9 @@ import { ExclusionSet } from '../../utils/exclusionSet.js';
 import { fetchApolloCandidates } from '../apollo.service.js';
 import { searchNominatimCandidates } from '../nominatim.service.js';
 import { searchGooglePlacesCandidates } from '../places.service.js';
+import { BrazilPublicCnpjService } from '../brazilPublicCnpj.service.js';
+import { ICPScoringEngine } from '../icpScoring.service.js';
+import { TextSimilarityUtil } from '../../utils/openSourceTextAndPhone.util.js';
 import { type SearchExecutionStatus, SearchExecutionTracker } from '../searchExecution.service.js';
 import { enrichCandidatesWithQualityData } from './qualityEnrichment.js';
 import type { DiscoverResult, ProspectCandidate, ProspectCriteria } from './types.js';
@@ -217,9 +220,38 @@ export async function discoverCandidates(
 
     let apolloError: string | undefined;
 
+    // 0. BUSCA DIRETA POR CNPJ: se o usuário informou um CNPJ nos critérios, busca diretamente na base pública oficial
+    const directCnpj = (criteria.cnpj || criteria.nomeEmpresa || '').replace(/\D/g, '');
+    if (directCnpj.length === 14) {
+      try {
+        const cnpjData = await BrazilPublicCnpjService.fetchByCnpj(directCnpj);
+        if (cnpjData) {
+          const directCandidate = BrazilPublicCnpjService.toProspectCandidate(cnpjData);
+          allCandidates.push(directCandidate);
+          tracker.recordProviderCall({
+            provider: 'receita_federal',
+            resultCount: 1,
+            status: 'ok',
+          });
+        }
+      } catch (cnpjErr: any) {
+        logger.warn({ err: cnpjErr.message, directCnpj }, 'Falha na busca direta de CNPJ');
+      }
+    }
+
     function absorb(found: ProspectCandidate[]) {
       for (const candidate of found) {
         if (exclusions.has(candidate.tradeName, candidate.website)) continue;
+        // Deduplicação determinística por CNPJ quando ambos possuem CNPJ conhecido
+        if (
+          candidate.cnpjGuess &&
+          allCandidates.some(
+            (existing) => existing.cnpjGuess && existing.cnpjGuess === candidate.cnpjGuess,
+          )
+        ) {
+          continue;
+        }
+
         exclusions.add(candidate.tradeName, candidate.website);
         allCandidates.push(candidate);
       }
@@ -325,6 +357,14 @@ export async function discoverCandidates(
     // reordena `finalCandidates` — só documenta para a UI mostrar com honestidade.
     for (const candidate of finalCandidates) {
       candidate.requirementEvaluations = evaluateCandidateRequirements(intent, candidate);
+
+      // NOVO MOTOR DE SCORING ICP TURBO 360:
+      const evalResult = ICPScoringEngine.evaluateCandidate(candidate, criteria);
+      candidate.icpScore = evalResult.totalScore;
+      candidate.icpBreakdown = evalResult.breakdown;
+      candidate.dataQualityScore = evalResult.dataQualityScore;
+      candidate.confidenceScore = evalResult.confidenceScore;
+      candidate.fitScoreEstimate = evalResult.totalScore;
     }
 
     const hadProviderError = tracker.providerCalls.some((c) => c.status === 'error');
@@ -340,17 +380,47 @@ export async function discoverCandidates(
       errorMessage: providerMode === 'hybrid' ? apolloError : undefined,
     });
 
+    // Estatísticas operacionais consolidadas dos resultados
+    const stats = {
+      totalEncontrados: finalCandidates.length,
+      comCnpj: finalCandidates.filter((c) => !!c.cnpjGuess).length,
+      comTelefone: finalCandidates.filter((c) => !!c.phone).length,
+      comEmail: finalCandidates.filter((c) => !!c.emails && c.emails.length > 0).length,
+      comWhatsapp: finalCandidates.filter((c) => !!c.phone).length,
+      decisoresEncontrados: finalCandidates.reduce(
+        (acc, c) => acc + (c.decisionMakers?.length || 0),
+        0,
+      ),
+      decisoresComLinkedin: finalCandidates.reduce(
+        (acc, c) => acc + (c.decisionMakers?.filter((d) => !!d.linkedinUrl).length || 0),
+        0,
+      ),
+      decisoresComEmail: finalCandidates.reduce(
+        (acc, c) => acc + (c.decisionMakers?.filter((d) => !!d.email).length || 0),
+        0,
+      ),
+      decisoresComTelefone: finalCandidates.reduce(
+        (acc, c) => acc + (c.decisionMakers?.filter((d) => !!d.phone).length || 0),
+        0,
+      ),
+      providersConsultados: tracker.providerCalls.map((p) => p.provider),
+      partialFailures: tracker.providerCalls
+        .filter((p) => p.status === 'error')
+        .map((p) => `${p.provider}: ${p.errorMessage || 'Falha'}`),
+    };
+
     return {
       searchId: tracker.searchId,
       candidates: finalCandidates,
       sources: [
         {
-          title: 'Apollo.io / Google Places / OpenStreetMap',
-          uri: 'https://apollo.io',
+          title: 'Apollo.io / Google Places / OpenStreetMap / Receita Federal',
+          uri: 'https://brasilapi.com.br',
         },
       ],
       apolloError: providerMode === 'hybrid' ? apolloError : undefined,
       providerMode,
+      stats,
     };
   } catch (error: any) {
     // Search-ID precisa ser persistido mesmo quando a execução inteira quebra antes de gerar
