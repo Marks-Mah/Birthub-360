@@ -5,11 +5,11 @@ import {
   withTenantContext,
 } from './interceptors.js';
 
-export interface ScrapeProspectParams {
+export type ScrapeProspectParams = {
   tenantId?: string;
   organizationId?: string;
   url: string;
-}
+};
 
 export const scrapeProspect = withTenantActivity(
   async (params: ScrapeProspectParams): Promise<any> => {
