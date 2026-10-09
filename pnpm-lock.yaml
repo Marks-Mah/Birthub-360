@@ -8277,8 +8277,8 @@ packages:
     resolution: {integrity: sha512-7dqa0ZcFfzbefdTuIkzOSMvZWC0J7FLqBOjJUZvDCXShIURWKxAyTT1wHhnE5q19c7jOJf43IYYKjBmZVZmvhg==}
     engines: {node: '>= 10.16.0'}
 
-  music-metadata@11.16.0:
-    resolution: {integrity: sha512-D5zZHjQUbfR+JhHjnwdbgeB4qj7zVJtisCB1I0GAI5sjSPGqPLoY14WMIzMeR8iA+4nSFswVLpO4crksZUybBg==}
+  music-metadata@11.16.1:
+    resolution: {integrity: sha512-uR/mHK6eyfl8h3jVCobF5b38Mfg1IDJMiBxIVbmm5F+G1OXEFcUpQHveO84tJBAqvY93GCRY2R4kDyx7s06Rug==}
     engines: {node: '>=18'}
 
   mustache@4.2.0:
@@ -15913,7 +15913,7 @@ snapshots:
       async-mutex: 0.5.0
       libsignal: 6.0.0
       lru-cache: 11.5.3
-      music-metadata: 11.16.0(supports-color@7.2.0)
+      music-metadata: 11.16.1(supports-color@7.2.0)
       p-queue: 9.3.3
       pino: 9.14.0
       protobufjs: 7.6.5
@@ -19061,7 +19061,7 @@ snapshots:
       busboy: 1.6.0
       type-is: 1.6.18
 
-  music-metadata@11.16.0(supports-color@7.2.0):
+  music-metadata@11.16.1(supports-color@7.2.0):
     dependencies:
       '@borewit/text-codec': 0.2.2
       '@tokenizer/token': 0.3.0
