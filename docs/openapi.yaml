@@ -1604,6 +1604,67 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
+  /prospecting/providers:
+    get:
+      tags: [Prospecting]
+      summary: Consulta a saúde e disponibilidade dos provedores de prospecção turbo
+      responses:
+        '200':
+          description: Status de saúde dos provedores de prospecção
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataEnvelope'
+
+  /prospecting/providers/test:
+    post:
+      tags: [Prospecting]
+      summary: Testa conectividade e disponibilidade dos provedores de prospecção
+      responses:
+        '200':
+          description: Resultado do teste de provedores
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataEnvelope'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /prospecting/interpret:
+    post:
+      tags: [Prospecting]
+      summary: Interpreta busca em linguagem natural e extrai critérios de prospecção estruturados
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [query, consent]
+              properties:
+                query:
+                  type: string
+                  minLength: 5
+                  maxLength: 2000
+                model:
+                  type: string
+                mode:
+                  type: string
+                  enum: [automatic, groq, local]
+                consent:
+                  type: boolean
+                allowPaidProviders:
+                  type: boolean
+      responses:
+        '200':
+          description: Critérios estruturados inferidos da consulta
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataEnvelope'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
   /prospecting/enrich-cnpj:
     post:
       tags: [Prospecting]
