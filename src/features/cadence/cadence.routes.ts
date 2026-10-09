@@ -22,7 +22,10 @@ import { prismaCalendarSchedulerPort } from './infra/PrismaCalendarSchedulerPort
 import { prismaMeetingConfirmationNotePort } from './infra/PrismaMeetingConfirmationNotePort.js';
 import { prismaOptOutRepository } from '../../shared/infra/PrismaOptOutRepository.js';
 import { recordOptOut } from '../../shared/services/optOutService.js';
-import { checkOptOutStatus, recordContactOptOut } from '../../shared/services/optOutCheck.service.js';
+import {
+  checkOptOutStatus,
+  recordContactOptOut,
+} from '../../shared/services/optOutCheck.service.js';
 import { parseCadenceSequenceDefinition } from './jobs/cadenceRun.worker.js';
 
 /**
