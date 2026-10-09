@@ -1,5 +1,5 @@
 param(
-    [string]$KeyPath = "C:\Users\marce\OneDrive\Desktop\Birthub360.pem",
+    [string]$KeyPath = "C:\Users\marce\OneDrive\Documentos\CHAVE AWS BIRTHUB 360.pem",
     [string]$EC2Host = "3.143.251.44",
     [string]$EC2User = "ubuntu"
 )

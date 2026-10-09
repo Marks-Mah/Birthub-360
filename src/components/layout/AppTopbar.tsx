@@ -80,34 +80,45 @@ export function AppTopbar({ activeTab, onOpenMobileNav }: AppTopbarProps) {
   };
 
   return (
-    <header className="relative sticky top-0 z-20 flex h-14 shrink-0 items-center gap-2.5 border-b border-line bg-gradient-to-r from-surface-elevated/96 to-surface/96 px-3 shadow-xs backdrop-blur-xl sm:px-5">
-      <div className="absolute bottom-0 left-0 right-0 h-[1.5px] bg-gradient-to-r from-transparent via-brand/30 to-transparent pointer-events-none" />
+    <header className="relative sticky top-0 z-20 flex h-16 shrink-0 items-center gap-2.5 el-glass el-hairline px-4 sm:px-6">
       <button
         type="button"
         onClick={onOpenMobileNav}
-        className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-control text-ink-2 transition-colors hover:bg-surface-interactive hover:text-ink lg:hidden"
+        className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full text-[color:var(--el-ink-2)] transition-all duration-300 hover:bg-[color:var(--surface-2)] hover:text-[color:var(--el-ink)] lg:hidden"
         aria-label="Abrir menu de navegação"
+        data-testid="topbar-open-mobile-nav"
       >
-        <Menu className="h-4 w-4" />
+        <Menu className="h-4 w-4" strokeWidth={1.5} />
       </button>
 
       {!isHome && (
         <button
           type="button"
           onClick={handleBack}
-          className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-control text-ink-2 transition-colors hover:bg-surface-interactive hover:text-ink"
+          className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full border border-[color:var(--el-line)] text-[color:var(--el-ink-2)] transition-all duration-300 hover:bg-[color:var(--surface-2)] hover:text-[color:var(--el-ink)] hover:border-[color:var(--el-gold)] hover:-translate-x-0.5"
           aria-label="Voltar"
           title="Voltar"
+          data-testid="topbar-back"
         >
-          <ArrowLeft className="h-4 w-4" />
+          <ArrowLeft className="h-4 w-4" strokeWidth={1.5} />
         </button>
       )}
 
-      <div className="flex min-w-0 items-center gap-2">
-        <div className="grid h-8 w-8 place-items-center rounded-control border border-brand/15 bg-brand/8">
-          <Icon className="h-4 w-4 shrink-0 text-brand-ink dark:text-brand" />
+      <div className="flex min-w-0 items-center gap-3">
+        <div
+          className="grid h-9 w-9 place-items-center rounded-full border border-[color:var(--el-line-strong)]"
+          style={{ background: 'linear-gradient(135deg, var(--surface) 0%, var(--surface-2) 100%)' }}
+        >
+          <Icon className="h-4 w-4 shrink-0 text-[color:var(--el-gold-deep)]" strokeWidth={1.5} />
         </div>
-        <h1 className="truncate font-display text-sm font-semibold text-ink">{meta.label}</h1>
+        <div className="flex flex-col leading-none">
+          <span className="text-[10px] uppercase tracking-[0.25em] text-[color:var(--el-ink-3)] font-display">
+            Birth Hub 360°
+          </span>
+          <h1 className="truncate font-display text-base text-[color:var(--el-ink)] italic mt-0.5" style={{ fontWeight: 400 }}>
+            {meta.label}
+          </h1>
+        </div>
       </div>
 
       <button
@@ -116,106 +127,111 @@ export function AppTopbar({ activeTab, onOpenMobileNav }: AppTopbarProps) {
           SoundFX.play('focus');
           window.dispatchEvent(new Event(OPEN_COMMAND_PALETTE_EVENT));
         }}
-        className="group ml-3 hidden max-w-md flex-1 items-center gap-2 rounded-control border border-line bg-surface-subtle/50 px-3 py-2 text-ink-2 transition-all hover:border-brand/40 hover:bg-surface-subtle hover:text-ink hover:shadow-[inset_0_2px_10px_rgba(0,0,0,0.02)] lg:flex"
+        className="group ml-5 hidden max-w-md flex-1 items-center gap-3 rounded-full border border-[color:var(--el-line-strong)] bg-[color:var(--surface)]/70 px-4 py-2.5 text-[color:var(--el-ink-2)] transition-all duration-500 hover:border-[color:var(--el-gold)] hover:bg-[color:var(--surface)] hover:text-[color:var(--el-ink)] hover:shadow-[var(--el-shadow-sm)] lg:flex"
+        data-testid="topbar-command-palette"
       >
-        <Search className="h-3.5 w-3.5 shrink-0 transition-transform duration-200 group-hover:scale-110 group-hover:text-brand" />
-        <span className="text-xs">Buscar empresa, decisor ou comando…</span>
-        <kbd className="ml-auto rounded-md border border-line bg-surface px-1.5 py-0.5 text-[9px] font-semibold text-ink-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] transition-colors group-hover:border-brand/30">
+        <Search className="h-3.5 w-3.5 shrink-0 transition-all duration-500 group-hover:text-[color:var(--el-gold-deep)] group-hover:rotate-12" strokeWidth={1.5} />
+        <span className="text-xs font-display italic">Buscar empresa, decisor ou comando…</span>
+        <kbd className="ml-auto rounded-full border border-[color:var(--el-line-strong)] bg-[color:var(--surface-2)] px-2 py-0.5 text-[9px] font-medium text-[color:var(--el-ink-3)] transition-colors group-hover:border-[color:var(--el-gold)]">
           ⌘K
         </kbd>
       </button>
 
-      <div className="ml-auto flex items-center gap-1.5 sm:gap-3">
+      <div className="ml-auto flex items-center gap-1.5 sm:gap-2">
         <SyncIndicator />
 
-        <div className="hidden text-right leading-tight sm:block">
-          <p className="text-[10px] font-medium uppercase tracking-wider text-ink-2">{dateLabel}</p>
-          <p className="text-sm font-bold text-ink [font-variant-numeric:tabular-nums]">
+        <div className="hidden text-right leading-tight sm:block mr-2">
+          <p className="text-[9px] font-display italic uppercase tracking-[0.2em] text-[color:var(--el-ink-3)]">
+            {dateLabel}
+          </p>
+          <p className="font-display text-sm text-[color:var(--el-ink)] [font-variant-numeric:tabular-nums]" style={{ fontWeight: 400 }}>
             {timeLabel}
           </p>
         </div>
 
         <motion.button
           type="button"
-          whileHover={{ scale: 1.08 }}
+          whileHover={{ scale: 1.1, rotate: 15 }}
           whileTap={{ scale: 0.92 }}
           transition={{ type: 'spring', stiffness: 400, damping: 25 }}
           onClick={() => {
             SoundFX.play('navigate');
             toggleTheme();
           }}
-          className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-transparent text-ink-2 transition-all duration-300 hover:border-line hover:bg-gradient-to-br hover:from-surface-2 hover:to-surface hover:text-ink hover:shadow-md"
+          className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full border border-[color:var(--el-line)] text-[color:var(--el-ink-2)] transition-all duration-300 hover:border-[color:var(--el-gold)] hover:text-[color:var(--el-gold-deep)]"
           aria-label="Alternar tema"
           title={`Mudar para modo ${theme === 'dark' ? 'claro' : 'escuro'}`}
+          data-testid="topbar-toggle-theme"
         >
-          {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+          {theme === 'dark' ? <Sun className="h-4 w-4" strokeWidth={1.5} /> : <Moon className="h-4 w-4" strokeWidth={1.5} />}
         </motion.button>
 
         <motion.button
           type="button"
-          whileHover={{ scale: 1.08 }}
+          whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.92 }}
           transition={{ type: 'spring', stiffness: 400, damping: 25 }}
           onClick={toggleSound}
-          className={`flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-lg border transition-all duration-300 hover:shadow-md ${
+          className={`flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full border transition-all duration-300 ${
             soundEnabled
-              ? 'border-brand/15 bg-gradient-to-br from-brand/8 to-brand/5 text-brand-ink dark:text-brand hover:border-brand/30'
-              : 'border-transparent text-ink-2 hover:border-line hover:bg-gradient-to-br hover:from-surface-2 hover:to-surface hover:text-ink'
+              ? 'border-[color:var(--el-gold)] bg-[color:var(--el-gold)]/10 text-[color:var(--el-gold-deep)]'
+              : 'border-[color:var(--el-line)] text-[color:var(--el-ink-2)] hover:border-[color:var(--el-gold)] hover:text-[color:var(--el-gold-deep)]'
           }`}
           aria-pressed={soundEnabled}
-          aria-label={soundEnabled ? 'Desativar sons da interface' : 'Ativar sons da interface'}
-          title={soundEnabled ? 'Sons da interface ligados' : 'Sons da interface desligados'}
+          aria-label={soundEnabled ? 'Desativar sons' : 'Ativar sons'}
+          data-testid="topbar-toggle-sound"
         >
-          {soundEnabled ? <Volume2 className="h-5 w-5" /> : <VolumeX className="h-5 w-5" />}
+          {soundEnabled ? <Volume2 className="h-4 w-4" strokeWidth={1.5} /> : <VolumeX className="h-4 w-4" strokeWidth={1.5} />}
         </motion.button>
 
         <motion.button
           type="button"
-          whileHover={{ scale: 1.08 }}
+          whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.92 }}
           transition={{ type: 'spring', stiffness: 400, damping: 25 }}
           onClick={() => {
             SoundFX.play('navigate');
             navigate('/app/notifications');
           }}
-          className="relative flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-transparent text-ink-2 transition-all duration-300 hover:border-line hover:bg-gradient-to-br hover:from-surface-2 hover:to-surface hover:text-brand hover:shadow-md"
-          aria-label={
-            unreadCount > 0
-              ? `Notificações — ${unreadCount} não lida${unreadCount === 1 ? '' : 's'}`
-              : 'Notificações'
-          }
+          className="relative flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full border border-[color:var(--el-line)] text-[color:var(--el-ink-2)] transition-all duration-300 hover:border-[color:var(--el-pink)] hover:text-[color:var(--el-pink)]"
+          aria-label={unreadCount > 0 ? `Notificações — ${unreadCount} não lidas` : 'Notificações'}
+          data-testid="topbar-notifications"
         >
-          <Bell className="h-5 w-5 transition-transform duration-300" />
+          <Bell className="h-4 w-4" strokeWidth={1.5} />
           {unreadCount > 0 && (
             <span
-              className="absolute right-[9px] top-[9px] h-1.5 w-1.5 rounded-full bg-brand shadow-[0_0_0_3px_var(--surface)] motion-safe:animate-pulse"
+              className="absolute right-[7px] top-[7px] h-1.5 w-1.5 rounded-full motion-safe:animate-pulse"
+              style={{ background: 'var(--el-pink)', boxShadow: '0 0 0 3px var(--surface)' }}
               aria-hidden="true"
             />
           )}
         </motion.button>
 
         <motion.div
-          whileHover={{ scale: 1.08 }}
+          whileHover={{ scale: 1.1 }}
           transition={{ type: 'spring', stiffness: 400, damping: 25 }}
           role="img"
           aria-label={`Avatar de ${currentUser?.name || 'Usuário'}`}
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-brand to-brand-2 text-sm font-bold text-on-brand shadow-md ring-1 ring-white/10 cursor-pointer"
-          title={`${currentUser?.name || 'Usuário'} (${currentUser?.roleTitle || currentUser?.role || ''})`}
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full font-display italic text-sm text-[color:var(--el-ink)] cursor-pointer border border-[color:var(--el-gold)]"
+          style={{ background: 'var(--el-grad-gold)', boxShadow: 'var(--el-glow-gold)' }}
+          title={`${currentUser?.name || 'Usuário'}`}
+          data-testid="topbar-avatar"
         >
           {userInitial}
         </motion.div>
 
         <motion.button
           type="button"
-          whileHover={{ scale: 1.08 }}
+          whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.92 }}
           transition={{ type: 'spring', stiffness: 400, damping: 25 }}
           onClick={logout}
-          className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-transparent text-ink-2 transition-all duration-300 hover:border-critical/20 hover:bg-gradient-to-br hover:from-critical/10 hover:to-critical/5 hover:text-critical hover:shadow-md"
+          className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full border border-[color:var(--el-line)] text-[color:var(--el-ink-2)] transition-all duration-300 hover:border-[color:var(--el-pink)] hover:text-[color:var(--el-pink)]"
           aria-label="Sair da conta"
           title="Sair da conta"
+          data-testid="topbar-logout"
         >
-          <LogOut className="h-5 w-5" />
+          <LogOut className="h-4 w-4" strokeWidth={1.5} />
         </motion.button>
       </div>
     </header>

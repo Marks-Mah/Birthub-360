@@ -4,7 +4,17 @@
 # Configurações
 $EC2_HOST = "3.143.251.44"
 $EC2_USER = "ubuntu"
-$KEY_PATH = "$env:USERPROFILE\Desktop\Birthub360.pem"
+$KEY_CANDIDATES = @(
+    "C:\Users\marce\OneDrive\Documentos\CHAVE AWS BIRTHUB 360.pem",
+    "$env:USERPROFILE\OneDrive\Documentos\CHAVE AWS BIRTHUB 360.pem",
+    "$env:USERPROFILE\Documents\CHAVE AWS BIRTHUB 360.pem",
+    "$env:USERPROFILE\Desktop\Birthub360.pem",
+    "$env:USERPROFILE\OneDrive\Desktop\Birthub360.pem"
+)
+$KEY_PATH = $KEY_CANDIDATES | Where-Object { Test-Path $_ } | Select-Object -First 1
+if (-not $KEY_PATH) {
+    $KEY_PATH = "C:\Users\marce\OneDrive\Documentos\CHAVE AWS BIRTHUB 360.pem"
+}
 $REMOTE_DIR = "/home/ubuntu/birthhub-360"
 $LOCAL_DIST = "./dist"
 $CONTAINER_NAME = "birthhub-app"

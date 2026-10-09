@@ -203,7 +203,7 @@ export function Sidebar({
                                 : 'text-[color:var(--el-ink-3)] group-hover:text-[color:var(--el-gold)]'
                             }`}
                           >
-                            <Icon size={16} strokeWidth={1.5} />
+                            <Icon size={16} />
                           </span>
 
                           {!isCollapsed && (

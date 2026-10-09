@@ -12,7 +12,7 @@ export interface NavGroupItem {
   label: string;
   sublabel?: string;
   ariaLabel?: string;
-  icon: React.ComponentType<{ size?: number; className?: string }>;
+  icon: React.ComponentType<{ size?: number; className?: string; strokeWidth?: number | string }>;
   primaryTab?: TabType;
   subItems?: NavSubItem[];
   accentColor?: string;

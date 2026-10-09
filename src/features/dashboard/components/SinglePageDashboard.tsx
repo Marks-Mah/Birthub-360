@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import {
   Activity,
+  AlertTriangle,
   ArrowRight,
   BarChart3,
   BrainCircuit,
@@ -9,6 +10,7 @@ import {
   Layers,
   PhoneCall,
   Radar,
+  RotateCw,
   Search,
   ShieldCheck,
   Sparkles,
@@ -22,6 +24,8 @@ import { GamificationWidget } from '../../../components/ui/GamificationWidget.js
 import { Skeleton } from '../../../components/ui/Skeleton.js';
 import { useAuth } from '../../../contexts/AuthContext.js';
 import { useAnalyticsDashboard } from '../../../hooks/useDatabase.js';
+import { useOnlineStatus } from '../../../hooks/useOnlineStatus.js';
+import { useBitrixIntegration } from '../../../hooks/useBitrixIntegration.js';
 import {
   fadeInUp,
   metricReveal,
@@ -40,7 +44,10 @@ function greeting() {
 export function SinglePageDashboard() {
   const navigate = useNavigate();
   const { currentUser } = useAuth();
-  const { data: stats, loading } = useAnalyticsDashboard(6);
+  const { data: stats, loading, error, refetch } = useAnalyticsDashboard(6);
+  const isOnline = useOnlineStatus();
+  const { bitrixConnections } = useBitrixIntegration();
+  const hasBitrixActive = bitrixConnections.length > 0;
 
   const overview = stats?.overview;
   const pipelineValue = overview?.pipelineValue ?? 0;
@@ -55,6 +62,32 @@ export function SinglePageDashboard() {
   const funnel = stats?.funnel ?? [];
   const maxFunnelCount = Math.max(...funnel.map((f) => f.count), 1);
   const byTemp = stats?.byTemperature ?? [];
+
+  if (error) {
+    return (
+      <div className="flex-1 overflow-y-auto bg-bg p-6 lg:p-8">
+        <div className="max-w-[48rem] mx-auto mt-12 text-center p-8 bg-surface rounded-2xl border border-line shadow-card space-y-4">
+          <div className="w-12 h-12 rounded-full bg-rose-500/10 text-rose-500 mx-auto flex items-center justify-center">
+            <AlertTriangle className="w-6 h-6" />
+          </div>
+          <h2 className="text-lg font-bold text-ink font-display">Falha ao carregar indicadores comerciais</h2>
+          <p className="text-sm text-ink-2 max-w-md mx-auto">
+            {error || 'Não foi possível sincronizar as métricas de pipeline com o servidor.'}
+          </p>
+          <div className="pt-2">
+            <button
+              type="button"
+              onClick={() => refetch()}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-brand hover:bg-brand/90 text-slate-950 text-sm font-bold transition-all shadow-md cursor-pointer"
+            >
+              <RotateCw className="w-4 h-4" />
+              Tentar novamente
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (loading) {
     return (
@@ -394,25 +427,58 @@ export function SinglePageDashboard() {
 
             {/* Quick System Indicators */}
             <div className="pt-4 border-t border-line/60 space-y-2">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-ink-3">
-                Status dos Conectores
-              </span>
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-ink-3">
+                  Status dos Conectores
+                </span>
+                <button
+                  type="button"
+                  onClick={() => navigate('/app/integrations')}
+                  className="text-[10px] font-semibold text-brand hover:underline cursor-pointer"
+                >
+                  Gerenciar &rarr;
+                </button>
+              </div>
               <div className="grid grid-cols-2 gap-2 text-[11px]">
-                <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400">
-                  <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
-                  <span className="text-ink font-medium">Bitrix24 Live</span>
+                <div
+                  className={`flex items-center gap-1.5 ${
+                    isOnline
+                      ? 'text-emerald-600 dark:text-emerald-400'
+                      : 'text-amber-600 dark:text-amber-400'
+                  }`}
+                >
+                  {isOnline ? (
+                    <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
+                  ) : (
+                    <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
+                  )}
+                  <span className="text-ink font-medium">
+                    {isOnline ? 'Rede Conectada' : 'Modo Offline'}
+                  </span>
+                </div>
+                <div
+                  className={`flex items-center gap-1.5 ${
+                    hasBitrixActive
+                      ? 'text-emerald-600 dark:text-emerald-400'
+                      : 'text-ink-2'
+                  }`}
+                >
+                  {hasBitrixActive ? (
+                    <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
+                  ) : (
+                    <span className="w-3.5 h-3.5 rounded-full border border-line flex items-center justify-center text-[8px]">•</span>
+                  )}
+                  <span className="text-ink font-medium">
+                    {hasBitrixActive ? 'Bitrix24 Ativo' : 'Bitrix24 Pendente'}
+                  </span>
                 </div>
                 <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400">
-                  <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
-                  <span className="text-ink font-medium">Birth Voice 3CX</span>
-                </div>
-                <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400">
-                  <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
+                  <ShieldCheck className="w-3.5 h-3.5 shrink-0" />
                   <span className="text-ink font-medium">PostgreSQL RLS</span>
                 </div>
                 <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400">
-                  <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
-                  <span className="text-ink font-medium">Copiloto IA Ativo</span>
+                  <Sparkles className="w-3.5 h-3.5 shrink-0" />
+                  <span className="text-ink font-medium">Copiloto IA</span>
                 </div>
               </div>
             </div>
