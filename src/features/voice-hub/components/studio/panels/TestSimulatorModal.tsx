@@ -37,7 +37,6 @@ export function TestSimulatorModal({ onClose }: TestSimulatorModalProps) {
   const streamRef = useRef<MediaStream | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
-
   const drawWaveform = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -133,7 +132,6 @@ export function TestSimulatorModal({ onClose }: TestSimulatorModalProps) {
       if (window.speechSynthesis) window.speechSynthesis.cancel();
     };
   }, [stopAudioWave]);
-
 
   const handleSendText = async (text: string) => {
     if (!text.trim() || isLoading) return;
