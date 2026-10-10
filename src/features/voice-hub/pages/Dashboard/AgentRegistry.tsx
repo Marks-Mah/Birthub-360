@@ -31,7 +31,12 @@ export default function AgentRegistry() {
       .then(async (res) => {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data: unknown = await res.json();
-        if (!data || typeof data !== 'object' || !('agents' in data) || !Array.isArray(data.agents)) {
+        if (
+          !data ||
+          typeof data !== 'object' ||
+          !('agents' in data) ||
+          !Array.isArray(data.agents)
+        ) {
           throw new Error('Invalid agents response');
         }
         return data.agents as AgentRecord[];
@@ -156,84 +161,87 @@ export default function AgentRegistry() {
           </button>
         </div>
       ) : visibleAgents.length === 0 ? (
-        <div role="status" className="rounded-2xl border border-slate-200 p-8 text-center text-slate-600">
+        <div
+          role="status"
+          className="rounded-2xl border border-slate-200 p-8 text-center text-slate-600"
+        >
           Nenhum agente corresponde à pesquisa.
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {visibleAgents.map((agent, i) => {
-              const config = agent.configuration || {};
-              const template = config.template || 'Custom';
+            const config = agent.configuration || {};
+            const template = config.template || 'Custom';
 
-              return (
-                <div
-                  key={agent.id}
-                  role="button"
-                  tabIndex={0}
-                  onKeyDown={(e) => {
-                    if (e.target !== e.currentTarget) return;
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault();
-                      e.currentTarget.click();
-                    }
-                  }}
-                  onClick={() => navigate(`/dashboard/agents/${agent.id}`)}
-                  className="group relative bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl hover:border-brand-300 dark:hover:border-brand-700 transition-all duration-300 cursor-pointer overflow-hidden transform hover:-translate-y-1"
-                  style={{ animationDelay: `${i * 100}ms` }}
-                >
-                  {/* Efeito de brilho de fundo no hover */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-brand-50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 dark:from-brand-900/20"></div>
+            return (
+              <div
+                key={agent.id}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.target !== e.currentTarget) return;
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    e.currentTarget.click();
+                  }
+                }}
+                onClick={() => navigate(`/dashboard/agents/${agent.id}`)}
+                className="group relative bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl hover:border-brand-300 dark:hover:border-brand-700 transition-all duration-300 cursor-pointer overflow-hidden transform hover:-translate-y-1"
+                style={{ animationDelay: `${i * 100}ms` }}
+              >
+                {/* Efeito de brilho de fundo no hover */}
+                <div className="absolute inset-0 bg-gradient-to-br from-brand-50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 dark:from-brand-900/20"></div>
 
-                  <div className="relative z-10 flex justify-between items-start mb-6">
-                    <div className="flex items-center gap-4">
-                      <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-brand-100 to-indigo-100 dark:from-brand-900 dark:to-indigo-900 flex items-center justify-center text-brand-600 dark:text-brand-300 shadow-inner">
-                        <User className="h-6 w-6" />
-                      </div>
-                      <div>
-                        <h3 className="font-bold text-slate-900 dark:text-white text-lg group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">
-                          {agent.name}
-                        </h3>
-                        <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">
-                          <span className="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800">
-                            {template}
-                          </span>
-                          <span>•</span>
-                          <span>{agent.model}</span>
-                        </div>
-                      </div>
+                <div className="relative z-10 flex justify-between items-start mb-6">
+                  <div className="flex items-center gap-4">
+                    <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-brand-100 to-indigo-100 dark:from-brand-900 dark:to-indigo-900 flex items-center justify-center text-brand-600 dark:text-brand-300 shadow-inner">
+                      <User className="h-6 w-6" />
                     </div>
-                    <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button
-                        type="button"
-                        onClick={(e) => handleDelete(e, agent.id)}
-                        disabled={deletingId !== null}
-                        aria-label={`Excluir agente ${agent.name}`}
-                        className="p-2 text-red-900 hover:text-red-500 hover:bg-red-100 dark:hover:bg-red-900/20 rounded-xl transition-colors"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </button>
+                    <div>
+                      <h3 className="font-bold text-slate-900 dark:text-white text-lg group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">
+                        {agent.name}
+                      </h3>
+                      <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">
+                        <span className="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800">
+                          {template}
+                        </span>
+                        <span>•</span>
+                        <span>{agent.model}</span>
+                      </div>
                     </div>
                   </div>
+                  <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button
+                      type="button"
+                      onClick={(e) => handleDelete(e, agent.id)}
+                      disabled={deletingId !== null}
+                      aria-label={`Excluir agente ${agent.name}`}
+                      className="p-2 text-red-900 hover:text-red-500 hover:bg-red-100 dark:hover:bg-red-900/20 rounded-xl transition-colors"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
 
-                  <div className="relative z-10 space-y-4">
-                    <p className="text-sm text-slate-600 dark:text-red-900 line-clamp-2 min-h-[40px]">
-                      {config.description || 'Nenhuma descrição fornecida para este agente.'}
-                    </p>
+                <div className="relative z-10 space-y-4">
+                  <p className="text-sm text-slate-600 dark:text-red-900 line-clamp-2 min-h-[40px]">
+                    {config.description || 'Nenhuma descrição fornecida para este agente.'}
+                  </p>
 
-                    <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center">
-                      <div className="flex items-center gap-2 text-xs text-slate-500">
-                        <Clock className="h-3.5 w-3.5" />
-                        Atualizado em {new Date(agent.updatedAt).toLocaleDateString()}
-                      </div>
+                  <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center">
+                    <div className="flex items-center gap-2 text-xs text-slate-500">
+                      <Clock className="h-3.5 w-3.5" />
+                      Atualizado em {new Date(agent.updatedAt).toLocaleDateString()}
+                    </div>
 
-                      <div className="flex items-center text-brand-600 dark:text-brand-400 text-sm font-bold group-hover:translate-x-1 transition-transform">
-                        Editar <ChevronRight className="h-4 w-4 ml-1" />
-                      </div>
+                    <div className="flex items-center text-brand-600 dark:text-brand-400 text-sm font-bold group-hover:translate-x-1 transition-transform">
+                      Editar <ChevronRight className="h-4 w-4 ml-1" />
                     </div>
                   </div>
                 </div>
-              );
-            })}
+              </div>
+            );
+          })}
         </div>
       )}
     </div>
