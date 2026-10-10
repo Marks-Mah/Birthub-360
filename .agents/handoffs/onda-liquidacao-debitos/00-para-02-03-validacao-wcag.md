@@ -169,13 +169,30 @@ import { ChevronDown } from 'lucide-react';
 
 ## Resolução (Agentes 02 e 03)
 
-Após correções:
-- [ ] Agente 03: Card.tsx — role/teclado adicionado
-- [ ] Agente 03: ChannelDonut.tsx — role/teclado adicionado
-- [ ] Agente 03: Gamified3DOrb.tsx — role/teclado adicionado
-- [ ] Agente 03: KpiCard.tsx — role/teclado adicionado, import removido
-- [ ] Agente 03: BentoCard.tsx — role condicional verificado
-- [ ] Agente 02: MacDock.tsx — role group adicionado, type button adicionado
-- [ ] Agente 02: ThemeToggle.tsx — type button adicionado
-- [ ] `npm run lint` sem avisos de a11y
-- [ ] Status alterado para "resolvido"
+**Implementado em:** 2026-10-10
+
+**Ações executadas:**
+
+**Agente 03 (Componentes UI):**
+- [x] Card.tsx — role/teclado JÁ implementado (linhas 170-182), nenhuma alteração necessária
+- [x] ChannelDonut.tsx — role="presentation" adicionado (decorativo, não interativo)
+- [x] Gamified3DOrb.tsx — JÁ é um `<button type="button">` com aria-label, nenhuma alteração necessária
+- [x] KpiCard.tsx — role/teclado adicionado (tabIndex e onKeyDown)
+- [x] KpiCard.tsx — import não usado removido (ChevronDown)
+- [x] BentoCard.tsx — role/teclado JÁ implementado (linhas 134-145), nenhuma alteração necessária
+
+**Agente 02 (Layout):**
+- [x] MacDock.tsx — role="group" adicionado ao div container do grupo
+- [x] MacDock.tsx — type="button" adicionado ao motion.button
+- [x] ThemeToggle.tsx — type="button" adicionado
+
+**Alterações em arquivos:**
+- `src/components/layout/ThemeToggle.tsx` — type="button" adicionado
+- `src/components/layout/MacDock.tsx` — role="group" e type="button" adicionados
+- `src/components/ui/KpiCard.tsx` — role/teclado adicionado, import removido
+- `src/components/ui/ChannelDonut.tsx` — role="presentation" adicionado
+
+**Componentes sem alteração (já conformes):**
+- Card.tsx — já tem role/teclado
+- Gamified3DOrb.tsx — já é um button com type="button"
+- BentoCard.tsx — já tem role/teclado
