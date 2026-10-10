@@ -854,27 +854,46 @@ export const useStudioStore = create<StudioState>((set, get) => ({
   loadWorkflowFromServer: async () => {
     try {
       const res = await fetch('/api/workflow');
-      if (res.ok) {
-        const data = await res.json();
-        if (data.workflow) {
-          const lifecycles: Record<string, NodeLifecycleState> = {};
-          data.workflow.nodes.forEach((n: { id: string }) => {
-            lifecycles[n.id] = 'Ready';
-          });
-          set({
-            nodes: data.workflow.nodes,
-            edges: data.workflow.edges,
-            nodeLifecycles: lifecycles,
-            workflowId: data.workflow.id ?? null,
-          });
-          get().addSimulationLog({
-            type: 'success',
-            message: 'Fluxo carregado com sucesso do banco de dados do servidor!',
-          });
-        }
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      if (!data || !Object.prototype.hasOwnProperty.call(data, 'workflow')) {
+        throw new Error('Invalid workflow response');
       }
-    } catch (err: any) {
+
+      if (data.workflow === null) {
+        set({ nodes: [], edges: [], nodeLifecycles: {}, workflowId: null });
+        return true;
+      }
+      if (
+        !data.workflow ||
+        !Array.isArray(data.workflow.nodes) ||
+        !Array.isArray(data.workflow.edges)
+      ) {
+        throw new Error('Invalid workflow graph');
+      }
+
+      const lifecycles: Record<string, NodeLifecycleState> = {};
+      data.workflow.nodes.forEach((n: { id: string }) => {
+        lifecycles[n.id] = 'Ready';
+      });
+      set({
+        nodes: data.workflow.nodes,
+        edges: data.workflow.edges,
+        nodeLifecycles: lifecycles,
+        workflowId: data.workflow.id ?? null,
+      });
+      get().addSimulationLog({
+        type: 'success',
+        message: 'Fluxo carregado com sucesso do banco de dados do servidor!',
+      });
+      return true;
+    } catch (err: unknown) {
       logger.error({ err }, 'Error loading workflow from server');
+      get().addSimulationLog({
+        type: 'error',
+        message: 'Não foi possível carregar o fluxo. Nenhuma gravação automática será iniciada.',
+      });
+      return false;
     }
   },
   saveWorkflowToServer: async () => {
@@ -888,15 +907,22 @@ export const useStudioStore = create<StudioState>((set, get) => ({
         body: JSON.stringify({ nodes, edges, name: 'Voice Agent Flow' }),
       });
       const data = await res.json().catch(() => ({}));
-      if (data.workflow?.id) {
-        set({ workflowId: data.workflow.id });
+      if (!res.ok || data.success !== true || typeof data.workflow?.id !== 'string') {
+        throw new Error(`Workflow save not confirmed (HTTP ${res.status})`);
       }
+      set({ workflowId: data.workflow.id });
       get().addSimulationLog({
         type: 'info',
         message: 'Progresso do Canvas salvo de forma segura e persistente no banco de dados.',
       });
-    } catch (err: any) {
+      return true;
+    } catch (err: unknown) {
       logger.error({ err }, 'Error saving workflow to server');
+      get().addSimulationLog({
+        type: 'error',
+        message: 'Falha ao salvar o fluxo no servidor. As alterações não foram confirmadas.',
+      });
+      return false;
     }
   },
 
