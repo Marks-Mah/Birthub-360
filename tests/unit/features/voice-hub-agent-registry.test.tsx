@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { cleanup, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import AgentRegistry from '@/features/voice-hub/pages/AgentRegistry.js';
@@ -41,6 +41,7 @@ describe.each([
   });
 
   afterEach(() => {
+    cleanup();
     vi.unstubAllGlobals();
     vi.clearAllMocks();
   });
@@ -53,12 +54,12 @@ describe.each([
     const user = userEvent.setup();
     show(Page);
 
-    expect(await screen.findByText('Não foi possível carregar os agentes de voz.')).toBeInTheDocument();
-    expect(screen.queryByText('Você ainda não criou nenhum agente de voz.')).not.toBeInTheDocument();
+    expect(await screen.findByText('Não foi possível carregar os agentes de voz.')).toBeTruthy();
+    expect(screen.queryByText('Você ainda não criou nenhum agente de voz.')).not.toBeTruthy();
 
     await user.click(screen.getByRole('button', { name: 'Tentar novamente' }));
 
-    expect(await screen.findByText('Agente Piloto')).toBeInTheDocument();
+    expect(await screen.findByText('Agente Piloto')).toBeTruthy();
     expect(fetch).toHaveBeenCalledTimes(2);
   });
 
@@ -66,15 +67,15 @@ describe.each([
     vi.mocked(fetch).mockResolvedValueOnce(await response({ message: 'unexpected' }));
     show(Page);
 
-    expect(await screen.findByText('Não foi possível carregar os agentes de voz.')).toBeInTheDocument();
-    expect(screen.queryByText('Nenhum agente encontrado')).not.toBeInTheDocument();
+    expect(await screen.findByText('Não foi possível carregar os agentes de voz.')).toBeTruthy();
+    expect(screen.queryByText('Nenhum agente encontrado')).not.toBeTruthy();
   });
 
   it('only shows the real empty state when the API explicitly returns an empty list', async () => {
     vi.mocked(fetch).mockResolvedValueOnce(await response({ agents: [] }));
     show(Page);
 
-    expect(await screen.findByText('Você ainda não criou nenhum agente de voz.')).toBeInTheDocument();
+    expect(await screen.findByText('Você ainda não criou nenhum agente de voz.')).toBeTruthy();
   });
 
   it('preserves the agent and explains the error on a failed deletion', async () => {
@@ -87,8 +88,8 @@ describe.each([
     await screen.findByText('Agente Piloto');
     await user.click(screen.getByRole('button', { name: 'Excluir agente Agente Piloto' }));
 
-    expect(await screen.findByText('Não foi possível excluir o agente. Tente novamente.')).toBeInTheDocument();
-    expect(screen.getByText('Agente Piloto')).toBeInTheDocument();
+    expect(await screen.findByText('Não foi possível excluir o agente. Tente novamente.')).toBeTruthy();
+    expect(screen.getByText('Agente Piloto')).toBeTruthy();
     expect(fetch).toHaveBeenLastCalledWith('/api/agents/agent-1', { method: 'DELETE' });
   });
 
@@ -102,8 +103,8 @@ describe.each([
     await screen.findByText('Agente Piloto');
     await user.click(screen.getByRole('button', { name: 'Excluir agente Agente Piloto' }));
 
-    expect(await screen.findByText('Não foi possível excluir o agente. Tente novamente.')).toBeInTheDocument();
-    expect(screen.getByText('Agente Piloto')).toBeInTheDocument();
+    expect(await screen.findByText('Não foi possível excluir o agente. Tente novamente.')).toBeTruthy();
+    expect(screen.getByText('Agente Piloto')).toBeTruthy();
   });
 
   it('removes the agent only after the server confirms successful deletion', async () => {
@@ -116,8 +117,8 @@ describe.each([
     await screen.findByText('Agente Piloto');
     await user.click(screen.getByRole('button', { name: 'Excluir agente Agente Piloto' }));
 
-    expect(await screen.findByText('Você ainda não criou nenhum agente de voz.')).toBeInTheDocument();
-    expect(screen.queryByText('Agente Piloto')).not.toBeInTheDocument();
+    expect(await screen.findByText('Você ainda não criou nenhum agente de voz.')).toBeTruthy();
+    expect(screen.queryByText('Agente Piloto')).not.toBeTruthy();
   });
 
   it('distinguishes an unmatched search from an empty organization', async () => {
@@ -128,7 +129,7 @@ describe.each([
     await screen.findByText('Agente Piloto');
     await user.type(screen.getByPlaceholderText('Pesquisar por nome ou modelo do agente...'), 'inexistente');
 
-    expect(screen.getByText('Nenhum agente corresponde à pesquisa.')).toBeInTheDocument();
-    expect(screen.queryByText('Você ainda não criou nenhum agente de voz.')).not.toBeInTheDocument();
+    expect(screen.getByText('Nenhum agente corresponde à pesquisa.')).toBeTruthy();
+    expect(screen.queryByText('Você ainda não criou nenhum agente de voz.')).not.toBeTruthy();
   });
 });
