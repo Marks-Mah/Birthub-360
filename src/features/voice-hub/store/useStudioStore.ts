@@ -14,19 +14,20 @@ import { initialNodes, initialEdges } from './initialData.js';
 import { createWorkflowPersistenceActions } from './workflowPersistence.js';
 export { workflowGraphSnapshot } from './workflowPersistence.js';
 import type { NodeLifecycleState, StudioState } from './studioTypes.js';
-
 // Re-exports for backwards compatibility
 export { nodeRegistry };
-export type { NodeLifecycleState, NodeRegistryItem, SimulationLog, StudioState } from './studioTypes.js';
-
+export type {
+  NodeLifecycleState,
+  NodeRegistryItem,
+  SimulationLog,
+  StudioState,
+} from './studioTypes.js';
 let workflowEpoch = 0;
-
 let simulationInterval: ReturnType<typeof setInterval> | null = null;
 export const useStudioStore = create<StudioState>((set, get) => ({
   past: [],
   future: [],
   clipboard: null,
-
   saveSnapshot: () => {
     const { nodes, edges, past } = get();
     // avoid saving identical snapshots
@@ -43,7 +44,6 @@ export const useStudioStore = create<StudioState>((set, get) => ({
       future: [],
     });
   },
-
   undo: () => {
     const { past, future, nodes, edges } = get();
     if (past.length === 0) return;
