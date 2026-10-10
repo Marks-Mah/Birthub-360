@@ -48,7 +48,10 @@ export default function TelephonyPage() {
             <Phone className="h-4 w-4 text-brand" />
             Consulta e Compra de Números (DID)
           </h3>
-          <p role="status" className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+          <p
+            role="status"
+            className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900"
+          >
             A busca de números e a consulta de preços ainda não estão conectadas a um provedor.
             Nenhuma disponibilidade ou tarifa foi consultada nesta tela.
           </p>
@@ -72,8 +75,8 @@ export default function TelephonyPage() {
               Compliance
             </h3>
             <p className="text-sm text-slate-600" role="status">
-              Os estados de mascaramento e gravação devem ser conferidos nas configurações reais
-              do provedor. Esta tela não consulta nem altera essas políticas.
+              Os estados de mascaramento e gravação devem ser conferidos nas configurações reais do
+              provedor. Esta tela não consulta nem altera essas políticas.
             </p>
           </div>
         </div>
