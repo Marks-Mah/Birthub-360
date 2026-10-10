@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { X, Mic, MicOff, PhoneOff, User, Bot, Loader2, AlertTriangle } from 'lucide-react';
 import { logger } from '../../../../../lib/logger.js';
 import { useStudioStore } from '../../../store/useStudioStore.js';
@@ -36,22 +36,6 @@ export function TestSimulatorModal({ onClose }: TestSimulatorModalProps) {
   const animationFrameRef = useRef<number | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-
-  useEffect(() => {
-    // Initial welcome message
-    setMessages([
-      {
-        role: 'agent',
-        text: 'Olá! Este é um chat de demonstração (mock) para testar a UI de teste de voz. Clique no microfone e diga algo.',
-      },
-    ]);
-
-    return () => {
-      stopAudioWave();
-      if (recognitionRef.current) recognitionRef.current.stop();
-      if (window.speechSynthesis) window.speechSynthesis.cancel();
-    };
-  }, [stopAudioWave]);
 
   const drawWaveform = () => {
     const canvas = canvasRef.current;
@@ -120,7 +104,7 @@ export function TestSimulatorModal({ onClose }: TestSimulatorModalProps) {
     }
   };
 
-  const stopAudioWave = () => {
+  const stopAudioWave = useCallback(() => {
     if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
     if (streamRef.current) streamRef.current.getTracks().forEach((track) => track.stop());
     if (audioContextRef.current && audioContextRef.current.state !== 'closed')
@@ -131,7 +115,23 @@ export function TestSimulatorModal({ onClose }: TestSimulatorModalProps) {
       const canvasCtx = canvas.getContext('2d');
       if (canvasCtx) canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    // Initial welcome message
+    setMessages([
+      {
+        role: 'agent',
+        text: 'Olá! Este é um chat de demonstração (mock) para testar a UI de teste de voz. Clique no microfone e diga algo.',
+      },
+    ]);
+
+    return () => {
+      stopAudioWave();
+      if (recognitionRef.current) recognitionRef.current.stop();
+      if (window.speechSynthesis) window.speechSynthesis.cancel();
+    };
+  }, [stopAudioWave]);
 
   const handleSendText = async (text: string) => {
     if (!text.trim() || isLoading) return;

@@ -113,8 +113,8 @@ export interface StudioState {
 
   // Server state & publishing
   workflowId: string | null;
-  loadWorkflowFromServer: () => Promise<void>;
-  saveWorkflowToServer: () => Promise<void>;
+  loadWorkflowFromServer: () => Promise<boolean>;
+  saveWorkflowToServer: () => Promise<boolean>;
 
   publishState: 'idle' | 'publishing' | 'success' | 'error';
   publishIssues: ValidationIssue[];

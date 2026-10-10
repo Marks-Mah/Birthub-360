@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState, lazy, Suspense } from 'react';
+import { useCallback, useEffect, useState, useRef, lazy, Suspense } from 'react';
 import {
   ReactFlow,
   MiniMap,
@@ -64,6 +64,9 @@ const edgeTypes = {
 
 function CanvasInner() {
   const [isSimulatorOpen, setIsSimulatorOpen] = useState(false);
+  const [loadState, setLoadState] = useState<'loading' | 'ready' | 'error'>('loading');
+  const [loadAttempt, setLoadAttempt] = useState(0);
+  const lastSavedGraphRef = useRef<string | null>(null);
 
   const {
     nodes,
@@ -83,18 +86,39 @@ function CanvasInner() {
   } = useStudioStore();
 
   useEffect(() => {
-    // loadWorkflowFromServer();
-  }, []);
+    let mounted = true;
+    setLoadState('loading');
+
+    // Read server state before enabling editing or autosave. The initial graph in the store is
+    // a demonstration template, not a tenant's saved workflow.
+    void loadWorkflowFromServer().then((loaded) => {
+      if (!mounted) return;
+      if (!loaded) {
+        setLoadState('error');
+        return;
+      }
+      const { nodes: loadedNodes, edges: loadedEdges } = useStudioStore.getState();
+      lastSavedGraphRef.current = JSON.stringify({ nodes: loadedNodes, edges: loadedEdges });
+      setLoadState('ready');
+    });
+
+    return () => {
+      mounted = false;
+    };
+  }, [loadWorkflowFromServer, loadAttempt]);
 
   useEffect(() => {
-    // Only save if there are actual nodes
-    if (nodes.length > 0) {
-      const timer = setTimeout(() => {
-        saveWorkflowToServer();
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [nodes, saveWorkflowToServer]);
+    if (loadState !== 'ready') return;
+    const graph = JSON.stringify({ nodes, edges });
+    if (graph === lastSavedGraphRef.current) return;
+
+    const timer = setTimeout(() => {
+      void saveWorkflowToServer().then((saved) => {
+        if (saved) lastSavedGraphRef.current = graph;
+      });
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, [nodes, edges, loadState, saveWorkflowToServer]);
 
   useEffect(() => {
     // Auto-dismiss the publish result banner; the outcome is still visible afterwards via the
@@ -150,7 +174,7 @@ function CanvasInner() {
   const onConnect = useCallback((params: Connection) => connectNodes(params), [connectNodes]);
 
   return (
-    <div className="flex flex-col flex-1 min-h-0 bg-[#0B0D14]">
+    <div className="relative flex flex-col flex-1 min-h-0 bg-[#0B0D14]">
       <TopBar
         health={health}
         issues={issues}
@@ -223,6 +247,30 @@ function CanvasInner() {
       </div>
 
       <BottomDrawer />
+
+      {loadState !== 'ready' && (
+        <div className="absolute inset-0 z-50 flex items-center justify-center bg-[#0B0D14] p-6">
+          {loadState === 'loading' ? (
+            <p role="status" className="text-sm text-slate-300">
+              Carregando o fluxo salvo da organização...
+            </p>
+          ) : (
+            <div role="alert" className="max-w-md space-y-4 text-center">
+              <p className="text-sm text-red-300">
+                Não foi possível carregar o fluxo. A edição e o salvamento automático foram
+                bloqueados para proteger os dados existentes.
+              </p>
+              <button
+                type="button"
+                onClick={() => setLoadAttempt((attempt) => attempt + 1)}
+                className="rounded-lg bg-indigo-600 px-4 py-2 text-sm text-white hover:bg-indigo-500"
+              >
+                Tentar novamente
+              </button>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
